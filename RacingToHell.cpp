@@ -26,6 +26,8 @@ int main()
 		window.clear();
 		window.draw(shape);
 		window.display();//ich weiﬂ nicht was ich hier tu.
+
+		//Test‰nderung
 	}
 
 	return 0;

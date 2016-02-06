@@ -18,13 +18,13 @@ Framework::~Framework()
 void Framework::run()
 {
 	//Main-Thread
-	while (_RenderWindow.isOpen())
+	while (_IsRunning)
 	{
 		update(_FrameTime);
 		handleEvents();
 		render();
 
-		messureTime();
+		measureTime();
 	}
 }
 
@@ -46,13 +46,13 @@ void Framework::handleEvents()
 	{
 		if (_Event.type == sf::Event::Closed)
 		{
+			_IsRunning = false;
 			_RenderWindow.close();
 		}
-
 	}
 }
 
-void Framework::messureTime()
+void Framework::measureTime()
 {
 
 	_FrameTime = _Clock.getElapsedTime().asSeconds();

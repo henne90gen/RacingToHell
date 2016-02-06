@@ -28,7 +28,7 @@ private:
 	void update(float Frametime);
 	void handleEvents();
 	void render();
-	void messureTime();
+	void measureTime();
 };
 
 #endif

@@ -23,7 +23,7 @@ int main()
 
 		//window.clear();
 		window.draw(shape);
-		window.display();
+		window.display();//ich weiﬂ nicht was ich hier tu.
 	}
 
 	return 0;

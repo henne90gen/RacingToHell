@@ -1,5 +1,8 @@
 #pragma once
-class Car
+
+#include "GameObject.h"
+
+class Car : public GameObject
 {
 public:
 	Car();
@@ -9,8 +12,10 @@ public:
 	//Funktionen
 
 	sf::Vector2f GetPos() { return  _Sprite.getPosition(); }
+	void render(sf::RenderWindow& Window);
+	void handleEvent(sf::Event& Event);
+	void update(float FrameTime);
 	int  GetHealth() { return _Health; }
-
 	//Variablen
 
 private:

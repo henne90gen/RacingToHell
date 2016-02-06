@@ -1,18 +1,15 @@
-#ifndef FRAMEWORK
-#define FRAMEWORK
+#pragma once
 
 #include "stdafx.h"
-#include <iostream>
-#include <SFML\Graphics.hpp>
 
 class Framework
 {
 public:
-	//Konstruktor, Dekonstruktor
+	//Constructor, Destructor
 	Framework();
 	~Framework();
 
-	//Funktionen
+	//Functions
 	void run();
 private:
 	//SFML-Graphics
@@ -20,16 +17,14 @@ private:
 	sf::Event _Event;
 	sf::Clock _Clock;
 
-	//Variablen
+	//Variables
 	float _FrameTime;
 	float _LastFPSPrint;
 	bool _IsRunning;
 
-	//Funktionen
+	//Functions
 	void update(float Frametime);
 	void handleEvents();
 	void render();
 	void measureTime();
 };
-
-#endif

@@ -21,6 +21,8 @@ int main()
 				window.close();
 		}
 
+		//New comment
+
 		window.clear();
 		window.draw(shape);
 		window.display();

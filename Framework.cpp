@@ -54,9 +54,11 @@ void Framework::handleEvents()
 
 void Framework::messureTime()
 {
-
 	_FrameTime = _Clock.getElapsedTime().asSeconds();
+	_LastFPSPrint += _FrameTime;
 	_Clock.restart();
-
-	std::cout << "FPS: " << 1 / _FrameTime << std::endl;
+	if (_LastFPSPrint > 1) {
+		std::cout << "FPS: " << 1 / _FrameTime << std::endl;
+		_LastFPSPrint = 0;
+	}
 }

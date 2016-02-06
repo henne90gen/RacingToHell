@@ -22,6 +22,7 @@ private:
 
 	//Variablen
 	float _FrameTime;
+	float _LastFPSPrint;
 	bool _IsRunning;
 
 	//Funktionen

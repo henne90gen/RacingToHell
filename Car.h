@@ -9,7 +9,7 @@ public:
 	//Funktionen
 
 	sf::Vector2f GetPos() { return  _Sprite.getPosition(); }
-	
+	int  GetHealth() { return _Health; }
 
 	//Variablen
 

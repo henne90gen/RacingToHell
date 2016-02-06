@@ -2,7 +2,6 @@
 //
 
 #include "stdafx.h"
-#include <SFML/Graphics.hpp>
 
 #include "Framework.hpp"
 

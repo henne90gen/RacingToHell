@@ -1,5 +1,5 @@
 #pragma once
-class Car
+class Car : public GameObject
 {
 public:
 	Car();

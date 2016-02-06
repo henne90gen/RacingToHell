@@ -3,7 +3,7 @@
 
 Framework::Framework()
 {
-	//Variablendefinition
+	//Definition of variables
 	_RenderWindow.create(sf::VideoMode(800, 600, 32U), "Racing to Hell");
 
 	_IsRunning = true;
@@ -17,7 +17,7 @@ Framework::~Framework()
 
 void Framework::run()
 {
-	//Main-Thread
+	//Main thread
 	while (_IsRunning)
 	{
 		update(_FrameTime);

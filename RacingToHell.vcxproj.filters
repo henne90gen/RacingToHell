@@ -52,4 +52,9 @@
     <None Include="README.md" />
     <None Include=".gitignore" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\car.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

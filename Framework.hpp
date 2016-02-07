@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "Car.h"
 
 class Framework
 {
@@ -21,6 +22,7 @@ private:
 	float _FrameTime;
 	float _LastFPSPrint;
 	bool _IsRunning;
+	Car _FirstCar;
 
 	//Functions
 	void update(float Frametime);

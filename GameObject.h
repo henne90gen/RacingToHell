@@ -1,4 +1,8 @@
 #pragma once
+
+/*
+	General interface for every object that's going to be in the game
+*/
 class GameObject
 {
 public:

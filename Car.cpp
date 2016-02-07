@@ -21,10 +21,9 @@ void Car::handleEvent(sf::Event& Event)
 {
 	//Keyinput abfragen und in _Movement speichern
 	_Movement = sf::Vector2f(0, 0);
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
 		_Movement += sf::Vector2f(-1, 0);
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+	} else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
 		_Movement += sf::Vector2f(1, 0);
 	}
 	else {
@@ -34,23 +33,8 @@ void Car::handleEvent(sf::Event& Event)
 
 void Car::update(float FrameTime)
 {
-	//Vorschlag - Nicht so gut. Event Handling sollte in handleEvent sein
-	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-	{
-		_Movement = sf::Vector2f(-_Speed * FrameTime, 0);
-
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-	{
-		_Movement = sf::Vector2f(_Speed * FrameTime, 0);
-	}
-	else
-	{
-		_Movement = sf::Vector2f(0, 0);
-	}
-	*/
 	//_Movement anwenden - Car bewegen
-	if (((getPos() + _Movement).x >= getWidth() / 2) && ((getPos() + _Movement).x <= 800 - getWidth() /2))
+	if (((getPos() + _Movement * FrameTime * _Speed).x >= getWidth() / 2) && ((getPos() + _Movement * FrameTime * _Speed).x <= 800 - getWidth() /2))
 	{
 		setPos(getPos() + (_Movement * FrameTime * _Speed));
 	}

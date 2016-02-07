@@ -18,15 +18,12 @@ public:
 	void setHealth(int Health) { _Health = Health; }
 
 	//Inherited functions from GameObject
-	void render(sf::RenderWindow& Window);
 	void handleEvent(sf::Event& Event);
 	void update(float FrameTime);
 	
 	//Variables
 
 private:
-	sf::Sprite _Sprite;
-	sf::Texture _Texture;
 	int _Health;
 	float _Speed;
 

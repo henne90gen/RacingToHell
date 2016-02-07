@@ -10,3 +10,7 @@ GameObject::GameObject()
 GameObject::~GameObject()
 {
 }
+
+void GameObject::render(sf::RenderWindow& Window) {
+	Window.draw(_Sprite);
+}

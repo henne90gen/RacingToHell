@@ -15,11 +15,6 @@ Car::~Car()
 {
 }
 
-void Car::render(sf::RenderWindow& Window)
-{
-	Window.draw(_Sprite);
-}
-
 void Car::handleEvent(sf::Event& Event)
 {
 	if (Event.type == sf::Event::KeyPressed) {

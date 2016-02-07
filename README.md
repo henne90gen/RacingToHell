@@ -7,7 +7,7 @@ Get both versions, 32-bit and 64-bit.
 Put each version in a folder named "SFML-x86" and "SFML-x64".
 
 
----Features---
+---Features to be implemented---
 
 - highway with cars coming at you
 -> cars are shooting at you (space invaders with cars)

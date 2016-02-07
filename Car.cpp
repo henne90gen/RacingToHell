@@ -22,6 +22,7 @@ void Car::render(sf::RenderWindow& Window)
 
 void Car::handleEvent(sf::Event& Event)
 {
+	/*
 	if (Event.type == sf::Event::KeyPressed) {
 		_Movement = sf::Vector2f(0, 0);
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
@@ -38,10 +39,25 @@ void Car::handleEvent(sf::Event& Event)
 		if (!sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
 			_Movement = sf::Vector2f(0, 0);
 		}
-	}
+	} */
 }
 
 void Car::update(float FrameTime)
 {
-	setPos(getPos() + (_Movement * FrameTime * _Speed));
+	//Vorschlag
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	{
+		_Movement = sf::Vector2f(-_Speed * FrameTime, 0);
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+	{
+		_Movement = sf::Vector2f(_Speed * FrameTime, 0);
+	}
+
+	if (((getPos() + _Movement).x >= getWidth() / 2) && ((getPos() + _Movement).x <= 800 - getWidth() /2))
+	{
+		setPos(getPos() + _Movement);
+	}
+
+	//setPos(getPos() + (_Movement * FrameTime * _Speed));
 }

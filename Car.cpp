@@ -48,10 +48,15 @@ void Car::update(float FrameTime)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
 		_Movement = sf::Vector2f(-_Speed * FrameTime, 0);
+
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
 		_Movement = sf::Vector2f(_Speed * FrameTime, 0);
+	}
+	else
+	{
+		_Movement = sf::Vector2f(0, 0);
 	}
 
 	if (((getPos() + _Movement).x >= getWidth() / 2) && ((getPos() + _Movement).x <= 800 - getWidth() /2))

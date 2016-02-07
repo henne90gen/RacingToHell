@@ -17,30 +17,22 @@ Car::~Car()
 
 void Car::handleEvent(sf::Event& Event)
 {
-	/*
-	if (Event.type == sf::Event::KeyPressed) {
-		_Movement = sf::Vector2f(0, 0);
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-			_Movement += sf::Vector2f(-1, 0);
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-			_Movement += sf::Vector2f(1, 0);
-		}
+	_Movement = sf::Vector2f(0, 0);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+		_Movement += sf::Vector2f(-1, 0);
 	}
-	else if (Event.type == sf::Event::KeyReleased) {
-		if (!sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-			_Movement = sf::Vector2f(0, 0);
-		}
-		if (!sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-			_Movement = sf::Vector2f(0, 0);
-		}
-	} */
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+		_Movement += sf::Vector2f(1, 0);
+	}
+	else {
+		_Movement = sf::Vector2f(0, 0);
+	}
 }
 
 void Car::update(float FrameTime)
 {
-	//Vorschlag
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	//Vorschlag - Nicht so gut. Event Handling sollte in handleEvent sein
+	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
 		_Movement = sf::Vector2f(-_Speed * FrameTime, 0);
 
@@ -53,11 +45,9 @@ void Car::update(float FrameTime)
 	{
 		_Movement = sf::Vector2f(0, 0);
 	}
-
+	*/
 	if (((getPos() + _Movement).x >= getWidth() / 2) && ((getPos() + _Movement).x <= 800 - getWidth() /2))
 	{
-		setPos(getPos() + _Movement);
+		setPos(getPos() + (_Movement * FrameTime * _Speed));
 	}
-
-	//setPos(getPos() + (_Movement * FrameTime * _Speed));
 }

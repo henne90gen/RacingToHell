@@ -11,8 +11,9 @@ GameObjectFactory::~GameObjectFactory()
 {
 }
 /*
-GameObject GameObjectFactory::getCar(Cars type)
+Car GameObjectFactory::getCar(Cars type)
 {
+	
 	GameObject go;
 	switch (type) {
 	case PlayerCar:

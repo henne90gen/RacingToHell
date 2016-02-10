@@ -1,12 +1,13 @@
 #pragma once
 
+#include "stdafx.h"
 #include "GameObject.h"
 
-class Car : public GameObject
+class PlayerCar : public GameObject
 {
 public:
-	Car();
-	~Car();
+	PlayerCar();
+	~PlayerCar();
 
 
 	//Getters and Setters

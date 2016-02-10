@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "Car.h"
+#include "PlayerCar.h"
 
 
-Car::Car() : _Health(100), _Speed(1000)
+PlayerCar::PlayerCar() : _Health(100), _Speed(1000)
 {
 	//Texture laden
 	//Mittelpunkt des Sprite als Ursprung festlegen
@@ -13,11 +13,11 @@ Car::Car() : _Health(100), _Speed(1000)
 }
 
 
-Car::~Car()
+PlayerCar::~PlayerCar()
 {
 }
 
-void Car::handleEvent(sf::Event& Event)
+void PlayerCar::handleEvent(sf::Event& Event)
 {
 	//Keyinput abfragen und in _Movement speichern
 	_Movement = sf::Vector2f(0, 0);
@@ -31,7 +31,7 @@ void Car::handleEvent(sf::Event& Event)
 	}
 }
 
-void Car::update(float FrameTime)
+void PlayerCar::update(float FrameTime)
 {
 	//_Movement anwenden - Car bewegen
 	if (((getPos() + _Movement * FrameTime * _Speed).x >= getWidth() / 2) && ((getPos() + _Movement * FrameTime * _Speed).x <= 800 - getWidth() /2))

@@ -154,14 +154,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Car.h" />
+    <ClInclude Include="PlayerCar.h" />
+    <ClInclude Include="CarFactory.h" />
+    <ClInclude Include="Cars.h" />
     <ClInclude Include="Framework.hpp" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Car.cpp" />
+    <ClCompile Include="PlayerCar.cpp" />
+    <ClCompile Include="CarFactory.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="RacingToHell.cpp" />

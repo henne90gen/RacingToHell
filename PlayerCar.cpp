@@ -29,7 +29,6 @@ void PlayerCar::handleEvent(sf::Event& Event)
 	else {
 		_Movement = sf::Vector2f(0, 0);
 	}
-	std::cout << "Moving" << std::endl;
 }
 
 void PlayerCar::update(float FrameTime)

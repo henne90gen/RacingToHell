@@ -5,7 +5,7 @@
 class Car : public GameObject
 {
 public:
-	Car(int health, int speed);
+	Car(int health, float speed);
 	~Car();
 
 	sf::Vector2f getPos() { return  _Sprite.getPosition(); }

@@ -9,10 +9,6 @@ public:
 	PlayerCar();
 	~PlayerCar();
 
-
-	//Getters and Setters
-	
-
 	//Inherited functions from GameObject
 	void handleEvent(sf::Event& Event);
 	void update(float FrameTime);

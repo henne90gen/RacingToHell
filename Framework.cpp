@@ -43,7 +43,6 @@ void Framework::handleEvents()
 {
 	while (_RenderWindow.pollEvent(_Event))
 	{
-		_FirstCar.handleEvent(_Event);
 		if (_Event.type == sf::Event::KeyPressed) {
 			_FirstCar.handleEvent(_Event);
 		} else if (_Event.type == sf::Event::KeyReleased) {

@@ -13,9 +13,11 @@ public:
 	virtual void handleEvent(sf::Event& Event) = 0;
 	virtual void update(float FrameTime) = 0;
 
-protected:
 	sf::Sprite _Sprite;
 	sf::Texture _Texture;
 	bool _CustomRenderer;
+
+protected:
+	
 };
 

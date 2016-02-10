@@ -2,7 +2,7 @@
 #include "PlayerCar.h"
 
 
-PlayerCar::PlayerCar() : _Health(100), _Speed(1000)
+PlayerCar::PlayerCar() : Car(100, 1000)
 {
 	//Texture laden
 	//Mittelpunkt des Sprite als Ursprung festlegen

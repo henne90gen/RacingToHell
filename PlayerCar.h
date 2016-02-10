@@ -1,9 +1,9 @@
 #pragma once
 
 #include "stdafx.h"
-#include "GameObject.h"
+#include "Car.h"
 
-class PlayerCar : public GameObject
+class PlayerCar : public Car
 {
 public:
 	PlayerCar();
@@ -21,14 +21,5 @@ public:
 	//Inherited functions from GameObject
 	void handleEvent(sf::Event& Event);
 	void update(float FrameTime);
-	
-	//Variables
-
-private:
-	int _Health;
-	float _Speed;
-
-	sf::Vector2f _Movement;
-
 };
 

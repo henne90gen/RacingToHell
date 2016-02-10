@@ -9,6 +9,6 @@ public:
 	GameObjectFactory();
 	~GameObjectFactory();
 
-	static GameObject getCar(Cars type);
+	static Car getCar(Cars type);
 };
 

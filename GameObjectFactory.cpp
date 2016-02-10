@@ -10,7 +10,7 @@ GameObjectFactory::GameObjectFactory()
 GameObjectFactory::~GameObjectFactory()
 {
 }
-
+/*
 GameObject GameObjectFactory::getCar(Cars type)
 {
 	GameObject go;
@@ -26,3 +26,4 @@ GameObject GameObjectFactory::getCar(Cars type)
 
 	return go;
 }
+*/

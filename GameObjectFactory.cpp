@@ -1,19 +1,19 @@
 #include "stdafx.h"
-#include "CarFactory.h"
+#include "GameObjectFactory.h"
 
 
-CarFactory::CarFactory()
+GameObjectFactory::GameObjectFactory()
 {
 }
 
 
-CarFactory::~CarFactory()
+GameObjectFactory::~GameObjectFactory()
 {
 }
 
-Car CarFactory::getCar(Cars type)
+GameObject GameObjectFactory::getCar(Cars type)
 {
-	Car car;
+	GameObject go;
 	switch (type) {
 	case PlayerCar:
 
@@ -24,5 +24,5 @@ Car CarFactory::getCar(Cars type)
 		break;
 	}
 
-	return car;
+	return go;
 }

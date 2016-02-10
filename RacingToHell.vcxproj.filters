@@ -27,13 +27,13 @@
     <ClInclude Include="GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CarFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Cars.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PlayerCar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjectFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -50,10 +50,10 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CarFactory.cpp">
+    <ClCompile Include="PlayerCar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerCar.cpp">
+    <ClCompile Include="GameObjectFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

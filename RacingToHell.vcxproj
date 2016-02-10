@@ -155,7 +155,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="PlayerCar.h" />
-    <ClInclude Include="CarFactory.h" />
+    <ClInclude Include="GameObjectFactory.h" />
     <ClInclude Include="Cars.h" />
     <ClInclude Include="Framework.hpp" />
     <ClInclude Include="GameObject.h" />
@@ -164,7 +164,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PlayerCar.cpp" />
-    <ClCompile Include="CarFactory.cpp" />
+    <ClCompile Include="GameObjectFactory.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="RacingToHell.cpp" />

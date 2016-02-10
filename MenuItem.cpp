@@ -26,3 +26,8 @@ void MenuItem::render(sf::RenderWindow & Window)
 {
 	Window.draw(_Text);
 }
+
+sf::FloatRect MenuItem::getRect()
+{
+	return _Text.getGlobalBounds();
+}

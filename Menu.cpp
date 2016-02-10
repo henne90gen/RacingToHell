@@ -46,6 +46,11 @@ MenuResult Menu::getMenuResponse(sf::RenderWindow& Window) {
 
 MenuResult Menu::handleClick(sf::Vector2f MousePos)
 {
-
+	for (int i = 0; i < _MenuItems.size(); i++) {
+		sf::FloatRect rect = _MenuItems[i]->getRect();
+		if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width) {
+			return _MenuItems[i]->getAction();
+		}
+	}
 	return MenuResult::Nothing;
 }

@@ -9,6 +9,8 @@ public:
 
 	void render(sf::RenderWindow& Window);
 
+	sf::FloatRect getRect();
+	MenuResult getAction() { return _Action; }
 private:
 	sf::Text _Text;
 	sf::Font _Font;

@@ -4,7 +4,7 @@
 
 PlayerCar::PlayerCar() : Car(100, 800)
 {
-	//Texture laden
+	//Textur laden
 	//Mittelpunkt des Sprite als Ursprung festlegen
 	if (_Texture.loadFromFile("Resources/car.png")) {
 		_Sprite.setTexture(_Texture);

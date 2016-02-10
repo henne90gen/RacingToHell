@@ -12,5 +12,6 @@ GameObject::~GameObject()
 }
 
 void GameObject::render(sf::RenderWindow& Window) {
+	_Sprite.setTexture(_Texture);
 	Window.draw(_Sprite);
 }

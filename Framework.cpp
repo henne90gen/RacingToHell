@@ -1,12 +1,10 @@
 #include "stdafx.h"
 #include "Framework.hpp"
 
-Framework::Framework()
+Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameState(GameState::Running)
 {
 	//Definition of variables
 	_RenderWindow.create(sf::VideoMode(800, 600, 32U), "Racing to Hell");
-	_IsRunning = true;
-	_FrameTime = 0;
 	_FirstCar.setPos(sf::Vector2f(_RenderWindow.getSize().x/2, _RenderWindow.getSize().y - _FirstCar.getHeight()/2));
 }
 
@@ -19,11 +17,22 @@ void Framework::run()
 	//Main thread
 	while (_IsRunning)
 	{
-		update(_FrameTime);
-		handleEvents();
-		render();
-
-		measureTime();
+		switch (_GameState) {
+		case GameState::Running:
+			update(_FrameTime);
+			handleEvents();
+			render();
+			measureTime();
+			break;
+		case GameState::Pausing:
+			showMenu();
+			break;
+		case GameState::Exiting:
+			_IsRunning = false;
+			_RenderWindow.close();
+			break;
+		}
+		
 	}
 }
 
@@ -44,12 +53,16 @@ void Framework::handleEvents()
 	while (_RenderWindow.pollEvent(_Event))
 	{
 		if (_Event.type == sf::Event::KeyPressed) {
-			_FirstCar.handleEvent(_Event);
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+				_GameState = GameState::Pausing;
+			}
+			else {
+				_FirstCar.handleEvent(_Event);
+			}
 		} else if (_Event.type == sf::Event::KeyReleased) {
 			_FirstCar.handleEvent(_Event);
 		} else if (_Event.type == sf::Event::Closed) {
-			_IsRunning = false;
-			_RenderWindow.close();
+			_GameState = GameState::Exiting;
 		}
 	}
 }
@@ -62,5 +75,17 @@ void Framework::measureTime()
 	if (_LastFPSPrint > 1) {
 		std::cout << "FPS: " << 1 / _FrameTime << std::endl;
 		_LastFPSPrint = 0;
+	}
+}
+
+void Framework::showMenu() {
+	MenuResult result = _Menu.render(_RenderWindow);
+	switch (result) {
+	case MenuResult::Resume:
+		_GameState = GameState::Running;
+		break;
+	case MenuResult::Exit:
+		_GameState = GameState::Exiting;
+		break;
 	}
 }

@@ -154,6 +154,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AICar.h" />
     <ClInclude Include="Car.h" />
     <ClInclude Include="PlayerCar.h" />
     <ClInclude Include="GameObjectFactory.h" />
@@ -164,6 +165,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AICar.cpp" />
     <ClCompile Include="Car.cpp" />
     <ClCompile Include="PlayerCar.cpp" />
     <ClCompile Include="GameObjectFactory.cpp" />

@@ -18,7 +18,6 @@ Framework::~Framework()
 
 void Framework::run()
 {
-	//Main thread
 	while (_IsRunning)
 	{
 		switch (_GameState) {
@@ -152,5 +151,6 @@ void Framework::loadCarSkins()
 void Framework::resetGame() 
 {
 	_Clock.restart();
+	_Score = 0;
 	_GameObjectContainer.resetGameObjects();
 }

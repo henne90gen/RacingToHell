@@ -7,6 +7,7 @@
 #include "Menu.h"
 #include "GameOverScreen.h"
 #include "HeadsUpDisplay.h"
+#include "Level.h"
 
 class Framework
 {
@@ -39,6 +40,7 @@ private:
 	int _CurrentCarSkinIndex;
 	GameOverScreen _GameOverScreen;
 	HeadsUpDisplay _HeadsUpDisplay;
+	Level _Level;
 	int _Score;
 
 	//Functions

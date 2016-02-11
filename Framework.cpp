@@ -45,6 +45,7 @@ void Framework::run()
 void Framework::render()
 {
 	_RenderWindow.clear(sf::Color::Cyan);
+	_Level.render(_RenderWindow);
 	_GameObjectContainer.render(_RenderWindow);
 	_HeadsUpDisplay.render(_RenderWindow);
 	_RenderWindow.display();
@@ -52,6 +53,7 @@ void Framework::render()
 
 void Framework::update(float FrameTime)
 {
+	_Level.update(FrameTime);
 	_GameObjectContainer.update(FrameTime);
 	if (!_GameObjectContainer.playerIsAlive()) {
 		_GameState = GameState::GameOver;

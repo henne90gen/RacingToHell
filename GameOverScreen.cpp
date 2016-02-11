@@ -9,7 +9,6 @@ GameOverScreen::GameOverScreen()
 		_GameOverText.setPosition(sf::Vector2f(0,0));
 		_GameOverText.setColor(sf::Color::Blue);
 		_GameOverText.setCharacterSize(50);
-		
 	}
 }
 
@@ -20,7 +19,7 @@ GameOverScreen::~GameOverScreen()
 
 MenuResult GameOverScreen::render(sf::RenderWindow& Window, int score)
 {
-	_GameOverText.setString("Game Over!\nRestart with Spacebar\nYour score was: " + std::to_string(score));
+	_GameOverText.setString("Game Over!\nRestart with Spacebar\n\nYour score was: " + std::to_string(score));
 
 	Window.clear(sf::Color::Red);
 	Window.draw(_GameOverText);

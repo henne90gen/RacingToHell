@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Car.h"
-#include <time.h>
+#include "GameObjects.h"
 
 class AICar : public Car
 {
@@ -11,5 +11,9 @@ public:
 
 	void handleEvent(sf::Event& Event);
 	void update(float FrameTime);
+
+	int getLane() { return _Lane; }
+private:
+	int _Lane;
 };
 

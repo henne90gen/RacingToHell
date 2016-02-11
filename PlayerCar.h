@@ -3,6 +3,7 @@
 #include "stdafx.h"
 #include "Car.h"
 #include "GameObject.h"
+#include "GameObjects.h"
 
 class PlayerCar : public Car
 {

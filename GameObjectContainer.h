@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameObject.h"
+#include "GameObjects.h"
 #include "AICar.h"
 #include "PlayerCar.h"
 

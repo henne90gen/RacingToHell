@@ -17,5 +17,3 @@
 #define SCREENWIDTH 600
 #define SCREENHEIGHT 800
 #define PI 3.141592654f
-
-// TODO: reference additional headers your program requires here

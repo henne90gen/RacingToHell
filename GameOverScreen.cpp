@@ -21,7 +21,6 @@ MenuResult GameOverScreen::render(sf::RenderWindow& Window, int score)
 {
 	_GameOverText.setString("Game Over!\nRestart with Spacebar\n\nYour score was: " + std::to_string(score));
 
-	//Window.clear(sf::Color::Red);
 	Window.draw(_GameOverText);
 	Window.display();
 	return getMenuResponse(Window);
@@ -29,20 +28,20 @@ MenuResult GameOverScreen::render(sf::RenderWindow& Window, int score)
 
 MenuResult GameOverScreen::getMenuResponse(sf::RenderWindow& Window) {
 	sf::Event event;
-		while (Window.pollEvent(event)) {
-			if (event.type == sf::Event::MouseButtonPressed) {
-				return handleClick(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
-			}
-			else if (event.type == sf::Event::KeyPressed) {
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-				return MenuResult::Restart;
-				}
-			}
-			else if (event.type == sf::Event::Closed) {
-				return MenuResult::Exit;
+	while (Window.pollEvent(event)) {
+		if (event.type == sf::Event::MouseButtonPressed) {
+			return handleClick(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
+		}
+		else if (event.type == sf::Event::KeyPressed) {
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+			return MenuResult::Restart;
 			}
 		}
+		else if (event.type == sf::Event::Closed) {
+			return MenuResult::Exit;
+		}
 	}
+}
 
 MenuResult GameOverScreen::handleClick(sf::Vector2f MousePos)
 {

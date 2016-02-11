@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GameObjectContainer.h"
 
-GameObjectContainer::GameObjectContainer() : _PlayerAlive(true)
+GameObjectContainer::GameObjectContainer() : _PlayerAlive(true), _PlayerBulletSpeed(600), _AIBulletSpeed(300)
 {
 	//Seed
 	srand(time(NULL));
@@ -148,7 +148,7 @@ void GameObjectContainer::update(float FrameTime)
 	//Prüfen ob Spieler geschossen hat
 	if (getPlayerCar()->shotBullet() != 360.0f)
 	{
-		Bullet* newBullet = new Bullet(getPlayerCar()->getPos(), getPlayerCar()->shotBullet(), 600, GameObjects::BulletObjectPlayer);
+		Bullet* newBullet = new Bullet(getPlayerCar()->getPos(), getPlayerCar()->shotBullet(), _PlayerBulletSpeed, GameObjects::BulletObjectPlayer);
 		_GameObjects.push_back(newBullet);
 
 		getPlayerCar()->resetShotBullet();
@@ -252,7 +252,7 @@ void GameObjectContainer::spawnBullet()
 		}
 	}
 
-	Bullet* newBullet = new Bullet(SelectedCar->getPos(), Direction, 350, GameObjects::BulletObjectAI);
+	Bullet* newBullet = new Bullet(SelectedCar->getPos(), Direction, _AIBulletSpeed, GameObjects::BulletObjectAI);
 	_GameObjects.push_back(newBullet);
 }
 

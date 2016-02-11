@@ -13,5 +13,5 @@ public:
 	void handleEvent(sf::Event& Event);
 
 private:
-	int _Speed, _Direction;
+	float _Speed, _Direction;
 };

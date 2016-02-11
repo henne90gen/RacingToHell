@@ -113,15 +113,11 @@ void Framework::showMenu() {
 
 void Framework::loadCarSkins()
 {
-	//TODO: For loop with strings
-	sf::Texture* texture = new sf::Texture();
-	if (texture->loadFromFile("Resources/car.png")) {
-		_CarSkins.push_back(texture);
+	std::vector<std::string> skins = { "car", "truck" };
+	for (unsigned int i = 0; i < skins.size(); i++) {
+		sf::Texture* texture = new sf::Texture();
+		if (texture->loadFromFile("Resources/" + skins.at(i) + ".png")) {
+			_CarSkins.push_back(texture);
+		}
 	}
-
-	/*
-	if (texture->loadFromFile("Resources/truck.png")) {
-		_CarSkins.push_back(texture);
-	}
-	*/
 }

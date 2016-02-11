@@ -5,7 +5,7 @@
 AICar::AICar() : Car(100, std::rand() % 100 + 100, GameObjects::AI, "car") 
 {
 	_Lane = std::rand() % 4;
-	setPos(sf::Vector2f(_Lane * SCREENWIDTH / 4 + SCREENWIDTH / 8, -getWidth() /2));
+	setPos(sf::Vector2f(_Lane * SCREENWIDTH / 4 + SCREENWIDTH / 8, -getHeight() /2));
 }
 
 

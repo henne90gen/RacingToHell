@@ -99,7 +99,7 @@ void GameObjectContainer::update(float FrameTime)
 	{
 		if (_GameObjects.at(i)->getType() == GameObjects::AI)
 		{
-			for (unsigned int j = 1; j < _GameObjects.size(); j++)
+			for (unsigned int j = i + 1; j < _GameObjects.size(); j++)
 			{
 				if (_GameObjects.at(j)->getType() == GameObjects::AI && i != j && dynamic_cast<AICar*>(_GameObjects.at(i))->getLane() == dynamic_cast<AICar*>(_GameObjects.at(j))->getLane() && dynamic_cast<AICar*>(_GameObjects.at(i))->getSpeed() != dynamic_cast<AICar*>(_GameObjects.at(j))->getSpeed())
 				{
@@ -116,7 +116,7 @@ void GameObjectContainer::update(float FrameTime)
 					{
 						dynamic_cast<AICar*>(_GameObjects.at(i))->takeDamage();
 						deleteObject(j);
-						j--;
+						break;
 					}
 				}
 			}

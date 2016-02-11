@@ -11,6 +11,7 @@ public:
 private:
 	sf::Text _HealthText;
 	sf::Text _ScoreText;
+	sf::Font _Font;
 	sf::RectangleShape _EnergyBar;
 	sf::RectangleShape _EnergyOutline;
 };

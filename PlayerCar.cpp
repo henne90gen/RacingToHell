@@ -31,11 +31,11 @@ void PlayerCar::handleEvent(sf::Event& Event)
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 	{
-		_Movement += sf::Vector2f(0, -0.4);
+		_Movement += sf::Vector2f(0, -0.45);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 	{
-		_Movement += sf::Vector2f(0, 1.3);
+		_Movement += sf::Vector2f(0, 1.2);
 	}
 	else
 	{

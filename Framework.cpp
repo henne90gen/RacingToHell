@@ -124,7 +124,7 @@ void Framework::showGameOverScreen()
 	switch (result) {
 	case MenuResult::Restart:
 		resetGame();
-		_GameState = GameState::Running;
+		_GameState = GameState::Pausing;
 		std::cout << _GameState << std::endl;
 		break;
 	case MenuResult::Exit:

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GameObjectContainer.h"
 
-GameObjectContainer::GameObjectContainer() : playerAlive(true)
+GameObjectContainer::GameObjectContainer() : _PlayerAlive(true)
 {
 	//Seed
 	srand(time(NULL));
@@ -39,7 +39,7 @@ void GameObjectContainer::update(float FrameTime)
 				switch (_GameObjects.at(i)->getType())
 				{
 				case GameObjects::AI:
-					playerAlive = false;
+					_PlayerAlive = false;
 					break;
 				case GameObjects::BulletObject:
 					getPlayerCar()->takeDamage();
@@ -53,7 +53,7 @@ void GameObjectContainer::update(float FrameTime)
 		}
 		else {
 			if (getPlayerCar()->getHealth() <= 0) {
-				playerAlive = false;
+				_PlayerAlive = false;
 			}
 		}
 		_GameObjects.at(i)->update(FrameTime);
@@ -137,10 +137,7 @@ void GameObjectContainer::resetGameObjects()
 		delete _GameObjects.at(i);
 		_GameObjects.at(i) = nullptr;
 	}
-	_GameObjects = std::vector<GameObject*>();
-
-	//Seed
-	srand(time(NULL));
+	_GameObjects.clear();
 
 	//Spielerauto
 	PlayerCar* MainCar = new PlayerCar(100, 800);
@@ -148,6 +145,12 @@ void GameObjectContainer::resetGameObjects()
 
 	//Frequenz
 	_Frequency = 2;
+	_BulletFrequency = 1.0f;
+
+	_TimePassed = 0.0f;
+	_TimePassedBullet = 0.0f;
+
+	_PlayerAlive = true;
 }
 
 void GameObjectContainer::spawnAICar()

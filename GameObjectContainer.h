@@ -17,7 +17,7 @@ public:
 	void handleEvents(sf::Event& Event);
 
 	PlayerCar* getPlayerCar() { return dynamic_cast<PlayerCar*>(_GameObjects.at(0)); }
-	bool playerIsAlive() { return playerAlive; }
+	bool playerIsAlive() { return _PlayerAlive; }
 
 	void resetGameObjects();
 
@@ -26,6 +26,6 @@ private:
 	float _Frequency, _BulletFrequency, _TimePassed, _TimePassedBullet;
 
 	void spawnAICar();
-	bool playerAlive;
+	bool _PlayerAlive;
 	void spawnBullet();
 };

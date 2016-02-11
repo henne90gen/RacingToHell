@@ -37,8 +37,8 @@ MenuResult Menu::getMenuResponse(sf::RenderWindow& Window) {
 	sf::Event event;
 	while (Window.pollEvent(event)) {
 		checkMouseHover(Window);
-		if (event.type == sf::Event::MouseButtonPressed) { 
-			return handleClick(sf::Vector2f(event.mouseButton.x, event.mouseButton.y)); 
+		if (event.type == sf::Event::MouseButtonPressed) {
+			return handleClick(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
 		}
 		else if (event.type == sf::Event::Closed) {
 			return MenuResult::Exit;

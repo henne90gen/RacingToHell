@@ -16,20 +16,8 @@
     <Filter Include="Source Files\Menu">
       <UniqueIdentifier>{1995ee35-b71e-4611-b27c-d4af73cde7f5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Car">
-      <UniqueIdentifier>{43bd045c-dc33-47ee-9521-ded0e1bb5e75}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Obstacles">
-      <UniqueIdentifier>{d9ebaff5-0616-430b-8c2e-02651852dece}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Menu">
       <UniqueIdentifier>{e78c2df7-a6d6-4ef4-a283-569c0c10d1f2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Car">
-      <UniqueIdentifier>{6ed71c05-dbd1-44b5-b7e8-4cd12aa0fc9f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Obstacles">
-      <UniqueIdentifier>{16385227-5b28-4842-bae1-1f907db183c4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resource Files\Fonts">
       <UniqueIdentifier>{a7b323e5-a73e-4cc0-89b5-f0a383580942}</UniqueIdentifier>
@@ -43,6 +31,12 @@
     <Filter Include="Source Files\Level">
       <UniqueIdentifier>{7aafb54b-0595-426b-800a-5c103c84b8b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GameObject">
+      <UniqueIdentifier>{43bd045c-dc33-47ee-9521-ded0e1bb5e75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GameObject">
+      <UniqueIdentifier>{6ed71c05-dbd1-44b5-b7e8-4cd12aa0fc9f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -52,12 +46,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Framework.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObjectContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Menu.h">
@@ -70,21 +58,33 @@
       <Filter>Header Files\Menu</Filter>
     </ClInclude>
     <ClInclude Include="AICar.h">
-      <Filter>Header Files\Car</Filter>
+      <Filter>Header Files\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Car.h">
-      <Filter>Header Files\Car</Filter>
+      <Filter>Header Files\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="PlayerCar.h">
-      <Filter>Header Files\Car</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObjects.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameOverScreen.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
+      <Filter>Header Files\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Header Files\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjectContainer.h">
+      <Filter>Header Files\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjects.h">
+      <Filter>Header Files\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameOverScreen.h">
+      <Filter>Header Files\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Level.h">
+      <Filter>Header Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="HeadsUpDisplay.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Level.h">
@@ -101,12 +101,6 @@
     <ClCompile Include="Framework.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObjectContainer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Menu.cpp">
       <Filter>Source Files\Menu</Filter>
     </ClCompile>
@@ -114,21 +108,30 @@
       <Filter>Source Files\Menu</Filter>
     </ClCompile>
     <ClCompile Include="Car.cpp">
-      <Filter>Source Files\Car</Filter>
+      <Filter>Source Files\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="AICar.cpp">
-      <Filter>Source Files\Car</Filter>
+      <Filter>Source Files\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="PlayerCar.cpp">
-      <Filter>Source Files\Car</Filter>
-    </ClCompile>
-    <ClCompile Include="GameOverScreen.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Level.cpp">
       <Filter>Source Files\Level</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
+      <Filter>Source Files\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjectContainer.cpp">
+      <Filter>Source Files\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameOverScreen.cpp">
+      <Filter>Source Files\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source Files\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="HeadsUpDisplay.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

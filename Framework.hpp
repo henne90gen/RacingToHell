@@ -6,6 +6,7 @@
 #include "GameObjectContainer.h"
 #include "Menu.h"
 #include "GameOverScreen.h"
+#include "HeadsUpDisplay.h"
 
 class Framework
 {
@@ -37,6 +38,8 @@ private:
 	std::vector<sf::Texture*> _CarSkins;
 	int _CurrentCarSkinIndex;
 	GameOverScreen _GameOverScreen;
+	HeadsUpDisplay _HeadsUpDisplay;
+	int _Score;
 
 	//Functions
 	void update(float Frametime);

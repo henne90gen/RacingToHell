@@ -11,8 +11,8 @@ GameObjectContainer::GameObjectContainer() : _PlayerAlive(true)
 	_GameObjects.push_back(MainCar);
 
 	//Frequenz
-	_Frequency = 0.0f;
-	_BulletFrequency = 0.0f;
+	_Frequency = 2.0f;
+	_BulletFrequency = 1.0f;
 
 	_TimePassed = 0.0f;
 	_TimePassedBullet = 0.0f;
@@ -96,7 +96,26 @@ void GameObjectContainer::update(float FrameTime)
 						dynamic_cast<AICar*>(_GameObjects.at(j))->setSpeed(minSpeed);
 					}
 				}
+				else if (_GameObjects.at(j)->getType() == GameObjects::BulletObjectPlayer)
+				{
+					if (_GameObjects.at(i)->getSprite().getGlobalBounds().intersects(_GameObjects.at(j)->getSprite().getGlobalBounds()))
+					{
+						dynamic_cast<AICar*>(_GameObjects.at(i))->takeDamage();
+					}
+				}
 			}
+		}
+	}
+
+	//kaputte Autos löschen
+	for (unsigned int i = 0; i < _GameObjects.size(); i++)
+	{
+		if (_GameObjects.at(i)->getType() == GameObjects::AI && dynamic_cast<AICar*>(_GameObjects.at(i))->getHealth() <= 0)
+		{
+			delete _GameObjects.at(i);
+			_GameObjects.at(i) = nullptr;
+			_GameObjects.erase(_GameObjects.begin() + i);
+			i--;
 		}
 	}
 

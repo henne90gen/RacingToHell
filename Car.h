@@ -11,7 +11,7 @@ public:
 	Car(int health, float speed, GameObjects Type, std::string Filename);
 	~Car();
 
-	int  getHealth() { return _Health; }
+	int getHealth() { return _Health; }
 	int getSpeed() { return _Speed; }
 
 	void setHealth(int Health) { _Health = Health; }

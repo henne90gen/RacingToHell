@@ -91,7 +91,7 @@
       <Filter>Header Files\Level</Filter>
     </ClInclude>
     <ClInclude Include="EnergyCanister.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -138,7 +138,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EnergyCanister.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

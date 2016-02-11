@@ -5,7 +5,6 @@
 PlayerCar::PlayerCar(int HP, int Speed) : Car(HP, Speed, GameObjects::Player, "car")
 {
 	setPos(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT - getHeight() / 2));
-	_Energy = 500;
 	resetShotBullet();
 }
 

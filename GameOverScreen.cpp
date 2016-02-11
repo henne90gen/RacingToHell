@@ -34,8 +34,8 @@ MenuResult GameOverScreen::getMenuResponse(sf::RenderWindow& Window) {
 				return handleClick(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
 			}
 			else if (event.type == sf::Event::KeyPressed) {
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-					return MenuResult::Restart;
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+					MenuResult::Restart;
 				}
 			}
 			else if (event.type == sf::Event::Closed) {

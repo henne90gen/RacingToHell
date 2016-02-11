@@ -6,6 +6,7 @@
 #include "GameObjectFactory.h"
 #include "Cars.h"
 #include "GameObjectContainer.h"
+#include "Menu.h"
 
 class Framework
 {
@@ -16,6 +17,11 @@ public:
 
 	//Functions
 	void run();
+
+	enum GameState {
+		Running, Pausing, Exiting
+	};
+
 private:
 	//SFML-Graphics
 	sf::RenderWindow _RenderWindow;
@@ -27,10 +33,13 @@ private:
 	float _LastFPSPrint;
 	bool _IsRunning;
 	GameObjectContainer _GameObjectContainer;
+	GameState _GameState;
+	Menu _Menu;
 
 	//Functions
 	void update(float Frametime);
 	void handleEvents();
 	void render();
 	void measureTime();
+	void showMenu();
 };

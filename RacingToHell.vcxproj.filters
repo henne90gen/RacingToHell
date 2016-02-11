@@ -13,6 +13,30 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\Menu">
+      <UniqueIdentifier>{1995ee35-b71e-4611-b27c-d4af73cde7f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Car">
+      <UniqueIdentifier>{43bd045c-dc33-47ee-9521-ded0e1bb5e75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Obstacles">
+      <UniqueIdentifier>{d9ebaff5-0616-430b-8c2e-02651852dece}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Menu">
+      <UniqueIdentifier>{e78c2df7-a6d6-4ef4-a283-569c0c10d1f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Car">
+      <UniqueIdentifier>{6ed71c05-dbd1-44b5-b7e8-4cd12aa0fc9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Obstacles">
+      <UniqueIdentifier>{16385227-5b28-4842-bae1-1f907db183c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Fonts">
+      <UniqueIdentifier>{a7b323e5-a73e-4cc0-89b5-f0a383580942}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Textures">
+      <UniqueIdentifier>{2756ad11-8b17-4b33-a08a-1b8dbefc9e78}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -45,6 +69,15 @@
     <ClInclude Include="GameObjectContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Menu.h">
+      <Filter>Header Files\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuItem.h">
+      <Filter>Header Files\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuResults.h">
+      <Filter>Header Files\Menu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -74,6 +107,12 @@
     <ClCompile Include="GameObjectContainer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Menu.cpp">
+      <Filter>Source Files\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuItem.cpp">
+      <Filter>Source Files\Menu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -81,7 +120,12 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\car.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Textures</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Resources\arial.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </Font>
   </ItemGroup>
 </Project>

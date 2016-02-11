@@ -157,6 +157,9 @@
     <ClInclude Include="AICar.h" />
     <ClInclude Include="Car.h" />
     <ClInclude Include="GameObjectContainer.h" />
+    <ClInclude Include="MenuResults.h" />
+    <ClInclude Include="Menu.h" />
+    <ClInclude Include="MenuItem.h" />
     <ClInclude Include="PlayerCar.h" />
     <ClInclude Include="GameObjectFactory.h" />
     <ClInclude Include="Cars.h" />
@@ -168,6 +171,8 @@
   <ItemGroup>
     <ClCompile Include="AICar.cpp" />
     <ClCompile Include="Car.cpp" />
+    <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="MenuItem.cpp" />
     <ClCompile Include="GameObjectContainer.cpp" />
     <ClCompile Include="PlayerCar.cpp" />
     <ClCompile Include="GameObjectFactory.cpp" />
@@ -187,6 +192,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\car.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Resources\arial.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

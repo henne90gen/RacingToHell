@@ -148,7 +148,7 @@ void GameObjectContainer::update(float FrameTime)
 	//Prüfen ob Spieler geschossen hat
 	if (getPlayerCar()->shotBullet() != 360.0f)
 	{
-		Bullet* newBullet = new Bullet(getPlayerCar()->getPos(), getPlayerCar()->shotBullet(), 600, GameObjects::BulletObjectPlayer);
+		Bullet* newBullet = new Bullet(getPlayerCar()->getPos(), getPlayerCar()->shotBullet(), 100, GameObjects::BulletObjectPlayer);
 		_GameObjects.push_back(newBullet);
 
 		getPlayerCar()->resetShotBullet();

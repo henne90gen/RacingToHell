@@ -1,14 +1,14 @@
 #include "stdafx.h"
 #include "GameObjectContainer.h"
 
-GameObjectContainer::GameObjectContainer()
+GameObjectContainer::GameObjectContainer() : playerAlive(true)
 {
 	//Seed
 	srand(time(NULL));
 
 	//Spielerauto
 	PlayerCar* MainCar = new PlayerCar(100, 800);
-	addObject(MainCar);
+	_GameObjects.push_back(MainCar);
 
 	//Frequenz
 	_Frequency = 2.0f;
@@ -31,10 +31,20 @@ GameObjectContainer::~GameObjectContainer()
 
 void GameObjectContainer::update(float FrameTime)
 {
+	//Kollision Spieler
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
 		if (i > 0) {
-			dynamic_cast<PlayerCar*>(_GameObjects.at(0))->checkForCollision(_GameObjects.at(i));
+			if (getPlayerCar()->checkForCollision(_GameObjects.at(i))) {
+				switch (_GameObjects.at(i)->getType())
+				{
+				case GameObjects::AI:
+					playerAlive = false;
+					break;
+				default:
+					break;
+				}
+			}
 		}
 		_GameObjects.at(i)->update(FrameTime);
 	}
@@ -110,6 +120,26 @@ void GameObjectContainer::handleEvents(sf::Event& Event)
 	}
 }
 
+void GameObjectContainer::resetGameObjects()
+{
+	for (unsigned int i = 0; i < _GameObjects.size(); i++)
+	{
+		delete _GameObjects.at(i);
+		_GameObjects.at(i) = nullptr;
+	}
+	_GameObjects = std::vector<GameObject*>();
+
+	//Seed
+	srand(time(NULL));
+
+	//Spielerauto
+	PlayerCar* MainCar = new PlayerCar(100, 800);
+	_GameObjects.push_back(MainCar);
+
+	//Frequenz
+	_Frequency = 2;
+}
+
 void GameObjectContainer::spawnAICar()
 {
 	AICar* newAiCar = new AICar();
@@ -127,7 +157,7 @@ void GameObjectContainer::spawnAICar()
 		}
 	}
 
-	addObject(newAiCar);
+	_GameObjects.push_back(newAiCar);
 }
 
 void GameObjectContainer::spawnBullet()
@@ -167,5 +197,5 @@ void GameObjectContainer::spawnBullet()
 	}
 
 	Bullet* newBullet = new Bullet(SelectedCar->getPos(), Direction, 100);
-	addObject(newBullet);
+	_GameObjects.push_back(newBullet);
 }

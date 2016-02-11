@@ -3,7 +3,6 @@
 
 Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameState(GameState::Pausing)
 {
-	//Definition of variables
 	_RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell");
 	loadCarSkins();
 	
@@ -32,6 +31,9 @@ void Framework::run()
 		case GameState::Pausing:
 			showMenu();
 			break;
+		case GameState::GameOver:
+			showGameOverScreen();
+			break;
 		case GameState::Exiting:
 			_IsRunning = false;
 			_RenderWindow.close();
@@ -51,6 +53,9 @@ void Framework::render()
 void Framework::update(float FrameTime)
 {
 	_GameObjectContainer.update(FrameTime);
+	if (!_GameObjectContainer.playerIsAlive()) {
+		_GameState = GameState::GameOver;
+	}
 }
 
 void Framework::handleEvents()
@@ -83,14 +88,15 @@ void Framework::measureTime()
 	}
 }
 
-void Framework::showMenu() {
+void Framework::showMenu() 
+{
 	MenuResult result = _Menu.render(_RenderWindow, *_CarSkins.at(_CurrentCarSkinIndex));
 	switch (result) {
 	case MenuResult::Resume:
+		_Clock.restart();
 		_GameState = GameState::Running;
 		break;
 	case MenuResult::PreviousSkin:
-		//TODO: Switch to previous skin
 		_CurrentCarSkinIndex--;
 		if (_CurrentCarSkinIndex < 0) {
 			_CurrentCarSkinIndex = _CarSkins.size() - 1;
@@ -98,12 +104,27 @@ void Framework::showMenu() {
 		_GameObjectContainer.getPlayerCar()->setSkin(_CarSkins.at(_CurrentCarSkinIndex));
 		break;
 	case MenuResult::NextSkin:
-		//TODO: Switch to next skin
 		_CurrentCarSkinIndex++;
 		if (_CurrentCarSkinIndex >= _CarSkins.size()) {
 			_CurrentCarSkinIndex = 0;
 		}
 		_GameObjectContainer.getPlayerCar()->setSkin(_CarSkins.at(_CurrentCarSkinIndex));
+		break;
+	case MenuResult::Exit:
+		_GameState = GameState::Exiting;
+		break;
+	}
+}
+
+void Framework::showGameOverScreen()
+{
+	MenuResult result = _GameOverScreen.render(_RenderWindow);
+	switch (result) {
+	case MenuResult::Restart:
+		//TODO: Reset all the variables
+		_Clock.restart();
+		resetGame();
+		_GameState = GameState::Running;
 		break;
 	case MenuResult::Exit:
 		_GameState = GameState::Exiting;
@@ -120,4 +141,9 @@ void Framework::loadCarSkins()
 			_CarSkins.push_back(texture);
 		}
 	}
+}
+
+void Framework::resetGame() 
+{
+	_GameObjectContainer.resetGameObjects();
 }

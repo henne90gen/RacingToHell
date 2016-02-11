@@ -158,7 +158,7 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Car.h" />
     <ClInclude Include="GameObjectContainer.h" />
-    <ClInclude Include="Level.h" />
+    <ClInclude Include="GameOverScreen.h" />
     <ClInclude Include="MenuResults.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="MenuItem.h" />
@@ -173,6 +173,7 @@
     <ClCompile Include="AICar.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Car.cpp" />
+    <ClCompile Include="GameOverScreen.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="MenuItem.cpp" />
@@ -194,6 +195,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\car.png" />
+    <Image Include="Resources\truck.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\arial.ttf" />

@@ -16,6 +16,6 @@ public:
 	void handleEvent(sf::Event& Event);
 	void update(float FrameTime);
 
-	void checkForCollision(GameObject * go);
+	bool checkForCollision(GameObject * go);
 };
 

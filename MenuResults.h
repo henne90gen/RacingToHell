@@ -1,5 +1,5 @@
 #pragma once
 
 enum MenuResult {
-	Resume, Nothing, Exit, NextSkin, PreviousSkin
+	Resume, Nothing, Exit, NextSkin, PreviousSkin, Restart
 };

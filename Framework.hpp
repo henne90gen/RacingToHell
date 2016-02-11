@@ -5,6 +5,7 @@
 #include "PlayerCar.h"
 #include "GameObjectContainer.h"
 #include "Menu.h"
+#include "GameOverScreen.h"
 
 class Framework
 {
@@ -17,7 +18,7 @@ public:
 	void run();
 
 	enum GameState {
-		Running, Pausing, Exiting
+		Running, Pausing, GameOver, Exiting
 	};
 
 private:
@@ -35,6 +36,7 @@ private:
 	Menu _Menu;
 	std::vector<sf::Texture*> _CarSkins;
 	int _CurrentCarSkinIndex;
+	GameOverScreen _GameOverScreen;
 
 	//Functions
 	void update(float Frametime);
@@ -42,5 +44,7 @@ private:
 	void render();
 	void measureTime();
 	void showMenu();
+	void showGameOverScreen();
 	void loadCarSkins();
+	void resetGame();
 };

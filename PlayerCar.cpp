@@ -88,7 +88,6 @@ void PlayerCar::update(float FrameTime)
 bool PlayerCar::checkForCollision(GameObject * go)
 {
 	if (getSprite().getGlobalBounds().intersects(go->getSprite().getGlobalBounds())) {
-		//std::cout << "We are intersecting!" << std::endl;
 		return true;
 	}
 	return false;

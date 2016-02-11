@@ -125,7 +125,7 @@ void Framework::showMenu()
 
 void Framework::showGameOverScreen()
 {
-	MenuResult result = _GameOverScreen.render(_RenderWindow);
+	MenuResult result = _GameOverScreen.render(_RenderWindow, _Score);
 	switch (result) {
 	case MenuResult::Restart:
 		resetGame();

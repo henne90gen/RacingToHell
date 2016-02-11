@@ -23,6 +23,4 @@ void Bullet::update(float FrameTime)
 
 void Bullet::handleEvent(sf::Event& Event)
 {
-
-
 }

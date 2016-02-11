@@ -2,11 +2,12 @@
 
 #include "stdafx.h"
 #include "Car.h"
+#include "GameObject.h"
 
 class PlayerCar : public Car
 {
 public:
-	PlayerCar();
+	PlayerCar(int HP, int Speed);
 	~PlayerCar();
 
 	//Inherited functions from GameObject

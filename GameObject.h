@@ -1,23 +1,23 @@
 #pragma once
 
-/*
-	General interface for every object that's going to be in the game
-*/
+#include <string>
+
 class GameObject
 {
 public:
-	GameObject();
+	GameObject(std::string Filename);
 	~GameObject();
 
 	virtual void render(sf::RenderWindow& Window);
 	virtual void handleEvent(sf::Event& Event) = 0;
 	virtual void update(float FrameTime) = 0;
 
+	sf::Vector2f getPos() { return  _Sprite.getPosition(); }
+	void setPos(sf::Vector2f Pos) { _Sprite.setPosition(Pos); }
+	float getWidth() { return _Sprite.getLocalBounds().width; }
+	float getHeight() { return _Sprite.getLocalBounds().height; }
+private:
 	sf::Sprite _Sprite;
 	sf::Texture _Texture;
-	bool _CustomRenderer;
-
-protected:
-	
 };
 

@@ -10,21 +10,18 @@ GameObjectFactory::GameObjectFactory()
 GameObjectFactory::~GameObjectFactory()
 {
 }
-/*
-Car GameObjectFactory::getCar(Cars type)
-{
-	
-	GameObject go;
-	switch (type) {
-	case PlayerCar:
 
-	case Cars::AICar:
-		car = Car(50, 2000, type);
-	case Cars::Truck:
-		car = Car(200, 500, type);
+
+/*Car GameObjectFactory::getCar(Cars type)
+{
+	switch (type) {
+	case Cars::Player:
+		return PlayerCar(100, 800);
+		break;
+	case Cars::AI:
+		sf::Texture AITextture;
+		AITextture.loadFromFile("Resources/car.png");
+		return AICar(100, 100, 100, AITextture);
 		break;
 	}
-
-	return go;
-}
-*/
+}*/

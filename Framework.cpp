@@ -4,10 +4,9 @@
 Framework::Framework()
 {
 	//Definition of variables
-	_RenderWindow.create(sf::VideoMode(800, 600, 32U), "Racing to Hell");
+	_RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell");
 	_IsRunning = true;
 	_FrameTime = 0;
-	_FirstCar.setPos(sf::Vector2f(_RenderWindow.getSize().x/2, _RenderWindow.getSize().y - _FirstCar.getHeight()/2));
 }
 
 Framework::~Framework()
@@ -30,23 +29,21 @@ void Framework::run()
 void Framework::render()
 {
 	_RenderWindow.clear(sf::Color::Cyan);
-	_FirstCar.render(_RenderWindow);
+	_GameObjectContainer.render(_RenderWindow);
 	_RenderWindow.display();
 }
 
 void Framework::update(float FrameTime)
 {
-	_FirstCar.update(FrameTime);
+	_GameObjectContainer.update(FrameTime);
 }
 
 void Framework::handleEvents()
 {
 	while (_RenderWindow.pollEvent(_Event))
 	{
-		if (_Event.type == sf::Event::KeyPressed) {
-			_FirstCar.handleEvent(_Event);
-		} else if (_Event.type == sf::Event::KeyReleased) {
-			_FirstCar.handleEvent(_Event);
+		if (_Event.type == sf::Event::KeyPressed || _Event.type == sf::Event::KeyReleased) {
+			_GameObjectContainer.handleEvents(_Event);
 		} else if (_Event.type == sf::Event::Closed) {
 			_IsRunning = false;
 			_RenderWindow.close();

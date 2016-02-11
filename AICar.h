@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Car.h"
+#include <time.h>
 
-class AICar : Car
+class AICar : public Car
 {
 public:
 	AICar();

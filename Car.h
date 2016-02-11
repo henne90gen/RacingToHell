@@ -2,18 +2,19 @@
 #include "stdafx.h"
 #include "GameObject.h"
 
+#include <string>
+
 class Car : public GameObject
 {
 public:
-	Car(int health, float speed);
+	Car(int health, float speed, std::string Filename);
 	~Car();
 
-	sf::Vector2f getPos() { return  _Sprite.getPosition(); }
-	void setPos(sf::Vector2f Pos) { _Sprite.setPosition(Pos); }
-	float getWidth() { return _Sprite.getLocalBounds().width; }
-	float getHeight() { return _Sprite.getLocalBounds().height; }
 	int  getHealth() { return _Health; }
 	void setHealth(int Health) { _Health = Health; }
+
+	void handleEvent(sf::Event& Event);
+	void update(float FrameTime);
 
 protected:
 

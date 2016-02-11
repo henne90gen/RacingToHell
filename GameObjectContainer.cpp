@@ -27,6 +27,9 @@ void GameObjectContainer::update(float FrameTime)
 {
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
+		if (i > 0) {
+			dynamic_cast<PlayerCar*>(_GameObjects.at(0))->checkForCollision(_GameObjects.at(i));
+		}
 		_GameObjects.at(i)->update(FrameTime);
 	}
 
@@ -38,6 +41,7 @@ void GameObjectContainer::update(float FrameTime)
 			delete _GameObjects.at(i);
 			_GameObjects.at(i) = nullptr;
 			_GameObjects.erase(_GameObjects.begin() + i);
+			i--;
 		}
 	}
 

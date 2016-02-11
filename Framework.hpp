@@ -3,7 +3,6 @@
 #include "stdafx.h"
 #include "Car.h"
 #include "PlayerCar.h"
-#include "GameObjectFactory.h"
 #include "Cars.h"
 #include "GameObjectContainer.h"
 #include "Menu.h"
@@ -35,6 +34,8 @@ private:
 	GameObjectContainer _GameObjectContainer;
 	GameState _GameState;
 	Menu _Menu;
+	std::vector<sf::Sprite*> _CarSkins;
+	int _CurrentCarSkinIndex;
 
 	//Functions
 	void update(float Frametime);
@@ -42,4 +43,5 @@ private:
 	void render();
 	void measureTime();
 	void showMenu();
+	void loadCarSkins();
 };

@@ -18,3 +18,9 @@ void GameObject::render(sf::RenderWindow& Window)
 {
 	Window.draw(_Sprite);
 }
+
+void GameObject::setSprite(sf::Sprite sprite)
+{
+	_Sprite = sprite;
+	//_Texture = *_Sprite.getTexture();
+}

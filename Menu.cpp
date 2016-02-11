@@ -14,6 +14,7 @@ Menu::~Menu()
 {
 	for (int i = 0; i < _MenuItems.size(); i++) {
 		delete _MenuItems[i];
+		_MenuItems[i] = nullptr;
 }
 }
 

@@ -17,6 +17,8 @@ public:
 	float getWidth() { return _Sprite.getLocalBounds().width; }
 	float getHeight() { return _Sprite.getLocalBounds().height; }
 	sf::Sprite getSprite() { return _Sprite; }
+	void setSprite(sf::Sprite sprite);
+
 private:
 	sf::Sprite _Sprite;
 	sf::Texture _Texture;

@@ -54,3 +54,11 @@ void PlayerCar::update(float FrameTime)
 		setPos(sf::Vector2f(getPos().x, getPos().y + _Movement.y * FrameTime * _Speed));
 	}
 }
+
+void PlayerCar::checkForCollision(GameObject * go)
+{
+	if (go->getSprite().getGlobalBounds().intersects(getSprite().getGlobalBounds())) {
+		std::cout << "We are intersecting!" << std::endl;
+
+	}
+}

@@ -5,10 +5,16 @@ Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameState(GameState::
 {
 	//Definition of variables
 	_RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell");
+	loadCarSkins();
+	
 }
 
 Framework::~Framework()
 {
+	for (unsigned int i = 0; i < _CarSkins.size(); i++) {
+		delete _CarSkins.at(i);
+		_CarSkins.at(i) = nullptr;
+	}
 }
 
 void Framework::run()
@@ -18,10 +24,10 @@ void Framework::run()
 	{
 		switch (_GameState) {
 		case GameState::Running:
-		update(_FrameTime);
-		handleEvents();
-		render();
-		measureTime();
+			update(_FrameTime);
+			handleEvents();
+			render();
+			measureTime();
 			break;
 		case GameState::Pausing:
 			showMenu();
@@ -78,19 +84,43 @@ void Framework::measureTime()
 }
 
 void Framework::showMenu() {
-	MenuResult result = _Menu.render(_RenderWindow, sf::Sprite());
+	MenuResult result = _Menu.render(_RenderWindow, *_CarSkins.at(_CurrentCarSkinIndex));
 	switch (result) {
 	case MenuResult::Resume:
 		_GameState = GameState::Running;
 		break;
 	case MenuResult::PreviousSkin:
 		//TODO: Switch to previous skin
+		_CurrentCarSkinIndex--;
+		if (_CurrentCarSkinIndex < 0) {
+			_CurrentCarSkinIndex = _CarSkins.size() - 1;
+		}
+		_GameObjectContainer.getPlayerCar()->setSprite(*_CarSkins.at(_CurrentCarSkinIndex));
 		break;
 	case MenuResult::NextSkin:
 		//TODO: Switch to next skin
+		_CurrentCarSkinIndex++;
+		if (_CurrentCarSkinIndex >= _CarSkins.size()) {
+			_CurrentCarSkinIndex = 0;
+		}
+		_GameObjectContainer.getPlayerCar()->setSprite(*_CarSkins.at(_CurrentCarSkinIndex));
 		break;
 	case MenuResult::Exit:
 		_GameState = GameState::Exiting;
 		break;
 	}
+}
+
+void Framework::loadCarSkins()
+{
+	sf::Texture texture;
+	if (texture.loadFromFile("Resources/car.png")) {
+		_CarSkins.push_back(new sf::Sprite(texture));
+	}
+
+	/*
+	if (texture.loadFromFile("Resources/truck.png")) {
+		_CarSkins.push_back(new sf::Sprite(texture));
+	}
+	*/
 }

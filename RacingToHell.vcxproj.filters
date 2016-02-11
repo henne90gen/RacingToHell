@@ -51,21 +51,6 @@
     <ClInclude Include="GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Cars.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerCar.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObjectFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Car.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AICar.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GameObjectContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -77,6 +62,18 @@
     </ClInclude>
     <ClInclude Include="MenuResults.h">
       <Filter>Header Files\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Cars.h">
+      <Filter>Header Files\Car</Filter>
+    </ClInclude>
+    <ClInclude Include="AICar.h">
+      <Filter>Header Files\Car</Filter>
+    </ClInclude>
+    <ClInclude Include="Car.h">
+      <Filter>Header Files\Car</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerCar.h">
+      <Filter>Header Files\Car</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -92,18 +89,6 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerCar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObjectFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Car.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AICar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GameObjectContainer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -112,6 +97,15 @@
     </ClCompile>
     <ClCompile Include="MenuItem.cpp">
       <Filter>Source Files\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Car.cpp">
+      <Filter>Source Files\Car</Filter>
+    </ClCompile>
+    <ClCompile Include="AICar.cpp">
+      <Filter>Source Files\Car</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerCar.cpp">
+      <Filter>Source Files\Car</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

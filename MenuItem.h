@@ -11,9 +11,13 @@ public:
 
 	sf::FloatRect getRect();
 	MenuResult getAction() { return _Action; }
+
+	void switchHoverState(bool hoverState, sf::RenderWindow& Window);
 private:
 	sf::Text _Text;
 	sf::Font _Font;
+	sf::RectangleShape _HoverRect;
 	MenuResult _Action;
+	bool _Hovering;
 };
 

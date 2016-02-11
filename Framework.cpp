@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Framework.hpp"
 
-Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameState(GameState::Running)
+Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameState(GameState::Pausing)
 {
 	//Definition of variables
 	_RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell");
@@ -78,10 +78,16 @@ void Framework::measureTime()
 }
 
 void Framework::showMenu() {
-	MenuResult result = _Menu.render(_RenderWindow);
+	MenuResult result = _Menu.render(_RenderWindow, sf::Sprite());
 	switch (result) {
 	case MenuResult::Resume:
 		_GameState = GameState::Running;
+		break;
+	case MenuResult::PreviousSkin:
+		//TODO: Switch to previous skin
+		break;
+	case MenuResult::NextSkin:
+		//TODO: Switch to next skin
 		break;
 	case MenuResult::Exit:
 		_GameState = GameState::Exiting;

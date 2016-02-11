@@ -4,8 +4,8 @@
 Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameState(GameState::Pausing)
 {
 	_RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell");
+	_RenderWindow.setFramerateLimit(300);
 	loadCarSkins();
-	
 }
 
 Framework::~Framework()

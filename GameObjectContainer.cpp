@@ -11,7 +11,7 @@ GameObjectContainer::GameObjectContainer() : playerAlive(true)
 	_GameObjects.push_back(MainCar);
 
 	//Frequenz
-	_Frequency = 2.0f;
+	_Frequency = 0.1f;
 	_BulletFrequency = 1.0f;
 
 	_TimePassed = 0.0f;
@@ -172,7 +172,9 @@ void GameObjectContainer::spawnBullet()
 		}
 	}
 
-	
+	if (AICarVector.size() == 0)
+		return;
+
 	AICar* SelectedCar = AICarVector.at(std::rand() % AICarVector.size());
 	
 	float Direction;

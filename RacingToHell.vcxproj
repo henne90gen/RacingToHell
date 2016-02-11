@@ -159,6 +159,7 @@
     <ClInclude Include="Car.h" />
     <ClInclude Include="GameObjectContainer.h" />
     <ClInclude Include="GameOverScreen.h" />
+    <ClInclude Include="Level.h" />
     <ClInclude Include="MenuResults.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="MenuItem.h" />

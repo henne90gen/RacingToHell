@@ -17,7 +17,12 @@ public:
 	void update(float FrameTime);
 
 	bool checkForCollision(GameObject * go);
+	float shotBullet() { return _ShotBullet; };
 
 	void takeDamage() { _Health -= 5; };
+	void resetShotBullet() { _ShotBullet = 360.0f; }
+private:
+	float _ShotBullet;
+	int _Energy;
 };
 

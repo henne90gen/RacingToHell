@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GameObjectContainer.h"
 
-GameObjectContainer::GameObjectContainer() : playerAlive(true)
+GameObjectContainer::GameObjectContainer() : _PlayerAlive(true)
 {
 	//Seed
 	srand(time(NULL));
@@ -11,8 +11,8 @@ GameObjectContainer::GameObjectContainer() : playerAlive(true)
 	_GameObjects.push_back(MainCar);
 
 	//Frequenz
-	_Frequency = 2.0f;
-	_BulletFrequency = 1.0f;
+	_Frequency = 0.0f;
+	_BulletFrequency = 0.0f;
 
 	_TimePassed = 0.0f;
 	_TimePassedBullet = 0.0f;
@@ -37,9 +37,9 @@ void GameObjectContainer::update(float FrameTime)
 				switch (_GameObjects.at(i)->getType())
 				{
 				case GameObjects::AI:
-					playerAlive = false;
+					_PlayerAlive = false;
 					break;
-				case GameObjects::BulletObject:
+				case GameObjects::BulletObjectAI:
 					getPlayerCar()->takeDamage();
 					delete _GameObjects.at(i);
 					_GameObjects.at(i) = nullptr;
@@ -51,7 +51,7 @@ void GameObjectContainer::update(float FrameTime)
 		}
 		else {
 			if (getPlayerCar()->getHealth() <= 0) {
-				playerAlive = false;
+				_PlayerAlive = false;
 			}
 		}
 		_GameObjects.at(i)->update(FrameTime);
@@ -110,6 +110,15 @@ void GameObjectContainer::update(float FrameTime)
 	{
 		_TimePassedBullet += FrameTime;
 	}
+
+	//Prüfen ob Spieler geschossen hat
+	if (getPlayerCar()->shotBullet() != 360.0f)
+	{
+		Bullet* newBullet = new Bullet(getPlayerCar()->getPos(), getPlayerCar()->shotBullet(), 100, GameObjects::BulletObjectPlayer);
+		_GameObjects.push_back(newBullet);
+
+		getPlayerCar()->resetShotBullet();
+	}
 }
 
 void GameObjectContainer::render(sf::RenderWindow& RenderWindow)
@@ -135,21 +144,20 @@ void GameObjectContainer::resetGameObjects()
 		delete _GameObjects.at(i);
 		_GameObjects.at(i) = nullptr;
 	}
-	_GameObjects = std::vector<GameObject*>();
-
-	//Seed
-	srand(time(NULL));
+	_GameObjects.clear();
 
 	//Spielerauto
 	PlayerCar* MainCar = new PlayerCar(100, 800);
 	_GameObjects.push_back(MainCar);
 
 	//Frequenz
-	_Frequency = 2.0f;
+	_Frequency = 2;
 	_BulletFrequency = 1.0f;
 
 	_TimePassed = 0.0f;
 	_TimePassedBullet = 0.0f;
+
+	_PlayerAlive = true;
 }
 
 void GameObjectContainer::spawnAICar()
@@ -200,7 +208,7 @@ void GameObjectContainer::spawnBullet()
 	}
 	else
 	{
-		if (getPlayerCar()->getPos().y > getPlayerCar()->getPos().y)
+		if (getPlayerCar()->getPos().y > SelectedCar->getPos().y)
 		{
 			Direction = 90;
 		}
@@ -210,6 +218,6 @@ void GameObjectContainer::spawnBullet()
 		}
 	}
 
-	Bullet* newBullet = new Bullet(SelectedCar->getPos(), Direction, 100);
+	Bullet* newBullet = new Bullet(SelectedCar->getPos(), Direction, 100, GameObjects::BulletObjectAI);
 	_GameObjects.push_back(newBullet);
 }

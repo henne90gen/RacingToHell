@@ -68,7 +68,7 @@ void Framework::handleEvents()
 			else {
 				_GameObjectContainer.handleEvents(_Event);
 			}
-		} else if (_Event.type == sf::Event::KeyReleased) {
+		} else if (_Event.type == sf::Event::KeyReleased || _Event.type == sf::Event::MouseButtonPressed) {
 			_GameObjectContainer.handleEvents(_Event);
 		} else if (_Event.type == sf::Event::Closed) {
 			_GameState = GameState::Exiting;
@@ -124,7 +124,7 @@ void Framework::showGameOverScreen()
 	switch (result) {
 	case MenuResult::Restart:
 		resetGame();
-		_GameState = GameState::Running;
+		_GameState = GameState::Pausing;
 		std::cout << _GameState << std::endl;
 		break;
 	case MenuResult::Exit:

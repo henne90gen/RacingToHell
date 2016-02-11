@@ -5,6 +5,8 @@
 PlayerCar::PlayerCar(int HP, int Speed) : Car(HP, Speed, GameObjects::Player, "car")
 {
 	setPos(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT - getHeight() / 2));
+	_Energy = 100;
+	resetShotBullet();
 }
 
 
@@ -38,6 +40,34 @@ void PlayerCar::handleEvent(sf::Event& Event)
 	else
 	{
 		_Movement.y = 0;
+	}
+
+	if (Event.type == sf::Event::MouseButtonPressed)
+	{
+		if (_Energy - 10 >= 0)
+		{
+			_Energy -= 10;
+
+			if (getPos().x > Event.mouseButton.x)
+			{
+				_ShotBullet = std::atanf((Event.mouseButton.y - getPos().y) / (Event.mouseButton.x - getPos().x)) * 180.0f / PI + 180;
+			}
+			else if (getPos().x < Event.mouseButton.x)
+			{
+				_ShotBullet = std::atanf((getPos().y - Event.mouseButton.y) / (getPos().x - Event.mouseButton.x)) * 180.0f / PI;
+			}
+			else
+			{
+				if (Event.mouseButton.y > getPos().y)
+				{
+					_ShotBullet = 90;
+				}
+				else
+				{
+					_ShotBullet = -90;
+				}
+			}
+		}
 	}
 }
 

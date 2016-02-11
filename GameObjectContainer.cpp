@@ -110,6 +110,7 @@ void GameObjectContainer::update(float FrameTime)
 	{
 		if (_GameObjects.at(i)->getType() == GameObjects::AI && dynamic_cast<AICar*>(_GameObjects.at(i))->getHealth() <= 0)
 		{
+			_CarScore += 100;
 			deleteObject(i);
 			i--;
 		}

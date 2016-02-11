@@ -41,7 +41,7 @@ private:
 	GameOverScreen _GameOverScreen;
 	HeadsUpDisplay _HeadsUpDisplay;
 	Level _Level;
-	int _Score;
+	float _Score;
 
 	//Functions
 	void update(float Frametime);

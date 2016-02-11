@@ -21,9 +21,12 @@ public:
 
 	void resetGameObjects();
 
+	int getCarScore() { int result = _CarScore; _CarScore = 0; return result; }
+
 private:
 	std::vector<GameObject*> _GameObjects;
 	float _Frequency, _BulletFrequency, _TimePassed, _TimePassedBullet;
+	int _CarScore;
 
 	void spawnAICar();
 	bool _PlayerAlive;

@@ -12,7 +12,7 @@ GameObjectContainer::GameObjectContainer() : _PlayerAlive(true)
 
 	//Frequenz
 	_Frequency = 3.0f;
-	_BulletFrequency = 0.0f;
+	_BulletFrequency = 1.0f;
 
 	_TimePassed = 0.0f;
 	_TimePassedBullet = 0.0f;

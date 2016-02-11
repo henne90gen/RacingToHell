@@ -157,6 +157,7 @@
     <ClInclude Include="AICar.h" />
     <ClInclude Include="Car.h" />
     <ClInclude Include="GameObjectContainer.h" />
+    <ClInclude Include="GameOverScreen.h" />
     <ClInclude Include="MenuResults.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="MenuItem.h" />
@@ -170,6 +171,7 @@
   <ItemGroup>
     <ClCompile Include="AICar.cpp" />
     <ClCompile Include="Car.cpp" />
+    <ClCompile Include="GameOverScreen.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="MenuItem.cpp" />
     <ClCompile Include="GameObjectContainer.cpp" />
@@ -190,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\car.png" />
+    <Image Include="Resources\truck.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\arial.ttf" />

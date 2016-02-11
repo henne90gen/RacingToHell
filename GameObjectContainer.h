@@ -15,11 +15,14 @@ public:
 	void render(sf::RenderWindow& RenderWindow);
 	void handleEvents(sf::Event& Event);
 
-	void addObject(GameObject* Object) { _GameObjects.push_back(Object); }
 	PlayerCar* getPlayerCar() { return dynamic_cast<PlayerCar*>(_GameObjects.at(0)); }
+	bool playerIsAlive() { return playerAlive; }
+
+	void resetGameObjects();
 
 private:
 	std::vector<GameObject*> _GameObjects;
 	float _Frequency, _TimePassed;
 	void spawnAICar();
+	bool playerAlive;
 };

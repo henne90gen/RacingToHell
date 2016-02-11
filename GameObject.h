@@ -16,6 +16,7 @@ public:
 	void setPos(sf::Vector2f Pos) { _Sprite.setPosition(Pos); }
 	float getWidth() { return _Sprite.getLocalBounds().width; }
 	float getHeight() { return _Sprite.getLocalBounds().height; }
+	sf::Sprite getSprite() { return _Sprite; }
 private:
 	sf::Sprite _Sprite;
 	sf::Texture _Texture;

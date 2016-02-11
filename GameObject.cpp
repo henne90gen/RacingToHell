@@ -21,8 +21,8 @@ void GameObject::render(sf::RenderWindow& Window)
 	Window.draw(_Sprite);
 }
 
-void GameObject::setSprite(sf::Sprite sprite)
+void GameObject::setSkin(sf::Texture* skin)
 {
-	_Sprite = sprite;
-	//_Texture = *_Sprite.getTexture();
+	_Texture = *skin;
+	_Sprite.setTexture(_Texture);
 }

@@ -21,7 +21,7 @@ public:
 	sf::Sprite getSprite() { return _Sprite; }
 
 	void setPos(sf::Vector2f Pos) { _Sprite.setPosition(Pos); }
-	void setSprite(sf::Sprite sprite);
+	void setSkin(sf::Texture* skin);
 
 private:
 	sf::Sprite _Sprite;

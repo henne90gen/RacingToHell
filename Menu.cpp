@@ -18,9 +18,9 @@ Menu::~Menu()
 }
 }
 
-MenuResult Menu::render(sf::RenderWindow & Window, sf::Sprite carSkin)
+MenuResult Menu::render(sf::RenderWindow & Window, sf::Texture carSkin)
 {
-	_CarSkin = carSkin;
+	_CarSkin.setTexture(carSkin);
 	_CarSkin.setPosition(sf::Vector2f(450, 260));
 	_CarSkin.setScale(2.5, 2.5);
 

@@ -95,7 +95,7 @@ void Framework::showMenu() {
 		if (_CurrentCarSkinIndex < 0) {
 			_CurrentCarSkinIndex = _CarSkins.size() - 1;
 		}
-		_GameObjectContainer.getPlayerCar()->setSprite(*_CarSkins.at(_CurrentCarSkinIndex));
+		_GameObjectContainer.getPlayerCar()->setSkin(_CarSkins.at(_CurrentCarSkinIndex));
 		break;
 	case MenuResult::NextSkin:
 		//TODO: Switch to next skin
@@ -103,7 +103,7 @@ void Framework::showMenu() {
 		if (_CurrentCarSkinIndex >= _CarSkins.size()) {
 			_CurrentCarSkinIndex = 0;
 		}
-		_GameObjectContainer.getPlayerCar()->setSprite(*_CarSkins.at(_CurrentCarSkinIndex));
+		_GameObjectContainer.getPlayerCar()->setSkin(_CarSkins.at(_CurrentCarSkinIndex));
 		break;
 	case MenuResult::Exit:
 		_GameState = GameState::Exiting;
@@ -113,14 +113,15 @@ void Framework::showMenu() {
 
 void Framework::loadCarSkins()
 {
-	sf::Texture texture;
-	if (texture.loadFromFile("Resources/car.png")) {
-		_CarSkins.push_back(new sf::Sprite(texture));
+	//TODO: For loop with strings
+	sf::Texture* texture = new sf::Texture();
+	if (texture->loadFromFile("Resources/car.png")) {
+		_CarSkins.push_back(texture);
 	}
 
 	/*
-	if (texture.loadFromFile("Resources/truck.png")) {
-		_CarSkins.push_back(new sf::Sprite(texture));
+	if (texture->loadFromFile("Resources/truck.png")) {
+		_CarSkins.push_back(texture);
 	}
 	*/
 }

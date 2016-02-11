@@ -33,7 +33,7 @@ private:
 	GameObjectContainer _GameObjectContainer;
 	GameState _GameState;
 	Menu _Menu;
-	std::vector<sf::Sprite*> _CarSkins;
+	std::vector<sf::Texture*> _CarSkins;
 	int _CurrentCarSkinIndex;
 
 	//Functions

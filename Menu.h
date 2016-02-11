@@ -9,7 +9,7 @@ public:
 	Menu();
 	~Menu();
 
-	MenuResult render(sf::RenderWindow& Window, sf::Sprite carSkin);
+	MenuResult render(sf::RenderWindow& Window, sf::Texture carSkin);
 	MenuResult getMenuResponse(sf::RenderWindow& Window);
 	MenuResult handleClick(sf::Vector2f MousePos);
 

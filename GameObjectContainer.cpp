@@ -11,13 +11,11 @@ GameObjectContainer::GameObjectContainer() : playerAlive(true)
 	_GameObjects.push_back(MainCar);
 
 	//Frequenz
-	_Frequency = 0.1f;
+	_Frequency = 2.0f;
 	_BulletFrequency = 1.0f;
 
 	_TimePassed = 0.0f;
 	_TimePassedBullet = 0.0f;
-
-	spawnAICar();
 }
 
 GameObjectContainer::~GameObjectContainer()
@@ -147,7 +145,11 @@ void GameObjectContainer::resetGameObjects()
 	_GameObjects.push_back(MainCar);
 
 	//Frequenz
-	_Frequency = 2;
+	_Frequency = 2.0f;
+	_BulletFrequency = 1.0f;
+
+	_TimePassed = 0.0f;
+	_TimePassedBullet = 0.0f;
 }
 
 void GameObjectContainer::spawnAICar()

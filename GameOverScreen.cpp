@@ -28,21 +28,19 @@ MenuResult GameOverScreen::render(sf::RenderWindow & Window)
 
 MenuResult GameOverScreen::getMenuResponse(sf::RenderWindow& Window) {
 	sf::Event event;
-	while (true) {
 		while (Window.pollEvent(event)) {
 			if (event.type == sf::Event::MouseButtonPressed) {
 				return handleClick(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
 			}
 			else if (event.type == sf::Event::KeyPressed) {
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-					MenuResult::Restart;
+					return MenuResult::Restart;
 				}
 			}
 			else if (event.type == sf::Event::Closed) {
 				return MenuResult::Exit;
 			}
 		}
-	}
 }
 
 MenuResult GameOverScreen::handleClick(sf::Vector2f MousePos)

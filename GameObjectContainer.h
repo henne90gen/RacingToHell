@@ -5,6 +5,7 @@
 #include "AICar.h"
 #include "PlayerCar.h"
 #include "Bullet.h"
+#include "EnergyCanister.h"
 
 class GameObjectContainer
 {
@@ -25,7 +26,7 @@ public:
 
 private:
 	std::vector<GameObject*> _GameObjects;
-	float _Frequency, _BulletFrequency, _TimePassed, _TimePassedBullet;
+	float _CarFrequency, _BulletFrequency, _TimePassedCar, _TimePassedBullet, _CanisterFrequency, _TimePassedCanister;
 	int _CarScore;
 
 	void spawnAICar();

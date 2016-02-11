@@ -23,6 +23,7 @@ public:
 	void resetShotBullet() { _ShotBullet = 360.0f; }
 
 	int getEnergy() { return _Energy; }
+	void addEnergy() { _Energy += 50; }
 private:
 	float _ShotBullet;
 	int _Energy;

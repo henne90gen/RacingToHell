@@ -4,6 +4,7 @@
 #include "Car.h"
 #include "AICar.h"
 #include "GameObject.h"
+#include "GameObjects.h"
 
 class PlayerCar : public Car
 {

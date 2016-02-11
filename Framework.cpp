@@ -36,9 +36,9 @@ void Framework::run()
 			_IsRunning = false;
 			_RenderWindow.close();
 			break;
-	}
+		}
 		
-}
+	}
 }
 
 void Framework::render()

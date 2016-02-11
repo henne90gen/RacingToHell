@@ -161,7 +161,7 @@
     <ClInclude Include="Menu.h" />
     <ClInclude Include="MenuItem.h" />
     <ClInclude Include="PlayerCar.h" />
-    <ClInclude Include="Cars.h" />
+    <ClInclude Include="GameObjects.h" />
     <ClInclude Include="Framework.hpp" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="stdafx.h" />

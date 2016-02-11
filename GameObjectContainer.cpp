@@ -55,6 +55,26 @@ void GameObjectContainer::update(float FrameTime)
 	{
 		_TimePassed += FrameTime;
 	}
+
+	//AI-Autos auf Kollision prüfen
+	for (unsigned int i = 1; i < _GameObjects.size(); i++)
+	{
+		if (_GameObjects.at(i)->getType() == GameObjects::AI)
+		{
+			for (unsigned int j = 1; j < _GameObjects.size(); j++)
+			{
+				if (i != j && dynamic_cast<AICar*>(_GameObjects.at(i))->getLane() == dynamic_cast<AICar*>(_GameObjects.at(j))->getLane() && dynamic_cast<AICar*>(_GameObjects.at(i))->getSpeed() != dynamic_cast<AICar*>(_GameObjects.at(j))->getSpeed())
+				{
+					if (std::abs(_GameObjects.at(i)->getPos().y - _GameObjects.at(j)->getPos().y) < _GameObjects.at(i)->getHeight() + 20)
+					{
+						int minSpeed = std::min({ dynamic_cast<AICar*>(_GameObjects.at(i))->getSpeed(), dynamic_cast<AICar*>(_GameObjects.at(j))->getSpeed() });
+						dynamic_cast<AICar*>(_GameObjects.at(i))->setSpeed(minSpeed);
+						dynamic_cast<AICar*>(_GameObjects.at(j))->setSpeed(minSpeed);
+					}
+				}
+			}
+		}
+	}
 }
 
 void GameObjectContainer::render(sf::RenderWindow& RenderWindow)
@@ -76,5 +96,19 @@ void GameObjectContainer::handleEvents(sf::Event& Event)
 void GameObjectContainer::spawnAICar()
 {
 	AICar* newAiCar = new AICar();
+
+	for (unsigned int i = 1; i < _GameObjects.size(); i++)
+	{
+		if (_GameObjects.at(i)->getType() == GameObjects::AI)
+		{
+			if (dynamic_cast<AICar*>(_GameObjects.at(i))->getLane() == newAiCar->getLane() && _GameObjects.at(i)->getPos().y < _GameObjects.at(i)->getHeight() / 2 + 20)
+			{
+				delete newAiCar;
+				newAiCar = nullptr;
+				return;
+			}
+		}
+	}
+
 	addObject(newAiCar);
 }

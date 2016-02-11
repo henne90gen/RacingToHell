@@ -28,4 +28,5 @@ private:
 	void spawnAICar();
 	bool _PlayerAlive;
 	void spawnBullet();
+	void deleteObject(unsigned int id);
 };

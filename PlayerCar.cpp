@@ -44,9 +44,9 @@ void PlayerCar::handleEvent(sf::Event& Event)
 
 	if (Event.type == sf::Event::MouseButtonPressed)
 	{
-		if (_Energy - 10 >= 0)
+		if (_Energy - 5 >= 0)
 		{
-			_Energy -= 10;
+			_Energy -= 5;
 
 			if (getPos().x > Event.mouseButton.x)
 			{

@@ -41,9 +41,7 @@ void GameObjectContainer::update(float FrameTime)
 					break;
 				case GameObjects::BulletObjectAI:
 					getPlayerCar()->takeDamage();
-					delete _GameObjects.at(i);
-					_GameObjects.at(i) = nullptr;
-					_GameObjects.erase(_GameObjects.begin() + i);
+					deleteObject(i);
 					i--;
 					break;
 				}
@@ -62,9 +60,7 @@ void GameObjectContainer::update(float FrameTime)
 	{
 		if (_GameObjects.at(i)->getPos().y - _GameObjects.at(i)->getHeight() / 2 > SCREENHEIGHT || _GameObjects.at(i)->getPos().y + _GameObjects.at(i)->getHeight() / 2 <= 0 || _GameObjects.at(i)->getPos().x + _GameObjects.at(i)->getWidth() / 2 <= 0 || _GameObjects.at(i)->getPos().x - _GameObjects.at(i)->getWidth() / 2 >= SCREENWIDTH)
 		{
-			delete _GameObjects.at(i);
-			_GameObjects.at(i) = nullptr;
-			_GameObjects.erase(_GameObjects.begin() + i);
+			deleteObject(i);
 			i--;
 		}
 	}
@@ -101,6 +97,8 @@ void GameObjectContainer::update(float FrameTime)
 					if (_GameObjects.at(i)->getSprite().getGlobalBounds().intersects(_GameObjects.at(j)->getSprite().getGlobalBounds()))
 					{
 						dynamic_cast<AICar*>(_GameObjects.at(i))->takeDamage();
+						deleteObject(j);
+						j--;
 					}
 				}
 			}
@@ -112,9 +110,7 @@ void GameObjectContainer::update(float FrameTime)
 	{
 		if (_GameObjects.at(i)->getType() == GameObjects::AI && dynamic_cast<AICar*>(_GameObjects.at(i))->getHealth() <= 0)
 		{
-			delete _GameObjects.at(i);
-			_GameObjects.at(i) = nullptr;
-			_GameObjects.erase(_GameObjects.begin() + i);
+			deleteObject(i);
 			i--;
 		}
 	}
@@ -239,4 +235,11 @@ void GameObjectContainer::spawnBullet()
 
 	Bullet* newBullet = new Bullet(SelectedCar->getPos(), Direction, 100, GameObjects::BulletObjectAI);
 	_GameObjects.push_back(newBullet);
+}
+
+void GameObjectContainer::deleteObject(unsigned int id)
+{
+	delete _GameObjects.at(id);
+	_GameObjects.at(id) = nullptr;
+	_GameObjects.erase(_GameObjects.begin() + id);
 }

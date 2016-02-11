@@ -7,7 +7,7 @@ GameObjectContainer::GameObjectContainer() : _PlayerAlive(true)
 	srand(time(NULL));
 
 	//Spielerauto
-	PlayerCar* MainCar = new PlayerCar(300, 550);
+	PlayerCar* MainCar = new PlayerCar(100, 450);
 	_GameObjects.push_back(MainCar);
 
 	//Frequenz
@@ -163,7 +163,7 @@ void GameObjectContainer::resetGameObjects()
 	_GameObjects.clear();
 
 	//Spielerauto
-	PlayerCar* MainCar = new PlayerCar(100, 800);
+	PlayerCar* MainCar = new PlayerCar(100, 450);
 	_GameObjects.push_back(MainCar);
 
 	//Frequenz

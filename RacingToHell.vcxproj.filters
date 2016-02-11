@@ -149,6 +149,12 @@
     <Image Include="Resources\Bullet.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
+    <Image Include="Resources\Road1.jpg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Road2.jpg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\arial.ttf">

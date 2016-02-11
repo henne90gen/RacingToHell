@@ -6,7 +6,7 @@ public:
 	~HeadsUpDisplay();
 
 	void render(sf::RenderWindow& Window);
-	void update(int Health, int Score, int Energy);
+	void update(int Health, int Score, int Energy, int MaxEnery);
 
 private:
 	sf::Text _HealthText;

@@ -39,7 +39,7 @@ private:
 	int _CurrentCarSkinIndex;
 	GameOverScreen _GameOverScreen;
 	HeadsUpDisplay _HeadsUpDisplay;
-	int _Score;
+	float _Score;
 
 	//Functions
 	void update(float Frametime);

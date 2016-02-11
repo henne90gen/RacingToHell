@@ -57,6 +57,8 @@ void Framework::update(float FrameTime)
 		_GameState = GameState::GameOver;
 	}
 	_HeadsUpDisplay.update(_GameObjectContainer.getPlayerCar()->getHealth(), _Score, _GameObjectContainer.getPlayerCar()->getEnergy());
+	_Score += _GameObjectContainer.getCarScore();
+	_Score += 10*FrameTime;
 }
 
 void Framework::handleEvents()

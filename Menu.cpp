@@ -4,10 +4,10 @@
 
 Menu::Menu()
 {
-	_MenuItems.push_back(new MenuItem(sf::Vector2f(50, 50), MenuResult::Resume));
-	_MenuItems.push_back(new MenuItem(sf::Vector2f(50, 225), MenuResult::PreviousSkin));
-	_MenuItems.push_back(new MenuItem(sf::Vector2f(650, 225), MenuResult::NextSkin));
-	_MenuItems.push_back(new MenuItem(sf::Vector2f(50, 400), MenuResult::Exit));
+	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2 - 30, 50), MenuResult::Resume));
+	_MenuItems.push_back(new MenuItem(sf::Vector2f(10, 225), MenuResult::PreviousSkin));
+	_MenuItems.push_back(new MenuItem(sf::Vector2f(450, 225), MenuResult::NextSkin));
+	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2 - 20, 450), MenuResult::Exit));
 	}
 
 Menu::~Menu()
@@ -21,7 +21,7 @@ Menu::~Menu()
 MenuResult Menu::render(sf::RenderWindow & Window, sf::Texture carSkin)
 {
 	_CarSkin.setTexture(carSkin);
-	_CarSkin.setPosition(sf::Vector2f(450, 260));
+	_CarSkin.setPosition(sf::Vector2f(SCREENWIDTH / 2 - 20, 190));
 	_CarSkin.setScale(2.5, 2.5);
 
 	Window.clear(sf::Color::Green);

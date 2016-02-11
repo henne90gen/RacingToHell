@@ -22,7 +22,7 @@ public:
 protected:
 
 	int _Health;
-	float _Speed;
+	int _Speed;
 
 	sf::Vector2f _Movement;
 };

@@ -11,7 +11,13 @@ GameObjectContainer::GameObjectContainer()
 	addObject(MainCar);
 
 	//Frequenz
-	_Frequency = 2;
+	_Frequency = 2.0f;
+	_BulletFrequency = 1.0f;
+
+	_TimePassed = 0.0f;
+	_TimePassedBullet = 0.0f;
+
+	spawnAICar();
 }
 
 GameObjectContainer::~GameObjectContainer()
@@ -36,7 +42,7 @@ void GameObjectContainer::update(float FrameTime)
 	//Objekt löschen wenn es sich nicht mehr im Screen befindet
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
-		if (_GameObjects.at(i)->getPos().y - _GameObjects.at(i)->getWidth() / 2 > SCREENHEIGHT)
+		if (_GameObjects.at(i)->getPos().y - _GameObjects.at(i)->getHeight() / 2 > SCREENHEIGHT || _GameObjects.at(i)->getPos().y + _GameObjects.at(i)->getHeight() / 2 <= 0 || _GameObjects.at(i)->getPos().x + _GameObjects.at(i)->getWidth() / 2 <= 0 || _GameObjects.at(i)->getPos().x - _GameObjects.at(i)->getWidth() / 2 >= SCREENWIDTH)
 		{
 			delete _GameObjects.at(i);
 			_GameObjects.at(i) = nullptr;
@@ -48,7 +54,7 @@ void GameObjectContainer::update(float FrameTime)
 	//neue AI-Autos spawnen
 	if (_TimePassed + FrameTime > 1 / _Frequency)
 	{
-		_TimePassed = _TimePassed + FrameTime - 1 / _Frequency;
+		_TimePassed += FrameTime - 1 / _Frequency;
 		spawnAICar();
 	}
 	else
@@ -63,7 +69,7 @@ void GameObjectContainer::update(float FrameTime)
 		{
 			for (unsigned int j = 1; j < _GameObjects.size(); j++)
 			{
-				if (i != j && dynamic_cast<AICar*>(_GameObjects.at(i))->getLane() == dynamic_cast<AICar*>(_GameObjects.at(j))->getLane() && dynamic_cast<AICar*>(_GameObjects.at(i))->getSpeed() != dynamic_cast<AICar*>(_GameObjects.at(j))->getSpeed())
+				if (_GameObjects.at(j)->getType() == GameObjects::AI && i != j && dynamic_cast<AICar*>(_GameObjects.at(i))->getLane() == dynamic_cast<AICar*>(_GameObjects.at(j))->getLane() && dynamic_cast<AICar*>(_GameObjects.at(i))->getSpeed() != dynamic_cast<AICar*>(_GameObjects.at(j))->getSpeed())
 				{
 					if (std::abs(_GameObjects.at(i)->getPos().y - _GameObjects.at(j)->getPos().y) < _GameObjects.at(i)->getHeight() + 20)
 					{
@@ -74,6 +80,17 @@ void GameObjectContainer::update(float FrameTime)
 				}
 			}
 		}
+	}
+
+	//Geschosse spawnen
+	if (_TimePassedBullet + FrameTime > 1 / _BulletFrequency)
+	{
+		_TimePassedBullet += FrameTime - 1 / _BulletFrequency;
+		spawnBullet();
+	}
+	else
+	{
+		_TimePassedBullet += FrameTime;
 	}
 }
 
@@ -111,4 +128,44 @@ void GameObjectContainer::spawnAICar()
 	}
 
 	addObject(newAiCar);
+}
+
+void GameObjectContainer::spawnBullet()
+{
+	std::vector<AICar*> AICarVector;
+
+	for (unsigned int i = 1; i < _GameObjects.size(); i++)
+	{
+		if (_GameObjects.at(i)->getType() == GameObjects::AI)
+		{
+			AICarVector.push_back(dynamic_cast<AICar*>(_GameObjects.at(i)));
+		}
+	}
+
+	
+	AICar* SelectedCar = AICarVector.at(std::rand() % AICarVector.size());
+	
+	float Direction;
+	if (getPlayerCar()->getPos().x < SelectedCar->getPos().x)
+	{
+		Direction = std::atanf((SelectedCar->getPos().y - getPlayerCar()->getPos().y) / (SelectedCar->getPos().x - getPlayerCar()->getPos().x)) * 180.0f / PI + 180;
+	}
+	else if (getPlayerCar()->getPos().x > SelectedCar->getPos().x)
+	{
+		Direction = std::atanf((getPlayerCar()->getPos().y - SelectedCar->getPos().y) / (getPlayerCar()->getPos().x - SelectedCar->getPos().x)) * 180.0f / PI;
+	}
+	else
+	{
+		if (getPlayerCar()->getPos().y > getPlayerCar()->getPos().y)
+		{
+			Direction = 90;
+		}
+		else
+		{
+			Direction = -90;
+		}
+	}
+
+	Bullet* newBullet = new Bullet(SelectedCar->getPos(), Direction, 100);
+	addObject(newBullet);
 }

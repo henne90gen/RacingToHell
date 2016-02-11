@@ -155,8 +155,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AICar.h" />
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Car.h" />
     <ClInclude Include="GameObjectContainer.h" />
+    <ClInclude Include="Level.h" />
     <ClInclude Include="MenuResults.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="MenuItem.h" />
@@ -169,7 +171,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AICar.cpp" />
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Car.cpp" />
+    <ClCompile Include="Level.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="MenuItem.cpp" />
     <ClCompile Include="GameObjectContainer.cpp" />

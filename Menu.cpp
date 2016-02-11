@@ -35,18 +35,17 @@ MenuResult Menu::render(sf::RenderWindow & Window, sf::Texture carSkin)
 
 MenuResult Menu::getMenuResponse(sf::RenderWindow& Window) {
 	sf::Event event;
-	while (true) {
-		while (Window.pollEvent(event)) {
-			checkMouseHover(Window);
-			if (event.type == sf::Event::MouseButtonPressed) { 
-				return handleClick(sf::Vector2f(event.mouseButton.x, event.mouseButton.y)); 
-			}
-			else if (event.type == sf::Event::Closed) {
-				return MenuResult::Exit;
-			}
+	while (Window.pollEvent(event)) {
+		checkMouseHover(Window);
+		if (event.type == sf::Event::MouseButtonPressed) { 
+			return handleClick(sf::Vector2f(event.mouseButton.x, event.mouseButton.y)); 
+		}
+		else if (event.type == sf::Event::Closed) {
+			return MenuResult::Exit;
 		}
 	}
 }
+
 
 MenuResult Menu::handleClick(sf::Vector2f MousePos)
 {
@@ -61,17 +60,14 @@ MenuResult Menu::handleClick(sf::Vector2f MousePos)
 
 void Menu::checkMouseHover(sf::RenderWindow & Window)
 {
-	Window.clear(sf::Color::Green);
 	sf::Vector2i MousePos = sf::Mouse::getPosition(Window);
 	for (int i = 0; i < _MenuItems.size(); i++) {
 		sf::FloatRect rect = _MenuItems[i]->getRect();
 		if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width) {
-			_MenuItems[i]->switchHoverState(true, Window);
+			_MenuItems[i]->switchHoverState(true);
 		}
 		else {
-			_MenuItems[i]->switchHoverState(false, Window);
+			_MenuItems[i]->switchHoverState(false);
 		}
 	}
-	Window.draw(_CarSkin);
-	Window.display();
 }

@@ -11,11 +11,13 @@ GameObjectContainer::GameObjectContainer() : _PlayerAlive(true)
 	_GameObjects.push_back(MainCar);
 
 	//Frequenz
-	_Frequency = 2.0f;
+	_CarFrequency = 2.0f;
 	_BulletFrequency = 1.0f;
+	_CanisterFrequency = 0.3f;
 
-	_TimePassed = 0.0f;
+	_TimePassedCar = 0.0f;
 	_TimePassedBullet = 0.0f;
+	_TimePassedCanister = 0.0f;
 }
 
 GameObjectContainer::~GameObjectContainer()
@@ -44,6 +46,11 @@ void GameObjectContainer::update(float FrameTime)
 					deleteObject(i);
 					i--;
 					break;
+				case GameObjects::Canister:
+					getPlayerCar()->addEnergy();
+					deleteObject(i);
+					i--;
+					break;
 				}
 			}
 		}
@@ -65,15 +72,26 @@ void GameObjectContainer::update(float FrameTime)
 		}
 	}
 
-	//neue AI-Autos spawnen
-	if (_TimePassed + FrameTime > 1 / _Frequency)
+	//EnergyCanister spawnen
+	if (_TimePassedCanister + FrameTime > 1 / _CanisterFrequency) 
 	{
-		_TimePassed += FrameTime - 1 / _Frequency;
+		_TimePassedCanister += FrameTime - 1 / _CanisterFrequency;
+		EnergyCanister* canister = new EnergyCanister(sf::Vector2f(std::rand() % 3 * 150 + 150, -25));
+		_GameObjects.push_back(canister);
+	}
+	else {
+		_TimePassedCanister += FrameTime;
+	}
+
+	//neue AI-Autos spawnen
+	if (_TimePassedCar + FrameTime > 1 / _CarFrequency)
+	{
+		_TimePassedCar += FrameTime - 1 / _CarFrequency;
 		spawnAICar();
 	}
 	else
 	{
-		_TimePassed += FrameTime;
+		_TimePassedCar += FrameTime;
 	}
 
 	//AI-Autos auf Kollision prüfen
@@ -167,10 +185,10 @@ void GameObjectContainer::resetGameObjects()
 	_GameObjects.push_back(MainCar);
 
 	//Frequenz
-	_Frequency = 2;
+	_CarFrequency = 2;
 	_BulletFrequency = 1.0f;
 
-	_TimePassed = 0.0f;
+	_TimePassedCar = 0.0f;
 	_TimePassedBullet = 0.0f;
 
 	_PlayerAlive = true;

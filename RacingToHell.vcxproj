@@ -157,6 +157,7 @@
     <ClInclude Include="AICar.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Car.h" />
+    <ClInclude Include="EnergyCanister.h" />
     <ClInclude Include="GameObjectContainer.h" />
     <ClInclude Include="GameOverScreen.h" />
     <ClInclude Include="HeadsUpDisplay.h" />
@@ -175,6 +176,7 @@
     <ClCompile Include="AICar.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Car.cpp" />
+    <ClCompile Include="EnergyCanister.cpp" />
     <ClCompile Include="GameOverScreen.cpp" />
     <ClCompile Include="HeadsUpDisplay.cpp" />
     <ClCompile Include="Level.cpp" />

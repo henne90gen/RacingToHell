@@ -13,7 +13,13 @@ MenuItem::MenuItem(sf::Vector2f pos, MenuResult action) : _Action(action)
 
 	switch (action) {
 	case MenuResult::Resume:
-		_Text.setString("Resume");
+		_Text.setString("Play");
+		break;
+	case MenuResult::PreviousSkin:
+		_Text.setString("Previous");
+		break;
+	case MenuResult::NextSkin:
+		_Text.setString("Next");
 		break;
 	case MenuResult::Exit:
 		_Text.setString("Exit");

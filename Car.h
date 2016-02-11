@@ -15,6 +15,8 @@ public:
 	int  getHealth() { return _Health; }
 	void setHealth(int Health) { _Health = Health; }
 
+	sf::Sprite getSprite() { return _Sprite; }
+
 protected:
 
 	int _Health;

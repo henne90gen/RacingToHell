@@ -9,14 +9,14 @@ public:
 	Menu();
 	~Menu();
 
-	MenuResult render(sf::RenderWindow& Window);
+	MenuResult render(sf::RenderWindow& Window, sf::Sprite carSkin);
 	MenuResult getMenuResponse(sf::RenderWindow& Window);
 	MenuResult handleClick(sf::Vector2f MousePos);
 
 	void checkMouseHover(sf::RenderWindow& Window);
 
 private:
-	sf::Sprite _Background;
+	sf::Sprite _CarSkin;
 	std::vector<MenuItem*> _MenuItems;
 };
 

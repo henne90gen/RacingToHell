@@ -4,14 +4,10 @@
 
 Menu::Menu()
 {
-	sf::Texture texture;
-	if (texture.loadFromFile("Resources/car.png")) {
-		_Background = sf::Sprite(texture);
-		_Background.setPosition(sf::Vector2f(0, 0));
-	}
-
 	_MenuItems.push_back(new MenuItem(sf::Vector2f(50, 50), MenuResult::Resume));
-	_MenuItems.push_back(new MenuItem(sf::Vector2f(50, 150), MenuResult::Exit));
+	_MenuItems.push_back(new MenuItem(sf::Vector2f(50, 225), MenuResult::PreviousSkin));
+	_MenuItems.push_back(new MenuItem(sf::Vector2f(650, 225), MenuResult::NextSkin));
+	_MenuItems.push_back(new MenuItem(sf::Vector2f(50, 400), MenuResult::Exit));
 }
 
 Menu::~Menu()
@@ -21,13 +17,17 @@ Menu::~Menu()
 	}
 }
 
-MenuResult Menu::render(sf::RenderWindow & Window)
+MenuResult Menu::render(sf::RenderWindow & Window, sf::Sprite carSkin)
 {
+	_CarSkin = carSkin;
+	_CarSkin.setPosition(sf::Vector2f(450, 260));
+	_CarSkin.setScale(2.5, 2.5);
+
 	Window.clear(sf::Color::Green);
 	for (int i = 0; i < _MenuItems.size(); i++) {
-		std::cout << "Rendering MenuItem #" << i << std::endl;
 		_MenuItems[i]->render(Window);
 	}
+	Window.draw(_CarSkin);
 	Window.display();
 	return getMenuResponse(Window);
 }
@@ -71,5 +71,6 @@ void Menu::checkMouseHover(sf::RenderWindow & Window)
 			_MenuItems[i]->switchHoverState(false, Window);
 		}
 	}
+	Window.draw(_CarSkin);
 	Window.display();
 }

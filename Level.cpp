@@ -1,12 +1,11 @@
 #include "stdafx.h"
 #include "Level.h"
 
-Level::Level()
+Level::Level() : _Difficulty(100)
 {
-	_Texture.loadFromFile("Resources/Road1.jpg");
+	_Texture.loadFromFile("Resources/Road2.jpg");
 	_Sprite.setTexture(_Texture);
 	_Sprite.setPosition(sf::Vector2f(0, - 1600));
-	_Difficulty = 1;
 }
 
 Level::~Level()
@@ -16,13 +15,13 @@ Level::~Level()
 
 void Level::update(float FrameTime)
 {
-	if (_Sprite.getPosition().y + FrameTime * _Difficulty * 100 >= 0)
+	if (_Sprite.getPosition().y + FrameTime * _Difficulty >= 0)
 	{
 		_Sprite.setPosition(sf::Vector2f(0, -1600));
 	}
 	else
 	{
-		_Sprite.setPosition(sf::Vector2f(_Sprite.getPosition().x, _Sprite.getPosition().y + FrameTime * _Difficulty * 100));
+		_Sprite.setPosition(sf::Vector2f(_Sprite.getPosition().x, _Sprite.getPosition().y + FrameTime * _Difficulty));
 	}
 }
 

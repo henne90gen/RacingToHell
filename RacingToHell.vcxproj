@@ -199,6 +199,8 @@
   <ItemGroup>
     <Image Include="Resources\Bullet.png" />
     <Image Include="Resources\car.png" />
+    <Image Include="Resources\Road1.jpg" />
+    <Image Include="Resources\Road2.jpg" />
     <Image Include="Resources\truck.png" />
   </ItemGroup>
   <ItemGroup>

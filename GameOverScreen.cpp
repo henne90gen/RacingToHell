@@ -21,7 +21,7 @@ MenuResult GameOverScreen::render(sf::RenderWindow& Window, int score)
 {
 	_GameOverText.setString("Game Over!\nRestart with Spacebar\n\nYour score was: " + std::to_string(score));
 
-	Window.clear(sf::Color::Red);
+	//Window.clear(sf::Color::Red);
 	Window.draw(_GameOverText);
 	Window.display();
 	return getMenuResponse(Window);

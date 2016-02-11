@@ -46,6 +46,7 @@ void Framework::render()
 {
 	_RenderWindow.clear(sf::Color::Cyan);
 	_GameObjectContainer.render(_RenderWindow);
+	_HeadsUpDisplay.render(_RenderWindow);
 	_RenderWindow.display();
 }
 
@@ -55,6 +56,7 @@ void Framework::update(float FrameTime)
 	if (!_GameObjectContainer.playerIsAlive()) {
 		_GameState = GameState::GameOver;
 	}
+	_HeadsUpDisplay.update(_GameObjectContainer.getPlayerCar()->getHealth(), _Score, 10/*_GameObjectContainer.getPlayerCar()->getEnergy()*/);
 }
 
 void Framework::handleEvents()
@@ -125,7 +127,6 @@ void Framework::showGameOverScreen()
 	case MenuResult::Restart:
 		resetGame();
 		_GameState = GameState::Pausing;
-		std::cout << _GameState << std::endl;
 		break;
 	case MenuResult::Exit:
 		_GameState = GameState::Exiting;

@@ -21,6 +21,8 @@ public:
 
 	void takeDamage() { _Health -= 5; };
 	void resetShotBullet() { _ShotBullet = 360.0f; }
+
+	int getEnergy() { return _Energy; }
 private:
 	float _ShotBullet;
 	int _Energy;

@@ -56,7 +56,7 @@ void Framework::update(float FrameTime)
 	if (!_GameObjectContainer.playerIsAlive()) {
 		_GameState = GameState::GameOver;
 	}
-	_HeadsUpDisplay.update(_GameObjectContainer.getPlayerCar()->getHealth(), _Score, 10/*_GameObjectContainer.getPlayerCar()->getEnergy()*/);
+	_HeadsUpDisplay.update(_GameObjectContainer.getPlayerCar()->getHealth(), _Score, _GameObjectContainer.getPlayerCar()->getEnergy());
 }
 
 void Framework::handleEvents()

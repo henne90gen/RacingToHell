@@ -18,7 +18,7 @@ void Level::update(float FrameTime)
 {
 	if (_Sprite.getPosition().y + FrameTime * _Difficulty * 100 >= 0)
 	{
-		_Sprite.setPosition(sf::Vector2f(0, -1600));
+		_Sprite.setPosition(sf::Vector2f(0, -1600 + +FrameTime * _Difficulty * 100));
 	}
 	else
 	{

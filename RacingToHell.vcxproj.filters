@@ -84,9 +84,6 @@
     <ClInclude Include="GameOverScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Level.h">
-      <Filter>Header Files\Level</Filter>
-    </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -141,6 +138,9 @@
       <Filter>Resource Files\Textures</Filter>
     </Image>
     <Image Include="Resources\truck.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Bullet.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
   </ItemGroup>

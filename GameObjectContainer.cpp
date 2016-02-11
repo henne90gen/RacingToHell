@@ -41,9 +41,19 @@ void GameObjectContainer::update(float FrameTime)
 				case GameObjects::AI:
 					playerAlive = false;
 					break;
-				default:
+				case GameObjects::BulletObject:
+					getPlayerCar()->takeDamage();
+					delete _GameObjects.at(i);
+					_GameObjects.at(i) = nullptr;
+					_GameObjects.erase(_GameObjects.begin() + i);
+					i--;
 					break;
 				}
+			}
+		}
+		else {
+			if (getPlayerCar()->getHealth() <= 0) {
+				playerAlive = false;
 			}
 		}
 		_GameObjects.at(i)->update(FrameTime);

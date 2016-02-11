@@ -1,11 +1,9 @@
 #include "stdafx.h"
 #include "Bullet.h"
 
-Bullet::Bullet(sf::Vector2f Position, float Direction, int Speed) : GameObject(GameObjects::BulletObject, "Bullet")
+Bullet::Bullet(sf::Vector2f Position, float Direction, int Speed) : GameObject(GameObjects::BulletObject, "Bullet"), _Direction(Direction), _Speed(Speed)
 {
 	setPos(Position);
-	_Direction = Direction;
-	_Speed = Speed;
 }
 
 Bullet::~Bullet()

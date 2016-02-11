@@ -17,5 +17,7 @@ public:
 	void update(float FrameTime);
 
 	bool checkForCollision(GameObject * go);
+
+	void takeDamage() { _Health -= 5; };
 };
 

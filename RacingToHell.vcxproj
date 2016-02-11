@@ -194,6 +194,7 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Resources\Bullet.png" />
     <Image Include="Resources\car.png" />
     <Image Include="Resources\truck.png" />
   </ItemGroup>

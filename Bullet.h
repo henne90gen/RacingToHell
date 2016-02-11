@@ -11,6 +11,7 @@ public:
 
 	void update(float FrameTime);
 	void handleEvent(sf::Event& Event);
+
 private:
 	int _Speed, _Direction;
 };

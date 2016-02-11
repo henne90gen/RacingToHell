@@ -39,7 +39,6 @@ void Framework::run()
 			_RenderWindow.close();
 			break;
 		}
-		
 	}
 }
 
@@ -92,6 +91,9 @@ void Framework::showMenu()
 {
 	MenuResult result = _Menu.render(_RenderWindow, *_CarSkins.at(_CurrentCarSkinIndex));
 	switch (result) {
+	case MenuResult::Nothing:
+		_GameState = GameState::Pausing;
+		break;
 	case MenuResult::Resume:
 		_Clock.restart();
 		_GameState = GameState::Running;
@@ -121,10 +123,9 @@ void Framework::showGameOverScreen()
 	MenuResult result = _GameOverScreen.render(_RenderWindow);
 	switch (result) {
 	case MenuResult::Restart:
-		//TODO: Reset all the variables
-		_Clock.restart();
 		resetGame();
 		_GameState = GameState::Running;
+		std::cout << _GameState << std::endl;
 		break;
 	case MenuResult::Exit:
 		_GameState = GameState::Exiting;
@@ -145,5 +146,6 @@ void Framework::loadCarSkins()
 
 void Framework::resetGame() 
 {
+	_Clock.restart();
 	_GameObjectContainer.resetGameObjects();
 }

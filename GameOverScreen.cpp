@@ -18,7 +18,7 @@ GameOverScreen::~GameOverScreen()
 {
 }
 
-MenuResult GameOverScreen::render(sf::RenderWindow & Window)
+MenuResult GameOverScreen::render(sf::RenderWindow& Window)
 {
 	Window.clear(sf::Color::Red);
 	Window.draw(_GameOverText);
@@ -34,14 +34,14 @@ MenuResult GameOverScreen::getMenuResponse(sf::RenderWindow& Window) {
 			}
 			else if (event.type == sf::Event::KeyPressed) {
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-					return MenuResult::Restart;
+				return MenuResult::Restart;
 				}
 			}
 			else if (event.type == sf::Event::Closed) {
 				return MenuResult::Exit;
 			}
 		}
-}
+	}
 
 MenuResult GameOverScreen::handleClick(sf::Vector2f MousePos)
 {

@@ -52,8 +52,7 @@ sf::FloatRect MenuItem::getRect()
 	return _Text.getGlobalBounds();
 }
 
-void MenuItem::switchHoverState(bool hoverState, sf::RenderWindow & Window)
+void MenuItem::switchHoverState(bool hoverState)
 {
 	_Hovering = hoverState;
-	render(Window);
 }

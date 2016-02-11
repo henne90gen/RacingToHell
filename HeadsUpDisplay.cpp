@@ -42,9 +42,9 @@ void HeadsUpDisplay::render(sf::RenderWindow & Window)
 	Window.draw(_EnergyBar);
 }
 
-void HeadsUpDisplay::update(int Health, int Score, int Energy)
+void HeadsUpDisplay::update(int Health, int Score, int Energy, int MaxEnergy)
 {
 	_HealthText.setString("HP: " + std::to_string(Health));
 	_ScoreText.setString("Score: " + std::to_string(Score));
-	_EnergyBar.setSize(sf::Vector2f(Energy, 30));
+	_EnergyBar.setSize(sf::Vector2f((float)Energy / (float)MaxEnergy * 100, 30));
 }

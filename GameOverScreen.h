@@ -1,13 +1,15 @@
 #pragma once
 
 #include "MenuResults.h"
+#include "GameObjectContainer.h"
+
 class GameOverScreen
 {
 public:
 	GameOverScreen();
 	~GameOverScreen();
 
-	MenuResult render(sf::RenderWindow& Window, int score);
+	MenuResult render(sf::RenderWindow& Window, int score, GameObjectContainer& goc);
 	MenuResult getMenuResponse(sf::RenderWindow& Window);
 	MenuResult handleClick(sf::Vector2f MousePos);
 

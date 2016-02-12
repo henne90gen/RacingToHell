@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "EnergyCanister.h"
+#include "GameObject\EnergyCanister.h"
 
 
 EnergyCanister::EnergyCanister(sf::Vector2f pos) : GameObject(pos, GameObjects::Canister, "canister")

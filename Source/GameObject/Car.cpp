@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Car.h"
+#include "GameObject\Car.h"
 
 
 Car::Car(sf::Vector2f pos, int health, float speed, GameObjects Type, std::string Filename) : GameObject(pos, Type, Filename)

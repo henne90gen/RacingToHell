@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "MenuItem.h"
+#include "Menu\MenuItem.h"
 
 
 MenuItem::MenuItem(sf::Vector2f pos, MenuResult action) : _Action(action)

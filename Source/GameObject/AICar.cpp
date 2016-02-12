@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AICar.h"
+#include "GameObject\AICar.h"
 
 
 AICar::AICar() : Car(sf::Vector2f(0, 0), 100, std::rand() % 100 + 100, GameObjects::AI, "Traffic" + std::to_string(std::rand() % 6 + 1))

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Toolbox.h"
+#include "GameObject\Toolbox.h"
 
 
 Toolbox::Toolbox(sf::Vector2f pos) : GameObject(pos, GameObjects::Tools, "toolbox")

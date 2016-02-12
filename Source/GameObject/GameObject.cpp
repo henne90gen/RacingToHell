@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "GameObject.h"
+#include "GameObject\GameObject.h"
 
 
 GameObject::GameObject(sf::Vector2f pos, GameObjects Type, std::string Filename)

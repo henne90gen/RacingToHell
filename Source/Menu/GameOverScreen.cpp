@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "GameOverScreen.h"
+#include "Menu\GameOverScreen.h"
 
 
 GameOverScreen::GameOverScreen()

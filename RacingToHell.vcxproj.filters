@@ -93,6 +93,9 @@
     <ClInclude Include="EnergyCanister.h">
       <Filter>Header Files\GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="Toolbox.h">
+      <Filter>Header Files\GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -140,6 +143,9 @@
     <ClCompile Include="EnergyCanister.cpp">
       <Filter>Source Files\GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="Toolbox.cpp">
+      <Filter>Source Files\GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -162,6 +168,18 @@
       <Filter>Resource Files\Textures</Filter>
     </Image>
     <Image Include="Resources\playercar3.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\playercar4.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\playercar5.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Road3.jpg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\toolbox.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
   </ItemGroup>

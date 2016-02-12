@@ -7,7 +7,7 @@
 class GameObject
 {
 public:
-	GameObject(GameObjects Type, std::string Filename);
+	GameObject(sf::Vector2f pos, GameObjects Type, std::string Filename);
 	~GameObject();
 
 	virtual void render(sf::RenderWindow& Window);

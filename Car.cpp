@@ -2,7 +2,7 @@
 #include "Car.h"
 
 
-Car::Car(int health, float speed, GameObjects Type, std::string Filename) : GameObject(Type, Filename)
+Car::Car(sf::Vector2f pos, int health, float speed, GameObjects Type, std::string Filename) : GameObject(pos, Type, Filename)
 {
 	_Speed = speed;
 	_Health = health;

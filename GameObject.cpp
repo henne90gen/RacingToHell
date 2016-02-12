@@ -2,12 +2,12 @@
 #include "GameObject.h"
 
 
-GameObject::GameObject(GameObjects Type, std::string Filename)
+GameObject::GameObject(sf::Vector2f pos, GameObjects Type, std::string Filename)
 {
 	_Texture.loadFromFile("Resources/" + Filename + ".png");
 	_Sprite.setTexture(_Texture);
 	_Sprite.setOrigin(_Sprite.getLocalBounds().width / 2, _Sprite.getLocalBounds().height / 2);
-
+	_Sprite.setPosition(pos);
 	_Type = Type;
 }
 

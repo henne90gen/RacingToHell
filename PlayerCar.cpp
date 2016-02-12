@@ -2,12 +2,11 @@
 #include "PlayerCar.h"
 
 
-PlayerCar::PlayerCar(int HP, int Speed) : Car(HP, Speed, GameObjects::Player, "playercar1"), _MaxEnergy(100)
+PlayerCar::PlayerCar() : Car(sf::Vector2f(0, 0), 100, 450, GameObjects::Player, "playercar1"), _MaxEnergy(100), _MaxHealth(100)
 {
-	setPos(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT - getHeight() / 2));
-
 	_Energy = _MaxEnergy;
 	resetShotBullet();
+	setPos(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT - getHeight() / 2));
 }
 
 
@@ -93,6 +92,18 @@ bool PlayerCar::checkForCollision(GameObject * go)
 		return true;
 	}
 	return false;
+}
+
+void PlayerCar::addHealth()
+{
+	if (_Health + 20 > _MaxHealth)
+	{
+		_Health = _MaxHealth;
+	}
+	else
+	{
+		_Health += 20;
+	}
 }
 
 void PlayerCar::addEnergy()

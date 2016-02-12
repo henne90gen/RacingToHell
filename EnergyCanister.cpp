@@ -2,9 +2,8 @@
 #include "EnergyCanister.h"
 
 
-EnergyCanister::EnergyCanister(sf::Vector2f pos) : GameObject(GameObjects::Canister, "canister")
+EnergyCanister::EnergyCanister(sf::Vector2f pos) : GameObject(pos, GameObjects::Canister, "canister")
 {
-	setPos(pos);
 }
 
 

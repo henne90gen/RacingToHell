@@ -171,6 +171,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Toolbox.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AICar.cpp" />
@@ -193,6 +194,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Toolbox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -203,8 +205,12 @@
     <Image Include="Resources\playercar1.png" />
     <Image Include="Resources\playercar2.png" />
     <Image Include="Resources\playercar3.png" />
+    <Image Include="Resources\playercar4.png" />
+    <Image Include="Resources\playercar5.png" />
     <Image Include="Resources\Road1.jpg" />
     <Image Include="Resources\Road2.jpg" />
+    <Image Include="Resources\Road3.jpg" />
+    <Image Include="Resources\toolbox.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\arial.ttf" />

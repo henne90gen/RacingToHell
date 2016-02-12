@@ -1,5 +1,5 @@
 #pragma once
 
 enum GameObjects {
-	Player, AI, BulletObjectAI, BulletObjectPlayer, Canister
+	Player, AI, BulletObjectAI, BulletObjectPlayer, Canister, Tools
 };

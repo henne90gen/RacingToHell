@@ -1,23 +1,18 @@
 #include "stdafx.h"
 #include "GameObjectContainer.h"
 
-GameObjectContainer::GameObjectContainer() : _PlayerAlive(true), _PlayerBulletSpeed(600), _AIBulletSpeed(300)
+GameObjectContainer::GameObjectContainer() : _PlayerAlive(true), _PlayerBulletSpeed(600), _AIBulletSpeed(300),
+_TimePassedBullet(0.0f), _TimePassedCanister(0.0f), _TimePassedCar(0.0f), _TimePassedToolbox(0.0f),
+_CarFrequency(2.0f), _BulletFrequency(1.0f), _CanisterFrequency(0.3f)
 {
 	//Seed
 	srand(time(NULL));
 
 	//Spielerauto
-	PlayerCar* MainCar = new PlayerCar(100, 450);
+	PlayerCar* MainCar = new PlayerCar();
 	_GameObjects.push_back(MainCar);
 
-	//Frequenz
-	_CarFrequency = 2.0f;
-	_BulletFrequency = 1.0f;
-	_CanisterFrequency = 0.3f;
-
-	_TimePassedCar = 0.0f;
-	_TimePassedBullet = 0.0f;
-	_TimePassedCanister = 0.0f;
+	_ToolboxFrequency = (float) (std::rand() % 150) / 1000.0f;
 }
 
 GameObjectContainer::~GameObjectContainer()
@@ -48,6 +43,11 @@ void GameObjectContainer::update(float FrameTime)
 					break;
 				case GameObjects::Canister:
 					getPlayerCar()->addEnergy();
+					deleteObject(i);
+					i--;
+					break;
+				case GameObjects::Tools:
+					getPlayerCar()->addHealth();
 					deleteObject(i);
 					i--;
 					break;
@@ -83,7 +83,19 @@ void GameObjectContainer::update(float FrameTime)
 		_TimePassedCanister += FrameTime;
 	}
 
-	//neue AI-Autos spawnen
+	//Toolbox spawnen
+	if (_TimePassedToolbox + FrameTime > 1 / _ToolboxFrequency)
+	{
+		_TimePassedToolbox += FrameTime - 1 / _ToolboxFrequency;
+		_ToolboxFrequency = (float)(std::rand() % 150) / 1000.0f;
+		Toolbox* toolbox = new Toolbox(sf::Vector2f(std::rand() % 3 * 150 + 150, -10));
+		_GameObjects.push_back(toolbox);
+	}
+	else {
+		_TimePassedToolbox += FrameTime;
+	}
+
+	//AI-Autos spawnen
 	if (_TimePassedCar + FrameTime > 1 / _CarFrequency)
 	{
 		_TimePassedCar += FrameTime - 1 / _CarFrequency;
@@ -181,15 +193,19 @@ void GameObjectContainer::resetGameObjects()
 	_GameObjects.clear();
 
 	//Spielerauto
-	PlayerCar* MainCar = new PlayerCar(100, 450);
+	PlayerCar* MainCar = new PlayerCar();
 	_GameObjects.push_back(MainCar);
 
 	//Frequenz
 	_CarFrequency = 2;
 	_BulletFrequency = 1.0f;
+	_CanisterFrequency = 0.3f;
+	_ToolboxFrequency = (float)(std::rand() % 150) / 1000.0f;
 
 	_TimePassedCar = 0.0f;
 	_TimePassedBullet = 0.0f;
+	_TimePassedCanister = 0.0f;
+	_TimePassedToolbox = 0.0f;
 
 	_PlayerAlive = true;
 }

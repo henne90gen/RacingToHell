@@ -125,7 +125,7 @@ void Framework::showMenu()
 
 void Framework::showGameOverScreen()
 {
-	MenuResult result = _GameOverScreen.render(_RenderWindow, _Score);
+	MenuResult result = _GameOverScreen.render(_RenderWindow, _Score, _GameObjectContainer);
 	switch (result) {
 	case MenuResult::Restart:
 		resetGame();
@@ -139,7 +139,7 @@ void Framework::showGameOverScreen()
 
 void Framework::loadCarSkins()
 {
-	std::vector<std::string> skins = { "RedRacingCar", "car", "truck", "CarRedWhite" };
+	std::vector<std::string> skins = { "playercar1", "playercar2", "playercar3" };
 	for (unsigned int i = 0; i < skins.size(); i++) {
 		sf::Texture* texture = new sf::Texture();
 		if (texture->loadFromFile("Resources/" + skins.at(i) + ".png")) {

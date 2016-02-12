@@ -146,12 +146,6 @@
     <None Include=".gitignore" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\car.png">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="Resources\truck.png">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
     <Image Include="Resources\Bullet.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
@@ -159,6 +153,15 @@
       <Filter>Resource Files\Textures</Filter>
     </Image>
     <Image Include="Resources\Road2.jpg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\playercar1.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\playercar2.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\playercar3.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
   </ItemGroup>

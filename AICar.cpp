@@ -2,10 +2,11 @@
 #include "AICar.h"
 
 
-AICar::AICar() : Car(100, std::rand() % 100 + 100, GameObjects::AI, "car") 
+AICar::AICar() : Car(100, std::rand() % 100 + 100, GameObjects::AI, "playercar1") 
 {
 	_Lane = std::rand() % 4;
 	setPos(sf::Vector2f(_Lane * SCREENWIDTH / 4 + SCREENWIDTH / 8, -getHeight() /2));
+
 }
 
 

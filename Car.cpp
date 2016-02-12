@@ -6,6 +6,7 @@ Car::Car(int health, float speed, GameObjects Type, std::string Filename) : Game
 {
 	_Speed = speed;
 	_Health = health;
+	
 }
 
 
@@ -21,5 +22,5 @@ void Car::handleEvent(sf::Event& Event)
 
 void Car::update(float FrameTime)
 {
-
+	getSprite().setRotation(90);
 }

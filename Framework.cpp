@@ -139,7 +139,7 @@ void Framework::showGameOverScreen()
 
 void Framework::loadCarSkins()
 {
-	std::vector<std::string> skins = { "car", "truck" };
+	std::vector<std::string> skins = { "RedRacingCar", "car", "truck", "CarRedWhite" };
 	for (unsigned int i = 0; i < skins.size(); i++) {
 		sf::Texture* texture = new sf::Texture();
 		if (texture->loadFromFile("Resources/" + skins.at(i) + ".png")) {

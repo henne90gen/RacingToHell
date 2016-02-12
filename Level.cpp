@@ -3,7 +3,7 @@
 
 Level::Level() : _Difficulty(100)
 {
-	_Texture.loadFromFile("Resources/Road2.jpg");
+	_Texture.loadFromFile("Resources/Road3.jpg");
 	_Sprite.setTexture(_Texture);
 	_Sprite.setPosition(sf::Vector2f(0, - 1600));
 }
@@ -17,7 +17,7 @@ void Level::update(float FrameTime)
 {
 	if (_Sprite.getPosition().y + FrameTime * _Difficulty >= 0)
 	{
-		_Sprite.setPosition(sf::Vector2f(0, -1600 + +FrameTime * _Difficulty * 100));
+		_Sprite.setPosition(sf::Vector2f(0, -1600));
 	}
 	else
 	{

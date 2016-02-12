@@ -101,7 +101,6 @@ void Framework::showMenu()
 		break;
 	case MenuResult::Resume:
 		_Clock.restart();
-		_GameObjectContainer.getPlayerCar()->setSkin(_CarSkins.at(_CurrentCarSkinIndex));
 		_GameState = GameState::Running;
 		break;
 	case MenuResult::PreviousSkin:
@@ -140,7 +139,7 @@ void Framework::showGameOverScreen()
 
 void Framework::loadCarSkins()
 {
-	std::vector<std::string> skins = { "playercar1", "playercar2", "playercar3" };
+	std::vector<std::string> skins = { "playercar1", "playercar2", "playercar3", "playercar4", "playercar5", "playercar6" };
 	for (unsigned int i = 0; i < skins.size(); i++) {
 		sf::Texture* texture = new sf::Texture();
 		if (texture->loadFromFile("Resources/" + skins.at(i) + ".png")) {

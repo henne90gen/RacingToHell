@@ -20,7 +20,7 @@ public:
 	void run();
 
 	enum GameState {
-		Running, Pausing, GameOver, Exiting
+		Running, MainMenu, Pausing, GameOver, Exiting
 	};
 
 private:
@@ -45,7 +45,9 @@ private:
 
 	//Functions
 	void update(float Frametime);
-	void handleEvents();
+	void handleEvent();
+	void handleEventMenu();
+	void handleEventGameOver();
 	void render();
 	void measureTime();
 	void showMenu();

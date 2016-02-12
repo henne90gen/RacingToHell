@@ -201,19 +201,26 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <Font Include="Resources\arial.ttf" />
+  </ItemGroup>
+  <ItemGroup>
     <Image Include="Resources\Bullet.png" />
+    <Image Include="Resources\canister.png" />
     <Image Include="Resources\playercar1.png" />
     <Image Include="Resources\playercar2.png" />
     <Image Include="Resources\playercar3.png" />
     <Image Include="Resources\playercar4.png" />
-    <Image Include="Resources\playercar5.png" />
     <Image Include="Resources\Road1.jpg" />
     <Image Include="Resources\Road2.jpg" />
     <Image Include="Resources\Road3.jpg" />
     <Image Include="Resources\toolbox.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="Resources\arial.ttf" />
+    <Image Include="Resources\Traffic1.png" />
+    <Image Include="Resources\Traffic2.png" />
+    <Image Include="Resources\Traffic3.png" />
+    <Image Include="Resources\Traffic4.png" />
+    <Image Include="Resources\Traffic5.png" />
+    <Image Include="Resources\Traffic6.png" />
+    <Image Include="Resources\Traffic7.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

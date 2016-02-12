@@ -152,13 +152,15 @@
     <None Include=".gitignore" />
   </ItemGroup>
   <ItemGroup>
+    <Font Include="Resources\arial.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </Font>
+  </ItemGroup>
+  <ItemGroup>
     <Image Include="Resources\Bullet.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
-    <Image Include="Resources\Road1.jpg">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="Resources\Road2.jpg">
+    <Image Include="Resources\canister.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
     <Image Include="Resources\playercar1.png">
@@ -173,7 +175,10 @@
     <Image Include="Resources\playercar4.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
-    <Image Include="Resources\playercar5.png">
+    <Image Include="Resources\Road1.jpg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Road2.jpg">
       <Filter>Resource Files\Textures</Filter>
     </Image>
     <Image Include="Resources\Road3.jpg">
@@ -182,10 +187,26 @@
     <Image Include="Resources\toolbox.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="Resources\arial.ttf">
-      <Filter>Resource Files\Fonts</Filter>
-    </Font>
+    <Image Include="Resources\Traffic1.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Traffic2.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Traffic3.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Traffic4.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Traffic5.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Traffic6.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Traffic7.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

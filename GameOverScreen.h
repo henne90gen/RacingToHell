@@ -9,7 +9,7 @@ public:
 	GameOverScreen();
 	~GameOverScreen();
 
-	MenuResult render(sf::RenderWindow& Window, int score, GameObjectContainer& goc);
+	MenuResult render(sf::RenderWindow& Window, int score);
 	MenuResult getMenuResponse(sf::RenderWindow& Window);
 	MenuResult handleClick(sf::Vector2f MousePos);
 

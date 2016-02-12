@@ -30,7 +30,7 @@ MenuItem::MenuItem(sf::Vector2f pos, MenuResult action) : _Action(action)
 	//Position is adjusted by 10 down and size is increased by 10 horizontally and 7 vertically
 	_HoverRect.setPosition(pos + sf::Vector2f(0, 10));
 	_HoverRect.setSize(sf::Vector2f(_Text.getLocalBounds().width + 10, _Text.getLocalBounds().height + 7));
-	_HoverRect.setFillColor(sf::Color::Green);
+	_HoverRect.setFillColor(sf::Color::Transparent);
 	_HoverRect.setOutlineThickness(5);
 	_HoverRect.setOutlineColor(sf::Color::Black);
 }

@@ -18,44 +18,16 @@ Menu::~Menu()
 }
 }
 
-MenuResult Menu::render(sf::RenderWindow & Window, sf::Texture carSkin)
+void Menu::render(sf::RenderWindow & Window)
 {
-	_CarSkin.setTexture(carSkin);
-	_CarSkin.setPosition(sf::Vector2f(SCREENWIDTH / 2 - 20, 190));
-	_CarSkin.setScale(2.5, 2.5);
-
-	Window.clear(sf::Color::Green);
 	for (int i = 0; i < _MenuItems.size(); i++) {
 		_MenuItems[i]->render(Window);
 	}
 	Window.draw(_CarSkin);
-	Window.display();
-	return getMenuResponse(Window);
 }
 
-MenuResult Menu::getMenuResponse(sf::RenderWindow& Window) {
-	sf::Event event;
-	while (Window.pollEvent(event)) {
-		checkMouseHover(Window);
-		if (event.type == sf::Event::MouseButtonPressed) {
-			return handleClick(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
-		}
-		else if (event.type == sf::Event::Closed) {
-			return MenuResult::Exit;
-		}
-	}
-}
-
-
-MenuResult Menu::handleClick(sf::Vector2f MousePos)
+void Menu::update(float FrameTime)
 {
-	for (int i = 0; i < _MenuItems.size(); i++) {
-		sf::FloatRect rect = _MenuItems[i]->getRect();
-		if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width) {
-			return _MenuItems[i]->getAction();
-		}
-	}
-	return MenuResult::Nothing;
 }
 
 void Menu::checkMouseHover(sf::RenderWindow & Window)

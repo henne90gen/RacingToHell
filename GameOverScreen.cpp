@@ -17,11 +17,9 @@ GameOverScreen::~GameOverScreen()
 {
 }
 
-MenuResult GameOverScreen::render(sf::RenderWindow& Window, int score, GameObjectContainer& goc)
+MenuResult GameOverScreen::render(sf::RenderWindow& Window, int score)
 {
 	_GameOverText.setString("Game Over!\nRestart with Spacebar\n\nYour score was: " + std::to_string(score));
-	//Rendering the goc reduces shaking of objects a little bit
-	goc.render(Window);
 	Window.draw(_GameOverText);
 	Window.display();
 	return getMenuResponse(Window);

@@ -160,7 +160,7 @@ void Framework::handleEventGameOver()
 	switch (result) {
 	case MenuResult::Restart:
 		resetGame();
-		_GameState = GameState::Pausing;
+		_GameState = GameState::MainMenu;
 		break;
 	case MenuResult::Exit:
 		_GameState = GameState::Exiting;

@@ -14,15 +14,15 @@ HeadsUpDisplay::HeadsUpDisplay()
 	_ScoreText.setFont(_Font);
 	_ScoreText.setCharacterSize(35);
 	_ScoreText.setColor(sf::Color::Magenta);
-	_ScoreText.setPosition(sf::Vector2f(150,0));
+	_ScoreText.setPosition(sf::Vector2f(300,0));
 	_ScoreText.setString("Score: ");
 	
-	_EnergyBar.setPosition(sf::Vector2f(350, 10));
+	_EnergyBar.setPosition(sf::Vector2f(140, 5));
 	_EnergyBar.setFillColor(sf::Color::Green);
 	_EnergyBar.setOutlineThickness(0);
 	_EnergyBar.setSize(sf::Vector2f(100, 30));
 
-	_EnergyOutline.setPosition(sf::Vector2f(350, 10));
+	_EnergyOutline.setPosition(sf::Vector2f(140, 5));
 	_EnergyOutline.setFillColor(sf::Color::Transparent);
 	_EnergyOutline.setOutlineColor(sf::Color::Black);
 	_EnergyOutline.setOutlineThickness(3);

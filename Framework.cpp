@@ -181,10 +181,9 @@ void Framework::measureTime()
 
 void Framework::loadCarSkins()
 {
-	std::vector<std::string> skins = { "1", "2", "3", "4" };
-	for (unsigned int i = 0; i < skins.size(); i++) {
+	for (unsigned int i = 0; i < 7; i++) {
 		sf::Texture* texture = new sf::Texture();
-		if (texture->loadFromFile("Resources/playercar" + skins.at(i) + ".png")) {
+		if (texture->loadFromFile("Resources/playercar" + std::to_string(i) + ".png")) {
 			_CarSkins.push_back(texture);
 		}
 	}

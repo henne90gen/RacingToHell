@@ -2,9 +2,10 @@
 #include "PlayerCar.h"
 
 
-PlayerCar::PlayerCar(int HP, int Speed) : Car(HP, Speed, GameObjects::Player, "car"), _MaxEnergy(100)
+PlayerCar::PlayerCar(int HP, int Speed) : Car(HP, Speed, GameObjects::Player, "playercar1"), _MaxEnergy(100)
 {
 	setPos(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT - getHeight() / 2));
+
 	_Energy = _MaxEnergy;
 	resetShotBullet();
 }
@@ -17,6 +18,7 @@ PlayerCar::~PlayerCar()
 
 void PlayerCar::handleEvent(sf::Event& Event)
 {
+	
 	//Keyinput abfragen und in _Movement speichern
 	_Movement = sf::Vector2f(0, 0);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {

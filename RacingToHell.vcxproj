@@ -200,10 +200,11 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Bullet.png" />
-    <Image Include="Resources\car.png" />
+    <Image Include="Resources\playercar1.png" />
+    <Image Include="Resources\playercar2.png" />
+    <Image Include="Resources\playercar3.png" />
     <Image Include="Resources\Road1.jpg" />
     <Image Include="Resources\Road2.jpg" />
-    <Image Include="Resources\truck.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\arial.ttf" />

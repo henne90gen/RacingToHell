@@ -8,7 +8,7 @@ Menu::Menu()
 	_MenuItems.push_back(new MenuItem(sf::Vector2f(10, 225), MenuResult::PreviousSkin));
 	_MenuItems.push_back(new MenuItem(sf::Vector2f(450, 225), MenuResult::NextSkin));
 	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2 - 20, 450), MenuResult::Exit));
-	}
+}
 
 Menu::~Menu()
 {

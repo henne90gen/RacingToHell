@@ -43,6 +43,10 @@ void MenuItem::render(sf::RenderWindow & Window)
 {
 	if (_Hovering) {
 		Window.draw(_HoverRect);
+		//_Text.setStyle(sf::Text::Bold);
+	}
+	else {
+		//_Text.setStyle(sf::Text::Regular);
 	}
 	Window.draw(_Text);
 }

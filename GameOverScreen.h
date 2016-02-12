@@ -9,9 +9,7 @@ public:
 	GameOverScreen();
 	~GameOverScreen();
 
-	MenuResult render(sf::RenderWindow& Window, int score);
-	MenuResult getMenuResponse(sf::RenderWindow& Window);
-	MenuResult handleClick(sf::Vector2f MousePos);
+	void render(sf::RenderWindow& Window, int score);
 
 private:
 	sf::Font _Font;

@@ -19,12 +19,6 @@
     <Filter Include="Header Files\Menu">
       <UniqueIdentifier>{e78c2df7-a6d6-4ef4-a283-569c0c10d1f2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Fonts">
-      <UniqueIdentifier>{a7b323e5-a73e-4cc0-89b5-f0a383580942}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Textures">
-      <UniqueIdentifier>{2756ad11-8b17-4b33-a08a-1b8dbefc9e78}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Level">
       <UniqueIdentifier>{c19d884f-c96c-4a42-8740-7e7ddd5e4852}</UniqueIdentifier>
     </Filter>
@@ -37,17 +31,23 @@
     <Filter Include="Header Files\GameObject">
       <UniqueIdentifier>{6ed71c05-dbd1-44b5-b7e8-4cd12aa0fc9f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Textures\PlayerCars">
+    <Filter Include="Resource Files\Font">
+      <UniqueIdentifier>{a7b323e5-a73e-4cc0-89b5-f0a383580942}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Texture">
+      <UniqueIdentifier>{2756ad11-8b17-4b33-a08a-1b8dbefc9e78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Texture\Addiditonal Object">
+      <UniqueIdentifier>{5a08c5ac-4b0e-4b9e-ab50-5e6d32ce8d8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Texture\PlayerCar">
       <UniqueIdentifier>{6467aff0-312b-4a63-8b65-10271e7e4498}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Textures\Roads">
+    <Filter Include="Resource Files\Texture\Road">
       <UniqueIdentifier>{a98f13da-c60b-434d-afbb-de2c8ce77375}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Textures\TrafficCars">
+    <Filter Include="Resource Files\Texture\TrafficCar">
       <UniqueIdentifier>{e79ad19c-d0a6-4f92-9f11-0b99868bc4be}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Textures\Addiditonal Objects">
-      <UniqueIdentifier>{5a08c5ac-4b0e-4b9e-ab50-5e6d32ce8d8d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -164,61 +164,61 @@
     <None Include=".gitignore" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="Resources\arial.ttf">
-      <Filter>Resource Files\Fonts</Filter>
-    </Font>
+    <Image Include="Resources\Texture\TrafficCar\Traffic1.png">
+      <Filter>Resource Files\Texture\TrafficCar</Filter>
+    </Image>
+    <Image Include="Resources\Texture\TrafficCar\Traffic2.png">
+      <Filter>Resource Files\Texture\TrafficCar</Filter>
+    </Image>
+    <Image Include="Resources\Texture\TrafficCar\Traffic3.png">
+      <Filter>Resource Files\Texture\TrafficCar</Filter>
+    </Image>
+    <Image Include="Resources\Texture\TrafficCar\Traffic4.png">
+      <Filter>Resource Files\Texture\TrafficCar</Filter>
+    </Image>
+    <Image Include="Resources\Texture\TrafficCar\Traffic5.png">
+      <Filter>Resource Files\Texture\TrafficCar</Filter>
+    </Image>
+    <Image Include="Resources\Texture\TrafficCar\Traffic6.png">
+      <Filter>Resource Files\Texture\TrafficCar</Filter>
+    </Image>
+    <Image Include="Resources\Texture\TrafficCar\Traffic7.png">
+      <Filter>Resource Files\Texture\TrafficCar</Filter>
+    </Image>
+    <Image Include="Resources\Texture\Road\Road1.jpg">
+      <Filter>Resource Files\Texture\Road</Filter>
+    </Image>
+    <Image Include="Resources\Texture\Road\Road2.jpg">
+      <Filter>Resource Files\Texture\Road</Filter>
+    </Image>
+    <Image Include="Resources\Texture\Road\Road3.jpg">
+      <Filter>Resource Files\Texture\Road</Filter>
+    </Image>
+    <Image Include="Resources\Texture\PlayerCar\playercar1.png">
+      <Filter>Resource Files\Texture\PlayerCar</Filter>
+    </Image>
+    <Image Include="Resources\Texture\PlayerCar\playercar2.png">
+      <Filter>Resource Files\Texture\PlayerCar</Filter>
+    </Image>
+    <Image Include="Resources\Texture\PlayerCar\playercar3.png">
+      <Filter>Resource Files\Texture\PlayerCar</Filter>
+    </Image>
+    <Image Include="Resources\Texture\PlayerCar\playercar4.png">
+      <Filter>Resource Files\Texture\PlayerCar</Filter>
+    </Image>
+    <Image Include="Resources\Texture\Object\Bullet.png">
+      <Filter>Resource Files\Texture\Addiditonal Object</Filter>
+    </Image>
+    <Image Include="Resources\Texture\Object\canister.png">
+      <Filter>Resource Files\Texture\Addiditonal Object</Filter>
+    </Image>
+    <Image Include="Resources\Texture\Object\toolbox.png">
+      <Filter>Resource Files\Texture\Addiditonal Object</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\playercar4.png">
-      <Filter>Resource Files\Textures\PlayerCars</Filter>
-    </Image>
-    <Image Include="Resources\playercar1.png">
-      <Filter>Resource Files\Textures\PlayerCars</Filter>
-    </Image>
-    <Image Include="Resources\playercar2.png">
-      <Filter>Resource Files\Textures\PlayerCars</Filter>
-    </Image>
-    <Image Include="Resources\playercar3.png">
-      <Filter>Resource Files\Textures\PlayerCars</Filter>
-    </Image>
-    <Image Include="Resources\Road3.jpg">
-      <Filter>Resource Files\Textures\Roads</Filter>
-    </Image>
-    <Image Include="Resources\Road1.jpg">
-      <Filter>Resource Files\Textures\Roads</Filter>
-    </Image>
-    <Image Include="Resources\Road2.jpg">
-      <Filter>Resource Files\Textures\Roads</Filter>
-    </Image>
-    <Image Include="Resources\Traffic7.png">
-      <Filter>Resource Files\Textures\TrafficCars</Filter>
-    </Image>
-    <Image Include="Resources\Traffic1.png">
-      <Filter>Resource Files\Textures\TrafficCars</Filter>
-    </Image>
-    <Image Include="Resources\Traffic2.png">
-      <Filter>Resource Files\Textures\TrafficCars</Filter>
-    </Image>
-    <Image Include="Resources\Traffic3.png">
-      <Filter>Resource Files\Textures\TrafficCars</Filter>
-    </Image>
-    <Image Include="Resources\Traffic4.png">
-      <Filter>Resource Files\Textures\TrafficCars</Filter>
-    </Image>
-    <Image Include="Resources\Traffic5.png">
-      <Filter>Resource Files\Textures\TrafficCars</Filter>
-    </Image>
-    <Image Include="Resources\Traffic6.png">
-      <Filter>Resource Files\Textures\TrafficCars</Filter>
-    </Image>
-    <Image Include="Resources\toolbox.png">
-      <Filter>Resource Files\Textures\Addiditonal Objects</Filter>
-    </Image>
-    <Image Include="Resources\Bullet.png">
-      <Filter>Resource Files\Textures\Addiditonal Objects</Filter>
-    </Image>
-    <Image Include="Resources\canister.png">
-      <Filter>Resource Files\Textures\Addiditonal Objects</Filter>
-    </Image>
+    <Font Include="Resources\Font\arial.ttf">
+      <Filter>Resource Files\Font</Filter>
+    </Font>
   </ItemGroup>
 </Project>

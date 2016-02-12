@@ -201,26 +201,26 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="Resources\arial.ttf" />
+    <Font Include="Resources\Font\arial.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\Bullet.png" />
-    <Image Include="Resources\canister.png" />
-    <Image Include="Resources\playercar1.png" />
-    <Image Include="Resources\playercar2.png" />
-    <Image Include="Resources\playercar3.png" />
-    <Image Include="Resources\playercar4.png" />
-    <Image Include="Resources\Road1.jpg" />
-    <Image Include="Resources\Road2.jpg" />
-    <Image Include="Resources\Road3.jpg" />
-    <Image Include="Resources\toolbox.png" />
-    <Image Include="Resources\Traffic1.png" />
-    <Image Include="Resources\Traffic2.png" />
-    <Image Include="Resources\Traffic3.png" />
-    <Image Include="Resources\Traffic4.png" />
-    <Image Include="Resources\Traffic5.png" />
-    <Image Include="Resources\Traffic6.png" />
-    <Image Include="Resources\Traffic7.png" />
+    <Image Include="Resources\Texture\Object\Bullet.png" />
+    <Image Include="Resources\Texture\Object\canister.png" />
+    <Image Include="Resources\Texture\PlayerCar\playercar1.png" />
+    <Image Include="Resources\Texture\PlayerCar\playercar2.png" />
+    <Image Include="Resources\Texture\PlayerCar\playercar3.png" />
+    <Image Include="Resources\Texture\PlayerCar\playercar4.png" />
+    <Image Include="Resources\Texture\Road\Road1.jpg" />
+    <Image Include="Resources\Texture\Road\Road2.jpg" />
+    <Image Include="Resources\Texture\Road\Road3.jpg" />
+    <Image Include="Resources\Texture\Object\toolbox.png" />
+    <Image Include="Resources\Texture\TrafficCar\Traffic1.png" />
+    <Image Include="Resources\Texture\TrafficCar\Traffic2.png" />
+    <Image Include="Resources\Texture\TrafficCar\Traffic3.png" />
+    <Image Include="Resources\Texture\TrafficCar\Traffic4.png" />
+    <Image Include="Resources\Texture\TrafficCar\Traffic5.png" />
+    <Image Include="Resources\Texture\TrafficCar\Traffic6.png" />
+    <Image Include="Resources\Texture\TrafficCar\Traffic7.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -4,7 +4,7 @@
 
 GameOverScreen::GameOverScreen()
 {
-	if (_Font.loadFromFile("Resources/arial.ttf")) {
+	if (_Font.loadFromFile("Resources/Font/arial.ttf")) {
 		_GameOverText.setFont(_Font);
 		_GameOverText.setPosition(sf::Vector2f(0,0));
 		_GameOverText.setColor(sf::Color::Blue);

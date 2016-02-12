@@ -4,7 +4,7 @@
 
 MenuItem::MenuItem(sf::Vector2f pos, MenuResult action) : _Action(action)
 {
-	_Font.loadFromFile("Resources/arial.ttf");
+	_Font.loadFromFile("Resources/Font/arial.ttf");
 	
 	_Text.setFont(_Font);
 	_Text.setPosition(pos);

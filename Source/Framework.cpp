@@ -183,7 +183,7 @@ void Framework::loadCarSkins()
 {
 	for (unsigned int i = 1; i < 7; i++) {
 		sf::Texture* texture = new sf::Texture();
-		if (texture->loadFromFile("Resources/playercar" + std::to_string(i) + ".png")) {
+		if (texture->loadFromFile("Resources/Texture/PlayerCar/playercar" + std::to_string(i) + ".png")) {
 			_CarSkins.push_back(texture);
 		}
 	}

@@ -4,7 +4,7 @@
 
 HeadsUpDisplay::HeadsUpDisplay()
 {
-	_Font.loadFromFile("Resources/arial.ttf");
+	_Font.loadFromFile("Resources/Font/arial.ttf");
 	_HealthText.setFont(_Font);
 	_HealthText.setCharacterSize(35);
 	_HealthText.setColor(sf::Color::Magenta);

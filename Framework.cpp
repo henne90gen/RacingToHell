@@ -45,7 +45,6 @@ void Framework::run()
 
 		measureTime();
 
-		//showGameOverScreen();
 	}
 }
 
@@ -57,8 +56,11 @@ void Framework::render()
 	if (_GameState == GameState::Running) {
 		_HeadsUpDisplay.render(_RenderWindow);
 	}
-	else {
+	else if (_GameState == GameState::MainMenu || _GameState == GameState::Pausing) {
 		_Menu.render(_RenderWindow);
+	}
+	else if (_GameState == GameState::GameOver) {
+		_GameOverScreen.render(_RenderWindow, _Score);
 	}
 	_RenderWindow.display();
 }
@@ -97,7 +99,7 @@ void Framework::handleEvent()
 void Framework::handleEventMenu()
 {
 	while (_RenderWindow.pollEvent(_Event)) {
-		//checkMouseHover(Window);
+		_Menu.checkMouseHover(_RenderWindow);
 		if (_Event.type == sf::Event::MouseButtonPressed) {
 			sf::Vector2f MousePos = sf::Vector2f(_Event.mouseButton.x, _Event.mouseButton.y);
 			for (int i = 0; i < _Menu.getMenuItems().size(); i++) {
@@ -144,7 +146,26 @@ void Framework::handleEventMenu()
 
 void Framework::handleEventGameOver()
 {
-
+	MenuResult result = MenuResult::Nothing;
+	while (_RenderWindow.pollEvent(_Event)) {
+		if (_Event.type == sf::Event::KeyPressed) {
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+				result = MenuResult::Restart;
+			}
+		}
+		else if (_Event.type == sf::Event::Closed) {
+			result = MenuResult::Exit;
+		}
+	}
+	switch (result) {
+	case MenuResult::Restart:
+		resetGame();
+		_GameState = GameState::Pausing;
+		break;
+	case MenuResult::Exit:
+		_GameState = GameState::Exiting;
+		break;
+	}
 }
 
 void Framework::measureTime()
@@ -155,32 +176,6 @@ void Framework::measureTime()
 	if (_LastFPSPrint > 1) {
 		std::cout << "FPS: " << 1 / _FrameTime << std::endl;
 		_LastFPSPrint = 0;
-	}
-}
-
-void Framework::showMenu() 
-{
-	MenuResult result = MenuResult::Nothing;
-	switch (result) {
-	
-	
-	case MenuResult::Exit:
-		_GameState = GameState::Exiting;
-		break;
-	}
-}
-
-void Framework::showGameOverScreen()
-{
-	MenuResult result = _GameOverScreen.render(_RenderWindow, _Score);
-	switch (result) {
-	case MenuResult::Restart:
-		resetGame();
-		_GameState = GameState::Pausing;
-		break;
-	case MenuResult::Exit:
-		_GameState = GameState::Exiting;
-		break;
 	}
 }
 

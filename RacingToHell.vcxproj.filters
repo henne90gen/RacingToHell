@@ -51,9 +51,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Level.h">
-      <Filter>Header Files\Level</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\Framework.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -108,7 +105,7 @@
     <ClInclude Include="Headers\GameObject\Toolbox.h">
       <Filter>Header Files\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerStats.h">
+    <ClInclude Include="Headers\PlayerStats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

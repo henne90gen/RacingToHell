@@ -8,7 +8,7 @@ MenuItem::MenuItem(sf::Vector2f pos, MenuResult action) : _Action(action)
 	
 	_Text.setFont(_Font);
 	_Text.setPosition(pos);
-	_Text.setColor(sf::Color::Blue);
+	_Text.setColor(sf::Color::White);
 	_Text.setCharacterSize(50);
 
 	switch (_Action) {

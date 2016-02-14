@@ -11,7 +11,7 @@ struct PlayerStats
 		{
 		case 0:
 			MaxHealth = 50;
-			MaxEnergy = 125;
+			MaxEnergy = 100;
 			Speed = 500;
 			Bulletdamage = 50;
 			break;
@@ -30,7 +30,7 @@ struct PlayerStats
 		case 3:
 			MaxHealth = 50;
 			MaxEnergy = 50;
-			Speed = 550;
+			Speed = 500;
 			Bulletdamage = 100;
 			break;
 		case 4:

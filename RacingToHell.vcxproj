@@ -169,6 +169,7 @@
     <ClInclude Include="Headers\GameObject\GameObjects.h" />
     <ClInclude Include="Headers\Framework.hpp" />
     <ClInclude Include="Headers\GameObject\GameObject.h" />
+    <ClInclude Include="Headers\PlayerStats.h" />
     <ClInclude Include="Headers\stdafx.h" />
     <ClInclude Include="Headers\targetver.h" />
     <ClInclude Include="Headers\GameObject\Toolbox.h" />

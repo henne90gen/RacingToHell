@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "GameObjectContainer.h"
+#include "GameObject\GameObjectContainer.h"
 
 GameObjectContainer::GameObjectContainer() : _PlayerAlive(true), _PlayerBulletSpeed(600), _AIBulletSpeed(300),
 _TimePassedBullet(0.0f), _TimePassedCanister(0.0f), _TimePassedCar(0.0f), _TimePassedToolbox(0.0f),

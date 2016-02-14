@@ -1,13 +1,13 @@
 #pragma once
 
 #include "stdafx.h"
-#include "Car.h"
-#include "PlayerCar.h"
-#include "GameObjectContainer.h"
-#include "Menu.h"
-#include "GameOverScreen.h"
+#include "GameObject\Car.h"
+#include "GameObject\PlayerCar.h"
+#include "GameObject\GameObjectContainer.h"
+#include "Menu\Menu.h"
+#include "Menu\GameOverScreen.h"
 #include "HeadsUpDisplay.h"
-#include "Level.h"
+#include "Level\Level.h"
 
 class Framework
 {

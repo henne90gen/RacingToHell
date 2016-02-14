@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "Level.h"
+#include "Level\Level.h"
 
 Level::Level() : _Difficulty(300)
 {
-	_Texture.loadFromFile("Resources/Road1.jpg");
+	_Texture.loadFromFile("Resources/Texture/Road/Road1.jpg");
 	_Sprite.setTexture(_Texture);
 	_Sprite.setPosition(sf::Vector2f(0, - 1600));
 }

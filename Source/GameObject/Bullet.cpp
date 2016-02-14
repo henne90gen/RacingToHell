@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Bullet.h"
+#include "GameObject\Bullet.h"
 
 Bullet::Bullet(sf::Vector2f pos, float Direction, int Speed, GameObjects Type) : GameObject(pos, Type, "Bullet"), _Direction(Direction), _Speed(Speed)
 {

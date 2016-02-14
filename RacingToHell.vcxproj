@@ -88,7 +88,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>SFML_STATIC;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>SFML-x86\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>SFML-x86\include;Headers</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -122,7 +122,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>SFML_STATIC;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>SFML-x86\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>SFML-x86\include;Headers</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -154,74 +154,73 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AICar.h" />
-    <ClInclude Include="Bullet.h" />
-    <ClInclude Include="Car.h" />
-    <ClInclude Include="EnergyCanister.h" />
-    <ClInclude Include="GameObjectContainer.h" />
-    <ClInclude Include="GameOverScreen.h" />
-    <ClInclude Include="HeadsUpDisplay.h" />
-    <ClInclude Include="Level.h" />
-    <ClInclude Include="MenuResults.h" />
-    <ClInclude Include="Menu.h" />
-    <ClInclude Include="MenuItem.h" />
-    <ClInclude Include="PlayerCar.h" />
-    <ClInclude Include="GameObjects.h" />
-    <ClInclude Include="Framework.hpp" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="PlayerStats.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="Toolbox.h" />
+    <ClInclude Include="Headers\GameObject\AICar.h" />
+    <ClInclude Include="Headers\GameObject\Bullet.h" />
+    <ClInclude Include="Headers\GameObject\Car.h" />
+    <ClInclude Include="Headers\GameObject\EnergyCanister.h" />
+    <ClInclude Include="Headers\GameObject\GameObjectContainer.h" />
+    <ClInclude Include="Headers\Menu\GameOverScreen.h" />
+    <ClInclude Include="Headers\HeadsUpDisplay.h" />
+    <ClInclude Include="Headers\Level\Level.h" />
+    <ClInclude Include="Headers\Menu\MenuResults.h" />
+    <ClInclude Include="Headers\Menu\Menu.h" />
+    <ClInclude Include="Headers\Menu\MenuItem.h" />
+    <ClInclude Include="Headers\GameObject\PlayerCar.h" />
+    <ClInclude Include="Headers\GameObject\GameObjects.h" />
+    <ClInclude Include="Headers\Framework.hpp" />
+    <ClInclude Include="Headers\GameObject\GameObject.h" />
+    <ClInclude Include="Headers\stdafx.h" />
+    <ClInclude Include="Headers\targetver.h" />
+    <ClInclude Include="Headers\GameObject\Toolbox.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AICar.cpp" />
-    <ClCompile Include="Bullet.cpp" />
-    <ClCompile Include="Car.cpp" />
-    <ClCompile Include="EnergyCanister.cpp" />
-    <ClCompile Include="GameOverScreen.cpp" />
-    <ClCompile Include="HeadsUpDisplay.cpp" />
-    <ClCompile Include="Level.cpp" />
-    <ClCompile Include="Menu.cpp" />
-    <ClCompile Include="MenuItem.cpp" />
-    <ClCompile Include="GameObjectContainer.cpp" />
-    <ClCompile Include="PlayerCar.cpp" />
-    <ClCompile Include="Framework.cpp" />
-    <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="RacingToHell.cpp" />
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="Source\GameObject\AICar.cpp" />
+    <ClCompile Include="Source\GameObject\Bullet.cpp" />
+    <ClCompile Include="Source\GameObject\Car.cpp" />
+    <ClCompile Include="Source\GameObject\EnergyCanister.cpp" />
+    <ClCompile Include="Source\Menu\GameOverScreen.cpp" />
+    <ClCompile Include="Source\HeadsUpDisplay.cpp" />
+    <ClCompile Include="Source\Level\Level.cpp" />
+    <ClCompile Include="Source\Menu\Menu.cpp" />
+    <ClCompile Include="Source\Menu\MenuItem.cpp" />
+    <ClCompile Include="Source\GameObject\GameObjectContainer.cpp" />
+    <ClCompile Include="Source\GameObject\PlayerCar.cpp" />
+    <ClCompile Include="Source\Framework.cpp" />
+    <ClCompile Include="Source\GameObject\GameObject.cpp" />
+    <ClCompile Include="Source\RacingToHell.cpp" />
+    <ClCompile Include="Source\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Toolbox.cpp" />
+    <ClCompile Include="Source\GameObject\Toolbox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="Resources\arial.ttf" />
+    <Font Include="Resources\Font\arial.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\Bullet.png" />
-    <Image Include="Resources\canister.png" />
-    <Image Include="Resources\playercar1.png" />
-    <Image Include="Resources\playercar2.png" />
-    <Image Include="Resources\playercar3.png" />
-    <Image Include="Resources\playercar4.png" />
-    <Image Include="Resources\Road1.jpg" />
-    <Image Include="Resources\Road2.jpg" />
-    <Image Include="Resources\Road3.jpg" />
-    <Image Include="Resources\toolbox.png" />
-    <Image Include="Resources\Traffic1.png" />
-    <Image Include="Resources\Traffic2.png" />
-    <Image Include="Resources\Traffic3.png" />
-    <Image Include="Resources\Traffic4.png" />
-    <Image Include="Resources\Traffic5.png" />
-    <Image Include="Resources\Traffic6.png" />
-    <Image Include="Resources\Traffic7.png" />
+    <Image Include="Resources\Texture\Object\Bullet.png" />
+    <Image Include="Resources\Texture\Object\canister.png" />
+    <Image Include="Resources\Texture\PlayerCar\playercar1.png" />
+    <Image Include="Resources\Texture\PlayerCar\playercar2.png" />
+    <Image Include="Resources\Texture\PlayerCar\playercar3.png" />
+    <Image Include="Resources\Texture\PlayerCar\playercar4.png" />
+    <Image Include="Resources\Texture\Road\Road1.jpg" />
+    <Image Include="Resources\Texture\Road\Road2.jpg" />
+    <Image Include="Resources\Texture\Road\Road3.jpg" />
+    <Image Include="Resources\Texture\Object\toolbox.png" />
+    <Image Include="Resources\Texture\TrafficCar\Traffic1.png" />
+    <Image Include="Resources\Texture\TrafficCar\Traffic2.png" />
+    <Image Include="Resources\Texture\TrafficCar\Traffic3.png" />
+    <Image Include="Resources\Texture\TrafficCar\Traffic4.png" />
+    <Image Include="Resources\Texture\TrafficCar\Traffic5.png" />
+    <Image Include="Resources\Texture\TrafficCar\Traffic6.png" />
+    <Image Include="Resources\Texture\TrafficCar\Traffic7.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -120,6 +120,7 @@ void Framework::handleEventMenu()
 								_CurrentCarSkinIndex = _CarSkins.size() - 1;
 							}
 							_GameObjectContainer.getPlayerCar()->setSkin(_CarSkins.at(_CurrentCarSkinIndex));
+							_GameObjectContainer.getPlayerCar()->setStats(_CurrentCarSkinIndex);
 						}
 						break;
 					case MenuResult::NextSkin:
@@ -129,6 +130,7 @@ void Framework::handleEventMenu()
 								_CurrentCarSkinIndex = 0;
 							}
 							_GameObjectContainer.getPlayerCar()->setSkin(_CarSkins.at(_CurrentCarSkinIndex));
+							_GameObjectContainer.getPlayerCar()->setStats(_CurrentCarSkinIndex);
 						}
 						break;
 					case MenuResult::Exit:
@@ -193,5 +195,5 @@ void Framework::resetGame()
 {
 	_Clock.restart();
 	_Score = 0;
-	_GameObjectContainer.resetGameObjects();
+	_GameObjectContainer.resetGameObjects(_CurrentCarSkinIndex);
 }

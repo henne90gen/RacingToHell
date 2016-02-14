@@ -13,7 +13,7 @@ Toolbox::~Toolbox()
 
 void Toolbox::update(float FrameTime)
 {
-	setPos(sf::Vector2f(getPos().x, getPos().y + FrameTime * 100));
+	setPos(sf::Vector2f(getPos().x, getPos().y + FrameTime * 300));
 }
 
 void Toolbox::handleEvent(sf::Event & Event)

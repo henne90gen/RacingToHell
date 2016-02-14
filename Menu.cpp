@@ -5,8 +5,8 @@
 Menu::Menu()
 {
 	_MenuItems.push_back(new MenuItem(sf::Vector2f(50, 25), MenuResult::Resume));
-	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2 - 100, SCREENHEIGHT - 75), MenuResult::PreviousSkin));
-	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2 + 37, SCREENHEIGHT - 75), MenuResult::NextSkin));
+	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2 - 100, SCREENHEIGHT - 100), MenuResult::PreviousSkin));
+	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2 + 37, SCREENHEIGHT - 100), MenuResult::NextSkin));
 	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH - 100, 25), MenuResult::Exit));
 }
 

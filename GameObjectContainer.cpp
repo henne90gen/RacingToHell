@@ -3,13 +3,13 @@
 
 GameObjectContainer::GameObjectContainer() : _PlayerAlive(true), _PlayerBulletSpeed(600), _AIBulletSpeed(300),
 _TimePassedBullet(0.0f), _TimePassedCanister(0.0f), _TimePassedCar(0.0f), _TimePassedToolbox(0.0f),
-_CarFrequency(2.0f), _BulletFrequency(1.0f), _CanisterFrequency(0.3f)
+_CarFrequency(2.0f), _BulletFrequency(2.0f), _CanisterFrequency(0.2f)
 {
 	//Seed
 	srand(time(NULL));
 
 	//Spielerauto
-	PlayerCar* MainCar = new PlayerCar();
+	PlayerCar* MainCar = new PlayerCar(0);
 	_GameObjects.push_back(MainCar);
 
 	_ToolboxFrequency = (float) (std::rand() % 150) / 1000.0f;
@@ -55,7 +55,7 @@ void GameObjectContainer::update(float FrameTime)
 			}
 		}
 		else {
-			if (getPlayerCar()->getHealth() <= 0) {
+			if (getPlayerCar()->getHealth() <= 0 || getPlayerCar()->getEnergy() <= 0) {
 				_PlayerAlive = false;
 			}
 		}
@@ -126,7 +126,7 @@ void GameObjectContainer::update(float FrameTime)
 				{
 					if (_GameObjects.at(i)->getSprite().getGlobalBounds().intersects(_GameObjects.at(j)->getSprite().getGlobalBounds()))
 					{
-						dynamic_cast<AICar*>(_GameObjects.at(i))->takeDamage();
+						dynamic_cast<AICar*>(_GameObjects.at(i))->takeDamage(getPlayerCar()->getBulletdamage());
 						deleteObject(j);
 						break;
 					}
@@ -183,7 +183,7 @@ void GameObjectContainer::handleEvents(sf::Event& Event)
 	}
 }
 
-void GameObjectContainer::resetGameObjects()
+void GameObjectContainer::resetGameObjects(int SelectedCar)
 {
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
@@ -193,7 +193,7 @@ void GameObjectContainer::resetGameObjects()
 	_GameObjects.clear();
 
 	//Spielerauto
-	PlayerCar* MainCar = new PlayerCar();
+	PlayerCar* MainCar = new PlayerCar(SelectedCar);
 	_GameObjects.push_back(MainCar);
 
 	//Frequenz

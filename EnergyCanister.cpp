@@ -13,7 +13,7 @@ EnergyCanister::~EnergyCanister()
 
 void EnergyCanister::update(float FrameTime)
 {
-	setPos(sf::Vector2f(getPos().x, getPos().y + FrameTime * 100));
+	setPos(sf::Vector2f(getPos().x, getPos().y + FrameTime * 300));
 }
 
 void EnergyCanister::handleEvent(sf::Event & Event)

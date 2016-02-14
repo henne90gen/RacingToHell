@@ -2,11 +2,11 @@
 #include "PlayerCar.h"
 
 
-PlayerCar::PlayerCar() : Car(sf::Vector2f(0, 0), 100, 450, GameObjects::Player, "playercar1"), _MaxEnergy(100), _MaxHealth(100)
+PlayerCar::PlayerCar(int SelectedCar) : Car(sf::Vector2f(0, 0), 100, 450, GameObjects::Player, "playercar" + std::to_string(SelectedCar + 1))
 {
-	_Energy = _MaxEnergy;
+	setStats(SelectedCar);
 	resetShotBullet();
-	setPos(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT - getHeight() / 2));
+	setPos(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT - getHeight() / 2 - 20));
 }
 
 
@@ -45,7 +45,7 @@ void PlayerCar::handleEvent(sf::Event& Event)
 
 	if (Event.type == sf::Event::MouseButtonPressed)
 	{
-		if (_Energy - 5 >= 0)
+		if (_Energy - 5 >= 10)
 		{
 			_Energy -= 5;
 
@@ -84,6 +84,9 @@ void PlayerCar::update(float FrameTime)
 	{
 		setPos(sf::Vector2f(getPos().x, getPos().y + _Movement.y * FrameTime * _Speed));
 	}
+
+	//Energieverbrauch
+	_Energy -= 2 * FrameTime;
 }
 
 bool PlayerCar::checkForCollision(GameObject * go)
@@ -116,4 +119,15 @@ void PlayerCar::addEnergy()
 	{
 		_Energy += 50;
 	}
+}
+
+void PlayerCar::setStats(int id)
+{
+	std::vector<int> Stats = PlayerStats::getPlayerStats(id);
+	_MaxHealth = Stats[0];
+	_Health = _MaxHealth;
+	_MaxEnergy = Stats[1];
+	_Energy = _MaxEnergy;
+	_Speed = Stats[2];
+	_Bulletdamage = Stats[3];
 }

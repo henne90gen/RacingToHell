@@ -12,7 +12,7 @@ public:
 	void handleEvent(sf::Event& Event);
 	void update(float FrameTime);
 	
-	void takeDamage() { setHealth(getHealth() - 50); }
+	void takeDamage(int damage) { setHealth(getHealth() - damage); }
 
 	int getLane() { return _Lane; }
 private:

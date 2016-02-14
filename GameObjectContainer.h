@@ -21,7 +21,7 @@ public:
 	PlayerCar* getPlayerCar() { return dynamic_cast<PlayerCar*>(_GameObjects.at(0)); }
 	bool playerIsAlive() { return _PlayerAlive; }
 
-	void resetGameObjects();
+	void resetGameObjects(int SelectedCar);
 
 	int getCarScore() { int result = _CarScore; _CarScore = 0; return result; }
 

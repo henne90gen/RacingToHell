@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Level.h"
 
-Level::Level() : _Difficulty(100)
+Level::Level() : _Difficulty(300)
 {
 	_Texture.loadFromFile("Resources/Road1.jpg");
 	_Sprite.setTexture(_Texture);

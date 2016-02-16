@@ -46,13 +46,31 @@ struct PlayerStats
 			Bulletdamage = 50;
 			break;
 		default:
-			MaxHealth = 100;
-			MaxEnergy = 100;
-			Speed = 100;
-			Bulletdamage = 100;
+			return {};
 			break;
 		}
 
 		return { MaxHealth, MaxEnergy, Speed, Bulletdamage };
+	}
+
+	static std::vector<int> getMaxStats()
+	{
+
+		std::vector<int> CurrentStats = getPlayerStats(0);
+		std::vector<int> MaxStats = { 0, 0, 0, 0 };
+
+		unsigned int i = 0;
+		while (CurrentStats.size() > 0)
+		{
+			for (unsigned int j = 0; j < MaxStats.size(); j++)
+			{
+				MaxStats[j] = std::max(MaxStats[j], CurrentStats[j]);
+			}
+
+			i++;
+			CurrentStats = getPlayerStats(i);
+		}
+
+		return MaxStats;
 	}
 };

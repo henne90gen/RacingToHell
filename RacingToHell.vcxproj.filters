@@ -108,6 +108,9 @@
     <ClInclude Include="Headers\PlayerStats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Menu\StatBox.h">
+      <Filter>Header Files\Menu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Framework.cpp">
@@ -156,6 +159,9 @@
       <Filter>Source Files\Menu</Filter>
     </ClCompile>
     <ClCompile Include="Source\Menu\MenuItem.cpp">
+      <Filter>Source Files\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="StatBox.cpp">
       <Filter>Source Files\Menu</Filter>
     </ClCompile>
   </ItemGroup>

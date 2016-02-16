@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "MenuItem.h"
 #include "MenuResults.h"
+#include "StatBox.h"
 
 class Menu
 {
@@ -9,7 +10,7 @@ public:
 	Menu();
 	~Menu();
 
-	void render(sf::RenderWindow& Window);
+	void render(sf::RenderWindow& Window, int SelectedCar);
 	void update(float FrameTime);
 
 	void checkMouseHover(sf::RenderWindow& Window);
@@ -19,5 +20,9 @@ public:
 private:
 	sf::Sprite _CarSkin;
 	std::vector<MenuItem*> _MenuItems;
+	sf::Font _MainMenuFont;
+	sf::Text _MainMenuText;
+
+	StatBox* _StatBox;
 };
 

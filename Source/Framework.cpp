@@ -57,7 +57,7 @@ void Framework::render()
 		_HeadsUpDisplay.render(_RenderWindow);
 	}
 	else if (_GameState == GameState::MainMenu || _GameState == GameState::Pausing) {
-		_Menu.render(_RenderWindow);
+		_Menu.render(_RenderWindow, _CurrentCarSkinIndex);
 	}
 	else if (_GameState == GameState::GameOver) {
 		_GameOverScreen.render(_RenderWindow, _Score);

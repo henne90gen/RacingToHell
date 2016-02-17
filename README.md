@@ -1,6 +1,6 @@
 #RacingToHell#
 
----Setup---
+---Setup to compile the source---
 
 Download SFML-2.3.2 for Visual Studio 2013 from http://www.sfml-dev.org/download/sfml/2.3.2
 Get both versions, 32-bit and 64-bit.

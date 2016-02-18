@@ -5,17 +5,18 @@
 Menu::Menu()
 {
 	//Menu-Items
-	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 240), MenuResult::Resume));
 	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2 - 100, SCREENHEIGHT - 335), MenuResult::PreviousSkin));
 	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2 + 37, SCREENHEIGHT - 335), MenuResult::NextSkin));
+	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 240), MenuResult::Resume));
 	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 320), MenuResult::Exit));
 
 	//Main-Menu Text
 	_MainMenuFont.loadFromFile("Resources/Font/arial.ttf");
 	_MainMenuText.setFont(_MainMenuFont);
 	_MainMenuText.setString("Main Menu");
-	_MainMenuText.setCharacterSize(55);
+	_MainMenuText.setCharacterSize(53);
 	_MainMenuText.setColor(sf::Color::White);
+	_MainMenuText.setStyle(sf::Text::Style::Bold);
 	_MainMenuText.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _MainMenuText.getLocalBounds().width / 2, 160));
 
 	//Stats-Box
@@ -33,15 +34,28 @@ Menu::~Menu()
 	_StatBox = nullptr;
 }
 
-void Menu::render(sf::RenderWindow & Window, int SelectedCar)
+void Menu::render(sf::RenderWindow & Window, int SelectedCar, bool paused)
 {
-	for (int i = 0; i < _MenuItems.size(); i++) {
+	unsigned int i = 0;
+
+	if (paused)
+	{
+		i = 2;
+		_MainMenuText.setString("Pause");
+	}
+	else
+	{
+		Window.draw(_CarSkin);
+		_StatBox->render(Window, SelectedCar);
+		_MainMenuText.setString("Main Menu");
+	}
+
+	for (; i < _MenuItems.size(); i++) {
 		_MenuItems[i]->render(Window);
 	}
-	Window.draw(_CarSkin);
-	Window.draw(_MainMenuText);
 
-	_StatBox->render(Window, SelectedCar);
+	_MainMenuText.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _MainMenuText.getLocalBounds().width / 2, 160));
+	Window.draw(_MainMenuText);
 }
 
 void Menu::update(float FrameTime)

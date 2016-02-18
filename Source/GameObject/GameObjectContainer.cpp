@@ -1,18 +1,13 @@
 #include "stdafx.h"
 #include "GameObject\GameObjectContainer.h"
 
-GameObjectContainer::GameObjectContainer() : _PlayerAlive(true), _PlayerBulletSpeed(600), _AIBulletSpeed(300),
-_TimePassedBullet(0.0f), _TimePassedCanister(0.0f), _TimePassedCar(0.0f), _TimePassedToolbox(0.0f),
-_CarFrequency(4.0f), _BulletFrequency(4.0f), _CanisterFrequency(0.2f)
+GameObjectContainer::GameObjectContainer() : _PlayerBulletSpeed(600), _AIBulletSpeed(300)
 {
 	//Seed
 	srand(time(NULL));
 
-	//Spielerauto
-	PlayerCar* MainCar = new PlayerCar(0);
-	_GameObjects.push_back(MainCar);
-
-	_ToolboxFrequency = (float) (std::rand() % 150) / 1000.0f;
+	//Variablen
+	resetGameObjects(0);
 }
 
 GameObjectContainer::~GameObjectContainer()

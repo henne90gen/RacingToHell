@@ -16,6 +16,7 @@ public:
 
 	void update(float FrameTime);
 	void render(sf::RenderWindow& RenderWindow);
+	void playSounds();
 	void handleEvents(sf::Event& Event);
 
 	PlayerCar* getPlayerCar() { return dynamic_cast<PlayerCar*>(_GameObjects.at(0)); }

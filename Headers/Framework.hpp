@@ -49,6 +49,7 @@ private:
 	void handleEventMenu();
 	void handleEventGameOver();
 	void render();
+	void playSounds();
 	void measureTime();
 	void showMenu();
 	void showGameOverScreen();

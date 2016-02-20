@@ -11,6 +11,7 @@ public:
 	~GameObject();
 
 	virtual void render(sf::RenderWindow& Window);
+	virtual void playSounds();
 	virtual void handleEvent(sf::Event& Event) = 0;
 	virtual void update(float FrameTime) = 0;
 

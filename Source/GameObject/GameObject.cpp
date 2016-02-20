@@ -31,6 +31,10 @@ GameObject::~GameObject()
 void GameObject::render(sf::RenderWindow& Window)
 {
 	Window.draw(_Sprite);
+}
+
+void GameObject::playSounds()
+{
 	if (_Sound.getStatus() == sf::Sound::Stopped) {
 		_Sound.play();
 	}

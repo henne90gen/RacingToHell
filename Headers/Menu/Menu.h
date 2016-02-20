@@ -10,7 +10,7 @@ public:
 	Menu();
 	~Menu();
 
-	void render(sf::RenderWindow& Window, int SelectedCar);
+	void render(sf::RenderWindow& Window, int SelectedCar, bool paused);
 	void update(float FrameTime);
 
 	void checkMouseHover(sf::RenderWindow& Window);

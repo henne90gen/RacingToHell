@@ -4,6 +4,7 @@
 
 GameObject::GameObject(sf::Vector2f pos, GameObjects Type, std::string Filename) : _Type(Type)
 {
+	//Setting up texture and sprite
 	if (_Type == GameObjects::Canister || _Type == GameObjects::Tools || _Type == GameObjects::BulletObjectAI || _Type == GameObjects::BulletObjectPlayer) {
 		_Texture.loadFromFile("Resources/Texture/Object/" + Filename + ".png");
 	}
@@ -16,6 +17,10 @@ GameObject::GameObject(sf::Vector2f pos, GameObjects Type, std::string Filename)
 	_Sprite.setTexture(_Texture);
 	_Sprite.setOrigin(_Sprite.getLocalBounds().width / 2, _Sprite.getLocalBounds().height / 2);
 	_Sprite.setPosition(pos);
+
+	//Setting up sound
+	//_SoundBuffer.loadFromFile("Resources/Sound/sample.wav");
+	//_Sound.setBuffer(_SoundBuffer);
 }
 
 GameObject::~GameObject()
@@ -26,6 +31,7 @@ GameObject::~GameObject()
 void GameObject::render(sf::RenderWindow& Window)
 {
 	Window.draw(_Sprite);
+	//_Sound.play();
 }
 
 void GameObject::setSkin(sf::Texture* skin)

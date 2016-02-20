@@ -161,7 +161,7 @@
     <ClCompile Include="Source\Menu\MenuItem.cpp">
       <Filter>Source Files\Menu</Filter>
     </ClCompile>
-    <ClCompile Include="StatBox.cpp">
+    <ClCompile Include="Source\Menu\StatBox.cpp">
       <Filter>Source Files\Menu</Filter>
     </ClCompile>
   </ItemGroup>

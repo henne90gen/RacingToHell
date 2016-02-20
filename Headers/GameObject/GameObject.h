@@ -27,6 +27,9 @@ public:
 private:
 	sf::Sprite _Sprite;
 	sf::Texture _Texture;
+
+	//sf::SoundBuffer _SoundBuffer;
+	//sf::Sound _Sound;
 	
 	GameObjects _Type;
 };

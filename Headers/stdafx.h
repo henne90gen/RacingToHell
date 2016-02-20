@@ -13,7 +13,7 @@
 #include <iostream>
 #include <vector>
 #include <SFML/Graphics.hpp>
-//#include <SFML/Audio.hpp>
+#include <SFML/Audio.hpp>
 
 #define SCREENWIDTH 600
 #define SCREENHEIGHT 800

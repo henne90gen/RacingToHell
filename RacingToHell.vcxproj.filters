@@ -49,6 +49,12 @@
     <Filter Include="Resource Files\Texture\TrafficCar">
       <UniqueIdentifier>{e79ad19c-d0a6-4f92-9f11-0b99868bc4be}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Sound">
+      <UniqueIdentifier>{4b28e776-ad92-46c7-be63-3d9062b11cf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Sound\Music">
+      <UniqueIdentifier>{a6647076-d2bd-49d7-9ba2-7399a87d4bbf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Framework.hpp">
@@ -226,5 +232,10 @@
     <Font Include="Resources\Font\arial.ttf">
       <Filter>Resource Files\Font</Filter>
     </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Resources\Sound\sample.wav">
+      <Filter>Resource Files\Sound</Filter>
+    </Media>
   </ItemGroup>
 </Project>

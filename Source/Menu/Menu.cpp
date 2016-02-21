@@ -21,6 +21,11 @@ Menu::Menu()
 
 	//Stats-Box
 	_StatBox = new StatBox(sf::Vector2f(SCREENWIDTH / 2, 575));
+
+	//Music
+	if (_MusicBuffer.loadFromFile("Resources/Sound/menu.wav")) {
+		_Music.setBuffer(_MusicBuffer);
+	}
 }
 
 Menu::~Menu()
@@ -56,6 +61,10 @@ void Menu::render(sf::RenderWindow & Window, int SelectedCar, bool paused)
 
 	_MainMenuText.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _MainMenuText.getLocalBounds().width / 2, 160));
 	Window.draw(_MainMenuText);
+}
+
+void Menu::playSounds() {
+	_Music.play();
 }
 
 void Menu::update(float FrameTime)

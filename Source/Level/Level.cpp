@@ -7,8 +7,9 @@ Level::Level() : _Difficulty(300)
 	_Sprite.setTexture(_Texture);
 	_Sprite.setPosition(sf::Vector2f(0, - 1600));
 
-	_MusicBuffer.loadFromFile("Resourses/Sound/Music/level1.wav");
-	_Music.setBuffer(_MusicBuffer);
+	if (_MusicBuffer.loadFromFile("Resourses/Sound/Music/level1.wav")) {
+		_Music.setBuffer(_MusicBuffer);
+	}
 }
 
 Level::~Level()

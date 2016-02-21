@@ -10,6 +10,10 @@ GameOverScreen::GameOverScreen()
 		_GameOverText.setColor(sf::Color::Blue);
 		_GameOverText.setCharacterSize(50);
 	}
+
+	if (_GameOverSoundBuffer.loadFromFile("Resources/Sound/gameover.wav")) {
+		_GameOverSound.setBuffer(_GameOverSoundBuffer);
+	}
 }
 
 
@@ -21,4 +25,9 @@ void GameOverScreen::render(sf::RenderWindow& Window, int score)
 {
 	_GameOverText.setString("Game Over!\nRestart with Spacebar\n\nYour score was: " + std::to_string(score));
 	Window.draw(_GameOverText);
+}
+
+void GameOverScreen::playSounds()
+{
+	_GameOverSound.play();
 }

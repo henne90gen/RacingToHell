@@ -19,8 +19,9 @@ GameObject::GameObject(sf::Vector2f pos, GameObjects Type, std::string Filename)
 	_Sprite.setPosition(pos);
 
 	//Setting up sound
-	_SoundBuffer.loadFromFile("Resources/Sound/sample.wav");
-	_Sound.setBuffer(_SoundBuffer);
+	if (_SoundBuffer.loadFromFile("Resources/Sound/" + Filename + ".wav")) {
+		_Sound.setBuffer(_SoundBuffer);
+	}
 }
 
 GameObject::~GameObject()

@@ -6,9 +6,6 @@ Level::Level() : _Difficulty(300)
 	_Texture.loadFromFile("Resources/Texture/Road/Road1.jpg");
 	_Sprite.setTexture(_Texture);
 	_Sprite.setPosition(sf::Vector2f(0, - 1600));
-
-	_MusicBuffer.loadFromFile("Resourses/Sound/Music/level1.wav");
-	_Music.setBuffer(_MusicBuffer);
 }
 
 Level::~Level()
@@ -31,9 +28,4 @@ void Level::update(float FrameTime)
 void Level::render(sf::RenderWindow& RenderWindow)
 {
 	RenderWindow.draw(_Sprite);
-}
-
-void Level::playSounds()
-{
-	_Music.play();
 }

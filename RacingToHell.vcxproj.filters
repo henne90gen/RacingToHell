@@ -58,6 +58,9 @@
     <Filter Include="Resource Files\Sound">
       <UniqueIdentifier>{8cad846b-a2d4-4331-8901-51b509ebec4b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Sound\Music">
+      <UniqueIdentifier>{d7593c76-d45a-4150-bf48-38c271ee553a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Framework.hpp">
@@ -250,6 +253,9 @@
   </ItemGroup>
   <ItemGroup>
     <Media Include="Resources\Sound\sample.wav">
+      <Filter>Resource Files\Sound</Filter>
+    </Media>
+    <Media Include="Resources\Sound\shot.wav">
       <Filter>Resource Files\Sound</Filter>
     </Media>
   </ItemGroup>

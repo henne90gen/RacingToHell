@@ -180,6 +180,9 @@
   <ItemGroup>
     <None Include="README.md" />
     <None Include=".gitignore" />
+    <None Include="Resources\Sound\Music\level1.ogg">
+      <Filter>Resource Files\Sound\Music</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Texture\TrafficCar\Traffic1.png">
@@ -257,9 +260,6 @@
     </Media>
     <Media Include="Resources\Sound\shot.wav">
       <Filter>Resource Files\Sound</Filter>
-    </Media>
-    <Media Include="Resources\Sound\Music\level1.mp3">
-      <Filter>Resource Files\Sound\Music</Filter>
     </Media>
   </ItemGroup>
 </Project>

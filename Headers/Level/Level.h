@@ -10,6 +10,7 @@ public:
 	void render(sf::RenderWindow& RenderWindow);
 	void playMusic();
 	void stopMusic();
+	void pauseMusic();
 
 private:
 	sf::Texture _Texture;

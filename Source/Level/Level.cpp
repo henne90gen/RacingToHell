@@ -7,7 +7,7 @@ Level::Level() : _Difficulty(300)
 	_Sprite.setTexture(_Texture);
 	_Sprite.setPosition(sf::Vector2f(0, - 1600));
 
-	if (_MusicBuffer.loadFromFile("Resources/Sound/Music/level1.mp3")) {
+	if (_MusicBuffer.loadFromFile("Resources/Sound/Music/level1.ogg")) {
 		_Music.setBuffer(_MusicBuffer);
 	}
 }
@@ -34,12 +34,19 @@ void Level::render(sf::RenderWindow& RenderWindow)
 	RenderWindow.draw(_Sprite);
 }
 
-void Level::playMusic() {
-	if (_Music.getStatus() == sf::Sound::Stopped) {
+void Level::playMusic() 
+{
+	if (_Music.getStatus() == sf::Sound::Stopped || _Music.getStatus() == sf::Sound::Paused) {
 		_Music.play();
 	}
 }
 
-void Level::stopMusic() {
+void Level::stopMusic() 
+{
+	_Music.stop();
+}
 
+void Level::pauseMusic()
+{
+	_Music.pause();
 }

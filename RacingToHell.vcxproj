@@ -230,6 +230,7 @@
     <Image Include="Resources\Texture\TrafficCar\Traffic7.png" />
   </ItemGroup>
   <ItemGroup>
+    <Media Include="Resources\Sound\Music\level1.mp3" />
     <Media Include="Resources\Sound\sample.wav" />
     <Media Include="Resources\Sound\shot.wav" />
   </ItemGroup>

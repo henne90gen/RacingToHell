@@ -21,8 +21,6 @@ void Framework::run()
 	while (_IsRunning)
 	{
 		render();
-		
-		playSounds();
 
 		switch (_GameState) {
 		case GameState::Running:
@@ -65,10 +63,6 @@ void Framework::render()
 		_GameOverScreen.render(_RenderWindow, _Score);
 	}
 	_RenderWindow.display();
-}
-
-void Framework::playSounds() {
-	_GameObjectContainer.playSounds();
 }
 
 void Framework::update(float FrameTime)

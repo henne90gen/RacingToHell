@@ -37,9 +37,6 @@
     <Filter Include="Resource Files\Texture">
       <UniqueIdentifier>{2756ad11-8b17-4b33-a08a-1b8dbefc9e78}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Texture\Addiditonal Object">
-      <UniqueIdentifier>{5a08c5ac-4b0e-4b9e-ab50-5e6d32ce8d8d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files\Texture\PlayerCar">
       <UniqueIdentifier>{6467aff0-312b-4a63-8b65-10271e7e4498}</UniqueIdentifier>
     </Filter>
@@ -48,6 +45,18 @@
     </Filter>
     <Filter Include="Resource Files\Texture\TrafficCar">
       <UniqueIdentifier>{e79ad19c-d0a6-4f92-9f11-0b99868bc4be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Texture\Object">
+      <UniqueIdentifier>{5a08c5ac-4b0e-4b9e-ab50-5e6d32ce8d8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Texture\HUD">
+      <UniqueIdentifier>{c45d0cb3-98aa-45ff-9442-32b4fa462a8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Texture\MainMenu">
+      <UniqueIdentifier>{3aa32f53-ed9e-4a96-8acf-6e8b8fb56422}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Sound">
+      <UniqueIdentifier>{8cad846b-a2d4-4331-8901-51b509ebec4b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -213,18 +222,35 @@
       <Filter>Resource Files\Texture\PlayerCar</Filter>
     </Image>
     <Image Include="Resources\Texture\Object\Bullet.png">
-      <Filter>Resource Files\Texture\Addiditonal Object</Filter>
+      <Filter>Resource Files\Texture\Object</Filter>
     </Image>
     <Image Include="Resources\Texture\Object\canister.png">
-      <Filter>Resource Files\Texture\Addiditonal Object</Filter>
+      <Filter>Resource Files\Texture\Object</Filter>
     </Image>
     <Image Include="Resources\Texture\Object\toolbox.png">
-      <Filter>Resource Files\Texture\Addiditonal Object</Filter>
+      <Filter>Resource Files\Texture\Object</Filter>
+    </Image>
+    <Image Include="Resources\Texture\MainMenu\StatBar.png">
+      <Filter>Resource Files\Texture\MainMenu</Filter>
+    </Image>
+    <Image Include="Resources\Texture\HUD\HUD_Background.png">
+      <Filter>Resource Files\Texture\HUD</Filter>
+    </Image>
+    <Image Include="Resources\Texture\HUD\HUD_EnergyIcon.png">
+      <Filter>Resource Files\Texture\HUD</Filter>
+    </Image>
+    <Image Include="Resources\Texture\HUD\HUD_HealthIcon.png">
+      <Filter>Resource Files\Texture\HUD</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\Font\arial.ttf">
       <Filter>Resource Files\Font</Filter>
     </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Resources\Sound\sample.wav">
+      <Filter>Resource Files\Sound</Filter>
+    </Media>
   </ItemGroup>
 </Project>

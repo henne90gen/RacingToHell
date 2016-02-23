@@ -207,6 +207,10 @@
     <Font Include="Resources\Font\arial.ttf" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Resources\Texture\HUD\HUD_Background.png" />
+    <Image Include="Resources\Texture\HUD\HUD_EnergyIcon.png" />
+    <Image Include="Resources\Texture\HUD\HUD_HealthIcon.png" />
+    <Image Include="Resources\Texture\MainMenu\StatBar.png" />
     <Image Include="Resources\Texture\Object\Bullet.png" />
     <Image Include="Resources\Texture\Object\canister.png" />
     <Image Include="Resources\Texture\PlayerCar\playercar1.png" />
@@ -224,6 +228,9 @@
     <Image Include="Resources\Texture\TrafficCar\Traffic5.png" />
     <Image Include="Resources\Texture\TrafficCar\Traffic6.png" />
     <Image Include="Resources\Texture\TrafficCar\Traffic7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Resources\Sound\sample.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

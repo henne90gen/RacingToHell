@@ -51,8 +51,6 @@ private:
 	void render();
 	void playSounds();
 	void measureTime();
-	void showMenu();
-	void showGameOverScreen();
 	void loadCarSkins();
 	void resetGame();
 };

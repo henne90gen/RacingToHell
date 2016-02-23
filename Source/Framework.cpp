@@ -69,11 +69,12 @@ void Framework::render()
 
 void Framework::playSounds() {
 	if (_GameState == GameState::Running) {
+		_Menu.stopMusic();
 		_Level.playMusic();
 	}
 	else if (_GameState == GameState::MainMenu || _GameState == GameState::Pausing) {
 		_Level.pauseMusic();
-		//_Menu.playMusic();
+		_Menu.playMusic();
 	}
 	else if (_GameState == GameState::GameOver) {
 		_Level.stopMusic();

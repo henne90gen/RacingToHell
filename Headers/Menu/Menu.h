@@ -10,8 +10,11 @@ public:
 	Menu();
 	~Menu();
 
-	void render(sf::RenderWindow& Window, int SelectedCar, bool paused);
 	void update(float FrameTime);
+	void render(sf::RenderWindow& Window, int SelectedCar, bool paused);
+	void playMusic();
+	void stopMusic();
+	void pauseMusic();
 
 	void checkMouseHover(sf::RenderWindow& Window);
 
@@ -22,6 +25,9 @@ private:
 	std::vector<MenuItem*> _MenuItems;
 	sf::Font _MainMenuFont;
 	sf::Text _MainMenuText;
+
+	sf::SoundBuffer _MusicBuffer;
+	sf::Sound _Music;
 
 	StatBox* _StatBox;
 };

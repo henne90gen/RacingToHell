@@ -9,6 +9,7 @@ Level::Level() : _Difficulty(300)
 
 	if (_MusicBuffer.loadFromFile("Resources/Sound/Music/level1.ogg")) {
 		_Music.setBuffer(_MusicBuffer);
+		_Music.setVolume(20);
 	}
 }
 

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Menu\Menu.h"
 
-
 Menu::Menu()
 {
 	//Menu-Items
@@ -21,6 +20,12 @@ Menu::Menu()
 
 	//Stats-Box
 	_StatBox = new StatBox(sf::Vector2f(SCREENWIDTH / 2, 575));
+
+	//Background Music
+	if (_MusicBuffer.loadFromFile("Resources/Sound/Music/menu1.ogg")) {
+		_Music.setBuffer(_MusicBuffer);
+		_Music.setVolume(10);
+	}
 }
 
 Menu::~Menu()
@@ -56,6 +61,23 @@ void Menu::render(sf::RenderWindow & Window, int SelectedCar, bool paused)
 
 	_MainMenuText.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _MainMenuText.getLocalBounds().width / 2, 160));
 	Window.draw(_MainMenuText);
+}
+
+void Menu::playMusic()
+{
+	if (_Music.getStatus() == sf::Sound::Stopped) {
+		_Music.play();
+	}
+}
+
+void Menu::stopMusic()
+{
+	_Music.stop();
+}
+
+void Menu::pauseMusic()
+{
+	_Music.pause();
 }
 
 void Menu::update(float FrameTime)

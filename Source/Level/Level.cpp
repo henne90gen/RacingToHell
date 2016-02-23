@@ -6,6 +6,10 @@ Level::Level() : _Difficulty(300)
 	_Texture.loadFromFile("Resources/Texture/Road/Road1.jpg");
 	_Sprite.setTexture(_Texture);
 	_Sprite.setPosition(sf::Vector2f(0, - 1600));
+
+	if (_MusicBuffer.loadFromFile("Resources/Sound/sample.wav")) {
+		_Music.setBuffer(_MusicBuffer);
+	}
 }
 
 Level::~Level()
@@ -28,4 +32,14 @@ void Level::update(float FrameTime)
 void Level::render(sf::RenderWindow& RenderWindow)
 {
 	RenderWindow.draw(_Sprite);
+}
+
+void Level::playMusic() {
+	if (_Music.getStatus() == sf::Sound::Stopped) {
+		_Music.play();
+	}
+}
+
+void Level::stopMusic() {
+
 }

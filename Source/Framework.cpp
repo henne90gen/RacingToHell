@@ -22,6 +22,8 @@ void Framework::run()
 	{
 		render();
 
+		playSounds();
+
 		switch (_GameState) {
 		case GameState::Running:
 			update(_FrameTime);
@@ -63,6 +65,19 @@ void Framework::render()
 		_GameOverScreen.render(_RenderWindow, _Score);
 	}
 	_RenderWindow.display();
+}
+
+void Framework::playSounds() {
+	if (_GameState == GameState::Running) {
+		_Level.playMusic();
+	}
+	else if (_GameState == GameState::MainMenu || _GameState == GameState::Pausing) {
+		_Level.stopMusic();
+		//_Menu.playMusic();
+	}
+	else if (_GameState == GameState::GameOver) {
+		//_GameOverScreen.playSounds();
+	}
 }
 
 void Framework::update(float FrameTime)

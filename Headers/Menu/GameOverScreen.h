@@ -12,6 +12,10 @@ public:
 
 private:
 	sf::Font _Font;
-	sf::Text _GameOverText;
+
+	//GOT = GameOverText
+	sf::Text _GOTLine1;
+	sf::Text _GOTLine2;
+	sf::Text _GOTLine3;
 };
 

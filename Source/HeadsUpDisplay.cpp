@@ -62,10 +62,7 @@ HeadsUpDisplay::HeadsUpDisplay()
 	_ScoreText.setColor(sf::Color::White);
 	_ScoreText.setPosition(sf::Vector2f(370, SCREENHEIGHT - _Background.getLocalBounds().height));
 	_ScoreText.setString("Score: 0000000");
-	
-
 }
-
 
 HeadsUpDisplay::~HeadsUpDisplay()
 {

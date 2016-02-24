@@ -10,10 +10,10 @@ HeadsUpDisplay::HeadsUpDisplay()
 	//Background
 	_BackgroundTexture.loadFromFile("Resources/Texture/HUD/HUD_Background.png");
 	_Background.setTexture(_BackgroundTexture);
-	_Background.setPosition(sf::Vector2f(0, 0));
+	_Background.setPosition(sf::Vector2f(0, SCREENHEIGHT - _Background.getLocalBounds().height));
 
 	//Healthbar
-	_HealthBar.setPosition(sf::Vector2f(10, 5));
+	_HealthBar.setPosition(sf::Vector2f(_Background.getGlobalBounds().left + 10, SCREENHEIGHT - _Background.getLocalBounds().height + 5));
 	_HealthBar.setSize(sf::Vector2f(150, 30));
 	_HealthBar.setFillColor(sf::Color(175, 0, 0));
 
@@ -28,15 +28,14 @@ HeadsUpDisplay::HeadsUpDisplay()
 	_HealthText.setFont(_Font);
 	_HealthText.setCharacterSize(20);
 	_HealthText.setColor(sf::Color::White);
-	_HealthText.setPosition(sf::Vector2f(100, 8));
 
 	//Health Icon
 	_HealthIconTexture.loadFromFile("Resources/Texture/HUD/HUD_HealthIcon.png");
 	_HealthIconSprite.setTexture(_HealthIconTexture);
-	_HealthIconSprite.setPosition(sf::Vector2f(15, 10));
+	_HealthIconSprite.setPosition(sf::Vector2f(_HealthBarOutline.getGlobalBounds().left + 6, _HealthBarOutline.getGlobalBounds().top + 6));
 
 	//Energybar
-	_EnergyBar.setPosition(sf::Vector2f(180, 5));
+	_EnergyBar.setPosition(sf::Vector2f(_HealthBarOutline.getGlobalBounds().left + _HealthBarOutline.getLocalBounds().width + 20, _HealthBarOutline.getGlobalBounds().top + 2));
 	_EnergyBar.setSize(sf::Vector2f(150, 30));
 	_EnergyBar.setFillColor(sf::Color(125, 0, 175));
 
@@ -55,13 +54,13 @@ HeadsUpDisplay::HeadsUpDisplay()
 	//Energy Icon
 	_EnergyIconTexture.loadFromFile("Resources/Texture/HUD/HUD_EnergyIcon.png");
 	_EnergyIconSprite.setTexture(_EnergyIconTexture);
-	_EnergyIconSprite.setPosition(sf::Vector2f(185, 10));
+	_EnergyIconSprite.setPosition(sf::Vector2f(_EnergyBarOutline.getGlobalBounds().left + 6, _EnergyBarOutline.getGlobalBounds().top + 6));
 
 	//Score
 	_ScoreText.setFont(_Font);
 	_ScoreText.setCharacterSize(30);
 	_ScoreText.setColor(sf::Color::White);
-	_ScoreText.setPosition(sf::Vector2f(370,0));
+	_ScoreText.setPosition(sf::Vector2f(370, SCREENHEIGHT - _Background.getLocalBounds().height));
 	_ScoreText.setString("Score: 0000000");
 	
 
@@ -93,7 +92,8 @@ void HeadsUpDisplay::update(int Score, int Health, int MaxHealth, int Energy, in
 {
 	_HealthBar.setSize(sf::Vector2f((float)Health / (float)MaxHealth * 150, 30));
 	_HealthText.setString(std::to_string(Health) + "/" + std::to_string(MaxHealth));
-	_HealthText.setPosition(sf::Vector2f(155 - _HealthText.getLocalBounds().width, 8));
+	_HealthText.setPosition(sf::Vector2f(	_HealthBarOutline.getGlobalBounds().left + _HealthBarOutline.getLocalBounds().width - _HealthText.getLocalBounds().width - 7, 
+											_HealthBarOutline.getGlobalBounds().top + 3));
 
 	if (Health <= 10)
 	{
@@ -106,7 +106,8 @@ void HeadsUpDisplay::update(int Score, int Health, int MaxHealth, int Energy, in
 
 	_EnergyBar.setSize(sf::Vector2f((float)Energy / (float)MaxEnergy * 150, 30));
 	_EnergyText.setString(std::to_string(Energy) + "/" + std::to_string(MaxEnergy));
-	_EnergyText.setPosition(sf::Vector2f(325 - _EnergyText.getLocalBounds().width, 8));
+	_EnergyText.setPosition(sf::Vector2f(_EnergyBarOutline.getGlobalBounds().left + _EnergyBarOutline.getLocalBounds().width - _EnergyText.getLocalBounds().width - 7,
+		_EnergyBarOutline.getGlobalBounds().top + 3));
 
 	if (Energy <= 10)
 	{
@@ -118,7 +119,6 @@ void HeadsUpDisplay::update(int Score, int Health, int MaxHealth, int Energy, in
 	}
 
 	_ScoreText.setString("Score: " + ConvertScore(Score));
-	//
 }
 
 std::string HeadsUpDisplay::ConvertScore(int Score)

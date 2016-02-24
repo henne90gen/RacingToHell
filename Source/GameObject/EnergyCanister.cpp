@@ -2,7 +2,7 @@
 #include "GameObject\EnergyCanister.h"
 
 
-EnergyCanister::EnergyCanister(sf::Vector2f pos) : GameObject(pos, GameObjects::Canister, "canister")
+EnergyCanister::EnergyCanister(sf::Vector2f pos, sf::Texture& texture) : GameObject(pos, GameObjects::Canister, texture)
 {
 }
 

@@ -8,7 +8,7 @@
 class Car : public GameObject
 {
 public:
-	Car(sf::Vector2f pos, int health, float speed, GameObjects Type, std::string Filename);
+	Car(sf::Vector2f pos, int health, float speed, GameObjects Type, sf::Texture& texture);
 	~Car();
 
 	int getHealth() { return _Health; }

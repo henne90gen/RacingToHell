@@ -6,7 +6,7 @@
 class AICar : public Car
 {
 public:
-	AICar();
+	AICar(sf::Texture& texture);
 	~AICar();
 
 	void handleEvent(sf::Event& Event);

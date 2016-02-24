@@ -21,11 +21,6 @@ Menu::Menu()
 
 	//Stats-Box
 	_StatBox = new StatBox(sf::Vector2f(SCREENWIDTH / 2, 575));
-
-	//Music
-	if (_MusicBuffer.loadFromFile("Resources/Sound/menu.wav")) {
-		_Music.setBuffer(_MusicBuffer);
-	}
 }
 
 Menu::~Menu()

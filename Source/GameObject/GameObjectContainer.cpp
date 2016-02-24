@@ -6,13 +6,24 @@ GameObjectContainer::GameObjectContainer() : _PlayerBulletSpeed(600), _AIBulletS
 	//Seed
 	srand(time(NULL));
 
+	for (int i = 1; i < 7; i++) {
+		sf::Texture* texture = new sf::Texture();
+		(*texture).loadFromFile("Resources/Texture/PlayerCar/playercar" + std::to_string(i) + ".png");
+		_PlayerCarTextures.push_back(texture);
+	}
+
+	for (int i = 1; i < 8; i++) {
+		sf::Texture* texture = new sf::Texture();
+		(*texture).loadFromFile("Resources/Texture/TrafficCar/Traffic" + std::to_string(i) + ".png");
+		_AICarTextures.push_back(texture);
+	}
+
+	_BulletTexture.loadFromFile("Resources/Texture/Object/Bullet.png");
+	_ToolboxTexture.loadFromFile("Resources/Texture/Object/toolbox.png");
+	_EnergyCanisterTexture.loadFromFile("Resources/Texture/Object/canister.png");
+
 	//Variablen
 	resetGameObjects(0);
-
-	//Shot-Sound
-	if (_ShotBuffer.loadFromFile("Resources/Sound/shot.wav")) {
-		_Shot.setBuffer(_ShotBuffer);
-	}
 }
 
 GameObjectContainer::~GameObjectContainer()
@@ -76,7 +87,7 @@ void GameObjectContainer::update(float FrameTime)
 	if (_TimePassedCanister + FrameTime > 1 / _CanisterFrequency) 
 	{
 		_TimePassedCanister += FrameTime - 1 / _CanisterFrequency;
-		EnergyCanister* canister = new EnergyCanister(sf::Vector2f(std::rand() % 3 * 150 + 150, -25));
+		EnergyCanister* canister = new EnergyCanister(sf::Vector2f(std::rand() % 3 * 150 + 150, -25), _EnergyCanisterTexture);
 		_GameObjects.push_back(canister);
 	}
 	else {
@@ -88,7 +99,7 @@ void GameObjectContainer::update(float FrameTime)
 	{
 		_TimePassedToolbox += FrameTime - 1 / _ToolboxFrequency;
 		_ToolboxFrequency = (float)(std::rand() % 150) / 1000.0f;
-		Toolbox* toolbox = new Toolbox(sf::Vector2f(std::rand() % 3 * 150 + 150, -10));
+		Toolbox* toolbox = new Toolbox(sf::Vector2f(std::rand() % 3 * 150 + 150, -10), _ToolboxTexture);
 		_GameObjects.push_back(toolbox);
 	}
 	else {
@@ -160,7 +171,7 @@ void GameObjectContainer::update(float FrameTime)
 	//Prüfen ob Spieler geschossen hat
 	if (getPlayerCar()->shotBullet() != 360.0f)
 	{
-		Bullet* newBullet = new Bullet(getPlayerCar()->getPos(), getPlayerCar()->shotBullet(), _PlayerBulletSpeed, GameObjects::BulletObjectPlayer);
+		Bullet* newBullet = new Bullet(getPlayerCar()->getPos(), getPlayerCar()->shotBullet(), _PlayerBulletSpeed, GameObjects::BulletObjectPlayer, _BulletTexture);
 		_GameObjects.push_back(newBullet);
 
 		getPlayerCar()->resetShotBullet();
@@ -193,7 +204,7 @@ void GameObjectContainer::resetGameObjects(int SelectedCar)
 	_GameObjects.clear();
 
 	//Spielerauto
-	PlayerCar* MainCar = new PlayerCar(SelectedCar);
+	PlayerCar* MainCar = new PlayerCar(SelectedCar, (*_PlayerCarTextures.at(SelectedCar)));
 	_GameObjects.push_back(MainCar);
 
 	//Frequenz
@@ -212,7 +223,7 @@ void GameObjectContainer::resetGameObjects(int SelectedCar)
 
 void GameObjectContainer::spawnAICar()
 {
-	AICar* newAiCar = new AICar();
+	AICar* newAiCar = new AICar((*_AICarTextures.at(std::rand() % 7)));
 
 	for (unsigned int i = 1; i < _GameObjects.size(); i++)
 	{
@@ -268,7 +279,7 @@ void GameObjectContainer::spawnBullet()
 		}
 	}
 
-	Bullet* newBullet = new Bullet(SelectedCar->getPos(), Direction, _AIBulletSpeed, GameObjects::BulletObjectAI);
+	Bullet* newBullet = new Bullet(SelectedCar->getPos(), Direction, _AIBulletSpeed, GameObjects::BulletObjectAI, _BulletTexture);
 	_GameObjects.push_back(newBullet);
 }
 

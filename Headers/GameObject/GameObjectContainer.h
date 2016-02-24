@@ -27,11 +27,12 @@ public:
 
 private:
 	std::vector<GameObject*> _GameObjects;
+	std::vector<sf::Texture*> _PlayerCarTextures, _AICarTextures;
+	sf::Texture _ToolboxTexture, _EnergyCanisterTexture, _BulletTexture;
+
 	float _CarFrequency, _BulletFrequency, _CanisterFrequency, _ToolboxFrequency, _TimePassedCar, _TimePassedBullet, _TimePassedCanister, _TimePassedToolbox;
 	int _CarScore, _PlayerBulletSpeed, _AIBulletSpeed;
 	bool _PlayerAlive;
-	sf::SoundBuffer _ShotBuffer;
-	sf::Sound _Shot;
 
 	void spawnAICar();
 	void spawnBullet();

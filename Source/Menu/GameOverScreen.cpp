@@ -23,10 +23,6 @@ GameOverScreen::GameOverScreen()
 		_GOTLine3.setColor(sf::Color::Red);
 		_GOTLine3.setCharacterSize(50);
 	}
-
-	if (_GameOverSoundBuffer.loadFromFile("Resources/Sound/gameover.wav")) {
-		_GameOverSound.setBuffer(_GameOverSoundBuffer);
-}
 }
 
 
@@ -43,9 +39,4 @@ void GameOverScreen::render(sf::RenderWindow& Window, int score)
 	Window.draw(_GOTLine1);
 	Window.draw(_GOTLine2);
 	Window.draw(_GOTLine3);
-}
-
-void GameOverScreen::playSounds()
-{
-	_GameOverSound.play();
 }

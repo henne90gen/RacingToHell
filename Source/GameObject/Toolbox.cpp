@@ -2,7 +2,7 @@
 #include "GameObject\Toolbox.h"
 
 
-Toolbox::Toolbox(sf::Vector2f pos) : GameObject(pos, GameObjects::Tools, "toolbox")
+Toolbox::Toolbox(sf::Vector2f pos, sf::Texture& texture) : GameObject(pos, GameObjects::Tools, texture)
 {
 }
 

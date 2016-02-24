@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GameObject\Bullet.h"
 
-Bullet::Bullet(sf::Vector2f pos, float Direction, int Speed, GameObjects Type) : GameObject(pos, Type, "Bullet"), _Direction(Direction), _Speed(Speed)
+Bullet::Bullet(sf::Vector2f pos, float Direction, int Speed, GameObjects Type, sf::Texture& texture) : GameObject(pos, Type, texture), _Direction(Direction), _Speed(Speed)
 {
 
 	if (Type == GameObjects::BulletObjectPlayer)

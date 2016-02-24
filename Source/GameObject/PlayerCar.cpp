@@ -2,7 +2,7 @@
 #include "GameObject\PlayerCar.h"
 
 
-PlayerCar::PlayerCar(int SelectedCar) : Car(sf::Vector2f(0, 0), 100, 450, GameObjects::Player, "playercar" + std::to_string(SelectedCar + 1))
+PlayerCar::PlayerCar(int SelectedCar, sf::Texture& texture) : Car(sf::Vector2f(0, 0), 100, 450, GameObjects::Player, texture)
 {
 	setStats(SelectedCar);
 	resetShotBullet();

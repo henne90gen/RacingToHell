@@ -6,7 +6,7 @@
 class Bullet : public GameObject
 {
 public:
-	Bullet(sf::Vector2f Position, float _Direction, int Speed, GameObjects Type);
+	Bullet(sf::Vector2f Position, float _Direction, int Speed, GameObjects Type, sf::Texture& texture);
 	~Bullet();
 
 	void update(float FrameTime);

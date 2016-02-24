@@ -10,7 +10,7 @@
 class PlayerCar : public Car
 {
 public:
-	PlayerCar(int SelectedCar);
+	PlayerCar(int SelectedCar, sf::Texture& texture);
 	~PlayerCar();
 
 	void handleEvent(sf::Event& Event);

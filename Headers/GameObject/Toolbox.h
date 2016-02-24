@@ -4,7 +4,7 @@
 class Toolbox : public GameObject
 {
 public:
-	Toolbox(sf::Vector2f pos);
+	Toolbox(sf::Vector2f pos, sf::Texture& texture);
 	~Toolbox();
 
 	void update(float FrameTime);

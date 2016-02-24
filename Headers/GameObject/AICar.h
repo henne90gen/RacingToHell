@@ -6,11 +6,11 @@
 class AICar : public Car
 {
 public:
-	AICar();
+	AICar(int RoadSpeed);
 	~AICar();
 
 	void handleEvent(sf::Event& Event);
-	void update(float FrameTime);
+	void update(float FrameTime, int RoadSpeed);
 	
 	void takeDamage(int damage) { setHealth(getHealth() - damage); }
 

@@ -9,7 +9,7 @@ public:
 	Bullet(sf::Vector2f Position, float _Direction, int Speed, GameObjects Type);
 	~Bullet();
 
-	void update(float FrameTime);
+	void update(float FrameTime, int RoadSpeed);
 	void handleEvent(sf::Event& Event);
 
 private:

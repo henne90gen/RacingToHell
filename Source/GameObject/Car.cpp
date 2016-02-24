@@ -20,7 +20,7 @@ void Car::handleEvent(sf::Event& Event)
 
 }
 
-void Car::update(float FrameTime)
+void Car::update(float FrameTime, int RoadSpped)
 {
-	getSprite().setRotation(90);
+	//getSprite().setRotation(90);
 }

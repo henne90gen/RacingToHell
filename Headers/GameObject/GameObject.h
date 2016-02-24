@@ -12,7 +12,7 @@ public:
 
 	virtual void render(sf::RenderWindow& Window);
 	virtual void handleEvent(sf::Event& Event) = 0;
-	virtual void update(float FrameTime) = 0;
+	virtual void update(float FrameTime, int RoadSpeed) = 0;
 
 	GameObjects getType() { return _Type; }
 	sf::Vector2f getPos() { return  _Sprite.getPosition(); }

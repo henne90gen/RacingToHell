@@ -14,7 +14,7 @@ public:
 	GameObjectContainer();
 	~GameObjectContainer();
 
-	void update(float FrameTime);
+	void update(float FrameTime, int RoadSpeed);
 	void render(sf::RenderWindow& RenderWindow);
 	void handleEvents(sf::Event& Event);
 
@@ -33,7 +33,7 @@ private:
 	sf::SoundBuffer _ShotBuffer;
 	sf::Sound _Shot;
 
-	void spawnAICar();
+	void spawnAICar(int RoadSpeed);
 	void spawnBullet();
 	void deleteObject(unsigned int id);
 };

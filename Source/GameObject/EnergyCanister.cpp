@@ -11,9 +11,9 @@ EnergyCanister::~EnergyCanister()
 {
 }
 
-void EnergyCanister::update(float FrameTime)
+void EnergyCanister::update(float FrameTime, int RoadSpeed)
 {
-	setPos(sf::Vector2f(getPos().x, getPos().y + FrameTime * 300));
+	setPos(sf::Vector2f(getPos().x, getPos().y + FrameTime * RoadSpeed));
 }
 
 void EnergyCanister::handleEvent(sf::Event & Event)

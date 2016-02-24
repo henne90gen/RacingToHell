@@ -7,7 +7,7 @@ public:
 	EnergyCanister(sf::Vector2f pos);
 	~EnergyCanister();
 
-	void update(float FrameTime);
+	void update(float FrameTime, int RoadSpeed);
 	void handleEvent(sf::Event& Event);
 };
 

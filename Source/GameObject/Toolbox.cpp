@@ -11,9 +11,9 @@ Toolbox::~Toolbox()
 {
 }
 
-void Toolbox::update(float FrameTime)
+void Toolbox::update(float FrameTime, int RoadSpeed)
 {
-	setPos(sf::Vector2f(getPos().x, getPos().y + FrameTime * 300));
+	setPos(sf::Vector2f(getPos().x, getPos().y + FrameTime * RoadSpeed));
 }
 
 void Toolbox::handleEvent(sf::Event & Event)

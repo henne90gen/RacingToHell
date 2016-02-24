@@ -7,7 +7,7 @@ public:
 	Toolbox(sf::Vector2f pos, sf::Texture& texture);
 	~Toolbox();
 
-	void update(float FrameTime);
+	void update(float FrameTime, int RoadSpeed);
 	void handleEvent(sf::Event& Event);
 };
 

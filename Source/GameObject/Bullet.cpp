@@ -15,7 +15,7 @@ Bullet::~Bullet()
 
 }
 
-void Bullet::update(float FrameTime)
+void Bullet::update(float FrameTime, int RoadSpeed)
 {
 	//Move ist immer gleich lang, kann also nicht der Grund für unterschiedlich schnelle Bullets sein
 	sf::Vector2f move = sf::Vector2f(std::cosf(PI * _Direction / 180.0f), std::sinf(PI * _Direction / 180.0f)) * FrameTime * _Speed;

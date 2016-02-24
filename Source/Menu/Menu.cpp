@@ -34,7 +34,7 @@ Menu::~Menu()
 	_StatBox = nullptr;
 }
 
-void Menu::render(sf::RenderWindow & Window, int SelectedCar, bool paused)
+void Menu::render(sf::RenderWindow & Window, int SelectedCar, bool paused, HeadsUpDisplay HUD)
 {
 	unsigned int i = 0;
 
@@ -42,6 +42,7 @@ void Menu::render(sf::RenderWindow & Window, int SelectedCar, bool paused)
 	{
 		i = 2;
 		_MainMenuText.setString("Pause");
+		HUD.render(Window);
 	}
 	else
 	{

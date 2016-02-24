@@ -225,6 +225,9 @@
     <Image Include="Resources\Texture\TrafficCar\Traffic6.png" />
     <Image Include="Resources\Texture\TrafficCar\Traffic7.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="Resources\Sound\sample.wav" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

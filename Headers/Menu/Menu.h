@@ -24,6 +24,9 @@ private:
 	sf::Font _MainMenuFont;
 	sf::Text _MainMenuText;
 
+	sf::SoundBuffer _MusicBuffer;
+	sf::Sound _Music;
+
 	StatBox* _StatBox;
 };
 

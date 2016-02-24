@@ -8,6 +8,11 @@ GameObjectContainer::GameObjectContainer() : _PlayerBulletSpeed(600), _AIBulletS
 
 	//Variablen
 	resetGameObjects(0);
+
+	//Shot-Sound
+	if (_ShotBuffer.loadFromFile("Resources/Sound/shot.wav")) {
+		_Shot.setBuffer(_ShotBuffer);
+	}
 }
 
 GameObjectContainer::~GameObjectContainer()
@@ -130,7 +135,7 @@ void GameObjectContainer::update(float FrameTime)
 		}
 	}
 
-	//kaputte Autos löschen
+	//Kaputte Autos löschen
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
 		if (_GameObjects.at(i)->getType() == GameObjects::AI && dynamic_cast<AICar*>(_GameObjects.at(i))->getHealth() <= 0)
@@ -141,7 +146,7 @@ void GameObjectContainer::update(float FrameTime)
 		}
 	}
 
-	//Geschosse spawnen
+	//Bullets spawnen
 	if (_TimePassedBullet + FrameTime > 1 / _BulletFrequency)
 	{
 		_TimePassedBullet += FrameTime - 1 / _BulletFrequency;

@@ -9,9 +9,14 @@ public:
 	~GameOverScreen();
 
 	void render(sf::RenderWindow& Window, int score);
+	void playSounds();
 
 private:
 	sf::Font _Font;
+	sf::Text _GameOverText;
+
+	sf::SoundBuffer _GameOverSoundBuffer;
+	sf::Sound _GameOverSound;
 
 	//GOT = GameOverText
 	sf::Text _GOTLine1;

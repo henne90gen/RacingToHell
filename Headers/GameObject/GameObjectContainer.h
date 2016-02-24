@@ -29,9 +29,11 @@ private:
 	std::vector<GameObject*> _GameObjects;
 	float _CarFrequency, _BulletFrequency, _CanisterFrequency, _ToolboxFrequency, _TimePassedCar, _TimePassedBullet, _TimePassedCanister, _TimePassedToolbox;
 	int _CarScore, _PlayerBulletSpeed, _AIBulletSpeed;
+	bool _PlayerAlive;
+	sf::SoundBuffer _ShotBuffer;
+	sf::Sound _Shot;
 
 	void spawnAICar();
-	bool _PlayerAlive;
 	void spawnBullet();
 	void deleteObject(unsigned int id);
 };

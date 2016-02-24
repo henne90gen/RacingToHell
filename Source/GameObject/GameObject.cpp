@@ -17,6 +17,11 @@ GameObject::GameObject(sf::Vector2f pos, GameObjects Type, std::string Filename)
 	_Sprite.setTexture(_Texture);
 	_Sprite.setOrigin(_Sprite.getLocalBounds().width / 2, _Sprite.getLocalBounds().height / 2);
 	_Sprite.setPosition(pos);
+
+	//Setting up sound
+	if (_SoundBuffer.loadFromFile("Resources/Sound/" + Filename + ".wav")) {
+		_Sound.setBuffer(_SoundBuffer);
+}
 }
 
 GameObject::~GameObject()

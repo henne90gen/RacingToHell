@@ -3,6 +3,7 @@
 #include "MenuItem.h"
 #include "MenuResults.h"
 #include "StatBox.h"
+#include "HeadsUpDisplay.h"
 
 class Menu
 {
@@ -10,8 +11,7 @@ public:
 	Menu();
 	~Menu();
 
-	void render(sf::RenderWindow& Window, int SelectedCar, bool paused);
-	void playSounds();
+	void render(sf::RenderWindow& Window, int SelectedCar, bool paused, HeadsUpDisplay HUD);
 	void update(float FrameTime);
 
 	void checkMouseHover(sf::RenderWindow& Window);

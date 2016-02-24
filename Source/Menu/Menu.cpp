@@ -64,10 +64,6 @@ void Menu::render(sf::RenderWindow & Window, int SelectedCar, bool paused, Heads
 	Window.draw(_MainMenuText);
 }
 
-void Menu::playSounds() {
-	_Music.play();
-}
-
 void Menu::update(float FrameTime)
 {
 }

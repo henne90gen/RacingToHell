@@ -65,20 +65,6 @@ void Framework::render()
 	_RenderWindow.display();
 }
 
-void Framework::playSounds() {
-	_GameObjectContainer.playSounds();
-	_Level.playSounds();
-	if (_GameState == GameState::Running) {
-
-	}
-	else if (_GameState == GameState::MainMenu || _GameState == GameState::Pausing) {
-
-	}
-	else if (_GameState == GameState::GameOver) {
-		_GameOverScreen.playSounds();
-	}
-}
-
 void Framework::update(float FrameTime)
 {
 	_Level.update(FrameTime);

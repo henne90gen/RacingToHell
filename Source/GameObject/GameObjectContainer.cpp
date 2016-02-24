@@ -175,14 +175,6 @@ void GameObjectContainer::render(sf::RenderWindow& RenderWindow)
 	}
 }
 
-void GameObjectContainer::playSounds()
-{
-	for (unsigned int i = 0; i < _GameObjects.size(); i++)
-	{
-		_GameObjects.at(i)->playSounds();
-	}
-}
-
 void GameObjectContainer::handleEvents(sf::Event& Event)
 {
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)

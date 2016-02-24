@@ -9,7 +9,7 @@ Level::Level() : _Difficulty(300)
 
 	if (_MusicBuffer.loadFromFile("Resourses/Sound/Music/level1.wav")) {
 		_Music.setBuffer(_MusicBuffer);
-	}
+}
 }
 
 Level::~Level()
@@ -32,9 +32,4 @@ void Level::update(float FrameTime)
 void Level::render(sf::RenderWindow& RenderWindow)
 {
 	RenderWindow.draw(_Sprite);
-}
-
-void Level::playSounds()
-{
-	_Music.play();
 }

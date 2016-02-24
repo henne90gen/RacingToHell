@@ -49,7 +49,6 @@ private:
 	void handleEventMenu();
 	void handleEventGameOver();
 	void render();
-	void playSounds();
 	void measureTime();
 	void loadCarSkins();
 	void resetGame();

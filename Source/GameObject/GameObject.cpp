@@ -21,7 +21,7 @@ GameObject::GameObject(sf::Vector2f pos, GameObjects Type, std::string Filename)
 	//Setting up sound
 	if (_SoundBuffer.loadFromFile("Resources/Sound/" + Filename + ".wav")) {
 		_Sound.setBuffer(_SoundBuffer);
-	}
+}
 }
 
 GameObject::~GameObject()
@@ -32,13 +32,6 @@ GameObject::~GameObject()
 void GameObject::render(sf::RenderWindow& Window)
 {
 	Window.draw(_Sprite);
-}
-
-void GameObject::playSounds()
-{
-	if (_Sound.getStatus() == sf::Sound::Stopped) {
-		_Sound.play();
-	}
 }
 
 void GameObject::setSkin(sf::Texture* skin)

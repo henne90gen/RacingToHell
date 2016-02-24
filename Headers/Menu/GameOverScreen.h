@@ -17,5 +17,10 @@ private:
 
 	sf::SoundBuffer _GameOverSoundBuffer;
 	sf::Sound _GameOverSound;
+
+	//GOT = GameOverText
+	sf::Text _GOTLine1;
+	sf::Text _GOTLine2;
+	sf::Text _GOTLine3;
 };
 

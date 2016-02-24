@@ -22,8 +22,6 @@ void Framework::run()
 	{
 		render();
 		
-		playSounds();
-
 		switch (_GameState) {
 		case GameState::Running:
 			update(_FrameTime);

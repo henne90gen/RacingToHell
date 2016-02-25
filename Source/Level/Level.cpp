@@ -13,7 +13,7 @@ Level::~Level()
 
 }
 
-void Level::update(float FrameTime)
+void Level::update(float FrameTime, bool isRunning)
 {
 	if (_Sprite.getPosition().y + FrameTime * _Difficulty >= 0)
 	{
@@ -24,14 +24,17 @@ void Level::update(float FrameTime)
 		_Sprite.setPosition(sf::Vector2f(_Sprite.getPosition().x, _Sprite.getPosition().y + FrameTime * getRoadSpeed()));
 	}
 
-	if (_TimePassed + FrameTime >= _LevelUp)
+	if (isRunning)
 	{
-		_TimePassed = _TimePassed + FrameTime - _LevelUp;
-		LevelUp();
-	}
-	else
-	{
-		_TimePassed += FrameTime;
+		if (_TimePassed + FrameTime >= _LevelUp)
+		{
+			_TimePassed = _TimePassed + FrameTime - _LevelUp;
+			LevelUp();
+		}
+		else
+		{
+			_TimePassed += FrameTime;
+		}
 	}
 }
 

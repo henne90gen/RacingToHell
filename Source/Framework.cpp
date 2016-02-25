@@ -33,6 +33,7 @@ void Framework::run()
 			if (_LevelUpScreen.update()) {
 				_Clock.restart();
 				_Level.resetTimer();
+				dynamic_cast<PlayerCar*>(_GameObjectContainer.getPlayerCar())->resetMovement();
 				_GameState = GameState::Running;
 			}
 			break;

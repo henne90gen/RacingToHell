@@ -9,6 +9,7 @@
 #include "Menu\LevelUpScreen.h"
 #include "HeadsUpDisplay.h"
 #include "Level\Level.h"
+#include "GameObject\PlayerCar.h"
 
 class Framework
 {

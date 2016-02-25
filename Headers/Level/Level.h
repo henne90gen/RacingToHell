@@ -14,7 +14,7 @@ public:
 	int getDifficulty() { return _Difficulty; }
 	int getRoadSpeed() { return (100 * _Difficulty + 100); }
 private:
-	sf::Texture _Texture;
+	std::vector<sf::Texture*> _Textures;
 	sf::Sprite _Sprite;
 
 	int _Difficulty;

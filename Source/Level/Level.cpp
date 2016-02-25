@@ -3,8 +3,12 @@
 
 Level::Level() : _Difficulty(1), _LevelUp(5)
 {
-	_Texture.loadFromFile("Resources/Texture/Road/Road1.jpg");
-	_Sprite.setTexture(_Texture);
+	for (int i = 0; i < 2; i++) {
+		sf::Texture* texture = new sf::Texture();
+		(*texture).loadFromFile("Resources/Texture/Road/Road" + std::to_string(i + 1) + ".jpg");
+		_Textures.push_back(texture);
+	}
+	_Sprite.setTexture((*_Textures.at(0)));
 	_Sprite.setPosition(sf::Vector2f(0, - 1600));
 }
 
@@ -46,4 +50,7 @@ void Level::render(sf::RenderWindow& RenderWindow)
 void Level::LevelUp()
 {
 	_Difficulty++;
+	if (_Difficulty < 2) {
+		_Sprite.setTexture((*_Textures.at(_Difficulty - 1)));
+	}
 }

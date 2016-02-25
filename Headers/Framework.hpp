@@ -20,7 +20,7 @@ public:
 	void run();
 
 	enum GameState {
-		Running, MainMenu, Pausing, GameOver, Exiting
+		Running, LevelUp, MainMenu, Pausing, GameOver, Exiting
 	};
 
 private:

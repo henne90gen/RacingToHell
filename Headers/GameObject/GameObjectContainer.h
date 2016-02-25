@@ -25,6 +25,8 @@ public:
 
 	int getCarScore() { int result = _CarScore; _CarScore = 0; return result; }
 
+	void setCarSkins(std::vector<sf::Texture*>& CarSkins);
+
 private:
 	std::vector<GameObject*> _GameObjects;
 	std::vector<sf::Texture*> _PlayerCarTextures, _AICarTextures;

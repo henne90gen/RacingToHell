@@ -27,6 +27,9 @@ void Framework::run()
 			update(_FrameTime);
 			handleEvent();
 			break;
+		case GameState::LevelUp:
+
+			break;
 		case GameState::MainMenu:
 			_Level.update(_FrameTime, false);
 			handleEventMenu();
@@ -70,7 +73,6 @@ void Framework::update(float FrameTime)
 	_GameObjectContainer.update(FrameTime, _Level.getDifficulty(), _Level.getRoadSpeed());
 	if (!_GameObjectContainer.playerIsAlive()) {
 		_GameState = GameState::GameOver;
-		_Level.resetDifficulty();
 	}
 	_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar()->getHealth(), _GameObjectContainer.getPlayerCar()->getMaxHealth(), _GameObjectContainer.getPlayerCar()->getEnergy(), _GameObjectContainer.getPlayerCar()->getMaxEnergy());
 	_Score += _GameObjectContainer.getCarScore();
@@ -196,4 +198,5 @@ void Framework::resetGame()
 	_Clock.restart();
 	_Score = 0;
 	_GameObjectContainer.resetGameObjects(_CurrentCarSkinIndex);
+	_Level.resetLevel();
 }

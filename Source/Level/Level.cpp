@@ -50,7 +50,13 @@ void Level::render(sf::RenderWindow& RenderWindow)
 void Level::LevelUp()
 {
 	_Difficulty++;
-	if (_Difficulty < 2) {
+	if (_Difficulty < 3) {
 		_Sprite.setTexture((*_Textures.at(_Difficulty - 1)));
 	}
+}
+
+void Level::resetLevel()
+{
+	_Difficulty = 1;
+	_Sprite.setTexture((*_Textures.at(_Difficulty - 1)));
 }

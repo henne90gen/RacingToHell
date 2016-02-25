@@ -231,6 +231,11 @@ void GameObjectContainer::resetGameObjects(int SelectedCar)
 	_PlayerAlive = true;
 }
 
+void GameObjectContainer::setCarSkins(std::vector<sf::Texture*>& CarSkins)
+{
+	_PlayerCarTextures = CarSkins;
+}
+
 void GameObjectContainer::spawnAICar(int Difficulty, int RoadSpeed)
 {
 	AICar* newAiCar = new AICar(Difficulty, RoadSpeed, (*_AICarTextures.at(std::rand() % 7)));

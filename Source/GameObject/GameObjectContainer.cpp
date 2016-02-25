@@ -6,15 +6,15 @@ GameObjectContainer::GameObjectContainer() : _PlayerBulletSpeed(600), _AIBulletS
 	//Seed
 	srand(time(NULL));
 
-	for (int i = 1; i < 7; i++) {
+	for (int i = 0; i < 6; i++) {
 		sf::Texture* texture = new sf::Texture();
-		(*texture).loadFromFile("Resources/Texture/PlayerCar/playercar" + std::to_string(i) + ".png");
+		(*texture).loadFromFile("Resources/Texture/PlayerCar/playercar" + std::to_string(i + 1) + ".png");
 		_PlayerCarTextures.push_back(texture);
 	}
 
-	for (int i = 1; i < 8; i++) {
+	for (int i = 0; i < 7; i++) {
 		sf::Texture* texture = new sf::Texture();
-		(*texture).loadFromFile("Resources/Texture/TrafficCar/Traffic" + std::to_string(i) + ".png");
+		(*texture).loadFromFile("Resources/Texture/TrafficCar/Traffic" + std::to_string(i + 1) + ".png");
 		_AICarTextures.push_back(texture);
 	}
 

@@ -8,7 +8,7 @@ HeadsUpDisplay::HeadsUpDisplay()
 	_Font.loadFromFile("Resources/Font/arial.ttf");
 
 	//Background
-	_BackgroundTexture.loadFromFile("Resources/Texture/HUD/HUD_Background.png");
+	_BackgroundTexture.loadFromFile("Resources/Texture/HUD/HUD_Background2.png");
 	_Background.setTexture(_BackgroundTexture);
 	_Background.setPosition(sf::Vector2f(0, SCREENHEIGHT - _Background.getLocalBounds().height));
 

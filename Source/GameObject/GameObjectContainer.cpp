@@ -78,41 +78,41 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			i--;
 		}
 	}
+	if (!_AboutToLevelUp) {
+		//EnergyCanister spawnen
+		if (_TimePassedCanister + FrameTime > 1 / _CanisterFrequency)
+		{
+			_TimePassedCanister += FrameTime - 1 / _CanisterFrequency;
+			EnergyCanister* canister = new EnergyCanister(sf::Vector2f(std::rand() % 3 * 150 + 150, -25), _EnergyCanisterTexture);
+			_GameObjects.push_back(canister);
+		}
+		else {
+			_TimePassedCanister += FrameTime;
+		}
 
-	//EnergyCanister spawnen
-	if (_TimePassedCanister + FrameTime > 1 / _CanisterFrequency) 
-	{
-		_TimePassedCanister += FrameTime - 1 / _CanisterFrequency;
-		EnergyCanister* canister = new EnergyCanister(sf::Vector2f(std::rand() % 3 * 150 + 150, -25), _EnergyCanisterTexture);
-		_GameObjects.push_back(canister);
-	}
-	else {
-		_TimePassedCanister += FrameTime;
-	}
+		//Toolbox spawnen
+		if (_TimePassedToolbox + FrameTime > 1 / _ToolboxFrequency)
+		{
+			_TimePassedToolbox += FrameTime - 1 / _ToolboxFrequency;
+			_ToolboxFrequency = (float)(std::rand() % 150) / 1000.0f;
+			Toolbox* toolbox = new Toolbox(sf::Vector2f(std::rand() % 3 * 150 + 150, -10), _ToolboxTexture);
+			_GameObjects.push_back(toolbox);
+		}
+		else {
+			_TimePassedToolbox += FrameTime;
+		}
 
-	//Toolbox spawnen
-	if (_TimePassedToolbox + FrameTime > 1 / _ToolboxFrequency)
-	{
-		_TimePassedToolbox += FrameTime - 1 / _ToolboxFrequency;
-		_ToolboxFrequency = (float)(std::rand() % 150) / 1000.0f;
-		Toolbox* toolbox = new Toolbox(sf::Vector2f(std::rand() % 3 * 150 + 150, -10), _ToolboxTexture);
-		_GameObjects.push_back(toolbox);
+		//AI-Autos spawnen
+		if (_TimePassedCar + FrameTime > 1 / _CarFrequency)
+		{
+			_TimePassedCar += FrameTime - 1 / _CarFrequency;
+			spawnAICar(Difficulty, RoadSpeed);
+		}
+		else
+		{
+			_TimePassedCar += FrameTime;
+		}
 	}
-	else {
-		_TimePassedToolbox += FrameTime;
-	}
-
-	//AI-Autos spawnen
-	if (_TimePassedCar + FrameTime > 1 / _CarFrequency)
-	{
-		_TimePassedCar += FrameTime - 1 / _CarFrequency;
-		spawnAICar(Difficulty, RoadSpeed);
-	}
-	else
-	{
-		_TimePassedCar += FrameTime;
-	}
-
 	//AI-Autos auf Kollision prüfen
 	for (unsigned int i = 1; i < _GameObjects.size(); i++)
 	{
@@ -217,6 +217,16 @@ void GameObjectContainer::resetGameObjects(int SelectedCar)
 	_TimePassedToolbox = 0.0f;
 
 	_PlayerAlive = true;
+}
+
+bool GameObjectContainer::emptyScreen()
+{
+	_AboutToLevelUp = true;
+	if (_GameObjects.size() == 1) {
+		_AboutToLevelUp = false;
+		return true;
+	}
+	return false;
 }
 
 void GameObjectContainer::setCarSkins(std::vector<sf::Texture*>& CarSkins)

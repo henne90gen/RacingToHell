@@ -10,16 +10,19 @@ public:
 	void render(sf::RenderWindow& RenderWindow);
 
 	void resetLevel();
+	void LevelUp();
 
 	int getDifficulty() { return _Difficulty; }
 	int getRoadSpeed() { return (100 * _Difficulty + 100); }
+
+	void resetTimer() { _Timer.restart(); }
+
 private:
 	std::vector<sf::Texture*> _Textures;
 	sf::Sprite _Sprite;
 
-	int _Difficulty;
-	float _TimePassed;
-	float _LevelUp;
+	sf::Clock _Timer;
 
-	void LevelUp();
+	int _Difficulty;
+	float _LevelUp;
 };

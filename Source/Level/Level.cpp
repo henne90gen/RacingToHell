@@ -31,15 +31,9 @@ bool Level::update(float FrameTime, bool isRunning)
 
 	if (isRunning && _Difficulty < 5)
 	{
-		if (_TimePassed + FrameTime >= _LevelUp)
+		if (_Timer.getElapsedTime().asSeconds() >= _LevelUp)
 		{
-			_TimePassed = _TimePassed + FrameTime - _LevelUp;
-			LevelUp();
 			return true;
-		}
-		else
-		{
-			_TimePassed += FrameTime;
 		}
 	}
 	return false;
@@ -52,6 +46,8 @@ void Level::render(sf::RenderWindow& RenderWindow)
 
 void Level::LevelUp()
 {
+	std::cout << "LevelUp()" << std::endl;
+	_Timer.restart();
 	_Difficulty++;
 	if (_Difficulty < 3) {
 		_Sprite.setTexture((*_Textures.at(_Difficulty - 1)));

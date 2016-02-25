@@ -33,8 +33,6 @@ void AICar::update(float FrameTime, int RoadSpeed)
 	_HealthBar.setPosition(sf::Vector2f(getPos().x - getWidth() / 2 - (_HealthBarFrame.getSize().x - getWidth()) / 2, getPos().y - getHeight() / 2 - _HealthBarFrame.getSize().y - 8));
 	_HealthBar.setSize(sf::Vector2f(_HealthBarFrame.getSize().x * getHealth() / getMaxHealth(), _HealthBarFrame.getSize().y));
 	_HealthBarFrame.setPosition(_HealthBar.getPosition());
-
-	std::cout << _HealthBar.getPosition().x << std::endl;
 }
 
 void AICar::render(sf::RenderWindow& RenderWindow)

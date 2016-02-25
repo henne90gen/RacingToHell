@@ -33,6 +33,16 @@ GameObjectContainer::~GameObjectContainer()
 		delete _GameObjects.at(i);
 		_GameObjects.at(i) = nullptr;
 	}
+
+	for (int i = 0; i < _PlayerCarTextures.size(); i++) {
+		delete _PlayerCarTextures.at(i);
+		_PlayerCarTextures.at(i) = nullptr;
+	}
+
+	for (int i = 0; i < _AICarTextures.size(); i++) {
+		delete _AICarTextures.at(i);
+		_AICarTextures.at(i) = nullptr;
+	}
 }
 
 void GameObjectContainer::update(float FrameTime, int RoadSpeed)

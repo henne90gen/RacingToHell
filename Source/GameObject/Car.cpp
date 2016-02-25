@@ -2,10 +2,11 @@
 #include "GameObject\Car.h"
 
 
-Car::Car(sf::Vector2f pos, int health, float speed, GameObjects Type, sf::Texture& texture) : GameObject(pos, Type, texture)
+Car::Car(sf::Vector2f pos, int maxhealth, float speed, GameObjects Type, sf::Texture& texture) : GameObject(pos, Type, texture)
 {
 	_Speed = speed;
-	_Health = health;
+	_MaxHealth = maxhealth;
+	_Health = maxhealth;
 	
 }
 

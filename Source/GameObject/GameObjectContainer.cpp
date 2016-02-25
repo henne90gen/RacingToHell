@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GameObject\GameObjectContainer.h"
 
-GameObjectContainer::GameObjectContainer() : _PlayerBulletSpeed(600), _AIBulletSpeed(300)
+GameObjectContainer::GameObjectContainer() : _PlayerBulletSpeed(600), _AIBulletSpeed(400)
 {
 	//Seed
 	srand(time(NULL));
@@ -158,6 +158,8 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 	{
 		_TimePassedBullet += FrameTime - 1 / _BulletFrequency;
 		spawnBullet();
+
+		_BulletFrequency = 1.0f + 0.1f * (float)(Difficulty);
 	}
 	else
 	{

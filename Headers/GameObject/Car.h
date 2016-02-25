@@ -8,10 +8,11 @@
 class Car : public GameObject
 {
 public:
-	Car(sf::Vector2f pos, int health, float speed, GameObjects Type, sf::Texture& texture);
+	Car(sf::Vector2f pos, int maxhealth, float speed, GameObjects Type, sf::Texture& texture);
 	~Car();
 
 	int getHealth() { return _Health; }
+	int getMaxHealth() { return _MaxHealth; }
 	int getSpeed() { return _Speed; }
 
 	void setHealth(int Health) { _Health = Health; }
@@ -21,8 +22,7 @@ public:
 	void update(float FrameTime, int RoadSpeed);
 protected:
 
-	int _Health;
-	int _Speed;
+	int _Health, _Speed, _MaxHealth;
 
 	sf::Vector2f _Movement;
 };

@@ -23,7 +23,7 @@ public:
 
 	void takeDamage() { _Health -= 5; }
 	void addHealth();
-	int getMaxHealth() { return _MaxHealth; }
+	//int getMaxHealth() { return _MaxHealth; }
 
 	float getEnergy() { return _Energy; }
 	int getMaxEnergy() { return _MaxEnergy; }
@@ -34,6 +34,6 @@ public:
 	void setStats(int id);
 private:
 	float _ShotBullet, _Energy;
-	int _MaxEnergy, _MaxHealth, _Bulletdamage;
+	int _MaxEnergy, _Bulletdamage;
 };
 

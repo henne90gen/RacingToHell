@@ -29,7 +29,7 @@ bool Level::update(float FrameTime, bool isRunning)
 		_Sprite.setPosition(sf::Vector2f(_Sprite.getPosition().x, _Sprite.getPosition().y + FrameTime * getRoadSpeed()));
 	}
 
-	if (isRunning)
+	if (isRunning && _Difficulty < 5)
 	{
 		if (_TimePassed + FrameTime >= _LevelUp)
 		{

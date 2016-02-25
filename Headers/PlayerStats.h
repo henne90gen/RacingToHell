@@ -25,13 +25,13 @@ struct PlayerStats
 			MaxHealth = 75;
 			MaxEnergy = 125;
 			Speed = 350;
-			Bulletdamage = 50;
+			Bulletdamage = 100;
 			break;
 		case 3:
 			MaxHealth = 50;
 			MaxEnergy = 50;
 			Speed = 500;
-			Bulletdamage = 100;
+			Bulletdamage = 80;
 			break;
 		case 4:
 			MaxHealth = 200;

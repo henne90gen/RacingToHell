@@ -147,7 +147,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 	{
 		if (_GameObjects.at(i)->getType() == GameObjects::AI && dynamic_cast<AICar*>(_GameObjects.at(i))->getHealth() <= 0)
 		{
-			_CarScore += 100;
+			_CarScore += (int)(1.5 * dynamic_cast<AICar*>(_GameObjects.at(i))->getMaxHealth());
 			deleteObject(i);
 			i--;
 		}

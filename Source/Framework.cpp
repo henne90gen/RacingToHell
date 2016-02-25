@@ -6,6 +6,7 @@ Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameState(GameState::
 	_RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell");
 	_RenderWindow.setFramerateLimit(300);
 	loadCarSkins();
+	_GameObjectContainer.resetGameObjects(0);
 }
 
 Framework::~Framework()
@@ -191,6 +192,7 @@ void Framework::loadCarSkins()
 			_CarSkins.push_back(texture);
 		}
 	}
+	_GameObjectContainer.setCarSkins(_CarSkins);
 }
 
 void Framework::resetGame() 

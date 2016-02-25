@@ -14,7 +14,7 @@ public:
 	GameObjectContainer();
 	~GameObjectContainer();
 
-	void update(float FrameTime, int RoadSpeed);
+	void update(float FrameTime, int Difficulty, int RoadSpeed);
 	void render(sf::RenderWindow& RenderWindow);
 	void handleEvents(sf::Event& Event);
 
@@ -34,7 +34,7 @@ private:
 	int _CarScore, _PlayerBulletSpeed, _AIBulletSpeed;
 	bool _PlayerAlive;
 
-	void spawnAICar(int RoadSpeed);
+	void spawnAICar(int Difficulty, int RoadSpeed);
 	void spawnBullet();
 	void deleteObject(unsigned int id);
 };

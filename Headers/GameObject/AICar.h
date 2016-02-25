@@ -6,7 +6,7 @@
 class AICar : public Car
 {
 public:
-	AICar(int RoadSpeed, sf::Texture& texture);
+	AICar(int Difficulty, int RoadSpeed, sf::Texture& texture);
 	~AICar();
 
 	void handleEvent(sf::Event& Event);

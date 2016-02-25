@@ -67,7 +67,7 @@ void Framework::render()
 void Framework::update(float FrameTime)
 {
 	_Level.update(FrameTime, _GameState == GameState::Running);
-	_GameObjectContainer.update(FrameTime, _Level.getRoadSpeed());
+	_GameObjectContainer.update(FrameTime, _Level.getDifficulty(), _Level.getRoadSpeed());
 	if (!_GameObjectContainer.playerIsAlive()) {
 		_GameState = GameState::GameOver;
 		_Level.resetDifficulty();

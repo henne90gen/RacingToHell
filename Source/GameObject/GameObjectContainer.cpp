@@ -45,7 +45,7 @@ GameObjectContainer::~GameObjectContainer()
 	}
 }
 
-void GameObjectContainer::update(float FrameTime, int RoadSpeed)
+void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 {
 	//Kollision Spieler
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)
@@ -120,7 +120,7 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 	if (_TimePassedCar + FrameTime > 1 / _CarFrequency)
 	{
 		_TimePassedCar += FrameTime - 1 / _CarFrequency;
-		spawnAICar(RoadSpeed);
+		spawnAICar(Difficulty, RoadSpeed);
 	}
 	else
 	{
@@ -231,9 +231,9 @@ void GameObjectContainer::resetGameObjects(int SelectedCar)
 	_PlayerAlive = true;
 }
 
-void GameObjectContainer::spawnAICar(int RoadSpeed)
+void GameObjectContainer::spawnAICar(int Difficulty, int RoadSpeed)
 {
-	AICar* newAiCar = new AICar(RoadSpeed, (*_AICarTextures.at(std::rand() % 7)));
+	AICar* newAiCar = new AICar(Difficulty, RoadSpeed, (*_AICarTextures.at(std::rand() % 7)));
 
 	for (unsigned int i = 1; i < _GameObjects.size(); i++)
 	{

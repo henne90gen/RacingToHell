@@ -23,7 +23,6 @@ public:
 
 	void takeDamage() { _Health -= 5; }
 	void addHealth();
-	//int getMaxHealth() { return _MaxHealth; }
 
 	float getEnergy() { return _Energy; }
 	int getMaxEnergy() { return _MaxEnergy; }
@@ -32,6 +31,8 @@ public:
 	int getBulletdamage() { return _Bulletdamage; }
 
 	void setStats(int id);
+
+	void resetMovement() { _Movement = sf::Vector2f(0, 0); }
 private:
 	float _ShotBullet, _Energy;
 	int _MaxEnergy, _Bulletdamage;

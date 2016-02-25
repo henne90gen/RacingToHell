@@ -174,8 +174,10 @@
     <ClInclude Include="Headers\stdafx.h" />
     <ClInclude Include="Headers\targetver.h" />
     <ClInclude Include="Headers\GameObject\Toolbox.h" />
+    <ClInclude Include="Headers\Menu\LevelUpScreen.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Menu\LevelUpScreen.cpp" />
     <ClCompile Include="Source\GameObject\AICar.cpp" />
     <ClCompile Include="Source\GameObject\Bullet.cpp" />
     <ClCompile Include="Source\GameObject\Car.cpp" />

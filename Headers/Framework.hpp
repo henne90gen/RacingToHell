@@ -6,6 +6,7 @@
 #include "GameObject\GameObjectContainer.h"
 #include "Menu\Menu.h"
 #include "Menu\GameOverScreen.h"
+#include "Menu\LevelUpScreen.h"
 #include "HeadsUpDisplay.h"
 #include "Level\Level.h"
 
@@ -39,6 +40,7 @@ private:
 	std::vector<sf::Texture*> _CarSkins;
 	int _CurrentCarSkinIndex;
 	GameOverScreen _GameOverScreen;
+	LevelUpScreen _LevelUpScreen;
 	HeadsUpDisplay _HeadsUpDisplay;
 	Level _Level;
 	float _Score;
@@ -48,6 +50,7 @@ private:
 	void handleEvent();
 	void handleEventMenu();
 	void handleEventGameOver();
+	void handleEventLevelUp();
 	void render();
 	void measureTime();
 	void loadCarSkins();

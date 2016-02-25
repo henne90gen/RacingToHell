@@ -1,7 +1,5 @@
 #pragma once
 
-#include "MenuResults.h"
-
 class GameOverScreen
 {
 public:
@@ -9,7 +7,6 @@ public:
 	~GameOverScreen();
 
 	void render(sf::RenderWindow& Window, int score);
-	void playSounds();
 
 private:
 	sf::Font _Font;

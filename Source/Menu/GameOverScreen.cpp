@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Menu\GameOverScreen.h"
 
-
 GameOverScreen::GameOverScreen()
 {
 	if (_Font.loadFromFile("Resources/Font/arial.ttf")) {

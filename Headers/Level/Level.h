@@ -6,7 +6,7 @@ public:
 	Level();
 	~Level();
 
-	void update(float FrameTime, bool isRunning);
+	bool update(float FrameTime, bool isRunning);
 	void render(sf::RenderWindow& RenderWindow);
 
 	void resetLevel();

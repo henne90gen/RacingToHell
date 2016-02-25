@@ -17,7 +17,8 @@ Level::~Level()
 
 }
 
-void Level::update(float FrameTime, bool isRunning)
+// returns true if 'level-up' has happened
+bool Level::update(float FrameTime, bool isRunning)
 {
 	if (_Sprite.getPosition().y + FrameTime * _Difficulty >= 0)
 	{
@@ -34,12 +35,14 @@ void Level::update(float FrameTime, bool isRunning)
 		{
 			_TimePassed = _TimePassed + FrameTime - _LevelUp;
 			LevelUp();
+			return true;
 		}
 		else
 		{
 			_TimePassed += FrameTime;
 		}
 	}
+	return false;
 }
 
 void Level::render(sf::RenderWindow& RenderWindow)

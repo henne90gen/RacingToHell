@@ -29,7 +29,11 @@ void Framework::run()
 			handleEvent();
 			break;
 		case GameState::LevelUp:
-
+			handleEventLevelUp();
+			if (_LevelUpScreen.update()) {
+				_Clock.restart();
+				_GameState = GameState::Running;
+			}
 			break;
 		case GameState::MainMenu:
 			_Level.update(_FrameTime, false);
@@ -65,12 +69,17 @@ void Framework::render()
 	else if (_GameState == GameState::GameOver) {
 		_GameOverScreen.render(_RenderWindow, _Score);
 	}
+	else if (_GameState == GameState::LevelUp) {
+		_LevelUpScreen.render(_RenderWindow);
+	}
 	_RenderWindow.display();
 }
 
 void Framework::update(float FrameTime)
 {
-	_Level.update(FrameTime, _GameState == GameState::Running);
+	if (_Level.update(FrameTime, _GameState == GameState::Running)) {
+		_GameState = GameState::LevelUp;
+	}
 	_GameObjectContainer.update(FrameTime, _Level.getDifficulty(), _Level.getRoadSpeed());
 	if (!_GameObjectContainer.playerIsAlive()) {
 		_GameState = GameState::GameOver;
@@ -171,6 +180,16 @@ void Framework::handleEventGameOver()
 		_GameState = GameState::Exiting;
 		break;
 	}
+}
+
+void Framework::handleEventLevelUp()
+{
+	while (_RenderWindow.pollEvent(_Event)) {
+		if (_Event.type == sf::Event::Closed) {
+			_GameState = GameState::Exiting;
+		}
+	}
+	
 }
 
 void Framework::measureTime()

@@ -24,9 +24,14 @@ void LevelUpScreen::render(sf::RenderWindow& Window) {
 }
 
 bool LevelUpScreen::update() {
-	if (_Timer.getElapsedTime().asSeconds() > 7) {
+	if (_Timer.getElapsedTime().asSeconds() > 5) {
 		_Timer.restart();
 		return true;
 	}
 	return false;
+}
+
+void LevelUpScreen::LevelUp()
+{
+	_Timer.restart();
 }

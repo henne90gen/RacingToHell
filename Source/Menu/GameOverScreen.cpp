@@ -24,7 +24,6 @@ GameOverScreen::GameOverScreen()
 	}
 }
 
-
 GameOverScreen::~GameOverScreen()
 {
 }

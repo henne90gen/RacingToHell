@@ -22,6 +22,7 @@ public:
 	bool playerIsAlive() { return _PlayerAlive; }
 
 	void resetGameObjects(int SelectedCar);
+	bool emptyScreen();
 
 	int getCarScore() { int result = _CarScore; _CarScore = 0; return result; }
 
@@ -34,7 +35,7 @@ private:
 
 	float _CarFrequency, _BulletFrequency, _CanisterFrequency, _ToolboxFrequency, _TimePassedCar, _TimePassedBullet, _TimePassedCanister, _TimePassedToolbox;
 	int _CarScore, _PlayerBulletSpeed, _AIBulletSpeed;
-	bool _PlayerAlive;
+	bool _PlayerAlive, _AboutToLevelUp;
 
 	void spawnAICar(int Difficulty, int RoadSpeed);
 	void spawnBullet();

@@ -32,6 +32,7 @@ void Framework::run()
 			handleEventLevelUp();
 			if (_LevelUpScreen.update()) {
 				_Clock.restart();
+				_Level.resetTimer();
 				_GameState = GameState::Running;
 			}
 			break;
@@ -78,7 +79,12 @@ void Framework::render()
 void Framework::update(float FrameTime)
 {
 	if (_Level.update(FrameTime, _GameState == GameState::Running)) {
-		_GameState = GameState::LevelUp;
+
+		if (_GameObjectContainer.emptyScreen()) {
+			_Level.LevelUp();
+			_LevelUpScreen.LevelUp();
+			_GameState = GameState::LevelUp;
+		}
 	}
 	_GameObjectContainer.update(FrameTime, _Level.getDifficulty(), _Level.getRoadSpeed());
 	if (!_GameObjectContainer.playerIsAlive()) {

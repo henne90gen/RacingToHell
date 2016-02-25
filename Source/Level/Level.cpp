@@ -46,7 +46,6 @@ void Level::render(sf::RenderWindow& RenderWindow)
 
 void Level::LevelUp()
 {
-	std::cout << "LevelUp()" << std::endl;
 	_Timer.restart();
 	_Difficulty++;
 	if (_Difficulty < 3) {

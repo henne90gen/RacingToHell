@@ -126,6 +126,7 @@ void Framework::handleEventMenu()
 					switch (_Menu.getMenuItems()[i]->getAction()) {
 					case MenuResult::Resume:
 						_Clock.restart();
+						_Level.resetTimer();
 						_GameState = GameState::Running;
 						break;
 					case MenuResult::Nothing:
@@ -195,7 +196,6 @@ void Framework::handleEventLevelUp()
 			_GameState = GameState::Exiting;
 		}
 	}
-	
 }
 
 void Framework::measureTime()

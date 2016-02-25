@@ -217,6 +217,7 @@ void GameObjectContainer::resetGameObjects(int SelectedCar)
 	_TimePassedToolbox = 0.0f;
 
 	_PlayerAlive = true;
+	_AboutToLevelUp = false;
 }
 
 bool GameObjectContainer::emptyScreen()

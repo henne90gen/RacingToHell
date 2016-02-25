@@ -17,7 +17,6 @@ PlayerCar::~PlayerCar()
 
 void PlayerCar::handleEvent(sf::Event& Event)
 {
-	
 	//Keyinput abfragen und in _Movement speichern
 	_Movement = sf::Vector2f(0, 0);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {

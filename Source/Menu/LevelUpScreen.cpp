@@ -24,7 +24,7 @@ void LevelUpScreen::render(sf::RenderWindow& Window) {
 }
 
 bool LevelUpScreen::update() {
-	if (_Timer.getElapsedTime().asSeconds() > 5) {
+	if (_Timer.getElapsedTime().asSeconds() > 2) {
 		_Timer.restart();
 		return true;
 	}

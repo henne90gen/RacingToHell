@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Textbox.h"
+
 class GameOverScreen
 {
 public:
@@ -7,7 +9,8 @@ public:
 	~GameOverScreen();
 
 	void render(sf::RenderWindow& Window, int score);
-
+	void update();
+	void handleEvent(sf::Event& Event);
 private:
 	sf::Font _Font;
 	sf::Text _GameOverText;
@@ -16,5 +19,7 @@ private:
 	sf::Text _GOTLine1;
 	sf::Text _GOTLine2;
 	sf::Text _GOTLine3;
+
+	Textbox* _Textbox;
 };
 

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Menu\Menu.h"
 
-
 Menu::Menu()
 {
 	//Menu-Items
@@ -61,6 +60,7 @@ void Menu::render(sf::RenderWindow & Window, int SelectedCar, bool paused, Heads
 
 void Menu::update(float FrameTime)
 {
+
 }
 
 void Menu::checkMouseHover(sf::RenderWindow & Window)

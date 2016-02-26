@@ -170,7 +170,9 @@
     <ClInclude Include="Headers\Framework.hpp" />
     <ClInclude Include="Headers\GameObject\GameObject.h" />
     <ClInclude Include="Headers\Menu\StatBox.h" />
+    <ClInclude Include="Headers\Menu\Textbox.h" />
     <ClInclude Include="Headers\PlayerStats.h" />
+    <ClInclude Include="Headers\StandardCursor.h" />
     <ClInclude Include="Headers\stdafx.h" />
     <ClInclude Include="Headers\targetver.h" />
     <ClInclude Include="Headers\GameObject\Toolbox.h" />
@@ -191,7 +193,9 @@
     <ClCompile Include="Source\GameObject\PlayerCar.cpp" />
     <ClCompile Include="Source\Framework.cpp" />
     <ClCompile Include="Source\GameObject\GameObject.cpp" />
+    <ClCompile Include="Source\Menu\Textbox.cpp" />
     <ClCompile Include="Source\RacingToHell.cpp" />
+    <ClCompile Include="Source\StandardCursor.cpp" />
     <ClCompile Include="Source\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

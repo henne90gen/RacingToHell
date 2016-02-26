@@ -46,6 +46,7 @@ void Framework::run()
 			break;
 		case GameState::GameOver:
 			handleEventGameOver();
+			_GameOverScreen.update();
 			break;
 		case GameState::Exiting:
 			_IsRunning = false;
@@ -170,6 +171,8 @@ void Framework::handleEventGameOver()
 {
 	MenuResult result = MenuResult::Nothing;
 	while (_RenderWindow.pollEvent(_Event)) {
+		_GameOverScreen.handleEvent(_Event);
+
 		if (_Event.type == sf::Event::KeyPressed) {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
 				result = MenuResult::Restart;

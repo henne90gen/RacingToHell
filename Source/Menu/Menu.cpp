@@ -7,7 +7,8 @@ Menu::Menu()
 	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2 - 100, SCREENHEIGHT - 335), MenuResult::PreviousSkin));
 	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2 + 37, SCREENHEIGHT - 335), MenuResult::NextSkin));
 	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 240), MenuResult::Resume));
-	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 320), MenuResult::Exit));
+	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 310), MenuResult::Option));
+	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 380), MenuResult::Exit));
 
 	//Main-Menu Text
 	_MainMenuFont.loadFromFile("Resources/Font/arial.ttf");

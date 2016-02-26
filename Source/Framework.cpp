@@ -36,6 +36,10 @@ void Framework::run()
 		case GameState::Pausing:
 			handleEventMenu();
 			break;
+		case GameState::OptionsMenu:
+			_Level.update(_FrameTime);
+			handleEventOptions();
+			break;
 		case GameState::GameOver:
 			handleEventGameOver();
 			break;
@@ -60,6 +64,9 @@ void Framework::render()
 	}
 	else if (_GameState == GameState::MainMenu || _GameState == GameState::Pausing) {
 		_Menu.render(_RenderWindow, _CurrentCarSkinIndex, _GameState == GameState::Pausing);
+	}
+	else if (_GameState == GameState::OptionsMenu) {
+		_OptionsMenu.render(_RenderWindow);
 	}
 	else if (_GameState == GameState::GameOver) {
 		_GameOverScreen.render(_RenderWindow, _Score);
@@ -91,7 +98,7 @@ void Framework::update(float FrameTime)
 	}
 	_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar()->getHealth(), _GameObjectContainer.getPlayerCar()->getMaxHealth(), _GameObjectContainer.getPlayerCar()->getEnergy(), _GameObjectContainer.getPlayerCar()->getMaxEnergy());
 	_Score += _GameObjectContainer.getCarScore();
-	_Score += 10*FrameTime;
+	_Score += 10 * FrameTime;
 }
 
 void Framework::handleEvent()
@@ -127,6 +134,9 @@ void Framework::handleEventMenu()
 						_Clock.restart();
 						_GameState = GameState::Running;
 						break;
+					case MenuResult::Option:
+						_GameState = GameState::OptionsMenu;
+						break;
 					case MenuResult::Nothing:
 						_GameState = GameState::Pausing;
 						break;
@@ -149,6 +159,35 @@ void Framework::handleEventMenu()
 							_GameObjectContainer.getPlayerCar()->setSkin(_CarSkins.at(_CurrentCarSkinIndex));
 							_GameObjectContainer.getPlayerCar()->setStats(_CurrentCarSkinIndex);
 						}
+						break;
+					case MenuResult::Exit:
+						_GameState = GameState::Exiting;
+						break;
+					}
+				}
+			}
+		}
+		else if (_Event.type == sf::Event::Closed) {
+			_GameState = GameState::Exiting;
+		}
+	}
+}
+
+void Framework::handleEventOptions()
+{
+	while (_RenderWindow.pollEvent(_Event)) {
+		_OptionsMenu.checkMouseHover(_RenderWindow);
+		if (_Event.type == sf::Event::MouseButtonPressed) {
+			sf::Vector2f MousePos = sf::Vector2f(_Event.mouseButton.x, _Event.mouseButton.y);
+			for (int i = 0; i < _OptionsMenu.getMenuItems().size(); i++) {
+				sf::FloatRect rect = _OptionsMenu.getMenuItems()[i]->getRect();
+				if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width) {
+					switch (_OptionsMenu.getMenuItems()[i]->getAction()) {
+					case MenuResult::Back:
+						_GameState = GameState::MainMenu;
+						break;
+					case MenuResult::Nothing:
+						_GameState = GameState::Pausing;
 						break;
 					case MenuResult::Exit:
 						_GameState = GameState::Exiting;

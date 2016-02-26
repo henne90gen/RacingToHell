@@ -5,6 +5,7 @@
 #include "GameObject\PlayerCar.h"
 #include "GameObject\GameObjectContainer.h"
 #include "Menu\Menu.h"
+#include "Menu\Options.h"
 #include "Menu\GameOverScreen.h"
 #include "HeadsUpDisplay.h"
 #include "Level\Level.h"
@@ -20,7 +21,7 @@ public:
 	void run();
 
 	enum GameState {
-		Running, MainMenu, Pausing, GameOver, Exiting
+		Running, MainMenu, Pausing, OptionsMenu, GameOver, Exiting
 	};
 
 private:
@@ -35,9 +36,10 @@ private:
 	bool _IsRunning;
 	GameObjectContainer _GameObjectContainer;
 	GameState _GameState;
-	Menu _Menu;
 	std::vector<sf::Texture*> _CarSkins;
 	int _CurrentCarSkinIndex;
+	Menu _Menu;
+	Options _OptionsMenu;
 	GameOverScreen _GameOverScreen;
 	HeadsUpDisplay _HeadsUpDisplay;
 	Level _Level;
@@ -48,6 +50,7 @@ private:
 	void handleEvent();
 	void handleEventMenu();
 	void handleEventGameOver();
+	void handleEventOptions();
 	void render();
 	void playSounds();
 	void measureTime();

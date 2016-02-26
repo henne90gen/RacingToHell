@@ -11,10 +11,12 @@ MenuItem::MenuItem(sf::Vector2f pos, MenuResult action) : _Action(action)
 	_Text.setColor(sf::Color::White);
 	_Text.setCharacterSize(45);
 
+	bool centerText = false;
+
 	switch (_Action) {
 	case MenuResult::Resume:
 		_Text.setString("Play");
-		_Text.setPosition(_Text.getPosition() - sf::Vector2f(_Text.getLocalBounds().width / 2, 0));
+		centerText = true;
 		break;
 	case MenuResult::PreviousSkin:
 		_Text.setString("<<");
@@ -22,15 +24,27 @@ MenuItem::MenuItem(sf::Vector2f pos, MenuResult action) : _Action(action)
 	case MenuResult::NextSkin:
 		_Text.setString(">>");
 		break;
+	case MenuResult::Option:
+		_Text.setString("Options");
+		centerText = true;
+		break;
+	case MenuResult::Back:
+		_Text.setString("Back");
+		centerText = true;
+		break;
 	case MenuResult::Exit:
 		_Text.setString("Exit");
-		_Text.setPosition(_Text.getPosition() - sf::Vector2f(_Text.getLocalBounds().width / 2, 0));
+		centerText = true;
 		break;
+	}
+
+	if (centerText) {
+		_Text.setPosition(_Text.getPosition() - sf::Vector2f(_Text.getLocalBounds().width / 2, 0));
 	}
 
 	//Initializing rectangle that will be shown at hover-over
 	//Position is adjusted by 10 down and size is increased by 10 horizontally and 7 vertically
-	if (_Action == MenuResult::Resume || _Action == MenuResult::Exit) {
+	if (_Action == MenuResult::Resume || _Action == MenuResult::Option || _Action == MenuResult::Back || _Action == MenuResult::Exit) {
 		_HoverRect.setPosition(_Text.getPosition() + sf::Vector2f(0, 10));
 		_HoverRect.setSize(sf::Vector2f(_Text.getLocalBounds().width + 10, _Text.getLocalBounds().height + 7));
 		_HoverRect.setFillColor(sf::Color::Transparent);
@@ -54,10 +68,6 @@ void MenuItem::render(sf::RenderWindow & Window)
 {
 	if (_Hovering) {
 		Window.draw(_HoverRect);
-		//_Text.setStyle(sf::Text::Bold);
-	}
-	else {
-		//_Text.setStyle(sf::Text::Regular);
 	}
 	Window.draw(_Text);
 }

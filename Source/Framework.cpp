@@ -11,6 +11,7 @@ Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameState(GameState::
 	if (_MenuMusicBuffer.loadFromFile("Resources/Sound/Music/menu1.ogg")) {
 	//if (_MenuMusicBuffer.loadFromFile("")) {
 		_MenuMusic.setBuffer(_MenuMusicBuffer);
+		_MenuMusic.setVolume(_OptionsMenu.getVolume());
 	}
 }
 

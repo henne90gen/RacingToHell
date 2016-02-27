@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Menu/OptionsMenu.h"
 
-OptionsMenu::OptionsMenu() : _Volume(100.0f), _MousePressed(false)
+OptionsMenu::OptionsMenu() : _Volume(50.0f), _MousePressed(false)
 {
 	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 320), MenuResult::Back));
 
@@ -24,7 +24,7 @@ OptionsMenu::OptionsMenu() : _Volume(100.0f), _MousePressed(false)
 	_VolumeSlider.setFillColor(sf::Color::White);
 	_VolumeSlider.setSize(sf::Vector2f(10,30));
 	_VolumeSlider.setOrigin(sf::Vector2f(_VolumeSlider.getLocalBounds().width / 2.0f, _VolumeSlider.getLocalBounds().height / 2.0f));
-	_VolumeSlider.setPosition(sf::Vector2f(_VolumeLine.getPosition().x + _VolumeLine.getLocalBounds().width, 
+	_VolumeSlider.setPosition(sf::Vector2f(_VolumeLine.getPosition().x + _VolumeLine.getLocalBounds().width * _Volume / 100.0f,
 		_VolumeLine.getPosition().y + _VolumeLine.getLocalBounds().height / 2.0f));
 
 	_VolumeBox.left = _VolumeLine.getPosition().x;

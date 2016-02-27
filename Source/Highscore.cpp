@@ -3,29 +3,31 @@
 
 Highscore::Highscore(sf::Vector2f Position)
 {
-	_Font.loadFromFile("Resources\\Font\\arial.ttf");
 	_Background.setFillColor(sf::Color(0, 0, 0, 100));
 	_Background.setSize(sf::Vector2f(450, 500));
 	_Background.setPosition(Position);
 
+	_Font.loadFromFile("Resources\\Font\\arial.ttf");
+
+	_HeadlineName.setFont(_Font);
+	_HeadlineName.setCharacterSize(30);
+	_HeadlineName.setStyle(sf::Text::Style::Bold);
+	_HeadlineName.setPosition(Position + sf::Vector2f(20,20));
+	_HeadlineName.setString("Name");
+
+	_HeadlineLevel = _HeadlineName;
+	_HeadlineLevel.setPosition(Position + sf::Vector2f(_Background.getSize().x / 2 - _HeadlineLevel.getLocalBounds().width / 2, 20));
+	_HeadlineLevel.setString("Level");
+
+	_HeadlineScore = _HeadlineName;
+	_HeadlineScore.setPosition(Position + sf::Vector2f(_Background.getSize().x - _HeadlineScore.getLocalBounds().width - 20, 20));
+	_HeadlineScore.setString("Score");
+
 	_Filename = "Resources\\Data\\Highscore.txt";
 
-	//Test
-	Player Player1;
-	Player1.Name = "Testperson1";
-	Player1.Level = 4;
-	Player1.Score = 12400;
-
-	Player Player2;
-	Player2.Name = "Testperson2";
-	Player2.Level = 3;
-	Player2.Score = 6500;
-
-	_PlayerList.push_back(Player2);
-	_PlayerList.push_back(Player1);
-
+	loadScoreTable();
 	SortScoreTable();
-	SaveScoreTable();
+	TestPrintPlayers();
 }
 
 Highscore::~Highscore()
@@ -36,6 +38,37 @@ Highscore::~Highscore()
 void Highscore::render(sf::RenderWindow& RenderWindow)
 {
 	RenderWindow.draw(_Background);
+	RenderWindow.draw(_HeadlineName);
+	RenderWindow.draw(_HeadlineLevel);
+	RenderWindow.draw(_HeadlineScore);
+	
+	for (unsigned int i = 0; i < _PlayerList.size(); i++)
+	{
+		sf::Text TextName;
+		sf::Text TextLevel;
+		sf::Text TextScore;
+
+		TextName.setFont(_Font);
+		TextName.setCharacterSize(25);
+		TextName.setString(_PlayerList[i].Name);
+		TextName.setPosition(_HeadlineName.getPosition() + sf::Vector2f(0, _HeadlineName.getLocalBounds().height + 30 + i * (TextName.getLocalBounds().height + 20)));
+	
+		TextLevel.setFont(_Font);
+		TextLevel.setCharacterSize(25);
+		TextLevel.setString(std::to_string(_PlayerList[i].Level));
+		TextLevel.setPosition(_HeadlineLevel.getPosition() + sf::Vector2f(_HeadlineLevel.getLocalBounds().width - TextLevel.getLocalBounds().width, _HeadlineName.getLocalBounds().height + 30 + i * (TextName.getLocalBounds().height + 20)));
+
+		TextScore.setFont(_Font);
+		TextScore.setCharacterSize(25);
+		TextScore.setString(std::to_string(_PlayerList[i].Score));
+		TextScore.setPosition(_HeadlineScore.getPosition() + sf::Vector2f(_HeadlineScore.getLocalBounds().width - TextScore.getLocalBounds().width, _HeadlineName.getLocalBounds().height + 30 + i * (TextName.getLocalBounds().height + 20)));
+
+
+		RenderWindow.draw(TextName);
+		RenderWindow.draw(TextLevel);
+		RenderWindow.draw(TextScore);
+	}
+	
 }
 
 void Highscore::loadScoreTable()
@@ -100,3 +133,12 @@ std::vector<std::string> Highscore::split(const std::string &s, char delim) {
 	}
 	return elems;
 }
+
+void Highscore::TestPrintPlayers()
+{
+	for (unsigned int i = 0; i < _PlayerList.size(); i++)
+	{
+		std::cout << "Name: " << _PlayerList[i].Name << " Level: " << _PlayerList[i].Level << " Score: " << _PlayerList[i].Score << std::endl;
+	}
+}
+

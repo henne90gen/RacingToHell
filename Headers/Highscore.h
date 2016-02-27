@@ -29,14 +29,15 @@ public:
 private:
 	sf::RectangleShape _Background;
 	sf::Font _Font;
-	sf::Text _TextNames;
-	sf::Text _TextLevel;
-	sf::Text _TextScore;
+	sf::Text _HeadlineName;
+	sf::Text _HeadlineLevel;
+	sf::Text _HeadlineScore;
 
 	std::vector<Player> _PlayerList;
 	std::string _Filename;
 
 	void SortScoreTable();
+	void TestPrintPlayers();
 
-	std::vector<std::string> split(const std::string& s, char delim)
+	std::vector<std::string> split(const std::string& s, char delim);
 };

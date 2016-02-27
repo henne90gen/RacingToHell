@@ -105,9 +105,6 @@
     <ClInclude Include="Headers\Menu\GameOverScreen.h">
       <Filter>Header Files\Menu</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Menu\Menu.h">
-      <Filter>Header Files\Menu</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\Menu\MenuItem.h">
       <Filter>Header Files\Menu</Filter>
     </ClInclude>
@@ -123,7 +120,19 @@
     <ClInclude Include="Headers\Menu\StatBox.h">
       <Filter>Header Files\Menu</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Menu\Options.h">
+    <ClInclude Include="Headers\GameState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\MainMenu.h">
+      <Filter>Header Files\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\PauseMenu.h">
+      <Filter>Header Files\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\OptionsMenu.h">
+      <Filter>Header Files\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\Menu.h">
       <Filter>Header Files\Menu</Filter>
     </ClInclude>
   </ItemGroup>
@@ -170,16 +179,22 @@
     <ClCompile Include="Source\Menu\GameOverScreen.cpp">
       <Filter>Source Files\Menu</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Menu\Menu.cpp">
-      <Filter>Source Files\Menu</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Menu\MenuItem.cpp">
       <Filter>Source Files\Menu</Filter>
     </ClCompile>
     <ClCompile Include="Source\Menu\StatBox.cpp">
       <Filter>Source Files\Menu</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Menu\Options.cpp">
+    <ClCompile Include="Source\Menu\MainMenu.cpp">
+      <Filter>Source Files\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menu\PauseMenu.cpp">
+      <Filter>Source Files\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menu\OptionsMenu.cpp">
+      <Filter>Source Files\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menu\Menu.cpp">
       <Filter>Source Files\Menu</Filter>
     </ClCompile>
   </ItemGroup>

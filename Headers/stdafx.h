@@ -15,6 +15,8 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 
+#include "GameState.h"
+
 #define SCREENWIDTH 600
 #define SCREENHEIGHT 800
 #define PI 3.141592654f

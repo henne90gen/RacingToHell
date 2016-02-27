@@ -1,34 +1,28 @@
 #pragma once
-#include "stdafx.h"
-#include "MenuItem.h"
-#include "MenuResults.h"
-#include "StatBox.h"
+#include "Menu/MenuItem.h"
+#include "Menu/MenuResults.h"
 
 class Menu
 {
 public:
-	Menu();
+	Menu(sf::SoundBuffer& MusicBuffer);
 	~Menu();
 
-	void update(float FrameTime);
-	void render(sf::RenderWindow& Window, int SelectedCar, bool paused);
-	void playMusic();
-	void stopMusic();
-	void pauseMusic();
+	virtual void update(float FrameTime) = 0;
+	virtual void render(sf::RenderWindow& Window) = 0;
+	virtual GameState handleEvents(sf::RenderWindow& Window) = 0;
 
 	void checkMouseHover(sf::RenderWindow& Window);
 
 	std::vector<MenuItem*>& getMenuItems() { return _MenuItems; }
 
-private:
-	sf::Sprite _CarSkin;
+protected:
 	std::vector<MenuItem*> _MenuItems;
-	sf::Font _MainMenuFont;
-	sf::Text _MainMenuText;
+	sf::Font _Font;
+	sf::Text _Text;
+	sf::Event _Event;
 
 	sf::SoundBuffer _MusicBuffer;
 	sf::Sound _Music;
-
-	StatBox* _StatBox;
 };
 

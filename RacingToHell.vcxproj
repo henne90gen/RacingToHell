@@ -154,6 +154,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\GameState.h" />
     <ClInclude Include="Headers\GameObject\AICar.h" />
     <ClInclude Include="Headers\GameObject\Bullet.h" />
     <ClInclude Include="Headers\GameObject\Car.h" />
@@ -163,7 +164,7 @@
     <ClInclude Include="Headers\HeadsUpDisplay.h" />
     <ClInclude Include="Headers\Level\Level.h" />
     <ClInclude Include="Headers\Menu\MenuResults.h" />
-    <ClInclude Include="Headers\Menu\Menu.h" />
+    <ClInclude Include="Headers\Menu\MainMenu.h" />
     <ClInclude Include="Headers\Menu\MenuItem.h" />
     <ClInclude Include="Headers\GameObject\PlayerCar.h" />
     <ClInclude Include="Headers\GameObject\GameObjects.h" />
@@ -174,10 +175,14 @@
     <ClInclude Include="Headers\stdafx.h" />
     <ClInclude Include="Headers\targetver.h" />
     <ClInclude Include="Headers\GameObject\Toolbox.h" />
-    <ClInclude Include="Headers\Menu\Options.h" />
+    <ClInclude Include="Headers\Menu\OptionsMenu.h" />
+    <ClInclude Include="Headers\Menu\PauseMenu.h" />
+    <ClInclude Include="Headers\Menu\Menu.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Menu\Options.cpp" />
+    <ClCompile Include="Source\Menu\Menu.cpp" />
+    <ClCompile Include="Source\Menu\PauseMenu.cpp" />
+    <ClCompile Include="Source\Menu\OptionsMenu.cpp" />
     <ClCompile Include="Source\GameObject\AICar.cpp" />
     <ClCompile Include="Source\GameObject\Bullet.cpp" />
     <ClCompile Include="Source\GameObject\Car.cpp" />
@@ -185,7 +190,7 @@
     <ClCompile Include="Source\Menu\GameOverScreen.cpp" />
     <ClCompile Include="Source\HeadsUpDisplay.cpp" />
     <ClCompile Include="Source\Level\Level.cpp" />
-    <ClCompile Include="Source\Menu\Menu.cpp" />
+    <ClCompile Include="Source\Menu\MainMenu.cpp" />
     <ClCompile Include="Source\Menu\MenuItem.cpp" />
     <ClCompile Include="Source\GameObject\GameObjectContainer.cpp" />
     <ClCompile Include="Source\GameObject\PlayerCar.cpp" />

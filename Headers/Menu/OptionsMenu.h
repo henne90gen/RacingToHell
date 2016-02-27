@@ -23,6 +23,6 @@ private:
 	bool _MousePressed;
 	GameState _ReturnState;
 
-	float _Volume;
+	float _Volume, _MaxVolume;
 };
 

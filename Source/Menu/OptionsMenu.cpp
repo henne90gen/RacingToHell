@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Menu/OptionsMenu.h"
 
-OptionsMenu::OptionsMenu() : _Volume(100.0f)
+OptionsMenu::OptionsMenu() : _Volume(100.0f), _MousePressed(false)
 {
 	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 320), MenuResult::Back));
 
@@ -59,11 +59,12 @@ GameState OptionsMenu::handleEvents(sf::RenderWindow & Window)
 {
 	while (Window.pollEvent(_Event)) {
 		checkMouseHover(Window);
+		sf::Vector2f MousePos = sf::Vector2f(sf::Mouse::getPosition(Window));
 		if (_Event.type == sf::Event::MouseButtonPressed) {
-			sf::Vector2f MousePos = sf::Vector2f(_Event.mouseButton.x, _Event.mouseButton.y);
 			if (MousePos.y > _VolumeBox.top && MousePos.y < _VolumeBox.top + _VolumeBox.height && MousePos.x > _VolumeBox.left && MousePos.x < _VolumeBox.left + _VolumeBox.width) {
 				_VolumeSlider.setPosition(MousePos.x, _VolumeLine.getPosition().y + _VolumeLine.getLocalBounds().height / 2.0f);
 				_Volume = (_VolumeSlider.getPosition().x - _VolumeLine.getPosition().x) * 100 / _VolumeLine.getLocalBounds().width;
+				_MousePressed = true;
 			} else {
 				for (int i = 0; i < getMenuItems().size(); i++) {
 					sf::FloatRect rect = getMenuItems()[i]->getRect();
@@ -83,8 +84,23 @@ GameState OptionsMenu::handleEvents(sf::RenderWindow & Window)
 				}
 			}
 		}
+		else if (_Event.type == sf::Event::MouseButtonReleased) {
+			_MousePressed = false;
+		}
 		else if (_Event.type == sf::Event::Closed) {
 			return GameState::Exiting;
+		}
+		else if (_MousePressed) {
+			if (MousePos.x < _VolumeLine.getPosition().x) {
+				_VolumeSlider.setPosition(_VolumeLine.getPosition().x, _VolumeLine.getPosition().y + _VolumeLine.getLocalBounds().height / 2.0f);
+			}
+			else if (MousePos.x > _VolumeLine.getPosition().x + _VolumeLine.getLocalBounds().width) {
+				_VolumeSlider.setPosition(_VolumeLine.getPosition().x + _VolumeLine.getLocalBounds().width, _VolumeLine.getPosition().y + _VolumeLine.getLocalBounds().height / 2.0f);
+			}
+			else {
+				_VolumeSlider.setPosition(MousePos.x, _VolumeLine.getPosition().y + _VolumeLine.getLocalBounds().height / 2.0f);
+			}
+			_Volume = (_VolumeSlider.getPosition().x - _VolumeLine.getPosition().x) * 100 / _VolumeLine.getLocalBounds().width;
 		}
 	}
 	return GameState::Options;

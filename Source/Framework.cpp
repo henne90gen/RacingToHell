@@ -154,7 +154,7 @@ void Framework::handleEvents()
 	case GameState::Options:
 		_GameState = _OptionsMenu.handleEvents(_RenderWindow);
 		_MenuMusic.setVolume(_OptionsMenu.getVolume());
-		std::cout << "Volume: " << _MenuMusic.getVolume() << std::endl;
+		//std::cout << "Volume: " << _MenuMusic.getVolume() << std::endl;
 		break;
 	case GameState::GameOver:
 		_GameState = _GameOverScreen.handleEvents(_RenderWindow);

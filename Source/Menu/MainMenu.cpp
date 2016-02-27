@@ -54,7 +54,7 @@ GameState MainMenu::handleEvents(sf::RenderWindow& Window, int& carSkinIndex)
 	while (Window.pollEvent(_Event)) {
 		checkMouseHover(Window);
 		if (_Event.type == sf::Event::MouseButtonPressed) {
-			sf::Vector2f MousePos = sf::Vector2f(_Event.mouseButton.x, _Event.mouseButton.y);
+			sf::Vector2f MousePos = sf::Vector2f(sf::Mouse::getPosition(Window));
 			for (int i = 0; i < getMenuItems().size(); i++) {
 				sf::FloatRect rect = getMenuItems()[i]->getRect();
 				if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width) {

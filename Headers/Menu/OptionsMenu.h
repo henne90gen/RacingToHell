@@ -20,6 +20,7 @@ private:
 	sf::RectangleShape _VolumeLine;
 	sf::FloatRect _VolumeBox;
 
+	bool _MousePressed;
 	GameState _ReturnState;
 
 	float _Volume;

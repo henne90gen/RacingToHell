@@ -17,7 +17,7 @@ OptionsMenu::OptionsMenu() : _Volume(100.0f), _MousePressed(false)
 		_VolumeText.setPosition(sf::Vector2f(100,200));
 	}
 	_VolumeLine.setFillColor(sf::Color::Black);
-	_VolumeLine.setSize(sf::Vector2f(100, 5));
+	_VolumeLine.setSize(sf::Vector2f(200, 5));
 	_VolumeLine.setPosition(sf::Vector2f(_VolumeText.getPosition().x + _VolumeText.getLocalBounds().width + 10, 
 		_VolumeText.getPosition().y + _VolumeText.getLocalBounds().height - 1));
 

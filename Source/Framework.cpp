@@ -6,6 +6,12 @@ Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameState(GameState::
 	_RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell");
 	_RenderWindow.setFramerateLimit(300);
 	loadCarSkins();
+
+	//Menu Music
+	//if (_MenuMusicBuffer.loadFromFile("Resources/Sound/Music/menu1.ogg")) {
+	if (_MenuMusicBuffer.loadFromFile("")) {
+		_MenuMusic.setBuffer(_MenuMusicBuffer);
+	}
 }
 
 Framework::~Framework()
@@ -38,10 +44,6 @@ void Framework::run()
 			break;
 		case GameState::Options:
 			_Level.update(_FrameTime);
-			handleEventOptions();
-			break;
-		case GameState::GameOver:
-			handleEventGameOver();
 			break;
 		case GameState::Exiting:
 			_IsRunning = false;
@@ -83,12 +85,14 @@ void Framework::render()
 
 void Framework::playSounds() {
 	if (_GameState == GameState::Running) {
-		_MainMenu.stopMusic();
+		_MenuMusic.stop();
 		_Level.playMusic();
 	}
-	else if (_GameState == GameState::Main || _GameState == GameState::Pause) {
+	else if (_GameState == GameState::Main || _GameState == GameState::Pause || _GameState == GameState::Options) {
 		_Level.pauseMusic();
-		_MainMenu.playMusic();
+		if (_MenuMusic.getStatus() == sf::Sound::Stopped || _MenuMusic.getStatus() == sf::Sound::Paused) {
+			_MenuMusic.play(); 
+		}
 	}
 	else if (_GameState == GameState::GameOver) {
 		_Level.stopMusic();
@@ -131,9 +135,11 @@ void Framework::handleEvents()
 		}
 		break;
 	case GameState::Pause:
+		_OptionsMenu.setReturnState(_GameState);
 		_GameState = _PauseMenu.handleEvents(_RenderWindow);
 		break;
 	case GameState::Main:
+		_OptionsMenu.setReturnState(_GameState);
 		_GameState = _MainMenu.handleEvents(_RenderWindow, _CurrentCarSkinIndex);
 		if (_GameState == GameState::Running) { _Clock.restart(); }
 		if (_CurrentCarSkinIndex < 0) {
@@ -146,36 +152,15 @@ void Framework::handleEvents()
 		_GameObjectContainer.getPlayerCar()->setStats(_CurrentCarSkinIndex);
 		break;
 	case GameState::Options:
-		
+		_GameState = _OptionsMenu.handleEvents(_RenderWindow);
+		_MenuMusic.setVolume(_OptionsMenu.getVolume());
+		std::cout << "Volume: " << _MenuMusic.getVolume() << std::endl;
 		break;
-	}
-}
-
-void Framework::handleEventOptions()
-{
-	
-}
-
-void Framework::handleEventGameOver()
-{
-	MenuResult result = MenuResult::Nothing;
-	while (_RenderWindow.pollEvent(_Event)) {
-		if (_Event.type == sf::Event::KeyPressed) {
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-				result = MenuResult::Restart;
-			}
+	case GameState::GameOver:
+		_GameState = _GameOverScreen.handleEvents(_RenderWindow);
+		if (_GameState == GameState::Main) {
+			resetGame();
 		}
-		else if (_Event.type == sf::Event::Closed) {
-			result = MenuResult::Exit;
-		}
-	}
-	switch (result) {
-	case MenuResult::Restart:
-		resetGame();
-		_GameState = GameState::Main;
-		break;
-	case MenuResult::Exit:
-		_GameState = GameState::Exiting;
 		break;
 	}
 }

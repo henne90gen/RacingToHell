@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Menu\MainMenu.h"
 
-MainMenu::MainMenu(sf::SoundBuffer& MusicBuffer) : Menu(MusicBuffer)
+MainMenu::MainMenu()
 {
 	//Menu-Items
 	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2 - 100, SCREENHEIGHT - 335), MenuResult::PreviousSkin));
@@ -87,27 +87,6 @@ GameState MainMenu::handleEvents(sf::RenderWindow& Window, int& carSkinIndex)
 		}
 	}
 	return GameState::Main;
-}
-
-void MainMenu::playMusic()
-{
-	if (_Music.getStatus() == sf::Sound::Stopped) {
-		_Music.play();
-	}
-}
-
-void MainMenu::stopMusic()
-{
-	_Music.stop();
-}
-
-void MainMenu::pauseMusic()
-{
-	_Music.pause();
-}
-
-void MainMenu::update(float FrameTime)
-{
 }
 
 void MainMenu::render(sf::RenderWindow & Window)

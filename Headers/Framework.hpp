@@ -34,6 +34,8 @@ private:
 	GameState _GameState;
 	std::vector<sf::Texture*> _CarSkins;
 	int _CurrentCarSkinIndex;
+	sf::SoundBuffer _MenuMusicBuffer;
+	sf::Sound _MenuMusic;
 	MainMenu _MainMenu;
 	PauseMenu _PauseMenu;
 	OptionsMenu _OptionsMenu;
@@ -45,8 +47,6 @@ private:
 	//Functions
 	void update(float Frametime);
 	void handleEvents();
-	void handleEventGameOver();
-	void handleEventOptions();
 	void render();
 	void playSounds();
 	void measureTime();

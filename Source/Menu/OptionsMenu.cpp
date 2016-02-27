@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Menu/OptionsMenu.h"
 
-OptionsMenu::OptionsMenu(sf::SoundBuffer& MusicBuffer) : Menu(MusicBuffer)
+OptionsMenu::OptionsMenu() : _Volume(100.0f)
 {
 	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 320), MenuResult::Back));
 
@@ -23,8 +23,14 @@ OptionsMenu::OptionsMenu(sf::SoundBuffer& MusicBuffer) : Menu(MusicBuffer)
 
 	_VolumeSlider.setFillColor(sf::Color::White);
 	_VolumeSlider.setSize(sf::Vector2f(10,30));
+	_VolumeSlider.setOrigin(sf::Vector2f(_VolumeSlider.getLocalBounds().width / 2.0f, _VolumeSlider.getLocalBounds().height / 2.0f));
 	_VolumeSlider.setPosition(sf::Vector2f(_VolumeLine.getPosition().x + _VolumeLine.getLocalBounds().width, 
-		_VolumeLine.getPosition().y + _VolumeLine.getLocalBounds().height / 2.0f - _VolumeSlider.getLocalBounds().height / 2.0f));
+		_VolumeLine.getPosition().y + _VolumeLine.getLocalBounds().height / 2.0f));
+
+	_VolumeBox.left = _VolumeLine.getPosition().x;
+	_VolumeBox.top = _VolumeSlider.getPosition().y - _VolumeSlider.getLocalBounds().height / 2.0f;
+	_VolumeBox.width = _VolumeLine.getLocalBounds().width;
+	_VolumeBox.height = _VolumeSlider.getLocalBounds().height;
 }
 
 
@@ -34,10 +40,6 @@ OptionsMenu::~OptionsMenu()
 		delete _MenuItems[i];
 		_MenuItems[i] = nullptr;
 	}
-}
-
-void OptionsMenu::update(float FrameTime)
-{
 }
 
 void OptionsMenu::render(sf::RenderWindow & Window)
@@ -59,19 +61,24 @@ GameState OptionsMenu::handleEvents(sf::RenderWindow & Window)
 		checkMouseHover(Window);
 		if (_Event.type == sf::Event::MouseButtonPressed) {
 			sf::Vector2f MousePos = sf::Vector2f(_Event.mouseButton.x, _Event.mouseButton.y);
-			for (int i = 0; i < getMenuItems().size(); i++) {
-				sf::FloatRect rect = getMenuItems()[i]->getRect();
-				if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width) {
-					switch (getMenuItems()[i]->getAction()) {
-					case MenuResult::Back:
-						return GameState::Main;
-						break;
-					case MenuResult::Nothing:
-						return GameState::Pause;
-						break;
-					case MenuResult::Exit:
-						return GameState::Exiting;
-						break;
+			if (MousePos.y > _VolumeBox.top && MousePos.y < _VolumeBox.top + _VolumeBox.height && MousePos.x > _VolumeBox.left && MousePos.x < _VolumeBox.left + _VolumeBox.width) {
+				_VolumeSlider.setPosition(MousePos.x, _VolumeLine.getPosition().y + _VolumeLine.getLocalBounds().height / 2.0f);
+				_Volume = (_VolumeSlider.getPosition().x - _VolumeLine.getPosition().x) * 100 / _VolumeLine.getLocalBounds().width;
+			} else {
+				for (int i = 0; i < getMenuItems().size(); i++) {
+					sf::FloatRect rect = getMenuItems()[i]->getRect();
+					if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width) {
+						switch (getMenuItems()[i]->getAction()) {
+						case MenuResult::Back:
+							return _ReturnState;
+							break;
+						case MenuResult::Nothing:
+							return GameState::Options;
+							break;
+						case MenuResult::Exit:
+							return GameState::Exiting;
+							break;
+						}
 					}
 				}
 			}
@@ -81,9 +88,4 @@ GameState OptionsMenu::handleEvents(sf::RenderWindow & Window)
 		}
 	}
 	return GameState::Options;
-}
-
-void OptionsMenu::updateVolume()
-{
-
 }

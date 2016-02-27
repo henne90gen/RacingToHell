@@ -5,10 +5,9 @@
 class Menu
 {
 public:
-	Menu(sf::SoundBuffer& MusicBuffer);
+	Menu();
 	~Menu();
 
-	virtual void update(float FrameTime) = 0;
 	virtual void render(sf::RenderWindow& Window) = 0;
 	virtual GameState handleEvents(sf::RenderWindow& Window) = 0;
 
@@ -21,8 +20,5 @@ protected:
 	sf::Font _Font;
 	sf::Text _Text;
 	sf::Event _Event;
-
-	sf::SoundBuffer _MusicBuffer;
-	sf::Sound _Music;
 };
 

@@ -2,7 +2,7 @@
 #include "Menu/PauseMenu.h"
 
 
-PauseMenu::PauseMenu(sf::SoundBuffer& MusicBuffer) : Menu(MusicBuffer)
+PauseMenu::PauseMenu()
 {
 	//Menu-Items
 	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 240), MenuResult::Resume));
@@ -19,10 +19,6 @@ PauseMenu::PauseMenu(sf::SoundBuffer& MusicBuffer) : Menu(MusicBuffer)
 
 
 PauseMenu::~PauseMenu()
-{
-}
-
-void PauseMenu::update(float FrameTime)
 {
 }
 

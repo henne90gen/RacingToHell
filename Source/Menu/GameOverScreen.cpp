@@ -22,3 +22,22 @@ void GameOverScreen::render(sf::RenderWindow& Window, int score)
 	_GameOverText.setString("Game Over!\nRestart with Spacebar\n\nYour score was: " + std::to_string(score));
 	Window.draw(_GameOverText);
 }
+
+void GameOverScreen::render(sf::RenderWindow & Window)
+{
+}
+
+GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
+{
+	while (Window.pollEvent(_Event)) {
+		if (_Event.type == sf::Event::KeyPressed) {
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+				return GameState::Main;
+			}
+		}
+		else if (_Event.type == sf::Event::Closed) {
+			return GameState::Exiting;
+		}
+	}
+	return GameState::GameOver;
+}

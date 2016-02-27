@@ -1,16 +1,10 @@
 #include "stdafx.h"
 #include "Menu/Menu.h"
 
-Menu::Menu(sf::SoundBuffer& MusicBuffer)
+Menu::Menu()
 {
 	_Font.loadFromFile("Resources/Font/arial.ttf");
 	_Text.setFont(_Font);
-
-	//Background Music
-	if (_MusicBuffer.loadFromFile("Resources/Sound/Music/menu1.ogg")) {
-		_Music.setBuffer(_MusicBuffer);
-		_Music.setVolume(100);
-	}
 }
 
 

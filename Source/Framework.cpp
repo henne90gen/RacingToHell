@@ -8,8 +8,8 @@ Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameState(GameState::
 	loadCarSkins();
 
 	//Menu Music
-	//if (_MenuMusicBuffer.loadFromFile("Resources/Sound/Music/menu1.ogg")) {
-	if (_MenuMusicBuffer.loadFromFile("")) {
+	if (_MenuMusicBuffer.loadFromFile("Resources/Sound/Music/menu1.ogg")) {
+	//if (_MenuMusicBuffer.loadFromFile("")) {
 		_MenuMusic.setBuffer(_MenuMusicBuffer);
 	}
 }

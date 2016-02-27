@@ -11,6 +11,7 @@ public:
 
 	sf::FloatRect getRect();
 	MenuResult getAction() { return _Action; }
+	bool getHoverState() { return _Hovering; }
 
 	void switchHoverState(bool hoverState);
 private:

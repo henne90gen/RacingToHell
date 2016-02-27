@@ -1,6 +1,7 @@
 #pragma once
 #include "Menu/MenuItem.h"
 #include "Menu/MenuResults.h"
+#include "StandardCursor.h"
 
 class Menu
 {
@@ -20,5 +21,7 @@ protected:
 	sf::Font _Font;
 	sf::Text _Text;
 	sf::Event _Event;
+
+	bool MenuItemHovered();
 };
 

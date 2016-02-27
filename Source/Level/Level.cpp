@@ -3,7 +3,7 @@
 
 Level::Level() : _Difficulty(1), _LevelUp(5)
 {
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < 3; i++) {
 		sf::Texture* texture = new sf::Texture();
 		(*texture).loadFromFile("Resources/Texture/Road/Road" + std::to_string(i + 1) + ".jpg");
 		_Textures.push_back(texture);
@@ -74,7 +74,7 @@ void Level::LevelUp()
 {
 	_Timer.restart();
 	_Difficulty++;
-	if (_Difficulty < 3) {
+	if (_Difficulty < 4) {
 		_Sprite.setTexture((*_Textures.at(_Difficulty - 1)));
 	}
 }

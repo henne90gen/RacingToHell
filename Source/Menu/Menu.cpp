@@ -9,7 +9,7 @@ Menu::Menu()
 
 Menu::~Menu()
 {
-	}
+}
 
 void Menu::checkMouseHover(sf::RenderWindow& Window)
 {
@@ -23,4 +23,28 @@ void Menu::checkMouseHover(sf::RenderWindow& Window)
 			_MenuItems[i]->switchHoverState(false);
 		}
 	}
+
+	if (MenuItemHovered())
+	{
+		sf::StandardCursor Cursor(sf::StandardCursor::HAND);
+		Cursor.set(Window.getSystemHandle());
+	}
+	else
+	{
+		sf::StandardCursor Cursor(sf::StandardCursor::NORMAL);
+		Cursor.set(Window.getSystemHandle());
+	}
+}
+
+bool Menu::MenuItemHovered()
+{
+	for (unsigned int i = 0; i < _MenuItems.size(); i++)
+	{
+		if (_MenuItems[i]->getHoverState())
+		{
+			return true;
+		}
+	}
+
+	return false;
 }

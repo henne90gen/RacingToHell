@@ -232,6 +232,8 @@ void Framework::load()
 	}
 	_GameObjectContainer.setCarSkins(_CarSkins);
 	_GameObjectContainer.resetGameObjects(0);
+
+	
 }
 
 void Framework::resetGame() 

@@ -34,9 +34,8 @@ GameOverScreen::GameOverScreen()
 
 		//_GOTLine4.setOrigin(_GOTLine4.getLocalBounds().left + _GOTLine4.getLocalBounds().width / 2.0f, _GOTLine4.getLocalBounds().top + _GOTLine4.getLocalBounds().height / 2.0f);
 		
-
 		_Textbox = new Textbox(sf::Vector2f(_GOTLine4.getPosition().x + _GOTLine4.getLocalBounds().width + 20, _GOTLine4.getPosition().y + 10), sf::Vector2f(450 - _GOTLine4.getLocalBounds().width - 20, _GOTLine4.getLocalBounds().height), 25, "Test");
-		_Highscore = new Highscore(sf::Vector2f(SCREENWIDTH / 2 - 225, 225));
+		
 	}
 }
 
@@ -85,4 +84,9 @@ GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
 		_Textbox->handleEvent(_Event);
 	}
 	return GameState::GameOver;
+}
+
+void GameOverScreen::loadHighScores()
+{
+	_Highscore = new Highscore(sf::Vector2f(SCREENWIDTH / 2 - 225, 225));
 }

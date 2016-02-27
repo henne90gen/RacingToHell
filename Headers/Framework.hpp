@@ -49,8 +49,8 @@ private:
 	//Functions
 	void update(float Frametime);
 	void handleEvents();
-	void handleEventLevelUp();
 	void playSounds();
+	void setVolume(float Volume);
 	void render();
 	void measureTime();
 	void loadCarSkins();

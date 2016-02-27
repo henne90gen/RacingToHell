@@ -11,6 +11,7 @@ public:
 	void playMusic();
 	void stopMusic();
 	void pauseMusic();
+	void setVolume(float Volume);
 
 	void resetLevel();
 	void LevelUp();

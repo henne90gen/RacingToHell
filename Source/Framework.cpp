@@ -11,8 +11,9 @@ Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameState(GameState::
 	if (_MenuMusicBuffer.loadFromFile("Resources/Sound/Music/menu1.ogg")) {
 	//if (_MenuMusicBuffer.loadFromFile("")) {
 		_MenuMusic.setBuffer(_MenuMusicBuffer);
-		_MenuMusic.setVolume(_OptionsMenu.getVolume());
 	}
+	setVolume(_OptionsMenu.getVolume());
+
 	_GameObjectContainer.resetGameObjects(0);
 }
 
@@ -28,41 +29,13 @@ void Framework::run()
 {
 	while (_IsRunning)
 	{
+		update(_FrameTime);
+		
 		render();
 
 		handleEvents();
 
 		playSounds();
-
-		switch (_GameState) {
-		case GameState::Running:
-			update(_FrameTime);
-			break;
-		case GameState::LevelUp:
-			handleEventLevelUp();
-			if (_LevelUpScreen.update()) {
-				_Clock.restart();
-				_Level.resetTimer();
-				dynamic_cast<PlayerCar*>(_GameObjectContainer.getPlayerCar())->resetMovement();
-				_GameState = GameState::Running;
-			}
-			break;
-		case GameState::Main:
-			_Level.update(_FrameTime, false);
-			break;
-		case GameState::Pause:
-			_Level.update(_FrameTime, false);
-			break;
-		case GameState::GameOver:
-			_GameOverScreen.update();
-		case GameState::Options:
-			_Level.update(_FrameTime, false);
-			break;
-		case GameState::Exiting:
-			_IsRunning = false;
-			_RenderWindow.close();
-			break;
-		}
 
 		measureTime();
 	}
@@ -70,7 +43,6 @@ void Framework::run()
 
 void Framework::render()
 {
-	_RenderWindow.clear(sf::Color::Cyan);
 	_Level.render(_RenderWindow);
 	_GameObjectContainer.render(_RenderWindow);
 	
@@ -87,12 +59,16 @@ void Framework::render()
 	case GameState::Options:
 		_OptionsMenu.render(_RenderWindow);
 		break;
+	case GameState::LevelUp:
+		_LevelUpScreen.render(_RenderWindow);
+		break;
 	case GameState::GameOver:
 		_GameOverScreen.render(_RenderWindow, _Score);
 		break;
 	}
+
 	_RenderWindow.display();
-	}
+}
 
 void Framework::playSounds() {
 	if (_GameState == GameState::Running) {
@@ -114,23 +90,53 @@ void Framework::playSounds() {
 	}
 }
 
+void Framework::setVolume(float Volume)
+{
+	_MenuMusic.setVolume(Volume);
+	_Level.setVolume(Volume);
+}
+
 void Framework::update(float FrameTime)
 {
-	if (_Level.update(FrameTime, _GameState == GameState::Running)) {
-
-		if (_GameObjectContainer.emptyScreen()) {
-			_Level.LevelUp();
-			_LevelUpScreen.LevelUp();
-			_GameState = GameState::LevelUp;
+	switch (_GameState) {
+	case GameState::Running:
+		if (_Level.update(FrameTime, _GameState == GameState::Running)) {
+			if (_GameObjectContainer.emptyScreen()) {
+				_Level.LevelUp();
+				_LevelUpScreen.LevelUp();
+				_GameState = GameState::LevelUp;
+			}
 		}
+		_GameObjectContainer.update(FrameTime, _Level.getDifficulty(), _Level.getRoadSpeed());
+		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar()->getHealth(), _GameObjectContainer.getPlayerCar()->getMaxHealth(), _GameObjectContainer.getPlayerCar()->getEnergy(), _GameObjectContainer.getPlayerCar()->getMaxEnergy());
+		if (!_GameObjectContainer.playerIsAlive()) {
+			_GameState = GameState::GameOver;
+		}
+		_Score += _GameObjectContainer.getCarScore();
+		_Score += 10 * _Level.getDifficulty() * FrameTime;
+		break;
+	case GameState::LevelUp:
+		if (_LevelUpScreen.update()) {
+			_Clock.restart();
+			_Level.resetTimer();
+			dynamic_cast<PlayerCar*>(_GameObjectContainer.getPlayerCar())->resetMovement();
+			_GameState = GameState::Running;
+		}
+		break;
+	case GameState::Main:
+		_Level.update(_FrameTime, false);
+		break;
+	case GameState::GameOver:
+		_GameOverScreen.update();
+		break;
+	case GameState::Options:
+		_Level.update(_FrameTime, false);
+		break;
+	case GameState::Exiting:
+		_IsRunning = false;
+		_RenderWindow.close();
+		break;
 	}
-	_GameObjectContainer.update(FrameTime, _Level.getDifficulty(), _Level.getRoadSpeed());
-	if (!_GameObjectContainer.playerIsAlive()) {
-		_GameState = GameState::GameOver;
-	}
-	_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar()->getHealth(), _GameObjectContainer.getPlayerCar()->getMaxHealth(), _GameObjectContainer.getPlayerCar()->getEnergy(), _GameObjectContainer.getPlayerCar()->getMaxEnergy());
-	_Score += _GameObjectContainer.getCarScore();
-	_Score += 10 * _Level.getDifficulty() * FrameTime;
 }
 
 void Framework::handleEvents()
@@ -146,11 +152,11 @@ void Framework::handleEvents()
 				else {
 					_GameObjectContainer.handleEvents(_Event);
 				}
-				}
-				else if (_Event.type == sf::Event::KeyReleased || _Event.type == sf::Event::MouseButtonPressed) {
+			}
+			else if (_Event.type == sf::Event::KeyReleased || _Event.type == sf::Event::MouseButtonPressed) {
 				_GameObjectContainer.handleEvents(_Event);
-				}
-				else if (_Event.type == sf::Event::Closed) {
+			}
+			else if (_Event.type == sf::Event::Closed) {
 				_GameState = GameState::Exiting;
 			}
 		}
@@ -158,14 +164,21 @@ void Framework::handleEvents()
 	case GameState::Pause:
 		_OptionsMenu.setReturnState(_GameState);
 		_GameState = _PauseMenu.handleEvents(_RenderWindow);
+		if (_GameState == GameState::Running) {
+			_Clock.restart();
+			_Level.resetTimer();
+		}
 		break;
 	case GameState::Main:
 		_OptionsMenu.setReturnState(_GameState);
 		_GameState = _MainMenu.handleEvents(_RenderWindow, _CurrentCarSkinIndex);
-		if (_GameState == GameState::Running) { _Clock.restart(); }
-			if (_CurrentCarSkinIndex < 0) {
-				_CurrentCarSkinIndex = _CarSkins.size() - 1;
-			}
+		if (_GameState == GameState::Running) { 
+			_Clock.restart();
+			_Level.resetTimer();
+		}
+		if (_CurrentCarSkinIndex < 0) {
+			_CurrentCarSkinIndex = _CarSkins.size() - 1;
+		}
 		else if (_CurrentCarSkinIndex >= _CarSkins.size()) {
 			_CurrentCarSkinIndex = 0;
 		}
@@ -174,10 +187,14 @@ void Framework::handleEvents()
 		break;
 	case GameState::Options:
 		_GameState = _OptionsMenu.handleEvents(_RenderWindow);
-		_MenuMusic.setVolume(_OptionsMenu.getVolume());
+		setVolume(_OptionsMenu.getVolume());
 		break;
 	case GameState::LevelUp:
-		handleEventLevelUp();
+		while (_RenderWindow.pollEvent(_Event)) {
+			if (_Event.type == sf::Event::Closed) {
+				_GameState = GameState::Exiting;
+			}
+		}
 		break;
 	case GameState::GameOver:
 		_GameState = _GameOverScreen.handleEvents(_RenderWindow);
@@ -185,15 +202,6 @@ void Framework::handleEvents()
 			resetGame();
 		}
 		break;
-	}
-}
-
-void Framework::handleEventLevelUp()
-{
-	while (_RenderWindow.pollEvent(_Event)) {
-		if (_Event.type == sf::Event::Closed) {
-			_GameState = GameState::Exiting;
-		}
 	}
 }
 

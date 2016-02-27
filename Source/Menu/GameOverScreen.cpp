@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Menu\GameOverScreen.h"
 
-GameOverScreen::GameOverScreen() : _IsRendered(false)
+GameOverScreen::GameOverScreen()
 {
 	if (_Font.loadFromFile("Resources/Font/arial.ttf")) {
 		_GOTLine1.setFont(_Font);
@@ -51,18 +51,15 @@ GameOverScreen::~GameOverScreen()
 
 void GameOverScreen::render(sf::RenderWindow& Window, int score)
 {
-	if (!_IsRendered) {
-		_GOTLine3.setString("Your score was: " + std::to_string(score));
+	_GOTLine3.setString("Your score was: " + std::to_string(score));
 
-		Window.draw(_GOTLine1);
-		Window.draw(_GOTLine2);
-		Window.draw(_GOTLine3);
-		Window.draw(_GOTLine4);
+	Window.draw(_GOTLine1);
+	Window.draw(_GOTLine2);
+	Window.draw(_GOTLine3);
+	Window.draw(_GOTLine4);
 
-		_Textbox->render(Window);
-		_Highscore->render(Window);
-		_IsRendered = true;
-	}
+	_Textbox->render(Window);
+	_Highscore->render(Window);
 }
 
 void GameOverScreen::update()

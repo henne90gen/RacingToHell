@@ -14,14 +14,17 @@ Highscore::Highscore(sf::Vector2f Position)
 	_HeadlineName.setStyle(sf::Text::Style::Bold);
 	_HeadlineName.setPosition(Position + sf::Vector2f(20,20));
 	_HeadlineName.setString("Name");
+	_HeadlineNameHeight = _HeadlineName.getLocalBounds().height;
 
 	_HeadlineLevel = _HeadlineName;
 	_HeadlineLevel.setPosition(Position + sf::Vector2f(_Background.getSize().x / 2 - _HeadlineLevel.getLocalBounds().width / 2, 20));
 	_HeadlineLevel.setString("Level");
+	_HeadlineLevelWidth = _HeadlineLevel.getLocalBounds().width;
 
 	_HeadlineScore = _HeadlineName;
 	_HeadlineScore.setPosition(Position + sf::Vector2f(_Background.getSize().x - _HeadlineScore.getLocalBounds().width - 20, 20));
 	_HeadlineScore.setString("Score");
+	_HeadlineScoreWidth = _HeadlineScore.getLocalBounds().width;
 
 	_Filename = "Resources\\Data\\Highscore.txt";
 
@@ -51,17 +54,17 @@ void Highscore::render(sf::RenderWindow& RenderWindow)
 		TextName.setFont(_Font);
 		TextName.setCharacterSize(25);
 		TextName.setString(_PlayerList[i].Name);
-		TextName.setPosition(_HeadlineName.getPosition() + sf::Vector2f(0, _HeadlineName.getLocalBounds().height + 30 + i * (TextName.getLocalBounds().height + 20)));
+		TextName.setPosition(_HeadlineName.getPosition() + sf::Vector2f(0, _HeadlineNameHeight + 30 + i * (TextName.getLocalBounds().height + 20)));
 	
 		TextLevel.setFont(_Font);
 		TextLevel.setCharacterSize(25);
 		TextLevel.setString(std::to_string(_PlayerList[i].Level));
-		TextLevel.setPosition(_HeadlineLevel.getPosition() + sf::Vector2f(_HeadlineLevel.getLocalBounds().width - TextLevel.getLocalBounds().width, _HeadlineName.getLocalBounds().height + 30 + i * (TextName.getLocalBounds().height + 20)));
+		TextLevel.setPosition(_HeadlineLevel.getPosition() + sf::Vector2f(_HeadlineLevelWidth - TextLevel.getLocalBounds().width, _HeadlineNameHeight + 30 + i * (TextName.getLocalBounds().height + 20)));
 
 		TextScore.setFont(_Font);
 		TextScore.setCharacterSize(25);
 		TextScore.setString(std::to_string(_PlayerList[i].Score));
-		TextScore.setPosition(_HeadlineScore.getPosition() + sf::Vector2f(_HeadlineScore.getLocalBounds().width - TextScore.getLocalBounds().width, _HeadlineName.getLocalBounds().height + 30 + i * (TextName.getLocalBounds().height + 20)));
+		TextScore.setPosition(_HeadlineScore.getPosition() + sf::Vector2f(_HeadlineScoreWidth - TextScore.getLocalBounds().width, _HeadlineNameHeight + 30 + i * (TextName.getLocalBounds().height + 20)));
 
 
 		RenderWindow.draw(TextName);

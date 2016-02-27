@@ -33,6 +33,8 @@ private:
 	sf::Text _HeadlineLevel;
 	sf::Text _HeadlineScore;
 
+	float _HeadlineNameHeight, _HeadlineLevelWidth, _HeadlineScoreWidth;
+
 	std::vector<Player> _PlayerList;
 	std::string _Filename;
 

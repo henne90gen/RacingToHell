@@ -1,11 +1,18 @@
 #include "stdafx.h"
 #include "Framework.hpp"
 
-Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameState(GameState::MainMenu)
+Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameState(GameState::Main)
 {
 	_RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell");
 	_RenderWindow.setFramerateLimit(300);
 	loadCarSkins();
+
+	//Menu Music
+	if (_MenuMusicBuffer.loadFromFile("Resources/Sound/Music/menu1.ogg")) {
+	//if (_MenuMusicBuffer.loadFromFile("")) {
+		_MenuMusic.setBuffer(_MenuMusicBuffer);
+		_MenuMusic.setVolume(_OptionsMenu.getVolume());
+	}
 	_GameObjectContainer.resetGameObjects(0);
 }
 
@@ -22,11 +29,14 @@ void Framework::run()
 	while (_IsRunning)
 	{
 		render();
-		
+
+		handleEvents();
+
+		playSounds();
+
 		switch (_GameState) {
 		case GameState::Running:
 			update(_FrameTime);
-			handleEvent();
 			break;
 		case GameState::LevelUp:
 			handleEventLevelUp();
@@ -37,16 +47,16 @@ void Framework::run()
 				_GameState = GameState::Running;
 			}
 			break;
-		case GameState::MainMenu:
+		case GameState::Main:
 			_Level.update(_FrameTime, false);
-			handleEventMenu();
 			break;
-		case GameState::Pausing:
-			handleEventMenu();
+		case GameState::Pause:
+			_Level.update(_FrameTime, false);
 			break;
 		case GameState::GameOver:
-			handleEventGameOver();
 			_GameOverScreen.update();
+		case GameState::Options:
+			_Level.update(_FrameTime, false);
 			break;
 		case GameState::Exiting:
 			_IsRunning = false;
@@ -63,19 +73,45 @@ void Framework::render()
 	_RenderWindow.clear(sf::Color::Cyan);
 	_Level.render(_RenderWindow);
 	_GameObjectContainer.render(_RenderWindow);
-	if (_GameState == GameState::Running) {
+	
+	switch (_GameState) {
+	case GameState::Running:
 		_HeadsUpDisplay.render(_RenderWindow);
+		break;
+	case GameState::Main:
+		_MainMenu.render(_RenderWindow, _CurrentCarSkinIndex);
+		break;
+	case GameState::Pause:
+		_PauseMenu.render(_RenderWindow);
+		break;
+	case GameState::Options:
+		_OptionsMenu.render(_RenderWindow);
+		break;
+	case GameState::GameOver:
+		_GameOverScreen.render(_RenderWindow, _Score);
+		break;
 	}
-	else if (_GameState == GameState::MainMenu || _GameState == GameState::Pausing) {
-		_Menu.render(_RenderWindow, _CurrentCarSkinIndex, _GameState == GameState::Pausing, _HeadsUpDisplay);
+	_RenderWindow.display();
+	}
+
+void Framework::playSounds() {
+	if (_GameState == GameState::Running) {
+		_MenuMusic.stop();
+		_Level.playMusic();
+	}
+	else if (_GameState == GameState::Main || _GameState == GameState::Pause || _GameState == GameState::Options) {
+		_Level.pauseMusic();
+		if (_MenuMusic.getStatus() == sf::Sound::Stopped || _MenuMusic.getStatus() == sf::Sound::Paused) {
+			_MenuMusic.play(); 
+		}
 	}
 	else if (_GameState == GameState::GameOver) {
-		_GameOverScreen.render(_RenderWindow, _Score);
+		_Level.stopMusic();
+		//_GameOverScreen.playSounds();
 	}
 	else if (_GameState == GameState::LevelUp) {
 		_LevelUpScreen.render(_RenderWindow);
 	}
-	_RenderWindow.display();
 }
 
 void Framework::update(float FrameTime)
@@ -97,98 +133,57 @@ void Framework::update(float FrameTime)
 	_Score += 10 * _Level.getDifficulty() * FrameTime;
 }
 
-void Framework::handleEvent()
+void Framework::handleEvents()
 {
-	while (_RenderWindow.pollEvent(_Event))
-	{
-		if (_Event.type == sf::Event::KeyPressed) {
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-				_GameState = GameState::Pausing;
-			}
-			else {
-				_GameObjectContainer.handleEvents(_Event);
-			}
-		} else if (_Event.type == sf::Event::KeyReleased || _Event.type == sf::Event::MouseButtonPressed) {
-			_GameObjectContainer.handleEvents(_Event);
-		} else if (_Event.type == sf::Event::Closed) {
-			_GameState = GameState::Exiting;
-		}
-	}
-}
-
-void Framework::handleEventMenu()
-{
-	while (_RenderWindow.pollEvent(_Event)) {
-		_Menu.checkMouseHover(_RenderWindow);
-		if (_Event.type == sf::Event::MouseButtonPressed) {
-			sf::Vector2f MousePos = sf::Vector2f(_Event.mouseButton.x, _Event.mouseButton.y);
-			for (int i = 0; i < _Menu.getMenuItems().size(); i++) {
-				sf::FloatRect rect = _Menu.getMenuItems()[i]->getRect();
-				if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width) {
-					switch (_Menu.getMenuItems()[i]->getAction()) {
-					case MenuResult::Resume:
-						_Clock.restart();
-						_Level.resetTimer();
-						_GameState = GameState::Running;
-						break;
-					case MenuResult::Nothing:
-						_GameState = GameState::Pausing;
-						break;
-					case MenuResult::PreviousSkin:
-						if (_GameState == GameState::MainMenu) {
-							_CurrentCarSkinIndex--;
-							if (_CurrentCarSkinIndex < 0) {
-								_CurrentCarSkinIndex = _CarSkins.size() - 1;
-							}
-							_GameObjectContainer.getPlayerCar()->setSkin(_CarSkins.at(_CurrentCarSkinIndex));
-							_GameObjectContainer.getPlayerCar()->setStats(_CurrentCarSkinIndex);
-						}
-						break;
-					case MenuResult::NextSkin:
-						if (_GameState == GameState::MainMenu) {
-							_CurrentCarSkinIndex++;
-							if (_CurrentCarSkinIndex >= _CarSkins.size()) {
-								_CurrentCarSkinIndex = 0;
-							}
-							_GameObjectContainer.getPlayerCar()->setSkin(_CarSkins.at(_CurrentCarSkinIndex));
-							_GameObjectContainer.getPlayerCar()->setStats(_CurrentCarSkinIndex);
-						}
-						break;
-					case MenuResult::Exit:
-						_GameState = GameState::Exiting;
-						break;
-					}
+	switch (_GameState) {
+	case GameState::Running:
+		while (_RenderWindow.pollEvent(_Event))
+		{
+			if (_Event.type == sf::Event::KeyPressed) {
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+						_GameState = GameState::Pause;
 				}
+				else {
+					_GameObjectContainer.handleEvents(_Event);
+				}
+				}
+				else if (_Event.type == sf::Event::KeyReleased || _Event.type == sf::Event::MouseButtonPressed) {
+				_GameObjectContainer.handleEvents(_Event);
+				}
+				else if (_Event.type == sf::Event::Closed) {
+				_GameState = GameState::Exiting;
 			}
 		}
-		else if (_Event.type == sf::Event::Closed) {
-			_GameState = GameState::Exiting;
-		}
-	}
-}
-
-void Framework::handleEventGameOver()
-{
-	MenuResult result = MenuResult::Nothing;
-	while (_RenderWindow.pollEvent(_Event)) {
-		_GameOverScreen.handleEvent(_Event);
-
-		if (_Event.type == sf::Event::KeyPressed) {
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-				result = MenuResult::Restart;
-			}
-		}
-		else if (_Event.type == sf::Event::Closed) {
-			result = MenuResult::Exit;
-		}
-	}
-	switch (result) {
-	case MenuResult::Restart:
-		resetGame();
-		_GameState = GameState::MainMenu;
 		break;
-	case MenuResult::Exit:
-		_GameState = GameState::Exiting;
+	case GameState::Pause:
+		_OptionsMenu.setReturnState(_GameState);
+		_GameState = _PauseMenu.handleEvents(_RenderWindow);
+		break;
+	case GameState::Main:
+		_OptionsMenu.setReturnState(_GameState);
+		_GameState = _MainMenu.handleEvents(_RenderWindow, _CurrentCarSkinIndex);
+		if (_GameState == GameState::Running) { _Clock.restart(); }
+			if (_CurrentCarSkinIndex < 0) {
+				_CurrentCarSkinIndex = _CarSkins.size() - 1;
+			}
+		else if (_CurrentCarSkinIndex >= _CarSkins.size()) {
+			_CurrentCarSkinIndex = 0;
+		}
+		_GameObjectContainer.getPlayerCar()->setSkin(_CarSkins.at(_CurrentCarSkinIndex));
+		_GameObjectContainer.getPlayerCar()->setStats(_CurrentCarSkinIndex);
+		break;
+	case GameState::Options:
+		_GameState = _OptionsMenu.handleEvents(_RenderWindow);
+		_MenuMusic.setVolume(_OptionsMenu.getVolume());
+		break;
+	case GameState::LevelUp:
+		handleEventLevelUp();
+		break;
+	case GameState::GameOver:
+		_GameState = _GameOverScreen.handleEvents(_RenderWindow);
+		if (_GameState == GameState::Main) {
+			resetGame();
+		}
 		break;
 	}
 }

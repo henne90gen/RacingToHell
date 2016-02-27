@@ -67,7 +67,22 @@ void GameOverScreen::update()
 	_Textbox->update();
 }
 
-void GameOverScreen::handleEvent(sf::Event& Event)
+void GameOverScreen::render(sf::RenderWindow & Window)
 {
-	_Textbox->handleEvent(Event);
+}
+
+GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
+{
+	while (Window.pollEvent(_Event)) {
+		if (_Event.type == sf::Event::KeyPressed) {
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+				return GameState::Main;
+			}
+		}
+		else if (_Event.type == sf::Event::Closed) {
+			return GameState::Exiting;
+		}
+		_Textbox->handleEvent(_Event);
+	}
+	return GameState::GameOver;
 }

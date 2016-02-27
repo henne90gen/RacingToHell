@@ -1,17 +1,21 @@
 #pragma once
 
+#include "Menu/Menu.h"
 #include "Textbox.h"
 #include "Highscore.h"
 
-class GameOverScreen
+class GameOverScreen : public Menu
 {
 public:
 	GameOverScreen();
 	~GameOverScreen();
 
 	void render(sf::RenderWindow& Window, int score);
+	void render(sf::RenderWindow& Window);
+	GameState handleEvents(sf::RenderWindow& Window);
+
 	void update();
-	void handleEvent(sf::Event& Event);
+
 private:
 	sf::Font _Font;
 	sf::Text _GameOverText;

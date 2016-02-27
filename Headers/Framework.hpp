@@ -1,15 +1,15 @@
 #pragma once
 
-#include "stdafx.h"
-#include "GameObject\Car.h"
-#include "GameObject\PlayerCar.h"
-#include "GameObject\GameObjectContainer.h"
-#include "Menu\Menu.h"
-#include "Menu\GameOverScreen.h"
-#include "Menu\LevelUpScreen.h"
+#include "GameObject/Car.h"
+#include "GameObject/PlayerCar.h"
+#include "GameObject/GameObjectContainer.h"
+#include "Menu/MainMenu.h"
+#include "Menu/PauseMenu.h"
+#include "Menu/OptionsMenu.h"
+#include "Menu/GameOverScreen.h"
+#include "Menu/LevelUpScreen.h"
 #include "HeadsUpDisplay.h"
-#include "Level\Level.h"
-#include "GameObject\PlayerCar.h"
+#include "Level/Level.h"
 
 class Framework
 {
@@ -20,10 +20,6 @@ public:
 
 	//Functions
 	void run();
-
-	enum GameState {
-		Running, LevelUp, MainMenu, Pausing, GameOver, Exiting
-	};
 
 private:
 	//SFML-Graphics
@@ -37,9 +33,13 @@ private:
 	bool _IsRunning;
 	GameObjectContainer _GameObjectContainer;
 	GameState _GameState;
-	Menu _Menu;
 	std::vector<sf::Texture*> _CarSkins;
 	int _CurrentCarSkinIndex;
+	sf::SoundBuffer _MenuMusicBuffer;
+	sf::Sound _MenuMusic;
+	MainMenu _MainMenu;
+	PauseMenu _PauseMenu;
+	OptionsMenu _OptionsMenu;
 	GameOverScreen _GameOverScreen;
 	LevelUpScreen _LevelUpScreen;
 	HeadsUpDisplay _HeadsUpDisplay;
@@ -48,10 +48,9 @@ private:
 
 	//Functions
 	void update(float Frametime);
-	void handleEvent();
-	void handleEventMenu();
-	void handleEventGameOver();
+	void handleEvents();
 	void handleEventLevelUp();
+	void playSounds();
 	void render();
 	void measureTime();
 	void loadCarSkins();

@@ -1,9 +1,6 @@
 #pragma once
-#include "stdafx.h"
-#include "MenuItem.h"
-#include "MenuResults.h"
-#include "StatBox.h"
-#include "HeadsUpDisplay.h"
+#include "Menu/MenuItem.h"
+#include "Menu/MenuResults.h"
 
 class Menu
 {
@@ -11,19 +8,17 @@ public:
 	Menu();
 	~Menu();
 
-	void render(sf::RenderWindow& Window, int SelectedCar, bool paused, HeadsUpDisplay HUD);
-	void update(float FrameTime);
+	virtual void render(sf::RenderWindow& Window) = 0;
+	virtual GameState handleEvents(sf::RenderWindow& Window) = 0;
 
 	void checkMouseHover(sf::RenderWindow& Window);
 
 	std::vector<MenuItem*>& getMenuItems() { return _MenuItems; }
 
-private:
-	sf::Sprite _CarSkin;
+protected:
 	std::vector<MenuItem*> _MenuItems;
-	sf::Font _MainMenuFont;
-	sf::Text _MainMenuText;
-
-	StatBox* _StatBox;
+	sf::Font _Font;
+	sf::Text _Text;
+	sf::Event _Event;
 };
 

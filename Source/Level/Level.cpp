@@ -10,6 +10,11 @@ Level::Level() : _Difficulty(1), _LevelUp(5)
 	}
 	_Sprite.setTexture((*_Textures.at(0)));
 	_Sprite.setPosition(sf::Vector2f(0, - 1600));
+
+	/*if (_MusicBuffer.loadFromFile("Resources/Sound/Music/level1.ogg")) {
+		_Music.setBuffer(_MusicBuffer);
+		_Music.setVolume(20);
+	}*/
 }
 
 Level::~Level()
@@ -34,14 +39,31 @@ bool Level::update(float FrameTime, bool isRunning)
 		if (_Timer.getElapsedTime().asSeconds() >= _LevelUp)
 		{
 			return true;
-		}
 	}
+}
 	return false;
 }
 
 void Level::render(sf::RenderWindow& RenderWindow)
 {
 	RenderWindow.draw(_Sprite);
+}
+
+void Level::playMusic() 
+{
+	if (_Music.getStatus() == sf::Sound::Stopped || _Music.getStatus() == sf::Sound::Paused) {
+		_Music.play();
+	}
+}
+
+void Level::stopMusic() 
+{
+	_Music.stop();
+}
+
+void Level::pauseMusic()
+{
+	_Music.pause();
 }
 
 void Level::LevelUp()

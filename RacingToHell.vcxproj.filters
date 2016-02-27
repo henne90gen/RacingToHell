@@ -129,6 +129,18 @@
     <ClInclude Include="Headers\Highscore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\GameState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\PauseMenu.h">
+      <Filter>Header Files\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\OptionsMenu.h">
+      <Filter>Header Files\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\MainMenu.h">
+      <Filter>Header Files\Menu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Framework.cpp">
@@ -191,6 +203,15 @@
     <ClCompile Include="Source\StandardCursor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Menu\MainMenu.cpp">
+      <Filter>Source Files\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menu\OptionsMenu.cpp">
+      <Filter>Source Files\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menu\PauseMenu.cpp">
+      <Filter>Source Files\Menu</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Highscore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -198,6 +219,9 @@
   <ItemGroup>
     <None Include="README.md" />
     <None Include=".gitignore" />
+    <None Include="Resources\Sound\Music\level1.ogg">
+      <Filter>Resource Files\Sound\Music</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Texture\TrafficCar\Traffic1.png">
@@ -251,6 +275,18 @@
     <Image Include="Resources\Texture\Object\toolbox.png">
       <Filter>Resource Files\Texture\Addiditonal Object</Filter>
     </Image>
+    <Image Include="Resources\Texture\HUD\HUD_Background.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\HUD\HUD_EnergyIcon.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\HUD\HUD_HealthIcon.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\MainMenu\StatBar.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\Font\arial.ttf">
@@ -259,6 +295,9 @@
   </ItemGroup>
   <ItemGroup>
     <Media Include="Resources\Sound\sample.wav">
+      <Filter>Resource Files\Sound</Filter>
+    </Media>
+    <Media Include="Resources\Sound\shot.wav">
       <Filter>Resource Files\Sound</Filter>
     </Media>
   </ItemGroup>

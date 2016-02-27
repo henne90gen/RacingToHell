@@ -8,6 +8,9 @@ public:
 
 	bool update(float FrameTime, bool isRunning);
 	void render(sf::RenderWindow& RenderWindow);
+	void playMusic();
+	void stopMusic();
+	void pauseMusic();
 
 	void resetLevel();
 	void LevelUp();
@@ -20,6 +23,9 @@ public:
 private:
 	std::vector<sf::Texture*> _Textures;
 	sf::Sprite _Sprite;
+
+	sf::SoundBuffer _MusicBuffer;
+	sf::Sound _Music;
 
 	sf::Clock _Timer;
 

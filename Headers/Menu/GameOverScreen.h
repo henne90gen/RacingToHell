@@ -14,6 +14,8 @@ public:
 	void render(sf::RenderWindow& Window);
 	GameState handleEvents(sf::RenderWindow& Window);
 
+	void loadHighScores();
+
 	void update();
 
 private:

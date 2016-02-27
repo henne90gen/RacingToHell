@@ -251,6 +251,9 @@
     <Media Include="Resources\Sound\sample.wav" />
     <Media Include="Resources\Sound\shot.wav" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\Data\Highscore.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

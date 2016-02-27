@@ -26,20 +26,9 @@ Highscore::Highscore(sf::Vector2f Position)
 	_HeadlineScore.setString("Score");
 	_HeadlineScoreWidth = _HeadlineScore.getLocalBounds().width;
 
-	_Filename = "Resources\\Data\\Highscore.txt";
+	_Filename = "Resources\Data\Highscore.txt";
 
 	loadScoreTable();
-	SortScoreTable();
-	TestPrintPlayers();
-
-	for (unsigned int i = 0; i < _PlayerList.size() * 3; i++)
-	{
-		sf::Text HighscoreText;
-		HighscoreText.setFont(_Font);
-		HighscoreText.setCharacterSize(25);
-
-		_HighscoreTexts.push_back(HighscoreText);
-	}
 }
 
 Highscore::~Highscore()
@@ -105,6 +94,15 @@ void Highscore::loadScoreTable()
 	FileStream.close();
 
 	SortScoreTable();
+
+	for (unsigned int i = 0; i < _PlayerList.size() * 3; i++)
+	{
+		sf::Text HighscoreText;
+		HighscoreText.setFont(_Font);
+		HighscoreText.setCharacterSize(25);
+
+		_HighscoreTexts.push_back(HighscoreText);
+	}
 }
 
 void Highscore::SaveScoreTable()
@@ -133,13 +131,5 @@ std::vector<std::string> Highscore::split(const std::string &s, char delim) {
 		elems.push_back(number);
 	}
 	return elems;
-}
-
-void Highscore::TestPrintPlayers()
-{
-	for (unsigned int i = 0; i < _PlayerList.size(); i++)
-	{
-		std::cout << "Name: " << _PlayerList[i].Name << " Level: " << _PlayerList[i].Level << " Score: " << _PlayerList[i].Score << std::endl;
-	}
 }
 

@@ -21,9 +21,10 @@ private:
 //	sf::StandardCursor _WindowsCursor;
 
 	bool _isFocused, _isDisabled, _ShowCursor;
-	int _MaxLength, _CursorPosition;
+	int _CursorPosition;
 
 	void setCursor();
 
 	bool MouseOverTextbox(sf::Vector2i MousePosition);
+	bool StringTooLarge(std::string str);
 };

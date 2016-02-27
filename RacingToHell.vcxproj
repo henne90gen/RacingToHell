@@ -159,6 +159,7 @@
     <ClInclude Include="Headers\GameObject\Car.h" />
     <ClInclude Include="Headers\GameObject\EnergyCanister.h" />
     <ClInclude Include="Headers\GameObject\GameObjectContainer.h" />
+    <ClInclude Include="Headers\Highscore.h" />
     <ClInclude Include="Headers\Menu\GameOverScreen.h" />
     <ClInclude Include="Headers\HeadsUpDisplay.h" />
     <ClInclude Include="Headers\Level\Level.h" />
@@ -179,6 +180,7 @@
     <ClInclude Include="Headers\Menu\LevelUpScreen.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Highscore.cpp" />
     <ClCompile Include="Source\Menu\LevelUpScreen.cpp" />
     <ClCompile Include="Source\GameObject\AICar.cpp" />
     <ClCompile Include="Source\GameObject\Bullet.cpp" />

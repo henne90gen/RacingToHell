@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Textbox.h"
+#include "Highscore.h"
 
 class GameOverScreen
 {
@@ -19,7 +20,9 @@ private:
 	sf::Text _GOTLine1;
 	sf::Text _GOTLine2;
 	sf::Text _GOTLine3;
+	sf::Text _GOTLine4;
 
 	Textbox* _Textbox;
+	Highscore* _Highscore;
 };
 

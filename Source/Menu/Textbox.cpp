@@ -3,7 +3,7 @@
 
 Textbox::Textbox(sf::Vector2f Position, sf::Vector2f Size, int CharacterSize, std::string Text)
 	: _FillColor(sf::Color(255, 255, 255)), _FillColorDisabled(sf::Color(140, 140, 140)), _OutlineColor(sf::Color(0, 0, 0)), _OutlineColorFocused(sf::Color(0, 150, 205)), _TextColor(sf::Color(0, 0, 0)),
-	_isDisabled(false), _isFocused(false), _ShowCursor(true), _CursorPosition(0), _MaxLength(7)
+	_isDisabled(false), _isFocused(false), _ShowCursor(true), _CursorPosition(0)
 {
 	_Font.loadFromFile("Resources\\Font\\arial.ttf");
 
@@ -124,21 +124,29 @@ void Textbox::handleEvent(sf::Event& Event)
 	{
 		if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::RControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt) && !sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt))
 		{
-			if (_Text.getString().getSize() < _MaxLength)
+		
+			if (Event.key.code < 26)
 			{
-				if (Event.key.code < 26)
+				std::string newString = _Text.getString().substring(0, _CursorPosition) + (char)(Event.key.code + 97 - 32 * (int)(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition);
+
+				if (!StringTooLarge(newString))
 				{
-					_Text.setString(_Text.getString().substring(0, _CursorPosition) + (char)(Event.key.code + 97 - 32 * (int)(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition));
-					_CursorPosition++;
-					setCursor();
-				}
-				else if (Event.key.code < 36 && !sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-				{
-					_Text.setString(_Text.getString().substring(0, _CursorPosition) + (char)(Event.key.code + 22) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition));
+					_Text.setString(newString);
 					_CursorPosition++;
 					setCursor();
 				}
 			}
+			else if (Event.key.code < 36 && !sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+			{
+				std::string newString = _Text.getString().substring(0, _CursorPosition) + (char)(Event.key.code + 22) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition);
+				if (!StringTooLarge(newString))
+				{
+					_Text.setString(newString);
+					_CursorPosition++;
+					setCursor();
+				}
+			}
+			
 
 			if (Event.key.code == 59 && _Text.getString().getSize() > 0 && _CursorPosition > 0)
 			{
@@ -167,10 +175,18 @@ void Textbox::setCursor()
 	sf::Text TmpText = _Text;
 	TmpText.setString(_Text.getString().substring(0, _CursorPosition));
 
-	_Cursor.setPosition(_Text.getPosition() + sf::Vector2f(TmpText.getLocalBounds().width, 4));
+	_Cursor.setPosition(_Text.getPosition() + sf::Vector2f(TmpText.getLocalBounds().width + 1, 4));
 }
 
 bool Textbox::MouseOverTextbox(sf::Vector2i MousePosition)
 {
 	return MousePosition.x >= _Box.getPosition().x && MousePosition.x < _Box.getPosition().x + _Box.getSize().x && MousePosition.y > _Box.getPosition().y && MousePosition.y < _Box.getPosition().y + _Box.getSize().y;
+}
+
+bool Textbox::StringTooLarge(std::string str)
+{
+	sf::Text TmpText = _Text;
+	TmpText.setString(str);
+
+	return TmpText.getLocalBounds().width > _Box.getSize().x - 4;
 }

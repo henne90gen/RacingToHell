@@ -7,6 +7,7 @@
 #include "Menu/PauseMenu.h"
 #include "Menu/OptionsMenu.h"
 #include "Menu/GameOverScreen.h"
+#include "Menu/LoadingScreen.h"
 #include "Menu/LevelUpScreen.h"
 #include "HeadsUpDisplay.h"
 #include "Level/Level.h"
@@ -41,6 +42,7 @@ private:
 	PauseMenu _PauseMenu;
 	OptionsMenu _OptionsMenu;
 	GameOverScreen _GameOverScreen;
+	LoadingScreen _LoadingScreen;
 	LevelUpScreen _LevelUpScreen;
 	HeadsUpDisplay _HeadsUpDisplay;
 	Level _Level;

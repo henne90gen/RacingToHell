@@ -16,6 +16,8 @@ public:
 	void resetLevel();
 	void LevelUp();
 
+	void load();
+
 	int getDifficulty() { return _Difficulty; }
 	int getRoadSpeed() { return (100 * _Difficulty + 100); }
 

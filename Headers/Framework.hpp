@@ -55,6 +55,6 @@ private:
 	void setVolume(float Volume);
 	void render();
 	void measureTime();
-	void loadCarSkins();
+	void load();
 	void resetGame();
 };

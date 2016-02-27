@@ -1,20 +1,10 @@
 #include "stdafx.h"
 #include "Framework.hpp"
 
-Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameState(GameState::Main)
+Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameState(GameState::Loading)
 {
 	_RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell", sf::Style::Close);
 	_RenderWindow.setFramerateLimit(300);
-	loadCarSkins();
-
-	//Menu Music
-	if (_MenuMusicBuffer.loadFromFile("Resources/Sound/Music/menu1.ogg")) {
-	//if (_MenuMusicBuffer.loadFromFile("")) {
-		_MenuMusic.setBuffer(_MenuMusicBuffer);
-	}
-	setVolume(_OptionsMenu.getVolume());
-
-	_GameObjectContainer.resetGameObjects(0);
 }
 
 Framework::~Framework()
@@ -29,11 +19,11 @@ void Framework::run()
 {
 	while (_IsRunning)
 	{
-		update(_FrameTime);
-		
 		render();
 
 		handleEvents();
+		
+		update(_FrameTime);
 
 		playSounds();
 
@@ -43,9 +33,11 @@ void Framework::run()
 
 void Framework::render()
 {
-	_Level.render(_RenderWindow);
-	_GameObjectContainer.render(_RenderWindow);
-	
+	if (_GameState != GameState::Loading) {
+		_Level.render(_RenderWindow);
+		_GameObjectContainer.render(_RenderWindow);
+	}
+
 	switch (_GameState) {
 	case GameState::Running:
 		_HeadsUpDisplay.render(_RenderWindow);
@@ -64,6 +56,9 @@ void Framework::render()
 		break;
 	case GameState::GameOver:
 		_GameOverScreen.render(_RenderWindow, _Score);
+		break;
+	case GameState::Loading:
+		_LoadingScreen.render(_RenderWindow);
 		break;
 	}
 
@@ -131,6 +126,10 @@ void Framework::update(float FrameTime)
 		break;
 	case GameState::Options:
 		_Level.update(_FrameTime, false);
+		break;
+	case GameState::Loading:
+		load();
+		_GameState = GameState::Main;
 		break;
 	case GameState::Exiting:
 		_IsRunning = false;
@@ -216,8 +215,15 @@ void Framework::measureTime()
 	}
 }
 
-void Framework::loadCarSkins()
+void Framework::load()
 {
+	if (_MenuMusicBuffer.loadFromFile("Resources/Sound/Music/menu1.ogg")) {
+		_MenuMusic.setBuffer(_MenuMusicBuffer);
+	}
+	setVolume(_OptionsMenu.getVolume());
+	
+	_Level.load();
+
 	for (unsigned int i = 1; i < 7; i++) {
 		sf::Texture* texture = new sf::Texture();
 		if (texture->loadFromFile("Resources/Texture/PlayerCar/playercar" + std::to_string(i) + ".png")) {
@@ -225,6 +231,7 @@ void Framework::loadCarSkins()
 		}
 	}
 	_GameObjectContainer.setCarSkins(_CarSkins);
+	_GameObjectContainer.resetGameObjects(0);
 }
 
 void Framework::resetGame() 

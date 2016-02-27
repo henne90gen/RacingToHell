@@ -31,6 +31,15 @@ Highscore::Highscore(sf::Vector2f Position)
 	loadScoreTable();
 	SortScoreTable();
 	TestPrintPlayers();
+
+	for (unsigned int i = 0; i < _PlayerList.size() * 3; i++)
+	{
+		sf::Text HighscoreText;
+		HighscoreText.setFont(_Font);
+		HighscoreText.setCharacterSize(25);
+
+		_HighscoreTexts.push_back(HighscoreText);
+	}
 }
 
 Highscore::~Highscore()
@@ -47,29 +56,18 @@ void Highscore::render(sf::RenderWindow& RenderWindow)
 	
 	for (unsigned int i = 0; i < _PlayerList.size(); i++)
 	{
-		sf::Text TextName;
-		sf::Text TextLevel;
-		sf::Text TextScore;
+		_HighscoreTexts[i].setString(_PlayerList[i].Name);
+		_HighscoreTexts[i].setPosition(_HeadlineName.getPosition() + sf::Vector2f(0, _HeadlineNameHeight + 30 + i * (_HighscoreTexts[i].getLocalBounds().height + 20)));
 
-		TextName.setFont(_Font);
-		TextName.setCharacterSize(25);
-		TextName.setString(_PlayerList[i].Name);
-		TextName.setPosition(_HeadlineName.getPosition() + sf::Vector2f(0, _HeadlineNameHeight + 30 + i * (TextName.getLocalBounds().height + 20)));
-	
-		TextLevel.setFont(_Font);
-		TextLevel.setCharacterSize(25);
-		TextLevel.setString(std::to_string(_PlayerList[i].Level));
-		TextLevel.setPosition(_HeadlineLevel.getPosition() + sf::Vector2f(_HeadlineLevelWidth - TextLevel.getLocalBounds().width, _HeadlineNameHeight + 30 + i * (TextName.getLocalBounds().height + 20)));
+		_HighscoreTexts[i + _PlayerList.size()].setString(std::to_string(_PlayerList[i].Level));
+		_HighscoreTexts[i + _PlayerList.size()].setPosition(_HeadlineLevel.getPosition() + sf::Vector2f(_HeadlineLevelWidth - _HighscoreTexts[i + _PlayerList.size()].getLocalBounds().width, _HeadlineNameHeight + 30 + i * (_HighscoreTexts[i].getLocalBounds().height + 20)));
 
-		TextScore.setFont(_Font);
-		TextScore.setCharacterSize(25);
-		TextScore.setString(std::to_string(_PlayerList[i].Score));
-		TextScore.setPosition(_HeadlineScore.getPosition() + sf::Vector2f(_HeadlineScoreWidth - TextScore.getLocalBounds().width, _HeadlineNameHeight + 30 + i * (TextName.getLocalBounds().height + 20)));
+		_HighscoreTexts[i + 2 * _PlayerList.size()].setString(std::to_string(_PlayerList[i].Score));
+		_HighscoreTexts[i + 2 * _PlayerList.size()].setPosition(_HeadlineScore.getPosition() + sf::Vector2f(_HeadlineScoreWidth - _HighscoreTexts[i + 2 * _PlayerList.size()].getLocalBounds().width, _HeadlineNameHeight + 30 + i * (_HighscoreTexts[i].getLocalBounds().height + 20)));
 
-
-		RenderWindow.draw(TextName);
-		RenderWindow.draw(TextLevel);
-		RenderWindow.draw(TextScore);
+		RenderWindow.draw(_HighscoreTexts[i]);
+		RenderWindow.draw(_HighscoreTexts[i + _PlayerList.size()]);
+		RenderWindow.draw(_HighscoreTexts[i + 2 * _PlayerList.size()]);
 	}
 	
 }

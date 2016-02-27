@@ -36,6 +36,7 @@ private:
 	float _HeadlineNameHeight, _HeadlineLevelWidth, _HeadlineScoreWidth;
 
 	std::vector<Player> _PlayerList;
+	std::vector<sf::Text> _HighscoreTexts;
 	std::string _Filename;
 
 	void SortScoreTable();

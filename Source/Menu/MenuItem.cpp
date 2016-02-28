@@ -103,7 +103,6 @@ void MenuItem::switchHoverState(bool hoverState)
 	if (_Hovering)
 	{
 		_Background.setFillColor(sf::Color(50, 50, 50, 100));
-		std::cout << "Test" << std::endl;
 	}
 	else
 	{

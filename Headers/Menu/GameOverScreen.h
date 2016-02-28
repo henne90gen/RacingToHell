@@ -17,12 +17,13 @@ public:
 	void loadHighScores();
 
 	void setScore(int Score) { _Score = Score; }
+	void setLevel(int Level) { _Level = Level; }
 
 	void playSounds();
 	void setVolume(float Volume);
 
 private:
-	int _Score;
+	int _Score, _Level;
 
 	//GOT = GameOverText
 	sf::Text _GOTLine1;

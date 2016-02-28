@@ -166,9 +166,7 @@ void Framework::update()
 		_Level.update(_FrameTime, false);
 		break;
 	case GameState::GameOver:
-		_GameOverScreen.setScore(_Score);
-		_GameOverScreen.setLevel(_Level.getDifficulty());
-		_GameOverScreen.update();
+		_GameOverScreen.update(_Score, _Level.getDifficulty());
 		break;
 	case GameState::Options:
 		if (_OptionsMenu.getReturnState() == GameState::Main) {

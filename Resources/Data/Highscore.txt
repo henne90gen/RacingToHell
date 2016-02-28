@@ -4,7 +4,8 @@ Testperson3;3;62000
 Testperson4;3;61000
 Test1;3;60000
 Testperson6;3;59000
-Testperson7;3;58000
-Testperson8;3;57000
-Testperson9;3;56000
-Test1;3;1000
+Testperson7;3;400
+Testperson8;3;300
+Testperson9;3;200
+Testperson10;1;100
+

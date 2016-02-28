@@ -12,18 +12,16 @@ public:
 
 	void render(sf::RenderWindow& Window);
 	GameState handleEvents(sf::RenderWindow& Window);
-	void update();
+	void update(int Score, int Level);
 
 	void loadHighScores();
-
-	void setScore(int Score) { _Score = Score; }
-	void setLevel(int Level) { _Level = Level; }
 
 	void playSounds();
 	void setVolume(float Volume);
 
 private:
 	int _Score, _Level;
+	bool _NewHighScore, _ScoreSubmitted;;
 
 	//GOT = GameOverText
 	sf::Text _GOTLine1;
@@ -37,6 +35,5 @@ private:
 	sf::SoundBuffer _GameOverSoundBuffer;
 	sf::Sound _GameOverSound;
 	bool _SoundPlayed;
-	bool _ScoreSubmitted;
 };
 

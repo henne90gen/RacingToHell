@@ -235,7 +235,7 @@ void Framework::load()
 	_GameObjectContainer.setCarSkins(_CarSkins);
 	_GameObjectContainer.resetGameObjects(0);
 
-	
+	_GameOverScreen.loadHighScores();
 }
 
 void Framework::resetGame() 

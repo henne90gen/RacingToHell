@@ -140,6 +140,9 @@ void Framework::update(float FrameTime)
 		else if (_LoadingScreen.isDoneFading()) {
 			_GameState = GameState::Main;
 		}
+		else if (_LoadingScreen.isFadingAway()) {
+			_Level.update(_FrameTime, false);
+		}
 		break;
 	case GameState::Exiting:
 		_IsRunning = false;

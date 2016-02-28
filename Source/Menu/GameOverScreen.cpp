@@ -130,6 +130,7 @@ GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
 						{
 							_Highscore->PlacePlayer(_Textbox->getText(), _Level, _Score);
 							_Highscore->SaveScoreTable();
+							_Highscore->loadScoreTable();
 							_ScoreSubmitted = true;
 						}
 						break;

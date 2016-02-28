@@ -9,12 +9,14 @@ public:
 	~MainMenu();
 
 	void render(sf::RenderWindow& Window);
-	void render(sf::RenderWindow& Window, int SelectedCar);
 	GameState handleEvents(sf::RenderWindow& Window);
-	GameState handleEvents(sf::RenderWindow& Window, int& carSkinIndex);
 
+	void setCarIndex(int CarIndex) { _SelectedCar = CarIndex; }
+	int getCarIndex() { return _SelectedCar; }
 private:
 	sf::Sprite _CarSkin;
 	StatBox* _StatBox;
+
+	int _SelectedCar;
 };
 

@@ -36,6 +36,14 @@ MenuItem::MenuItem(sf::Vector2f pos, MenuResult action) : _Action(action)
 		_Text.setString("Exit");
 		centerText = true;
 		break;
+	case MenuResult::BackToMain:
+		_Text.setString("Back");
+		centerText = false;
+		break;
+	case MenuResult::SubmitScore:
+		_Text.setString("Submit");
+		centerText = false;
+		break;
 	}
 
 	if (centerText) {

@@ -36,6 +36,8 @@ GameOverScreen::GameOverScreen() : _SoundPlayed(false)
 		
 		_Textbox = new Textbox(sf::Vector2f(_GOTLine4.getPosition().x + _GOTLine4.getLocalBounds().width + 20, _GOTLine4.getPosition().y + 10), sf::Vector2f(450 - _GOTLine4.getLocalBounds().width - 20, _GOTLine4.getLocalBounds().height), 25, "Test");
 		
+		_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2 - 225, 750), MenuResult::BackToMain));
+		_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2 - 225 + 450, 750), MenuResult::SubmitScore));
 	}
 }
 
@@ -53,12 +55,17 @@ void GameOverScreen::render(sf::RenderWindow& Window, int score)
 	_GOTLine3.setString("Your score was: " + std::to_string(score));
 
 	Window.draw(_GOTLine1);
-	Window.draw(_GOTLine2);
+	//Window.draw(_GOTLine2);
 	Window.draw(_GOTLine3);
 	Window.draw(_GOTLine4);
 
 	_Textbox->render(Window);
 	_Highscore->render(Window);
+
+	for (unsigned int i = 0; i < _MenuItems.size(); i++)
+	{
+		_MenuItems[i]->render(Window);
+	}
 }
 
 void GameOverScreen::render(sf::RenderWindow & Window)
@@ -87,6 +94,7 @@ void GameOverScreen::setVolume(float Volume)
 GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
 {
 	while (Window.pollEvent(_Event)) {
+		checkMouseHover(Window);
 		if (_Event.type == sf::Event::KeyPressed) {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
 				_SoundPlayed = false;

@@ -83,7 +83,7 @@ sf::FloatRect MenuItem::getRect()
 {
 	if (_Action == MenuResult::NextSkin || _Action == MenuResult::PreviousSkin)
 	{
-		return _Text.getLocalBounds();
+		return _Text.getGlobalBounds();
 	}
 	else
 	{
@@ -98,6 +98,7 @@ void MenuItem::switchHoverState(bool hoverState)
 	if (_Hovering)
 	{
 		_Background.setFillColor(sf::Color(50, 50, 50, 100));
+		std::cout << "Test" << std::endl;
 	}
 	else
 	{

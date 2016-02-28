@@ -11,13 +11,6 @@ GameOverScreen::GameOverScreen() : _SoundPlayed(false)
 		_GOTLine1.setOrigin(_GOTLine1.getLocalBounds().left + _GOTLine1.getLocalBounds().width / 2.0f, _GOTLine1.getLocalBounds().top + _GOTLine1.getLocalBounds().height / 2.0f);
 		_GOTLine1.setPosition(SCREENWIDTH / 2.0f, 50);
 
-		_GOTLine2.setFont(_Font);
-		_GOTLine2.setColor(sf::Color(255, 255, 255));
-		_GOTLine2.setCharacterSize(25);
-		_GOTLine2.setString("Restart with Spacebar");
-		_GOTLine2.setOrigin(_GOTLine2.getLocalBounds().left + _GOTLine2.getLocalBounds().width / 2.0f, _GOTLine2.getLocalBounds().top + _GOTLine2.getLocalBounds().height / 2.0f);
-		_GOTLine2.setPosition(SCREENWIDTH / 2.0f, SCREENHEIGHT - 35);
-
 		_GOTLine3.setFont(_Font);
 		_GOTLine3.setColor(sf::Color(200, 0, 0));
 		_GOTLine3.setCharacterSize(40);
@@ -57,7 +50,6 @@ void GameOverScreen::render(sf::RenderWindow& Window, int score)
 	_GOTLine3.setString("Your score was: " + std::to_string(score));
 
 	Window.draw(_GOTLine1);
-	//Window.draw(_GOTLine2);
 	Window.draw(_GOTLine3);
 	Window.draw(_GOTLine4);
 

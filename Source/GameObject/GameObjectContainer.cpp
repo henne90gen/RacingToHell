@@ -267,7 +267,7 @@ void GameObjectContainer::playShotSound(GameObjects go)
 	else if (go == GameObjects::Player) {
 		shotSound->setBuffer(_PlayerShotSoundBuffer);
 	}
-	shotSound->setVolume(100/*_Volume*/);
+	shotSound->setVolume(_Volume);
 	_SoundEffects.push_back({ shotSound, 0 });
 }
 

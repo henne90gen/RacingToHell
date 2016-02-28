@@ -154,6 +154,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AlignText.h" />
     <ClInclude Include="Headers\GameState.h" />
     <ClInclude Include="Headers\GameObject\AICar.h" />
     <ClInclude Include="Headers\GameObject\Bullet.h" />

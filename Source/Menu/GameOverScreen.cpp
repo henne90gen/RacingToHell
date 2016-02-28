@@ -36,8 +36,10 @@ GameOverScreen::GameOverScreen() : _SoundPlayed(false)
 		
 		_Textbox = new Textbox(sf::Vector2f(_GOTLine4.getPosition().x + _GOTLine4.getLocalBounds().width + 20, _GOTLine4.getPosition().y + 10), sf::Vector2f(450 - _GOTLine4.getLocalBounds().width - 20, _GOTLine4.getLocalBounds().height), 25, "Test");
 		
-		_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2 - 225, 750), MenuResult::BackToMain));
-		_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2 - 225 + 450, 750), MenuResult::SubmitScore));
+		sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
+
+		_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2 - 225, 735), ButtonSize, MenuResult::BackToMain));
+		_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2 - 225 + 450, 735), ButtonSize, MenuResult::SubmitScore));
 	}
 }
 

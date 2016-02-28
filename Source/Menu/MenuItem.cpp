@@ -2,71 +2,71 @@
 #include "Menu\MenuItem.h"
 
 
-MenuItem::MenuItem(sf::Vector2f pos, MenuResult action) : _Action(action)
+MenuItem::MenuItem(sf::Vector2f pos, sf::Vector2f size, MenuResult action) : _Action(action)
 {
 	_Font.loadFromFile("Resources/Font/arial.ttf");
-	
+
 	_Text.setFont(_Font);
 	_Text.setPosition(pos);
 	_Text.setColor(sf::Color::White);
-	_Text.setCharacterSize(45);
+	_Text.setCharacterSize(40);
 
 	bool centerText = false;
 
 	switch (_Action) {
 	case MenuResult::Resume:
 		_Text.setString("Play");
-		centerText = true;
+		_Alignment = TextAlignment::Center;
 		break;
 	case MenuResult::PreviousSkin:
 		_Text.setString("<<");
+		_Alignment = TextAlignment::Left;
 		break;
 	case MenuResult::NextSkin:
 		_Text.setString(">>");
+		_Alignment = TextAlignment::Left;
 		break;
 	case MenuResult::Option:
 		_Text.setString("Options");
-		centerText = true;
+		_Alignment = TextAlignment::Center;
 		break;
 	case MenuResult::Back:
 		_Text.setString("Back");
-		centerText = true;
+		_Alignment = TextAlignment::Center;
 		break;
 	case MenuResult::Exit:
 		_Text.setString("Exit");
-		centerText = true;
+		_Alignment = TextAlignment::Center;
 		break;
 	case MenuResult::BackToMain:
 		_Text.setString("Back");
-		centerText = false;
+		_Alignment = TextAlignment::Left;
 		break;
 	case MenuResult::SubmitScore:
 		_Text.setString("Submit");
-		centerText = false;
+		_Alignment = TextAlignment::Right;
 		break;
 	}
 
-	if (centerText) {
-		_Text.setPosition(_Text.getPosition() - sf::Vector2f(_Text.getLocalBounds().width / 2, 0));
+	_Background.setPosition(pos);
+	_Background.setSize(size);
+	_Background.setFillColor(sf::Color(0, 0, 0, 100));
+	_Background.setOutlineThickness(1);
+	_Background.setOutlineColor(sf::Color::Black);
+
+	switch (_Alignment)
+	{
+	case TextAlignment::Center:
+		_Background.setPosition(_Background.getPosition() - sf::Vector2f(_Background.getLocalBounds().width / 2, 0));
+		break;
+	case TextAlignment::Right:
+		_Background.setPosition(_Background.getPosition() - sf::Vector2f(_Background.getLocalBounds().width, 0));
+		break;
+	default:
+		break;
 	}
 
-	//Initializing rectangle that will be shown at hover-over
-	//Position is adjusted by 10 down and size is increased by 10 horizontally and 7 vertically
-	if (_Action == MenuResult::NextSkin || _Action == MenuResult::PreviousSkin) {
-		_HoverRect.setPosition(_Text.getPosition() + sf::Vector2f(0, 15));
-		_HoverRect.setSize(sf::Vector2f(_Text.getLocalBounds().width + 10, _Text.getLocalBounds().height + 7));
-		_HoverRect.setFillColor(sf::Color::Transparent);
-		_HoverRect.setOutlineThickness(5);
-		_HoverRect.setOutlineColor(sf::Color::Black);
-	}
-	else {
-		_HoverRect.setPosition(_Text.getPosition() + sf::Vector2f(0, 10));
-		_HoverRect.setSize(sf::Vector2f(_Text.getLocalBounds().width + 10, _Text.getLocalBounds().height + 7));
-		_HoverRect.setFillColor(sf::Color::Transparent);
-		_HoverRect.setOutlineThickness(5);
-		_HoverRect.setOutlineColor(sf::Color::Black);
-	}
-	else 
+	_Text.setPosition(_Background.getPosition() + sf::Vector2f(_Background.getLocalBounds().width / 2 - _Text.getLocalBounds().width / 2, 0));
 }
 
 MenuItem::~MenuItem()
@@ -75,18 +75,32 @@ MenuItem::~MenuItem()
 
 void MenuItem::render(sf::RenderWindow & Window)
 {
-	if (_Hovering) {
-		Window.draw(_HoverRect);
-	}
+	Window.draw(_Background);
 	Window.draw(_Text);
 }
 
 sf::FloatRect MenuItem::getRect()
 {
-	return _Text.getGlobalBounds();
+	if (_Action == MenuResult::NextSkin || _Action == MenuResult::PreviousSkin)
+	{
+		return _Text.getLocalBounds();
+	}
+	else
+	{
+		return _Background.getGlobalBounds();
+	}
 }
 
 void MenuItem::switchHoverState(bool hoverState)
 {
 	_Hovering = hoverState;
+
+	if (_Hovering)
+	{
+		_Background.setFillColor(sf::Color(50, 50, 50, 100));
+	}
+	else
+	{
+		_Background.setFillColor(sf::Color(0, 0, 0, 100));
+	}
 }

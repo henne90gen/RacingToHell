@@ -3,7 +3,7 @@
 
 OptionsMenu::OptionsMenu() : _Volume(0.1f), _MaxVolume(5.0f), _MousePressed(false)
 {
-	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 320), MenuResult::Back));
+	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 320), sf::Vector2f(150, 50), MenuResult::Back));
 
 	_Text.setString("Main Menu");
 	_Text.setCharacterSize(53);

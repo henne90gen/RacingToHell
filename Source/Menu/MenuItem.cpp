@@ -66,7 +66,6 @@ MenuItem::MenuItem(sf::Vector2f pos, MenuResult action) : _Action(action)
 		_HoverRect.setOutlineThickness(5);
 		_HoverRect.setOutlineColor(sf::Color::Black);
 	}
-	else 
 }
 
 MenuItem::~MenuItem()

@@ -26,6 +26,7 @@ public:
 
 	void load();
 
+	void playSounds();
 	void setVolume(float Volume) { _Volume = Volume; }
 
 	int getCarScore() { int result = _CarScore; _CarScore = 0; return result; }
@@ -37,13 +38,15 @@ private:
 	std::vector<sf::Texture*> _PlayerCarTextures, _AICarTextures;
 	sf::Texture _ToolboxTexture, _EnergyCanisterTexture, _BulletTexture;
 
-	sf::SoundBuffer _ShotSoundBuffer;
+	sf::SoundBuffer _AIShotSoundBuffer, _PlayerShotSoundBuffer;
+	std::vector<std::pair<sf::Sound*, bool>> _SoundEffects;
 	float _Volume;
 
 	float _CarFrequency, _BulletFrequency, _CanisterFrequency, _ToolboxFrequency, _TimePassedCar, _TimePassedBullet, _TimePassedCanister, _TimePassedToolbox;
 	int _CarScore, _PlayerBulletSpeed, _AIBulletSpeed;
 	bool _PlayerAlive, _AboutToLevelUp;
 
+	void playShotSound(GameObjects go);
 	void spawnAICar(int Difficulty, int RoadSpeed);
 	void spawnBullet();
 	void deleteObject(unsigned int id);

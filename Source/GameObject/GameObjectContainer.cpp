@@ -163,6 +163,8 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 		_GameObjects.push_back(newBullet);
 
 		getPlayerCar()->resetShotBullet();
+
+		playShotSound(GameObjects::Player);
 	}
 }
 
@@ -179,6 +181,21 @@ void GameObjectContainer::handleEvents(sf::Event& Event)
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
 		_GameObjects.at(i)->handleEvent(Event);
+	}
+}
+
+void GameObjectContainer::playSounds()
+{
+	for (int i = 0; i < _SoundEffects.size(); i++) {
+		if (_SoundEffects[i].first->getStatus() == sf::Sound::Stopped || _SoundEffects[i].first->getStatus() == sf::Sound::Paused) {
+			if (_SoundEffects[i].second) {
+				_SoundEffects.erase(_SoundEffects.begin() + i);
+			}
+			else {
+				_SoundEffects[i].first->play();
+				_SoundEffects[i].second = true;
+			}
+		}
 	}
 }
 
@@ -232,12 +249,26 @@ void GameObjectContainer::load()
 	_ToolboxTexture.loadFromFile("Resources/Texture/Object/toolbox.png");
 	_EnergyCanisterTexture.loadFromFile("Resources/Texture/Object/canister.png");
 
-	_ShotSoundBuffer.loadFromFile("Resources/Sound/shot - futuristic.ogg");
+	_AIShotSoundBuffer.loadFromFile("Resources/Sound/shot.wav");
+	_PlayerShotSoundBuffer.loadFromFile("Resources/Sound/shot - futuristic.ogg");
 }
 
 void GameObjectContainer::setCarSkins(std::vector<sf::Texture*>& CarSkins)
 {
 	_PlayerCarTextures = CarSkins;
+}
+
+void GameObjectContainer::playShotSound(GameObjects go)
+{
+	sf::Sound* shotSound = new sf::Sound();
+	if (go == GameObjects::AI) {
+		shotSound->setBuffer(_AIShotSoundBuffer);
+	}
+	else if (go == GameObjects::Player) {
+		shotSound->setBuffer(_PlayerShotSoundBuffer);
+	}
+	shotSound->setVolume(100/*_Volume*/);
+	_SoundEffects.push_back({ shotSound, 0 });
 }
 
 void GameObjectContainer::spawnAICar(int Difficulty, int RoadSpeed)
@@ -258,10 +289,6 @@ void GameObjectContainer::spawnAICar(int Difficulty, int RoadSpeed)
 	}
 
 	_GameObjects.push_back(newAiCar);
-	sf::Sound shotSound;
-	shotSound.setBuffer(_ShotSoundBuffer);
-	shotSound.setVolume(_Volume);
-	shotSound.play();
 }
 
 void GameObjectContainer::spawnBullet()
@@ -304,6 +331,8 @@ void GameObjectContainer::spawnBullet()
 
 	Bullet* newBullet = new Bullet(SelectedCar->getPos(), Direction, _AIBulletSpeed, GameObjects::BulletObjectAI, _BulletTexture);
 	_GameObjects.push_back(newBullet);
+	
+	playShotSound(GameObjects::AI);
 }
 
 void GameObjectContainer::deleteObject(unsigned int id)

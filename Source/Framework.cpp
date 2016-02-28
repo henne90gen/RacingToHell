@@ -194,6 +194,7 @@ void Framework::playSounds() {
 	if (_GameState == GameState::Running) {
 		_MenuMusic.stop();
 		_Level.playMusic();
+		_GameObjectContainer.playSounds();
 	}
 	else if (_GameState == GameState::Main || _GameState == GameState::Pause || _GameState == GameState::Options) {
 		_Level.pauseMusic();
@@ -255,5 +256,6 @@ void Framework::setVolume(float Volume)
 {
 	_MenuMusic.setVolume(Volume);
 	_Level.setVolume(Volume);
+	_GameObjectContainer.setVolume(Volume);
 	_GameOverScreen.setVolume(Volume);
 }

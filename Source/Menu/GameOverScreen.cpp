@@ -106,13 +106,25 @@ GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
 {
 	while (Window.pollEvent(_Event)) {
 		checkMouseHover(Window);
-		if (_Event.type == sf::Event::KeyPressed) {
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-				_SoundPlayed = false;
-				return GameState::Main;
+		if (_Event.type == sf::Event::MouseButtonPressed)
+		{
+			sf::Vector2f MousePos = sf::Vector2f(sf::Mouse::getPosition(Window));
+			for (int i = 0; i < getMenuItems().size(); i++) {
+				sf::FloatRect rect = getMenuItems()[i]->getRect();
+				if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width) {
+					switch (getMenuItems()[i]->getAction()) {
+					case MenuResult::BackToMain:
+						_SoundPlayed = false;
+						return GameState::Main;
+						break;
+					case MenuResult::SubmitScore:
+						break;
+					}
+				}
 			}
 		}
-		else if (_Event.type == sf::Event::Closed) {
+
+		if (_Event.type == sf::Event::Closed) {
 			return GameState::Exiting;
 		}
 		_Textbox->handleEvent(_Event);

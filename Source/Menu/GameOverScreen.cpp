@@ -68,8 +68,11 @@ void GameOverScreen::render(sf::RenderWindow& Window)
 	}
 	else if (_Textbox->MouseOverTextbox(sf::Mouse::getPosition(Window)))
 	{
-		sf::StandardCursor Cursor(sf::StandardCursor::TEXT);
-		Cursor.set(Window.getSystemHandle());
+		if (!_Textbox->getDisabled())
+		{
+			sf::StandardCursor Cursor(sf::StandardCursor::TEXT);
+			Cursor.set(Window.getSystemHandle());
+		}
 	}
 	else
 	{

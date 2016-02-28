@@ -26,6 +26,9 @@ public:
 
 	void loadScoreTable();
 	void SaveScoreTable();
+
+	int MinScore();
+	void PlacePlayer(std::string& Name, int Level, int Score);
 private:
 	sf::RectangleShape _Background;
 	sf::Font _Font;

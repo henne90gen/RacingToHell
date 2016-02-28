@@ -133,3 +133,12 @@ std::vector<std::string> Highscore::split(const std::string &s, char delim) {
 	return elems;
 }
 
+void Highscore::PlacePlayer(std::string& Name, int Level, int)
+{
+
+}
+
+int Highscore::MinScore()
+{
+	return std::min_element(_PlayerList.begin(), _PlayerList.end())->Score;
+}

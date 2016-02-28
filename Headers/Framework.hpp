@@ -29,15 +29,21 @@ private:
 	sf::Clock _Clock;
 
 	//Variables
-	float _FrameTime;
-	float _LastFPSPrint;
+	float _FrameTime, _LastFPSPrint, _Score;
 	bool _IsRunning;
-	GameObjectContainer _GameObjectContainer;
-	GameState _GameState;
-	std::vector<sf::Texture*> _CarSkins;
 	int _CurrentCarSkinIndex;
+
+	//GameObjects
+	GameState _GameState;
+	GameObjectContainer _GameObjectContainer;
+	std::vector<sf::Texture*> _CarSkins;
+	Level _Level;
+
+	//Music
 	sf::SoundBuffer _MenuMusicBuffer;
 	sf::Sound _MenuMusic;
+
+	//Menus and Screens
 	MainMenu _MainMenu;
 	PauseMenu _PauseMenu;
 	OptionsMenu _OptionsMenu;
@@ -45,16 +51,14 @@ private:
 	LoadingScreen _LoadingScreen;
 	LevelUpScreen _LevelUpScreen;
 	HeadsUpDisplay _HeadsUpDisplay;
-	Level _Level;
-	float _Score;
-
+	
 	//Functions
-	void update(float Frametime);
-	void handleEvents();
-	void playSounds();
-	void setVolume(float Volume);
 	void render();
+	void handleEvents();
+	void update();
+	void playSounds();
 	void measureTime();
 	void load();
 	void resetGame();
+	void setVolume(float Volume);
 };

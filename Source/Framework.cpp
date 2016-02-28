@@ -167,6 +167,7 @@ void Framework::update()
 		break;
 	case GameState::GameOver:
 		_GameOverScreen.setScore(_Score);
+
 		_GameOverScreen.update();
 		break;
 	case GameState::Options:

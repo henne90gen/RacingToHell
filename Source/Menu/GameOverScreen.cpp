@@ -81,9 +81,17 @@ void GameOverScreen::render(sf::RenderWindow& Window)
 	}
 }
 
-void GameOverScreen::update()
+void GameOverScreen::update(int Score, int Level)
 {
-	_Textbox->setDisabled(_Score < _Highscore->MinScore() || _ScoreSubmitted);
+	_Score = Score;
+	_Level = Level;
+	if (_Score > _Highscore->MinScore()) {
+		_NewHighScore = true;
+	}
+	else {
+		_NewHighScore = false;
+	}
+	_Textbox->setDisabled(!_NewHighScore || _ScoreSubmitted);
 	_Textbox->update();
 }
 

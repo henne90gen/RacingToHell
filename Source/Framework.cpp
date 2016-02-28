@@ -33,7 +33,7 @@ void Framework::run()
 
 void Framework::render()
 {
-	if (_GameState != GameState::Loading) {
+	if (_GameState != GameState::Loading || _LoadingScreen.isFadingAway()) {
 		_Level.render(_RenderWindow);
 		_GameObjectContainer.render(_RenderWindow);
 	}
@@ -58,6 +58,9 @@ void Framework::render()
 		_GameOverScreen.render(_RenderWindow, _Score);
 		break;
 	case GameState::Loading:
+		if (_LoadingScreen.isFadingAway()) {
+			_MainMenu.render(_RenderWindow, _CurrentCarSkinIndex);
+		}
 		_LoadingScreen.render(_RenderWindow);
 		break;
 	}
@@ -130,8 +133,13 @@ void Framework::update(float FrameTime)
 		}
 		break;
 	case GameState::Loading:
-		load();
-		_GameState = GameState::Main;
+		if (!_LoadingScreen.isFadingAway()) {
+			load();
+			_LoadingScreen.fadeAway();
+		}
+		else if (_LoadingScreen.isDoneFading()) {
+			_GameState = GameState::Main;
+		}
 		break;
 	case GameState::Exiting:
 		_IsRunning = false;

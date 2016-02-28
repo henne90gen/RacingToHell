@@ -135,8 +135,7 @@ GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
 void GameOverScreen::loadHighScores()
 {
 	_Highscore = new Highscore(sf::Vector2f(SCREENWIDTH / 2 - 225, 225));
-	if (_GameOverSoundBuffer.loadFromFile("Resources/Sound/game over.ogg")) {
+	if (_GameOverSoundBuffer.loadFromFile("Resources/Sound/gameOver.wav")) {
 		_GameOverSound.setBuffer(_GameOverSoundBuffer);
-		//_GameOverSound.setVolume();
 	}
 }

@@ -220,7 +220,6 @@
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="README.md" />
-    <None Include="Resources\Sound\game over.ogg" />
     <None Include="Resources\Sound\Music\level1.ogg" />
   </ItemGroup>
   <ItemGroup>
@@ -251,8 +250,10 @@
     <Image Include="Resources\Texture\TrafficCar\Traffic7.png" />
   </ItemGroup>
   <ItemGroup>
+    <Media Include="Resources\Sound\gameOver.wav" />
     <Media Include="Resources\Sound\sample.wav" />
-    <Media Include="Resources\Sound\shot.wav" />
+    <Media Include="Resources\Sound\shotAI.wav" />
+    <Media Include="Resources\Sound\shotPlayer.wav" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\Data\Highscore.txt" />

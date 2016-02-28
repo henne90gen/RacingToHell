@@ -52,20 +52,21 @@ MenuItem::MenuItem(sf::Vector2f pos, MenuResult action) : _Action(action)
 
 	//Initializing rectangle that will be shown at hover-over
 	//Position is adjusted by 10 down and size is increased by 10 horizontally and 7 vertically
-	if (_Action == MenuResult::Resume || _Action == MenuResult::Option || _Action == MenuResult::Back || _Action == MenuResult::Exit) {
-		_HoverRect.setPosition(_Text.getPosition() + sf::Vector2f(0, 10));
-		_HoverRect.setSize(sf::Vector2f(_Text.getLocalBounds().width + 10, _Text.getLocalBounds().height + 7));
-		_HoverRect.setFillColor(sf::Color::Transparent);
-		_HoverRect.setOutlineThickness(5);
-		_HoverRect.setOutlineColor(sf::Color::Black);
-	}
-	else if (_Action == MenuResult::NextSkin || _Action == MenuResult::PreviousSkin) {
+	if (_Action == MenuResult::NextSkin || _Action == MenuResult::PreviousSkin) {
 		_HoverRect.setPosition(_Text.getPosition() + sf::Vector2f(0, 15));
 		_HoverRect.setSize(sf::Vector2f(_Text.getLocalBounds().width + 10, _Text.getLocalBounds().height + 7));
 		_HoverRect.setFillColor(sf::Color::Transparent);
 		_HoverRect.setOutlineThickness(5);
 		_HoverRect.setOutlineColor(sf::Color::Black);
 	}
+	else {
+		_HoverRect.setPosition(_Text.getPosition() + sf::Vector2f(0, 10));
+		_HoverRect.setSize(sf::Vector2f(_Text.getLocalBounds().width + 10, _Text.getLocalBounds().height + 7));
+		_HoverRect.setFillColor(sf::Color::Transparent);
+		_HoverRect.setOutlineThickness(5);
+		_HoverRect.setOutlineColor(sf::Color::Black);
+	}
+	else 
 }
 
 MenuItem::~MenuItem()

@@ -36,5 +36,6 @@ private:
 	sf::SoundBuffer _GameOverSoundBuffer;
 	sf::Sound _GameOverSound;
 	bool _SoundPlayed;
+	bool _ScoreSubmitted;
 };
 

@@ -7,5 +7,4 @@ Testperson6;3;59000
 Testperson7;3;400
 Testperson8;3;300
 Testperson9;3;200
-Testperson10;1;100
-
+Tes;1;148

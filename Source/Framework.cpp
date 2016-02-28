@@ -236,6 +236,7 @@ void Framework::load()
 			_CarSkins.push_back(texture);
 		}
 	}
+	_GameObjectContainer.load();
 	_GameObjectContainer.setCarSkins(_CarSkins);
 	_GameObjectContainer.resetGameObjects(0);
 
@@ -254,4 +255,5 @@ void Framework::setVolume(float Volume)
 {
 	_MenuMusic.setVolume(Volume);
 	_Level.setVolume(Volume);
+	_GameOverScreen.setVolume(Volume);
 }

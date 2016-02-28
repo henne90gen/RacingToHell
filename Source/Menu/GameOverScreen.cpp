@@ -61,6 +61,9 @@ void GameOverScreen::render(sf::RenderWindow& Window, int score)
 	_Highscore->render(Window);
 }
 
+void GameOverScreen::render(sf::RenderWindow & Window)
+{}
+
 void GameOverScreen::update()
 {
 	_Textbox->update();
@@ -76,8 +79,9 @@ void GameOverScreen::playSounds()
 	}
 }
 
-void GameOverScreen::render(sf::RenderWindow & Window)
+void GameOverScreen::setVolume(float Volume)
 {
+	_GameOverSound.setVolume(Volume + 10);
 }
 
 GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)

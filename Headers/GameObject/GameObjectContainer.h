@@ -24,6 +24,10 @@ public:
 	void resetGameObjects(int SelectedCar);
 	bool emptyScreen();
 
+	void load();
+
+	void setVolume(float Volume) { _Volume = Volume; }
+
 	int getCarScore() { int result = _CarScore; _CarScore = 0; return result; }
 
 	void setCarSkins(std::vector<sf::Texture*>& CarSkins);
@@ -32,6 +36,9 @@ private:
 	std::vector<GameObject*> _GameObjects;
 	std::vector<sf::Texture*> _PlayerCarTextures, _AICarTextures;
 	sf::Texture _ToolboxTexture, _EnergyCanisterTexture, _BulletTexture;
+
+	sf::SoundBuffer _ShotSoundBuffer;
+	float _Volume;
 
 	float _CarFrequency, _BulletFrequency, _CanisterFrequency, _ToolboxFrequency, _TimePassedCar, _TimePassedBullet, _TimePassedCanister, _TimePassedToolbox;
 	int _CarScore, _PlayerBulletSpeed, _AIBulletSpeed;

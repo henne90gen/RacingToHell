@@ -5,16 +5,6 @@ GameObjectContainer::GameObjectContainer() : _PlayerBulletSpeed(600), _AIBulletS
 {
 	//Seed
 	srand(time(NULL));
-
-	for (int i = 0; i < 7; i++) {
-		sf::Texture* texture = new sf::Texture();
-		(*texture).loadFromFile("Resources/Texture/TrafficCar/Traffic" + std::to_string(i + 1) + ".png");
-		_AICarTextures.push_back(texture);
-	}
-
-	_BulletTexture.loadFromFile("Resources/Texture/Object/Bullet.png");
-	_ToolboxTexture.loadFromFile("Resources/Texture/Object/toolbox.png");
-	_EnergyCanisterTexture.loadFromFile("Resources/Texture/Object/canister.png");
 }
 
 GameObjectContainer::~GameObjectContainer()
@@ -230,6 +220,21 @@ bool GameObjectContainer::emptyScreen()
 	return false;
 }
 
+void GameObjectContainer::load()
+{
+	for (int i = 0; i < 7; i++) {
+		sf::Texture* texture = new sf::Texture();
+		(*texture).loadFromFile("Resources/Texture/TrafficCar/Traffic" + std::to_string(i + 1) + ".png");
+		_AICarTextures.push_back(texture);
+	}
+
+	_BulletTexture.loadFromFile("Resources/Texture/Object/Bullet.png");
+	_ToolboxTexture.loadFromFile("Resources/Texture/Object/toolbox.png");
+	_EnergyCanisterTexture.loadFromFile("Resources/Texture/Object/canister.png");
+
+	_ShotSoundBuffer.loadFromFile("Resources/Sound/shot - futuristic.ogg");
+}
+
 void GameObjectContainer::setCarSkins(std::vector<sf::Texture*>& CarSkins)
 {
 	_PlayerCarTextures = CarSkins;
@@ -253,6 +258,10 @@ void GameObjectContainer::spawnAICar(int Difficulty, int RoadSpeed)
 	}
 
 	_GameObjects.push_back(newAiCar);
+	sf::Sound shotSound;
+	shotSound.setBuffer(_ShotSoundBuffer);
+	shotSound.setVolume(_Volume);
+	shotSound.play();
 }
 
 void GameObjectContainer::spawnBullet()

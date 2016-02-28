@@ -26,7 +26,7 @@ Highscore::Highscore(sf::Vector2f Position)
 	_HeadlineScore.setString("Score");
 	_HeadlineScoreWidth = _HeadlineScore.getLocalBounds().width;
 
-	_Filename = "Resources\Data\Highscore.txt";
+	_Filename = "Resources\\Data\\Highscore.txt";
 
 	loadScoreTable();
 }

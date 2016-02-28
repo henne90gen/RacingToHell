@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Menu\GameOverScreen.h"
 
-GameOverScreen::GameOverScreen() : _SoundPlayed(false)
+GameOverScreen::GameOverScreen() : _SoundPlayed(false), _ScoreSubmitted(false)
 {
 	if (_Font.loadFromFile("Resources/Font/arial.ttf")) {
 		_GOTLine1.setFont(_Font);
@@ -83,6 +83,7 @@ void GameOverScreen::render(sf::RenderWindow& Window)
 
 void GameOverScreen::update()
 {
+	_Textbox->setDisabled(_Score < _Highscore->MinScore() || _ScoreSubmitted);
 	_Textbox->update();
 }
 
@@ -104,7 +105,6 @@ void GameOverScreen::setVolume(float Volume)
 GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
 {
 	while (Window.pollEvent(_Event)) {
-		checkMouseHover(Window);
 		if (_Event.type == sf::Event::MouseButtonPressed)
 		{
 			sf::Vector2f MousePos = sf::Vector2f(sf::Mouse::getPosition(Window));
@@ -117,6 +117,12 @@ GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
 						return GameState::Main;
 						break;
 					case MenuResult::SubmitScore:
+						if (!_ScoreSubmitted && _Score > _Highscore->MinScore() && _Textbox->getText() != "")
+						{
+							_Highscore->PlacePlayer(_Textbox->getText(), 1, _Score);
+							_Highscore->SaveScoreTable();
+							_ScoreSubmitted = true;
+						}
 						break;
 					}
 				}

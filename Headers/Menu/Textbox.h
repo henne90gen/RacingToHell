@@ -12,6 +12,8 @@ public:
 	void render(sf::RenderWindow& RenderWindow);
 	void handleEvent(sf::Event& Event);
 
+	void setDisabled(bool disabled) { _isDisabled = disabled; }
+
 	std::string getText() { return _Text.getString(); }
 	bool MouseOverTextbox(sf::Vector2i MousePosition);
 	bool getDisabled() { return _isDisabled; }

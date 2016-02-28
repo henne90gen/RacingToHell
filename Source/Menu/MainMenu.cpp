@@ -65,7 +65,6 @@ GameState MainMenu::handleEvents(sf::RenderWindow & Window)
 GameState MainMenu::handleEvents(sf::RenderWindow& Window, int& carSkinIndex)
 {
 	while (Window.pollEvent(_Event)) {
-		checkMouseHover(Window);
 		if (_Event.type == sf::Event::MouseButtonPressed) {
 			sf::Vector2f MousePos = sf::Vector2f(sf::Mouse::getPosition(Window));
 			for (int i = 0; i < getMenuItems().size(); i++) {

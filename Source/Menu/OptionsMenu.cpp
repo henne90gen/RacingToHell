@@ -70,7 +70,6 @@ void OptionsMenu::render(sf::RenderWindow & Window)
 GameState OptionsMenu::handleEvents(sf::RenderWindow & Window)
 {
 	while (Window.pollEvent(_Event)) {
-		checkMouseHover(Window);
 		sf::Vector2f MousePos = sf::Vector2f(sf::Mouse::getPosition(Window));
 		if (_Event.type == sf::Event::MouseButtonPressed) {
 			if (MousePos.y > _VolumeBox.top && MousePos.y < _VolumeBox.top + _VolumeBox.height && MousePos.x > _VolumeBox.left && MousePos.x < _VolumeBox.left + _VolumeBox.width) {

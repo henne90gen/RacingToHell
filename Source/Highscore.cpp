@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Highscore.h"
 
-Highscore::Highscore(sf::Vector2f Position)
+Highscore::Highscore(sf::Vector2f Position) : _Gap(42)
 {
 	_Background.setFillColor(sf::Color(0, 0, 0, 100));
 	_Background.setSize(sf::Vector2f(450, 500));
@@ -46,19 +46,18 @@ void Highscore::render(sf::RenderWindow& RenderWindow)
 	for (unsigned int i = 0; i < _PlayerList.size(); i++)
 	{
 		_HighscoreTexts[i].setString(_PlayerList[i].Name);
-		_HighscoreTexts[i].setPosition(_HeadlineName.getPosition() + sf::Vector2f(0, _HeadlineNameHeight + 30 + i * (_HighscoreTexts[i].getLocalBounds().height + 20)));
+		_HighscoreTexts[i].setPosition(_HeadlineName.getPosition() + sf::Vector2f(0, _HeadlineNameHeight + 30 + i * _Gap));
 
 		_HighscoreTexts[i + _PlayerList.size()].setString(std::to_string(_PlayerList[i].Level));
-		_HighscoreTexts[i + _PlayerList.size()].setPosition(_HeadlineLevel.getPosition() + sf::Vector2f(_HeadlineLevelWidth - _HighscoreTexts[i + _PlayerList.size()].getLocalBounds().width, _HeadlineNameHeight + 30 + i * (_HighscoreTexts[i].getLocalBounds().height + 20)));
+		_HighscoreTexts[i + _PlayerList.size()].setPosition(_HeadlineLevel.getPosition() + sf::Vector2f(_HeadlineLevelWidth - _HighscoreTexts[i + _PlayerList.size()].getLocalBounds().width, _HeadlineNameHeight + 30 + i * _Gap));
 
 		_HighscoreTexts[i + 2 * _PlayerList.size()].setString(std::to_string(_PlayerList[i].Score));
-		_HighscoreTexts[i + 2 * _PlayerList.size()].setPosition(_HeadlineScore.getPosition() + sf::Vector2f(_HeadlineScoreWidth - _HighscoreTexts[i + 2 * _PlayerList.size()].getLocalBounds().width, _HeadlineNameHeight + 30 + i * (_HighscoreTexts[i].getLocalBounds().height + 20)));
+		_HighscoreTexts[i + 2 * _PlayerList.size()].setPosition(_HeadlineScore.getPosition() + sf::Vector2f(_HeadlineScoreWidth - _HighscoreTexts[i + 2 * _PlayerList.size()].getLocalBounds().width, _HeadlineNameHeight + 30 + i * _Gap));
 
 		RenderWindow.draw(_HighscoreTexts[i]);
 		RenderWindow.draw(_HighscoreTexts[i + _PlayerList.size()]);
 		RenderWindow.draw(_HighscoreTexts[i + 2 * _PlayerList.size()]);
 	}
-	
 }
 
 void Highscore::loadScoreTable()
@@ -135,8 +134,11 @@ std::vector<std::string> Highscore::split(const std::string &s, char delim) {
 
 void Highscore::PlacePlayer(std::string& Name, int Level, int Score)
 {
-	_PlayerList.erase(_PlayerList.begin() + _PlayerList.size() - 1);
-
+	if (_PlayerList.size() == 10)
+	{
+		_PlayerList.erase(_PlayerList.begin() + _PlayerList.size() - 1);
+	}
+	
 	Player newPlayer;
 	newPlayer.Name = Name;
 	newPlayer.Level = Level;
@@ -149,5 +151,12 @@ void Highscore::PlacePlayer(std::string& Name, int Level, int Score)
 
 int Highscore::MinScore()
 {
-	return std::min_element(_PlayerList.begin(), _PlayerList.end())->Score;
+	if (_PlayerList.size() < 10)
+	{
+		return 0;
+	}
+	else
+	{
+		return std::min_element(_PlayerList.begin(), _PlayerList.end())->Score;
+	}
 }

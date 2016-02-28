@@ -36,7 +36,7 @@ private:
 	sf::Text _HeadlineLevel;
 	sf::Text _HeadlineScore;
 
-	float _HeadlineNameHeight, _HeadlineLevelWidth, _HeadlineScoreWidth;
+	float _HeadlineNameHeight, _HeadlineLevelWidth, _HeadlineScoreWidth, _Gap;
 
 	std::vector<Player> _PlayerList;
 	std::vector<sf::Text> _HighscoreTexts;

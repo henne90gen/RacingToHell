@@ -249,8 +249,8 @@ void GameObjectContainer::load()
 	_ToolboxTexture.loadFromFile("Resources/Texture/Object/toolbox.png");
 	_EnergyCanisterTexture.loadFromFile("Resources/Texture/Object/canister.png");
 
-	_AIShotSoundBuffer.loadFromFile("Resources/Sound/shot.wav");
-	_PlayerShotSoundBuffer.loadFromFile("Resources/Sound/shot - futuristic.ogg");
+	_AIShotSoundBuffer.loadFromFile("Resources/Sound/shotAI.wav");
+	_PlayerShotSoundBuffer.loadFromFile("Resources/Sound/shotPlayer.wav");
 }
 
 void GameObjectContainer::setCarSkins(std::vector<sf::Texture*>& CarSkins)

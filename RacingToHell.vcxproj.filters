@@ -240,9 +240,6 @@
     <None Include="Resources\Sound\Music\level1.ogg">
       <Filter>Resource Files\Sound\Music</Filter>
     </None>
-    <None Include="Resources\Sound\game over.ogg">
-      <Filter>Resource Files\Sound</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Texture\TrafficCar\Traffic1.png">
@@ -321,7 +318,13 @@
     <Media Include="Resources\Sound\sample.wav">
       <Filter>Resource Files\Sound</Filter>
     </Media>
-    <Media Include="Resources\Sound\shot.wav">
+    <Media Include="Resources\Sound\gameOver.wav">
+      <Filter>Resource Files\Sound</Filter>
+    </Media>
+    <Media Include="Resources\Sound\shotAI.wav">
+      <Filter>Resource Files\Sound</Filter>
+    </Media>
+    <Media Include="Resources\Sound\shotPlayer.wav">
       <Filter>Resource Files\Sound</Filter>
     </Media>
   </ItemGroup>

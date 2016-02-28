@@ -11,16 +11,16 @@ OptionsMenu::OptionsMenu() : _Volume(2.5f), _MaxVolume(5.0f), _MousePressed(fals
 	_Text.setStyle(sf::Text::Style::Bold);
 	_Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 160));
 
+	_VolumeLine.setFillColor(sf::Color::Black);
+	_VolumeLine.setSize(sf::Vector2f(200, 5));
+	_VolumeLine.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _VolumeLine.getLocalBounds().width / 2.0f, 250));
+
 	if (_Font.loadFromFile("Resources/Font/arial.ttf")) {
 		_VolumeText.setFont(_Font);
 		_VolumeText.setString("Volume:");
-		_VolumeText.setPosition(sf::Vector2f(100,200));
+		_VolumeText.setPosition(sf::Vector2f(_VolumeLine.getPosition().x - _VolumeText.getLocalBounds().width - 10,
+			_VolumeLine.getPosition().y - _VolumeText.getLocalBounds().height + _VolumeLine.getLocalBounds().height / 2.0f));
 	}
-
-	_VolumeLine.setFillColor(sf::Color::Black);
-	_VolumeLine.setSize(sf::Vector2f(200, 5));
-	_VolumeLine.setPosition(sf::Vector2f(_VolumeText.getPosition().x + _VolumeText.getLocalBounds().width + 10, 
-		_VolumeText.getPosition().y + _VolumeText.getLocalBounds().height - 1));
 
 	_VolumeSlider.setFillColor(sf::Color::White);
 	_VolumeSlider.setSize(sf::Vector2f(10,30));

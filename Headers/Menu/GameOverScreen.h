@@ -20,8 +20,8 @@ public:
 	void setVolume(float Volume);
 
 private:
-	int _Score, _Level;
-	bool _NewHighScore, _ScoreSubmitted;;
+	int _Level;
+	bool _ScoreSubmitted;
 
 	//GOT = GameOverText
 	sf::Text _GOTLine1;

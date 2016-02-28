@@ -47,7 +47,7 @@ GameOverScreen::~GameOverScreen()
 
 void GameOverScreen::render(sf::RenderWindow& Window)
 {
-	_GOTLine3.setString("Your score was: " + std::to_string(_Score));
+	_GOTLine3.setString("Your score was: " + std::to_string(_Highscore->getScore()));
 
 	Window.draw(_GOTLine1);
 	Window.draw(_GOTLine3);
@@ -83,15 +83,9 @@ void GameOverScreen::render(sf::RenderWindow& Window)
 
 void GameOverScreen::update(int Score, int Level)
 {
-	_Score = Score;
+	_Highscore->setScore(Score);
 	_Level = Level;
-	if (_Score > _Highscore->MinScore()) {
-		_NewHighScore = true;
-	}
-	else {
-		_NewHighScore = false;
-	}
-	_Textbox->setDisabled(!_NewHighScore || _ScoreSubmitted);
+	_Textbox->setDisabled(!_Highscore->isNewHighscore() || _ScoreSubmitted);
 	_Textbox->update();
 }
 
@@ -126,9 +120,9 @@ GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
 						return GameState::Main;
 						break;
 					case MenuResult::SubmitScore:
-						if (!_ScoreSubmitted && _Score > _Highscore->MinScore() && _Textbox->getText() != "")
+						if (!_ScoreSubmitted && _Highscore->getScore() > _Highscore->MinScore() && _Textbox->getText() != "")
 						{
-							_Highscore->PlacePlayer(_Textbox->getText(), _Level, _Score);
+							_Highscore->PlacePlayer(_Textbox->getText(), _Level);
 							_Highscore->SaveScoreTable();
 							_Highscore->loadScoreTable();
 							_ScoreSubmitted = true;

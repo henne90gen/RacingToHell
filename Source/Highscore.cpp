@@ -54,6 +54,17 @@ void Highscore::render(sf::RenderWindow& RenderWindow)
 		_HighscoreTexts[i + 2 * _PlayerList.size()].setString(std::to_string(_PlayerList[i].Score));
 		_HighscoreTexts[i + 2 * _PlayerList.size()].setPosition(_HeadlineScore.getPosition() + sf::Vector2f(_HeadlineScoreWidth - _HighscoreTexts[i + 2 * _PlayerList.size()].getLocalBounds().width, _HeadlineNameHeight + 30 + i * _Gap));
 
+		if (_NewHighscore) {
+			if (_PlayerList[i].Score == _Score) {
+				_HighscoreTexts[i].setColor(sf::Color::Yellow);
+				_HighscoreTexts[i + _PlayerList.size()].setColor(sf::Color::Yellow);
+				_HighscoreTexts[i + 2 * _PlayerList.size()].setColor(sf::Color::Yellow);
+			}
+		}
+		else {
+
+		}
+
 		RenderWindow.draw(_HighscoreTexts[i]);
 		RenderWindow.draw(_HighscoreTexts[i + _PlayerList.size()]);
 		RenderWindow.draw(_HighscoreTexts[i + 2 * _PlayerList.size()]);
@@ -132,7 +143,7 @@ std::vector<std::string> Highscore::split(const std::string &s, char delim) {
 	return elems;
 }
 
-void Highscore::PlacePlayer(std::string& Name, int Level, int Score)
+void Highscore::PlacePlayer(std::string& Name, int Level)
 {
 	if (_PlayerList.size() == 10)
 	{
@@ -142,11 +153,21 @@ void Highscore::PlacePlayer(std::string& Name, int Level, int Score)
 	Player newPlayer;
 	newPlayer.Name = Name;
 	newPlayer.Level = Level;
-	newPlayer.Score = Score;
+	newPlayer.Score = _Score;
 
 	_PlayerList.push_back(newPlayer);
 
 	SortScoreTable();
+}
+
+void Highscore::setScore(int Score) { 
+	_Score = Score;
+	if (_Score > MinScore()) {
+		_NewHighscore = true;
+	}
+	else {
+		_NewHighscore = false;
+	}
 }
 
 int Highscore::MinScore()

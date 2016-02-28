@@ -12,7 +12,9 @@ public:
 	void render(sf::RenderWindow& RenderWindow);
 	void handleEvent(sf::Event& Event);
 
+	std::string getText() { return _Text.getString(); }
 	bool MouseOverTextbox(sf::Vector2i MousePosition);
+	bool getDisabled() { return _isDisabled; }
 private:
 	sf::RectangleShape _Box, _Cursor;
 	sf::Color _FillColor, _FillColorDisabled, _OutlineColor, _OutlineColorFocused, _TextColor;

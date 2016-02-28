@@ -4,11 +4,13 @@
 MainMenu::MainMenu()
 {
 	//Menu-Items
-	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2 - 100, SCREENHEIGHT - 335), MenuResult::PreviousSkin));
-	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2 + 37, SCREENHEIGHT - 335), MenuResult::NextSkin));
-	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 240), MenuResult::Resume));
-	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 310), MenuResult::Option));
-	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 380), MenuResult::Exit));
+	sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
+
+	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2 - 60, SCREENHEIGHT - 335), sf::Vector2f(0, 0), MenuResult::PreviousSkin));
+	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2 + 50, SCREENHEIGHT - 335), sf::Vector2f(0, 0), MenuResult::NextSkin));
+	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 240), ButtonSize, MenuResult::Resume));
+	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 310), ButtonSize, MenuResult::Option));
+	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 380), ButtonSize, MenuResult::Exit));
 
 	//Main-Menu Text
 	_Text.setString("Main Menu");
@@ -42,6 +44,17 @@ void MainMenu::render(sf::RenderWindow & Window, int SelectedCar)
 	}
 
 	Window.draw(_Text);
+
+	if (MenuItemHovered())
+	{
+		sf::StandardCursor Cursor(sf::StandardCursor::HAND);
+		Cursor.set(Window.getSystemHandle());
+	}
+	else
+	{
+		sf::StandardCursor Cursor(sf::StandardCursor::NORMAL);
+		Cursor.set(Window.getSystemHandle());
+	}
 }
 
 GameState MainMenu::handleEvents(sf::RenderWindow & Window)

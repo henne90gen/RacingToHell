@@ -3,7 +3,7 @@
 
 OptionsMenu::OptionsMenu() : _Volume(2.5f), _MaxVolume(5.0f), _MousePressed(false)
 {
-	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 320), MenuResult::Back));
+	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 320), sf::Vector2f(150, 50), MenuResult::Back));
 
 	_Text.setString("Main Menu");
 	_Text.setCharacterSize(53);
@@ -54,6 +54,17 @@ void OptionsMenu::render(sf::RenderWindow & Window)
 	}
 
 	Window.draw(_Text);
+
+	if (MenuItemHovered())
+	{
+		sf::StandardCursor Cursor(sf::StandardCursor::HAND);
+		Cursor.set(Window.getSystemHandle());
+	}
+	else
+	{
+		sf::StandardCursor Cursor(sf::StandardCursor::NORMAL);
+		Cursor.set(Window.getSystemHandle());
+	}
 }
 
 GameState OptionsMenu::handleEvents(sf::RenderWindow & Window)

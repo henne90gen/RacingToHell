@@ -13,7 +13,7 @@ Menu::~Menu()
 
 void Menu::checkMouseHover(sf::RenderWindow& Window)
 {
-	sf::Vector2f MousePos = sf::Vector2f(sf::Mouse::getPosition(Window));
+	/*sf::Vector2f MousePos = sf::Vector2f(sf::Mouse::getPosition(Window));
 	for (int i = 0; i < _MenuItems.size(); i++) {
 		sf::FloatRect rect = _MenuItems[i]->getRect();
 		if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width) {
@@ -33,7 +33,7 @@ void Menu::checkMouseHover(sf::RenderWindow& Window)
 	{
 		sf::StandardCursor Cursor(sf::StandardCursor::NORMAL);
 		Cursor.set(Window.getSystemHandle());
-	}
+	} */
 }
 
 bool Menu::MenuItemHovered()
@@ -45,6 +45,6 @@ bool Menu::MenuItemHovered()
 			return true;
 		}
 	}
-
-	return false;
+	
+	return false; 
 }

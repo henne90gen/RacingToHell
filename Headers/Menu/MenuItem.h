@@ -1,10 +1,11 @@
 #pragma once
 #include "MenuResults.h"
+#include "AlignText.h"
 
 class MenuItem
 {
 public:
-	MenuItem(sf::Vector2f pos, MenuResult action);
+	MenuItem(sf::Vector2f pos, sf::Vector2f size, MenuResult action);
 	~MenuItem();
 
 	void render(sf::RenderWindow& Window);
@@ -17,8 +18,11 @@ public:
 private:
 	sf::Text _Text;
 	sf::Font _Font;
-	sf::RectangleShape _HoverRect;
+	sf::RectangleShape _Background;
+
 	MenuResult _Action;
+	TextAlignment _Alignment;
+
 	bool _Hovering;
 };
 

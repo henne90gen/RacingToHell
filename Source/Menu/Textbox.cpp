@@ -73,17 +73,6 @@ void Textbox::render(sf::RenderWindow& RenderWindow)
 	{
 		RenderWindow.draw(_Cursor);
 	}
-
-	if (!_isDisabled && MouseOverTextbox(sf::Mouse::getPosition(RenderWindow)))
-	{
-		sf::StandardCursor Cursor(sf::StandardCursor::TEXT);
-		Cursor.set(RenderWindow.getSystemHandle());
-	}
-	else
-	{
-		sf::StandardCursor Cursor(sf::StandardCursor::NORMAL);
-		Cursor.set(RenderWindow.getSystemHandle());
-	}
 }
 
 void Textbox::handleEvent(sf::Event& Event)

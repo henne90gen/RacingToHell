@@ -114,12 +114,13 @@ GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
 					switch (getMenuItems()[i]->getAction()) {
 					case MenuResult::BackToMain:
 						_SoundPlayed = false;
+						_ScoreSubmitted = false;
 						return GameState::Main;
 						break;
 					case MenuResult::SubmitScore:
 						if (!_ScoreSubmitted && _Score > _Highscore->MinScore() && _Textbox->getText() != "")
 						{
-							_Highscore->PlacePlayer(_Textbox->getText(), 1, _Score);
+							_Highscore->PlacePlayer(_Textbox->getText(), _Level, _Score);
 							_Highscore->SaveScoreTable();
 							_ScoreSubmitted = true;
 						}

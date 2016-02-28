@@ -133,9 +133,18 @@ std::vector<std::string> Highscore::split(const std::string &s, char delim) {
 	return elems;
 }
 
-void Highscore::PlacePlayer(std::string& Name, int Level, int)
+void Highscore::PlacePlayer(std::string& Name, int Level, int Score)
 {
+	_PlayerList.erase(_PlayerList.begin() + _PlayerList.size() - 1);
 
+	Player newPlayer;
+	newPlayer.Name = Name;
+	newPlayer.Level = Level;
+	newPlayer.Score = Score;
+
+	_PlayerList.push_back(newPlayer);
+
+	SortScoreTable();
 }
 
 int Highscore::MinScore()

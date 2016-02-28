@@ -1,11 +1,10 @@
-Testperson1;4;124000
+Test1;4;124000
 Testperson2;3;65000
 Testperson3;3;62000
 Testperson4;3;61000
-Testperson5;3;60000
+Test1;3;60000
 Testperson6;3;59000
 Testperson7;3;58000
 Testperson8;3;57000
 Testperson9;3;56000
-Testperson10;1;550
-
+Test1;3;1000

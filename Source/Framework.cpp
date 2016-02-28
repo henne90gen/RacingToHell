@@ -43,7 +43,7 @@ void Framework::render()
 		_HeadsUpDisplay.render(_RenderWindow);
 		break;
 	case GameState::Main:
-		_MainMenu.render(_RenderWindow, _CurrentCarSkinIndex);
+		_MainMenu.render(_RenderWindow);
 		break;
 	case GameState::Pause:
 		_PauseMenu.render(_RenderWindow);
@@ -59,7 +59,7 @@ void Framework::render()
 		break;
 	case GameState::Loading:
 		if (_LoadingScreen.isFadingAway()) {
-			_MainMenu.render(_RenderWindow, _CurrentCarSkinIndex);
+			_MainMenu.render(_RenderWindow);
 		}
 		_LoadingScreen.render(_RenderWindow);
 		break;
@@ -100,7 +100,8 @@ void Framework::handleEvents()
 		break;
 	case GameState::Main:
 		_OptionsMenu.setReturnState(_GameState);
-		_GameState = _MainMenu.handleEvents(_RenderWindow, _CurrentCarSkinIndex);
+		_GameState = _MainMenu.handleEvents(_RenderWindow);
+		_CurrentCarSkinIndex = _MainMenu.getCarIndex();
 		if (_GameState == GameState::Running) {
 			_Clock.restart();
 			_Level.resetTimer();
@@ -111,6 +112,7 @@ void Framework::handleEvents()
 		else if (_CurrentCarSkinIndex >= _CarSkins.size()) {
 			_CurrentCarSkinIndex = 0;
 		}
+		_MainMenu.setCarIndex(_CurrentCarSkinIndex);
 		_GameObjectContainer.getPlayerCar()->setSkin(_CarSkins.at(_CurrentCarSkinIndex));
 		_GameObjectContainer.getPlayerCar()->setStats(_CurrentCarSkinIndex);
 		break;

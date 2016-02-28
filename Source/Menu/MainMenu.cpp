@@ -34,10 +34,10 @@ MainMenu::~MainMenu()
 	_StatBox = nullptr;
 }
 
-void MainMenu::render(sf::RenderWindow & Window, int SelectedCar)
+void MainMenu::render(sf::RenderWindow & Window)
 {
 	Window.draw(_CarSkin);
-	_StatBox->render(Window, SelectedCar);
+	_StatBox->render(Window, _SelectedCar);
 
 	for (int i = 0; i < _MenuItems.size(); i++) {
 		_MenuItems[i]->render(Window);
@@ -57,12 +57,7 @@ void MainMenu::render(sf::RenderWindow & Window, int SelectedCar)
 	}
 }
 
-GameState MainMenu::handleEvents(sf::RenderWindow & Window)
-{
-	return GameState::Main;
-}
-
-GameState MainMenu::handleEvents(sf::RenderWindow& Window, int& carSkinIndex)
+GameState MainMenu::handleEvents(sf::RenderWindow& Window)
 {
 	while (Window.pollEvent(_Event)) {
 		checkMouseHover(Window);
@@ -83,10 +78,10 @@ GameState MainMenu::handleEvents(sf::RenderWindow& Window, int& carSkinIndex)
 						return GameState::Pause;
 						break;
 					case MenuResult::PreviousSkin:
-						carSkinIndex--;
+						_SelectedCar--;
 						break;
 					case MenuResult::NextSkin:
-						carSkinIndex++;
+						_SelectedCar++;
 						break;
 					case MenuResult::Exit:
 						return GameState::Exiting;
@@ -100,8 +95,4 @@ GameState MainMenu::handleEvents(sf::RenderWindow& Window, int& carSkinIndex)
 		}
 	}
 	return GameState::Main;
-}
-
-void MainMenu::render(sf::RenderWindow & Window)
-{
 }

@@ -77,6 +77,11 @@ void MenuItem::render(sf::RenderWindow & Window)
 {
 	Window.draw(_Background);
 	Window.draw(_Text);
+
+	sf::FloatRect rect = getRect();
+	sf::Vector2i MousePos = sf::Mouse::getPosition(Window);
+
+	switchHoverState(MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width);
 }
 
 sf::FloatRect MenuItem::getRect()

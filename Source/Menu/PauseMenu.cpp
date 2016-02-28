@@ -30,6 +30,17 @@ void PauseMenu::render(sf::RenderWindow & Window)
 		_MenuItems[i]->render(Window);
 	}
 	Window.draw(_Text);
+
+	if (MenuItemHovered())
+	{
+		sf::StandardCursor Cursor(sf::StandardCursor::HAND);
+		Cursor.set(Window.getSystemHandle());
+	}
+	else
+	{
+		sf::StandardCursor Cursor(sf::StandardCursor::NORMAL);
+		Cursor.set(Window.getSystemHandle());
+	}
 }
 
 GameState PauseMenu::handleEvents(sf::RenderWindow & Window)

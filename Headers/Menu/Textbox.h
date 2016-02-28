@@ -11,6 +11,8 @@ public:
 	void update();
 	void render(sf::RenderWindow& RenderWindow);
 	void handleEvent(sf::Event& Event);
+
+	bool MouseOverTextbox(sf::Vector2i MousePosition);
 private:
 	sf::RectangleShape _Box, _Cursor;
 	sf::Color _FillColor, _FillColorDisabled, _OutlineColor, _OutlineColorFocused, _TextColor;
@@ -25,6 +27,5 @@ private:
 
 	void setCursor();
 
-	bool MouseOverTextbox(sf::Vector2i MousePosition);
 	bool StringTooLarge(std::string str);
 };

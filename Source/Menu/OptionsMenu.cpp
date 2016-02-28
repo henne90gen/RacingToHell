@@ -54,6 +54,17 @@ void OptionsMenu::render(sf::RenderWindow & Window)
 	}
 
 	Window.draw(_Text);
+
+	if (MenuItemHovered())
+	{
+		sf::StandardCursor Cursor(sf::StandardCursor::HAND);
+		Cursor.set(Window.getSystemHandle());
+	}
+	else
+	{
+		sf::StandardCursor Cursor(sf::StandardCursor::NORMAL);
+		Cursor.set(Window.getSystemHandle());
+	}
 }
 
 GameState OptionsMenu::handleEvents(sf::RenderWindow & Window)

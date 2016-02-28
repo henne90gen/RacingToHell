@@ -60,10 +60,27 @@ void GameOverScreen::render(sf::RenderWindow& Window, int score)
 	{
 		_MenuItems[i]->render(Window);
 	}
+
+	if (MenuItemHovered())
+	{
+		sf::StandardCursor Cursor(sf::StandardCursor::HAND);
+		Cursor.set(Window.getSystemHandle());
+	}
+	else if (_Textbox->MouseOverTextbox(sf::Mouse::getPosition(Window)))
+	{
+		sf::StandardCursor Cursor(sf::StandardCursor::TEXT);
+		Cursor.set(Window.getSystemHandle());
+	}
+	else
+	{
+		sf::StandardCursor Cursor(sf::StandardCursor::NORMAL);
+		Cursor.set(Window.getSystemHandle());
+	}
 }
 
 void GameOverScreen::render(sf::RenderWindow & Window)
-{}
+{
+}
 
 void GameOverScreen::update()
 {

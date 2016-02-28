@@ -44,6 +44,17 @@ void MainMenu::render(sf::RenderWindow & Window, int SelectedCar)
 	}
 
 	Window.draw(_Text);
+
+	if (MenuItemHovered())
+	{
+		sf::StandardCursor Cursor(sf::StandardCursor::HAND);
+		Cursor.set(Window.getSystemHandle());
+	}
+	else
+	{
+		sf::StandardCursor Cursor(sf::StandardCursor::NORMAL);
+		Cursor.set(Window.getSystemHandle());
+	}
 }
 
 GameState MainMenu::handleEvents(sf::RenderWindow & Window)

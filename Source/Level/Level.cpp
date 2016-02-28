@@ -3,11 +3,6 @@
 
 Level::Level() : _Difficulty(1), _LevelUp(5)
 {
-	for (int i = 0; i < 4; i++) {
-		sf::Texture* texture = new sf::Texture();
-		(*texture).loadFromFile("Resources/Texture/Road/Road" + std::to_string(i + 1) + ".jpg");
-		_Textures.push_back(texture);
-	}
 }
 
 Level::~Level()

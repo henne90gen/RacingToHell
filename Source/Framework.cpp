@@ -125,7 +125,9 @@ void Framework::update(float FrameTime)
 		_GameOverScreen.update();
 		break;
 	case GameState::Options:
-		_Level.update(_FrameTime, false);
+		if (_OptionsMenu.getReturnState() == GameState::Main) {
+			_Level.update(_FrameTime, false);
+		}
 		break;
 	case GameState::Loading:
 		load();
@@ -233,7 +235,7 @@ void Framework::load()
 	_GameObjectContainer.setCarSkins(_CarSkins);
 	_GameObjectContainer.resetGameObjects(0);
 
-	
+	_GameOverScreen.loadHighScores();
 }
 
 void Framework::resetGame() 

@@ -7,7 +7,7 @@ Highscore::Highscore(sf::Vector2f Position)
 	_Background.setSize(sf::Vector2f(450, 500));
 	_Background.setPosition(Position);
 
-	_Font.loadFromFile("Resources\\Font\\arial.ttf");
+	_Font.loadFromFile("Resources/Font/arial.ttf");
 
 	_HeadlineName.setFont(_Font);
 	_HeadlineName.setCharacterSize(30);
@@ -26,7 +26,7 @@ Highscore::Highscore(sf::Vector2f Position)
 	_HeadlineScore.setString("Score");
 	_HeadlineScoreWidth = _HeadlineScore.getLocalBounds().width;
 
-	_Filename = "Resources\\Data\\Highscore.txt";
+	_Filename = "Resources/Data/Highscore.txt";
 
 	loadScoreTable();
 }

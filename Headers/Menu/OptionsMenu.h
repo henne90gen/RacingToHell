@@ -11,7 +11,7 @@ public:
 	GameState handleEvents(sf::RenderWindow& Window);
 
 	void setReturnState(GameState returnState) { _ReturnState = returnState; }
-
+	GameState getReturnState() { return _ReturnState; }
 	float getVolume() { return _Volume; }
 
 private:

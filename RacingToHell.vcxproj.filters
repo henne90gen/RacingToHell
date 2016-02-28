@@ -237,6 +237,9 @@
     <None Include="Resources\Sound\Music\level1.ogg">
       <Filter>Resource Files\Sound\Music</Filter>
     </None>
+    <None Include="Resources\Sound\game over.ogg">
+      <Filter>Resource Files\Sound</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Texture\TrafficCar\Traffic1.png">

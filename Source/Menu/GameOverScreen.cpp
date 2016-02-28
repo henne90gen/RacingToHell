@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Menu\GameOverScreen.h"
 
-GameOverScreen::GameOverScreen()
+GameOverScreen::GameOverScreen() : _SoundPlayed(false)
 {
 	if (_Font.loadFromFile("Resources/Font/arial.ttf")) {
 		_GOTLine1.setFont(_Font);
@@ -66,6 +66,16 @@ void GameOverScreen::update()
 	_Textbox->update();
 }
 
+void GameOverScreen::playSounds()
+{
+	if (_GameOverSound.getStatus() == sf::Sound::Stopped || _GameOverSound.getStatus() == sf::Sound::Paused) {
+		if (!_SoundPlayed) {
+			_GameOverSound.play();
+			_SoundPlayed = true;
+		}
+	}
+}
+
 void GameOverScreen::render(sf::RenderWindow & Window)
 {
 }
@@ -75,6 +85,7 @@ GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
 	while (Window.pollEvent(_Event)) {
 		if (_Event.type == sf::Event::KeyPressed) {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+				_SoundPlayed = false;
 				return GameState::Main;
 			}
 		}
@@ -89,4 +100,8 @@ GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
 void GameOverScreen::loadHighScores()
 {
 	_Highscore = new Highscore(sf::Vector2f(SCREENWIDTH / 2 - 225, 225));
+	if (_GameOverSoundBuffer.loadFromFile("Resources/Sound/game over.ogg")) {
+		_GameOverSound.setBuffer(_GameOverSoundBuffer);
+		//_GameOverSound.setVolume();
+	}
 }

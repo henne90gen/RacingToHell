@@ -140,7 +140,6 @@ void Framework::update()
 	case GameState::Running:
 		if (_Level.update(_FrameTime, _GameState == GameState::Running)) {
 			if (_GameObjectContainer.emptyScreen()) {
-				_Level.LevelUp();
 				_LevelUpScreen.LevelUp();
 				_GameState = GameState::LevelUp;
 			}
@@ -156,7 +155,7 @@ void Framework::update()
 	case GameState::LevelUp:
 		if (_LevelUpScreen.update()) {
 			_Clock.restart();
-			_Level.resetTimer();
+			_Level.LevelUp();
 			dynamic_cast<PlayerCar*>(_GameObjectContainer.getPlayerCar())->resetMovement();
 			_GameState = GameState::Running;
 		}
@@ -204,7 +203,7 @@ void Framework::playSounds() {
 	}
 	else if (_GameState == GameState::GameOver) {
 		_Level.stopMusic();
-		//_GameOverScreen.playSounds();
+		_GameOverScreen.playSounds();
 	}
 	else if (_GameState == GameState::LevelUp) {
 		_LevelUpScreen.render(_RenderWindow);

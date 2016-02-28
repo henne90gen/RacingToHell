@@ -219,6 +219,7 @@
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="README.md" />
+    <None Include="Resources\Sound\game over.ogg" />
     <None Include="Resources\Sound\Music\level1.ogg" />
   </ItemGroup>
   <ItemGroup>

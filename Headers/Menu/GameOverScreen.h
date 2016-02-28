@@ -18,6 +18,8 @@ public:
 
 	void update();
 
+	void playSounds();
+
 private:
 	sf::Font _Font;
 	sf::Text _GameOverText;
@@ -30,5 +32,9 @@ private:
 
 	Textbox* _Textbox;
 	Highscore* _Highscore;
+
+	sf::SoundBuffer _GameOverSoundBuffer;
+	sf::Sound _GameOverSound;
+	bool _SoundPlayed;
 };
 

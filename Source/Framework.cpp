@@ -55,7 +55,7 @@ void Framework::render()
 		_LevelUpScreen.render(_RenderWindow);
 		break;
 	case GameState::GameOver:
-		_GameOverScreen.render(_RenderWindow, _Score);
+		_GameOverScreen.render(_RenderWindow);
 		break;
 	case GameState::Loading:
 		if (_LoadingScreen.isFadingAway()) {
@@ -164,6 +164,7 @@ void Framework::update()
 		_Level.update(_FrameTime, false);
 		break;
 	case GameState::GameOver:
+		_GameOverScreen.setScore(_Score);
 		_GameOverScreen.update();
 		break;
 	case GameState::Options:

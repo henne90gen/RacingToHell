@@ -10,19 +10,19 @@ public:
 	GameOverScreen();
 	~GameOverScreen();
 
-	void render(sf::RenderWindow& Window, int score);
 	void render(sf::RenderWindow& Window);
 	GameState handleEvents(sf::RenderWindow& Window);
 	void update();
 
 	void loadHighScores();
 
+	void setScore(int Score) { _Score = Score; }
+
 	void playSounds();
 	void setVolume(float Volume);
 
 private:
-	sf::Font _Font;
-	sf::Text _GameOverText;
+	int _Score;
 
 	//GOT = GameOverText
 	sf::Text _GOTLine1;

@@ -45,9 +45,9 @@ GameOverScreen::~GameOverScreen()
 	_Highscore = nullptr;
 }
 
-void GameOverScreen::render(sf::RenderWindow& Window, int score)
+void GameOverScreen::render(sf::RenderWindow& Window)
 {
-	_GOTLine3.setString("Your score was: " + std::to_string(score));
+	_GOTLine3.setString("Your score was: " + std::to_string(_Score));
 
 	Window.draw(_GOTLine1);
 	Window.draw(_GOTLine3);
@@ -79,10 +79,6 @@ void GameOverScreen::render(sf::RenderWindow& Window, int score)
 		sf::StandardCursor Cursor(sf::StandardCursor::NORMAL);
 		Cursor.set(Window.getSystemHandle());
 	}
-}
-
-void GameOverScreen::render(sf::RenderWindow & Window)
-{
 }
 
 void GameOverScreen::update()

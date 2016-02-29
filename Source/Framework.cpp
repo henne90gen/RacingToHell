@@ -74,7 +74,10 @@ void Framework::handleEvents()
 	case GameState::Running:
 		while (_RenderWindow.pollEvent(_Event))
 		{
-			if (_Event.type == sf::Event::KeyPressed) {
+			if (_Event.type == sf::Event::Closed) {
+				_GameState = GameState::Exiting;
+			}
+			else if (_Event.type == sf::Event::KeyPressed || sf::Event::JoystickMoved || sf::Event::JoystickButtonPressed) {
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
 					_GameState = GameState::Pause;
 				}
@@ -84,9 +87,6 @@ void Framework::handleEvents()
 			}
 			else if (_Event.type == sf::Event::KeyReleased || _Event.type == sf::Event::MouseButtonPressed) {
 				_GameObjectContainer.handleEvents(_Event);
-			}
-			else if (_Event.type == sf::Event::Closed) {
-				_GameState = GameState::Exiting;
 			}
 		}
 		break;

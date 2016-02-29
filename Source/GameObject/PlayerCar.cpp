@@ -19,51 +19,54 @@ void PlayerCar::handleEvent(sf::Event& Event)
 {
 	//Keyinput abfragen und in _Movement speichern
 	_Movement = sf::Vector2f(0, 0);
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+	bool usingJoystick = false;
+	if (sf::Joystick::isConnected(0) && !(sf::Joystick::getAxisPosition(0, sf::Joystick::X) < 10 && sf::Joystick::getAxisPosition(0, sf::Joystick::X) > -10)) {
+		_Movement = sf::Vector2f(sf::Joystick::getAxisPosition(0, sf::Joystick::X) / 100.0f, 0);
+		usingJoystick = true;
+	}
+	else if (!usingJoystick && (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))) {
 		_Movement += sf::Vector2f(-1, 0);
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+	else if (!usingJoystick && (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))) {
 		_Movement += sf::Vector2f(1, 0);
 	}
 	else {
 		_Movement = sf::Vector2f(0, 0);
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-	{
+	if (sf::Joystick::isConnected(0) && !(sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < 10 && sf::Joystick::getAxisPosition(0, sf::Joystick::Y) > -10)) {
+		if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < 0) {
+			_Movement += sf::Vector2f(0, sf::Joystick::getAxisPosition(0, sf::Joystick::Y) / 100.0f * 0.45);
+		}
+		else {
+			_Movement += sf::Vector2f(0, sf::Joystick::getAxisPosition(0, sf::Joystick::Y) / 100.0f * 1.2);
+		}
+	}
+	else if (!usingJoystick && (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))) {
 		_Movement += sf::Vector2f(0, -0.45);
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-	{
+	else if (!usingJoystick && (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))) {
 		_Movement += sf::Vector2f(0, 1.2);
 	}
-	else
-	{
+	else {
 		_Movement.y = 0;
 	}
 
-	if (Event.type == sf::Event::MouseButtonPressed)
-	{
-		if (_Energy - 5 >= 10)
-		{
+	if (Event.type == sf::Event::MouseButtonPressed) {
+		if (_Energy - 5 >= 10) {
 			_Energy -= 5;
 
-			if (getPos().x > Event.mouseButton.x)
-			{
+			if (getPos().x > Event.mouseButton.x) {
 				_ShotBullet = std::atanf((Event.mouseButton.y - getPos().y) / (Event.mouseButton.x - getPos().x)) * 180.0f / PI + 180;
 			}
-			else if (getPos().x < Event.mouseButton.x)
-			{
+			else if (getPos().x < Event.mouseButton.x) {
 				_ShotBullet = std::atanf((getPos().y - Event.mouseButton.y) / (getPos().x - Event.mouseButton.x)) * 180.0f / PI;
 			}
-			else
-			{
-				if (Event.mouseButton.y > getPos().y)
-				{
+			else {
+				if (Event.mouseButton.y > getPos().y) {
 					_ShotBullet = 90;
 				}
-				else
-				{
+				else {
 					_ShotBullet = -90;
 				}
 			}
@@ -74,13 +77,11 @@ void PlayerCar::handleEvent(sf::Event& Event)
 void PlayerCar::update(float FrameTime, int RoadSpeed)
 {
 	//_Movement anwenden - Car bewegen
-	if (((getPos() + _Movement * FrameTime * (float)_Speed).x >= getWidth() / 2) && ((getPos() + _Movement * FrameTime * (float)_Speed).x <= SCREENWIDTH - getWidth() / 2))
-	{
+	if (((getPos() + _Movement * FrameTime * (float)_Speed).x >= getWidth() / 2) && ((getPos() + _Movement * FrameTime * (float)_Speed).x <= SCREENWIDTH - getWidth() / 2)) {
 		setPos(sf::Vector2f(getPos().x + (_Movement.x * _Speed * FrameTime), getPos().y));
 	}
 
-	if (getPos().y + getHeight() / 2 + _Movement.y * FrameTime * _Speed <= SCREENHEIGHT && getPos().y - getHeight() / 2 + _Movement.y * FrameTime * _Speed >= 0)
-	{
+	if (getPos().y + getHeight() / 2 + _Movement.y * FrameTime * _Speed <= SCREENHEIGHT && getPos().y - getHeight() / 2 + _Movement.y * FrameTime * _Speed >= 0) {
 		setPos(sf::Vector2f(getPos().x, getPos().y + _Movement.y * FrameTime * _Speed));
 	}
 
@@ -98,24 +99,20 @@ bool PlayerCar::checkForCollision(GameObject * go)
 
 void PlayerCar::addHealth()
 {
-	if (_Health + 20 > _MaxHealth)
-	{
+	if (_Health + 20 > _MaxHealth) {
 		_Health = _MaxHealth;
 	}
-	else
-	{
+	else {
 		_Health += 20;
 	}
 }
 
 void PlayerCar::addEnergy()
 {
-	if (_Energy + 50 > _MaxEnergy)
-	{
+	if (_Energy + 50 > _MaxEnergy) {
 		_Energy = _MaxEnergy;
 	}
-	else
-	{
+	else {
 		_Energy += 50;
 	}
 }

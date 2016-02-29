@@ -6,23 +6,30 @@ Highscore::Highscore(sf::Vector2f Position) : _Gap(42)
 	_Background.setFillColor(sf::Color(0, 0, 0, 100));
 	_Background.setSize(sf::Vector2f(450, 500));
 	_Background.setPosition(Position);
+	
+	Position += sf::Vector2f(15, 15);
 
 	_Font.loadFromFile("Resources/Font/arial.ttf");
 
-	_HeadlineName.setFont(_Font);
-	_HeadlineName.setCharacterSize(30);
-	_HeadlineName.setStyle(sf::Text::Style::Bold);
-	_HeadlineName.setPosition(Position + sf::Vector2f(20,20));
-	_HeadlineName.setString("Name");
-	_HeadlineNameHeight = _HeadlineName.getLocalBounds().height;
+	_HeadlineRank.setFont(_Font);
+	_HeadlineRank.setCharacterSize(30);
+	_HeadlineRank.setStyle(sf::Text::Style::Bold);
+	_HeadlineRank.setPosition(Position);
+	_HeadlineRank.setString("Rank");
+	_HeadlineRankWidth = _HeadlineRank.getLocalBounds().width;
 
-	_HeadlineLevel = _HeadlineName;
-	_HeadlineLevel.setPosition(Position + sf::Vector2f(_Background.getSize().x / 2 - _HeadlineLevel.getLocalBounds().width / 2, 20));
+	_HeadlineName = _HeadlineRank;
+	_HeadlineName.setPosition(_HeadlineRank.getPosition() + sf::Vector2f(_HeadlineRank.getLocalBounds().width + 10, 0));
+	_HeadlineName.setString("Name");
+	_HeadlineNameHeight = _HeadlineName.getLocalBounds().height + 30;
+
+	_HeadlineLevel = _HeadlineRank;
 	_HeadlineLevel.setString("Level");
+	_HeadlineLevel.setPosition(_HeadlineName.getPosition() + sf::Vector2f(_HeadlineName.getLocalBounds().width + 70, 0));
 	_HeadlineLevelWidth = _HeadlineLevel.getLocalBounds().width;
 
-	_HeadlineScore = _HeadlineName;
-	_HeadlineScore.setPosition(Position + sf::Vector2f(_Background.getSize().x - _HeadlineScore.getLocalBounds().width - 20, 20));
+	_HeadlineScore = _HeadlineRank;
+	_HeadlineScore.setPosition(_HeadlineLevel.getPosition() + sf::Vector2f(_HeadlineLevel.getLocalBounds().width + 30, 0));
 	_HeadlineScore.setString("Score");
 	_HeadlineScoreWidth = _HeadlineScore.getLocalBounds().width;
 
@@ -39,26 +46,33 @@ Highscore::~Highscore()
 void Highscore::render(sf::RenderWindow& RenderWindow)
 {
 	RenderWindow.draw(_Background);
+	RenderWindow.draw(_HeadlineRank);
 	RenderWindow.draw(_HeadlineName);
 	RenderWindow.draw(_HeadlineLevel);
 	RenderWindow.draw(_HeadlineScore);
 	
-	for (unsigned int i = 0; i < _PlayerList.size(); i++)
+	int numPlayers = _PlayerList.size();
+
+	for (unsigned int i = 0; i < numPlayers; i++)
 	{
-		_HighscoreTexts[i].setString(_PlayerList[i].Name);
-		_HighscoreTexts[i].setPosition(_HeadlineName.getPosition() + sf::Vector2f(0, _HeadlineNameHeight + 30 + i * _Gap));
+		_HighscoreTexts[i].setString(std::to_string(_PlayerList[i].Rank));
+		_HighscoreTexts[i].setOrigin(sf::Vector2f(_HighscoreTexts[i].getLocalBounds().width / 2.0f, 0));
+		_HighscoreTexts[i].setPosition(_HeadlineRank.getPosition() + sf::Vector2f(_HeadlineRankWidth / 2.0f, _HeadlineNameHeight + i * _Gap));
 
-		_HighscoreTexts[i + _PlayerList.size()].setString(std::to_string(_PlayerList[i].Level));
-		_HighscoreTexts[i + _PlayerList.size()].setPosition(_HeadlineLevel.getPosition() + sf::Vector2f(_HeadlineLevelWidth - _HighscoreTexts[i + _PlayerList.size()].getLocalBounds().width, _HeadlineNameHeight + 30 + i * _Gap));
+		_HighscoreTexts[i + numPlayers].setString(_PlayerList[i].Name);
+		_HighscoreTexts[i + numPlayers].setPosition(_HeadlineName.getPosition() + sf::Vector2f(0, _HeadlineNameHeight + i * _Gap));
 
-		_HighscoreTexts[i + 2 * _PlayerList.size()].setString(std::to_string(_PlayerList[i].Score));
-		_HighscoreTexts[i + 2 * _PlayerList.size()].setPosition(_HeadlineScore.getPosition() + sf::Vector2f(_HeadlineScoreWidth - _HighscoreTexts[i + 2 * _PlayerList.size()].getLocalBounds().width, _HeadlineNameHeight + 30 + i * _Gap));
+		_HighscoreTexts[i + 2 * numPlayers].setString(std::to_string(_PlayerList[i].Level));
+		_HighscoreTexts[i + 2 * numPlayers].setPosition(_HeadlineLevel.getPosition() + sf::Vector2f(_HeadlineLevelWidth - _HighscoreTexts[i + 2 * numPlayers].getLocalBounds().width, _HeadlineNameHeight + i * _Gap));
+
+		_HighscoreTexts[i + 3 * numPlayers].setString(std::to_string(_PlayerList[i].Score));
+		_HighscoreTexts[i + 3 * numPlayers].setPosition(_HeadlineScore.getPosition() + sf::Vector2f(_HeadlineScoreWidth - _HighscoreTexts[i + 3 * numPlayers].getLocalBounds().width, _HeadlineNameHeight + i * _Gap));
 
 		if (_NewHighscore) {
 			if (_PlayerList[i].Score == _Score) {
 				_HighscoreTexts[i].setColor(sf::Color::Yellow);
-				_HighscoreTexts[i + _PlayerList.size()].setColor(sf::Color::Yellow);
-				_HighscoreTexts[i + 2 * _PlayerList.size()].setColor(sf::Color::Yellow);
+				_HighscoreTexts[i + numPlayers].setColor(sf::Color::Yellow);
+				_HighscoreTexts[i + 2 * numPlayers].setColor(sf::Color::Yellow);
 			}
 		}
 		else {
@@ -66,8 +80,9 @@ void Highscore::render(sf::RenderWindow& RenderWindow)
 		}
 
 		RenderWindow.draw(_HighscoreTexts[i]);
-		RenderWindow.draw(_HighscoreTexts[i + _PlayerList.size()]);
-		RenderWindow.draw(_HighscoreTexts[i + 2 * _PlayerList.size()]);
+		RenderWindow.draw(_HighscoreTexts[i + numPlayers]);
+		RenderWindow.draw(_HighscoreTexts[i + 2 * numPlayers]);
+		RenderWindow.draw(_HighscoreTexts[i + 3 * numPlayers]);
 	}
 }
 
@@ -93,6 +108,7 @@ void Highscore::loadScoreTable()
 		if (Info.size() == 3)
 		{
 			Player newPlayer;
+			newPlayer.Rank = i + 1;
 			newPlayer.Name = Info[0];
 			newPlayer.Level = std::stoi(Info[1]);
 			newPlayer.Score = std::stoi(Info[2]);
@@ -105,7 +121,7 @@ void Highscore::loadScoreTable()
 
 	SortScoreTable();
 
-	for (unsigned int i = 0; i < _PlayerList.size() * 3; i++)
+	for (unsigned int i = 0; i < _PlayerList.size() * 4; i++)
 	{
 		sf::Text HighscoreText;
 		HighscoreText.setFont(_Font);

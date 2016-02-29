@@ -9,6 +9,7 @@ class Highscore
 public:
 	struct Player
 	{
+		int Rank;
 		std::string Name;
 		int Score;
 		int Level;
@@ -37,11 +38,12 @@ public:
 private:
 	sf::RectangleShape _Background;
 	sf::Font _Font;
+	sf::Text _HeadlineRank;
 	sf::Text _HeadlineName;
 	sf::Text _HeadlineLevel;
 	sf::Text _HeadlineScore;
 
-	float _HeadlineNameHeight, _HeadlineLevelWidth, _HeadlineScoreWidth, _Gap;
+	float _HeadlineRankWidth, _HeadlineNameHeight, _HeadlineLevelWidth, _HeadlineScoreWidth, _Gap;
 	int _Score;
 	bool _NewHighscore;
 

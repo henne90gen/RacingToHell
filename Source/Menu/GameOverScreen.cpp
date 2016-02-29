@@ -86,6 +86,7 @@ void GameOverScreen::update(int Score, int Level)
 	_Highscore->setScore(Score);
 	_Level = Level;
 	_Textbox->setDisabled(!_Highscore->isNewHighscore() || _ScoreSubmitted);
+	_MenuItems[1]->setEnabled(!_Textbox->getDisabled());
 	_Textbox->update();
 }
 

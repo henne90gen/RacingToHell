@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Menu/OptionsMenu.h"
 
-OptionsMenu::OptionsMenu() : _Volume(2.5f), _MaxVolume(5.0f), _MousePressed(false)
+OptionsMenu::OptionsMenu() : _Volume(0.0f), _MaxVolume(5.0f), _MousePressed(false)
 {
 	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 320), sf::Vector2f(150, 50), MenuResult::Back));
 

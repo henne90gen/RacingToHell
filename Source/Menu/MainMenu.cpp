@@ -74,7 +74,7 @@ GameState MainMenu::handleEvents(sf::RenderWindow& Window)
 						return GameState::Options;
 						break;
 					case MenuResult::Nothing:
-						return GameState::Pause;
+						return GameState::Main;
 						break;
 					case MenuResult::PreviousSkin:
 						_SelectedCar--;

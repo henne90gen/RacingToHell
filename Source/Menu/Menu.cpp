@@ -15,7 +15,7 @@ bool Menu::MenuItemHovered()
 {
 	for (unsigned int i = 0; i < _MenuItems.size(); i++)
 	{
-		if (_MenuItems[i]->getHoverState())
+		if (_MenuItems[i]->getHoverState() && _MenuItems[i]->getEnabled())
 		{
 			return true;
 		}

@@ -2,7 +2,7 @@
 #include "Menu\MenuItem.h"
 
 
-MenuItem::MenuItem(sf::Vector2f pos, sf::Vector2f size, MenuResult action) : _Action(action)
+MenuItem::MenuItem(sf::Vector2f pos, sf::Vector2f size, MenuResult action) : _Action(action), _Enabled(true)
 {
 	_Font.loadFromFile("Resources/Font/arial.ttf");
 	
@@ -96,16 +96,28 @@ sf::FloatRect MenuItem::getRect()
 	}
 }
 
+MenuResult MenuItem::getAction()
+{
+	if (_Enabled) {
+		return _Action;
+	}
+	return MenuResult::Nothing;
+}
+
 void MenuItem::switchHoverState(bool hoverState)
 {
 	_Hovering = hoverState;
 
-	if (_Hovering)
-	{
+	if (_Hovering && _Enabled) {
 		_Background.setFillColor(sf::Color(50, 50, 50, 100));
+		_Text.setColor(sf::Color::White);
 	}
-	else
-	{
+	else if (_Enabled) {
 		_Background.setFillColor(sf::Color(0, 0, 0, 100));
+		_Text.setColor(sf::Color::White);
+	}
+	else {
+		_Background.setFillColor(sf::Color(0, 0, 0, 100));
+		_Text.setColor(sf::Color(150, 150, 150, 255));
 	}
 }

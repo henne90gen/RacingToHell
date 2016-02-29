@@ -11,10 +11,13 @@ public:
 	void render(sf::RenderWindow& Window);
 
 	sf::FloatRect getRect();
-	MenuResult getAction() { return _Action; }
-	bool getHoverState() { return _Hovering; }
+	MenuResult getAction();
 
+	bool getHoverState() { return _Hovering; }
 	void switchHoverState(bool hoverState);
+	
+	bool getEnabled() { return _Enabled; }
+	void setEnabled(bool enabled) { _Enabled = enabled; }
 private:
 	sf::Text _Text;
 	sf::Font _Font;
@@ -24,5 +27,6 @@ private:
 	TextAlignment _Alignment;
 
 	bool _Hovering;
+	bool _Enabled;
 };
 

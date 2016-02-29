@@ -126,6 +126,7 @@ GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
 							_Highscore->SaveScoreTable();
 							_Highscore->loadScoreTable();
 							_ScoreSubmitted = true;
+							getMenuItems().at(i)->setEnabled(false);
 						}
 						break;
 					}

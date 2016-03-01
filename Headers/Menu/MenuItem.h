@@ -14,7 +14,7 @@ public:
 	MenuResult getAction();
 
 	bool getHoverState() { return _Hovering; }
-	void switchHoverState(bool hoverState);
+	void switchHoverState(bool hoverState, bool joystickSelected);
 	
 	bool getEnabled() { return _Enabled; }
 	void setEnabled(bool enabled) { _Enabled = enabled; }
@@ -26,7 +26,6 @@ private:
 	MenuResult _Action;
 	TextAlignment _Alignment;
 
-	bool _Hovering;
-	bool _Enabled;
+	bool _Hovering, _Enabled, _JoystickSelected;
 };
 

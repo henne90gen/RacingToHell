@@ -50,7 +50,6 @@ MenuItem::MenuItem(sf::Vector2f pos, sf::Vector2f size, MenuResult action) : _Ac
 
 	_Background.setPosition(pos);
 	_Background.setSize(size);
-	_Background.setFillColor(sf::Color(0, 0, 0, 100));
 	_Background.setOutlineThickness(1);
 	_Background.setOutlineColor(sf::Color::Black);
 
@@ -81,7 +80,7 @@ void MenuItem::render(sf::RenderWindow & Window)
 	sf::FloatRect rect = getRect();
 	sf::Vector2i MousePos = sf::Mouse::getPosition(Window);
 
-	switchHoverState(MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width);
+	switchHoverState(MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width, _JoystickSelected);
 }
 
 sf::FloatRect MenuItem::getRect()
@@ -104,16 +103,17 @@ MenuResult MenuItem::getAction()
 	return MenuResult::Nothing;
 }
 
-void MenuItem::switchHoverState(bool hoverState)
+void MenuItem::switchHoverState(bool hoverState, bool joystickSelected)
 {
 	_Hovering = hoverState;
+	_JoystickSelected = joystickSelected;
 
-	if (_Hovering && _Enabled) {
+	if ((_Hovering && _Enabled) || (_JoystickSelected && _Enabled)) {
 		_Background.setFillColor(sf::Color(50, 50, 50, 100));
 		_Text.setColor(sf::Color::White);
 	}
 	else if (_Enabled) {
-		_Background.setFillColor(sf::Color(0, 0, 0, 100));
+		_Background.setFillColor(sf::Color(0, 0, 0, 175));
 		_Text.setColor(sf::Color::White);
 	}
 	else {

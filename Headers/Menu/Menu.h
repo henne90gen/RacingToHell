@@ -21,5 +21,8 @@ protected:
 	sf::Event _Event;
 
 	bool MenuItemHovered();
+	int _JoystickSelection;
+	sf::Clock _JoystickTimer;
+	float _JoystickDelay;
 };
 

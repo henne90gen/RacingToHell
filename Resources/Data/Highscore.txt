@@ -1,10 +1,4 @@
-Test1;4;124000
-Testperson2;3;65000
-Testperson3;3;62000
-Testperson4;3;61000
-Test1;3;60000
-Testperson6;3;59000
 Alice;5;6078
 Henn;5;5529
-Hen;5;4476
-Tes;3;2392
+Test1;2;974
+Test2;2;831

@@ -68,17 +68,17 @@ void Highscore::render(sf::RenderWindow& RenderWindow)
 		_HighscoreTexts[i + 3 * numPlayers].setString(std::to_string(_PlayerList[i].Score));
 		_HighscoreTexts[i + 3 * numPlayers].setPosition(_HeadlineScore.getPosition() + sf::Vector2f(_HeadlineScoreWidth - _HighscoreTexts[i + 3 * numPlayers].getLocalBounds().width, _HeadlineNameHeight + i * _Gap));
 
-		if (_NewHighscore) {
-			if (_PlayerList[i].Score == _Score) {
-				_HighscoreTexts[i].setColor(sf::Color::Yellow);
-				_HighscoreTexts[i + numPlayers].setColor(sf::Color::Yellow);
-				_HighscoreTexts[i + 2 * numPlayers].setColor(sf::Color::Yellow);
-			}
+		if (_NewHighscore && _PlayerList[i].Score == _Score) {
+			_HighscoreTexts[i].setColor(sf::Color::Yellow);
+			_HighscoreTexts[i + numPlayers].setColor(sf::Color::Yellow);
+			_HighscoreTexts[i + 2 * numPlayers].setColor(sf::Color::Yellow);
+			_HighscoreTexts[i + 3 * numPlayers].setColor(sf::Color::Yellow);
 		}
 		else {
 			_HighscoreTexts[i].setColor(sf::Color::White);
 			_HighscoreTexts[i + numPlayers].setColor(sf::Color::White);
 			_HighscoreTexts[i + 2 * numPlayers].setColor(sf::Color::White);
+			_HighscoreTexts[i + 3 * numPlayers].setColor(sf::Color::White);
 		}
 
 		RenderWindow.draw(_HighscoreTexts[i]);

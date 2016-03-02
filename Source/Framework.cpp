@@ -78,7 +78,7 @@ void Framework::handleEvents()
 				_GameState = GameState::Exiting;
 			}
 			else if (_Event.type == sf::Event::KeyPressed || sf::Event::JoystickMoved || sf::Event::JoystickButtonPressed) {
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, 7)) {
 					_GameState = GameState::Pause;
 				}
 				else {

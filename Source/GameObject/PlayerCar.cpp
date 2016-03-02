@@ -7,12 +7,21 @@ PlayerCar::PlayerCar(int SelectedCar, sf::Texture& texture) : Car(sf::Vector2f(0
 	setStats(SelectedCar);
 	resetShotBullet();
 	setPos(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT - 300));
+	
+	_AimLine.setFillColor(sf::Color::Black);
+	_AimLine.setSize(sf::Vector2f(50.0f, 3.0f));
+	_AimLine.setOrigin(0, _AimLine.getSize().y / 2.0f);
 }
 
 
 PlayerCar::~PlayerCar()
 {
 
+}
+
+void PlayerCar::render(sf::RenderWindow& Window) {
+	Window.draw(getSprite());
+	Window.draw(_AimLine);
 }
 
 void PlayerCar::handleEvent(sf::Event& Event)
@@ -54,10 +63,27 @@ void PlayerCar::handleEvent(sf::Event& Event)
 		_Movement.y = 0;
 	}
 
-	if (Event.type == sf::Event::MouseButtonPressed) {
+	if (Event.type == sf::Event::MouseMoved) {
+		//Update angle on the _AimLine
+		sf::Vector2f dir = sf::Vector2f(Event.mouseMove.x, Event.mouseMove.y) - getPos();
+		float angle = std::atan(dir.y / dir.x) * 180.0f / PI;
+		if (dir.x < 0) {
+			_AimLine.setRotation(angle + 180);
+		}
+		else {
+			_AimLine.setRotation(angle);
+		}
+	}
+	else if (Event.type == sf::Event::MouseButtonPressed) {
 		if (_Energy - 5 >= 10) {
 			_Energy -= 5;
+			//New approach seems to work fine
+			_ShotBullet = _AimLine.getRotation();
+			
+			
+			//Following code might be obsolete, if any errors occur please return to this bit, because it worked
 
+			/*
 			if (getPos().x > Event.mouseButton.x) {
 				_ShotBullet = std::atanf((Event.mouseButton.y - getPos().y) / (Event.mouseButton.x - getPos().x)) * 180.0f / PI + 180;
 			}
@@ -71,7 +97,8 @@ void PlayerCar::handleEvent(sf::Event& Event)
 				else {
 					_ShotBullet = -90;
 				}
-			}
+			}*/
+
 		}
 	}
 }
@@ -86,6 +113,8 @@ void PlayerCar::update(float FrameTime, int RoadSpeed)
 	if (getPos().y + getHeight() / 2 + _Movement.y * FrameTime * _Speed <= SCREENHEIGHT && getPos().y - getHeight() / 2 + _Movement.y * FrameTime * _Speed >= 0) {
 		setPos(sf::Vector2f(getPos().x, getPos().y + _Movement.y * FrameTime * _Speed));
 	}
+
+	_AimLine.setPosition(getPos());
 
 	//Energieverbrauch
 	_Energy -= 2 * FrameTime;

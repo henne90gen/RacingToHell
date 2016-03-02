@@ -75,7 +75,6 @@ GameState MainMenu::handleEvents(sf::RenderWindow& Window)
 					}
 					switch (getMenuItems()[i]->getAction()) {
 					case MenuResult::Resume:
-						std::cout << "Resuming" << std::endl;
 						return GameState::Running;
 						break;
 					case MenuResult::Option:
@@ -96,18 +95,26 @@ GameState MainMenu::handleEvents(sf::RenderWindow& Window)
 					}
 				}
 			}
-		} 
+		}
 		else if (_Event.type == sf::Event::JoystickMoved && _JoystickTimer.getElapsedTime().asSeconds() >= _JoystickDelay) {
+			float X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
+			float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
 			_MenuItems[_JoystickSelection]->switchHoverState(false, false);
-			if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < -80) {
+			if (Y < -80) {
 				if (_JoystickSelection > 0) {
 					_JoystickSelection--;
 				}
 			}
-			else if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) > 80) {
+			else if (Y > 80) {
 				if (_JoystickSelection < _MenuItems.size() - 3) {
 					_JoystickSelection++;
 				}
+			}
+			else if (X < -80) {
+				_SelectedCar--;
+			}
+			else if (X > 80) {
+				_SelectedCar++;
 			}
 			_MenuItems[_JoystickSelection]->switchHoverState(true, true);
 			_JoystickTimer.restart();

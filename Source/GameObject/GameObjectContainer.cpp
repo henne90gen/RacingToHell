@@ -56,6 +56,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 				_PlayerAlive = false;
 			}
 		}
+
 		_GameObjects.at(i)->update(FrameTime, RoadSpeed);
 	}
 

@@ -5,6 +5,8 @@ OptionsMenu::OptionsMenu() : _Volume(0.0f), _MaxVolume(5.0f), _MousePressed(fals
 {
 	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 320), sf::Vector2f(150, 50), MenuResult::Back));
 
+	_JoystickSelection = 1;
+
 	_Text.setString("Main Menu");
 	_Text.setCharacterSize(53);
 	_Text.setColor(sf::Color::White);

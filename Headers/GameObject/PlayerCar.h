@@ -13,6 +13,7 @@ public:
 	PlayerCar(int SelectedCar, sf::Texture& texture);
 	~PlayerCar();
 
+	void render(sf::RenderWindow& Window);
 	void handleEvent(sf::Event& Event);
 	void update(float FrameTime, int RoadSpeed);
 
@@ -36,5 +37,7 @@ public:
 private:
 	float _ShotBullet, _Energy;
 	int _MaxEnergy, _Bulletdamage;
+
+	sf::RectangleShape _AimLine;
 };
 

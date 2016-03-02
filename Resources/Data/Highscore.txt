@@ -4,7 +4,7 @@ Testperson3;3;62000
 Testperson4;3;61000
 Test1;3;60000
 Testperson6;3;59000
+Alice;5;6078
 Henn;5;5529
 Hen;5;4476
 Tes;3;2392
-Controller;5;1913

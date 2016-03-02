@@ -76,7 +76,9 @@ void Highscore::render(sf::RenderWindow& RenderWindow)
 			}
 		}
 		else {
-
+			_HighscoreTexts[i].setColor(sf::Color::White);
+			_HighscoreTexts[i + numPlayers].setColor(sf::Color::White);
+			_HighscoreTexts[i + 2 * numPlayers].setColor(sf::Color::White);
 		}
 
 		RenderWindow.draw(_HighscoreTexts[i]);

@@ -71,24 +71,30 @@ GameState OptionsMenu::handleEvents(sf::RenderWindow & Window)
 {
 	while (Window.pollEvent(_Event)) {
 		sf::Vector2f MousePos = sf::Vector2f(sf::Mouse::getPosition(Window));
-		if (_Event.type == sf::Event::MouseButtonPressed) {
-			if (MousePos.y > _VolumeBox.top && MousePos.y < _VolumeBox.top + _VolumeBox.height && MousePos.x > _VolumeBox.left && MousePos.x < _VolumeBox.left + _VolumeBox.width) {
+		if (_Event.type == sf::Event::Closed) {
+			return GameState::Exiting;
+		}
+		else if (_Event.type == sf::Event::MouseButtonPressed || _Event.type == sf::Event::JoystickButtonPressed) {
+			if (MousePos.y > _VolumeBox.top && MousePos.y < _VolumeBox.top + _VolumeBox.height && MousePos.x > _VolumeBox.left && MousePos.x < _VolumeBox.left + _VolumeBox.width) 
+			{
 				_VolumeSlider.setPosition(MousePos.x, _VolumeLine.getPosition().y + _VolumeLine.getLocalBounds().height / 2.0f);
 				_Volume = (_VolumeSlider.getPosition().x - _VolumeLine.getPosition().x) * _MaxVolume / _VolumeLine.getLocalBounds().width;
 				_MousePressed = true;
 			} else {
 				for (int i = 0; i < getMenuItems().size(); i++) {
 					sf::FloatRect rect = getMenuItems()[i]->getRect();
-					if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width) {
+					if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width || 
+						sf::Joystick::isButtonPressed(0, 0)) 
+					{
+						if (sf::Joystick::isButtonPressed(0, 0)) {
+							i = _JoystickSelection;
+						}
 						switch (getMenuItems()[i]->getAction()) {
 						case MenuResult::Back:
 							return _ReturnState;
 							break;
 						case MenuResult::Nothing:
 							return GameState::Options;
-							break;
-						case MenuResult::Exit:
-							return GameState::Exiting;
 							break;
 						}
 					}
@@ -98,20 +104,48 @@ GameState OptionsMenu::handleEvents(sf::RenderWindow & Window)
 		else if (_Event.type == sf::Event::MouseButtonReleased) {
 			_MousePressed = false;
 		}
-		else if (_Event.type == sf::Event::Closed) {
-			return GameState::Exiting;
-		}
 		else if (_MousePressed) {
 			if (MousePos.x < _VolumeLine.getPosition().x) {
-				_VolumeSlider.setPosition(_VolumeLine.getPosition().x, _VolumeLine.getPosition().y + _VolumeLine.getLocalBounds().height / 2.0f);
+				_VolumeSlider.setPosition(_VolumeLine.getPosition().x, _VolumeLine.getPosition().y + _VolumeLine.getSize().y / 2.0f);
 			}
-			else if (MousePos.x > _VolumeLine.getPosition().x + _VolumeLine.getLocalBounds().width) {
-				_VolumeSlider.setPosition(_VolumeLine.getPosition().x + _VolumeLine.getLocalBounds().width, _VolumeLine.getPosition().y + _VolumeLine.getLocalBounds().height / 2.0f);
+			else if (MousePos.x > _VolumeLine.getPosition().x + _VolumeLine.getSize().x) {
+				_VolumeSlider.setPosition(_VolumeLine.getPosition().x + _VolumeLine.getSize().x, _VolumeLine.getPosition().y + _VolumeLine.getSize().y / 2.0f);
 			}
 			else {
-				_VolumeSlider.setPosition(MousePos.x, _VolumeLine.getPosition().y + _VolumeLine.getLocalBounds().height / 2.0f);
+				_VolumeSlider.setPosition(MousePos.x, _VolumeLine.getPosition().y + _VolumeLine.getSize().y / 2.0f);
 			}
-			_Volume = (_VolumeSlider.getPosition().x - _VolumeLine.getPosition().x) * _MaxVolume / _VolumeLine.getLocalBounds().width;
+			_Volume = (_VolumeSlider.getPosition().x - _VolumeLine.getPosition().x) * _MaxVolume / _VolumeLine.getSize().x;
+		}
+		else if (_Event.type == sf::Event::JoystickMoved) {
+			float X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
+			float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
+			if (Y < -80 && _JoystickSelection == 0 && _JoystickTimer.getElapsedTime().asSeconds() >= _JoystickDelay) {
+				_MenuItems[_JoystickSelection]->switchHoverState(false, false);
+				_JoystickSelection = 1;
+				_JoystickTimer.restart();
+			}
+			else if (Y > 80 && _JoystickSelection == 1 && _JoystickTimer.getElapsedTime().asSeconds() >= _JoystickDelay) {
+				_JoystickSelection = 0;
+				_MenuItems[_JoystickSelection]->switchHoverState(true, true);
+				_JoystickTimer.restart();
+			}
+			else if (X < -80 && _JoystickSelection == 1) {
+				if (_VolumeSlider.getPosition().x - 1 > _VolumeLine.getPosition().x) {
+					_VolumeSlider.setPosition(_VolumeSlider.getPosition().x - 1, _VolumeLine.getPosition().y + _VolumeLine.getSize().y / 2.0f);
+				}
+			}
+			else if (X > 80 && _JoystickSelection == 1) {
+				if (_VolumeSlider.getPosition().x + 1 < _VolumeLine.getPosition().x + _VolumeLine.getSize().x) {
+					_VolumeSlider.setPosition(_VolumeSlider.getPosition().x + 1, _VolumeLine.getPosition().y + _VolumeLine.getSize().y / 2.0f);
+				}
+			}
+			_Volume = (_VolumeSlider.getPosition().x - _VolumeLine.getPosition().x) * _MaxVolume / _VolumeLine.getSize().x;
+		}
+		else if (_Event.type == sf::Event::MouseMoved) {
+			_MenuItems[_JoystickSelection]->switchHoverState(false, false);
+		}
+		else if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < 10 && sf::Joystick::getAxisPosition(0, sf::Joystick::Y) > -10) {
+			_JoystickTimer.restart();
 		}
 		
 	}

@@ -99,19 +99,18 @@ GameState MainMenu::handleEvents(sf::RenderWindow& Window)
 		} 
 		else if (_Event.type == sf::Event::JoystickMoved && _JoystickTimer.getElapsedTime().asSeconds() >= _JoystickDelay) {
 			_MenuItems[_JoystickSelection]->switchHoverState(false, false);
-			if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < -5) {
+			if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < -80) {
 				if (_JoystickSelection > 0) {
 					_JoystickSelection--;
 				}
 			}
-			else if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) > 10) {
+			else if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) > 80) {
 				if (_JoystickSelection < _MenuItems.size() - 3) {
 					_JoystickSelection++;
 				}
 			}
 			_MenuItems[_JoystickSelection]->switchHoverState(true, true);
 			_JoystickTimer.restart();
-			std::cout << _JoystickSelection << std::endl;
 		}
 		else if (_Event.type == sf::Event::MouseMoved) {
 			_MenuItems[_JoystickSelection]->switchHoverState(false, false);

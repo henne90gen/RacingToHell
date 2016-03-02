@@ -74,6 +74,20 @@ void PlayerCar::handleEvent(sf::Event& Event)
 			_AimLine.setRotation(angle);
 		}
 	}
+	else if (Event.type == sf::Event::JoystickMoved) {
+		float U = sf::Joystick::getAxisPosition(0, sf::Joystick::U);
+		float R = sf::Joystick::getAxisPosition(0, sf::Joystick::R);
+		if (U < -50 || U > 50 || R < -50 || R > 50) {
+			sf::Vector2f dir = sf::Vector2f(U, R);
+			float angle = std::atan(dir.y / dir.x) * 180.0f / PI;
+			if (dir.x < 0) {
+				_AimLine.setRotation(angle + 180);
+			}
+			else {
+				_AimLine.setRotation(angle);
+			}
+		}
+	}
 	else if (Event.type == sf::Event::MouseButtonPressed) {
 		if (_Energy - 5 >= 10) {
 			_Energy -= 5;

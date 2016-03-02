@@ -19,33 +19,35 @@ void PlayerCar::handleEvent(sf::Event& Event)
 {
 	//Keyinput abfragen und in _Movement speichern
 	_Movement = sf::Vector2f(0, 0);
-	bool usingJoystick = false;
-	if (sf::Joystick::isConnected(0) && !(sf::Joystick::getAxisPosition(0, sf::Joystick::X) < 10 && sf::Joystick::getAxisPosition(0, sf::Joystick::X) > -10)) {
-		_Movement = sf::Vector2f(sf::Joystick::getAxisPosition(0, sf::Joystick::X) / 100.0f, 0);
-		usingJoystick = true;
+
+	float X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
+	float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
+	
+	if (X > 50 || X < -50) {
+		_Movement = sf::Vector2f(X / 100.0f, 0);
 	}
-	else if (!usingJoystick && (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
 		_Movement += sf::Vector2f(-1, 0);
 	}
-	else if (!usingJoystick && (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
 		_Movement += sf::Vector2f(1, 0);
 	}
 	else {
 		_Movement = sf::Vector2f(0, 0);
 	}
 
-	if (sf::Joystick::isConnected(0) && !(sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < 10 && sf::Joystick::getAxisPosition(0, sf::Joystick::Y) > -10)) {
-		if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < 0) {
-			_Movement += sf::Vector2f(0, sf::Joystick::getAxisPosition(0, sf::Joystick::Y) / 100.0f * 0.45);
+	if (Y > 50 || Y < -50) {
+		if (Y < 0) {
+			_Movement += sf::Vector2f(0, Y / 100.0f * 0.45);
 		}
 		else {
-			_Movement += sf::Vector2f(0, sf::Joystick::getAxisPosition(0, sf::Joystick::Y) / 100.0f * 1.2);
+			_Movement += sf::Vector2f(0, Y / 100.0f * 1.2);
 		}
 	}
-	else if (!usingJoystick && (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
 		_Movement += sf::Vector2f(0, -0.45);
 	}
-	else if (!usingJoystick && (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
 		_Movement += sf::Vector2f(0, 1.2);
 	}
 	else {

@@ -108,12 +108,19 @@ void GameOverScreen::setVolume(float Volume)
 GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
 {
 	while (Window.pollEvent(_Event)) {
-		if (_Event.type == sf::Event::MouseButtonPressed)
-		{
+		if (_Event.type == sf::Event::Closed) {
+			return GameState::Exiting;
+		} 
+		else if (_Event.type == sf::Event::MouseButtonPressed || _Event.type == sf::Event::JoystickButtonPressed) {
 			sf::Vector2f MousePos = sf::Vector2f(sf::Mouse::getPosition(Window));
 			for (int i = 0; i < getMenuItems().size(); i++) {
 				sf::FloatRect rect = getMenuItems()[i]->getRect();
-				if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width) {
+				if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width ||
+					sf::Joystick::isButtonPressed(0, 0)) 
+				{
+					if (sf::Joystick::isButtonPressed(0, 0)) {
+						i = _JoystickSelection;
+					}
 					switch (getMenuItems()[i]->getAction()) {
 					case MenuResult::BackToMain:
 						_SoundPlayed = false;
@@ -134,10 +141,30 @@ GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
 				}
 			}
 		}
-
-		if (_Event.type == sf::Event::Closed) {
-			return GameState::Exiting;
+		else if (_Event.type == sf::Event::JoystickMoved && _JoystickTimer.getElapsedTime().asSeconds() >= _JoystickDelay) {
+			float X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
+			float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
+			_MenuItems[_JoystickSelection]->switchHoverState(false, false);
+			if (Y < -80) {
+				if (_JoystickSelection > 0) {
+					_JoystickSelection--;
+				}
+			}
+			else if (Y > 80) {
+				if (_JoystickSelection < _MenuItems.size() - 1) {
+					_JoystickSelection++;
+				}
+			}
+			_MenuItems[_JoystickSelection]->switchHoverState(true, true);
+			_JoystickTimer.restart();
 		}
+		else if (_Event.type == sf::Event::MouseMoved) {
+			_MenuItems[_JoystickSelection]->switchHoverState(false, false);
+		}
+		else if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < 10 && sf::Joystick::getAxisPosition(0, sf::Joystick::Y) > -10) {
+			_JoystickTimer.restart();
+		}
+		
 		_Textbox->handleEvent(_Event);
 	}
 	return GameState::GameOver;

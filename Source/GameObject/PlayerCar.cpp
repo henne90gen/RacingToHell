@@ -88,7 +88,7 @@ void PlayerCar::handleEvent(sf::Event& Event)
 			}
 		}
 	}
-	else if (Event.type == sf::Event::MouseButtonPressed) {
+	else if (Event.type == sf::Event::MouseButtonPressed || (Event.type == sf::Event::JoystickButtonPressed && sf::Joystick::isButtonPressed(0, 5))) {
 		if (_Energy - 5 >= 10) {
 			_Energy -= 5;
 			//New approach seems to work fine

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Menu/OptionsMenu.h"
 
-OptionsMenu::OptionsMenu() : _Volume(0.0f), _MaxVolume(5.0f), _MousePressed(false)
+OptionsMenu::OptionsMenu() : _Volume(4.0f), _MaxVolume(5.0f), _MousePressed(false)
 {
 	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 320), sf::Vector2f(150, 50), MenuResult::Back));
 
@@ -144,12 +144,30 @@ GameState OptionsMenu::handleEvents(sf::RenderWindow & Window)
 			_Volume = (_VolumeSlider.getPosition().x - _VolumeLine.getPosition().x) * _MaxVolume / _VolumeLine.getSize().x;
 		}
 		else if (_Event.type == sf::Event::MouseMoved) {
-			_MenuItems[_JoystickSelection]->switchHoverState(false, false);
+			if (_JoystickSelection == 0) {
+				_MenuItems[_JoystickSelection]->switchHoverState(false, false);
+			}
 		}
 		else if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < 10 && sf::Joystick::getAxisPosition(0, sf::Joystick::Y) > -10) {
 			_JoystickTimer.restart();
 		}
-		
 	}
+
+	if (sf::Joystick::getAxisPosition(0, sf::Joystick::X) < -80 || sf::Joystick::getAxisPosition(0, sf::Joystick::X) > 80) {
+		float X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
+		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
+		if (X < -80 && _JoystickSelection == 1) {
+			if (_VolumeSlider.getPosition().x - 1 > _VolumeLine.getPosition().x) {
+				_VolumeSlider.setPosition(_VolumeSlider.getPosition().x - 1, _VolumeLine.getPosition().y + _VolumeLine.getSize().y / 2.0f);
+			}
+		}
+		else if (X > 80 && _JoystickSelection == 1) {
+			if (_VolumeSlider.getPosition().x + 1 < _VolumeLine.getPosition().x + _VolumeLine.getSize().x) {
+				_VolumeSlider.setPosition(_VolumeSlider.getPosition().x + 1, _VolumeLine.getPosition().y + _VolumeLine.getSize().y / 2.0f);
+			}
+		}
+		_Volume = (_VolumeSlider.getPosition().x - _VolumeLine.getPosition().x) * _MaxVolume / _VolumeLine.getSize().x;
+	}
+
 	return GameState::Options;
 }

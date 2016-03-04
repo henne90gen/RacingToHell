@@ -4,7 +4,6 @@
 Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameState(GameState::Loading)
 {
 	_RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell", sf::Style::Close);
-	_RenderWindow.setFramerateLimit(60);
 	_RenderWindow.setMouseCursorVisible(false);
 }
 

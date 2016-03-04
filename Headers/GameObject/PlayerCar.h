@@ -40,8 +40,9 @@ private:
 	int _MaxEnergy, _Bulletdamage;
 
 	sf::RectangleShape _AimLine;
-
+	sf::Vector2f _CrosshairMovement;
+	float _CrosshairSpeed;
 	sf::Texture _CrosshairTexture;
-	sf::Sprite _AimCrosshair;
+	sf::Sprite _Crosshair;
 };
 

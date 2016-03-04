@@ -2,7 +2,7 @@
 #include "GameObject\PlayerCar.h"
 
 
-PlayerCar::PlayerCar(int SelectedCar, sf::Texture& texture) : Car(sf::Vector2f(0, 0), 100, 450, GameObjects::Player, texture)
+PlayerCar::PlayerCar(int SelectedCar, sf::Texture& texture) : Car(sf::Vector2f(0, 0), 100, 450, GameObjects::Player, texture), _CrosshairSpeed(500.0f)
 {
 	setStats(SelectedCar);
 	resetShotBullet();
@@ -13,9 +13,10 @@ PlayerCar::PlayerCar(int SelectedCar, sf::Texture& texture) : Car(sf::Vector2f(0
 	_AimLine.setOrigin(0, _AimLine.getSize().y / 2.0f);
 
 	if (_CrosshairTexture.loadFromFile("Resources/Texture/PlayerCar/crosshair.png")) {
-		_AimCrosshair.setTexture(_CrosshairTexture);
-		_AimCrosshair.setOrigin(_AimCrosshair.getLocalBounds().width / 2.0f, _AimCrosshair.getLocalBounds().height / 2.0f);
-		_AimCrosshair.setScale(sf::Vector2f(0.15f, 0.15f));
+		_Crosshair.setTexture(_CrosshairTexture);
+		_Crosshair.setOrigin(_Crosshair.getLocalBounds().width / 2.0f, _Crosshair.getLocalBounds().height / 2.0f);
+		_Crosshair.setScale(sf::Vector2f(0.15f, 0.15f));
+		_Crosshair.setPosition(SCREENWIDTH / 2.0f, SCREENHEIGHT / 2.0f);
 	}
 }
 
@@ -29,8 +30,9 @@ void PlayerCar::render(sf::RenderWindow& Window, bool renderCrosshair) {
 	Window.draw(getSprite());
 	if (renderCrosshair) {
 		Window.draw(_AimLine);
-		_AimCrosshair.setPosition(sf::Vector2f(sf::Mouse::getPosition(Window)));
-		Window.draw(_AimCrosshair);
+		//TODO: Move that somewhere else
+		//_Crosshair.setPosition(sf::Vector2f(sf::Mouse::getPosition(Window)));
+		Window.draw(_Crosshair);
 	}
 }
 
@@ -43,7 +45,7 @@ void PlayerCar::handleEvent(sf::Event& Event)
 	float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
 	
 	if (X > 50 || X < -50) {
-		_Movement = sf::Vector2f(X / 100.0f, 0);
+		_Movement += sf::Vector2f(X / 100.0f, 0);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
 		_Movement += sf::Vector2f(-1, 0);
@@ -72,68 +74,45 @@ void PlayerCar::handleEvent(sf::Event& Event)
 	else {
 		_Movement.y = 0;
 	}
-
+	
+	_CrosshairMovement = sf::Vector2f(0, 0);
 	if (Event.type == sf::Event::MouseMoved) {
-		//Update angle on the _AimLine
-		sf::Vector2f dir = sf::Vector2f(Event.mouseMove.x, Event.mouseMove.y) - getPos();
-		float angle = std::atan(dir.y / dir.x) * 180.0f / PI;
-		if (dir.x < 0) {
-			_AimLine.setRotation(angle + 180);
-		}
-		else {
-			_AimLine.setRotation(angle);
-		}
-	}
-	else if (Event.type == sf::Event::JoystickMoved || 
-		sf::Joystick::getAxisPosition(0, sf::Joystick::U) < -50 || sf::Joystick::getAxisPosition(0, sf::Joystick::U) > 50 || 
-		sf::Joystick::getAxisPosition(0, sf::Joystick::R) < -50 || sf::Joystick::getAxisPosition(0, sf::Joystick::R) > 50) {
+		_Crosshair.setPosition(Event.mouseMove.x, Event.mouseMove.y);
+	} 
+	else if (Event.type == sf::Event::JoystickMoved) {
 		float U = sf::Joystick::getAxisPosition(0, sf::Joystick::U);
 		float R = sf::Joystick::getAxisPosition(0, sf::Joystick::R);
-		if (U < -50 || U > 50 || R < -50 || R > 50) {
-			sf::Vector2f dir = sf::Vector2f(U, R);
-			float angle = std::atan(dir.y / dir.x) * 180.0f / PI;
-			if (dir.x < 0) {
-				_AimLine.setRotation(angle + 180);
-			}
-			else {
-				_AimLine.setRotation(angle);
-			}
+		if (U < -50 || U > 50) {
+			_CrosshairMovement += sf::Vector2f(U / 100.0f, 0);
+		}
+		else if (R < -50 || R > 50) {
+			_CrosshairMovement += sf::Vector2f(0, R / 100.0f);
 		}
 	}
 	else if (Event.type == sf::Event::MouseButtonPressed || (Event.type == sf::Event::JoystickButtonPressed && sf::Joystick::isButtonPressed(0, 5))) {
 		if (_Energy - 5 >= 10) {
 			_Energy -= 5;
-			//New approach seems to work fine
 			_ShotBullet = _AimLine.getRotation();
-			
-			
-			//Following code might be obsolete, if any errors occur please return to this bit, because it worked
-
-			/*
-			if (getPos().x > Event.mouseButton.x) {
-				_ShotBullet = std::atanf((Event.mouseButton.y - getPos().y) / (Event.mouseButton.x - getPos().x)) * 180.0f / PI + 180;
-			}
-			else if (getPos().x < Event.mouseButton.x) {
-				_ShotBullet = std::atanf((getPos().y - Event.mouseButton.y) / (getPos().x - Event.mouseButton.x)) * 180.0f / PI;
-			}
-			else {
-				if (Event.mouseButton.y > getPos().y) {
-					_ShotBullet = 90;
-				}
-				else {
-					_ShotBullet = -90;
-				}
-			}*/
-
 		}
 	}
+
+	//Update angle on the _AimLine
+	sf::Vector2f dir = _Crosshair.getPosition() - getPos();
+	float angle = std::atan(dir.y / dir.x) * 180.0f / PI;
+	if (dir.x < 0) {
+		_AimLine.setRotation(angle + 180);
+	}
+	else {
+		_AimLine.setRotation(angle);
+	}
+
 }
 
 void PlayerCar::update(float FrameTime, int RoadSpeed)
 {
 	//_Movement anwenden - Car bewegen
 	if (((getPos() + _Movement * FrameTime * (float)_Speed).x >= getWidth() / 2) && ((getPos() + _Movement * FrameTime * (float)_Speed).x <= SCREENWIDTH - getWidth() / 2)) {
-		setPos(sf::Vector2f(getPos().x + (_Movement.x * _Speed * FrameTime), getPos().y));
+		setPos(sf::Vector2f(getPos().x + _Movement.x * _Speed * FrameTime, getPos().y));
 	}
 
 	if (getPos().y + getHeight() / 2 + _Movement.y * FrameTime * _Speed <= SCREENHEIGHT && getPos().y - getHeight() / 2 + _Movement.y * FrameTime * _Speed >= 0) {
@@ -141,6 +120,8 @@ void PlayerCar::update(float FrameTime, int RoadSpeed)
 	}
 
 	_AimLine.setPosition(getPos());
+
+	_Crosshair.setPosition(_Crosshair.getPosition() + _CrosshairMovement * FrameTime * _CrosshairSpeed);
 
 	//Energieverbrauch
 	_Energy -= 2 * FrameTime;

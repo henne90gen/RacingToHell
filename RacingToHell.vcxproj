@@ -155,6 +155,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AlignText.h" />
+    <ClInclude Include="Boss.h" />
     <ClInclude Include="Headers\GameState.h" />
     <ClInclude Include="Headers\GameObject\AICar.h" />
     <ClInclude Include="Headers\GameObject\Bullet.h" />
@@ -186,6 +187,7 @@
     <ClInclude Include="Headers\Menu\LoadingScreen.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Boss.cpp" />
     <ClCompile Include="Source\Menu\LoadingScreen.cpp" />
     <ClCompile Include="Source\Menu\Menu.cpp" />
     <ClCompile Include="Source\Menu\PauseMenu.cpp" />

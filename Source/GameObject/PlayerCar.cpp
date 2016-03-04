@@ -11,6 +11,12 @@ PlayerCar::PlayerCar(int SelectedCar, sf::Texture& texture) : Car(sf::Vector2f(0
 	_AimLine.setFillColor(sf::Color::Black);
 	_AimLine.setSize(sf::Vector2f(50.0f, 3.0f));
 	_AimLine.setOrigin(0, _AimLine.getSize().y / 2.0f);
+
+	if (_CrosshairTexture.loadFromFile("Resources/Texture/PlayerCar/crosshair.png")) {
+		_AimCrosshair.setTexture(_CrosshairTexture);
+		_AimCrosshair.setOrigin(_AimCrosshair.getLocalBounds().width / 2.0f, _AimCrosshair.getLocalBounds().height / 2.0f);
+		_AimCrosshair.setScale(sf::Vector2f(0.15f, 0.15f));
+	}
 }
 
 
@@ -19,9 +25,13 @@ PlayerCar::~PlayerCar()
 
 }
 
-void PlayerCar::render(sf::RenderWindow& Window) {
+void PlayerCar::render(sf::RenderWindow& Window, bool renderCrosshair) {
 	Window.draw(getSprite());
-	Window.draw(_AimLine);
+	if (renderCrosshair) {
+		Window.draw(_AimLine);
+		_AimCrosshair.setPosition(sf::Vector2f(sf::Mouse::getPosition(Window)));
+		Window.draw(_AimCrosshair);
+	}
 }
 
 void PlayerCar::handleEvent(sf::Event& Event)
@@ -74,7 +84,9 @@ void PlayerCar::handleEvent(sf::Event& Event)
 			_AimLine.setRotation(angle);
 		}
 	}
-	else if (Event.type == sf::Event::JoystickMoved) {
+	else if (Event.type == sf::Event::JoystickMoved || 
+		sf::Joystick::getAxisPosition(0, sf::Joystick::U) < -50 || sf::Joystick::getAxisPosition(0, sf::Joystick::U) > 50 || 
+		sf::Joystick::getAxisPosition(0, sf::Joystick::R) < -50 || sf::Joystick::getAxisPosition(0, sf::Joystick::R) > 50) {
 		float U = sf::Joystick::getAxisPosition(0, sf::Joystick::U);
 		float R = sf::Joystick::getAxisPosition(0, sf::Joystick::R);
 		if (U < -50 || U > 50 || R < -50 || R > 50) {

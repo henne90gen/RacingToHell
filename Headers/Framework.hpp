@@ -61,4 +61,5 @@ private:
 	void load();
 	void resetGame();
 	void setVolume(float Volume);
+	void setMouseVisible(bool visible);
 };

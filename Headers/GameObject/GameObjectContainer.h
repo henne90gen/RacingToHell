@@ -15,7 +15,7 @@ public:
 	~GameObjectContainer();
 
 	void update(float FrameTime, int Difficulty, int RoadSpeed);
-	void render(sf::RenderWindow& RenderWindow);
+	void render(sf::RenderWindow& RenderWindow, bool renderCrosshair);
 	void handleEvents(sf::Event& Event);
 
 	PlayerCar* getPlayerCar() { return dynamic_cast<PlayerCar*>(_GameObjects.at(0)); }

@@ -232,6 +232,7 @@
     <Image Include="Resources\Texture\MainMenu\StatBar.png" />
     <Image Include="Resources\Texture\Object\Bullet.png" />
     <Image Include="Resources\Texture\Object\canister.png" />
+    <Image Include="Resources\Texture\PlayerCar\crosshair.png" />
     <Image Include="Resources\Texture\PlayerCar\playercar1.png" />
     <Image Include="Resources\Texture\PlayerCar\playercar2.png" />
     <Image Include="Resources\Texture\PlayerCar\playercar3.png" />

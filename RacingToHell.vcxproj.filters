@@ -308,6 +308,9 @@
     <Image Include="Resources\Texture\Road\Road4.jpg">
       <Filter>Resource Files\Texture\Road</Filter>
     </Image>
+    <Image Include="Resources\Texture\PlayerCar\crosshair.png">
+      <Filter>Resource Files\Texture\PlayerCar</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\Font\arial.ttf">

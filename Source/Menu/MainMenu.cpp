@@ -34,7 +34,7 @@ MainMenu::~MainMenu()
 	_StatBox = nullptr;
 }
 
-void MainMenu::render(sf::RenderWindow & Window)
+void MainMenu::render(sf::RenderWindow& Window)
 {
 	Window.draw(_CarSkin);
 	_StatBox->render(Window, _SelectedCar);

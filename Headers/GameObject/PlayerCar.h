@@ -13,7 +13,8 @@ public:
 	PlayerCar(int SelectedCar, sf::Texture& texture);
 	~PlayerCar();
 
-	void render(sf::RenderWindow& Window);
+	void render(sf::RenderWindow& Window, bool renderCrosshair);
+	void render(sf::RenderWindow& Window) {}
 	void handleEvent(sf::Event& Event);
 	void update(float FrameTime, int RoadSpeed);
 
@@ -39,5 +40,8 @@ private:
 	int _MaxEnergy, _Bulletdamage;
 
 	sf::RectangleShape _AimLine;
+
+	sf::Texture _CrosshairTexture;
+	sf::Sprite _AimCrosshair;
 };
 

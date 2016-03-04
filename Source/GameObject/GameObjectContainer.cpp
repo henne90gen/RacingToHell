@@ -169,11 +169,16 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 	}
 }
 
-void GameObjectContainer::render(sf::RenderWindow& RenderWindow)
+void GameObjectContainer::render(sf::RenderWindow& RenderWindow, bool renderCrosshair)
 {
-	for (unsigned int i = 0; i < _GameObjects.size(); i++)
+	for (unsigned int i = _GameObjects.size(); i > 0; i--)
 	{
-		_GameObjects.at(i)->render(RenderWindow);
+		if (_GameObjects.at(i-1)->getType() == GameObjects::Player) {
+			dynamic_cast<PlayerCar*>(_GameObjects.at(i-1))->render(RenderWindow, renderCrosshair);
+		}
+		else {
+			_GameObjects.at(i-1)->render(RenderWindow);
+		}
 	}
 }
 

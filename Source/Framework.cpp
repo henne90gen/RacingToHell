@@ -5,6 +5,7 @@ Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameState(GameState::
 {
 	_RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell", sf::Style::Close);
 	_RenderWindow.setFramerateLimit(300);
+	_RenderWindow.setMouseCursorVisible(false);
 }
 
 Framework::~Framework()
@@ -35,29 +36,36 @@ void Framework::render()
 {
 	if (_GameState != GameState::Loading || _LoadingScreen.isFadingAway()) {
 		_Level.render(_RenderWindow);
-		_GameObjectContainer.render(_RenderWindow);
+		_GameObjectContainer.render(_RenderWindow, _GameState == GameState::Running);
 	}
 
 	switch (_GameState) {
 	case GameState::Running:
+		setMouseVisible(false);
 		_HeadsUpDisplay.render(_RenderWindow);
 		break;
 	case GameState::Main:
+		setMouseVisible(true);
 		_MainMenu.render(_RenderWindow);
 		break;
 	case GameState::Pause:
+		setMouseVisible(true);
 		_PauseMenu.render(_RenderWindow);
 		break;
 	case GameState::Options:
+		setMouseVisible(true);
 		_OptionsMenu.render(_RenderWindow);
 		break;
 	case GameState::LevelUp:
+		setMouseVisible(false);
 		_LevelUpScreen.render(_RenderWindow);
 		break;
 	case GameState::GameOver:
+		setMouseVisible(true);
 		_GameOverScreen.render(_RenderWindow);
 		break;
 	case GameState::Loading:
+		setMouseVisible(false);
 		if (_LoadingScreen.isFadingAway()) {
 			_MainMenu.render(_RenderWindow);
 		}
@@ -77,16 +85,14 @@ void Framework::handleEvents()
 			if (_Event.type == sf::Event::Closed) {
 				_GameState = GameState::Exiting;
 			}
-			else if (_Event.type == sf::Event::KeyPressed || sf::Event::JoystickMoved || sf::Event::JoystickButtonPressed) {
+			else if (_Event.type == sf::Event::KeyPressed || sf::Event::JoystickMoved || sf::Event::JoystickButtonPressed || 
+				_Event.type == sf::Event::MouseButtonPressed || _Event.type == sf::Event::KeyReleased) {
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, 7)) {
 					_GameState = GameState::Pause;
 				}
 				else {
 					_GameObjectContainer.handleEvents(_Event);
 				}
-			}
-			else if (_Event.type == sf::Event::KeyReleased || _Event.type == sf::Event::MouseButtonPressed) {
-				_GameObjectContainer.handleEvents(_Event);
 			}
 		}
 		break;
@@ -260,4 +266,20 @@ void Framework::setVolume(float Volume)
 	_Level.setVolume(Volume);
 	_GameObjectContainer.setVolume(Volume);
 	_GameOverScreen.setVolume(Volume);
+}
+
+void Framework::setMouseVisible(bool visible)
+{
+	if (!visible) {
+		int cursor = ShowCursor(0);
+		while (cursor > 0) {
+			cursor = ShowCursor(0);
+		}
+	}
+	else {
+		int cursor = ShowCursor(1);
+		while (cursor < 0) {
+			cursor = ShowCursor(1);
+		}
+	}
 }

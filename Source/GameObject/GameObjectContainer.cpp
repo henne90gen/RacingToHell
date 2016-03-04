@@ -31,10 +31,10 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 				switch (_GameObjects.at(i)->getType())
 				{
 				case GameObjects::AI:
-					_PlayerAlive = false;
+					//_PlayerAlive = false;
 					break;
 				case GameObjects::BulletObjectAI:
-					getPlayerCar()->takeDamage();
+					//getPlayerCar()->takeDamage();
 					deleteObject(i);
 					i--;
 					break;
@@ -171,7 +171,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 
 void GameObjectContainer::render(sf::RenderWindow& RenderWindow, bool renderCrosshair)
 {
-	for (unsigned int i = _GameObjects.size(); i > 0; i--)
+	/*for (unsigned int i = _GameObjects.size(); i > 0; i--)
 	{
 		if (_GameObjects.at(i-1)->getType() == GameObjects::Player) {
 			dynamic_cast<PlayerCar*>(_GameObjects.at(i-1))->render(RenderWindow, renderCrosshair);
@@ -179,7 +179,7 @@ void GameObjectContainer::render(sf::RenderWindow& RenderWindow, bool renderCros
 		else {
 			_GameObjects.at(i-1)->render(RenderWindow);
 		}
-	}
+	}*/
 }
 
 void GameObjectContainer::handleEvents(sf::Event& Event)

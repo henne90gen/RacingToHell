@@ -4,7 +4,7 @@
 Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameState(GameState::Loading)
 {
 	_RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell", sf::Style::Close);
-	_RenderWindow.setFramerateLimit(300);
+	_RenderWindow.setFramerateLimit(60);
 	_RenderWindow.setMouseCursorVisible(false);
 }
 
@@ -223,7 +223,7 @@ void Framework::playSounds() {
 
 void Framework::measureTime()
 {
-	_FrameTime = _Clock.getElapsedTime().asSeconds();
+	_FrameTime = _Clock.getElapsedTime().asMicroseconds() / 1000000.0f;
 	_LastFPSPrint += _FrameTime;
 	_Clock.restart();
 	if (_LastFPSPrint > 1) {

@@ -223,7 +223,7 @@ void Framework::playSounds() {
 
 void Framework::measureTime()
 {
-	_FrameTime = _Clock.getElapsedTime().asSeconds();
+	_FrameTime = _Clock.getElapsedTime().asMicroseconds() / 1000000.0f;
 	_LastFPSPrint += _FrameTime;
 	_Clock.restart();
 	if (_LastFPSPrint > 1) {

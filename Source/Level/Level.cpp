@@ -34,6 +34,7 @@ bool Level::update(float FrameTime, bool isRunning)
 
 void Level::render(sf::RenderWindow& RenderWindow)
 {
+	//RenderWindow.clear(sf::Color::Cyan);
 	RenderWindow.draw(_Sprite);
 }
 

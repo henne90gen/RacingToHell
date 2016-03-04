@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Level\Level.h"
 
-Level::Level() : _Difficulty(1), _LevelUp(30)
+Level::Level() : _Difficulty(2), _LevelUp(5)
 {
 }
 
@@ -22,7 +22,7 @@ bool Level::update(float FrameTime, bool isRunning)
 		_Sprite.setPosition(sf::Vector2f(_Sprite.getPosition().x, _Sprite.getPosition().y + FrameTime * getRoadSpeed()));
 	}
 
-	if (isRunning && _Difficulty < 5)
+	if (isRunning && _Difficulty < 4)
 	{
 		if (_Timer.getElapsedTime().asSeconds() >= _LevelUp)
 		{
@@ -70,7 +70,7 @@ void Level::LevelUp()
 
 void Level::load()
 {
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 3; i++) {
 		sf::Texture* texture = new sf::Texture();
 		(*texture).loadFromFile("Resources/Texture/Road/Road" + std::to_string(i + 1) + ".jpg");
 		_Textures.push_back(texture);

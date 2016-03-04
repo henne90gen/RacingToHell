@@ -242,6 +242,7 @@
     <Image Include="Resources\Texture\Road\Road3.jpg" />
     <Image Include="Resources\Texture\Object\toolbox.png" />
     <Image Include="Resources\Texture\Road\Road4.jpg" />
+    <Image Include="Resources\Texture\Road\Road5.jpg" />
     <Image Include="Resources\Texture\TrafficCar\Traffic1.png" />
     <Image Include="Resources\Texture\TrafficCar\Traffic2.png" />
     <Image Include="Resources\Texture\TrafficCar\Traffic3.png" />

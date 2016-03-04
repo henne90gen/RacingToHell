@@ -102,8 +102,11 @@ void GameOverScreen::playSounds()
 
 void GameOverScreen::setVolume(float Volume)
 {
-	if (Volume != 0) {
+	if (Volume > 0) {
 		_GameOverSound.setVolume(Volume + 10);
+	}
+	else {
+		_GameOverSound.setVolume(Volume);
 	}
 }
 

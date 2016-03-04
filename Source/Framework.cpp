@@ -80,6 +80,7 @@ void Framework::handleEvents()
 {
 	switch (_GameState) {
 	case GameState::Running:
+
 		while (_RenderWindow.pollEvent(_Event))
 		{
 			if (_Event.type == sf::Event::Closed) {
@@ -134,6 +135,7 @@ void Framework::handleEvents()
 		}
 		break;
 	case GameState::GameOver:
+		setVolume(_OptionsMenu.getVolume());
 		_GameState = _GameOverScreen.handleEvents(_RenderWindow);
 		if (_GameState == GameState::Main) {
 			resetGame();
@@ -235,7 +237,6 @@ void Framework::load()
 	if (_MenuMusicBuffer.loadFromFile("Resources/Sound/Music/menu1.ogg")) {
 		_MenuMusic.setBuffer(_MenuMusicBuffer);
 	}
-	setVolume(_OptionsMenu.getVolume());
 	
 	_Level.load();
 
@@ -250,6 +251,8 @@ void Framework::load()
 	_GameObjectContainer.resetGameObjects(0);
 
 	_GameOverScreen.loadHighScores();
+
+	setVolume(_OptionsMenu.getVolume());
 }
 
 void Framework::resetGame() 

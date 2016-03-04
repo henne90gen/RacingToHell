@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Level\Level.h"
 
-Level::Level() : _Difficulty(4), _LevelUp(5)
+Level::Level() : _Difficulty(2), _LevelUp(5)
 {
 }
 
@@ -22,7 +22,7 @@ bool Level::update(float FrameTime, bool isRunning)
 		_Sprite.setPosition(sf::Vector2f(_Sprite.getPosition().x, _Sprite.getPosition().y + FrameTime * getRoadSpeed()));
 	}
 
-	if (isRunning && _Difficulty < 5)
+	if (isRunning && _Difficulty < 4)
 	{
 		if (_Timer.getElapsedTime().asSeconds() >= _LevelUp)
 		{

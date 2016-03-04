@@ -102,7 +102,9 @@ void GameOverScreen::playSounds()
 
 void GameOverScreen::setVolume(float Volume)
 {
-	_GameOverSound.setVolume(Volume + 10);
+	if (Volume != 0) {
+		_GameOverSound.setVolume(Volume + 10);
+	}
 }
 
 GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)

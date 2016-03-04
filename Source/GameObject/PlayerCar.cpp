@@ -2,7 +2,7 @@
 #include "GameObject\PlayerCar.h"
 
 
-PlayerCar::PlayerCar(int SelectedCar, sf::Texture& texture) : Car(sf::Vector2f(0, 0), 100, 450, GameObjects::Player, texture), _CrosshairSpeed(500.0f)
+PlayerCar::PlayerCar(int SelectedCar, sf::Texture& texture) : Car(sf::Vector2f(0, 0), 100, 500, GameObjects::Player, texture), _CrosshairSpeed(600.0f)
 {
 	setStats(SelectedCar);
 	resetShotBullet();
@@ -78,15 +78,12 @@ void PlayerCar::handleEvent(sf::Event& Event)
 	_CrosshairMovement = sf::Vector2f(0, 0);
 	if (Event.type == sf::Event::MouseMoved) {
 		_Crosshair.setPosition(Event.mouseMove.x, Event.mouseMove.y);
-	} 
+	}
 	else if (Event.type == sf::Event::JoystickMoved) {
 		float U = sf::Joystick::getAxisPosition(0, sf::Joystick::U);
 		float R = sf::Joystick::getAxisPosition(0, sf::Joystick::R);
-		if (U < -50 || U > 50) {
-			_CrosshairMovement += sf::Vector2f(U / 100.0f, 0);
-		}
-		else if (R < -50 || R > 50) {
-			_CrosshairMovement += sf::Vector2f(0, R / 100.0f);
+		if (U < -50 || U > 50 || R < -50 || R > 50) {
+			_CrosshairMovement += sf::Vector2f(U / 100.0f, R / 90.0f);
 		}
 	}
 	else if (Event.type == sf::Event::MouseButtonPressed || (Event.type == sf::Event::JoystickButtonPressed && sf::Joystick::isButtonPressed(0, 5))) {
@@ -95,17 +92,6 @@ void PlayerCar::handleEvent(sf::Event& Event)
 			_ShotBullet = _AimLine.getRotation();
 		}
 	}
-
-	//Update angle on the _AimLine
-	sf::Vector2f dir = _Crosshair.getPosition() - getPos();
-	float angle = std::atan(dir.y / dir.x) * 180.0f / PI;
-	if (dir.x < 0) {
-		_AimLine.setRotation(angle + 180);
-	}
-	else {
-		_AimLine.setRotation(angle);
-	}
-
 }
 
 void PlayerCar::update(float FrameTime, int RoadSpeed)
@@ -119,7 +105,16 @@ void PlayerCar::update(float FrameTime, int RoadSpeed)
 		setPos(sf::Vector2f(getPos().x, getPos().y + _Movement.y * FrameTime * _Speed));
 	}
 
+	//Update _AimLine
 	_AimLine.setPosition(getPos());
+	sf::Vector2f dir = _Crosshair.getPosition() - getPos();
+	float angle = std::atan(dir.y / dir.x) * 180.0f / PI;
+	if (dir.x < 0) {
+		_AimLine.setRotation(angle + 180);
+	}
+	else {
+		_AimLine.setRotation(angle);
+	}
 
 	_Crosshair.setPosition(_Crosshair.getPosition() + _CrosshairMovement * FrameTime * _CrosshairSpeed);
 

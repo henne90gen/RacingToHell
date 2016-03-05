@@ -2,7 +2,7 @@
 #include "GameObject/BossCar.h"
 
 BossCar::BossCar(std::vector<sf::Texture*>& textures, sf::Vector2f Position) : Car(sf::Vector2f(SCREENWIDTH / 2, -1 * (int)textures[0]->getSize().y / 2 + 1), 1000, 500, GameObjects::Boss, (*textures.at(0))),
-	_GunOrientation(0.0f), _Phase(4), _Event1Frequency(0.0f), _Event2Frequency(0.0f), _BulletSpeed(500), _Event1Switch(false), _Event2Switch(false), _Event1Counter(0), _Event2Counter(0),
+	_GunOrientation(0.0f), _Phase(5), _Event1Frequency(0.0f), _Event2Frequency(0.0f), _BulletSpeed(500), _Event1Switch(false), _Event2Switch(false), _Event1Counter(0), _Event2Counter(0),
 	_Speed(200.0f), _MovementBehaviour(-1), _Attack(false), _MovementSwitch(false)
 {
 	_CannonSprite.setTexture(*textures.at(1));
@@ -188,6 +188,20 @@ void BossCar::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& G
 				if (getBossEvent() == 2)
 				{
 					_Event1Switch = true;
+				}
+			}
+			break;
+		case 5:
+			_Event1Frequency = 1.5f;
+
+			aimAtPlayer(GameObjects[0]);
+
+			if (getBossEvent() == 1)
+			{
+				for (int i = 0; i < 5; i++)
+				{
+					sf::Vector2f Position = getPos() + sf::Vector2f(100.0f * std::sinf(_GunOrientation - 10 * (i - 2)), 100.0f * std::cos(_GunOrientation - 10 * (i - 2)));
+					ShootBullet(GameObjects, Position, _GunOrientation - 10 * (i - 2));
 				}
 			}
 			break;

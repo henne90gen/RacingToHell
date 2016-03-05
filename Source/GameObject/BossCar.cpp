@@ -172,25 +172,10 @@ int BossCar::getBossEvent()
 
 void BossCar::aimAtPlayer(GameObject* Player)
 {
-	if (Player->getPos().x < getPos().x)
-	{
-		_GunOrientation = std::atanf((getPos().y - Player->getPos().y) / (getPos().x - Player->getPos().x)) * 180.0f / PI + 180;
-	}
-	else if (Player->getPos().x > getPos().x)
-	{
-		_GunOrientation = std::atanf((Player->getPos().y - getPos().y) / (Player->getPos().x - getPos().x)) * 180.0f / PI;
-	}
-	else
-	{
-		if (Player->getPos().y > getPos().y)
-		{
-			_GunOrientation = 90;
-		}
-		else
-		{
-			_GunOrientation = -90;
-		}
-	}
+	sf::Vector2f dir = Player->getPos() - getPos();
+	_GunOrientation = std::atan(dir.y / dir.x) * 180.0f / PI;
+	if (dir.x < 0)
+		_GunOrientation += 180.0f;
 }
 
 void BossCar::ShootBullet(std::vector<GameObject*>& GameObjects, sf::Vector2f Position, float Direction)
@@ -205,14 +190,12 @@ bool BossCar::DriveToNextPosition(float FrameTime)
 	{
 		return true;
 	}
-	else
-	{
+	else {
 		sf::Vector2f movement = sf::Vector2f(_NextPosition.x - getPos().x, _NextPosition.y - getPos().y);
 		float length = std::sqrtf(std::pow(movement.x, 2) + std::pow(movement.y, 2));
 		movement = movement / length;
 
 		setPos(getPos() + movement * FrameTime * _Speed);
-
 		return false;
 	}
 }

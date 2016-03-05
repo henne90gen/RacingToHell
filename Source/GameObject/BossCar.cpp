@@ -157,8 +157,8 @@ void BossCar::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& G
 			}
 			break;
 		case 4: //Druckwelle Salve
-			_Event1Frequency = 3.0f;
-			_Event2Frequency = 10.0f;
+			_Event1Frequency = 0.1f;
+			_Event2Frequency = 7.0f;
 
 			aimAtPlayer(GameObjects[0]);
 
@@ -166,7 +166,7 @@ void BossCar::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& G
 			{
 				if (getBossEvent() == 2)
 				{
-					for (int i = 2 * _Event1Counter; i <= 360; i += 10)
+					for (int i = 2 * _Event1Counter; i <= 360; i += 20)
 					{
 						sf::Vector2f Position = getPos() + sf::Vector2f(100.0f * std::sinf(i), 100.0f * std::cos(i));
 						ShootBullet(GameObjects, Position, (float)i);

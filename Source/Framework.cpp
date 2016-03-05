@@ -184,12 +184,12 @@ void Framework::update()
 		_Score += 10 * _Level.getDifficulty() * _FrameTime;
 		break;
 	case GameState::BossFight:
-		if (_Level.update(_FrameTime, _GameState)) {
-			if (_GameObjectContainer.bossIsDead()) {
-				_LevelUpScreen.levelUp();
-				_GameState = GameState::LevelUp;
-			}
+		_Level.update(_FrameTime, _GameState);
+		if (_GameObjectContainer.bossIsDead()) {
+			_LevelUpScreen.levelUp();
+			_GameState = GameState::LevelUp;
 		}
+		
 		
 		_GameObjectContainer.update(_FrameTime, _Level.getDifficulty(), _Level.getRoadSpeed());
 		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar()->getHealth(), _GameObjectContainer.getPlayerCar()->getMaxHealth(), _GameObjectContainer.getPlayerCar()->getEnergy(), _GameObjectContainer.getPlayerCar()->getMaxEnergy());

@@ -12,8 +12,6 @@ public:
 	void handleEvent(sf::Event& Event);
 	void update(float FrameTime, int RoadSpeed);
 	void render(sf::RenderWindow& RenderWindow);
-	
-	void takeDamage(int damage) { setHealth(getHealth() - damage); }
 
 	int getLane() { return _Lane; }
 private:

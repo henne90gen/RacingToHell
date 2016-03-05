@@ -50,6 +50,19 @@ void BossCar::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& G
 			}
 
 			_Attack = true;
+
+			if (std::rand() % 100 > 80)
+			{
+				_NextPosition = GameObjects[0]->getPos();
+				_MovementBehaviour = 1;
+				_Speed = 700.0f;
+				_Attack = false;
+			}
+			break;
+		case 1:
+			_NextPosition = _DefaultPosition;
+			_MovementBehaviour = 0;
+			_Speed = 200.0f;
 			break;
 		default:
 			break;

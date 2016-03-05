@@ -15,9 +15,6 @@ BossCar::BossCar(std::vector<sf::Texture*>& textures, sf::Vector2f Position) : C
 
 	_BossEventTimer1.restart();
 	_BossEventTimer2.restart();
-
-
-
 }
 
 BossCar::~BossCar()

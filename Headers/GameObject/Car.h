@@ -18,6 +18,8 @@ public:
 	void setHealth(int Health) { _Health = Health; }
 	void setSpeed(int Speed) { _Speed = Speed; }
 
+	void takeDamage(int damage) { _Health -= damage; }
+
 	void handleEvent(sf::Event& Event);
 	void update(float FrameTime, int RoadSpeed);
 protected:

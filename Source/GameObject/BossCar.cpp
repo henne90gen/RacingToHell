@@ -9,7 +9,6 @@ BossCar::BossCar(std::pair<sf::Texture*, sf::Texture*> textures) : Car(sf::Vecto
 	_CannonSprite.setOrigin(_CannonSprite.getLocalBounds().width / 2.0f, 50.0f);
 }
 
-
 BossCar::~BossCar()
 {
 }

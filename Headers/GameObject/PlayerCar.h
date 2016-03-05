@@ -23,7 +23,6 @@ public:
 	float shotBullet() { return _ShotBullet; }
 	void resetShotBullet() { _ShotBullet = 360.0f; }
 
-	void takeDamage() { _Health -= 5; }
 	void addHealth();
 
 	float getEnergy() { return _Energy; }

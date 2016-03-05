@@ -34,7 +34,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 					_PlayerAlive = false;
 					break;
 				case GameObjects::BulletObjectAI:
-					getPlayerCar()->takeDamage();
+					getPlayerCar()->takeDamage(5);
 					deleteObject(i);
 					i--;
 					break;
@@ -135,6 +135,18 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			_TimePassedBullet += FrameTime;
 		}
 	}
+	else {
+		for (unsigned int i = 1; i < _GameObjects.size(); i++) {
+			if (_GameObjects.at(i)->getType() == GameObjects::BulletObjectPlayer)
+			{
+				if (_GameObjects.at(1)->getSprite().getGlobalBounds().intersects(_GameObjects.at(i)->getSprite().getGlobalBounds()))
+				{
+					dynamic_cast<BossCar*>(_GameObjects.at(1))->takeDamage(getPlayerCar()->getBulletdamage());
+					deleteObject(i);
+				}
+			}
+		}
+	}
 
 	if (!_AboutToLevelUp) {
 		//EnergyCanister spawnen
@@ -211,9 +223,10 @@ void GameObjectContainer::playSounds()
 
 bool GameObjectContainer::bossIsDead()
 {
-	/*if (_Boss.getHealth() <= 0) {
-		return true;
-	}*/
+	if (_BossFight)
+		if (dynamic_cast<BossCar*>(_GameObjects.at(1))->getHealth() <= 0)
+			//TODO: Remove boss and reset
+			return true;
 	return false;
 }
 

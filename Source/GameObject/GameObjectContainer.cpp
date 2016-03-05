@@ -72,17 +72,20 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 
 		_GameObjects.at(i)->update(FrameTime, RoadSpeed);
 	}
+
+	//Objekt löschen wenn es sich nicht mehr im Screen befindet
+	for (unsigned int i = 0; i < _GameObjects.size(); i++)
+	{
+		if (_GameObjects.at(i)->getPos().y - _GameObjects.at(i)->getHeight() / 2 > SCREENHEIGHT || _GameObjects.at(i)->getPos().y + _GameObjects.at(i)->getHeight() / 2 <= 0 || _GameObjects.at(i)->getPos().x + _GameObjects.at(i)->getWidth() / 2 <= 0 || _GameObjects.at(i)->getPos().x - _GameObjects.at(i)->getWidth() / 2 >= SCREENWIDTH)
+		{
+			deleteObject(i);
+			i--;
+		}
+	}
+
 	if (!_BossFight) 
 	{
-		//Objekt löschen wenn es sich nicht mehr im Screen befindet
-		for (unsigned int i = 0; i < _GameObjects.size(); i++)
-		{
-			if (_GameObjects.at(i)->getPos().y - _GameObjects.at(i)->getHeight() / 2 > SCREENHEIGHT || _GameObjects.at(i)->getPos().y + _GameObjects.at(i)->getHeight() / 2 <= 0 || _GameObjects.at(i)->getPos().x + _GameObjects.at(i)->getWidth() / 2 <= 0 || _GameObjects.at(i)->getPos().x - _GameObjects.at(i)->getWidth() / 2 >= SCREENWIDTH)
-			{
-				deleteObject(i);
-				i--;
-			}
-		}
+		
 		if (!_AboutToLevelUp) {
 			//AI-Autos spawnen
 			if (_TimePassedCar + FrameTime > 1 / _CarFrequency)

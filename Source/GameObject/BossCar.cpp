@@ -38,11 +38,11 @@ void BossCar::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& G
 			_MovementBehaviour = 0;
 			break;
 		case 0:
-			_MovementSwitch = (std::rand() % 100 > (getPos().x / SCREENWIDTH) * 100);
+			_MovementSwitch = !_MovementSwitch;
 
 			if (_MovementSwitch)
 			{
-				_DestinationPosition = getPos() + sf::Vector2f((SCREENWIDTH - getPos().x) * (std::rand() % 100) / 100.0f, 0.0f);
+				_DestinationPosition = getPos() + sf::Vector2f(((float)SCREENWIDTH - getPos().x) * (std::rand() % 100) / 100.0f, 0.0f);
 			}
 			else
 			{
@@ -201,7 +201,7 @@ void BossCar::ShootBullet(std::vector<GameObject*>& GameObjects, sf::Vector2f Po
 
 bool BossCar::DriveToDestination(float FrameTime)
 {
-	if (std::abs((getPos().y - _DestinationPosition.y)) + std::abs((getPos().x - _DestinationPosition.x)) < 10.0f)
+	if (std::abs((getPos().y - _DestinationPosition.y)) < 5.0f && std::abs((getPos().x - _DestinationPosition.x)) < 5.0f)
 	{
 		setPos(_DestinationPosition);
 		return true;

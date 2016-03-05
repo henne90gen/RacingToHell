@@ -14,6 +14,9 @@ private:
 	sf::Texture* _BulletTexture;
 	sf::Sprite _CannonSprite;
 
+	sf::Clock _PhaseClock;
+	float _ChangePhaseFrequency;
+
 	sf::Clock _BossEventTimer1;
 	sf::Clock _BossEventTimer2;
 	float _Event1Frequency, _Event2Frequency;

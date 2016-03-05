@@ -248,7 +248,7 @@ bool GameObjectContainer::bossIsDead()
 
 void GameObjectContainer::enterBossFight(bool entering)
 {
-	BossCar* boss = new BossCar(_BossCarTextures, sf::Vector2f(SCREENWIDTH / 2, 100));
+	BossCar* boss = new BossCar(_BossCarTextures, sf::Vector2f(SCREENWIDTH / 2, 150));
 	_GameObjects.push_back(boss);
 	_BossFight = entering;
 }

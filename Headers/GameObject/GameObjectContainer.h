@@ -1,12 +1,13 @@
 #pragma once
 
-#include "GameObject.h"
-#include "GameObjects.h"
-#include "AICar.h"
-#include "PlayerCar.h"
-#include "Bullet.h"
-#include "EnergyCanister.h"
-#include "Toolbox.h"
+#include "GameObject/GameObject.h"
+#include "GameObject/GameObjects.h"
+#include "GameObject/AICar.h"
+#include "GameObject/PlayerCar.h"
+#include "GameObject/BossCar.h"
+#include "GameObject/Bullet.h"
+#include "GameObject/EnergyCanister.h"
+#include "GameObject/Toolbox.h"
 
 class GameObjectContainer
 {
@@ -20,6 +21,9 @@ public:
 
 	PlayerCar* getPlayerCar() { return dynamic_cast<PlayerCar*>(_GameObjects.at(0)); }
 	bool playerIsAlive() { return _PlayerAlive; }
+	bool bossIsDead();
+
+	void enterBossFight(bool entering);
 
 	void resetGameObjects(int SelectedCar);
 	bool emptyScreen();
@@ -36,6 +40,8 @@ public:
 private:
 	std::vector<GameObject*> _GameObjects;
 	std::vector<sf::Texture*> _PlayerCarTextures, _AICarTextures;
+	std::vector<std::pair<sf::Texture*, sf::Texture*>> _BossCarTextures;
+	std::pair<sf::Texture*, sf::Texture*> /*Temporary solution for boss texture*/ _BossCarTexture;
 	sf::Texture _ToolboxTexture, _EnergyCanisterTexture, _BulletTexture;
 
 	sf::SoundBuffer _AIShotSoundBuffer, _PlayerShotSoundBuffer;
@@ -44,7 +50,7 @@ private:
 
 	float _CarFrequency, _BulletFrequency, _CanisterFrequency, _ToolboxFrequency, _TimePassedCar, _TimePassedBullet, _TimePassedCanister, _TimePassedToolbox;
 	int _CarScore, _PlayerBulletSpeed, _AIBulletSpeed;
-	bool _PlayerAlive, _AboutToLevelUp;
+	bool _PlayerAlive, _AboutToLevelUp, _BossFight;
 
 	void playShotSound(GameObjects go);
 	void spawnAICar(int Difficulty, int RoadSpeed);

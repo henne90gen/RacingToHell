@@ -64,6 +64,9 @@
     <Filter Include="Resource Files\Texture\MainMenu">
       <UniqueIdentifier>{e50cfe5b-58c7-4066-a315-958e872d7b78}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Texture\BossCar">
+      <UniqueIdentifier>{6a98c5d6-379f-4ae7-8db4-c1b14462f7f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Framework.hpp">
@@ -153,6 +156,9 @@
     <ClInclude Include="Headers\Menu\LoadingScreen.h">
       <Filter>Header Files\Menu</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\GameObject\BossCar.h">
+      <Filter>Header Files\GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Framework.cpp">
@@ -229,6 +235,9 @@
     </ClCompile>
     <ClCompile Include="Source\Menu\LoadingScreen.cpp">
       <Filter>Source Files\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObject\BossCar.cpp">
+      <Filter>Source Files\GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -310,6 +319,12 @@
     </Image>
     <Image Include="Resources\Texture\Road\Road5.jpg">
       <Filter>Resource Files\Texture\Road</Filter>
+    </Image>
+    <Image Include="Resources\Texture\BossCar\cannon.png">
+      <Filter>Resource Files\Texture\BossCar</Filter>
+    </Image>
+    <Image Include="Resources\Texture\BossCar\tank.png">
+      <Filter>Resource Files\Texture\BossCar</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

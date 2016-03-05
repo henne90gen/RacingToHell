@@ -45,7 +45,7 @@ bool LevelUpScreen::update() {
 	return false;
 }
 
-void LevelUpScreen::LevelUp()
+void LevelUpScreen::levelUp()
 {
 	_Timer.restart();
 	_FadeTimer.restart();

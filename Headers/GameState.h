@@ -1,5 +1,5 @@
 #pragma once
 
 enum GameState {
-	Running, Main, Pause, Options, LevelUp, GameOver, Loading, Exiting
+	Running, Main, Pause, Options, BossFight, LevelUp, GameOver, Loading, Exiting
 };

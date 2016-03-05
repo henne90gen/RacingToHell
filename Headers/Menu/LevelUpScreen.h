@@ -9,7 +9,7 @@ public:
 	void render(sf::RenderWindow& Window);
 	bool update();
 
-	void LevelUp();
+	void levelUp();
 
 private:
 	sf::Font _Font;

@@ -37,7 +37,7 @@ void Framework::render()
 {
 	if (_GameState != GameState::Loading || _LoadingScreen.isFadingAway()) {
 		_Level.render(_RenderWindow);
-		_GameObjectContainer.render(_RenderWindow, _GameState == GameState::Running);
+		_GameObjectContainer.render(_RenderWindow, _GameState == GameState::Running || _GameState == GameState::BossFight);
 	}
 
 	switch (_GameState) {
@@ -61,6 +61,10 @@ void Framework::render()
 		setMouseVisible(false);
 		_LevelUpScreen.render(_RenderWindow);
 		break;
+	case GameState::BossFight:
+		setMouseVisible(false);
+		_HeadsUpDisplay.render(_RenderWindow);
+		break;
 	case GameState::GameOver:
 		setMouseVisible(true);
 		_GameOverScreen.render(_RenderWindow);
@@ -81,7 +85,6 @@ void Framework::handleEvents()
 {
 	switch (_GameState) {
 	case GameState::Running:
-
 		while (_RenderWindow.pollEvent(_Event))
 		{
 			if (_Event.type == sf::Event::Closed) {
@@ -135,6 +138,23 @@ void Framework::handleEvents()
 			}
 		}
 		break;
+	case GameState::BossFight:
+		while (_RenderWindow.pollEvent(_Event))
+		{
+			if (_Event.type == sf::Event::Closed) {
+				_GameState = GameState::Exiting;
+			}
+			else if (_Event.type == sf::Event::KeyPressed || sf::Event::JoystickMoved || sf::Event::JoystickButtonPressed ||
+				_Event.type == sf::Event::MouseButtonPressed || _Event.type == sf::Event::KeyReleased) {
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, 7)) {
+					_GameState = GameState::Pause;
+				}
+				else {
+					_GameObjectContainer.handleEvents(_Event);
+				}
+			}
+		}
+		break;
 	case GameState::GameOver:
 		setVolume(_OptionsMenu.getVolume());
 		_GameState = _GameOverScreen.handleEvents(_RenderWindow);
@@ -149,10 +169,10 @@ void Framework::update()
 {
 	switch (_GameState) {
 	case GameState::Running:
-		if (_Level.update(_FrameTime, _GameState == GameState::Running)) {
+		if (_Level.update(_FrameTime, _GameState)) {
 			if (_GameObjectContainer.emptyScreen()) {
-				_LevelUpScreen.LevelUp();
-				_GameState = GameState::LevelUp;
+				_GameObjectContainer.enterBossFight(true);
+				_GameState = GameState::BossFight;
 			}
 		}
 		_GameObjectContainer.update(_FrameTime, _Level.getDifficulty(), _Level.getRoadSpeed());
@@ -163,23 +183,39 @@ void Framework::update()
 		_Score += _GameObjectContainer.getCarScore();
 		_Score += 10 * _Level.getDifficulty() * _FrameTime;
 		break;
+	case GameState::BossFight:
+		if (_Level.update(_FrameTime, _GameState)) {
+			if (_GameObjectContainer.bossIsDead()) {
+				_LevelUpScreen.levelUp();
+				_GameState = GameState::LevelUp;
+			}
+		}
+		
+		_GameObjectContainer.update(_FrameTime, _Level.getDifficulty(), _Level.getRoadSpeed());
+		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar()->getHealth(), _GameObjectContainer.getPlayerCar()->getMaxHealth(), _GameObjectContainer.getPlayerCar()->getEnergy(), _GameObjectContainer.getPlayerCar()->getMaxEnergy());
+		if (!_GameObjectContainer.playerIsAlive()) {
+			_GameState = GameState::GameOver;
+		}
+		_Score += _GameObjectContainer.getCarScore();
+		_Score += 100 * _Level.getDifficulty() * _FrameTime;
+		break;
 	case GameState::LevelUp:
 		if (_LevelUpScreen.update()) {
 			_Clock.restart();
-			_Level.LevelUp();
+			_Level.levelUp();
 			dynamic_cast<PlayerCar*>(_GameObjectContainer.getPlayerCar())->resetMovement();
 			_GameState = GameState::Running;
 		}
 		break;
 	case GameState::Main:
-		_Level.update(_FrameTime, false);
+		_Level.update(_FrameTime, _GameState);
 		break;
 	case GameState::GameOver:
 		_GameOverScreen.update(_Score, _Level.getDifficulty());
 		break;
 	case GameState::Options:
 		if (_OptionsMenu.getReturnState() == GameState::Main) {
-			_Level.update(_FrameTime, false);
+			_Level.update(_FrameTime, _GameState);
 		}
 		break;
 	case GameState::Loading:
@@ -191,7 +227,7 @@ void Framework::update()
 			_GameState = GameState::Main;
 		}
 		else if (_LoadingScreen.isFadingAway()) {
-			_Level.update(_FrameTime, false);
+			_Level.update(_FrameTime, _GameState);
 		}
 		break;
 	case GameState::Exiting:

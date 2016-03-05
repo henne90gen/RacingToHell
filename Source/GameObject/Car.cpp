@@ -7,7 +7,6 @@ Car::Car(sf::Vector2f pos, int maxhealth, float speed, GameObjects Type, sf::Tex
 	_Speed = speed;
 	_MaxHealth = maxhealth;
 	_Health = maxhealth;
-	
 }
 
 

@@ -11,7 +11,7 @@ Level::~Level()
 }
 
 // returns true if 'level-up' has happened
-bool Level::update(float FrameTime, bool isRunning)
+bool Level::update(float FrameTime, GameState gameState)
 {
 	if (_Sprite.getPosition().y + FrameTime * _Difficulty >= 0)
 	{
@@ -22,7 +22,7 @@ bool Level::update(float FrameTime, bool isRunning)
 		_Sprite.setPosition(sf::Vector2f(_Sprite.getPosition().x, _Sprite.getPosition().y + FrameTime * getRoadSpeed()));
 	}
 
-	if (isRunning && _Difficulty < 4)
+	if (gameState == GameState::Running && _Difficulty < 4)
 	{
 		if (_Timer.getElapsedTime().asSeconds() >= _LevelUp)
 		{
@@ -34,7 +34,6 @@ bool Level::update(float FrameTime, bool isRunning)
 
 void Level::render(sf::RenderWindow& RenderWindow)
 {
-	//RenderWindow.clear(sf::Color::Cyan);
 	RenderWindow.draw(_Sprite);
 }
 
@@ -60,7 +59,7 @@ void Level::setVolume(float Volume)
 	_Music.setVolume(Volume);
 }
 
-void Level::LevelUp()
+void Level::levelUp()
 {
 	_Timer.restart();
 	_Difficulty++;

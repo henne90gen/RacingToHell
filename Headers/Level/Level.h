@@ -6,7 +6,7 @@ public:
 	Level();
 	~Level();
 
-	bool update(float FrameTime, bool isRunning);
+	bool update(float FrameTime, GameState gameState);
 	void render(sf::RenderWindow& RenderWindow);
 	void playMusic();
 	void stopMusic();
@@ -14,7 +14,7 @@ public:
 	void setVolume(float Volume);
 
 	void resetLevel();
-	void LevelUp();
+	void levelUp();
 
 	void load();
 

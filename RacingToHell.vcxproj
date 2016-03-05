@@ -154,6 +154,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\GameObject\BossCar.h" />
     <ClInclude Include="Headers\GameState.h" />
     <ClInclude Include="Headers\GameObject\AICar.h" />
     <ClInclude Include="Headers\GameObject\Bullet.h" />
@@ -185,6 +186,7 @@
     <ClInclude Include="Headers\Menu\LoadingScreen.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\GameObject\BossCar.cpp" />
     <ClCompile Include="Source\Menu\LoadingScreen.cpp" />
     <ClCompile Include="Source\Menu\Menu.cpp" />
     <ClCompile Include="Source\Menu\PauseMenu.cpp" />
@@ -225,6 +227,8 @@
     <Font Include="Resources\Font\arial.ttf" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Resources\Texture\BossCar\cannon.png" />
+    <Image Include="Resources\Texture\BossCar\tank.png" />
     <Image Include="Resources\Texture\HUD\HUD_Background.png" />
     <Image Include="Resources\Texture\HUD\HUD_EnergyIcon.png" />
     <Image Include="Resources\Texture\HUD\HUD_HealthIcon.png" />

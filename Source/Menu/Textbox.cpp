@@ -2,8 +2,9 @@
 #include "Menu\Textbox.h"
 
 Textbox::Textbox(sf::Vector2f Position, sf::Vector2f Size, int CharacterSize, std::string Text)
-	: _FillColor(sf::Color(255, 255, 255)), _FillColorDisabled(sf::Color(140, 140, 140)), _OutlineColor(sf::Color(0, 0, 0)), _OutlineColorFocused(sf::Color(0, 150, 205)), _TextColor(sf::Color(0, 0, 0)),
-	_isDisabled(false), _isFocused(false), _ShowCursor(true), _CursorPosition(0)
+	: MenuItem(MenuItems::MTextbox, MenuResult::Nothing),
+	_FillColor(sf::Color(255, 255, 255)), _FillColorDisabled(sf::Color(140, 140, 140)), _OutlineColor(sf::Color(0, 0, 0)), _OutlineColorFocused(sf::Color(0, 150, 205)), _TextColor(sf::Color(0, 0, 0)),
+	_isFocused(false), _ShowCursor(true), _CursorPosition(0)
 {
 	_Font.loadFromFile("Resources\\Font\\arial.ttf");
 
@@ -34,7 +35,7 @@ Textbox::~Textbox()
 
 void Textbox::update()
 {
-	if (_isDisabled)
+	if (!_Enabled)
 	{
 		_Box.setFillColor(_FillColorDisabled);
 		_Box.setOutlineColor(_OutlineColor);
@@ -77,7 +78,7 @@ void Textbox::render(sf::RenderWindow& RenderWindow)
 
 void Textbox::handleEvent(sf::Event& Event)
 {
-	if (!_isDisabled && Event.type == sf::Event::MouseButtonPressed)
+	if (_Enabled && Event.type == sf::Event::MouseButtonPressed)
 	{
 		if (MouseOverTextbox(sf::Vector2i(Event.mouseButton.x, Event.mouseButton.y)))
 		{
@@ -109,7 +110,7 @@ void Textbox::handleEvent(sf::Event& Event)
 		}
 	}
 
-	if (!_isDisabled && _isFocused && Event.type == sf::Event::KeyPressed)
+	if (_Enabled && _isFocused && Event.type == sf::Event::KeyPressed)
 	{
 		if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::RControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt) && !sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt))
 		{
@@ -170,6 +171,16 @@ void Textbox::setCursor()
 bool Textbox::MouseOverTextbox(sf::Vector2i MousePosition)
 {
 	return MousePosition.x >= _Box.getPosition().x && MousePosition.x < _Box.getPosition().x + _Box.getSize().x && MousePosition.y > _Box.getPosition().y && MousePosition.y < _Box.getPosition().y + _Box.getSize().y;
+}
+
+void Textbox::switchHoverState(bool hoverState, bool joystickSelected)
+{
+
+}
+
+sf::FloatRect Textbox::getRect()
+{
+	return _Box.getGlobalBounds();
 }
 
 bool Textbox::StringTooLarge(std::string str)

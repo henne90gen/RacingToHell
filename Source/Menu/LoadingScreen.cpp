@@ -36,6 +36,11 @@ GameState LoadingScreen::handleEvents(sf::RenderWindow & Window)
 	return GameState::Loading;
 }
 
+GameState LoadingScreen::handleMenuItemAction(int index)
+{
+	return GameState();
+}
+
 void LoadingScreen::fadeAway()
 {
 	_FadeTimer.restart();

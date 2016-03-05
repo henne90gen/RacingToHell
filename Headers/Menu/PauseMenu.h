@@ -9,8 +9,6 @@ public:
 
 	void render(sf::RenderWindow& Window);
 	GameState handleEvents(sf::RenderWindow& Window);
-
-private:
-	
+	GameState handleMenuItemAction(int index);
 };
 

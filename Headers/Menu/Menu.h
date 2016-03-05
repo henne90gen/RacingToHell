@@ -1,5 +1,6 @@
 #pragma once
-#include "Menu/MenuItem.h"
+#include "Menu/MenuButton.h"
+#include "Menu/Slider.h"
 #include "Menu/MenuResults.h"
 #include "StandardCursor.h"
 
@@ -11,8 +12,7 @@ public:
 
 	virtual void render(sf::RenderWindow& Window) = 0;
 	virtual GameState handleEvents(sf::RenderWindow& Window) = 0;
-
-	std::vector<MenuItem*>& getMenuItems() { return _MenuItems; }
+	virtual GameState handleMenuItemAction(int index) = 0;
 
 protected:
 	std::vector<MenuItem*> _MenuItems;
@@ -20,7 +20,8 @@ protected:
 	sf::Text _Text;
 	sf::Event _Event;
 
-	bool MenuItemHovered();
+	void checkMenuItemHovered(sf::RenderWindow& Window);
+
 	int _JoystickSelection;
 	sf::Clock _JoystickTimer;
 	float _JoystickDelay;

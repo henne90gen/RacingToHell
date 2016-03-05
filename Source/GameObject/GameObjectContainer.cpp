@@ -15,10 +15,22 @@ GameObjectContainer::~GameObjectContainer()
 		_GameObjects.at(i) = nullptr;
 	}
 
+	_GameObjects.clear();
+
 	for (int i = 0; i < _AICarTextures.size(); i++) {
 		delete _AICarTextures.at(i);
 		_AICarTextures.at(i) = nullptr;
 	}
+
+	_AICarTextures.clear();
+
+	for (unsigned int i = 0; i < _BossCarTextures.size() - 1; i++)
+	{
+		delete _BossCarTextures[i];
+		_BossCarTextures[i] = nullptr;
+	}
+
+	_BossCarTextures.clear();
 }
 
 void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
@@ -59,7 +71,8 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 
 		_GameObjects.at(i)->update(FrameTime, RoadSpeed);
 	}
-	if (!_BossFight) {
+	if (!_BossFight) 
+	{
 		//Objekt löschen wenn es sich nicht mehr im Screen befindet
 		for (unsigned int i = 0; i < _GameObjects.size(); i++)
 		{
@@ -146,6 +159,8 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 				}
 			}
 		}
+
+		getBossCar()->update(FrameTime, RoadSpeed, _GameObjects);
 	}
 
 	if (!_AboutToLevelUp) {
@@ -232,7 +247,7 @@ bool GameObjectContainer::bossIsDead()
 
 void GameObjectContainer::enterBossFight(bool entering)
 {
-	BossCar* boss = new BossCar(_BossCarTexture);
+	BossCar* boss = new BossCar(_BossCarTextures, sf::Vector2f(SCREENWIDTH / 2, 100));
 	_GameObjects.push_back(boss);
 	_BossFight = entering;
 }
@@ -284,17 +299,20 @@ void GameObjectContainer::load()
 		_AICarTextures.push_back(texture);
 	}
 
-	_BossCarTexture.first = new sf::Texture();
-	_BossCarTexture.second = new sf::Texture();
-	_BossCarTexture.first->loadFromFile("Resources/Texture/BossCar/tank.png");
-	_BossCarTexture.second->loadFromFile("Resources/Texture/BossCar/cannon.png");
-
 	_BulletTexture.loadFromFile("Resources/Texture/Object/Bullet.png");
 	_ToolboxTexture.loadFromFile("Resources/Texture/Object/toolbox.png");
 	_EnergyCanisterTexture.loadFromFile("Resources/Texture/Object/canister.png");
 
 	_AIShotSoundBuffer.loadFromFile("Resources/Sound/shotAI.wav");
 	_PlayerShotSoundBuffer.loadFromFile("Resources/Sound/shotPlayer.wav");
+
+	_BossCarTextures.push_back(new sf::Texture());
+	_BossCarTextures.push_back(new sf::Texture());
+	_BossCarTextures.push_back(new sf::Texture());
+				   
+	_BossCarTextures[0]->loadFromFile("Resources/Texture/BossCar/tank.png");
+	_BossCarTextures[1]->loadFromFile("Resources/Texture/BossCar/cannon.png");
+	_BossCarTextures[2] = &_BulletTexture;
 }
 
 void GameObjectContainer::setCarSkins(std::vector<sf::Texture*>& CarSkins)

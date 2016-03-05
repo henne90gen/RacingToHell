@@ -20,6 +20,7 @@ public:
 	void handleEvents(sf::Event& Event);
 
 	PlayerCar* getPlayerCar() { return dynamic_cast<PlayerCar*>(_GameObjects.at(0)); }
+	BossCar* getBossCar() { return dynamic_cast<BossCar*>(_GameObjects.at(1)); }
 	bool playerIsAlive() { return _PlayerAlive; }
 	bool bossIsDead();
 
@@ -40,8 +41,7 @@ public:
 private:
 	std::vector<GameObject*> _GameObjects;
 	std::vector<sf::Texture*> _PlayerCarTextures, _AICarTextures;
-	std::vector<std::pair<sf::Texture*, sf::Texture*>> _BossCarTextures;
-	std::pair<sf::Texture*, sf::Texture*> /*Temporary solution for boss texture*/ _BossCarTexture;
+	std::vector<sf::Texture*> _BossCarTextures;
 	sf::Texture _ToolboxTexture, _EnergyCanisterTexture, _BulletTexture;
 
 	sf::SoundBuffer _AIShotSoundBuffer, _PlayerShotSoundBuffer;

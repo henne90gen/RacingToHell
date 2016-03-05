@@ -122,7 +122,6 @@ GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
 		else if (_Event.type == sf::Event::MouseButtonPressed) {
 			sf::Vector2f MousePos = sf::Vector2f(sf::Mouse::getPosition(Window));
 			for (int i = 0; i < _MenuItems.size(); i++) {
-				std::cout << "GameOverScreen check every MenuItem. " << i << std::endl;
 				sf::FloatRect rect = _MenuItems[i]->getRect();
 				if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width) 
 				{

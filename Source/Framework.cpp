@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Framework.hpp"
 
-Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameState(GameState::Loading)
+Framework::Framework() : _FrameTime(0), _FPS(60.0f), _IsRunning(true), _GameState(GameState::Loading)
 {
 	_RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell", sf::Style::Close);
 	_RenderWindow.setMouseCursorVisible(false);
@@ -19,7 +19,9 @@ void Framework::run()
 {
 	while (_IsRunning)
 	{
-		render();
+		if (measureTime()) {
+			render();
+		}
 
 		handleEvents();
 		
@@ -27,7 +29,7 @@ void Framework::run()
 
 		playSounds();
 
-		measureTime();
+		//measureTime();
 	}
 }
 
@@ -220,15 +222,22 @@ void Framework::playSounds() {
 	}
 }
 
-void Framework::measureTime()
+bool Framework::measureTime()
 {
 	_FrameTime = _Clock.getElapsedTime().asMicroseconds() / 1000000.0f;
+	_LastFPSCheck += _FrameTime;
 	_LastFPSPrint += _FrameTime;
 	_Clock.restart();
-	if (_LastFPSPrint > 1) {
-		std::cout << "FPS: " << 1 / _FrameTime << std::endl;
-		_LastFPSPrint = 0;
+	
+	if (_LastFPSCheck >= 1 / _FPS) {
+		if (_LastFPSPrint > 1) {
+			std::cout << "FPS: " << 1 / _LastFPSCheck << std::endl;
+			_LastFPSPrint = 0;
+		}
+		_LastFPSCheck = 0;
+		return true;
 	}
+	return false;
 }
 
 void Framework::load()

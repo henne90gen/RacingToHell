@@ -29,7 +29,7 @@ private:
 	sf::Clock _Clock;
 
 	//Variables
-	float _FrameTime, _LastFPSPrint, _Score;
+	float _FrameTime, _LastFPSPrint, _LastFPSCheck, _Score, _FPS;
 	bool _IsRunning;
 	int _CurrentCarSkinIndex;
 
@@ -57,7 +57,7 @@ private:
 	void handleEvents();
 	void update();
 	void playSounds();
-	void measureTime();
+	bool measureTime();
 	void load();
 	void resetGame();
 	void setVolume(float Volume);

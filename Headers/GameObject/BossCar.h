@@ -12,5 +12,8 @@ public:
 private:
 	sf::Texture _CannonTexture;
 	sf::Sprite _CannonSprite;
+
+	int _Phase;
+	float _GunOrientation;
 };
 

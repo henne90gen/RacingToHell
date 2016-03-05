@@ -1,5 +1,5 @@
 #pragma once
-#include "Menu\Menu.h"
+#include "Menu/Menu.h"
 
 class OptionsMenu : public Menu
 {
@@ -9,20 +9,15 @@ public:
 
 	void render(sf::RenderWindow& Window);
 	GameState handleEvents(sf::RenderWindow& Window);
+	GameState handleMenuItemAction(int index);
 
 	void setReturnState(GameState returnState) { _ReturnState = returnState; }
 	GameState getReturnState() { return _ReturnState; }
-	float getVolume() { return _Volume; }
+	float getVolume() { return dynamic_cast<Slider*>(_MenuItems[0])->getValue(); }
 
 private:
-	sf::Text _VolumeText;
-	sf::RectangleShape _VolumeSlider;
-	sf::RectangleShape _VolumeLine;
-	sf::FloatRect _VolumeBox;
-
 	bool _MousePressed;
-	GameState _ReturnState;
 
-	float _Volume, _MaxVolume;
+	GameState _ReturnState;
 };
 

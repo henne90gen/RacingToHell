@@ -7,9 +7,9 @@ PauseMenu::PauseMenu()
 	//Menu-Items
 	sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
 
-	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 240), ButtonSize, MenuResult::Resume));
-	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 310), ButtonSize, MenuResult::Option));
-	_MenuItems.push_back(new MenuItem(sf::Vector2f(SCREENWIDTH / 2, 380), ButtonSize, MenuResult::Exit));
+	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 240), ButtonSize, MenuResult::Resume, "Resume", TextAlignment::Center));
+	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 310), ButtonSize, MenuResult::Option, "Options", TextAlignment::Center));
+	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 380), ButtonSize, MenuResult::Exit, "Exit", TextAlignment::Center));
 
 	//Menu-Text
 	_Text.setString("Pause Menu");
@@ -31,16 +31,7 @@ void PauseMenu::render(sf::RenderWindow & Window)
 	}
 	Window.draw(_Text);
 
-	if (MenuItemHovered())
-	{
-		sf::StandardCursor Cursor(sf::StandardCursor::HAND);
-		Cursor.set(Window.getSystemHandle());
-	}
-	else
-	{
-		sf::StandardCursor Cursor(sf::StandardCursor::NORMAL);
-		Cursor.set(Window.getSystemHandle());
-	}
+	checkMenuItemHovered(Window);
 }
 
 GameState PauseMenu::handleEvents(sf::RenderWindow & Window)
@@ -51,15 +42,15 @@ GameState PauseMenu::handleEvents(sf::RenderWindow & Window)
 		}
 		else if (_Event.type == sf::Event::MouseButtonPressed || _Event.type == sf::Event::JoystickButtonPressed) {
 			sf::Vector2f MousePos = sf::Vector2f(sf::Mouse::getPosition(Window));
-			for (int i = 0; i < getMenuItems().size(); i++) {
-				sf::FloatRect rect = getMenuItems()[i]->getRect();
+			for (int i = 0; i < _MenuItems.size(); i++) {
+				sf::FloatRect rect = _MenuItems[i]->getRect();
 				if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width ||
 					sf::Joystick::isButtonPressed(0, 0)) 
 				{
 					if (sf::Joystick::isButtonPressed(0, 0)) {
 						i = _JoystickSelection;
 					}
-					switch (getMenuItems()[i]->getAction()) {
+					switch (_MenuItems[i]->getAction()) {
 					case MenuResult::Resume:
 						return GameState::Running;
 						break;
@@ -100,4 +91,9 @@ GameState PauseMenu::handleEvents(sf::RenderWindow & Window)
 		
 	}
 	return GameState::Pause;
+}
+
+GameState PauseMenu::handleMenuItemAction(int index)
+{
+	return GameState();
 }

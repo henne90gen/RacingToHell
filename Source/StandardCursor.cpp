@@ -3,7 +3,11 @@
 
 #ifdef SFML_SYSTEM_WINDOWS
 
-sf::StandardCursor::StandardCursor(const sf::StandardCursor::TYPE t)
+sf::StandardCursor::StandardCursor()
+{
+}
+
+void sf::StandardCursor::set(const sf::WindowHandle& aWindowHandle, const sf::StandardCursor::TYPE t)
 {
 	switch (t)
 	{
@@ -22,10 +26,6 @@ sf::StandardCursor::StandardCursor(const sf::StandardCursor::TYPE t)
 		//For more cursor options on Windows go here:
 		// http://msdn.microsoft.com/en-us/library/ms648391%28v=vs.85%29.aspx
 	}
-}
-
-void sf::StandardCursor::set(const sf::WindowHandle& aWindowHandle) const
-{
 	SetClassLongPtr(aWindowHandle, GCLP_HCURSOR, reinterpret_cast<LONG_PTR>(Cursor));
 }
 

@@ -11,7 +11,10 @@ public:
 	~GameOverScreen();
 
 	void render(sf::RenderWindow& Window);
+
 	GameState handleEvents(sf::RenderWindow& Window);
+	GameState handleMenuItemAction(int index); 
+	
 	void update(int Score, int Level);
 
 	void loadHighScores();
@@ -29,7 +32,6 @@ private:
 	sf::Text _GOTLine3;
 	sf::Text _GOTLine4;
 
-	Textbox* _Textbox;
 	Highscore* _Highscore;
 
 	sf::SoundBuffer _GameOverSoundBuffer;

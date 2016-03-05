@@ -11,14 +11,26 @@ Menu::~Menu()
 {
 }
 
-bool Menu::MenuItemHovered()
+void Menu::checkMenuItemHovered(sf::RenderWindow& Window)
 {
+	sf::StandardCursor Cursor;
 	for (unsigned int i = 0; i < _MenuItems.size(); i++)
 	{
 		if (_MenuItems[i]->getHoverState() && _MenuItems[i]->getEnabled())
 		{
-			return true;
+			switch (_MenuItems[i]->getType()) {
+			case MenuItems::MButton:
+				Cursor.set(Window.getSystemHandle(), sf::StandardCursor::HAND);
+				break;
+			case MenuItems::MTextbox:
+				Cursor.set(Window.getSystemHandle(), sf::StandardCursor::TEXT);
+				break;
+			case MenuItems::MSlider:
+				Cursor.set(Window.getSystemHandle(), sf::StandardCursor::HAND);
+				break;
+			}
+			return;
 		}
 	}
-	return false; 
+	Cursor.set(Window.getSystemHandle(), sf::StandardCursor::NORMAL);
 }

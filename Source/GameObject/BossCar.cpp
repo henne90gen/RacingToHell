@@ -11,7 +11,7 @@ BossCar::BossCar(std::vector<sf::Texture*>& textures, sf::Vector2f Position) : C
 	_BulletTexture = textures.at(2);
 
 	_DefaultPosition = Position;
-	_DestinationPosition = _DefaultPosition;
+	_NextPosition = _DefaultPosition;
 
 	_BossEventTimer1.restart();
 	_BossEventTimer2.restart();
@@ -28,7 +28,7 @@ void BossCar::render(sf::RenderWindow& Window) {
 
 void BossCar::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects)
 {
-	bool Arrived = DriveToDestination(FrameTime);
+	bool Arrived = DriveToNextPosition(FrameTime);
 	
 	if (Arrived)
 	{
@@ -42,11 +42,11 @@ void BossCar::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& G
 
 			if (_MovementSwitch)
 			{
-				_DestinationPosition = getPos() + sf::Vector2f(((float)SCREENWIDTH - getPos().x) * (std::rand() % 100) / 100.0f, 0.0f);
+				_NextPosition = getPos() + sf::Vector2f((SCREENWIDTH - getPos().x) * (std::rand() % 100) / 100.0f, 0.0f);
 			}
 			else
 			{
-				_DestinationPosition = getPos() - sf::Vector2f(getPos().x * (std::rand() % 100) / 100.0f, 0.0f);
+				_NextPosition = getPos() - sf::Vector2f(getPos().x * (std::rand() % 100) / 100.0f, 0.0f);
 			}
 
 			_Attack = true;
@@ -199,38 +199,19 @@ void BossCar::ShootBullet(std::vector<GameObject*>& GameObjects, sf::Vector2f Po
 	GameObjects.push_back(newBullet);
 }
 
-bool BossCar::DriveToDestination(float FrameTime)
+bool BossCar::DriveToNextPosition(float FrameTime)
 {
-	if (std::abs((getPos().y - _DestinationPosition.y)) < 5.0f && std::abs((getPos().x - _DestinationPosition.x)) < 5.0f)
+	if (std::abs((getPos().y - _NextPosition.y)) < 2.0f && std::abs((getPos().x - _NextPosition.x)) < 2.0f)
 	{
-		setPos(_DestinationPosition);
 		return true;
 	}
 	else
 	{
-		float Direction;
-		//std::cout << std::atanf((getPos().y - _DestinationPosition.y) / (getPos().x - _DestinationPosition.x)) * 180.0f / PI + 180.0f << std::endl;
-		if (_DestinationPosition.x < getPos().x)
-		{
-			Direction = std::atanf((getPos().y - _DestinationPosition.y) / (getPos().x - _DestinationPosition.x)) * 180.0f / PI + 180.0f;
-		}
-		else if (_DestinationPosition.x > getPos().x)
-		{
-			Direction = std::atanf((_DestinationPosition.y - getPos().y) / (_DestinationPosition.x - getPos().x)) * 180.0f / PI;
-		}
-		else
-		{
-			if (_DestinationPosition.y > getPos().y)
-			{
-				Direction = 90;
-			}
-			else
-			{
-				Direction = -90;
-			}
-		}
+		sf::Vector2f movement = sf::Vector2f(_NextPosition.x - getPos().x, _NextPosition.y - getPos().y);
+		float length = std::sqrtf(std::pow(movement.x, 2) + std::pow(movement.y, 2));
+		movement = movement / length;
 
-		setPos(getPos() + FrameTime * sf::Vector2f(-_Speed * std::sin(Direction), _Speed * std::cos(Direction)));
+		setPos(getPos() + movement * FrameTime * _Speed);
 
 		return false;
 	}

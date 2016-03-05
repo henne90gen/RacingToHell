@@ -23,7 +23,7 @@ private:
 	int _Phase, _BulletSpeed;
 	float _GunOrientation;
 
-	sf::Vector2f _DestinationPosition, _DefaultPosition;
+	sf::Vector2f _NextPosition, _DefaultPosition;
 	float _Speed;
 	int _MovementBehaviour;
 	bool _Attack, _MovementSwitch;
@@ -31,6 +31,6 @@ private:
 	int getBossEvent();
 	void aimAtPlayer(GameObject* Player);
 	void ShootBullet(std::vector<GameObject*>& GameObjects, sf::Vector2f Position, float Direction);
-	bool DriveToDestination(float FrameTime);
+	bool DriveToNextPosition(float FrameTime);
 };
 

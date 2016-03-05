@@ -5,6 +5,9 @@ Framework::Framework() : _FrameTime(0), _FPS(15000.0f), _IsRunning(true), _GameS
 {
 	_RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell", sf::Style::Close);
 	_RenderWindow.setMouseCursorVisible(false);
+
+	//Seed
+	srand(time(NULL));
 }
 
 Framework::~Framework()

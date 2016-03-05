@@ -3,8 +3,6 @@
 
 GameObjectContainer::GameObjectContainer() : _PlayerBulletSpeed(600), _AIBulletSpeed(400)
 {
-	//Seed
-	srand(time(NULL));
 }
 
 GameObjectContainer::~GameObjectContainer()
@@ -59,6 +57,9 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 					getPlayerCar()->addHealth();
 					deleteObject(i);
 					i--;
+					break;
+				case GameObjects::Boss:
+					_PlayerAlive = false;
 					break;
 				}
 			}

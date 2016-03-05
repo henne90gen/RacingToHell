@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Framework.hpp"
 
-Framework::Framework() : _FrameTime(0), _FPS(60.0f), _IsRunning(true), _GameState(GameState::Loading)
+Framework::Framework() : _FrameTime(0), _FPS(15000.0f), _IsRunning(true), _GameState(GameState::Loading)
 {
 	_RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell", sf::Style::Close);
 	_RenderWindow.setMouseCursorVisible(false);

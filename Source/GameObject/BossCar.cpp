@@ -2,7 +2,7 @@
 #include "GameObject/BossCar.h"
 
 BossCar::BossCar(std::vector<sf::Texture*>& textures, sf::Vector2f Position) : Car(sf::Vector2f(SCREENWIDTH / 2, -1 * (int)textures[0]->getSize().y / 2 + 1), 1000, 500, GameObjects::Boss, (*textures.at(0))),
-	_GunOrientation(0.0f), _Phase(3), _Event1Frequency(0.0f), _Event2Frequency(0.0f), _BulletSpeed(500), _Event1Switch(false), _Event2Switch(false), _Event1Counter(0), _Event2Counter(0),
+	_GunOrientation(0.0f), _Phase(4), _Event1Frequency(0.0f), _Event2Frequency(0.0f), _BulletSpeed(500), _Event1Switch(false), _Event2Switch(false), _Event1Counter(0), _Event2Counter(0),
 	_Speed(200.0f), _MovementBehaviour(-1), _Attack(false), _MovementSwitch(false)
 {
 	_CannonSprite.setTexture(*textures.at(1));
@@ -153,6 +153,41 @@ void BossCar::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& G
 				{
 					sf::Vector2f Position = getPos() + sf::Vector2f(100.0f * std::sinf(i), 100.0f * std::cos(i));
 					ShootBullet(GameObjects, Position, (float)i);
+				}
+			}
+			break;
+		case 4: //Druckwelle Salve
+			_Event1Frequency = 3.0f;
+			_Event2Frequency = 10.0f;
+
+			aimAtPlayer(GameObjects[0]);
+
+			if (_Event1Switch)
+			{
+				if (getBossEvent() == 2)
+				{
+					for (int i = 2 * _Event1Counter; i <= 360; i += 10)
+					{
+						sf::Vector2f Position = getPos() + sf::Vector2f(100.0f * std::sinf(i), 100.0f * std::cos(i));
+						ShootBullet(GameObjects, Position, (float)i);
+					}
+
+					if (_Event1Counter + 1 < 5)
+					{
+						_Event1Counter += 1;
+					}
+					else
+					{
+						_Event1Switch = false;
+						_Event1Counter = 0;
+					}
+				}
+			}
+			else
+			{
+				if (getBossEvent() == 2)
+				{
+					_Event1Switch = true;
 				}
 			}
 			break;

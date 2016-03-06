@@ -13,7 +13,9 @@ public:
 	void switchHoverState(bool hoverState, bool joystickSelected);
 
 	float getValue() { return _Value; }
-	void setValue(float value) { _Value = value; }
+	void setValue(float value);
+
+	float getMaxValue() { return _MaxValue; }
 
 	void moveSlider(sf::Vector2f newPos);
 private:

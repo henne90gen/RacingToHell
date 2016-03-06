@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Menu/Menu.h"
 
-Menu::Menu() : _JoystickSelection(0), _JoystickDelay(0.1f)
+Menu::Menu() : _JoystickSelection(0), _JoystickDelay(0.15f)
 {
 	_Font.loadFromFile("Resources/Font/arial.ttf");
 	_Text.setFont(_Font);

@@ -3,10 +3,11 @@
 
 OptionsMenu::OptionsMenu() : _MousePressed(false)
 {
-	_MenuItems.push_back(new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 250)), MenuResult::Nothing, "Volume", 0.0f, 5.0f));
-	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 320), sf::Vector2f(150, 50), MenuResult::Back, "Back", TextAlignment::Center));
+	_MenuItems.push_back(new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 250)), MenuResult::Nothing, "FPS", 0.0f, 210.0f));
+	_MenuItems.push_back(new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 300)), MenuResult::Nothing, "Volume", 0.0f, 5.0f));
+	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 350), sf::Vector2f(150, 50), MenuResult::Back, "Back", TextAlignment::Center));
 
-	_JoystickSelection = 1;
+	_MenuItems[0]->switchHoverState(true, true);
 
 	_Text.setString("Options");
 	_Text.setCharacterSize(53);
@@ -60,60 +61,56 @@ GameState OptionsMenu::handleEvents(sf::RenderWindow & Window)
 			if (sf::Joystick::isButtonPressed(0, 0)) {
 				return handleMenuItemAction(_JoystickSelection);
 			}
+			else if (sf::Joystick::isButtonPressed(0, 1)) {
+				return _ReturnState;
+			}
 		}
-		/*else if (_Event.type == sf::Event::JoystickMoved) {
-			float X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
-			float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
-			if (Y < -80 && _JoystickSelection == 0 && _JoystickTimer.getElapsedTime().asSeconds() >= _JoystickDelay) {
-				_MenuItems[_JoystickSelection]->switchHoverState(false, false);
-				_JoystickSelection = 1;
-				_JoystickTimer.restart();
-			}
-			else if (Y > 80 && _JoystickSelection == 1 && _JoystickTimer.getElapsedTime().asSeconds() >= _JoystickDelay) {
-				_JoystickSelection = 0;
-				_MenuItems[_JoystickSelection]->switchHoverState(true, true);
-				_JoystickTimer.restart();
-			}
-			else if (X < -80 && _JoystickSelection == 1) {
-				if (_VolumeSlider.getPosition().x - 1 > _VolumeLine.getPosition().x) {
-					_VolumeSlider.setPosition(_VolumeSlider.getPosition().x - 1, _VolumeLine.getPosition().y + _VolumeLine.getSize().y / 2.0f);
-				}
-			}
-			else if (X > 80 && _JoystickSelection == 1) {
-				if (_VolumeSlider.getPosition().x + 1 < _VolumeLine.getPosition().x + _VolumeLine.getSize().x) {
-					_VolumeSlider.setPosition(_VolumeSlider.getPosition().x + 1, _VolumeLine.getPosition().y + _VolumeLine.getSize().y / 2.0f);
-				}
-			}
-			_Volume = (_VolumeSlider.getPosition().x - _VolumeLine.getPosition().x) * _MaxVolume / _VolumeLine.getSize().x;
-		}*/
 		else if (_Event.type == sf::Event::MouseMoved) {
-			if (_JoystickSelection == 1) {
-				_MenuItems[_JoystickSelection]->switchHoverState(false, false);
-			}
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-				dynamic_cast<Slider*>(_MenuItems[0])->moveSlider(MousePos);
+			for (unsigned int i = 0; i < _MenuItems.size(); i++) {
+				sf::FloatRect rect = _MenuItems[i]->getRect();
+				if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width)
+				{
+					_MenuItems[i]->switchHoverState(true, false);
+					if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+						if (_MenuItems[i]->getType() == MenuItems::MSlider) {
+							dynamic_cast<Slider*>(_MenuItems[i])->moveSlider(MousePos);
+						}
+					}
+				}
+				else {
+					_MenuItems[i]->switchHoverState(false, false);
+				}
 			}
 		}
-		else if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < 10 && sf::Joystick::getAxisPosition(0, sf::Joystick::Y) > -10) {
+		
+		if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < 10 && sf::Joystick::getAxisPosition(0, sf::Joystick::Y) > -10) {
 			_JoystickTimer.restart();
 		}
 	}
 
-	/*if (sf::Joystick::getAxisPosition(0, sf::Joystick::X) < -80 || sf::Joystick::getAxisPosition(0, sf::Joystick::X) > 80) {
-		float X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
+	if (_JoystickTimer.getElapsedTime().asSeconds() >= _JoystickDelay) {
 		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
-		if (X < -80 && _JoystickSelection == 1) {
-			if (_VolumeSlider.getPosition().x - 1 > _VolumeLine.getPosition().x) {
-				_VolumeSlider.setPosition(_VolumeSlider.getPosition().x - 1, _VolumeLine.getPosition().y + _VolumeLine.getSize().y / 2.0f);
-			}
+		if (Y < -50 && _JoystickSelection > 0) {
+			_MenuItems[_JoystickSelection]->switchHoverState(false, false);
+			_JoystickSelection--;
+			_MenuItems[_JoystickSelection]->switchHoverState(true, true);
+			_JoystickTimer.restart();
 		}
-		else if (X > 80 && _JoystickSelection == 1) {
-			if (_VolumeSlider.getPosition().x + 1 < _VolumeLine.getPosition().x + _VolumeLine.getSize().x) {
-				_VolumeSlider.setPosition(_VolumeSlider.getPosition().x + 1, _VolumeLine.getPosition().y + _VolumeLine.getSize().y / 2.0f);
-			}
+		else if (Y > 50 && _JoystickSelection < _MenuItems.size() - 1) {
+			_MenuItems[_JoystickSelection]->switchHoverState(false, false); 
+			_JoystickSelection++;
+			_MenuItems[_JoystickSelection]->switchHoverState(true, true);
+			_JoystickTimer.restart();
 		}
-		_Volume = (_VolumeSlider.getPosition().x - _VolumeLine.getPosition().x) * _MaxVolume / _VolumeLine.getSize().x;
-	}*/
+	}
+
+	float X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
+	if (X < -80) {
+		_ChangeSliderValue = -1;
+	}
+	else if (X > 80) {
+		_ChangeSliderValue = 1;
+	}
 
 	return GameState::Options;
 }
@@ -126,4 +123,13 @@ GameState OptionsMenu::handleMenuItemAction(int index)
 		break;
 	}
 	return GameState::Options;
+}
+
+void OptionsMenu::update(float FrameTime)
+{
+	if (_MenuItems[_JoystickSelection]->getType() == MenuItems::MSlider) {
+		Slider* slider = dynamic_cast<Slider*>(_MenuItems[_JoystickSelection]);
+		slider->setValue(slider->getValue() + slider->getMaxValue() * _ChangeSliderValue * FrameTime);
+		_ChangeSliderValue = 0;
+	}
 }

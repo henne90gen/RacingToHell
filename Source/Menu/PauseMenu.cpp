@@ -37,63 +37,79 @@ void PauseMenu::render(sf::RenderWindow & Window)
 GameState PauseMenu::handleEvents(sf::RenderWindow & Window)
 {
 	while (Window.pollEvent(_Event)) {
+		sf::Vector2f MousePos = sf::Vector2f(sf::Mouse::getPosition(Window));
 		if (_Event.type == sf::Event::Closed) {
 			return GameState::Exiting;
 		}
-		else if (_Event.type == sf::Event::MouseButtonPressed || _Event.type == sf::Event::JoystickButtonPressed) {
-			sf::Vector2f MousePos = sf::Vector2f(sf::Mouse::getPosition(Window));
+		else if (_Event.type == sf::Event::MouseButtonPressed) {
 			for (int i = 0; i < _MenuItems.size(); i++) {
 				sf::FloatRect rect = _MenuItems[i]->getRect();
-				if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width ||
-					sf::Joystick::isButtonPressed(0, 0)) 
+				if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width) 
 				{
-					if (sf::Joystick::isButtonPressed(0, 0)) {
-						i = _JoystickSelection;
-					}
-					switch (_MenuItems[i]->getAction()) {
-					case MenuResult::Resume:
-						return GameState::Running;
-						break;
-					case MenuResult::Option:
-						return GameState::Options;
-						break;
-					case MenuResult::Nothing:
-						return GameState::Pause;
-						break;
-					case MenuResult::Exit:
-						return GameState::Exiting;
-						break;
-					}
+					return handleMenuItemAction(i);
 				}
 			}
 		}
-		else if (_Event.type == sf::Event::JoystickMoved && _JoystickTimer.getElapsedTime().asSeconds() >= _JoystickDelay) {
+		else if (_Event.type == sf::Event::JoystickButtonPressed) {
+			if (sf::Joystick::isButtonPressed(0, 0)) {
+				return handleMenuItemAction(_JoystickSelection);
+			}
+			else if (sf::Joystick::isButtonPressed(0, 1)) {
+				return GameState::Running;
+			}
+		}
+		else if (_Event.type == sf::Event::MouseMoved) {
+			for (unsigned int i = 0; i < _MenuItems.size(); i++) {
+				sf::FloatRect rect = _MenuItems[i]->getRect();
+				if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width)
+				{
+					_MenuItems[i]->switchHoverState(true, false);
+				}
+				else {
+					_MenuItems[i]->switchHoverState(false, false);
+				}
+			}
+		}
+		
+		if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < 10 && sf::Joystick::getAxisPosition(0, sf::Joystick::Y) > -10) {
+			_JoystickTimer.restart();
+		}
+	}
+
+	if (_JoystickTimer.getElapsedTime().asSeconds() >= _JoystickDelay) {
+		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
+		if (Y < -80 && _JoystickSelection > 0) {
 			_MenuItems[_JoystickSelection]->switchHoverState(false, false);
-			if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < -80) {
-				if (_JoystickSelection > 0) {
-					_JoystickSelection--;
-				}
-			}
-			else if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) > 80) {
-				if (_JoystickSelection < _MenuItems.size() - 1) {
-					_JoystickSelection++;
-				}
-			}
+			_JoystickSelection--;
 			_MenuItems[_JoystickSelection]->switchHoverState(true, true);
 			_JoystickTimer.restart();
 		}
-		else if (_Event.type == sf::Event::MouseMoved) {
+		else if (Y > 80 && _JoystickSelection < _MenuItems.size() - 1) {
 			_MenuItems[_JoystickSelection]->switchHoverState(false, false);
-		}
-		else if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < 10 && sf::Joystick::getAxisPosition(0, sf::Joystick::Y) > -10) {
+			_JoystickSelection++;
+			_MenuItems[_JoystickSelection]->switchHoverState(true, true);
 			_JoystickTimer.restart();
 		}
-		
 	}
+
 	return GameState::Pause;
 }
 
 GameState PauseMenu::handleMenuItemAction(int index)
 {
-	return GameState();
+	switch (_MenuItems[index]->getAction()) {
+	case MenuResult::Resume:
+		return GameState::Running;
+		break;
+	case MenuResult::Option:
+		return GameState::Options;
+		break;
+	case MenuResult::Nothing:
+		return GameState::Pause;
+		break;
+	case MenuResult::Exit:
+		return GameState::Exiting;
+		break;
+	}
+	return GameState::Pause;
 }

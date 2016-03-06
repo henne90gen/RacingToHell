@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Framework.hpp"
 
-Framework::Framework() : _FrameTime(0), _FPS(15000.0f), _IsRunning(true), _GameState(GameState::Loading)
+Framework::Framework() : _FrameTime(0), _FPS(60.0f), _IsRunning(true), _GameState(GameState::Loading)
 {
 	_RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell", sf::Style::Close);
 	_RenderWindow.setMouseCursorVisible(false);
@@ -31,8 +31,6 @@ void Framework::run()
 		update();
 
 		playSounds();
-
-		//measureTime();
 	}
 }
 
@@ -133,6 +131,7 @@ void Framework::handleEvents()
 	case GameState::Options:
 		_GameState = _OptionsMenu.handleEvents(_RenderWindow);
 		setVolume(_OptionsMenu.getVolume());
+		_FPS = _OptionsMenu.getFPS();
 		break;
 	case GameState::LevelUp:
 		while (_RenderWindow.pollEvent(_Event)) {
@@ -192,8 +191,6 @@ void Framework::update()
 			_LevelUpScreen.levelUp();
 			_GameState = GameState::LevelUp;
 		}
-		
-		
 		_GameObjectContainer.update(_FrameTime, _Level.getDifficulty(), _Level.getRoadSpeed());
 		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar()->getHealth(), _GameObjectContainer.getPlayerCar()->getMaxHealth(), _GameObjectContainer.getPlayerCar()->getEnergy(), _GameObjectContainer.getPlayerCar()->getMaxEnergy());
 		if (!_GameObjectContainer.playerIsAlive()) {
@@ -217,6 +214,7 @@ void Framework::update()
 		_GameOverScreen.update(_Score, _Level.getDifficulty());
 		break;
 	case GameState::Options:
+		_OptionsMenu.update(_FrameTime);
 		if (_OptionsMenu.getReturnState() == GameState::Main) {
 			_Level.update(_FrameTime, _GameState);
 		}
@@ -224,6 +222,7 @@ void Framework::update()
 	case GameState::Loading:
 		if (!_LoadingScreen.isFadingAway()) {
 			load();
+			_OptionsMenu.setFPS(_FPS);
 			_LoadingScreen.fadeAway();
 		}
 		else if (_LoadingScreen.isDoneFading()) {

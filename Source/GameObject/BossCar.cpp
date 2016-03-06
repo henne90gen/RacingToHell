@@ -16,6 +16,15 @@ BossCar::BossCar(std::vector<sf::Texture*>& textures, sf::Vector2f Position) : C
 	_BossEventTimer1.restart();
 	_BossEventTimer2.restart();
 	_PhaseClock.restart();
+
+	//HP-Balken
+	_HealthBar.setFillColor(sf::Color(200, 0, 0));
+	_HealthBar.setSize(sf::Vector2f(getWidth() + 5, 5));
+
+	_HealthBarFrame.setFillColor(sf::Color::Transparent);
+	_HealthBarFrame.setOutlineColor(sf::Color(20, 0, 0));
+	_HealthBarFrame.setOutlineThickness(1);
+	_HealthBarFrame.setSize(_HealthBar.getSize());
 }
 
 BossCar::~BossCar()
@@ -25,6 +34,8 @@ BossCar::~BossCar()
 void BossCar::render(sf::RenderWindow& Window) {
 	Window.draw(getSprite());
 	Window.draw(_CannonSprite);
+	Window.draw(_HealthBar);
+	Window.draw(_HealthBarFrame);
 }
 
 void BossCar::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects)
@@ -269,6 +280,10 @@ void BossCar::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& G
 
 	_CannonSprite.setPosition(getPos());
 	_CannonSprite.setRotation(_GunOrientation - 90.0f);
+
+	_HealthBar.setPosition(sf::Vector2f(getPos().x - getWidth() / 2 - (_HealthBarFrame.getSize().x - getWidth()) / 2, getPos().y - getHeight() / 2 - _HealthBarFrame.getSize().y - 8));
+	_HealthBar.setSize(sf::Vector2f(_HealthBarFrame.getSize().x * getHealth() / getMaxHealth(), _HealthBarFrame.getSize().y));
+	_HealthBarFrame.setPosition(_HealthBar.getPosition());
 }
 
 int BossCar::getBossEvent()

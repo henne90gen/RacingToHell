@@ -11,6 +11,9 @@ public:
 	void render(sf::RenderWindow& Window);
 	void update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects);
 private:
+	sf::RectangleShape _HealthBar;
+	sf::RectangleShape _HealthBarFrame;
+
 	sf::Texture* _BulletTexture;
 	sf::Sprite _CannonSprite;
 

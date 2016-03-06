@@ -298,7 +298,31 @@ void Framework::load()
 
 	_GameOverScreen.loadHighScores();
 
-	setVolume(_OptionsMenu.getVolume());
+	//Einstellungen laden
+	std::vector<std::string> Settings;
+	std::string Option;
+	std::ifstream FileStream;
+
+	FileStream.open("Resources/Data/Settings.txt");
+
+	while (std::getline(FileStream, Option))
+	{
+		Settings.push_back(Option);
+	}
+
+	if (Settings.size() == 2)
+	{
+		_FPS = std::stoi(Settings[0]);
+		setVolume(std::stof(Settings[1]));
+		_OptionsMenu.setFPS(_FPS);
+		_OptionsMenu.setVolume(std::stoi(Settings[1]));
+	}
+	else
+	{
+		setVolume(_OptionsMenu.getVolume());
+	}
+
+	FileStream.close();
 }
 
 void Framework::resetGame() 

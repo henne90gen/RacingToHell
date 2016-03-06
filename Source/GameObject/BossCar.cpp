@@ -2,7 +2,7 @@
 #include "GameObject/BossCar.h"
 
 BossCar::BossCar(std::vector<sf::Texture*>& textures, sf::Vector2f Position) : Car(sf::Vector2f(SCREENWIDTH / 2, -1 * (int)textures[0]->getSize().y / 2 + 1), 2000, 500, GameObjects::Boss, (*textures.at(0))),
-	_GunOrientation(0.0f), _Phase(0), _Event1Frequency(0.0f), _Event2Frequency(0.0f), _BulletSpeed(500), _Event1Switch(false), _Event2Switch(false), _Event1Counter(0), _Event2Counter(0),
+	_GunOrientation(0.0f), _Phase(9), _Event1Frequency(0.0f), _Event2Frequency(0.0f), _BulletSpeed(500), _Event1Switch(false), _Event2Switch(false), _Event1Counter(0), _Event2Counter(0),
 	_Speed(200.0f), _MovementBehaviour(-1), _Attack(false), _MovementSwitch(false), _ChangePhaseFrequency(0.25f)
 {
 	_CannonSprite.setTexture(*textures.at(1));
@@ -51,6 +51,7 @@ void BossCar::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& G
 			break;
 		case 0:
 			_MovementSwitch = !_MovementSwitch;
+			_Speed = 200;
 
 			if (_MovementSwitch)
 			{
@@ -74,7 +75,7 @@ void BossCar::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& G
 		case 1:
 			_NextPosition = _DefaultPosition;
 			_MovementBehaviour = 0;
-			_Speed = 200.0f;
+			_Speed = 400.0f;
 			break;
 		default:
 			break;
@@ -264,6 +265,18 @@ void BossCar::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& G
 
 				ShootBullet(GameObjects, getPos(), Orientation);
 			}
+		case 9: //von der Seite
+			_Event1Frequency = 0.4;
+
+			if (getBossEvent() == 1)
+			{
+				for (int i = 0; i <= SCREENHEIGHT; i += 200)
+				{
+					ShootBullet(GameObjects, sf::Vector2f(0, i), 0.0f);
+					ShootBullet(GameObjects, sf::Vector2f(SCREENWIDTH, i + 100), 180.0f);
+				}
+			}
+			break;
 		default:
 			break;
 		}
@@ -273,11 +286,11 @@ void BossCar::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& G
 	{
 		if (std::rand() % 100 > 30)
 		{
-			_Phase = std::rand() % 7;
+			_Phase = std::rand() % 10;
 			_PhaseClock.restart();
 		}
 	}
-
+	
 	_CannonSprite.setPosition(getPos());
 	_CannonSprite.setRotation(_GunOrientation - 90.0f);
 

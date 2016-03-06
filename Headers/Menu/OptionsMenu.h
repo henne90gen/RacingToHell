@@ -1,5 +1,6 @@
 #pragma once
 #include "Menu/Menu.h"
+#include <fstream>
 
 class OptionsMenu : public Menu
 {
@@ -18,7 +19,8 @@ public:
 	float getVolume() { return dynamic_cast<Slider*>(_MenuItems[1])->getValue(); }
 	float getFPS() { return dynamic_cast<Slider*>(_MenuItems[0])->getValue() + 30.0f; }
 	void setFPS(float fps) { dynamic_cast<Slider*>(_MenuItems[0])->setValue(fps-30); }
-
+	void setVolume(float volume) { dynamic_cast<Slider*>(_MenuItems[1])->setValue(volume); }
+	void saveOptions();
 private:
 	bool _MousePressed;
 

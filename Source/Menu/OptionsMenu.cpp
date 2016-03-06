@@ -119,6 +119,7 @@ GameState OptionsMenu::handleMenuItemAction(int index)
 {
 	switch (_MenuItems[index]->getAction()) {
 	case MenuResult::Back:
+		saveOptions();
 		return _ReturnState;
 		break;
 	}
@@ -132,4 +133,15 @@ void OptionsMenu::update(float FrameTime)
 		slider->setValue(slider->getValue() + slider->getMaxValue() * _ChangeSliderValue * FrameTime);
 		_ChangeSliderValue = 0;
 	}
+}
+
+void OptionsMenu::saveOptions()
+{
+	std::string Path = "Resources/Data/Settings.txt";
+	std::ofstream FileStream;
+	FileStream.open(Path);
+
+	FileStream << getFPS() << std::endl << getVolume();
+
+	FileStream.close();
 }

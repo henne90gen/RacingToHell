@@ -12,6 +12,9 @@
 #include "HeadsUpDisplay.h"
 #include "Level/Level.h"
 
+#include <sstream>
+#include <fstream>
+
 class Framework
 {
 public:

@@ -264,6 +264,9 @@
     <None Include="Resources\Sound\Music\level1.ogg">
       <Filter>Resource Files\Sound\Music</Filter>
     </None>
+    <None Include="Resources\Sound\Music\menu1.ogg">
+      <Filter>Resource Files\Sound\Music</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Texture\TrafficCar\Traffic1.png">
@@ -366,6 +369,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\Data\Highscore.txt">
+      <Filter>Resource Files\Data</Filter>
+    </Text>
+    <Text Include="Resources\Data\Settings.txt">
       <Filter>Resource Files\Data</Filter>
     </Text>
   </ItemGroup>

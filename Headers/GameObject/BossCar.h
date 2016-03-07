@@ -1,15 +1,19 @@
 #pragma once
 #include "GameObject\Car.h"
 #include "GameObject\Bullet.h"
+#include "GameObject\PlayerCar.h"
+#include "GameObject\AICar.h"
 
 class BossCar : public Car
 {
 public:
-	BossCar(std::vector<sf::Texture*>& textures, sf::Vector2f Position);
+	BossCar(std::vector<sf::Texture*>& textures, sf::Vector2f Position, bool Traffic);
 	~BossCar();
 
 	void render(sf::RenderWindow& Window);
 	void update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects);
+
+	bool getTrafficOn() { return _Traffic; }
 private:
 	sf::RectangleShape _HealthBar;
 	sf::RectangleShape _HealthBarFrame;
@@ -33,6 +37,8 @@ private:
 	float _Speed;
 	int _MovementBehaviour;
 	bool _Attack, _MovementSwitch;
+
+	bool _Traffic;
 
 	int getBossEvent();
 	void aimAtPlayer(GameObject* Player);

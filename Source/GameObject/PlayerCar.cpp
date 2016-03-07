@@ -122,14 +122,6 @@ void PlayerCar::update(float FrameTime, int RoadSpeed)
 	_Energy -= 2 * FrameTime;
 }
 
-bool PlayerCar::checkForCollision(GameObject * go)
-{
-	if (getSprite().getGlobalBounds().intersects(go->getSprite().getGlobalBounds())) {
-		return true;
-	}
-	return false;
-}
-
 void PlayerCar::addHealth()
 {
 	if (_Health + 20 > _MaxHealth) {

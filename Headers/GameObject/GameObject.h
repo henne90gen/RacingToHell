@@ -24,6 +24,7 @@ public:
 	void setSkin(sf::Texture* skin);
 	void setSpriteColor(sf::Color Color) { _Sprite.setColor(Color); }
 
+	bool checkForCollision(GameObject* go);
 private:
 	sf::Sprite _Sprite;
 	sf::Texture _Texture;

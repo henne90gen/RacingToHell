@@ -26,3 +26,12 @@ void GameObject::setSkin(sf::Texture* skin)
 	_Texture = *skin;
 	_Sprite.setTexture(_Texture);
 }
+
+bool GameObject::checkForCollision(GameObject * go)
+{
+	if (getSprite().getGlobalBounds().intersects(go->getSprite().getGlobalBounds())) {
+		return true;
+	}
+	return false;
+}
+

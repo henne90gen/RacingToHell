@@ -22,7 +22,7 @@ GameObjectContainer::~GameObjectContainer()
 
 	_AICarTextures.clear();
 
-	for (unsigned int i = 0; i < _BossCarTextures.size() - 1; i++)
+	for (unsigned int i = 0; i < 2; i++)
 	{
 		delete _BossCarTextures[i];
 		_BossCarTextures[i] = nullptr;
@@ -83,9 +83,10 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 		}
 	}
 
-	if (!_BossFight) 
+	
+
+	if (!_BossFight || (_BossFight && getBossCar()->getTrafficOn())) 
 	{
-		
 		if (!_AboutToLevelUp) {
 			//AI-Autos spawnen
 			if (_TimePassedCar + FrameTime > 1 / _CarFrequency)
@@ -98,8 +99,32 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 				_TimePassedCar += FrameTime;
 			}
 		}
+
+		//Kaputte Autos löschen
+		for (unsigned int i = 0; i < _GameObjects.size(); i++)
+		{
+			if (_GameObjects.at(i)->getType() == GameObjects::AI && dynamic_cast<AICar*>(_GameObjects.at(i))->getHealth() <= 0)
+			{
+				_CarScore += (int)(1.5 * dynamic_cast<AICar*>(_GameObjects.at(i))->getMaxHealth());
+				deleteObject(i);
+				i--;
+			}
+		}
+
+		//Bullets spawnen
+		if (_TimePassedBullet + FrameTime > 1 / _BulletFrequency)
+		{
+			_TimePassedBullet += FrameTime - 1 / _BulletFrequency;
+			spawnBullet();
+
+			_BulletFrequency = 1.0f + 0.1f * (float)(Difficulty);
+		}
+		else {
+			_TimePassedBullet += FrameTime;
+		}
+
 		//AI-Autos auf Kollision prüfen
-		for (unsigned int i = 1; i < _GameObjects.size(); i++)
+		for (unsigned int i = 1 + (int)(_BossFight); i < _GameObjects.size(); i++)
 		{
 			if (_GameObjects.at(i)->getType() == GameObjects::AI)
 			{
@@ -128,38 +153,23 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 				}
 			}
 		}
-
-		//Kaputte Autos löschen
-		for (unsigned int i = 0; i < _GameObjects.size(); i++)
-		{
-			if (_GameObjects.at(i)->getType() == GameObjects::AI && dynamic_cast<AICar*>(_GameObjects.at(i))->getHealth() <= 0)
-			{
-				_CarScore += (int)(1.5 * dynamic_cast<AICar*>(_GameObjects.at(i))->getMaxHealth());
-				deleteObject(i);
-				i--;
-			}
-		}
-
-		//Bullets spawnen
-		if (_TimePassedBullet + FrameTime > 1 / _BulletFrequency) 
-		{
-			_TimePassedBullet += FrameTime - 1 / _BulletFrequency;
-			spawnBullet();
-
-			_BulletFrequency = 1.0f + 0.1f * (float)(Difficulty);
-		}
-		else {
-			_TimePassedBullet += FrameTime;
-		}
 	}
-	else {
-		for (unsigned int i = 1; i < _GameObjects.size(); i++) {
-			if (_GameObjects.at(i)->getType() == GameObjects::BulletObjectPlayer)
+	if (_BossFight)
+	{
+		for (unsigned int i = 2; i < _GameObjects.size(); i++)
+		{
+			if (getBossCar()->checkForCollision(_GameObjects.at(i)))
 			{
-				if (_GameObjects.at(1)->getSprite().getGlobalBounds().intersects(_GameObjects.at(i)->getSprite().getGlobalBounds()))
+				if (_GameObjects.at(i)->getType() == GameObjects::BulletObjectPlayer)
 				{
 					dynamic_cast<BossCar*>(_GameObjects.at(1))->takeDamage(getPlayerCar()->getBulletdamage());
 					deleteObject(i);
+					i--;
+				}
+				else if (_GameObjects.at(i)->getType() == GameObjects::AI)
+				{
+					deleteObject(i);
+					i--;
 				}
 			}
 		}
@@ -251,7 +261,7 @@ bool GameObjectContainer::bossIsDead()
 
 void GameObjectContainer::enterBossFight(bool entering)
 {
-	BossCar* boss = new BossCar(_BossCarTextures, sf::Vector2f(SCREENWIDTH / 2, 150));
+	BossCar* boss = new BossCar(_BossCarTextures, sf::Vector2f(SCREENWIDTH / 2, 150), false);
 	_GameObjects.push_back(boss);
 	_BossFight = entering;
 }
@@ -310,13 +320,14 @@ void GameObjectContainer::load()
 	_AIShotSoundBuffer.loadFromFile("Resources/Sound/shotAI.wav");
 	_PlayerShotSoundBuffer.loadFromFile("Resources/Sound/shotPlayer.wav");
 
-	_BossCarTextures.push_back(new sf::Texture());
-	_BossCarTextures.push_back(new sf::Texture());
-	_BossCarTextures.push_back(new sf::Texture());
+	for (int i = 0; i < 2; i++)
+	{
+		_BossCarTextures.push_back(new sf::Texture);
+	}
 				   
 	_BossCarTextures[0]->loadFromFile("Resources/Texture/BossCar/tank.png");
 	_BossCarTextures[1]->loadFromFile("Resources/Texture/BossCar/cannon.png");
-	_BossCarTextures[2] = &_BulletTexture;
+	_BossCarTextures.push_back(&_BulletTexture);
 }
 
 void GameObjectContainer::setCarSkins(std::vector<sf::Texture*>& CarSkins)

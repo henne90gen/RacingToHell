@@ -228,6 +228,7 @@
     <None Include=".gitignore" />
     <None Include="README.md" />
     <None Include="Resources\Sound\Music\level1.ogg" />
+    <None Include="Resources\Sound\Music\menu1.ogg" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\Font\arial.ttf" />
@@ -268,6 +269,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\Data\Highscore.txt" />
+    <Text Include="Resources\Data\Settings.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

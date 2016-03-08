@@ -304,25 +304,20 @@ void Framework::load()
 	std::ifstream FileStream;
 
 	FileStream.open("Resources/Data/Settings.txt");
-
 	while (std::getline(FileStream, Option))
 	{
 		Settings.push_back(Option);
 	}
+	FileStream.close();
 
 	if (Settings.size() == 2)
 	{
 		_FPS = std::stoi(Settings[0]);
-		setVolume(std::stof(Settings[1]));
 		_OptionsMenu.setFPS(_FPS);
 		_OptionsMenu.setVolume(std::stoi(Settings[1]));
 	}
-	else
-	{
-		setVolume(_OptionsMenu.getVolume());
-	}
-
-	FileStream.close();
+	
+	setVolume(_OptionsMenu.getVolume());
 }
 
 void Framework::resetGame() 

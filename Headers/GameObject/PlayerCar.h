@@ -18,8 +18,6 @@ public:
 	void handleEvent(sf::Event& Event);
 	void update(float FrameTime, int RoadSpeed);
 
-	bool checkForCollision(GameObject * go);
-
 	float shotBullet() { return _ShotBullet; }
 	void resetShotBullet() { _ShotBullet = 360.0f; }
 

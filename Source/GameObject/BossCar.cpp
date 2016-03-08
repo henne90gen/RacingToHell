@@ -44,8 +44,7 @@ void BossCar::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& G
 
 	if (Arrived)
 	{
-		switch (_MovementBehaviour)
-		{
+		switch (_MovementBehaviour) {
 		case -1:
 			_MovementBehaviour = 0;
 			break;
@@ -81,8 +80,6 @@ void BossCar::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& G
 			break;
 		}
 	}
-
-//	std::cout << getPos().y << "|" << _DestinationPosition.y << std::endl;
 
 	switch (_MovementBehaviour)
 	{
@@ -204,7 +201,7 @@ void BossCar::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& G
 				}
 			}
 			break;
-		case 5: 
+		case 5: //5er Salve
 			_Event1Frequency = 1.5f;
 
 			aimAtPlayer(GameObjects[0]);
@@ -277,8 +274,6 @@ void BossCar::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& G
 				}
 			}
 			break;
-		default:
-			break;
 		}
 	}
 
@@ -333,7 +328,7 @@ void BossCar::ShootBullet(std::vector<GameObject*>& GameObjects, sf::Vector2f Po
 
 bool BossCar::DriveToNextPosition(float FrameTime)
 {
-	if (std::abs((getPos().y - _NextPosition.y)) < 2.0f && std::abs((getPos().x - _NextPosition.x)) < 2.0f)
+	if (std::abs((getPos().y - _NextPosition.y)) < 0.1f && std::abs((getPos().x - _NextPosition.x)) < 0.1f)
 	{
 		return true;
 	}

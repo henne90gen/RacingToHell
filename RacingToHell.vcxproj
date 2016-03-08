@@ -269,7 +269,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\Data\Highscore.txt" />
-    <Text Include="Resources\Data\Settings.txt" />
+    <Text Include="Resources\Data\Settings.cfg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

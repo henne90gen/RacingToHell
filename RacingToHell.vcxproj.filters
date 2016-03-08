@@ -371,7 +371,7 @@
     <Text Include="Resources\Data\Highscore.txt">
       <Filter>Resource Files\Data</Filter>
     </Text>
-    <Text Include="Resources\Data\Settings.txt">
+    <Text Include="Resources\Data\Settings.cfg">
       <Filter>Resource Files\Data</Filter>
     </Text>
   </ItemGroup>

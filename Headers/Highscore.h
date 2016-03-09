@@ -21,7 +21,7 @@ public:
 			return Score < Player2.Score;
 		}
 
-		virtual void serialize(std::ostream & stream)
+		virtual void serialize(std::ofstream & stream)
 		{
 			stream.write((char*)&Rank, sizeof(Rank));
 			int length = Name.size();
@@ -31,7 +31,7 @@ public:
 			stream.write((char*)&Score, sizeof(Score));
 		}
 
-		virtual void deserialize(std::istream & stream)
+		virtual void deserialize(std::ifstream & stream)
 		{
 			stream.read((char*)&Rank, sizeof(Rank));
 			int length;

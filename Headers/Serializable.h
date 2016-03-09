@@ -5,7 +5,7 @@ public:
 	Serializable();
 	~Serializable();
 
-	virtual void serialize(std::ostream& stream) = 0;
-	virtual void deserialize(std::istream& stream) = 0;
+	virtual void serialize(std::ofstream& stream) = 0;
+	virtual void deserialize(std::ifstream& stream) = 0;
 };
 

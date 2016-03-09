@@ -24,18 +24,16 @@ public:
 		virtual void serialize(std::ostream & stream)
 		{
 			stream.write((char*)&Rank, sizeof(Rank));
-			stream.write((char*)&Level, sizeof(Level));
-			stream.write((char*)&Score, sizeof(Score));
 			int length = Name.size();
 			stream.write((char*)&length, sizeof(length));
 			stream << Name;
+			stream.write((char*)&Level, sizeof(Level));
+			stream.write((char*)&Score, sizeof(Score));
 		}
 
 		virtual void deserialize(std::istream & stream)
 		{
 			stream.read((char*)&Rank, sizeof(Rank));
-			stream.read((char*)&Level, sizeof(Level));
-			stream.read((char*)&Score, sizeof(Score));
 			int length;
 			stream.read((char*)&length, sizeof(length));
 			char* newString = new char[length];
@@ -43,6 +41,8 @@ public:
 			for (int i = 0; i < length; i++) {
 				Name += newString[i];
 			}
+			stream.read((char*)&Level, sizeof(Level));
+			stream.read((char*)&Score, sizeof(Score));
 		}
 	};
 

@@ -97,13 +97,13 @@ GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
 		}
 
 		if (_JoystickTimer.getElapsedTime().asSeconds() >= _JoystickDelay) {
-			if (Y < -80 || (X > 80 && _JoystickSelection == 2)) {
+			if (Y < -80) {
 				if (_JoystickSelection > 0) {
 					_JoystickSelection--;
 					_JoystickTimer.restart();
 				}
 			}
-			else if (Y > 80 || (X < -80 && _JoystickSelection == 1)) {
+			else if (Y > 80) {
 				if (_JoystickSelection < _MenuItems.size() - 1) {
 					_JoystickSelection++;
 					_JoystickTimer.restart();

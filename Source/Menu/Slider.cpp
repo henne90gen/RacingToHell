@@ -71,6 +71,7 @@ MenuResult Slider::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 				_Hovering = true;
 				setSlider(MousePos.x);
 			}
+			_Focused = false;
 		}
 	}
 	return _Action;

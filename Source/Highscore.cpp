@@ -97,8 +97,10 @@ void Highscore::loadScoreTable()
 	FileStream.open(_Filename, std::ios::in | std::ifstream::binary);
 	int length;
 	FileStream.read((char*)&length, sizeof(length));
+
 	_PlayerList.clear();
-	for (int i = 0; i < length; i++) {
+	for (int i = 0; i < length; i++) 
+	{
 		Player newPlayer;
 		newPlayer << FileStream;
 		_PlayerList.push_back(newPlayer);
@@ -126,7 +128,6 @@ void Highscore::SaveScoreTable()
 	FileStream.write((char*)&length, sizeof(length));
 	for (unsigned int i = 0; i < _PlayerList.size(); i++)
 	{
-		//FileStream << _PlayerList[i];
 		_PlayerList[i] >> FileStream;
 	}
 	FileStream.close();

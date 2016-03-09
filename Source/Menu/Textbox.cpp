@@ -93,7 +93,7 @@ MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 			setCursor();
 		}
 	}
-	else if (Event.type = sf::Event::MouseMoved) {
+	else if (Event.type == sf::Event::MouseMoved) {
 		if (MousePos.y > getRect().top && MousePos.y < getRect().top + getRect().height && MousePos.x > getRect().left && MousePos.x < getRect().left + getRect().width) {
 			_Hovering = true;
 		}
@@ -140,7 +140,6 @@ MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 			}
 		}
 	}
-	
 	return _Action;
 }
 

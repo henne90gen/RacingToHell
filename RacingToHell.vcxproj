@@ -191,7 +191,6 @@
     <ClInclude Include="Headers\Serializable.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Serializable.cpp" />
     <ClCompile Include="Source\Menu\Slider.cpp" />
     <ClCompile Include="Source\Menu\MenuButton.cpp" />
     <ClCompile Include="Source\GameObject\BossCar.cpp" />

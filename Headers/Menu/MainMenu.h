@@ -8,9 +8,9 @@ public:
 	MainMenu();
 	~MainMenu();
 
-	void render(sf::RenderWindow& Window);
-	GameState handleEvents(sf::RenderWindow& Window);
-	GameState handleMenuItemAction(int index);
+	void render(sf::RenderWindow & Window);
+	GameState handleEvents(sf::RenderWindow & Window);
+	GameState handleMenuItemResult(MenuResult result);
 
 	void setCarIndex(int CarIndex) { _SelectedCar = CarIndex; }
 	int getCarIndex() { return _SelectedCar; }

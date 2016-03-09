@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Menu/Menu.h"
 
-Menu::Menu() : _JoystickSelection(0), _JoystickDelay(0.15f)
+Menu::Menu(GameState menuState) : _JoystickSelection(0), _JoystickDelay(0.15f), _MenuGameState(menuState)
 {
 	_Font.loadFromFile("Resources/Font/arial.ttf");
 	_Text.setFont(_Font);
@@ -9,6 +9,44 @@ Menu::Menu() : _JoystickSelection(0), _JoystickDelay(0.15f)
 
 Menu::~Menu()
 {
+}
+
+GameState Menu::handleMenuItems(sf::Event & Event)
+{
+	applyJoystickSelection();
+
+	if (Event.type == sf::Event::MouseButtonPressed) {
+		_MousePos = sf::Vector2f(Event.mouseButton.x, Event.mouseButton.y);
+	}
+	else if (Event.type == sf::Event::MouseMoved) {
+		_MousePos = sf::Vector2f(Event.mouseMove.x, Event.mouseMove.y);
+	}
+
+	if (_Event.type == sf::Event::Closed) {
+		return GameState::Exiting;
+	}
+	else {
+		GameState result = _MenuGameState;
+		for (int i = 0; i < _MenuItems.size(); i++) {
+			if (result == _MenuGameState) {
+				result = handleMenuItemResult(_MenuItems[i]->handleEvent(_Event, _MousePos));
+			}
+		}
+		return result;
+	}
+	return _MenuGameState;
+}
+
+void Menu::applyJoystickSelection()
+{
+	for (int i = 0; i < _MenuItems.size(); i++) {
+		if (i == _JoystickSelection) {
+			_MenuItems[i]->setFocused(true);
+		}
+		else {
+			_MenuItems[i]->setFocused(false);
+		}
+	}
 }
 
 void Menu::checkMenuItemHovered(sf::RenderWindow& Window)

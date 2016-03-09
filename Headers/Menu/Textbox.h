@@ -5,18 +5,14 @@
 class Textbox : public MenuItem
 {
 public:
-	Textbox(sf::Vector2f Position, sf::Vector2f Size, int CharacterSize, std::string Text = "");
+	Textbox(sf::Vector2f Position, sf::Vector2f Size, int CharacterSize, std::string Text, bool isFocused);
 	~Textbox();
 
-	void update();
 	void render(sf::RenderWindow& RenderWindow);
-	void handleEvent(sf::Event& Event);
+	MenuResult handleEvent(sf::Event & Event, sf::Vector2f MousePos);
 
 	std::string getText() { return _Text.getString(); }
-	bool MouseOverTextbox(sf::Vector2i MousePosition);
-
-	void switchHoverState(bool hoverState, bool joystickSelected);
-	sf::FloatRect getRect();
+	sf::FloatRect& getRect();
 	
 private:
 	sf::RectangleShape _Box, _Cursor;
@@ -26,7 +22,7 @@ private:
 
 //	sf::StandardCursor _WindowsCursor;
 
-	bool _isFocused, _ShowCursor;
+	bool _ShowCursor;
 	int _CursorPosition;
 
 	void setCursor();

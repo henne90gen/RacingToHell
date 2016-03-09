@@ -34,7 +34,7 @@ MenuButton::~MenuButton()
 
 void MenuButton::render(sf::RenderWindow & Window)
 {
-	if ((_Hovering && _Enabled) || (_JoystickSelected && _Enabled)) {
+	if ((_Hovering && _Enabled) || (_Focused && _Enabled)) {
 		_Background.setFillColor(sf::Color(50, 50, 50, 100));
 		_Text.setColor(sf::Color::White);
 	}
@@ -49,27 +49,41 @@ void MenuButton::render(sf::RenderWindow & Window)
 
 	Window.draw(_Background);
 	Window.draw(_Text);
-
-	sf::FloatRect rect = getRect();
-	sf::Vector2i MousePos = sf::Mouse::getPosition(Window);
-
-	switchHoverState(MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width, _JoystickSelected);
 }
 
-sf::FloatRect MenuButton::getRect()
+MenuResult MenuButton::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 {
-	if (_Action == MenuResult::NextSkin || _Action == MenuResult::PreviousSkin)
-	{
+	if (_Enabled) {
+		if (Event.type == sf::Event::MouseButtonPressed) {
+			if (MousePos.y > getRect().top && MousePos.y < getRect().top + getRect().height && MousePos.x > getRect().left && MousePos.x < getRect().left + getRect().width)
+			{
+				return _Action;
+			}
+		}
+		else if (Event.type == sf::Event::MouseMoved) {
+			if (MousePos.y > getRect().top && MousePos.y < getRect().top + getRect().height && MousePos.x > getRect().left && MousePos.x < getRect().left + getRect().width){
+				_Hovering = true;
+			}
+			else {
+				_Hovering = false;
+			}
+			_Focused = false;
+		}
+		else if (Event.type == sf::Event::JoystickButtonPressed) {
+			if (Event.joystickButton.button == 0 && _Focused) {
+				return _Action;
+			}
+		}
+	}
+	return MenuResult::Nothing;
+}
+
+sf::FloatRect & MenuButton::getRect()
+{
+	if (_Action == MenuResult::NextSkin || _Action == MenuResult::PreviousSkin) {
 		return _Text.getGlobalBounds();
 	}
-	else
-	{
+	else {
 		return _Background.getGlobalBounds();
 	}
-}
-
-void MenuButton::switchHoverState(bool hoverState, bool joystickSelected)
-{
-	_Hovering = hoverState;
-	_JoystickSelected = joystickSelected;
 }

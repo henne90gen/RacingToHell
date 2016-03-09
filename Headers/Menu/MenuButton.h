@@ -7,9 +7,9 @@ public:
 	~MenuButton();
 
 	void render(sf::RenderWindow& Window);
+	MenuResult handleEvent(sf::Event & Event, sf::Vector2f MousePos);
 
-	sf::FloatRect getRect();
-	void switchHoverState(bool hoverState, bool joystickSelected);
+	sf::FloatRect & getRect();
 private:
 	sf::Text _Text;
 	TextAlignment _Alignment;

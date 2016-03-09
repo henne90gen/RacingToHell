@@ -9,7 +9,7 @@ public:
 
 	void render(sf::RenderWindow& Window);
 	GameState handleEvents(sf::RenderWindow& Window);
-	GameState handleMenuItemAction(int index);
+	GameState handleMenuItemResult(MenuResult result);
 
 	bool isFadingAway() { return _IsFadingAway; }
 	void fadeAway();

@@ -8,21 +8,23 @@ public:
 	~Slider();
 
 	void render(sf::RenderWindow& Window);
+	MenuResult handleEvent(sf::Event & Event, sf::Vector2f MousePos);
 
-	sf::FloatRect getRect() { return _BoundingBox; }
-	void switchHoverState(bool hoverState, bool joystickSelected);
+	sf::FloatRect & getRect() { return _BoundingBox; }
 
 	float getValue() { return _Value; }
 	void setValue(float value);
 
 	float getMaxValue() { return _MaxValue; }
 
-	void moveSlider(sf::Vector2f newPos);
+	void setSlider(float x);
 private:
 	sf::Text _Text;
 	sf::RectangleShape _Slider;
 	sf::RectangleShape _Line;
 	sf::FloatRect _BoundingBox;
+
+	bool _MouseButtonPressed;
 
 	float _Value, _MaxValue;
 };

@@ -2,7 +2,7 @@
 #include "GameObject/BossCar.h"
 
 BossCar::BossCar(std::vector<sf::Texture*>& textures, sf::Vector2f Position, bool Traffic) : Car(sf::Vector2f(SCREENWIDTH / 2, -1 * (int)textures[0]->getSize().y / 2 + 1), 2000, 500, GameObjects::Boss, (*textures.at(0))),
-	_GunOrientation(0.0f), _Phase(2), _Event1Frequency(0.0f), _Event2Frequency(0.0f), _BulletSpeed(500), _Event1Switch(false), _Event2Switch(false), _Event1Counter(0), _Event2Counter(0),
+	_GunOrientation(0.0f), _Phase(0), _Event1Frequency(0.0f), _Event2Frequency(0.0f), _BulletSpeed(500), _Event1Switch(false), _Event2Switch(false), _Event1Counter(0), _Event2Counter(0),
 	_Speed(200.0f), _MovementBehaviour(-1), _Attack(false), _MovementSwitch(false), _ChangePhaseFrequency(0.25f), _Traffic(Traffic)
 {
 	_CannonSprite.setTexture(*textures.at(1));
@@ -46,7 +46,7 @@ void BossCar::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& G
 	{
 		switch (_MovementBehaviour) {
 		case -1:
-			_MovementBehaviour = 2;
+			_MovementBehaviour = 3;
 			_Attack = true;
 			break;
 		case 0:
@@ -93,6 +93,11 @@ void BossCar::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& G
 		{
 			_NextPosition = sf::Vector2f(GameObjects[0]->getPos().x, getPos().y);
 			break;
+		}
+		case 3:
+		{
+			_NextPosition = sf::Vector2f(getWidth() / 2 + (SCREENWIDTH - getWidth()) * (std::rand() % 100) / 100, getHeight() / 2 + (SCREENHEIGHT - getHeight()) * (std::rand() % 100) / 100);
+			_Speed = 450.0f;
 		}
 		default:
 			break;
@@ -316,7 +321,7 @@ void BossCar::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& G
 	{
 		if (std::rand() % 100 > 30)
 		{
-			//_Phase = std::rand() % 10;
+			_Phase = std::rand() % 10;
 			_PhaseClock.restart();
 		}
 	}

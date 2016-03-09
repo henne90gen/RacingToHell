@@ -325,8 +325,8 @@ void GameObjectContainer::load()
 		_BossCarTextures.push_back(new sf::Texture);
 	}
 				   
-	_BossCarTextures[0]->loadFromFile("Resources/Texture/BossCar/tank.png");
-	_BossCarTextures[1]->loadFromFile("Resources/Texture/BossCar/cannon.png");
+	_BossCarTextures[0]->loadFromFile("Resources/Texture/BossCar/Carrier.png");
+	_BossCarTextures[1]->loadFromFile("Resources/Texture/BossCar/cannonCarrier.png");
 	_BossCarTextures.push_back(&_BulletTexture);
 }
 

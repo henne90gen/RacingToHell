@@ -32,17 +32,7 @@ Slider::~Slider()
 
 void Slider::render(sf::RenderWindow & Window)
 {
-	Window.draw(_Text);
-	Window.draw(_Line);
-	Window.draw(_Slider);
-}
-
-void Slider::switchHoverState(bool hoverState, bool joystickSelected)
-{
-	_Hovering = hoverState;
-	_JoystickSelected = joystickSelected;
-
-	if ((_Hovering && _Enabled) || (_JoystickSelected && _Enabled)) {
+	if ((_Hovering && _Enabled) || (_Focused && _Enabled)) {
 		_Slider.setOutlineThickness(3);
 	}
 	else if (_Enabled) {
@@ -51,6 +41,39 @@ void Slider::switchHoverState(bool hoverState, bool joystickSelected)
 	else {
 		//TODO: Add design for disabled slider
 	}
+
+	Window.draw(_Text);
+	Window.draw(_Line);
+	Window.draw(_Slider);
+}
+
+MenuResult Slider::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
+{
+	if (_Enabled) {
+		if (Event.type == sf::Event::MouseButtonPressed) {
+			if (MousePos.y > getRect().top && MousePos.y < getRect().top + getRect().height && MousePos.x > getRect().left && MousePos.x < getRect().left + getRect().width)
+			{
+				setSlider(MousePos.x);
+				_MouseButtonPressed = true;
+			}
+		}
+		else if (Event.type == sf::Event::MouseButtonReleased) {
+			_MouseButtonPressed = false;
+		}
+		else if (Event.type == sf::Event::MouseMoved) {
+			if (MousePos.y > getRect().top && MousePos.y < getRect().top + getRect().height && MousePos.x > getRect().left && MousePos.x < getRect().left + getRect().width) {
+				_Hovering = true;
+			}
+			else {
+				_Hovering = false;
+			}
+			if (_MouseButtonPressed) {
+				_Hovering = true;
+				setSlider(MousePos.x);
+			}
+		}
+	}
+	return _Action;
 }
 
 void Slider::setValue(float value)
@@ -63,8 +86,18 @@ void Slider::setValue(float value)
 	_Slider.setPosition(_Line.getPosition().x + _Line.getSize().x * value / _MaxValue, _Line.getPosition().y + _Line.getLocalBounds().height / 2.0f);
 }
 
-void Slider::moveSlider(sf::Vector2f newPos)
+void Slider::setSlider(float x)
 {
-	_Slider.setPosition(newPos.x, _Line.getPosition().y + _Line.getLocalBounds().height / 2.0f);
+	if (x > _Line.getPosition().x && x < _Line.getPosition().x + _Line.getLocalBounds().width) {
+		_Slider.setPosition(x, _Line.getPosition().y + _Line.getLocalBounds().height / 2.0f);
+	}
+	else {
+		if (x < _Line.getPosition().x) {
+			_Slider.setPosition(_Line.getPosition().x, _Line.getPosition().y + _Line.getLocalBounds().height / 2.0f);
+		}
+		else if (x > _Line.getPosition().x + _Line.getLocalBounds().width) {
+			_Slider.setPosition(_Line.getPosition().x + _Line.getLocalBounds().width, _Line.getPosition().y + _Line.getLocalBounds().height / 2.0f);
+		}
+	}
 	_Value = (_Slider.getPosition().x - _Line.getPosition().x) * _MaxValue / _Line.getLocalBounds().width;
 }

@@ -1,13 +1,11 @@
 #include "stdafx.h"
 #include "Menu\Textbox.h"
 
-Textbox::Textbox(sf::Vector2f Position, sf::Vector2f Size, int CharacterSize, std::string Text)
+Textbox::Textbox(sf::Vector2f Position, sf::Vector2f Size, int CharacterSize, std::string Text, bool isFocused)
 	: MenuItem(MenuItems::MTextbox, MenuResult::Nothing),
-	_FillColor(sf::Color(255, 255, 255)), _FillColorDisabled(sf::Color(140, 140, 140)), _OutlineColor(sf::Color(0, 0, 0)), _OutlineColorFocused(sf::Color(0, 150, 205)), _TextColor(sf::Color(0, 0, 0)),
-	_isFocused(false), _ShowCursor(true), _CursorPosition(0)
+	_FillColor(sf::Color(255, 255, 255)), _FillColorDisabled(sf::Color(140, 140, 140)), _OutlineColor(sf::Color(0, 0, 0)), _OutlineColorFocused(sf::Color(0, 150, 205)), 
+	_TextColor(sf::Color(0, 0, 0)), _ShowCursor(true), _CursorPosition(0)
 {
-	_Font.loadFromFile("Resources\\Font\\arial.ttf");
-
 	_CursorClock.restart();
 
 	_Box.setFillColor(_FillColor);
@@ -24,49 +22,39 @@ Textbox::Textbox(sf::Vector2f Position, sf::Vector2f Size, int CharacterSize, st
 
 	_Cursor.setSize(sf::Vector2f(1, CharacterSize));
 	_Cursor.setFillColor(sf::Color::Black);
+	
+	_Focused = true;
 
 	setCursor();
 }
 
 Textbox::~Textbox()
 {
-
-}
-
-void Textbox::update()
-{
-	if (!_Enabled)
-	{
-		_Box.setFillColor(_FillColorDisabled);
-		_Box.setOutlineColor(_OutlineColor);
-		_ShowCursor = false;
-	}
-	else
-	{
-		_Box.setFillColor(_FillColor);
-
-		if (_isFocused)
-		{
-			_Box.setOutlineColor(_OutlineColorFocused);
-
-			if (_CursorClock.getElapsedTime().asSeconds() > 0.6f)
-			{
-				_ShowCursor = !_ShowCursor;
-				_CursorClock.restart();
-			}
-		}
-		else
-		{
-			_Box.setOutlineColor(_OutlineColor);
-			_ShowCursor = false;
-		}
-	}
-
-
 }
 
 void Textbox::render(sf::RenderWindow& RenderWindow)
 {
+	if (_Enabled) {
+		_Box.setFillColor(_FillColor);
+
+		if (_Focused) {
+			_Box.setOutlineColor(_OutlineColorFocused);
+			if (_CursorClock.getElapsedTime().asSeconds() > 0.6f) {
+				_ShowCursor = !_ShowCursor;
+				_CursorClock.restart();
+			}
+		}
+		else {
+			_Box.setOutlineColor(_OutlineColor);
+			_ShowCursor = false;
+		}
+	}
+	else {
+		_Box.setFillColor(_FillColorDisabled);
+		_Box.setOutlineColor(_OutlineColor);
+		_ShowCursor = false;
+	}
+
 	RenderWindow.draw(_Box);
 	RenderWindow.draw(_Text);
 
@@ -76,88 +64,67 @@ void Textbox::render(sf::RenderWindow& RenderWindow)
 	}
 }
 
-void Textbox::handleEvent(sf::Event& Event)
+MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 {
-	if (_Enabled && Event.type == sf::Event::MouseButtonPressed)
-	{
-		if (MouseOverTextbox(sf::Vector2i(Event.mouseButton.x, Event.mouseButton.y)))
-		{
-			_isFocused = true;
+	if (_Enabled && _Focused) {
+		if (Event.type == sf::Event::MouseButtonPressed) {
 			_ShowCursor = true;
 			_CursorClock.restart();
-
 			_CursorPosition = 0;
-			for (int i = _Text.getString().getSize(); i > 0; i--)
-			{
+
+			for (int i = _Text.getString().getSize(); i > 0; i--) {
 				sf::Text TmpText = _Text;
 				sf::Text TmpChar = _Text;
 
 				TmpText.setString(_Text.getString().substring(0, i));
 				TmpChar.setString(_Text.getString().substring(i - 1, 1));
 
-				if (Event.mouseButton.x > TmpText.getPosition().x + TmpText.getLocalBounds().width - TmpChar.getLocalBounds().width / 2)
-				{
+				if (Event.mouseButton.x > TmpText.getPosition().x + TmpText.getLocalBounds().width - TmpChar.getLocalBounds().width / 2) {
 					_CursorPosition = i;
 					break;
 				}
 			}
-			
 			setCursor();
 		}
-		else
-		{
-			_isFocused = false;
-		}
-	}
+		else if (Event.type == sf::Event::KeyPressed) {
+			if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::RControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt) && !sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt)) {
+				if (Event.key.code < 26) {
+					std::string newString = _Text.getString().substring(0, _CursorPosition) + (char)(Event.key.code + 97 - 32 * (int)(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition);
 
-	if (_Enabled && _isFocused && Event.type == sf::Event::KeyPressed)
-	{
-		if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::RControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt) && !sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt))
-		{
-		
-			if (Event.key.code < 26)
-			{
-				std::string newString = _Text.getString().substring(0, _CursorPosition) + (char)(Event.key.code + 97 - 32 * (int)(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition);
+					if (!StringTooLarge(newString)) {
+						_Text.setString(newString);
+						_CursorPosition++;
+						setCursor();
+					}
+				}
+				else if (Event.key.code < 36 && !sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+					std::string newString = _Text.getString().substring(0, _CursorPosition) + (char)(Event.key.code + 22) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition);
+					if (!StringTooLarge(newString)) {
+						_Text.setString(newString);
+						_CursorPosition++;
+						setCursor();
+					}
+				}
 
-				if (!StringTooLarge(newString))
-				{
-					_Text.setString(newString);
-					_CursorPosition++;
+				if (Event.key.code == 59 && _Text.getString().getSize() > 0 && _CursorPosition > 0) {
+					_Text.setString(_Text.getString().substring(0, _CursorPosition - 1) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition));
+					_CursorPosition--;
 					setCursor();
 				}
 			}
-			else if (Event.key.code < 36 && !sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-			{
-				std::string newString = _Text.getString().substring(0, _CursorPosition) + (char)(Event.key.code + 22) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition);
-				if (!StringTooLarge(newString))
-				{
-					_Text.setString(newString);
-					_CursorPosition++;
-					setCursor();
-				}
-			}
-			
 
-			if (Event.key.code == 59 && _Text.getString().getSize() > 0 && _CursorPosition > 0)
-			{
-				_Text.setString(_Text.getString().substring(0, _CursorPosition - 1) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition));
+			if (_CursorPosition > 0 && Event.key.code == 71) {
 				_CursorPosition--;
 				setCursor();
 			}
-		}
 
-		if (_CursorPosition > 0 && Event.key.code == 71)
-		{
-			_CursorPosition--;
-			setCursor();
-		}
-
-		if (_CursorPosition < _Text.getString().getSize() && Event.key.code == 72)
-		{
-			_CursorPosition++;
-			setCursor();
+			if (_CursorPosition < _Text.getString().getSize() && Event.key.code == 72) {
+				_CursorPosition++;
+				setCursor();
+			}
 		}
 	}
+	return _Action;
 }
 
 void Textbox::setCursor()
@@ -168,17 +135,7 @@ void Textbox::setCursor()
 	_Cursor.setPosition(_Text.getPosition() + sf::Vector2f(TmpText.getLocalBounds().width + 1, 4));
 }
 
-bool Textbox::MouseOverTextbox(sf::Vector2i MousePosition)
-{
-	return MousePosition.x >= _Box.getPosition().x && MousePosition.x < _Box.getPosition().x + _Box.getSize().x && MousePosition.y > _Box.getPosition().y && MousePosition.y < _Box.getPosition().y + _Box.getSize().y;
-}
-
-void Textbox::switchHoverState(bool hoverState, bool joystickSelected)
-{
-
-}
-
-sf::FloatRect Textbox::getRect()
+sf::FloatRect & Textbox::getRect()
 {
 	return _Box.getGlobalBounds();
 }

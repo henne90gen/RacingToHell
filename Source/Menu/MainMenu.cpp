@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Menu\MainMenu.h"
 
-MainMenu::MainMenu()
+MainMenu::MainMenu() : Menu(GameState::Main)
 {
 	//Menu-Items
 	sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
@@ -51,11 +51,9 @@ void MainMenu::render(sf::RenderWindow& Window)
 GameState MainMenu::handleEvents(sf::RenderWindow& Window)
 {
 	while (Window.pollEvent(_Event)) {
-		sf::Vector2f MousePos = sf::Vector2f(sf::Mouse::getPosition(Window));
-		if (_Event.type == sf::Event::Closed) {
-			return GameState::Exiting;
-		}
-		else if (_Event.type == sf::Event::MouseButtonPressed) {
+		return handleMenuItems(_Event);
+
+		/*if (_Event.type == sf::Event::MouseButtonPressed) {
 			for (int i = 0; i < _MenuItems.size(); i++) {
 				sf::FloatRect rect = _MenuItems[i]->getRect();
 				if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width) 
@@ -74,10 +72,10 @@ GameState MainMenu::handleEvents(sf::RenderWindow& Window)
 				sf::FloatRect rect = _MenuItems[i]->getRect();
 				if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width)
 				{
-					_MenuItems[i]->switchHoverState(true, false);
+					_MenuItems[i]->switchHoverState(true, false, true);
 				}
 				else {
-					_MenuItems[i]->switchHoverState(false, false);
+					_MenuItems[i]->switchHoverState(false, false, true);
 				}
 			}
 		}
@@ -90,15 +88,15 @@ GameState MainMenu::handleEvents(sf::RenderWindow& Window)
 	if (_JoystickTimer.getElapsedTime().asSeconds() >= _JoystickDelay) {
 		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
 		if (Y < -50 && _JoystickSelection > 0) {
-			_MenuItems[_JoystickSelection]->switchHoverState(false, false);
+			_MenuItems[_JoystickSelection]->switchHoverState(false, false, false);
 			_JoystickSelection--;
-			_MenuItems[_JoystickSelection]->switchHoverState(true, true);
+			_MenuItems[_JoystickSelection]->switchHoverState(true, true, true);
 			_JoystickTimer.restart();
 		}
 		else if (Y > 50 && _JoystickSelection < _MenuItems.size() - 3) {
-			_MenuItems[_JoystickSelection]->switchHoverState(false, false);
+			_MenuItems[_JoystickSelection]->switchHoverState(false, false, false);
 			_JoystickSelection++;
-			_MenuItems[_JoystickSelection]->switchHoverState(true, true);
+			_MenuItems[_JoystickSelection]->switchHoverState(true, true, true);
 			_JoystickTimer.restart();
 		}
 	}
@@ -112,15 +110,15 @@ GameState MainMenu::handleEvents(sf::RenderWindow& Window)
 		else if (X > 50) {
 			_SelectedCar++;
 			_JoystickTimer.restart();
-		}
+		}*/
 	}
 
 	return GameState::Main;
 }
 
-GameState MainMenu::handleMenuItemAction(int index)
+GameState MainMenu::handleMenuItemResult(MenuResult result)
 {
-	switch (_MenuItems[index]->getAction()) {
+	switch (result) {
 	case MenuResult::Resume:
 		return GameState::Running;
 		break;

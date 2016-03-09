@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Menu\GameOverScreen.h"
 
-GameOverScreen::GameOverScreen() : _SoundPlayed(false), _ScoreSubmitted(false)
+GameOverScreen::GameOverScreen() : Menu(GameState::GameOver), _SoundPlayed(false), _ScoreSubmitted(false)
 {
 	if (_Font.loadFromFile("Resources/Font/arial.ttf")) {
 		_GOTLine1.setFont(_Font);
@@ -29,7 +29,7 @@ GameOverScreen::GameOverScreen() : _SoundPlayed(false), _ScoreSubmitted(false)
 		
 		sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
 
-		_MenuItems.push_back(new Textbox(sf::Vector2f(_GOTLine4.getPosition().x + _GOTLine4.getLocalBounds().width + 20, _GOTLine4.getPosition().y + 10), sf::Vector2f(450 - _GOTLine4.getLocalBounds().width - 20, _GOTLine4.getLocalBounds().height), 25, "Test"));
+		_MenuItems.push_back(new Textbox(sf::Vector2f(_GOTLine4.getPosition().x + _GOTLine4.getLocalBounds().width + 20, _GOTLine4.getPosition().y + 10), sf::Vector2f(450 - _GOTLine4.getLocalBounds().width - 20, _GOTLine4.getLocalBounds().height), 25, "Test", true));
 		_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2 + 200, 735), ButtonSize, MenuResult::SubmitScore, "Submit", TextAlignment::Center));
 		_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 200, 735), ButtonSize, MenuResult::Back, "Back", TextAlignment::Center));
 	}
@@ -63,35 +63,6 @@ void GameOverScreen::update(int Score, int Level)
 {
 	_Highscore->setScore(Score);
 	_Level = Level;
-	_MenuItems[0]->setEnabled(_Highscore->isNewHighscore() || !_ScoreSubmitted);
-	_MenuItems[1]->setEnabled(_MenuItems[0]->getEnabled() && !_ScoreSubmitted);
-	dynamic_cast<Textbox*>(_MenuItems[0])->update();
-}
-
-GameState GameOverScreen::handleMenuItemAction(int index)
-{
-	std::string name = dynamic_cast<Textbox*>(_MenuItems[0])->getText();
-	switch (_MenuItems[index]->getAction()) {
-	case MenuResult::Back:
-		_SoundPlayed = false;
-		_ScoreSubmitted = false;
-		return GameState::Main;
-		break;
-	case MenuResult::SubmitScore:
-		if (!_ScoreSubmitted && _Highscore->getScore() > _Highscore->MinScore() && name != "")
-		{
-			_Highscore->PlacePlayer(name, _Level);
-			_Highscore->SaveScoreTable();
-			_Highscore->loadScoreTable();
-			_ScoreSubmitted = true;
-			_MenuItems[index - 1]->setEnabled(false);
-			_MenuItems[index]->setEnabled(false);
-		}
-		break;
-	case MenuResult::Nothing:
-		break;
-	}
-	return GameState::GameOver;
 }
 
 void GameOverScreen::playSounds()
@@ -117,11 +88,9 @@ void GameOverScreen::setVolume(float Volume)
 GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
 {
 	while (Window.pollEvent(_Event)) {
-		sf::Vector2f MousePos = sf::Vector2f(sf::Mouse::getPosition(Window));
-		if (_Event.type == sf::Event::Closed) {
-			return GameState::Exiting;
-		}
-		else if (_Event.type == sf::Event::MouseButtonPressed) {
+		return handleMenuItems(_Event);
+
+			/*if (_Event.type == sf::Event::MouseButtonPressed) {
 			sf::Vector2f MousePos = sf::Vector2f(sf::Mouse::getPosition(Window));
 			for (int i = 0; i < _MenuItems.size(); i++) {
 				sf::FloatRect rect = _MenuItems[i]->getRect();
@@ -139,40 +108,67 @@ GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
 				sf::FloatRect rect = _MenuItems[i]->getRect();
 				if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width)
 				{
-					_MenuItems[i]->switchHoverState(true, false);
+					_MenuItems[i]->switchHoverState(true, false, true);
 				}
 				else {
-					_MenuItems[i]->switchHoverState(false, false);
+					_MenuItems[i]->switchHoverState(false, false, false);
 				}
 			}
 		}
 		else if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < 10 && sf::Joystick::getAxisPosition(0, sf::Joystick::Y) > -10) {
 			_JoystickTimer.restart();
 		}
-		dynamic_cast<Textbox*>(_MenuItems[0])->handleEvent(_Event);
 	}
+
+	dynamic_cast<Textbox*>(_MenuItems[0])->handleEvent(_Event);
 
 	if (_JoystickTimer.getElapsedTime().asSeconds() >= _JoystickDelay) {
 		float X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
 		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
 		if (Y < -80 || (X > 80 && _JoystickSelection == 2)) {
 			if (_JoystickSelection > 0) {
-				_MenuItems[_JoystickSelection]->switchHoverState(false, false);
+				_MenuItems[_JoystickSelection]->switchHoverState(false, false, false);
 				_JoystickSelection--;
-				_MenuItems[_JoystickSelection]->switchHoverState(true, true);
+				_MenuItems[_JoystickSelection]->switchHoverState(true, true, true);
 				_JoystickTimer.restart();
 			}
 		}
 		else if (Y > 80 || (X < -80 && _JoystickSelection == 1)) {
 			if (_JoystickSelection < _MenuItems.size() - 1) {
-				_MenuItems[_JoystickSelection]->switchHoverState(false, false);
+				_MenuItems[_JoystickSelection]->switchHoverState(false, false, false);
 				_JoystickSelection++;
-				_MenuItems[_JoystickSelection]->switchHoverState(true, true);
+				_MenuItems[_JoystickSelection]->switchHoverState(true, true, true);
 				_JoystickTimer.restart();
 			}
-		}
+		}*/
 	}
 
+	return GameState::GameOver;
+}
+
+GameState GameOverScreen::handleMenuItemResult(MenuResult result)
+{
+	std::string name = dynamic_cast<Textbox*>(_MenuItems[0])->getText();
+	switch (result) {
+	case MenuResult::Back:
+		_SoundPlayed = false;
+		_ScoreSubmitted = false;
+		return GameState::Main;
+		break;
+	case MenuResult::SubmitScore:
+		if (!_ScoreSubmitted && _Highscore->getScore() > _Highscore->MinScore() && name != "")
+		{
+			_Highscore->PlacePlayer(name, _Level);
+			_Highscore->SaveScoreTable();
+			_Highscore->loadScoreTable();
+			_ScoreSubmitted = true;
+			_MenuItems[0]->setEnabled(false);
+			_MenuItems[1]->setEnabled(false);
+		}
+		break;
+	case MenuResult::Nothing:
+		break;
+	}
 	return GameState::GameOver;
 }
 

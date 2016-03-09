@@ -7,8 +7,8 @@ public:
 	Serializable() {}
 	~Serializable() {}
 
-	//virtual void operator<<(std::ofstream& stream) = 0;
-	//virtual void operator>>(std::ifstream& stream) = 0;
+	virtual void operator>>(std::ofstream& stream) = 0;
+	virtual void operator<<(std::ifstream& stream) = 0;
 
 	template <typename T> void write(std::ofstream& stream, T input)
 	{

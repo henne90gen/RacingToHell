@@ -10,7 +10,7 @@ public:
 
 	void render(sf::RenderWindow& Window);
 	GameState handleEvents(sf::RenderWindow& Window);
-	GameState handleMenuItemAction(int index);
+	GameState handleMenuItemResult(MenuResult result);
 
 	void update(float FrameTime);
 
@@ -22,8 +22,6 @@ public:
 	void setVolume(float volume) { dynamic_cast<Slider*>(_MenuItems[1])->setValue(volume); }
 	void saveOptions();
 private:
-	bool _MousePressed;
-
 	int _ChangeSliderValue;
 
 	GameState _ReturnState;

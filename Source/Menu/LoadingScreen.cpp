@@ -2,7 +2,7 @@
 #include "Menu/LoadingScreen.h"
 
 
-LoadingScreen::LoadingScreen() : _IsFadingAway(false), _FadeTime(1.0f)
+LoadingScreen::LoadingScreen() : Menu(GameState::GameOver), _IsFadingAway(false), _FadeTime(1.0f)
 {
 	_Text.setString("Loading...");
 	_Text.setCharacterSize(75);
@@ -36,7 +36,7 @@ GameState LoadingScreen::handleEvents(sf::RenderWindow & Window)
 	return GameState::Loading;
 }
 
-GameState LoadingScreen::handleMenuItemAction(int index)
+GameState LoadingScreen::handleMenuItemResult(MenuResult result)
 {
 	return GameState();
 }

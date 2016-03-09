@@ -33,7 +33,7 @@ Highscore::Highscore(sf::Vector2f Position) : _Gap(42)
 	_HeadlineScore.setString("Score");
 	_HeadlineScoreWidth = _HeadlineScore.getLocalBounds().width;
 
-	_Filename = "Resources/Data/Highscore.sco";
+	_Filename = "Resources/Data/Highscore.txt";
 
 	loadScoreTable();
 }
@@ -94,14 +94,29 @@ void Highscore::loadScoreTable()
 	std::string PlayerInformation;
 
 	std::ifstream FileStream;
-	FileStream.open(_Filename, std::ios::in | std::ifstream::binary);
-	int length;
-	FileStream.read((char*)&length, sizeof(length));
+	FileStream.open(_Filename);
+
+	while (std::getline(FileStream, PlayerInformation))
+	{
+		PlayerInformations.push_back(PlayerInformation);
+	}
+
 	_PlayerList.clear();
-	for (int i = 0; i < length; i++) {
-		Player newPlayer;
-		newPlayer.deserialize(FileStream);
-		_PlayerList.push_back(newPlayer);
+
+	for (unsigned int i = 0; i < PlayerInformations.size(); i++)
+	{
+		std::vector<std::string> Info = split(PlayerInformations[i], ';');
+		
+		if (Info.size() == 3)
+		{
+			Player newPlayer;
+			newPlayer.Rank = i + 1;
+			newPlayer.Name = Info[0];
+			newPlayer.Level = std::stoi(Info[1]);
+			newPlayer.Score = std::stoi(Info[2]);
+
+			_PlayerList.push_back(newPlayer);
+		}
 	}
 
 	FileStream.close();
@@ -121,22 +136,19 @@ void Highscore::loadScoreTable()
 void Highscore::SaveScoreTable()
 {
 	std::ofstream FileStream;
-	FileStream.open(_Filename, std::ios::out | std::ofstream::binary);
-	int length = _PlayerList.size();
-	FileStream.write((char*)&length, sizeof(length));
+	FileStream.open(_Filename);
+
 	for (unsigned int i = 0; i < _PlayerList.size(); i++)
 	{
-		_PlayerList[i].serialize(FileStream);
+		FileStream << _PlayerList[i].Name << ";" << _PlayerList[i].Level << ";" << _PlayerList[i].Score << std::endl;
 	}
+
 	FileStream.close();
 }
 
 void Highscore::SortScoreTable()
 {
 	std::sort(_PlayerList.rbegin(), _PlayerList.rend());
-	for (int i = 0; i < _PlayerList.size(); i++) {
-		_PlayerList[i].Rank = i + 1;
-	}
 }
 
 std::vector<std::string> Highscore::split(const std::string &s, char delim) {

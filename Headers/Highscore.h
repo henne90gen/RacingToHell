@@ -4,17 +4,15 @@
 #include <sstream>
 #include <algorithm>
 
-#include "Serializable.h"
-
 class Highscore
 {
 public:
-	struct Player : public Serializable
+	struct Player
 	{
 		int Rank;
 		std::string Name;
-		int Level;
 		int Score;
+		int Level;
 
 		bool operator<(Player& const Player2) const 
 		{

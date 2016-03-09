@@ -34,6 +34,19 @@ MenuButton::~MenuButton()
 
 void MenuButton::render(sf::RenderWindow & Window)
 {
+	if ((_Hovering && _Enabled) || (_JoystickSelected && _Enabled)) {
+		_Background.setFillColor(sf::Color(50, 50, 50, 100));
+		_Text.setColor(sf::Color::White);
+	}
+	else if (_Enabled) {
+		_Background.setFillColor(sf::Color(0, 0, 0, 175));
+		_Text.setColor(sf::Color::White);
+	}
+	else {
+		_Background.setFillColor(sf::Color(0, 0, 0, 100));
+		_Text.setColor(sf::Color(150, 150, 150, 255));
+	}
+
 	Window.draw(_Background);
 	Window.draw(_Text);
 
@@ -59,17 +72,4 @@ void MenuButton::switchHoverState(bool hoverState, bool joystickSelected)
 {
 	_Hovering = hoverState;
 	_JoystickSelected = joystickSelected;
-	
-	if ((_Hovering && _Enabled) || (_JoystickSelected && _Enabled)) {
-		_Background.setFillColor(sf::Color(50, 50, 50, 100));
-		_Text.setColor(sf::Color::White);
-	}
-	else if (_Enabled) {
-		_Background.setFillColor(sf::Color(0, 0, 0, 175));
-		_Text.setColor(sf::Color::White);
-	}
-	else {
-		_Background.setFillColor(sf::Color(0, 0, 0, 100));
-		_Text.setColor(sf::Color(150, 150, 150, 255));
-	}
 }

@@ -35,25 +35,6 @@ Highscore::Highscore(sf::Vector2f Position) : _Gap(42)
 
 	_Filename = "Resources/Data/Highscore.sco";
 
-	Player newPlayer;
-	newPlayer.Rank = 1;
-	newPlayer.Name = "Ferdinand";
-	newPlayer.Level = 4;
-	newPlayer.Score = 1234;
-	_PlayerList.push_back(newPlayer);
-
-	newPlayer.Rank = 2;
-	newPlayer.Name = "Peter";
-	newPlayer.Level = 5;
-	newPlayer.Score = 2234;
-	_PlayerList.push_back(newPlayer);
-
-	for (int i = 0; i < _PlayerList.size(); i++) {
-		std::cout << _PlayerList[i].Name << std::endl;
-	}
-
-	SaveScoreTable();
-
 	loadScoreTable();
 }
 

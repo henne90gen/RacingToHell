@@ -33,7 +33,26 @@ Highscore::Highscore(sf::Vector2f Position) : _Gap(42)
 	_HeadlineScore.setString("Score");
 	_HeadlineScoreWidth = _HeadlineScore.getLocalBounds().width;
 
-	_Filename = "Resources/Data/Highscore.txt";
+	_Filename = "Resources/Data/Highscore.sco";
+
+	Player newPlayer;
+	newPlayer.Rank = 1;
+	newPlayer.Name = "Ferdinand";
+	newPlayer.Level = 4;
+	newPlayer.Score = 1234;
+	_PlayerList.push_back(newPlayer);
+
+	newPlayer.Rank = 2;
+	newPlayer.Name = "Peter";
+	newPlayer.Level = 5;
+	newPlayer.Score = 2234;
+	_PlayerList.push_back(newPlayer);
+
+	for (int i = 0; i < _PlayerList.size(); i++) {
+		std::cout << _PlayerList[i].Name << std::endl;
+	}
+
+	SaveScoreTable();
 
 	loadScoreTable();
 }
@@ -94,29 +113,14 @@ void Highscore::loadScoreTable()
 	std::string PlayerInformation;
 
 	std::ifstream FileStream;
-	FileStream.open(_Filename);
-
-	while (std::getline(FileStream, PlayerInformation))
-	{
-		PlayerInformations.push_back(PlayerInformation);
-	}
-
+	FileStream.open(_Filename, std::ios::in | std::ifstream::binary);
+	int length;
+	FileStream.read((char*)&length, sizeof(length));
 	_PlayerList.clear();
-
-	for (unsigned int i = 0; i < PlayerInformations.size(); i++)
-	{
-		std::vector<std::string> Info = split(PlayerInformations[i], ';');
-		
-		if (Info.size() == 3)
-		{
-			Player newPlayer;
-			newPlayer.Rank = i + 1;
-			newPlayer.Name = Info[0];
-			newPlayer.Level = std::stoi(Info[1]);
-			newPlayer.Score = std::stoi(Info[2]);
-
-			_PlayerList.push_back(newPlayer);
-		}
+	for (int i = 0; i < length; i++) {
+		Player newPlayer;
+		newPlayer.deserialize(FileStream);
+		_PlayerList.push_back(newPlayer);
 	}
 
 	FileStream.close();
@@ -136,19 +140,22 @@ void Highscore::loadScoreTable()
 void Highscore::SaveScoreTable()
 {
 	std::ofstream FileStream;
-	FileStream.open(_Filename);
-
+	FileStream.open(_Filename, std::ios::out | std::ofstream::binary);
+	int length = _PlayerList.size();
+	FileStream.write((char*)&length, sizeof(length));
 	for (unsigned int i = 0; i < _PlayerList.size(); i++)
 	{
-		FileStream << _PlayerList[i].Name << ";" << _PlayerList[i].Level << ";" << _PlayerList[i].Score << std::endl;
+		_PlayerList[i].serialize(FileStream);
 	}
-
 	FileStream.close();
 }
 
 void Highscore::SortScoreTable()
 {
 	std::sort(_PlayerList.rbegin(), _PlayerList.rend());
+	for (int i = 0; i < _PlayerList.size(); i++) {
+		_PlayerList[i].Rank = i + 1;
+	}
 }
 
 std::vector<std::string> Highscore::split(const std::string &s, char delim) {

@@ -100,7 +100,7 @@ void Highscore::loadScoreTable()
 	_PlayerList.clear();
 	for (int i = 0; i < length; i++) {
 		Player newPlayer;
-		newPlayer.deserialize(FileStream);
+		newPlayer << FileStream;
 		_PlayerList.push_back(newPlayer);
 	}
 
@@ -126,7 +126,8 @@ void Highscore::SaveScoreTable()
 	FileStream.write((char*)&length, sizeof(length));
 	for (unsigned int i = 0; i < _PlayerList.size(); i++)
 	{
-		_PlayerList[i].serialize(FileStream);
+		//FileStream << _PlayerList[i];
+		_PlayerList[i] >> FileStream;
 	}
 	FileStream.close();
 }

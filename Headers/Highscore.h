@@ -13,36 +13,32 @@ public:
 	{
 		int Rank;
 		std::string Name;
-		int Level;
 		int Score;
+		int Level;
 
-		bool operator<(Player& const Player2) const 
+		bool operator<(Player& const Player2) const
 		{
 			return Score < Player2.Score;
 		}
 
-		virtual void serialize(std::ofstream & stream)
+		std::ofstream& operator>>(std::ofstream & stream)
 		{
-			stream.write((char*)&Rank, sizeof(Rank));
-			int length = Name.size();
-			stream.write((char*)&length, sizeof(length));
-			stream << Name;
-			stream.write((char*)&Level, sizeof(Level));
-			stream.write((char*)&Score, sizeof(Score));
+			write(stream, Rank);
+			write(stream, Name);
+			write(stream, Level);
+			write(stream, Score);
+
+			return stream;
 		}
 
-		virtual void deserialize(std::ifstream & stream)
+		std::ifstream& operator<<(std::ifstream & stream)
 		{
-			stream.read((char*)&Rank, sizeof(Rank));
-			int length;
-			stream.read((char*)&length, sizeof(length));
-			char* newString = new char[length];
-			stream.read(newString, length);
-			for (int i = 0; i < length; i++) {
-				Name += newString[i];
-			}
-			stream.read((char*)&Level, sizeof(Level));
-			stream.read((char*)&Score, sizeof(Score));
+			read(stream, Rank);
+			read(stream, Name);
+			read(stream, Level);
+			read(stream, Score);
+
+			return stream;
 		}
 	};
 

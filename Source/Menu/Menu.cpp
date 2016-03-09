@@ -13,6 +13,8 @@ Menu::~Menu()
 
 GameState Menu::handleMenuItems(sf::Event & Event)
 {
+	applyJoystickSelection();
+
 	if (Event.type == sf::Event::MouseButtonPressed) {
 		_MousePos = sf::Vector2f(Event.mouseButton.x, Event.mouseButton.y);
 	}
@@ -31,6 +33,19 @@ GameState Menu::handleMenuItems(sf::Event & Event)
 			}
 		}
 		return result;
+	}
+	return _MenuGameState;
+}
+
+void Menu::applyJoystickSelection()
+{
+	for (int i = 0; i < _MenuItems.size(); i++) {
+		if (i == _JoystickSelection) {
+			_MenuItems[i]->setFocused(true);
+		}
+		else {
+			_MenuItems[i]->setFocused(false);
+		}
 	}
 }
 

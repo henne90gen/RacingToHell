@@ -61,12 +61,17 @@ MenuResult MenuButton::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 			}
 		}
 		else if (Event.type == sf::Event::MouseMoved) {
-			if (MousePos.y > getRect().top && MousePos.y < getRect().top + getRect().height && MousePos.x > getRect().left && MousePos.x < getRect().left + getRect().width)
-			{
+			if (MousePos.y > getRect().top && MousePos.y < getRect().top + getRect().height && MousePos.x > getRect().left && MousePos.x < getRect().left + getRect().width){
 				_Hovering = true;
 			}
 			else {
 				_Hovering = false;
+			}
+			_Focused = false;
+		}
+		else if (Event.type == sf::Event::JoystickButtonPressed) {
+			if (Event.joystickButton.button == 0 && _Focused) {
+				return _Action;
 			}
 		}
 	}

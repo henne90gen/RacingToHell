@@ -37,59 +37,33 @@ void PauseMenu::render(sf::RenderWindow & Window)
 GameState PauseMenu::handleEvents(sf::RenderWindow & Window)
 {
 	while (Window.pollEvent(_Event)) {
-		return handleMenuItems(_Event);
-			/*if (_Event.type == sf::Event::MouseButtonPressed) {
-			for (int i = 0; i < _MenuItems.size(); i++) {
-				sf::FloatRect rect = _MenuItems[i]->getRect();
-				if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width) 
-				{
-					return handleMenuItemAction(i);
-				}
-			}
-		}
-		else if (_Event.type == sf::Event::JoystickButtonPressed) {
-			if (sf::Joystick::isButtonPressed(0, 0)) {
-				return handleMenuItemAction(_JoystickSelection);
-			}
-			else if (sf::Joystick::isButtonPressed(0, 1)) {
+		
+		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
+
+		if (_Event.type == sf::Event::JoystickButtonPressed) {
+			if (sf::Joystick::isButtonPressed(0, 1)) {
 				return GameState::Running;
 			}
 		}
-		else if (_Event.type == sf::Event::MouseMoved) {
-			for (unsigned int i = 0; i < _MenuItems.size(); i++) {
-				sf::FloatRect rect = _MenuItems[i]->getRect();
-				if (MousePos.y > rect.top && MousePos.y < rect.top + rect.height && MousePos.x > rect.left && MousePos.x < rect.left + rect.width)
-				{
-					_MenuItems[i]->switchHoverState(true, false, true);
-				}
-				else {
-					_MenuItems[i]->switchHoverState(false, false, false);
-				}
+		
+		if (Y < 10 && Y > -10) {
+			_JoystickTimer.restart();
+		}
+
+		if (_JoystickTimer.getElapsedTime().asSeconds() >= _JoystickDelay) {
+			if (Y < -80 && _JoystickSelection > 0) {
+				_JoystickSelection--;
+				_JoystickTimer.restart();
+			}
+			else if (Y > 80 && _JoystickSelection < _MenuItems.size() - 1) {
+				_JoystickSelection++;
+				_JoystickTimer.restart();
 			}
 		}
-		
-		if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < 10 && sf::Joystick::getAxisPosition(0, sf::Joystick::Y) > -10) {
-			_JoystickTimer.restart();
-		}
-	}
 
-	if (_JoystickTimer.getElapsedTime().asSeconds() >= _JoystickDelay) {
-		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
-		if (Y < -80 && _JoystickSelection > 0) {
-			_MenuItems[_JoystickSelection]->switchHoverState(false, false, false);
-			_JoystickSelection--;
-			_MenuItems[_JoystickSelection]->switchHoverState(true, true, true);
-			_JoystickTimer.restart();
-		}
-		else if (Y > 80 && _JoystickSelection < _MenuItems.size() - 1) {
-			_MenuItems[_JoystickSelection]->switchHoverState(false, false, false);
-			_JoystickSelection++;
-			_MenuItems[_JoystickSelection]->switchHoverState(true, true, true);
-			_JoystickTimer.restart();
-		}*/
+		return handleMenuItems(_Event);
 	}
-
-	return GameState::Pause;
+	return _MenuGameState;
 }
 
 GameState PauseMenu::handleMenuItemResult(MenuResult result)
@@ -101,12 +75,9 @@ GameState PauseMenu::handleMenuItemResult(MenuResult result)
 	case MenuResult::Option:
 		return GameState::Options;
 		break;
-	case MenuResult::Nothing:
-		return GameState::Pause;
-		break;
 	case MenuResult::Exit:
 		return GameState::Exiting;
 		break;
 	}
-	return GameState::Pause;
+	return _MenuGameState;
 }

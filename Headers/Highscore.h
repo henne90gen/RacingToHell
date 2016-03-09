@@ -3,11 +3,12 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include "Serializable.h"
 
 class Highscore
 {
 public:
-	struct Player
+	struct Player : public Serializable
 	{
 		int Rank;
 		std::string Name;

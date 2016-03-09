@@ -171,6 +171,9 @@
     <ClInclude Include="Headers\Menu\Slider.h">
       <Filter>Header Files\Menu</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Serializable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Framework.cpp">
@@ -257,6 +260,9 @@
     <ClCompile Include="Source\Menu\Slider.cpp">
       <Filter>Source Files\Menu</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Serializable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -266,6 +272,9 @@
     </None>
     <None Include="Resources\Sound\Music\menu1.ogg">
       <Filter>Resource Files\Sound\Music</Filter>
+    </None>
+    <None Include="Resources\Data\Highscore.sco">
+      <Filter>Resource Files\Data</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -368,10 +377,7 @@
     </Media>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Resources\Data\Highscore.txt">
-      <Filter>Resource Files\Data</Filter>
-    </Text>
-    <Text Include="Resources\Data\Settings.txt">
+    <Text Include="Resources\Data\Settings.cfg">
       <Filter>Resource Files\Data</Filter>
     </Text>
   </ItemGroup>

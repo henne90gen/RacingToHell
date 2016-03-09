@@ -64,13 +64,13 @@ void GameOverScreen::update(int Score, int Level)
 	_Highscore->setScore(Score);
 	_Level = Level;
 	_MenuItems[0]->setEnabled(_Highscore->isNewHighscore() || !_ScoreSubmitted);
-	_MenuItems[1]->setEnabled(_MenuItems[0]->getEnabled());
+	_MenuItems[1]->setEnabled(_MenuItems[0]->getEnabled() && !_ScoreSubmitted);
 	dynamic_cast<Textbox*>(_MenuItems[0])->update();
 }
 
 GameState GameOverScreen::handleMenuItemAction(int index)
 {
-	std::string text = dynamic_cast<Textbox*>(_MenuItems[0])->getText();
+	std::string name = dynamic_cast<Textbox*>(_MenuItems[0])->getText();
 	switch (_MenuItems[index]->getAction()) {
 	case MenuResult::Back:
 		_SoundPlayed = false;
@@ -78,12 +78,13 @@ GameState GameOverScreen::handleMenuItemAction(int index)
 		return GameState::Main;
 		break;
 	case MenuResult::SubmitScore:
-		if (!_ScoreSubmitted && _Highscore->getScore() > _Highscore->MinScore() && text != "")
+		if (!_ScoreSubmitted && _Highscore->getScore() > _Highscore->MinScore() && name != "")
 		{
-			_Highscore->PlacePlayer(text, _Level);
+			_Highscore->PlacePlayer(name, _Level);
 			_Highscore->SaveScoreTable();
 			_Highscore->loadScoreTable();
 			_ScoreSubmitted = true;
+			_MenuItems[index - 1]->setEnabled(false);
 			_MenuItems[index]->setEnabled(false);
 		}
 		break;

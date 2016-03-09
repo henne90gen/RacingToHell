@@ -188,8 +188,10 @@
     <ClInclude Include="Headers\Menu\LoadingScreen.h" />
     <ClInclude Include="Headers\Menu\MenuButton.h" />
     <ClInclude Include="Headers\Menu\Slider.h" />
+    <ClInclude Include="Headers\Serializable.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Serializable.cpp" />
     <ClCompile Include="Source\Menu\Slider.cpp" />
     <ClCompile Include="Source\Menu\MenuButton.cpp" />
     <ClCompile Include="Source\GameObject\BossCar.cpp" />
@@ -227,6 +229,7 @@
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="README.md" />
+    <None Include="Resources\Data\Highscore.sco" />
     <None Include="Resources\Sound\Music\level1.ogg" />
     <None Include="Resources\Sound\Music\menu1.ogg" />
   </ItemGroup>
@@ -268,8 +271,7 @@
     <Media Include="Resources\Sound\shotPlayer.wav" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Resources\Data\Highscore.txt" />
-    <Text Include="Resources\Data\Settings.txt" />
+    <Text Include="Resources\Data\Settings.cfg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

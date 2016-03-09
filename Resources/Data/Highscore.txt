@@ -1,9 +1,0 @@
-Alice;5;6078
-Henn;5;5529
-Papa;3;2406
-Test1;2;974
-Test2;2;831
-Test;2;639
-Test;1;19
-Test;1;18
-Test;1;17

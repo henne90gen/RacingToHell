@@ -48,12 +48,9 @@ public:
 	void SaveScoreTable();
 
 	int getScore() { return _CurrentScore; }
-	void setScore(int Score);
+	void setScore(int Score) { _CurrentScore = Score; }
 
-	//int MinScore();
 	void PlacePlayer(std::string& Name, int Level);
-
-	//bool isNewHighscore() { return _NewHighscore; }
 private:
 	sf::RectangleShape _Background;
 	sf::Font _Font;
@@ -63,7 +60,6 @@ private:
 	sf::Text _HeadlineScore;
 
 	float _HeadlineRankWidth, _HeadlineNameHeight, _HeadlineLevelWidth, _HeadlineScoreWidth, _Gap;
-	//bool _NewHighscore;
 	std::string _CurrentName;
 	int _CurrentScore, _CurrentLevel, _NumScores;
 

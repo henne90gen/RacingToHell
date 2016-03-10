@@ -48,12 +48,11 @@ void Highscore::render(sf::RenderWindow& RenderWindow)
 	RenderWindow.draw(_HeadlineName);
 	RenderWindow.draw(_HeadlineLevel);
 	RenderWindow.draw(_HeadlineScore);
-	
-	int numPlayers = _PlayerList.size();
 
-	for (unsigned int i = 0; i < numPlayers; i++)
+	for (unsigned int i = 0; i < _PlayerList.size(); i++)
 	{
-		bool madeTheList = false;
+		bool newTopTen = false;
+		// Render rank 1 - 10
 		if (i < _NumScores) {
 			_HighscoreTexts[i].setString(std::to_string(_PlayerList[i].Rank));
 			_HighscoreTexts[i].setOrigin(sf::Vector2f(_HighscoreTexts[i].getLocalBounds().width / 2.0f, 0));
@@ -73,7 +72,7 @@ void Highscore::render(sf::RenderWindow& RenderWindow)
 				_HighscoreTexts[i + _NumScores].setColor(sf::Color::Yellow);
 				_HighscoreTexts[i + 2 * _NumScores].setColor(sf::Color::Yellow);
 				_HighscoreTexts[i + 3 * _NumScores].setColor(sf::Color::Yellow);
-				madeTheList = true;
+				newTopTen = true;
 			}
 			else {
 				_HighscoreTexts[i].setColor(sf::Color::White);
@@ -86,15 +85,16 @@ void Highscore::render(sf::RenderWindow& RenderWindow)
 			RenderWindow.draw(_HighscoreTexts[i + _NumScores]);
 			RenderWindow.draw(_HighscoreTexts[i + 2 * _NumScores]);
 			RenderWindow.draw(_HighscoreTexts[i + 3 * _NumScores]);
-
-			if (madeTheList && i == _NumScores - 1) {
-				_HighscoreTexts[_NumScores].setString("");
-				_HighscoreTexts[_NumScores + _NumScores].setString("");
-				_HighscoreTexts[_NumScores + 2 * _NumScores].setString("");
-				_HighscoreTexts[_NumScores + 3 * _NumScores].setString("");
-				break;
-			}
 		}
+		// Stop the for loop if player made it into the top 10
+		else if (newTopTen) {
+			_HighscoreTexts[_NumScores].setString("");
+			_HighscoreTexts[_NumScores + _NumScores].setString("");
+			_HighscoreTexts[_NumScores + 2 * _NumScores].setString("");
+			_HighscoreTexts[_NumScores + 3 * _NumScores].setString("");
+			break;
+		}
+		// Render 11th item that shows the players rank in the whole highscore list
 		else if (_PlayerList[i].Score == _CurrentScore && _PlayerList[i].Name == _CurrentName && _PlayerList[i].Level == _CurrentLevel) {
 			_HighscoreTexts[_NumScores].setString(std::to_string(_PlayerList[i].Rank));
 			_HighscoreTexts[_NumScores].setOrigin(sf::Vector2f(_HighscoreTexts[_NumScores].getLocalBounds().width / 2.0f, 0));
@@ -179,11 +179,6 @@ void Highscore::PlacePlayer(std::string& Name, int Level)
 {
 	_CurrentName = Name;
 	_CurrentLevel = Level;
-
-	/*if (_PlayerList.size() == 10)
-	{
-		_PlayerList.erase(_PlayerList.begin() + _PlayerList.size() - 1);
-	}*/
 	
 	Player newPlayer;
 	newPlayer.Name = _CurrentName;
@@ -194,20 +189,3 @@ void Highscore::PlacePlayer(std::string& Name, int Level)
 
 	SortScoreTable();
 }
-
-void Highscore::setScore(int Score) {
-	_CurrentScore = Score;
-	//_NewHighscore = _CurrentScore > MinScore();
-}
-
-/*int Highscore::MinScore()
-{
-	if (_PlayerList.size() < 10)
-	{
-		return 0;
-	}
-	else
-	{
-		return std::min_element(_PlayerList.begin(), _PlayerList.end())->Score;
-	}
-}*/

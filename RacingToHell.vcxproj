@@ -237,6 +237,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Texture\BossCar\cannon.png" />
+    <Image Include="Resources\Texture\BossCar\cannonCarrier.png" />
+    <Image Include="Resources\Texture\BossCar\Carrier.png" />
     <Image Include="Resources\Texture\BossCar\tank.png" />
     <Image Include="Resources\Texture\HUD\HUD_Background.png" />
     <Image Include="Resources\Texture\HUD\HUD_EnergyIcon.png" />
@@ -249,6 +251,8 @@
     <Image Include="Resources\Texture\PlayerCar\playercar2.png" />
     <Image Include="Resources\Texture\PlayerCar\playercar3.png" />
     <Image Include="Resources\Texture\PlayerCar\playercar4.png" />
+    <Image Include="Resources\Texture\PlayerCar\playercar5.png" />
+    <Image Include="Resources\Texture\PlayerCar\playercar6.png" />
     <Image Include="Resources\Texture\Road\Road1.jpg" />
     <Image Include="Resources\Texture\Road\Road2.jpg" />
     <Image Include="Resources\Texture\Road\Road3.jpg" />

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Menu\GameOverScreen.h"
 
-GameOverScreen::GameOverScreen() : Menu(GameState::GameOver), _SoundPlayed(false), _ScoreSubmitted(false)
+GameOverScreen::GameOverScreen() : Menu(GameState::GameOver), _SoundPlayed(false), _ScoreSubmitted(false), _Highscore(sf::Vector2f(SCREENWIDTH / 2 - 225, 190))
 {
 	if (_Font.loadFromFile("Resources/Font/arial.ttf")) {
 		_GOTLine1.setFont(_Font);
@@ -14,42 +14,36 @@ GameOverScreen::GameOverScreen() : Menu(GameState::GameOver), _SoundPlayed(false
 		_GOTLine3.setFont(_Font);
 		_GOTLine3.setColor(sf::Color(200, 0, 0));
 		_GOTLine3.setCharacterSize(40);
-		//_GOTLine3.setOrigin(_GOTLine3.getLocalBounds().left + _GOTLine3.getLocalBounds().width / 2.0f, _GOTLine3.getLocalBounds().top + _GOTLine3.getLocalBounds().height / 2.0f);
 		_GOTLine3.setString("Your score was: ");
-		_GOTLine3.setPosition(SCREENWIDTH / 2 - 225, _GOTLine1.getGlobalBounds().top + _GOTLine1.getLocalBounds().height * 2.0f);
+		_GOTLine3.setPosition(SCREENWIDTH / 2 - 225, _GOTLine1.getGlobalBounds().top + _GOTLine1.getLocalBounds().height * 1.2f);
 
-		
 		_GOTLine4.setFont(_Font);
 		_GOTLine4.setColor(sf::Color(200, 0, 0));
 		_GOTLine4.setCharacterSize(40);
 		_GOTLine4.setString("Enter your name:");
-		_GOTLine4.setPosition(SCREENWIDTH / 2 - 225, _GOTLine3.getGlobalBounds().top + _GOTLine3.getLocalBounds().height + 10);
-
-		//_GOTLine4.setOrigin(_GOTLine4.getLocalBounds().left + _GOTLine4.getLocalBounds().width / 2.0f, _GOTLine4.getLocalBounds().top + _GOTLine4.getLocalBounds().height / 2.0f);
-		
-		sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
-
-		_MenuItems.push_back(new Textbox(sf::Vector2f(_GOTLine4.getPosition().x + _GOTLine4.getLocalBounds().width + 20, _GOTLine4.getPosition().y + 10), sf::Vector2f(450 - _GOTLine4.getLocalBounds().width - 20, _GOTLine4.getLocalBounds().height), 25, "Test", true));
-		_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2 + 200, 735), ButtonSize, MenuResult::SubmitScore, "Submit", TextAlignment::Center));
-		_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 200, 735), ButtonSize, MenuResult::Back, "Back", TextAlignment::Center));
+		_GOTLine4.setPosition(_GOTLine3.getPosition().x, _GOTLine3.getGlobalBounds().top + _GOTLine3.getLocalBounds().height + 10);
 	}
+		
+	sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
+
+	_MenuItems.push_back(new Textbox(sf::Vector2f(_GOTLine4.getPosition().x + _GOTLine4.getLocalBounds().width + 20, _GOTLine4.getPosition().y + 10), sf::Vector2f(450 - _GOTLine4.getLocalBounds().width - 20, _GOTLine4.getLocalBounds().height), 25, "Test", true));
+	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2 + 200, 735), ButtonSize, MenuResult::SubmitScore, "Submit", TextAlignment::Center));
+	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 200, 735), ButtonSize, MenuResult::Back, "Back", TextAlignment::Center));
 }
 
 GameOverScreen::~GameOverScreen()
 {
-	delete _Highscore;
-	_Highscore = nullptr;
 }
 
 void GameOverScreen::render(sf::RenderWindow& Window)
 {
-	_GOTLine3.setString("Your score was: " + std::to_string(_Highscore->getScore()));
+	_GOTLine3.setString("Your score was: " + std::to_string(_Highscore.getScore()));
 
 	Window.draw(_GOTLine1);
 	Window.draw(_GOTLine3);
 	Window.draw(_GOTLine4);
 
-	_Highscore->render(Window);
+	_Highscore.render(Window);
 
 	for (unsigned int i = 0; i < _MenuItems.size(); i++)
 	{
@@ -61,7 +55,7 @@ void GameOverScreen::render(sf::RenderWindow& Window)
 
 void GameOverScreen::update(int Score, int Level)
 {
-	_Highscore->setScore(Score);
+	_Highscore.setScore(Score);
 	_Level = Level;
 }
 
@@ -119,14 +113,14 @@ GameState GameOverScreen::handleMenuItemResult(MenuResult result)
 	case MenuResult::Back:
 		_SoundPlayed = false;
 		_ScoreSubmitted = false;
+		_MenuItems[0]->setEnabled(true);
+		_MenuItems[1]->setEnabled(true);
 		return GameState::Main;
 		break;
 	case MenuResult::SubmitScore:
-		if (!_ScoreSubmitted && _Highscore->getScore() > _Highscore->MinScore() && name != "")
+		if (!_ScoreSubmitted && name != "")
 		{
-			_Highscore->PlacePlayer(name, _Level);
-			_Highscore->SaveScoreTable();
-			_Highscore->loadScoreTable();
+			_Highscore.PlacePlayer(name, _Level);
 			_ScoreSubmitted = true;
 			_MenuItems[0]->setEnabled(false);
 			_MenuItems[1]->setEnabled(false);
@@ -136,9 +130,8 @@ GameState GameOverScreen::handleMenuItemResult(MenuResult result)
 	return _MenuGameState;
 }
 
-void GameOverScreen::loadHighScores()
+void GameOverScreen::load()
 {
-	_Highscore = new Highscore(sf::Vector2f(SCREENWIDTH / 2 - 225, 225));
 	if (_GameOverSoundBuffer.loadFromFile("Resources/Sound/gameOver.wav")) {
 		_GameOverSound.setBuffer(_GameOverSoundBuffer);
 	}

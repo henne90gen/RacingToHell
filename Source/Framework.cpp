@@ -296,7 +296,7 @@ void Framework::load()
 	_GameObjectContainer.setCarSkins(_CarSkins);
 	_GameObjectContainer.resetGameObjects(0);
 
-	_GameOverScreen.loadHighScores();
+	_GameOverScreen.load();
 
 	//Einstellungen laden
 	std::vector<std::string> Settings;

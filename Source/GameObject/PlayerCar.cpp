@@ -30,17 +30,14 @@ void PlayerCar::render(sf::RenderWindow& Window, bool renderCrosshair) {
 	Window.draw(getSprite());
 	if (renderCrosshair) {
 		Window.draw(_AimLine);
-		//TODO: Move that somewhere else
-		//_Crosshair.setPosition(sf::Vector2f(sf::Mouse::getPosition(Window)));
 		Window.draw(_Crosshair);
 	}
 }
 
 void PlayerCar::handleEvent(sf::Event& Event)
 {
-	//Keyinput abfragen und in _Movement speichern
+	// Apply key input to car
 	_Movement = sf::Vector2f(0, 0);
-
 	float X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
 	float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
 	
@@ -75,6 +72,7 @@ void PlayerCar::handleEvent(sf::Event& Event)
 		_Movement.y = 0;
 	}
 	
+	// Apply mouse and joystick movement
 	_CrosshairMovement = sf::Vector2f(0, 0);
 	if (Event.type == sf::Event::MouseMoved) {
 		_Crosshair.setPosition(Event.mouseMove.x, Event.mouseMove.y);
@@ -83,7 +81,7 @@ void PlayerCar::handleEvent(sf::Event& Event)
 		float U = sf::Joystick::getAxisPosition(0, sf::Joystick::U);
 		float R = sf::Joystick::getAxisPosition(0, sf::Joystick::R);
 		if (U < -50 || U > 50 || R < -50 || R > 50) {
-			_CrosshairMovement += sf::Vector2f(U / 100.0f, R / 90.0f);
+			_CrosshairMovement += sf::Vector2f(U / 65.0f, R / 65.0f);
 		}
 	}
 	else if (Event.type == sf::Event::MouseButtonPressed || (Event.type == sf::Event::JoystickButtonPressed && sf::Joystick::isButtonPressed(0, 5))) {

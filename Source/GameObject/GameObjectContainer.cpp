@@ -85,7 +85,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 
 	
 
-	if (!_BossFight || (_BossFight && getBossCar()->getTrafficOn())) 
+	if (!_BossFight || (false)) 
 	{
 		if (!_AboutToLevelUp) {
 			//AI-Autos spawnen
@@ -261,8 +261,8 @@ bool GameObjectContainer::bossIsDead()
 
 void GameObjectContainer::enterBossFight(bool entering)
 {
-	BossCar* boss = new BossCar(_BossCarTextures, sf::Vector2f(SCREENWIDTH / 2, 150), false);
-	_GameObjects.push_back(boss);
+	//BossCar* boss = new BossCar(_BossCarTextures, sf::Vector2f(SCREENWIDTH / 2, 150), false);
+	//_GameObjects.push_back(boss);
 	_BossFight = entering;
 }
 

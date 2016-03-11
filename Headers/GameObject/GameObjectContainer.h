@@ -9,6 +9,7 @@
 #include "GameObject/EnergyCanister.h"
 #include "GameObject/Toolbox.h"
 #include "GameObject/Tank.h"
+#include "GameObject/Carrier.h"
 
 #include "Animation/Explosion.h"
 
@@ -45,7 +46,7 @@ private:
 	std::vector<GameObject*> _GameObjects;
 	std::vector<Animation*> _Animations;
 	std::vector<sf::Texture*> _PlayerCarTextures, _AICarTextures;
-	sf::Texture _BossCarTexture;
+	std::vector<sf::Texture> _BossCarTextures;
 	sf::Texture _ToolboxTexture, _EnergyCanisterTexture, _BulletTexture;
 
 	sf::SoundBuffer _AIShotSoundBuffer, _PlayerShotSoundBuffer;

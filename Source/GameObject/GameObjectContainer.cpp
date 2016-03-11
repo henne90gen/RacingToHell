@@ -276,7 +276,8 @@ bool GameObjectContainer::bossIsDead()
 
 void GameObjectContainer::enterBossFight()
 {
-	Tank* boss = new Tank(_BossCarTexture, &_BulletTexture);
+	//Tank* boss = new Tank(_BossCarTextures[0], &_BulletTexture);
+	Carrier* boss = new Carrier(_BossCarTextures[1], &_BulletTexture);
 	_GameObjects.push_back(boss);
 	_BossFight = true;
 }
@@ -335,7 +336,10 @@ void GameObjectContainer::load()
 	_AIShotSoundBuffer.loadFromFile("Resources/Sound/shotAI.wav");
 	_PlayerShotSoundBuffer.loadFromFile("Resources/Sound/shotPlayer.wav");
 				   
-	_BossCarTexture.loadFromFile("Resources/Texture/BossCar/Tank.png");
+
+	_BossCarTextures.resize(2);
+	_BossCarTextures[0].loadFromFile("Resources/Texture/BossCar/Tank.png");
+	_BossCarTextures[1].loadFromFile("Resources/Texture/BossCar/Carrier.png");
 }
 
 void GameObjectContainer::setCarSkins(std::vector<sf::Texture*>& CarSkins)

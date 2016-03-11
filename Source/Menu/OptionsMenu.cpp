@@ -40,6 +40,12 @@ GameState OptionsMenu::handleEvents(sf::RenderWindow & Window)
 
 		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
 
+		if (_Event.type == sf::Event::JoystickButtonPressed) {
+			if (sf::Joystick::isButtonPressed(0, 1)) {
+				return _ReturnState;
+			}
+		}
+
 		if (Y < 10 && Y > -10) {
 			_JoystickTimer.restart();
 		}

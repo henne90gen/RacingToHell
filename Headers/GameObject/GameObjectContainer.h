@@ -28,7 +28,7 @@ public:
 	bool playerIsAlive() { return _PlayerAlive; }
 	bool bossIsDead();
 
-	void enterBossFight(bool entering);
+	void enterBossFight();
 
 	void resetGameObjects(int SelectedCar);
 	bool emptyScreen();

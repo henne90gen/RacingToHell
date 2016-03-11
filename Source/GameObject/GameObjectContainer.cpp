@@ -263,19 +263,23 @@ void GameObjectContainer::playSounds()
 
 bool GameObjectContainer::bossIsDead()
 {
-	if (_BossFight)
-		if (dynamic_cast<BossCar*>(_GameObjects.at(1))->getHealth() <= 0)
+	if (_BossFight) {
+		if (dynamic_cast<BossCar*>(_GameObjects.at(1))->getHealth() <= 0) {
 			//TODO: Remove boss and resets
+			_BossFight = false;
+			deleteObject(1);
 			return true;
+		}
+	}
 	return false; 
 }
 
-void GameObjectContainer::enterBossFight(bool entering)
+void GameObjectContainer::enterBossFight()
 {
 	//Tank* boss = new Tank(_BossCarTextures[0], &_BulletTexture);
 	Carrier* boss = new Carrier(_BossCarTextures[1], &_BulletTexture);
 	_GameObjects.push_back(boss);
-	_BossFight = entering;
+	_BossFight = true;
 }
 
 void GameObjectContainer::resetGameObjects(int SelectedCar)

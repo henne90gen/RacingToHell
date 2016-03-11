@@ -98,7 +98,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 
 	
 
-	if (!_BossFight || (_BossFight && getBossCar()->getTrafficOn())) 
+	if (!_BossFight || (false)) 
 	{
 		if (!_AboutToLevelUp) {
 			//AI-Autos spawnen
@@ -168,7 +168,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			}
 		}
 	}
-	if (_BossFight)
+	/*if (_BossFight)
 	{
 		for (unsigned int i = 2; i < _GameObjects.size(); i++)
 		{
@@ -189,7 +189,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 		}
 
 		getBossCar()->update(FrameTime, RoadSpeed, _GameObjects);
-	}
+	} */
 
 	if (!_AboutToLevelUp) {
 		//EnergyCanister spawnen
@@ -270,17 +270,17 @@ void GameObjectContainer::playSounds()
 
 bool GameObjectContainer::bossIsDead()
 {
-	if (_BossFight)
+	/*if (_BossFight)
 		if (dynamic_cast<BossCar*>(_GameObjects.at(1))->getHealth() <= 0)
 			//TODO: Remove boss and reset
-			return true;
-	return false;
+			return true; */
+	return false; 
 }
 
 void GameObjectContainer::enterBossFight(bool entering)
 {
-	BossCar* boss = new BossCar(_BossCarTextures, sf::Vector2f(SCREENWIDTH / 2, 150), false);
-	_GameObjects.push_back(boss);
+	//BossCar* boss = new BossCar(_BossCarTextures, sf::Vector2f(SCREENWIDTH / 2, 150), false);
+	//_GameObjects.push_back(boss);
 	_BossFight = entering;
 }
 

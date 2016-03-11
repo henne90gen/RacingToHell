@@ -47,13 +47,10 @@ public:
 	void loadScoreTable();
 	void SaveScoreTable();
 
-	int MinScore();
+	int getScore() { return _CurrentScore; }
+	void setScore(int Score) { _CurrentScore = Score; }
+
 	void PlacePlayer(std::string& Name, int Level);
-
-	void setScore(int Score);
-	int getScore() { return _Score; }
-
-	bool isNewHighscore() { return _NewHighscore; }
 private:
 	sf::RectangleShape _Background;
 	sf::Font _Font;
@@ -63,8 +60,8 @@ private:
 	sf::Text _HeadlineScore;
 
 	float _HeadlineRankWidth, _HeadlineNameHeight, _HeadlineLevelWidth, _HeadlineScoreWidth, _Gap;
-	int _Score;
-	bool _NewHighscore;
+	std::string _CurrentName;
+	int _CurrentScore, _CurrentLevel, _NumScores;
 
 	std::vector<Player> _PlayerList;
 	std::vector<sf::Text> _HighscoreTexts;
@@ -72,6 +69,4 @@ private:
 
 	void SortScoreTable();
 	void TestPrintPlayers();
-
-	std::vector<std::string> split(const std::string& s, char delim);
 };

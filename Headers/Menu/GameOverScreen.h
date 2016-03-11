@@ -17,7 +17,7 @@ public:
 	
 	void update(int Score, int Level);
 
-	void loadHighScores();
+	void load();
 
 	void playSounds();
 	void setVolume(float Volume);
@@ -32,7 +32,7 @@ private:
 	sf::Text _GOTLine3;
 	sf::Text _GOTLine4;
 
-	Highscore* _Highscore;
+	Highscore _Highscore;
 
 	sf::SoundBuffer _GameOverSoundBuffer;
 	sf::Sound _GameOverSound;

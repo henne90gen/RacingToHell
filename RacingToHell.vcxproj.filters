@@ -365,6 +365,18 @@
     <Image Include="Resources\Texture\BossCar\tank.png">
       <Filter>Resource Files\Texture\BossCar</Filter>
     </Image>
+    <Image Include="Resources\Texture\BossCar\cannonCarrier.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\BossCar\Carrier.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\PlayerCar\playercar5.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\PlayerCar\playercar6.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\Font\arial.ttf">

@@ -66,8 +66,14 @@ void Textbox::render(sf::RenderWindow& RenderWindow)
 
 MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 {
-	if (_Enabled && _Focused) {
-		if (Event.type == sf::Event::MouseButtonPressed) {
+	if (Event.type == sf::Event::MouseButtonPressed) {
+		if (MousePos.y > getRect().top && MousePos.y < getRect().top + getRect().height && MousePos.x > getRect().left && MousePos.x < getRect().left + getRect().width) {
+			_Focused = true;
+		}
+		else {
+			_Focused = false;
+		}
+		if (_Enabled && _Focused) {
 			_ShowCursor = true;
 			_CursorClock.restart();
 			_CursorPosition = 0;
@@ -86,7 +92,17 @@ MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 			}
 			setCursor();
 		}
-		else if (Event.type == sf::Event::KeyPressed) {
+	}
+	else if (Event.type == sf::Event::MouseMoved) {
+		if (MousePos.y > getRect().top && MousePos.y < getRect().top + getRect().height && MousePos.x > getRect().left && MousePos.x < getRect().left + getRect().width) {
+			_Hovering = true;
+		}
+		else {
+			_Hovering = false;
+		}
+	}
+	else if (Event.type == sf::Event::KeyPressed) {
+		if (_Enabled && _Focused) {
 			if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::RControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt) && !sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt)) {
 				if (Event.key.code < 26) {
 					std::string newString = _Text.getString().substring(0, _CursorPosition) + (char)(Event.key.code + 97 - 32 * (int)(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition);

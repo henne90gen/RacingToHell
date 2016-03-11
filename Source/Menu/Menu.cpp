@@ -40,12 +40,14 @@ GameState Menu::handleMenuItems(sf::Event & Event)
 void Menu::applyJoystickSelection()
 {
 	for (int i = 0; i < _MenuItems.size(); i++) {
-		if (i == _JoystickSelection) {
-			_MenuItems[i]->setFocused(true);
-		}
-		else {
-			_MenuItems[i]->setFocused(false);
-		}
+		//if (_MenuItems[i]->getType() != MenuItems::MTextbox) {
+			if (i == _JoystickSelection) {
+				_MenuItems[i]->setFocused(true);
+			}
+			else {
+				_MenuItems[i]->setFocused(false);
+			}
+		//}
 	}
 }
 

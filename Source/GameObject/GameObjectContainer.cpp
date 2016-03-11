@@ -21,14 +21,6 @@ GameObjectContainer::~GameObjectContainer()
 	}
 
 	_AICarTextures.clear();
-
-	for (unsigned int i = 0; i < 2; i++)
-	{
-		delete _BossCarTextures[i];
-		_BossCarTextures[i] = nullptr;
-	}
-
-	_BossCarTextures.clear();
 }
 
 void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
@@ -89,14 +81,15 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 	//Objekt löschen wenn es sich nicht mehr im Screen befindet
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
-		if (_GameObjects.at(i)->getPos().y - _GameObjects.at(i)->getHeight() / 2 > SCREENHEIGHT || _GameObjects.at(i)->getPos().y + _GameObjects.at(i)->getHeight() / 2 <= 0 || _GameObjects.at(i)->getPos().x + _GameObjects.at(i)->getWidth() / 2 <= 0 || _GameObjects.at(i)->getPos().x - _GameObjects.at(i)->getWidth() / 2 >= SCREENWIDTH)
+		if (_GameObjects.at(i)->getType() != GameObjects::Boss)
 		{
-			deleteObject(i);
-			i--;
+			if (_GameObjects.at(i)->getPos().y - _GameObjects.at(i)->getHeight() / 2 > SCREENHEIGHT || _GameObjects.at(i)->getPos().y + _GameObjects.at(i)->getHeight() / 2 <= 0 || _GameObjects.at(i)->getPos().x + _GameObjects.at(i)->getWidth() / 2 <= 0 || _GameObjects.at(i)->getPos().x - _GameObjects.at(i)->getWidth() / 2 >= SCREENWIDTH)
+			{
+				deleteObject(i);
+				i--;
+			}
 		}
 	}
-
-	
 
 	if (!_BossFight || (false)) 
 	{
@@ -168,7 +161,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			}
 		}
 	}
-	/*if (_BossFight)
+	if (_BossFight)
 	{
 		for (unsigned int i = 2; i < _GameObjects.size(); i++)
 		{
@@ -189,7 +182,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 		}
 
 		getBossCar()->update(FrameTime, RoadSpeed, _GameObjects);
-	} */
+	} 
 
 	if (!_AboutToLevelUp) {
 		//EnergyCanister spawnen
@@ -270,17 +263,17 @@ void GameObjectContainer::playSounds()
 
 bool GameObjectContainer::bossIsDead()
 {
-	/*if (_BossFight)
+	if (_BossFight)
 		if (dynamic_cast<BossCar*>(_GameObjects.at(1))->getHealth() <= 0)
-			//TODO: Remove boss and reset
-			return true; */
+			//TODO: Remove boss and resets
+			return true;
 	return false; 
 }
 
 void GameObjectContainer::enterBossFight(bool entering)
 {
-	//BossCar* boss = new BossCar(_BossCarTextures, sf::Vector2f(SCREENWIDTH / 2, 150), false);
-	//_GameObjects.push_back(boss);
+	Tank* boss = new Tank(_BossCarTexture, &_BulletTexture);
+	_GameObjects.push_back(boss);
 	_BossFight = entering;
 }
 
@@ -337,15 +330,8 @@ void GameObjectContainer::load()
 
 	_AIShotSoundBuffer.loadFromFile("Resources/Sound/shotAI.wav");
 	_PlayerShotSoundBuffer.loadFromFile("Resources/Sound/shotPlayer.wav");
-
-	for (int i = 0; i < 2; i++)
-	{
-		_BossCarTextures.push_back(new sf::Texture);
-	}
 				   
-	_BossCarTextures[0]->loadFromFile("Resources/Texture/BossCar/Carrier.png");
-	_BossCarTextures[1]->loadFromFile("Resources/Texture/BossCar/cannonCarrier.png");
-	_BossCarTextures.push_back(&_BulletTexture);
+	_BossCarTexture.loadFromFile("Resources/Texture/BossCar/Tank.png");
 }
 
 void GameObjectContainer::setCarSkins(std::vector<sf::Texture*>& CarSkins)

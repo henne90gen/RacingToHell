@@ -4,7 +4,7 @@
 class Tank : public BossCar
 {
 public:
-	Tank(sf::Texture& Texture);
+	Tank(sf::Texture& Texture, sf::Texture* BulletTexture);
 	~Tank();
 
 	void update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects);
@@ -14,7 +14,11 @@ private:
 	sf::Sprite _GunSprite;
 	
 	sf::Vector2f _GunPosition;
-	float _Orientation, _Radius;
+	float _GunOrientation, _Radius;
 
+	sf::Vector2f _DefaultPosition;
+	bool _MovementSwitch;
+
+	sf::Vector2f& calcBulletPosition();
 };
 

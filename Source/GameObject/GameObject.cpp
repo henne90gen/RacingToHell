@@ -29,9 +29,6 @@ void GameObject::setSkin(sf::Texture* skin)
 
 bool GameObject::checkForCollision(GameObject * go)
 {
-	if (getSprite().getGlobalBounds().intersects(go->getSprite().getGlobalBounds())) {
-		return true;
-	}
-	return false;
+	return Collision::BoundingBoxTest(getSprite(), go->getSprite());
 }
 

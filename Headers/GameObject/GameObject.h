@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameObjects.h"
+#include "Collision.h"
 
 #include <string>
 

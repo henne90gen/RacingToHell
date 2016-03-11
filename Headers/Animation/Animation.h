@@ -24,6 +24,8 @@ protected:
 	sf::Texture _SpriteSheet;
 	sf::IntRect _CurrentSprite;
 
+	int _NumFrames;
+
 	sf::Clock _Timer;
 	float _ElapsedTime, _TimePerFrame;
 	AnimationState _AnimState;

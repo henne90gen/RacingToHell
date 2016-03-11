@@ -174,10 +174,10 @@
     <ClInclude Include="Headers\GameObject\BossCar.h">
       <Filter>Header Files\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Tank.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\GameObject\BossCarOld.h">
+      <Filter>Header Files\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\GameObject\Tank.h">
       <Filter>Header Files\GameObject</Filter>
     </ClInclude>
   </ItemGroup>
@@ -266,10 +266,10 @@
     <ClCompile Include="Source\GameObject\BossCar.cpp">
       <Filter>Source Files\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="Tank.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\GameObject\BossCarOld.cpp">
+      <Filter>Source Files\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObject\Tank.cpp">
       <Filter>Source Files\GameObject</Filter>
     </ClCompile>
   </ItemGroup>

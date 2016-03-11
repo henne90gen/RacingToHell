@@ -155,6 +155,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Headers\GameObject\BossCar.h" />
+    <ClInclude Include="Headers\GameObject\Tank.h" />
     <ClInclude Include="Headers\Menu\MenuItems.h" />
     <ClInclude Include="Headers\GameObject\BossCarOld.h" />
     <ClInclude Include="Headers\GameState.h" />
@@ -190,10 +191,10 @@
     <ClInclude Include="Headers\Menu\MenuButton.h" />
     <ClInclude Include="Headers\Menu\Slider.h" />
     <ClInclude Include="Headers\Serializable.h" />
-    <ClInclude Include="Tank.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\GameObject\BossCar.cpp" />
+    <ClCompile Include="Source\GameObject\Tank.cpp" />
     <ClCompile Include="Source\Menu\Slider.cpp" />
     <ClCompile Include="Source\Menu\MenuButton.cpp" />
     <ClCompile Include="Source\GameObject\BossCarOld.cpp" />
@@ -227,7 +228,6 @@
     </ClCompile>
     <ClCompile Include="Source\GameObject\Toolbox.cpp" />
     <ClCompile Include="Source\Menu\StatBox.cpp" />
-    <ClCompile Include="Tank.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />

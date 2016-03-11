@@ -13,7 +13,7 @@ public:
 	virtual void update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects) = 0;
 	virtual void render(sf::RenderWindow& RenderWindow) = 0;
 protected:
-	enum Phase { NOTHING, SIMPLESHOOT, SALVE, SPIN, HARDCORESPAM };
+	enum Phase { NOTHING, SIMPLESHOOT, SALVE, SPIN, HARDCORESPAM, BLASTSALVE, SPIRAL, RANDOMSPRAY };
 	int _CurrentPhase;
 	std::vector<std::pair<Phase, float>> _Pattern;
 	sf::Clock _PhaseClock;

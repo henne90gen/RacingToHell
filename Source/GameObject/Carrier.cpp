@@ -2,7 +2,7 @@
 #include "GameObject\Carrier.h"
 
 Carrier::Carrier(sf::Texture & Texture, sf::Texture * BulletTexture) : BossCar(sf::Vector2f(SCREENWIDTH / 2, -1 * (float)Texture.getSize().y / 2.0f), 2000, 400, Texture, BulletTexture),
-	_MovementSwitchLeftRight(false), _MovementSwitchUpDown(false), _GunPosition(sf::Vector2f(0, 0)), _Radius(), _SwitchSideTime(8.0f)
+	_MovementSwitchLeftRight(false), _MovementSwitchUpDown(false), _GunPosition(sf::Vector2f(0, 0)), _Radius(50), _SwitchSideTime(8.0f)
 {
 	_GunTexture.loadFromFile("Resources/Texture/BossCar/CannonCarrier.png");
 	_GunSprite.setTexture(_GunTexture);
@@ -14,7 +14,7 @@ Carrier::Carrier(sf::Texture & Texture, sf::Texture * BulletTexture) : BossCar(s
 	_NextPosition = _DefaultPosition;
 	_Movement = Movement::DRIVETODEFAULT;
 
-	_Pattern = { std::make_pair(Phase::BLASTSALVE, 4.0f), std::make_pair(Phase::SPIRAL, 10.0f), std::make_pair(Phase::RANDOMSPRAY, 6.0f) };
+	_Pattern = { std::make_pair(Phase::BLASTSALVE, 5.0f), std::make_pair(Phase::RANDOMSPRAY, 6.0f), std::make_pair(Phase::SPIRAL, 10.0f), std::make_pair(Phase::HARDCORESPAM, 7.0f) };
 }
 
 Carrier::~Carrier()
@@ -165,6 +165,19 @@ void Carrier::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& G
 			}
 			break;
 		}
+		case Phase::HARDCORESPAM:
+		{
+			_Event1Frequency = 60.0f;
+
+			if (getBossEvent() == 1)
+			{
+				float Orientation = (std::rand() % 360);
+				_GunOrientation = Orientation;
+
+				ShootBullet(GameObjects, calcBulletPosition(), Orientation);
+			}
+			break;
+		}
 		default:
 			break;
 		}
@@ -188,5 +201,5 @@ void Carrier::render(sf::RenderWindow & RenderWindow)
 
 sf::Vector2f & Carrier::calcBulletPosition()
 {
-	return sf::Vector2f();
+	return getPos() + _GunPosition + sf::Vector2f(_Radius * std::cos(_GunOrientation / 180 * PI), _Radius * std::sin(_GunOrientation / 180 * PI));
 }

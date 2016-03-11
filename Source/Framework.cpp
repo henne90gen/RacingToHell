@@ -91,8 +91,7 @@ void Framework::handleEvents()
 			if (_Event.type == sf::Event::Closed) {
 				_GameState = GameState::Exiting;
 			}
-			else if (_Event.type == sf::Event::KeyPressed || sf::Event::JoystickMoved || sf::Event::JoystickButtonPressed || 
-				_Event.type == sf::Event::MouseButtonPressed || _Event.type == sf::Event::KeyReleased) {
+			else {
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, 7)) {
 					_GameState = GameState::Pause;
 				}
@@ -146,8 +145,7 @@ void Framework::handleEvents()
 			if (_Event.type == sf::Event::Closed) {
 				_GameState = GameState::Exiting;
 			}
-			else if (_Event.type == sf::Event::KeyPressed || sf::Event::JoystickMoved || sf::Event::JoystickButtonPressed ||
-				_Event.type == sf::Event::MouseButtonPressed || _Event.type == sf::Event::KeyReleased) {
+			else {
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, 7)) {
 					_GameState = GameState::Pause;
 				}
@@ -173,7 +171,7 @@ void Framework::update()
 	case GameState::Running:
 		if (_Level.update(_FrameTime, _GameState)) {
 			if (_GameObjectContainer.emptyScreen()) {
-				_GameObjectContainer.enterBossFight(true);
+				_GameObjectContainer.enterBossFight();
 				_GameState = GameState::BossFight;
 			}
 		}

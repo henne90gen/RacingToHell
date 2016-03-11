@@ -154,6 +154,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\Animation\Animation.h" />
+    <ClInclude Include="Headers\Animation\Explosion.h" />
     <ClInclude Include="Headers\Menu\MenuItems.h" />
     <ClInclude Include="Headers\GameObject\BossCar.h" />
     <ClInclude Include="Headers\GameState.h" />
@@ -191,6 +193,8 @@
     <ClInclude Include="Headers\Serializable.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Animation\Animation.cpp" />
+    <ClCompile Include="Source\Animation\Explosion.cpp" />
     <ClCompile Include="Source\Menu\Slider.cpp" />
     <ClCompile Include="Source\Menu\MenuButton.cpp" />
     <ClCompile Include="Source\GameObject\BossCar.cpp" />

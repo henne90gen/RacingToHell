@@ -33,6 +33,11 @@ GameObjectContainer::~GameObjectContainer()
 
 void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 {
+	// Update Animations
+	for (int i = 0; i < _Animations.size(); i++) {
+		_Animations[i]->update(FrameTime);
+	}
+
 	//Kollision Spieler
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
@@ -106,6 +111,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			if (_GameObjects.at(i)->getType() == GameObjects::AI && dynamic_cast<AICar*>(_GameObjects.at(i))->getHealth() <= 0)
 			{
 				_CarScore += (int)(1.5 * dynamic_cast<AICar*>(_GameObjects.at(i))->getMaxHealth());
+				_Animations.push_back(new Explosion(sf::Vector2f(_GameObjects.at(i)->getPos())));
 				deleteObject(i);
 				i--;
 			}
@@ -214,16 +220,20 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 	}
 }
 
-void GameObjectContainer::render(sf::RenderWindow& RenderWindow, bool renderCrosshair)
+void GameObjectContainer::render(sf::RenderWindow& Window, bool renderCrosshair)
 {
 	for (unsigned int i = _GameObjects.size(); i > 0; i--)
 	{
 		if (_GameObjects.at(i-1)->getType() == GameObjects::Player) {
-			dynamic_cast<PlayerCar*>(_GameObjects.at(i-1))->render(RenderWindow, renderCrosshair);
+			dynamic_cast<PlayerCar*>(_GameObjects.at(i-1))->render(Window, renderCrosshair);
 		}
 		else {
-			_GameObjects.at(i-1)->render(RenderWindow);
+			_GameObjects.at(i-1)->render(Window);
 		}
+	}
+
+	for (int i = 0; i < _Animations.size(); i++) {
+		_Animations[i]->render(Window);
 	}
 }
 

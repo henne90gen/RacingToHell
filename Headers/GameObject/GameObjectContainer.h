@@ -9,6 +9,8 @@
 #include "GameObject/EnergyCanister.h"
 #include "GameObject/Toolbox.h"
 
+#include "Animation/Explosion.h"
+
 class GameObjectContainer
 {
 public:
@@ -16,7 +18,7 @@ public:
 	~GameObjectContainer();
 
 	void update(float FrameTime, int Difficulty, int RoadSpeed);
-	void render(sf::RenderWindow& RenderWindow, bool renderCrosshair);
+	void render(sf::RenderWindow& Window, bool renderCrosshair);
 	void handleEvents(sf::Event& Event);
 
 	PlayerCar* getPlayerCar() { return dynamic_cast<PlayerCar*>(_GameObjects.at(0)); }
@@ -40,6 +42,7 @@ public:
 
 private:
 	std::vector<GameObject*> _GameObjects;
+	std::vector<Animation*> _Animations;
 	std::vector<sf::Texture*> _PlayerCarTextures, _AICarTextures;
 	std::vector<sf::Texture*> _BossCarTextures;
 	sf::Texture _ToolboxTexture, _EnergyCanisterTexture, _BulletTexture;

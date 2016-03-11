@@ -35,7 +35,15 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 {
 	// Update Animations
 	for (int i = 0; i < _Animations.size(); i++) {
-		_Animations[i]->update(FrameTime);
+		if (_Animations[i]->getAnimationState() == Animation::Stop) {
+			delete _Animations.at(i);
+			_Animations.at(i) = nullptr;
+			_Animations.erase(_Animations.begin() + i);
+			i--;
+		}
+		else {
+			_Animations[i]->update(FrameTime);
+		}
 	}
 
 	//Kollision Spieler

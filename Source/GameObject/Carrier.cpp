@@ -2,7 +2,7 @@
 #include "GameObject\Carrier.h"
 
 Carrier::Carrier(sf::Texture & Texture, sf::Texture * BulletTexture) : BossCar(sf::Vector2f(SCREENWIDTH / 2, -1 * (float)Texture.getSize().y / 2.0f), 2000, 400, Texture, BulletTexture),
-	_MovementSwitchLeftRight(false), _MovementSwitchUpDown(false), _GunPosition(sf::Vector2f(0, 0)), _Radius(), _SwitchSideTime(5.0f)
+	_MovementSwitchLeftRight(false), _MovementSwitchUpDown(false), _GunPosition(sf::Vector2f(0, 0)), _Radius(), _SwitchSideTime(8.0f)
 {
 	_GunTexture.loadFromFile("Resources/Texture/BossCar/CannonCarrier.png");
 	_GunSprite.setTexture(_GunTexture);
@@ -63,6 +63,12 @@ void Carrier::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& G
 			_Attack = true;
 			_Speed = 200;
 			_SwitchSidesClock.restart();
+			_BossEventTimer1.restart();
+			_BossEventTimer2.restart();
+			_Event1Switch = false;
+			_Event2Switch = false;
+			_Event2Counter = 0;
+			_Event1Counter = 0;
 			break;
 		default:
 			break;

@@ -18,7 +18,7 @@ protected:
 	std::vector<std::pair<Phase, float>> _Pattern;
 	sf::Clock _PhaseClock;
 
-	enum Movement { STILL, DRIVETODEFAULT, LEFTRIGHT };
+	enum Movement { STILL, DRIVETODEFAULT, LEFTRIGHT, SWITCHSIDES};
 	Movement _Movement;
 
 	sf::RectangleShape _HealthBar;

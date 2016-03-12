@@ -282,7 +282,7 @@ bool GameObjectContainer::bossIsDead()
 	return false; 
 }
 
-void GameObjectContainer::enterBossFight()
+void GameObjectContainer::enterBossFight()   
 {
 	//Tank* boss = new Tank(_BossCarTextures[0], &_BulletTexture);
 	//Carrier* boss = new Carrier(_BossCarTextures[1], &_BulletTexture);

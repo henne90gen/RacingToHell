@@ -4,13 +4,10 @@
 // IDEA: Mech comes in from below and "chase" the player
 
 Mech::Mech(sf::Texture& TextureTop, sf::Texture& TextureLegs, sf::Texture* BulletTexture) : BossCar(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), 10000, 100, TextureTop, BulletTexture),
-	_TopAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), TextureTop), _LegsAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), TextureLegs)
+	_TopAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), TextureTop), _LegsAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), TextureLegs), _MovementSwitch(false), _GunOrientation(90)
 {
 	setSprite(_TopAnim.getSprite());
-
-	//HP-Balken
-	_HealthBar.setSize(sf::Vector2f(getWidth() + 5, 5));
-	_HealthBarFrame.setSize(_HealthBar.getSize());
+	//_LegsAnim.getSprite().setRotation(180);
 
 	_DefaultPosition = sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT - 120);
 	_NextPosition = _DefaultPosition;
@@ -32,44 +29,56 @@ void Mech::render(sf::RenderWindow & Window)
 
 void Mech::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects)
 {
-	_LegsAnim.update(FrameTime);
-	_TopAnim.update(FrameTime);
-	
-	if (DriveToNextPosition(FrameTime)) {
+	bool _Arrived = DriveToNextPosition(FrameTime);
+
+	if (_Arrived)
+
+	{
 		switch (_Movement)
 		{
-		case Movement::DRIVETODEFAULT:
+		case BossCar::DRIVETODEFAULT:
 			_Movement = Movement::LEFTRIGHT;
-			_Speed = 200;
+			_Speed = 300;
 			_Attack = true;
 			_PhaseClock.restart();
-		case Movement::LEFTRIGHT:
+			break;
+		case BossCar::LEFTRIGHT:
 			_MovementSwitch = !_MovementSwitch;
 
 			if (_MovementSwitch)
 			{
-				_NextPosition = getPos() + sf::Vector2f((SCREENWIDTH - getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
+			_NextPosition = getPos() + sf::Vector2f((SCREENWIDTH - getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
 			}
 			else
 			{
-				_NextPosition = getPos() - sf::Vector2f((getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
+			_NextPosition = getPos() - sf::Vector2f((getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
 			}
+			break; 
 		default:
 			break;
 		}
 	}
 
+
+
 	if (_Attack)
 	{
 		switch (_Pattern[_CurrentPhase].first)
 		{
-		case Phase::SIMPLESHOOT:
+		default:
 			break;
 		}
 	}
 
+	_TopAnim.getSprite().setRotation(_GunOrientation + 90);
+
 	updateHealthBar();
 	checkPhase();
+
+	_LegsAnim.update(FrameTime);
+	_TopAnim.update(FrameTime);
+
+	_TopAnim.getSprite().setRotation(_TopAnim.getSprite().getRotation() + 30 * FrameTime);
 }
 
 void Mech::setPos(sf::Vector2f pos) {

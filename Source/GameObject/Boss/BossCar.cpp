@@ -74,6 +74,7 @@ bool BossCar::DriveToNextPosition(float FrameTime)
 		movement = movement / length;
 
 		setPos(getPos() + movement * FrameTime * (float)_Speed);
+
 		return false;
 	}
 }

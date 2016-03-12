@@ -97,7 +97,7 @@ void Mech::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& Game
 	_LegsAnim.update(FrameTime);
 	_TopAnim.update(FrameTime);
 
-	_TopAnim.getSprite().setRotation(_TopAnim.getSprite().getRotation() + 30 * FrameTime);
+	_TopAnim.setRotation(_TopAnim.getRotation() + 30 * FrameTime);
 }
 
 void Mech::setPos(sf::Vector2f pos) {

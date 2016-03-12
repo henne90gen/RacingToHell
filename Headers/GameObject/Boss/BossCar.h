@@ -12,6 +12,7 @@ public:
 
 	virtual void update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects) = 0;
 	virtual void render(sf::RenderWindow& RenderWindow) = 0;
+
 protected:
 	enum Phase { NOTHING, SIMPLESHOOT, SALVE, SPIN, HARDCORESPAM };
 	int _CurrentPhase;

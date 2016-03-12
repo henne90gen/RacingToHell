@@ -171,13 +171,7 @@
     <ClInclude Include="Headers\Serializable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\GameObject\BossCar.h">
-      <Filter>Header Files\GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\GameObject\BossCarOld.h">
-      <Filter>Header Files\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\GameObject\Tank.h">
       <Filter>Header Files\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Animation\Explosion.h">
@@ -189,8 +183,26 @@
     <ClInclude Include="Headers\Menu\MenuItems.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\GameObject\Carrier.h">
+    <ClInclude Include="Headers\Menu\MenuItems.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Animation\MechLegs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Animation\MechTop.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\GameObject\Boss\BossCar.h">
       <Filter>Header Files\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\GameObject\Boss\Carrier.h">
+      <Filter>Header Files\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\GameObject\Boss\Tank.h">
+      <Filter>Header Files\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\GameObject\Boss\Mech.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -275,13 +287,7 @@
     <ClCompile Include="Source\Menu\Slider.cpp">
       <Filter>Source Files\Menu</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameObject\BossCar.cpp">
-      <Filter>Source Files\GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="Source\GameObject\BossCarOld.cpp">
-      <Filter>Source Files\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\GameObject\Tank.cpp">
       <Filter>Source Files\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Source\Animation\Animation.cpp">
@@ -290,7 +296,22 @@
     <ClCompile Include="Source\Animation\Explosion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameObject\Carrier.cpp">
+    <ClCompile Include="Source\Animation\MechLegs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Animation\MechTop.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObject\Boss\BossCar.cpp">
+      <Filter>Source Files\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObject\Boss\Carrier.cpp">
+      <Filter>Source Files\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObject\Boss\Mech.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObject\Boss\Tank.cpp">
       <Filter>Source Files\GameObject</Filter>
     </ClCompile>
   </ItemGroup>
@@ -396,6 +417,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Resources\Texture\PlayerCar\playercar6.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\BossCar\CannonTank.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

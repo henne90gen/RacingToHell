@@ -1,11 +1,11 @@
 #pragma once
 #include "Animation/Animation.h"
 
-class Explosion : public Animation
+class MechTop : public Animation
 {
 public:
-	Explosion(sf::Vector2f pos, sf::Texture & Texture);
-	~Explosion();
+	MechTop(sf::Vector2f pos, sf::Texture& texture);
+	~MechTop();
 
 	virtual void render(sf::RenderWindow & Window);
 	virtual void update(float FrameTime);

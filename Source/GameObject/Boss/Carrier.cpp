@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "GameObject\Carrier.h"
+#include "GameObject/Boss/Carrier.h"
 
 Carrier::Carrier(sf::Texture & Texture, sf::Texture * BulletTexture) : BossCar(sf::Vector2f(SCREENWIDTH / 2, -1 * (float)Texture.getSize().y / 2.0f), 2000, 400, Texture, BulletTexture),
 	_MovementSwitchLeftRight(false), _MovementSwitchUpDown(false), _GunPosition(sf::Vector2f(0, 0)), _Radius(), _SwitchSideTime(5.0f)

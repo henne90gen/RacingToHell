@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Level\Level.h"
 
-Level::Level() : _Difficulty(1), _LevelUp(5)
+Level::Level() : _Difficulty(1), _LevelUp(1)
 {
 }
 

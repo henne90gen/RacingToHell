@@ -4,12 +4,14 @@
 #include "GameObject/GameObjects.h"
 #include "GameObject/AICar.h"
 #include "GameObject/PlayerCar.h"
-#include "GameObject/BossCar.h"
 #include "GameObject/Bullet.h"
 #include "GameObject/EnergyCanister.h"
 #include "GameObject/Toolbox.h"
-#include "GameObject/Tank.h"
-#include "GameObject/Carrier.h"
+
+#include "GameObject/Boss/BossCar.h"
+#include "GameObject/Boss/Tank.h"
+#include "GameObject/Boss/Carrier.h"
+#include "GameObject/Boss/Mech.h"
 
 #include "Animation/Explosion.h"
 
@@ -47,7 +49,7 @@ private:
 	std::vector<Animation*> _Animations;
 	std::vector<sf::Texture*> _PlayerCarTextures, _AICarTextures;
 	std::vector<sf::Texture> _BossCarTextures;
-	sf::Texture _ToolboxTexture, _EnergyCanisterTexture, _BulletTexture;
+	sf::Texture _ToolboxTexture, _EnergyCanisterTexture, _BulletTexture, _ExplosionTexture;
 
 	sf::SoundBuffer _AIShotSoundBuffer, _PlayerShotSoundBuffer;
 	std::vector<std::pair<sf::Sound*, bool>> _SoundEffects;

@@ -112,7 +112,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			if (_GameObjects.at(i)->getType() == GameObjects::AI && dynamic_cast<AICar*>(_GameObjects.at(i))->getHealth() <= 0)
 			{
 				_CarScore += (int)(1.5 * dynamic_cast<AICar*>(_GameObjects.at(i))->getMaxHealth());
-				_Animations.push_back(new Explosion(sf::Vector2f(_GameObjects.at(i)->getPos())));
+				//_Animations.push_back(new Explosion(sf::Vector2f(_GameObjects.at(i)->getPos()), _ExplosionTexture));
 				deleteObject(i);
 				i--;
 			}
@@ -265,7 +265,6 @@ bool GameObjectContainer::bossIsDead()
 {
 	if (_BossFight) {
 		if (dynamic_cast<BossCar*>(_GameObjects.at(1))->getHealth() <= 0) {
-			//TODO: Remove boss and resets
 			_BossFight = false;
 			deleteObject(1);
 			return true;
@@ -277,7 +276,8 @@ bool GameObjectContainer::bossIsDead()
 void GameObjectContainer::enterBossFight()
 {
 	//Tank* boss = new Tank(_BossCarTextures[0], &_BulletTexture);
-	Carrier* boss = new Carrier(_BossCarTextures[1], &_BulletTexture);
+	//Carrier* boss = new Carrier(_BossCarTextures[1], &_BulletTexture);
+	Mech* boss = new Mech(_BossCarTextures[2], _BossCarTextures[3], &_BulletTexture);
 	_GameObjects.push_back(boss);
 	_BossFight = true;
 }
@@ -336,10 +336,13 @@ void GameObjectContainer::load()
 	_AIShotSoundBuffer.loadFromFile("Resources/Sound/shotAI.wav");
 	_PlayerShotSoundBuffer.loadFromFile("Resources/Sound/shotPlayer.wav");
 				   
+	_ExplosionTexture.loadFromFile("Resources/Texture/Animation/explosion.png");
 
-	_BossCarTextures.resize(2);
+	_BossCarTextures.resize(4);
 	_BossCarTextures[0].loadFromFile("Resources/Texture/BossCar/Tank.png");
 	_BossCarTextures[1].loadFromFile("Resources/Texture/BossCar/Carrier.png");
+	_BossCarTextures[2].loadFromFile("Resources/Texture/BossCar/mech-top.png");
+	_BossCarTextures[3].loadFromFile("Resources/Texture/BossCar/mech-legs.png");
 }
 
 void GameObjectContainer::setCarSkins(std::vector<sf::Texture*>& CarSkins)

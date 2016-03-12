@@ -156,10 +156,10 @@
   <ItemGroup>
     <ClInclude Include="Headers\Animation\Animation.h" />
     <ClInclude Include="Headers\Animation\Explosion.h" />
-    <ClInclude Include="Headers\GameObject\Carrier.h" />
+    <ClInclude Include="Headers\GameObject\Boss\Carrier.h" />
     <ClInclude Include="Headers\Menu\MenuItems.h" />
-    <ClInclude Include="Headers\GameObject\BossCar.h" />
-    <ClInclude Include="Headers\GameObject\Tank.h" />
+    <ClInclude Include="Headers\GameObject\Boss\BossCar.h" />
+    <ClInclude Include="Headers\GameObject\Boss\Tank.h" />
     <ClInclude Include="Headers\Menu\MenuItems.h" />
     <ClInclude Include="Headers\GameObject\BossCarOld.h" />
     <ClInclude Include="Headers\GameState.h" />
@@ -195,13 +195,19 @@
     <ClInclude Include="Headers\Menu\MenuButton.h" />
     <ClInclude Include="Headers\Menu\Slider.h" />
     <ClInclude Include="Headers\Serializable.h" />
+    <ClInclude Include="Headers\Animation\MechLegs.h" />
+    <ClInclude Include="Headers\GameObject\Boss\Mech.h" />
+    <ClInclude Include="Headers\Animation\MechTop.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Animation\MechTop.cpp" />
+    <ClCompile Include="Source\GameObject\Boss\Mech.cpp" />
+    <ClCompile Include="Source\Animation\MechLegs.cpp" />
     <ClCompile Include="Source\Animation\Animation.cpp" />
     <ClCompile Include="Source\Animation\Explosion.cpp" />
-    <ClCompile Include="Source\GameObject\BossCar.cpp" />
-    <ClCompile Include="Source\GameObject\Carrier.cpp" />
-    <ClCompile Include="Source\GameObject\Tank.cpp" />
+    <ClCompile Include="Source\GameObject\Boss\BossCar.cpp" />
+    <ClCompile Include="Source\GameObject\Boss\Carrier.cpp" />
+    <ClCompile Include="Source\GameObject\Boss\Tank.cpp" />
     <ClCompile Include="Source\Menu\Slider.cpp" />
     <ClCompile Include="Source\Menu\MenuButton.cpp" />
     <ClCompile Include="Source\GameObject\BossCarOld.cpp" />
@@ -249,6 +255,7 @@
   <ItemGroup>
     <Image Include="Resources\Texture\BossCar\cannon.png" />
     <Image Include="Resources\Texture\BossCar\cannonCarrier.png" />
+    <Image Include="Resources\Texture\BossCar\CannonTank.png" />
     <Image Include="Resources\Texture\BossCar\Carrier.png" />
     <Image Include="Resources\Texture\BossCar\tank.png" />
     <Image Include="Resources\Texture\HUD\HUD_Background.png" />

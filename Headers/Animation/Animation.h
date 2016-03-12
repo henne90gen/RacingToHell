@@ -2,7 +2,7 @@
 class Animation
 {
 public:
-	Animation(sf::Vector2f pos, std::string path, float timePerFrame);
+	Animation(sf::Vector2f pos, sf::Texture & texture, float timePerFrame, int frames, int rows, int cols);
 	~Animation();
 
 	enum AnimationState {
@@ -15,8 +15,10 @@ public:
 	void play() { _AnimState = Animation::Play; }
 	void pause() { _AnimState = Animation::Pause; }
 	void stop() { _AnimState = Animation::Stop; }
+	void reset();
 
 	AnimationState getAnimationState() { return _AnimState; }
+	sf::Sprite & getSprite() { return _Sprite; }
 protected:
 	bool nextSprite();
 
@@ -24,7 +26,7 @@ protected:
 	sf::Texture _SpriteSheet;
 	sf::IntRect _CurrentSprite;
 
-	int _NumFrames;
+	int _NumFrames, _NumRows, _NumCols;
 
 	sf::Clock _Timer;
 	float _ElapsedTime, _TimePerFrame;

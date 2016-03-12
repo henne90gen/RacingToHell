@@ -2,9 +2,9 @@
 #include "Animation/Explosion.h"
 
 
-Explosion::Explosion(sf::Vector2f pos, sf::Texture & Texture) : Animation(pos, Texture, 0.01, 81, 9, 9)
+Explosion::Explosion(sf::Vector2f pos, sf::Texture & Texture) : Animation(pos, Texture, 0.0075, 81, 9, 9)
 {
-
+	_Sprite.setScale(sf::Vector2f(1.1f, 1.1f));
 }
 
 

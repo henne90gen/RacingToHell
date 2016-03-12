@@ -23,11 +23,15 @@ void Animation::reset()
 {
 }
 
+int Animation::getCurrentFrameNum()
+{
+	return _CurrentSprite.top / _CurrentSprite.height * _NumCols + _CurrentSprite.left / _CurrentSprite.width;
+}
+
 bool Animation::nextSprite()
 {
 	_CurrentSprite.left += _CurrentSprite.width;
-	int currentCell = _CurrentSprite.top / _CurrentSprite.height * _NumCols + _CurrentSprite.left / _CurrentSprite.width;
-	if (currentCell == _NumFrames) {
+	if (getCurrentFrameNum() == _NumFrames) {
 		_CurrentSprite.left = 0;
 		_CurrentSprite.top = 0;
 		_Sprite.setTextureRect(_CurrentSprite);

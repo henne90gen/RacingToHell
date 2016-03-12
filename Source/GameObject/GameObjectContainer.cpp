@@ -41,41 +41,49 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 	//Kollision Spieler
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
-		if (i > 0) {
-			if (getPlayerCar()->checkForCollision(_GameObjects.at(i))) {
-				switch (_GameObjects.at(i)->getType())
-				{
-				case GameObjects::AI:
-					_PlayerAlive = false;
-					break;
-				case GameObjects::BulletObjectAI:
-					getPlayerCar()->takeDamage(5);
-					deleteObject(i);
-					i--;
-					break;
-				case GameObjects::Canister:
-					getPlayerCar()->addEnergy();
-					deleteObject(i);
-					i--;
-					break;
-				case GameObjects::Tools:
-					getPlayerCar()->addHealth();
-					deleteObject(i);
-					i--;
-					break;
-				case GameObjects::Boss:
-					_PlayerAlive = false;
-					break;
+		if (_PlayerAlive) {
+			if (i > 0) {
+				if (getPlayerCar()->checkForCollision(_GameObjects.at(i))) {
+					switch (_GameObjects.at(i)->getType())
+					{
+					case GameObjects::AI:
+						_Animations.push_back(new Explosion(getPlayerCar()->getPos(), _ExplosionTexture));
+						_PlayerAlive = false;
+						break;
+					case GameObjects::BulletObjectAI:
+						getPlayerCar()->takeDamage(5);
+						deleteObject(i);
+						i--;
+						break;
+					case GameObjects::Canister:
+						getPlayerCar()->addEnergy();
+						deleteObject(i);
+						i--;
+						break;
+					case GameObjects::Tools:
+						getPlayerCar()->addHealth();
+						deleteObject(i);
+						i--;
+						break;
+					case GameObjects::Boss:
+						_Animations.push_back(new Explosion(getPlayerCar()->getPos(), _ExplosionTexture));
+						_PlayerAlive = false;
+						break;
+					}
 				}
 			}
-		}
-		else {
-			if (getPlayerCar()->getHealth() <= 0 || getPlayerCar()->getEnergy() <= 0) {
-				_PlayerAlive = false;
+			else {
+				if (getPlayerCar()->getHealth() <= 0) {
+					_Animations.push_back(new Explosion(getPlayerCar()->getPos(), _ExplosionTexture));
+					_PlayerAlive = false;
+				}
+				else if (getPlayerCar()->getEnergy() <= 0) {
+					_PlayerAlive = false;
+				}
 			}
-		}
 
-		_GameObjects.at(i)->update(FrameTime, RoadSpeed);
+			_GameObjects.at(i)->update(FrameTime, RoadSpeed);
+		}
 	}
 
 	//Objekt löschen wenn es sich nicht mehr im Screen befindet
@@ -91,7 +99,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 		}
 	}
 
-	if (!_BossFight || (false)) 
+	if (!_BossFight) 
 	{
 		if (!_AboutToLevelUp) {
 			//AI-Autos spawnen
@@ -112,7 +120,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			if (_GameObjects.at(i)->getType() == GameObjects::AI && dynamic_cast<AICar*>(_GameObjects.at(i))->getHealth() <= 0)
 			{
 				_CarScore += (int)(1.5 * dynamic_cast<AICar*>(_GameObjects.at(i))->getMaxHealth());
-				//_Animations.push_back(new Explosion(sf::Vector2f(_GameObjects.at(i)->getPos()), _ExplosionTexture));
+				_Animations.push_back(new Explosion(sf::Vector2f(_GameObjects.at(i)->getPos()), _ExplosionTexture));
 				deleteObject(i);
 				i--;
 			}
@@ -225,7 +233,7 @@ void GameObjectContainer::render(sf::RenderWindow& Window, bool renderCrosshair)
 {
 	for (unsigned int i = _GameObjects.size(); i > 0; i--)
 	{
-		if (_GameObjects.at(i-1)->getType() == GameObjects::Player) {
+		if (_GameObjects.at(i-1)->getType() == GameObjects::Player && _PlayerAlive) {
 			dynamic_cast<PlayerCar*>(_GameObjects.at(i-1))->render(Window, renderCrosshair);
 		}
 		else {
@@ -242,7 +250,9 @@ void GameObjectContainer::handleEvents(sf::Event& Event)
 {
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
-		_GameObjects.at(i)->handleEvent(Event);
+		if (_PlayerAlive) {
+			_GameObjects.at(i)->handleEvent(Event);
+		}
 	}
 }
 
@@ -290,6 +300,13 @@ void GameObjectContainer::resetGameObjects(int SelectedCar)
 		_GameObjects.at(i) = nullptr;
 	}
 	_GameObjects.clear();
+
+	for (unsigned int i = 0; i < _Animations.size(); i++)
+	{
+		delete _Animations[i];
+		_Animations[i] = nullptr;
+	}
+	_Animations.clear();
 
 	//Spielerauto
 	PlayerCar* MainCar = new PlayerCar(SelectedCar, (*_PlayerCarTextures.at(SelectedCar)));
@@ -425,6 +442,15 @@ void GameObjectContainer::spawnBullet()
 	_GameObjects.push_back(newBullet);
 	
 	playShotSound(GameObjects::AI);
+}
+
+bool GameObjectContainer::playerIsAlive() {
+	if (!_PlayerAlive && _Animations.size() > 0) {
+		if (_Animations[_Animations.size() - 1]->getCurrentFrameNum() >= 18) {
+			return false;
+		}
+	}
+	return true;
 }
 
 void GameObjectContainer::deleteObject(unsigned int id)

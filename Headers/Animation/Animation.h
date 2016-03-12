@@ -18,6 +18,7 @@ public:
 	void reset();
 
 	AnimationState getAnimationState() { return _AnimState; }
+	int getCurrentFrameNum();
 	sf::Sprite & getSprite() { return _Sprite; }
 
 	void setRotation(float angle) { _Sprite.setRotation(angle); }

@@ -1,6 +1,5 @@
 
 #include "stdafx.h"
-#include "GameObject/BossCarOld.h"
 
 /*
 BossCarOld::BossCar(std::vector<sf::Texture*>& textures, sf::Vector2f Position, bool Traffic) : Car(sf::Vector2f(SCREENWIDTH / 2, -1 * (int)textures[0]->getSize().y / 2 + 1), 2000, 500, GameObjects::Boss, (*textures.at(0))),

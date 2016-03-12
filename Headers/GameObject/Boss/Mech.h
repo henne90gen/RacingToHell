@@ -24,10 +24,10 @@ private:
 	MechLegs _LegsAnim;
 
 	bool _MovementSwitch;
-
-	std::pair<sf::Vector2f, sf::Vector2f> _GunPositions;
+	
 	float _GunOrientation, _GunRadius;
 
 	std::pair<sf::Vector2f, sf::Vector2f>& calcGunPositions();
+	
 };
 

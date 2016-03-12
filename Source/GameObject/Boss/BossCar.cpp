@@ -44,6 +44,14 @@ void BossCar::ShootBullet(std::vector<GameObject*>& GameObjects, sf::Vector2f Po
 	GameObjects.push_back(newBullet);
 }
 
+
+void BossCar::ShootBullet(std::vector<GameObject*>& GameObjects, sf::Vector2f Position, float Direction, int BulletSpeed)
+{
+	Bullet* newBullet = new Bullet(Position, Direction, BulletSpeed, GameObjects::BulletObjectAI, *_BulletTexture);
+	GameObjects.push_back(newBullet);
+}
+
+
 int BossCar::getBossEvent()
 {
 	if (_Event1Frequency != 0 && _BossEventTimer1.getElapsedTime().asSeconds() > 1 / _Event1Frequency)

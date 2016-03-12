@@ -18,7 +18,7 @@ Mech::Mech(sf::Texture& TextureTop, sf::Texture& TextureLegs, sf::Texture* Bulle
 	_NextPosition = _DefaultPosition;
 	_Movement = Movement::DRIVETODEFAULT;
 
-	_Pattern = { std::make_pair(Phase::SPIN, 6.0f), std::make_pair(Phase::SHOTGUN, 7.0f) };
+	_Pattern = { std::make_pair(Phase::SPIN, 6.0f), std::make_pair(Phase::SHOTGUN, 7.0f), std::make_pair(Phase::SALVE, 7.0f) };
 }
 
 Mech::~Mech()
@@ -108,6 +108,30 @@ void Mech::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& Game
 			}
 			break;
 		}
+		case Phase::SALVE:
+		{
+			_Event1Frequency = 1.5f;
+
+			_GunOrientation = PlayerAngle(GameObjects[0]);
+
+			if (getBossEvent() == 1)
+			{
+				bool Hand = (std::rand() % 100) > 50;
+		
+				for (int i = 0; i < 5; i++)
+				{
+					if (Hand)
+					{
+						ShootBullet(GameObjects, calcGunPositions().first, _GunOrientation - 10 * (i - 2));
+					}
+					else
+					{
+						ShootBullet(GameObjects, calcGunPositions().first, _GunOrientation - 10 * (i - 2));
+					}
+				}
+			}
+			break;
+		}
 		default:
 			break;
 		}
@@ -120,8 +144,6 @@ void Mech::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& Game
 
 	_LegsAnim.update(FrameTime);
 	_TopAnim.update(FrameTime);
-
-	_TopAnim.setRotation(_TopAnim.getRotation() + 30 * FrameTime);
 }
 
 void Mech::setPos(sf::Vector2f pos) {

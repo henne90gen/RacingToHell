@@ -3,11 +3,15 @@
 
 // IDEA: Mech comes in from below and "chase" the player
 
-Mech::Mech(sf::Texture& TextureTop, sf::Texture& TextureLegs, sf::Texture* BulletTexture) : BossCar(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), 10000, 100, TextureTop, BulletTexture),
-	_TopAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), TextureTop), _LegsAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), TextureLegs), _MovementSwitch(false), _GunOrientation(90)
+Mech::Mech(sf::Texture& TextureTop, sf::Texture& TextureLegs, sf::Texture* BulletTexture) : BossCar(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), 10000, 75, TextureTop, BulletTexture),
+	_TopAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), TextureTop), _LegsAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), TextureLegs), _MovementSwitch(false), _GunOrientation(-90)
 {
 	setSprite(_TopAnim.getSprite());
 	//_LegsAnim.getSprite().setRotation(180);
+
+	//HP-Balken
+	_HealthBar.setSize(sf::Vector2f(getWidth() + 5, 5));
+	_HealthBarFrame.setSize(_HealthBar.getSize());
 
 	_DefaultPosition = sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT - 120);
 	_NextPosition = _DefaultPosition;
@@ -38,7 +42,6 @@ void Mech::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& Game
 		{
 		case BossCar::DRIVETODEFAULT:
 			_Movement = Movement::LEFTRIGHT;
-			_Speed = 300;
 			_Attack = true;
 			_PhaseClock.restart();
 			break;
@@ -47,11 +50,11 @@ void Mech::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& Game
 
 			if (_MovementSwitch)
 			{
-			_NextPosition = getPos() + sf::Vector2f((SCREENWIDTH - getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
+				_NextPosition = getPos() + sf::Vector2f((SCREENWIDTH - getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
 			}
 			else
 			{
-			_NextPosition = getPos() - sf::Vector2f((getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
+				_NextPosition = getPos() - sf::Vector2f((getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
 			}
 			break; 
 		default:
@@ -70,7 +73,7 @@ void Mech::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& Game
 		}
 	}
 
-	_TopAnim.getSprite().setRotation(_GunOrientation + 90);
+	_TopAnim.setRotation(_GunOrientation + 90);
 
 	updateHealthBar();
 	checkPhase();

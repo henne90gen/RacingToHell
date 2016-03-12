@@ -85,21 +85,22 @@ void Mech::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& Game
 		}
 		case Phase::SHOTGUN:
 		{
-			_Event1Frequency = 1.6f;
+			_Event1Frequency = 1.5f;
 
 			_GunOrientation = PlayerAngle(GameObjects[0]);
 
 			if (getBossEvent() == 1)
 			{
-				for (int i = 0; i < 12; i++)
+				bool Hand = (std::rand() % 100) > 50;
+				for (int i = 0; i < 10; i++)
 				{
-					if (_Event1Switch)
+					if (Hand)
 					{
-						ShootBullet(GameObjects, calcGunPositions().first, (_GunOrientation - 10) + 20 * (std::rand() % 100) / 100, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed));
+						ShootBullet(GameObjects, calcGunPositions().first, (_GunOrientation - 12.5) + 25 * (std::rand() % 100) / 100, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed));
 					}
 					else
 					{
-						ShootBullet(GameObjects, calcGunPositions().second, (_GunOrientation - 10) + 20 * (std::rand() % 100) / 100, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed));
+						ShootBullet(GameObjects, calcGunPositions().second, (_GunOrientation - 12.5) + 25 * (std::rand() % 100) / 100, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed));
 					}
 				}
 

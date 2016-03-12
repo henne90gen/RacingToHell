@@ -22,6 +22,7 @@ public:
 	sf::Sprite & getSprite() { return _Sprite; }
 
 	void setRotation(float angle) { _Sprite.setRotation(angle); }
+	float getRotation() { return _Sprite.getRotation(); }
 protected:
 	bool nextSprite();
 

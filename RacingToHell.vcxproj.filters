@@ -204,6 +204,9 @@
     <ClInclude Include="Headers\GameObject\Boss\Mech.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Menu\MenuItems.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Headers\Collision.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -16,13 +16,13 @@ public:
 	virtual void update(float FrameTime, int RoadSpeed) = 0;
 
 	GameObjects getType() { return _Type; }
-	sf::Vector2f getPos() { return  _Sprite.getPosition(); }
-	float getWidth() { return _Sprite.getLocalBounds().width; }
-	float getHeight() { return _Sprite.getLocalBounds().height; }
-	sf::Sprite& getSprite() { return _Sprite; }
+	virtual sf::Vector2f getPos() { return  _Sprite.getPosition(); }
+	virtual float getWidth() { return _Sprite.getLocalBounds().width; }
+	virtual float getHeight() { return _Sprite.getLocalBounds().height; }
+	virtual sf::Sprite& getSprite() { return _Sprite; }
 	void setSprite(sf::Sprite & Sprite) { _Sprite = Sprite; }
 
-	void setPos(sf::Vector2f Pos) { _Sprite.setPosition(Pos); }
+	virtual void setPos(sf::Vector2f Pos) { _Sprite.setPosition(Pos); }
 	void setSkin(sf::Texture* skin);
 	void setSpriteColor(sf::Color Color) { _Sprite.setColor(Color); }
 

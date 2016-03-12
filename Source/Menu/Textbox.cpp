@@ -103,7 +103,10 @@ MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 	}
 	else if (Event.type == sf::Event::KeyPressed) {
 		if (_Enabled && _Focused) {
-			if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::RControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt) && !sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt)) {
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
+				return MenuResult::SubmitScore;
+			} 
+			else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::RControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt) && !sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt)) {
 				if (Event.key.code < 26) {
 					std::string newString = _Text.getString().substring(0, _CursorPosition) + (char)(Event.key.code + 97 - 32 * (int)(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition);
 

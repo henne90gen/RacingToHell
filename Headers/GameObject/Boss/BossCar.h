@@ -22,6 +22,8 @@ protected:
 	enum Movement { STILL, DRIVETODEFAULT, LEFTRIGHT, SWITCHSIDES};
 	Movement _Movement;
 
+	sf::Vector2f _DefaultPosition;
+
 	sf::RectangleShape _HealthBar;
 	sf::RectangleShape _HealthBarFrame;
 

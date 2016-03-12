@@ -20,7 +20,5 @@ private:
 	sf::Clock _SwitchSidesClock;
 	float _SwitchSideTime;
 
-	sf::Vector2f _DefaultPosition;
-
 	sf::Vector2f& calcBulletPosition();
 };

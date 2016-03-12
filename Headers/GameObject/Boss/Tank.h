@@ -16,7 +16,6 @@ private:
 	sf::Vector2f _GunPosition;
 	float _GunOrientation, _Radius;
 
-	sf::Vector2f _DefaultPosition;
 	bool _MovementSwitch;
 
 	sf::Vector2f& calcBulletPosition();

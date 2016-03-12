@@ -2,14 +2,13 @@
 #include "GameObject/Boss/BossCar.h"
 
 BossCar::BossCar(sf::Vector2f& Position, int Health, float Speed, sf::Texture& Texture, sf::Texture* BulletTetxure) : Car(Position, Health, Speed, GameObjects::Boss, Texture),
-	_BulletSpeed(500), _BulletTexture(BulletTetxure), _Movement(Movement::STILL), _Attack(false), 
+	_BulletSpeed(500), _BulletTexture(BulletTetxure), _Movement(Movement::STILL), _Attack(false),
 	_Event1Counter(0), _Event2Counter(0), _Event1Frequency(0), _Event2Frequency(0), _Event1Switch(false), _Event2Switch(false), _CurrentPhase(0)
 {
 	_BossEventTimer1.restart();
 	_BossEventTimer2.restart();
 	_PhaseClock.restart();
 
-	_Speed = 0.0f;
 	_Pattern = { std::make_pair(Phase::NOTHING, 1.0f) };
 
 	//HP-Balken

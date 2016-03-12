@@ -2,14 +2,12 @@
 #include "GameObject/Boss/Tank.h"
 
 
-Tank::Tank(sf::Texture& Texture, sf::Texture* BulletTexture) : BossCar(sf::Vector2f(SCREENWIDTH / 2, -1 * (float)Texture.getSize().y / 2.0f), 2000, 400, Texture, BulletTexture),
+Tank::Tank(sf::Texture& Texture, sf::Texture* BulletTexture) : BossCar(sf::Vector2f(SCREENWIDTH / 2, -1 * (float)Texture.getSize().y / 2.0f), 2000, 200, Texture, BulletTexture),
 	_GunOrientation(90), _GunPosition(sf::Vector2f(0.0f, -15.0f)), _Radius(130), _MovementSwitch(false)
 {
 	_GunTexture.loadFromFile("Resources/Texture/BossCar/CannonTank.png");
 	_GunSprite.setTexture(_GunTexture);
 	_GunSprite.setOrigin(_GunTexture.getSize().x / 2, 50);
-
-	_Speed = 200;
 
 	_DefaultPosition = sf::Vector2f(SCREENWIDTH / 2, 150);
 	_NextPosition = _DefaultPosition;
@@ -26,10 +24,7 @@ Tank::~Tank()
 
 void Tank::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects)
 {
-	
-	bool _Arrived = DriveToNextPosition(FrameTime);
-
-	if (_Arrived)
+	if (DriveToNextPosition(FrameTime))
 	{
 		switch (_Movement)
 		{

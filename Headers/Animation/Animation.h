@@ -19,6 +19,8 @@ public:
 
 	AnimationState getAnimationState() { return _AnimState; }
 	sf::Sprite & getSprite() { return _Sprite; }
+
+	void setRotation(float angle) { _Sprite.setRotation(angle); }
 protected:
 	bool nextSprite();
 

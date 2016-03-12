@@ -66,6 +66,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 						i--;
 						break;
 					case GameObjects::Boss:
+						_Animations.push_back(new Explosion(getPlayerCar()->getPos(), _ExplosionTexture));
 						_PlayerAlive = false;
 						break;
 					}

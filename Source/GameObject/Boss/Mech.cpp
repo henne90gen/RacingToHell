@@ -122,11 +122,11 @@ void Mech::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& Game
 				{
 					if (Hand)
 					{
-						ShootBullet(GameObjects, calcGunPositions().first, _GunOrientation - 10 * (i - 2));
+						ShootBullet(GameObjects, calcGunPositions().first, _GunOrientation - 7 * (i - 2));
 					}
 					else
 					{
-						ShootBullet(GameObjects, calcGunPositions().first, _GunOrientation - 10 * (i - 2));
+						ShootBullet(GameObjects, calcGunPositions().first, _GunOrientation - 7 * (i - 2));
 					}
 				}
 			}

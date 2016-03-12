@@ -210,6 +210,12 @@
     <ClInclude Include="Headers\Menu\MenuItems.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Menu\MenuItems.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\GameObject\Boss\Jet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Framework.cpp">
@@ -321,6 +327,9 @@
       <Filter>Source Files\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Source\Collision.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObject\Boss\Jet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

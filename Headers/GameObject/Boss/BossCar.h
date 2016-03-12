@@ -13,13 +13,14 @@ public:
 	virtual void update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects) = 0;
 	virtual void render(sf::RenderWindow& RenderWindow) = 0;
 
+	bool getTraffic() { return _Traffic; }
 protected:
-	enum Phase { NOTHING, SIMPLESHOOT, SALVE, SPIN, HARDCORESPAM, BLASTSALVE, SPIRAL, RANDOMSPRAY, SHOTGUN };
+	enum Phase { NOTHING, SIMPLESHOOT, SALVE, SPIN, HARDCORESPAM, BLASTSALVE, SPIRAL, RANDOMSPRAY, SHOTGUN, SIDE };
 	int _CurrentPhase;
 	std::vector<std::pair<Phase, float>> _Pattern;
 	sf::Clock _PhaseClock;
 
-	enum Movement { STILL, DRIVETODEFAULT, LEFTRIGHT, SWITCHSIDES};
+	enum Movement { STILL, DRIVETODEFAULT, LEFTRIGHT, SWITCHSIDES, STRAIGHT, PARABOLA};
 	Movement _Movement;
 
 	sf::Vector2f _DefaultPosition;
@@ -40,7 +41,7 @@ protected:
 	int getBossEvent();
 
 	sf::Vector2f _NextPosition;
-	bool _Attack;
+	bool _Attack, _Traffic;
 
 	float PlayerAngle(GameObject* Player);
 	void ShootBullet(std::vector<GameObject*>& GameObjects, sf::Vector2f Position, float Direction);

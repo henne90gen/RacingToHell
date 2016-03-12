@@ -3,7 +3,7 @@
 
 // IDEA: Mech comes in from below and "chase" the player
 
-Mech::Mech(sf::Texture& TextureTop, sf::Texture& TextureLegs, sf::Texture* BulletTexture) : BossCar(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), 10000, 100, TextureTop, BulletTexture),
+Mech::Mech(sf::Texture& TextureTop, sf::Texture& TextureLegs, sf::Texture* BulletTexture) : BossCar(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), 2000, 100, TextureTop, BulletTexture),
 	_TopAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), TextureTop), _LegsAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), TextureLegs), _MovementSwitch(false), _GunOrientation(-90),
 	_GunRadius(81.5659f)
 {
@@ -18,7 +18,7 @@ Mech::Mech(sf::Texture& TextureTop, sf::Texture& TextureLegs, sf::Texture* Bulle
 	_NextPosition = _DefaultPosition;
 	_Movement = Movement::DRIVETODEFAULT;
 
-	_Pattern = { std::make_pair(Phase::SPIN, 6.0f), std::make_pair(Phase::SHOTGUN, 7.0f), std::make_pair(Phase::SALVE, 7.0f) };
+	_Pattern = { std::make_pair(Phase::SPIN, 2.0f), std::make_pair(Phase::SHOTGUN, 7.0f), std::make_pair(Phase::SALVE, 7.0f) };
 }
 
 Mech::~Mech()
@@ -72,7 +72,7 @@ void Mech::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& Game
 		{
 			_Event1Frequency = 11.0f;
 
-			_GunOrientation += 60 * FrameTime;
+			_GunOrientation += 180 * FrameTime;
 
 			if (getBossEvent() == 1)
 			{
@@ -140,8 +140,12 @@ void Mech::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& Game
 	_TopAnim.setRotation(_GunOrientation + 90);
 
 	updateHealthBar();
-	checkPhase();
 
+	if (_Movement != Movement::DRIVETODEFAULT)
+	{
+		checkPhase();
+	}
+	
 	_LegsAnim.update(FrameTime);
 	_TopAnim.update(FrameTime);
 }

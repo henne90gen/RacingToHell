@@ -99,7 +99,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 		}
 	}
 
-	if (!_BossFight) 
+	if (!_BossFight || (_BossFight && getBossCar()->getTraffic())) 
 	{
 		if (!_AboutToLevelUp) {
 			//AI-Autos spawnen
@@ -287,7 +287,8 @@ void GameObjectContainer::enterBossFight()
 {
 	//Tank* boss = new Tank(_BossCarTextures[0], &_BulletTexture);
 	//Carrier* boss = new Carrier(_BossCarTextures[1], &_BulletTexture);
-	Mech* boss = new Mech(_BossCarTextures[2], _BossCarTextures[3], &_BulletTexture);
+	//Mech* boss = new Mech(_BossCarTextures[2], _BossCarTextures[3], &_BulletTexture);
+	Jet* boss = new Jet(_BossCarTextures[4], &_BulletTexture);
 	_GameObjects.push_back(boss);
 	_BossFight = true;
 }
@@ -355,11 +356,12 @@ void GameObjectContainer::load()
 				   
 	_ExplosionTexture.loadFromFile("Resources/Texture/Animation/explosion.png");
 
-	_BossCarTextures.resize(4);
+	_BossCarTextures.resize(5);
 	_BossCarTextures[0].loadFromFile("Resources/Texture/BossCar/Tank.png");
 	_BossCarTextures[1].loadFromFile("Resources/Texture/BossCar/Carrier.png");
 	_BossCarTextures[2].loadFromFile("Resources/Texture/BossCar/mech-top.png");
 	_BossCarTextures[3].loadFromFile("Resources/Texture/BossCar/mech-legs.png");
+	_BossCarTextures[4].loadFromFile("Resources/Texture/BossCar/Jet.png");
 }
 
 void GameObjectContainer::setCarSkins(std::vector<sf::Texture*>& CarSkins)

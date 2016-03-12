@@ -42,10 +42,10 @@ void Tank::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& Game
 			}
 			else
 			{
-				_NextPosition = getPos() - sf::Vector2f((getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
-			}
 		default:
 			break;
+				_NextPosition = getPos() - sf::Vector2f((getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
+			}
 		}
 	}
 

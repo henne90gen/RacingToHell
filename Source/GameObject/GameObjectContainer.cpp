@@ -47,7 +47,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 					switch (_GameObjects.at(i)->getType())
 					{
 					case GameObjects::AI:
-						_Animations.push_back(new Explosion(getPlayerCar()->getPos(), _ExplosionTexture));
+						_Animations.push_back(new Explosion(getPlayerCar()->getPos(), _ExplosionTexture, sf::Vector2f(0,0)));
 						_PlayerAlive = false;
 						break;
 					case GameObjects::BulletObjectAI:
@@ -66,7 +66,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 						i--;
 						break;
 					case GameObjects::Boss:
-						_Animations.push_back(new Explosion(getPlayerCar()->getPos(), _ExplosionTexture));
+						_Animations.push_back(new Explosion(getPlayerCar()->getPos(), _ExplosionTexture, sf::Vector2f(0,0)));
 						_PlayerAlive = false;
 						break;
 					}
@@ -74,7 +74,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			}
 			else {
 				if (getPlayerCar()->getHealth() <= 0) {
-					_Animations.push_back(new Explosion(getPlayerCar()->getPos(), _ExplosionTexture));
+					_Animations.push_back(new Explosion(getPlayerCar()->getPos(), _ExplosionTexture, sf::Vector2f(0, 0)));
 					_PlayerAlive = false;
 				}
 				else if (getPlayerCar()->getEnergy() <= 0) {
@@ -120,7 +120,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			if (_GameObjects.at(i)->getType() == GameObjects::AI && dynamic_cast<AICar*>(_GameObjects.at(i))->getHealth() <= 0)
 			{
 				_CarScore += (int)(1.5 * dynamic_cast<AICar*>(_GameObjects.at(i))->getMaxHealth());
-				_Animations.push_back(new Explosion(sf::Vector2f(_GameObjects.at(i)->getPos()), _ExplosionTexture));
+				_Animations.push_back(new Explosion(sf::Vector2f(_GameObjects.at(i)->getPos()), _ExplosionTexture, sf::Vector2f(0, dynamic_cast<AICar*>(_GameObjects[i])->getSpeed())));
 				deleteObject(i);
 				i--;
 			}

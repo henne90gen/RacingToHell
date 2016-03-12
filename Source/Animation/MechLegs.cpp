@@ -18,5 +18,5 @@ void MechLegs::render(sf::RenderWindow & Window) {
 
 void MechLegs::update(float FrameTime)
 {
-
+	
 }

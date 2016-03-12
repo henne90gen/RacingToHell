@@ -15,5 +15,11 @@ public:
 private:
 	MechTop _TopAnim;
 	MechLegs _LegsAnim;
+
+	sf::Vector2f _DefaultPosition;
+	bool _MovementSwitch;
+
+	std::pair<sf::Vector2f, sf::Vector2f> _GunPositions;
+	float _GunOrientation;
 };
 

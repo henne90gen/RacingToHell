@@ -36,120 +36,123 @@ void Mech::render(sf::RenderWindow & Window)
 
 void Mech::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects)
 {
-	bool _Arrived = DriveToNextPosition(FrameTime);
-
-	if (_Arrived)
-	{
-		switch (_Movement)
+	if (!_IsExploding) {
+		if (DriveToNextPosition(FrameTime))
 		{
-		case BossCar::DRIVETODEFAULT:
-			_Movement = Movement::LEFTRIGHT;
-			_Attack = true;
-			_PhaseClock.restart();
-			break;
-		case BossCar::LEFTRIGHT:
-			_MovementSwitch = !_MovementSwitch;
-
-			if (_MovementSwitch)
+			switch (_Movement)
 			{
-			_NextPosition = getPos() + sf::Vector2f((SCREENWIDTH - getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
-			}
-			else
-			{
-			_NextPosition = getPos() - sf::Vector2f((getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
-			}
-			break; 
-		default:
-			break;
-		}
-	}
+			case BossCar::DRIVETODEFAULT:
+				_Movement = Movement::LEFTRIGHT;
+				_Attack = true;
+				_PhaseClock.restart();
+				break;
+			case BossCar::LEFTRIGHT:
+				_MovementSwitch = !_MovementSwitch;
 
-	if (_Attack)
-	{
-		switch (_Pattern[_CurrentPhase].first)
-		{
-		case Phase::SPIN:
-		{
-			_Event1Frequency = 11.0f;
-
-			_GunOrientation += 180 * FrameTime;
-
-			if (getBossEvent() == 1)
-			{
-				std::pair<sf::Vector2f, sf::Vector2f> Positions = calcGunPositions();
-
-				ShootBullet(GameObjects, Positions.first, _GunOrientation);
-				ShootBullet(GameObjects, Positions.second, _GunOrientation);
-			}
-			break;
-		}
-		case Phase::SHOTGUN:
-		{
-			_Event1Frequency = 1.5f;
-
-			_GunOrientation = PlayerAngle(GameObjects[0]);
-
-			if (getBossEvent() == 1)
-			{
-				bool Hand = (std::rand() % 100) > 50;
-				for (int i = 0; i < 10; i++)
+				if (_MovementSwitch)
 				{
-				 
-					if (Hand)
+					_NextPosition = getPos() + sf::Vector2f((SCREENWIDTH - getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
+				}
+				else
+				{
+					_NextPosition = getPos() - sf::Vector2f((getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
+				}
+				break;
+			default:
+				break;
+			}
+		}
+
+		if (_Attack)
+		{
+			switch (_Pattern[_CurrentPhase].first)
+			{
+			case Phase::SPIN:
+			{
+				_Event1Frequency = 11.0f;
+
+				_GunOrientation += 180 * FrameTime;
+
+				if (getBossEvent() == 1)
+				{
+					std::pair<sf::Vector2f, sf::Vector2f> Positions = calcGunPositions();
+
+					ShootBullet(GameObjects, Positions.first, _GunOrientation);
+					ShootBullet(GameObjects, Positions.second, _GunOrientation);
+				}
+				break;
+			}
+			case Phase::SHOTGUN:
+			{
+				_Event1Frequency = 1.5f;
+
+				_GunOrientation = PlayerAngle(GameObjects[0]);
+
+				if (getBossEvent() == 1)
+				{
+					bool Hand = (std::rand() % 100) > 50;
+					for (int i = 0; i < 10; i++)
 					{
-						ShootBullet(GameObjects, calcGunPositions().first, (_GunOrientation - 12.5) + 25 * (std::rand() % 100) / 100, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed));
+
+						if (Hand)
+						{
+							ShootBullet(GameObjects, calcGunPositions().first, (_GunOrientation - 12.5) + 25 * (std::rand() % 100) / 100, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed));
+						}
+						else
+						{
+							ShootBullet(GameObjects, calcGunPositions().second, (_GunOrientation - 12.5) + 25 * (std::rand() % 100) / 100, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed));
+						}
 					}
-					else
+
+					_Event1Switch = !_Event1Switch;
+				}
+				break;
+			}
+			case Phase::SALVE:
+			{
+				_Event1Frequency = 1.5f;
+
+				_GunOrientation = PlayerAngle(GameObjects[0]);
+
+				if (getBossEvent() == 1)
+				{
+					bool Hand = (std::rand() % 100) > 50;
+
+					for (int i = 0; i < 5; i++)
 					{
-						ShootBullet(GameObjects, calcGunPositions().second, (_GunOrientation - 12.5) + 25 * (std::rand() % 100) / 100, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed));
+						if (Hand)
+						{
+							ShootBullet(GameObjects, calcGunPositions().first, _GunOrientation - 7 * (i - 2));
+						}
+						else
+						{
+							ShootBullet(GameObjects, calcGunPositions().first, _GunOrientation - 7 * (i - 2));
+						}
 					}
 				}
-
-				_Event1Switch = !_Event1Switch;
+				break;
 			}
-			break;
+			default:
+				break;
+			}
 		}
-		case Phase::SALVE:
+
+		_TopAnim.setRotation(_GunOrientation + 90);
+		_LegsAnim.setRotation(_GunOrientation + 90);
+
+		updateHealthBar();
+
+		if (_Movement != Movement::DRIVETODEFAULT)
 		{
-			_Event1Frequency = 1.5f;
-
-			_GunOrientation = PlayerAngle(GameObjects[0]);
-
-			if (getBossEvent() == 1)
-			{
-				bool Hand = (std::rand() % 100) > 50;
-		
-				for (int i = 0; i < 5; i++)
-				{
-					if (Hand)
-					{
-						ShootBullet(GameObjects, calcGunPositions().first, _GunOrientation - 7 * (i - 2));
-					}
-					else
-					{
-						ShootBullet(GameObjects, calcGunPositions().first, _GunOrientation - 7 * (i - 2));
-					}
-				}
-			}
-			break;
+			checkPhase();
 		}
-		default:
-			break;
-		}
+
+		_LegsAnim.update(FrameTime);
+		_TopAnim.update(FrameTime);
 	}
-
-	_TopAnim.setRotation(_GunOrientation + 90);
-	_LegsAnim.setRotation(_GunOrientation + 90);
-
-	updateHealthBar();
-
-	if (_Movement != Movement::DRIVETODEFAULT)
-	{
-	checkPhase();
+	else {
+		updateExplosions(FrameTime);
 	}
-
-	_LegsAnim.update(FrameTime);
-	_TopAnim.update(FrameTime);
 }
 
 void Mech::setPos(sf::Vector2f pos) {

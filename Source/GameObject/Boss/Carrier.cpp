@@ -21,169 +21,174 @@ Carrier::~Carrier()
 
 void Carrier::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects)
 {
-	if (DriveToNextPosition(FrameTime))
-	{
-		switch (_Movement)
+	if (!_IsExploding) {
+		if (DriveToNextPosition(FrameTime))
 		{
-		case Movement::DRIVETODEFAULT:
-			_Movement = Movement::LEFTRIGHT;
-			_Speed = 200;
-			_Attack = true;
-			_PhaseClock.restart();
-			_SwitchSidesClock.restart();
-			break;
-		case Movement::LEFTRIGHT:
-			_Attack = true;
-			_MovementSwitchLeftRight = !_MovementSwitchLeftRight;
-
-			if (_MovementSwitchLeftRight)
+			switch (_Movement)
 			{
-				_NextPosition = getPos() + sf::Vector2f((SCREENWIDTH - getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
-			}
-			else
-			{
-				_NextPosition = getPos() - sf::Vector2f((getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
-			}
+			case Movement::DRIVETODEFAULT:
+				_Movement = Movement::LEFTRIGHT;
+				_Speed = 200;
+				_Attack = true;
+				_PhaseClock.restart();
+				_SwitchSidesClock.restart();
+				break;
+			case Movement::LEFTRIGHT:
+				_Attack = true;
+				_MovementSwitchLeftRight = !_MovementSwitchLeftRight;
 
-			if (_SwitchSidesClock.getElapsedTime().asSeconds() >= _SwitchSideTime)
-			{
-				_Movement = Movement::SWITCHSIDES;
-				_NextPosition = sf::Vector2f(getWidth() / 2 + (SCREENWIDTH - getWidth()) * (std::rand() % 100) / 100, ((int)(!_MovementSwitchUpDown) * (SCREENHEIGHT - 2 * _DefaultPosition.y)) + _DefaultPosition.y);
-				_Speed = 450;
-				_Attack = false;
-				_MovementSwitchUpDown = !_MovementSwitchUpDown;
-			}
-			break;
-		case Movement::SWITCHSIDES:
-			_Movement = Movement::LEFTRIGHT;
-			_Attack = true;
-			_Speed = 200;
-			_SwitchSidesClock.restart();
-			_BossEventTimer1.restart();
-			_BossEventTimer2.restart();
-			_Event1Switch = false;
-			_Event2Switch = false;
-			_Event2Counter = 0;
-			_Event1Counter = 0;
-			break;
-		default:
-			break;
-		}
-	}
-
-	if (_Movement == Movement::SWITCHSIDES)
-	{
-		getSprite().setRotation((getPos().y - _DefaultPosition.y) * 180 / (SCREENHEIGHT - 2 * _DefaultPosition.y));
-	}
-
-	_GunOrientation = PlayerAngle(GameObjects[0]);
-
-	if (_Attack)
-	{
-		switch (_Pattern[_CurrentPhase].first)
-		{
-		case Phase::BLASTSALVE:
-		{
-			_Event1Frequency = 0.4f;
-			_Event2Frequency = 7.0f;
-
-			if (_Event1Switch)
-			{
-				if (getBossEvent() == 2)
+				if (_MovementSwitchLeftRight)
 				{
-					for (int i = 2 * _Event1Counter; i <= 360; i += 20)
-					{
-						ShootBullet(GameObjects, getPos(), (float)i);
-					}
+					_NextPosition = getPos() + sf::Vector2f((SCREENWIDTH - getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
+				}
+				else
+				{
+					_NextPosition = getPos() - sf::Vector2f((getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
+				}
 
-					if (_Event1Counter + 1 < 5)
+				if (_SwitchSidesClock.getElapsedTime().asSeconds() >= _SwitchSideTime)
+				{
+					_Movement = Movement::SWITCHSIDES;
+					_NextPosition = sf::Vector2f(getWidth() / 2 + (SCREENWIDTH - getWidth()) * (std::rand() % 100) / 100, ((int)(!_MovementSwitchUpDown) * (SCREENHEIGHT - 2 * _DefaultPosition.y)) + _DefaultPosition.y);
+					_Speed = 450;
+					_Attack = false;
+					_MovementSwitchUpDown = !_MovementSwitchUpDown;
+				}
+				break;
+			case Movement::SWITCHSIDES:
+				_Movement = Movement::LEFTRIGHT;
+				_Attack = true;
+				_Speed = 200;
+				_SwitchSidesClock.restart();
+				_BossEventTimer1.restart();
+				_BossEventTimer2.restart();
+				_Event1Switch = false;
+				_Event2Switch = false;
+				_Event2Counter = 0;
+				_Event1Counter = 0;
+				break;
+			default:
+				break;
+			}
+		}
+
+		if (_Movement == Movement::SWITCHSIDES)
+		{
+			getSprite().setRotation((getPos().y - _DefaultPosition.y) * 180 / (SCREENHEIGHT - 2 * _DefaultPosition.y));
+		}
+
+		_GunOrientation = PlayerAngle(GameObjects[0]);
+
+		if (_Attack)
+		{
+			switch (_Pattern[_CurrentPhase].first)
+			{
+			case Phase::BLASTSALVE:
+			{
+				_Event1Frequency = 0.4f;
+				_Event2Frequency = 7.0f;
+
+				if (_Event1Switch)
+				{
+					if (getBossEvent() == 2)
 					{
-						_Event1Counter += 1;
-					}
-					else
-					{
-						_Event1Switch = false;
-						_Event1Counter = 0;
+						for (int i = 2 * _Event1Counter; i <= 360; i += 20)
+						{
+							ShootBullet(GameObjects, getPos(), (float)i);
+						}
+
+						if (_Event1Counter + 1 < 5)
+						{
+							_Event1Counter += 1;
+						}
+						else
+						{
+							_Event1Switch = false;
+							_Event1Counter = 0;
+						}
 					}
 				}
+				else
+				{
+					if (getBossEvent() == 1)
+					{
+						_Event1Switch = true;
+					}
+				}
+				break;
 			}
-			else
+			case Phase::SPIRAL:
 			{
+				_Event1Frequency = 3.0f;
+				_Event2Frequency = 10.0f;
+
+				_GunOrientation = 90;
+
+				if (_Event1Switch)
+				{
+					if (getBossEvent() == 2)
+					{
+						for (float i = 0.0f; i < 360.0f; i += 36.0f)
+						{
+							sf::Vector2f Position = getPos() + sf::Vector2f(50.0f * std::cosf(i / 180 * PI), 50.0f * std::sinf(i / 180 * PI));
+							float Orientation = 90 + i;
+
+							ShootBullet(GameObjects, Position, Orientation);
+						}
+					}
+				}
+				else
+				{
+					if (getBossEvent() == 1)
+					{
+						_Event1Switch = true;
+					}
+				}
+				break;
+			}
+			case Phase::RANDOMSPRAY:
+			{
+				_Event1Frequency = 0.8f;
+
 				if (getBossEvent() == 1)
 				{
-					_Event1Switch = true;
-				}
-			}
-			break;
-		}
-		case Phase::SPIRAL:
-		{
-			_Event1Frequency = 3.0f;
-			_Event2Frequency = 10.0f;
-
-			_GunOrientation = 90;
-
-			if (_Event1Switch)
-			{
-				if (getBossEvent() == 2)
-				{
-					for (float i = 0.0f; i < 360.0f; i += 36.0f)
+					for (float i = -30.0f; i < 240.0f; i += 10.0f)
 					{
 						sf::Vector2f Position = getPos() + sf::Vector2f(50.0f * std::cosf(i / 180 * PI), 50.0f * std::sinf(i / 180 * PI));
-						float Orientation = 90 + i;
+						float Orientation = (std::rand() % 270) - 30.0f;
 
 						ShootBullet(GameObjects, Position, Orientation);
 					}
 				}
+				break;
 			}
-			else
+			case Phase::HARDCORESPAM:
 			{
+				_Event1Frequency = 60.0f;
+
 				if (getBossEvent() == 1)
 				{
-					_Event1Switch = true;
+					float Orientation = (std::rand() % 360);
+					_GunOrientation = Orientation;
+
+					ShootBullet(GameObjects, calcBulletPosition(), Orientation);
 				}
+				break;
 			}
-			break;
-		}
-		case Phase::RANDOMSPRAY:
-		{
-			_Event1Frequency = 0.8f;
-
-			if (getBossEvent() == 1)
-			{
-				for (float i = -30.0f; i < 240.0f; i += 10.0f)
-				{
-					sf::Vector2f Position = getPos() + sf::Vector2f(50.0f * std::cosf(i / 180 * PI), 50.0f * std::sinf(i / 180 * PI));
-					float Orientation = (std::rand() % 270) - 30.0f;
-
-					ShootBullet(GameObjects, Position, Orientation);
-				}
+			default:
+				break;
 			}
-			break;
 		}
-		case Phase::HARDCORESPAM:
-		{
-			_Event1Frequency = 60.0f;
 
-			if (getBossEvent() == 1)
-			{
-				float Orientation = (std::rand() % 360);
-				_GunOrientation = Orientation;
+		_GunSprite.setPosition(getPos() + _GunPosition);
+		_GunSprite.setRotation(_GunOrientation - 90);
 
-				ShootBullet(GameObjects, calcBulletPosition(), Orientation);
-			}
-			break;
-		}
-		default:
-			break;
-		}
+		updateHealthBar();
+		checkPhase();
 	}
-
-	_GunSprite.setPosition(getPos() + _GunPosition);
-	_GunSprite.setRotation(_GunOrientation - 90);
-
-	updateHealthBar();
-	checkPhase();
+	else {
+		updateExplosions(FrameTime);
+	}
 }
 
 void Carrier::render(sf::RenderWindow & RenderWindow)

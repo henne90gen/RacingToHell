@@ -2,7 +2,7 @@
 #include "GameObject/Boss/Tank.h"
 
 
-Tank::Tank(sf::Texture& Texture, sf::Texture& BulletTexture) : BossCar(sf::Vector2f(SCREENWIDTH / 2, -1 * (float)Texture.getSize().y / 2.0f), 2000, 200, Texture, BulletTexture),
+Tank::Tank(sf::Texture& Texture, sf::Texture& BulletTexture) : BossCar(sf::Vector2f(SCREENWIDTH / 2, -1 * (float)Texture.getSize().y / 2.0f), 50, 200, Texture, BulletTexture),
 	_GunOrientation(90), _GunPosition(sf::Vector2f(0.0f, -15.0f)), _Radius(130), _MovementSwitch(false)
 {
 	_GunTexture.loadFromFile("Resources/Texture/BossCar/CannonTank.png");
@@ -14,7 +14,6 @@ Tank::Tank(sf::Texture& Texture, sf::Texture& BulletTexture) : BossCar(sf::Vecto
 	_Movement = Movement::DRIVETODEFAULT;
 
 	_Pattern = {std::make_pair(Phase::SIMPLESHOOT, 4.0f), std::make_pair(Phase::SALVE, 10.0f), std::make_pair(Phase::SPIN, 10.0f), std::make_pair(Phase::HARDCORESPAM, 6.0f)};
-	//_Pattern = { std::make_pair(Phase::SPIN, 10.0f) };
 }
 
 Tank::~Tank()
@@ -24,132 +23,139 @@ Tank::~Tank()
 
 void Tank::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects)
 {
-	if (DriveToNextPosition(FrameTime))
-	{
-		switch (_Movement)
+	if (!_IsExploding) {
+		if (DriveToNextPosition(FrameTime))
 		{
-		case Movement::DRIVETODEFAULT:
-			_Movement = Movement::LEFTRIGHT;
-			_Speed = 200;
-			_Attack = true;
-			_PhaseClock.restart();
-		case Movement::LEFTRIGHT:
-			_MovementSwitch = !_MovementSwitch;
-			
-			if (_MovementSwitch)
+			switch (_Movement)
 			{
-				_NextPosition = getPos() + sf::Vector2f((SCREENWIDTH - getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
-			}
-			else
-			{
-		default:
-			break;
-				_NextPosition = getPos() - sf::Vector2f((getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
-			}
-		}
-	}
+			case Movement::DRIVETODEFAULT:
+				_Movement = Movement::LEFTRIGHT;
+				_Speed = 200;
+				_Attack = true;
+				_PhaseClock.restart();
+			case Movement::LEFTRIGHT:
+				_MovementSwitch = !_MovementSwitch;
 
-	if (_Attack)
-	{
-		switch (_Pattern[_CurrentPhase].first)
-		{
-		case Phase::SIMPLESHOOT:
-		{
-			_Event1Frequency = 4.0f;
-
-			_GunOrientation = PlayerAngle(GameObjects[0]);
-
-			if (getBossEvent() == 1)
-			{
-				ShootBullet(GameObjects, calcBulletPosition(), _GunOrientation);
-			}
-			break;
-		}
-		case Phase::SALVE:
-		{
-			_Event1Frequency = 1.0f;
-			_Event2Frequency = 10.0f;
-
-			_GunOrientation = PlayerAngle(GameObjects[0]);
-
-			if (_Event1Switch)
-			{
-				if (getBossEvent() == 2)
+				if (_MovementSwitch)
 				{
-					ShootBullet(GameObjects, calcBulletPosition(), _GunOrientation);
-
-					if (_Event1Counter + 1 < 3)
-					{
-						_Event1Counter += 1;
-					}
-					else
-					{
-						_Event1Switch = false;
-						_Event1Counter = 0;
-					}
+					_NextPosition = getPos() + sf::Vector2f((SCREENWIDTH - getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
+				}
+				else
+				{
+			default:
+				break;
+				_NextPosition = getPos() - sf::Vector2f((getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
 				}
 			}
-			else
+		}
+
+		if (_Attack)
+		{
+			switch (_Pattern[_CurrentPhase].first)
 			{
+			case Phase::SIMPLESHOOT:
+			{
+				_Event1Frequency = 4.0f;
+
+				_GunOrientation = PlayerAngle(GameObjects[0]);
+
 				if (getBossEvent() == 1)
 				{
-					_Event1Switch = true;
+					ShootBullet(GameObjects, calcBulletPosition(), _GunOrientation);
 				}
+				break;
 			}
-			break;
-		}
-		case Phase::SPIN:
-		{
-			_Event1Frequency = 11.0f;
-
-			if (_GunOrientation > 180.0f || _GunOrientation < 0.0f)
+			case Phase::SALVE:
 			{
-				_GunOrientation = (int)(!_Event1Switch) * 180.0f;
-				_Event1Switch = !_Event1Switch;
-			}
-			else
-			{
-				_GunOrientation += 100.0f * FrameTime * std::pow(-1, (int)_Event1Switch);
-			}
+				_Event1Frequency = 1.0f;
+				_Event2Frequency = 10.0f;
 
-			if (getBossEvent() == 1)
-			{
-				ShootBullet(GameObjects, calcBulletPosition(), _GunOrientation);
-			}
-			break;
-		}
-		case Phase::HARDCORESPAM:
-		{
-			_Event1Frequency = 40.0f;
+				_GunOrientation = PlayerAngle(GameObjects[0]);
 
-			if (getBossEvent() == 1)
-			{
-				float Orientation = (std::rand() % 270) - 30.0f;
-				_GunOrientation = Orientation;
+				if (_Event1Switch)
+				{
+					if (getBossEvent() == 2)
+					{
+						ShootBullet(GameObjects, calcBulletPosition(), _GunOrientation);
 
-				ShootBullet(GameObjects, calcBulletPosition(), Orientation);
+						if (_Event1Counter + 1 < 3)
+						{
+							_Event1Counter += 1;
+						}
+						else
+						{
+							_Event1Switch = false;
+							_Event1Counter = 0;
+						}
+					}
+				}
+				else
+				{
+					if (getBossEvent() == 1)
+					{
+						_Event1Switch = true;
+					}
+				}
+				break;
 			}
-			break;
+			case Phase::SPIN:
+			{
+				_Event1Frequency = 11.0f;
+
+				if (_GunOrientation > 180.0f || _GunOrientation < 0.0f)
+				{
+					_GunOrientation = (int)(!_Event1Switch) * 180.0f;
+					_Event1Switch = !_Event1Switch;
+				}
+				else
+				{
+					_GunOrientation += 100.0f * FrameTime * std::pow(-1, (int)_Event1Switch);
+				}
+
+				if (getBossEvent() == 1)
+				{
+					ShootBullet(GameObjects, calcBulletPosition(), _GunOrientation);
+				}
+				break;
+			}
+			case Phase::HARDCORESPAM:
+			{
+				_Event1Frequency = 40.0f;
+
+				if (getBossEvent() == 1)
+				{
+					float Orientation = (std::rand() % 270) - 30.0f;
+					_GunOrientation = Orientation;
+
+					ShootBullet(GameObjects, calcBulletPosition(), Orientation);
+				}
+				break;
+			}
+			default:
+				break;
+			}
 		}
-		default:
-			break;
-		}
+
+		_GunSprite.setPosition(getPos() + _GunPosition);
+		_GunSprite.setRotation(_GunOrientation - 90);
+
+		updateHealthBar();
+		checkPhase();
 	}
-	
-	_GunSprite.setPosition(getPos() + _GunPosition);
-	_GunSprite.setRotation(_GunOrientation - 90);
-
-	updateHealthBar();
-	checkPhase();
+	else {
+		updateExplosions(FrameTime);
+	}
 }
 
-void Tank::render(sf::RenderWindow& RenderWindow)
+void Tank::render(sf::RenderWindow& Window)
 {
-	RenderWindow.draw(getSprite());
-	RenderWindow.draw(_GunSprite);
+	Window.draw(getSprite());
+	Window.draw(_GunSprite);
 
-	RenderWindow.draw(_HealthBar);
-	RenderWindow.draw(_HealthBarFrame);
+	Window.draw(_HealthBar);
+	Window.draw(_HealthBarFrame);
+
+	renderExplosions(Window);
 }
 
 sf::Vector2f& Tank::calcBulletPosition()

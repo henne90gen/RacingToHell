@@ -5,11 +5,12 @@
 PauseMenu::PauseMenu() : Menu(GameState::Pause)
 {
 	//Menu-Items
-	sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
+	sf::Vector2f ButtonSize = sf::Vector2f(250, 50);
 
 	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 240), ButtonSize, MenuResult::Resume, "Resume", TextAlignment::Center));
 	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 310), ButtonSize, MenuResult::Option, "Options", TextAlignment::Center));
-	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 380), ButtonSize, MenuResult::Exit, "Exit", TextAlignment::Center));
+	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 380), ButtonSize, MenuResult::Back, "Main Menu", TextAlignment::Center));
+	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 450), ButtonSize, MenuResult::Exit, "Exit", TextAlignment::Center));
 
 	//Menu-Text
 	_Text.setString("Pause Menu");
@@ -61,6 +62,9 @@ GameState PauseMenu::handleMenuItemResult(MenuResult result)
 		break;
 	case MenuResult::Option:
 		return GameState::Options;
+		break;
+	case MenuResult::Back:
+		return GameState::Main;
 		break;
 	case MenuResult::Exit:
 		return GameState::Exiting;

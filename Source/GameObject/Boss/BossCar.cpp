@@ -2,7 +2,7 @@
 #include "GameObject/Boss/BossCar.h"
 
 BossCar::BossCar(sf::Vector2f& Position, int Health, float Speed, sf::Texture& Texture, sf::Texture& BulletTetxure) : Car(Position, Health, Speed, GameObjects::Boss, Texture),
-	_BulletSpeed(500), _BulletTexture(BulletTetxure), _Movement(Movement::STILL), _Attack(false), _Traffic(false),
+	_BulletSpeed(500), _BulletTexture(BulletTetxure), _Movement(Movement::STILL), _Attack(false), _Traffic(false), _IsExploding(false),
 	_Event1Counter(0), _Event2Counter(0), _Event1Frequency(0), _Event2Frequency(0), _Event1Switch(false), _Event2Switch(false), _CurrentPhase(0)
 {
 	_BossEventTimer1.restart();
@@ -108,4 +108,51 @@ void BossCar::checkPhase()
 
 		_PhaseClock.restart();
 	}
+}
+
+void BossCar::renderExplosions(sf::RenderWindow & Window)
+{
+	if (_IsExploding) {
+		for (int i = 0; i < _Explosions.size(); i++) {
+			_Explosions[i]->render(Window);
+		}
+	}
+}
+
+void BossCar::updateExplosions(float FrameTime)
+{
+	for (int i = 0; i < _Explosions.size(); i++) {
+		_Explosions[i]->update(FrameTime);
+	}
+}
+
+bool BossCar::isDoneExploding(sf::Texture& ExplosionTexture)
+{
+	if (_Health <= 0 && !_IsExploding) {
+		_IsExploding = 1;
+		_ExplosionTimer.restart();
+	}
+	if (_Health <= 0 && _IsExploding && _ExplosionTimer.getElapsedTime().asSeconds() > 0.2) {
+		_ExplosionTimer.restart();
+		sf::Vector2f position = sf::Vector2f(0, 0);
+		switch (_Explosions.size()) {
+		case 1:
+			position = sf::Vector2f(getWidth() / 3.0f, getHeight() / 3.0f);
+			break;
+		case 2:
+			position = sf::Vector2f(getWidth() / 3.0f, getHeight() / -3.0f);
+			break;
+		case 3:
+			position = sf::Vector2f(getWidth() / -3.0f, getHeight() / -3.0f);
+			break;
+		case 4:
+			position = sf::Vector2f(getWidth() / -3.0f, getHeight() / 3.0f);
+			break;
+		}
+		_Explosions.push_back(new Explosion(getPos() + position, ExplosionTexture, sf::Vector2f(0, 0)));
+	}
+	if (_Explosions.size() >= 5) {
+		_IsExploding = 2;
+	}
+	return (_Health <= 0 && _IsExploding == 2);
 }

@@ -20,6 +20,7 @@ Jet::~Jet()
 
 void Jet::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects)
 {
+	if (!_IsExploding) {
 	if (_Movement != Movement::STILL && DriveToNextPosition(FrameTime))
 	{
 		_BossEventTimer1.restart();
@@ -83,6 +84,10 @@ void Jet::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameO
 	
 	checkPhase();
 	updateHealthBar();
+}
+	else {
+		updateExplosions(FrameTime);
+	}
 }
 
 void Jet::render(sf::RenderWindow & RenderWindow)

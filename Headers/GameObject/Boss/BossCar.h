@@ -3,6 +3,7 @@
 #include "GameObject\Car.h"
 #include "GameObject\GameObjects.h"
 #include "GameObject\Bullet.h"
+#include "Animation\Explosion.h"
 
 class BossCar : public Car
 {
@@ -14,6 +15,8 @@ public:
 	virtual void render(sf::RenderWindow& RenderWindow) = 0;
 
 	bool getTraffic() { return _Traffic; }
+
+	bool isDoneExploding(sf::Texture& ExplosionTexture);
 protected:
 	enum Phase { NOTHING, SIMPLESHOOT, SALVE, SPIN, HARDCORESPAM, BLASTSALVE, SPIRAL, RANDOMSPRAY, SHOTGUN, SIDE, POWERUPLANES };
 	int _CurrentPhase;
@@ -32,6 +35,10 @@ protected:
 
 	int const _BulletSpeed;
 
+	std::vector<Explosion*> _Explosions;
+	sf::Clock _ExplosionTimer;
+	int _IsExploding;
+
 	sf::Clock _BossEventTimer1;
 	sf::Clock _BossEventTimer2;
 	float _Event1Frequency, _Event2Frequency;
@@ -49,4 +56,6 @@ protected:
 	bool DriveToNextPosition(float FrameTime);
 	void updateHealthBar();
 	void checkPhase();
+	void renderExplosions(sf::RenderWindow& Window);
+	void updateExplosions(float FrameTime);
 };

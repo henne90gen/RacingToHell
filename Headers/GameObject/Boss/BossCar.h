@@ -30,7 +30,7 @@ protected:
 
 	sf::Texture _BulletTexture;
 
-	int _BulletSpeed;
+	int const _BulletSpeed;
 
 	sf::Clock _BossEventTimer1;
 	sf::Clock _BossEventTimer2;
@@ -46,7 +46,7 @@ protected:
 	float PlayerAngle(GameObject* Player);
 	void ShootBullet(std::vector<GameObject*>& GameObjects, sf::Vector2f Position, float Direction);
 	void ShootBullet(std::vector<GameObject*>& GameObjects, sf::Vector2f Position, float Direction, int BulletSpeed);
-	bool BossCar::DriveToNextPosition(float FrameTime);
+	bool DriveToNextPosition(float FrameTime);
 	void updateHealthBar();
 	void checkPhase();
 };

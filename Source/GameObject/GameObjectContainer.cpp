@@ -353,7 +353,7 @@ void GameObjectContainer::load()
 	
 	_ExplosionTexture.loadFromFile("Resources/Texture/Animation/explosion.png");
 
-	std::string bossTextures[] = 
+	std::vector<std::string> bossTextures = 
 	{ 
 		"Tank", 
 		"Carrier", 
@@ -361,7 +361,7 @@ void GameObjectContainer::load()
 		"Jet"
 	};
 
-	for (int i = 0; i < bossTextures->size(); i++) {
+	for (int i = 0; i < bossTextures.size(); i++) {
 		sf::Texture* texture = new sf::Texture();
 		texture->loadFromFile("Resources/Texture/BossCar/" + bossTextures[i] + ".png");
 		_BossCarTextures.push_back(texture);

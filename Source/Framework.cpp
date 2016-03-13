@@ -112,6 +112,9 @@ void Framework::handleEvents()
 			_Clock.restart();
 			_Level.resetTimer();
 		}
+		else if (_GameState == GameState::Main) {
+			_GameObjectContainer.resetGameObjects(_CurrentCarSkinIndex);
+		}
 		break;
 	case GameState::Main:
 		_OptionsMenu.setReturnState(_GameState);
@@ -262,9 +265,6 @@ void Framework::playSounds() {
 	else if (_GameState == GameState::GameOver) {
 		_Level.stopMusic();
 		_GameOverScreen.playSounds();
-	}
-	else if (_GameState == GameState::LevelUp) {
-		_LevelUpScreen.render(_RenderWindow);
 	}
 }
 

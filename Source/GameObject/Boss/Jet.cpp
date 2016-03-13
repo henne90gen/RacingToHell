@@ -18,44 +18,49 @@ Jet::~Jet()
 
 void Jet::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects)
 {
-	if (DriveToNextPosition(FrameTime))
-	{
-		_Attack = true;
-		_PhaseClock.restart();
-	}
-
-	if (_Attack)
-	{
-		switch (_Pattern[_CurrentPhase].first)
+	if (!_IsExploding) {
+		if (DriveToNextPosition(FrameTime))
 		{
-		case Phase::SIDE:
-		{
-			_Event1Frequency = 0.4f;
+			_Attack = true;
+			_PhaseClock.restart();
+		}
 
-			if (getBossEvent() == 1)
+		if (_Attack)
+		{
+			switch (_Pattern[_CurrentPhase].first)
 			{
-				for (int i = -40; i <= SCREENHEIGHT; i += 200)
+			case Phase::SIDE:
+			{
+				_Event1Frequency = 0.4f;
+
+				if (getBossEvent() == 1)
 				{
-					ShootBullet(GameObjects, sf::Vector2f(0, i), 0.0f);
-					ShootBullet(GameObjects, sf::Vector2f(SCREENWIDTH, i + 100), 180.0f);
+					for (int i = -40; i <= SCREENHEIGHT; i += 200)
+					{
+						ShootBullet(GameObjects, sf::Vector2f(0, i), 0.0f);
+						ShootBullet(GameObjects, sf::Vector2f(SCREENWIDTH, i + 100), 180.0f);
+					}
+
+					_Attack = false;
+					RandomPosition();
 				}
-
-				_Attack = false;
-				RandomPosition();
+				break;
 			}
-			break;
+			default:
+				break;
+			}
 		}
-		default:
-			break;
-		}
-	}
 
-	if (_Movement == Movement::PARABOLA)
-	{
-		setPos(getPos() + sf::Vector2f(0, (float)RoadSpeed * FrameTime));
+		if (_Movement == Movement::PARABOLA)
+		{
+			setPos(getPos() + sf::Vector2f(0, (float)RoadSpeed * FrameTime));
+		}
+
+		updateHealthBar();
 	}
-	
-	updateHealthBar();
+	else {
+		updateExplosions(FrameTime);
+	}
 }
 
 void Jet::render(sf::RenderWindow & RenderWindow)

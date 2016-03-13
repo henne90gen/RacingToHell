@@ -51,8 +51,10 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 					switch (_GameObjects.at(i)->getType())
 					{
 					case GameObjects::AI:
-						_Animations.push_back(new Explosion(getPlayerCar()->getPos(), _ExplosionTexture, sf::Vector2f(0,0)));
-						_PlayerAlive = false;
+						if (!_AboutToLevelUp) {
+							_Animations.push_back(new Explosion(getPlayerCar()->getPos(), _ExplosionTexture, sf::Vector2f(0, 0)));
+							_PlayerAlive = false;
+						}
 						break;
 					case GameObjects::BulletObjectAI:
 						getPlayerCar()->takeDamage(5);
@@ -70,8 +72,10 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 						i--;
 						break;
 					case GameObjects::Boss:
-						_Animations.push_back(new Explosion(getPlayerCar()->getPos(), _ExplosionTexture, sf::Vector2f(0,0)));
-						_PlayerAlive = false;
+						if (!_AboutToLevelUp) {
+							_Animations.push_back(new Explosion(getPlayerCar()->getPos(), _ExplosionTexture, sf::Vector2f(0, 0)));
+							_PlayerAlive = false;
+						}
 						break;
 					}
 				}
@@ -276,8 +280,13 @@ void GameObjectContainer::playSounds()
 bool GameObjectContainer::bossIsDead()
 {
 	if (_BossFight) {
-		if (dynamic_cast<BossCar*>(_GameObjects.at(1))->getHealth() <= 0) {
+		if (getBossCar()->getHealth() <= 0) {
+			// TODO: Spawn explosions
+			_AboutToLevelUp = true;
+		}
+		if (_AboutToLevelUp && getBossCar()->isDoneExploding(_ExplosionTexture)) {
 			_BossFight = false;
+			_AboutToLevelUp = false;
 			deleteObject(1);
 			return true;
 		}
@@ -287,10 +296,10 @@ bool GameObjectContainer::bossIsDead()
 
 void GameObjectContainer::enterBossFight()   
 {
-	//Tank* boss = new Tank(_BossCarTextures[0], &_BulletTexture);
+	Tank* boss = new Tank((*_BossCarTextures[0]), _BulletTexture);
 	//Carrier* boss = new Carrier(_BossCarTextures[1], &_BulletTexture);
 	//Mech* boss = new Mech(_BossCarTextures[2], _BossCarTextures[3], &_BulletTexture);
-	Jet* boss = new Jet((*_BossCarTextures[4]), _BulletTexture);
+	//Jet* boss = new Jet((*_BossCarTextures[4]), _BulletTexture);
 	_GameObjects.push_back(boss);
 	_BossFight = true;
 }

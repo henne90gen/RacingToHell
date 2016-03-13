@@ -46,20 +46,7 @@ GameState PauseMenu::handleEvents(sf::RenderWindow & Window)
 			}
 		}
 		
-		if (Y < 10 && Y > -10) {
-			_JoystickTimer.restart();
-		}
-
-		if (_JoystickTimer.getElapsedTime().asSeconds() >= _JoystickDelay) {
-			if (Y < -80 && _JoystickSelection > 0) {
-				_JoystickSelection--;
-				_JoystickTimer.restart();
-			}
-			else if (Y > 80 && _JoystickSelection < _MenuItems.size() - 1) {
-				_JoystickSelection++;
-				_JoystickTimer.restart();
-			}
-		}
+		handleJoystick(Y);
 
 		return handleMenuItems(_Event);
 	}

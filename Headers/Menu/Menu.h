@@ -15,6 +15,7 @@ public:
 	virtual GameState handleMenuItemResult(MenuResult result) = 0;
 
 	GameState handleMenuItems(sf::Event & Event);
+	void handleJoystick(float axis);
 	void applyJoystickSelection();
 
 protected:

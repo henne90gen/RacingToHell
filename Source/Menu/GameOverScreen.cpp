@@ -88,20 +88,7 @@ GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
 		float X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
 		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
 
-		if (X < 10 && X > -10) {
-			_JoystickTimer.restart();
-		}
-
-		if (_JoystickTimer.getElapsedTime().asSeconds() >= _JoystickDelay) {
-			if (X < -50 && _JoystickSelection < _MenuItems.size() - 1) {
-				_JoystickSelection++;
-				_JoystickTimer.restart();
-			}
-			else if (X > 50 && _JoystickSelection > 1) {
-				_JoystickSelection--;
-				_JoystickTimer.restart();
-			}
-		}
+		handleJoystick(X);
 
 		return handleMenuItems(_Event);
 	}

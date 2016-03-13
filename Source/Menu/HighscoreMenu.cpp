@@ -2,7 +2,7 @@
 #include "Menu/HighscoreMenu.h"
 
 
-HighscoreMenu::HighscoreMenu() : Menu(GameState::Highscores), _List(sf::Vector2f(100, 100))
+HighscoreMenu::HighscoreMenu() : Menu(GameState::Highscores), _List(sf::Vector2f(75, 100))
 {
 	sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
 
@@ -31,6 +31,16 @@ void HighscoreMenu::render(sf::RenderWindow & Window)
 GameState HighscoreMenu::handleEvents(sf::RenderWindow & Window)
 {
 	while (Window.pollEvent(_Event)) {
+
+		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
+
+		if (_Event.type == sf::Event::JoystickButtonPressed) {
+			if (sf::Joystick::isButtonPressed(0, 1)) {
+				return GameState::Main;
+			}
+		}
+
+		handleJoystick(Y);
 
 		return handleMenuItems(_Event);
 	}

@@ -41,6 +41,24 @@ GameState Menu::handleMenuItems(sf::Event & Event)
 	return _MenuGameState;
 }
 
+void Menu::handleJoystick(float axis)
+{
+	if (axis < 10 && axis > -10) {
+		_JoystickTimer.restart();
+	}
+
+	if (_JoystickTimer.getElapsedTime().asSeconds() >= _JoystickDelay) {
+		if (axis < -50 && _JoystickSelection > 0) {
+			_JoystickSelection--;
+			_JoystickTimer.restart();
+		}
+		else if (axis > 50 && _JoystickSelection < _MenuItems.size() - 3) {
+			_JoystickSelection++;
+			_JoystickTimer.restart();
+		}
+	}
+}
+
 void Menu::applyJoystickSelection()
 {
 	for (int i = 0; i < _MenuItems.size(); i++) {

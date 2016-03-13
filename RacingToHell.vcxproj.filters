@@ -216,6 +216,9 @@
     <ClInclude Include="Headers\Menu\MenuItems.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Menu\MenuItem\MenuResults.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Headers\GameObject\Boss\Jet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -335,6 +338,9 @@
     <ClCompile Include="Source\Menu\MenuItem\StatBox.cpp">
       <Filter>Source Files\Menu</Filter>
     </ClCompile>
+    <ClCompile Include="Source\GameObject\Boss\Jet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -428,20 +434,26 @@
     <Image Include="Resources\Texture\BossCar\tank.png">
       <Filter>Resource Files\Texture\BossCar</Filter>
     </Image>
-    <Image Include="Resources\Texture\BossCar\cannonCarrier.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Resources\Texture\BossCar\Carrier.png">
-      <Filter>Resource Files</Filter>
+    <Image Include="Resources\Texture\PlayerCar\playercar6.png">
+      <Filter>Resource Files\Texture\PlayerCar</Filter>
     </Image>
     <Image Include="Resources\Texture\PlayerCar\playercar5.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Texture\PlayerCar</Filter>
     </Image>
-    <Image Include="Resources\Texture\PlayerCar\playercar6.png">
-      <Filter>Resource Files</Filter>
+    <Image Include="Resources\Texture\BossCar\cannonCarrier.png">
+      <Filter>Resource Files\Texture\BossCar</Filter>
     </Image>
     <Image Include="Resources\Texture\BossCar\CannonTank.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Texture\BossCar</Filter>
+    </Image>
+    <Image Include="Resources\Texture\BossCar\Carrier.png">
+      <Filter>Resource Files\Texture\BossCar</Filter>
+    </Image>
+    <Image Include="Resources\Texture\BossCar\mech-legs.png">
+      <Filter>Resource Files\Texture\BossCar</Filter>
+    </Image>
+    <Image Include="Resources\Texture\BossCar\mech-top.png">
+      <Filter>Resource Files\Texture\BossCar</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

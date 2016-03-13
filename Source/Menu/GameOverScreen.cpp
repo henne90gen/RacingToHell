@@ -29,6 +29,8 @@ GameOverScreen::GameOverScreen() : Menu(GameState::GameOver), _SoundPlayed(false
 	_MenuItems.push_back(new Textbox(sf::Vector2f(_GOTLine4.getPosition().x + _GOTLine4.getLocalBounds().width + 20, _GOTLine4.getPosition().y + 10), sf::Vector2f(450 - _GOTLine4.getLocalBounds().width - 20, _GOTLine4.getLocalBounds().height), 25, "Test", true));
 	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2 + 200, 735), ButtonSize, MenuResult::SubmitScore, "Submit", TextAlignment::Center));
 	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 200, 735), ButtonSize, MenuResult::Back, "Back", TextAlignment::Center));
+
+	_JoystickSelection = 1;
 }
 
 GameOverScreen::~GameOverScreen()
@@ -86,17 +88,17 @@ GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
 		float X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
 		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
 
-		if (Y < 10 && Y > -10) {
+		if (X < 10 && X > -10) {
 			_JoystickTimer.restart();
 		}
 
 		if (_JoystickTimer.getElapsedTime().asSeconds() >= _JoystickDelay) {
-			if (Y < -50 && _JoystickSelection > 0) {
-				_JoystickSelection--;
+			if (X < -50 && _JoystickSelection < _MenuItems.size() - 1) {
+				_JoystickSelection++;
 				_JoystickTimer.restart();
 			}
-			else if (Y > 50 && _JoystickSelection < _MenuItems.size() - 1) {
-				_JoystickSelection++;
+			else if (X > 50 && _JoystickSelection > 1) {
+				_JoystickSelection--;
 				_JoystickTimer.restart();
 			}
 		}
@@ -124,6 +126,7 @@ GameState GameOverScreen::handleMenuItemResult(MenuResult result)
 			_ScoreSubmitted = true;
 			_MenuItems[0]->setEnabled(false);
 			_MenuItems[1]->setEnabled(false);
+			_JoystickSelection = 2;
 		}
 		break;
 	}

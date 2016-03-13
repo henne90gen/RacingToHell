@@ -158,6 +158,7 @@
     <ClInclude Include="Headers\Animation\Explosion.h" />
     <ClInclude Include="Headers\Collision.h" />
     <ClInclude Include="Headers\GameObject\Boss\Carrier.h" />
+    <ClInclude Include="Headers\GameObject\Boss\Jet.h" />
     <ClInclude Include="Headers\Menu\MenuItem\MenuItems.h" />
     <ClInclude Include="Headers\GameObject\Boss\BossCar.h" />
     <ClInclude Include="Headers\GameObject\Boss\Tank.h" />
@@ -261,6 +262,8 @@
     <Image Include="Resources\Texture\BossCar\cannonCarrier.png" />
     <Image Include="Resources\Texture\BossCar\CannonTank.png" />
     <Image Include="Resources\Texture\BossCar\Carrier.png" />
+    <Image Include="Resources\Texture\BossCar\mech-legs.png" />
+    <Image Include="Resources\Texture\BossCar\mech-top.png" />
     <Image Include="Resources\Texture\BossCar\tank.png" />
     <Image Include="Resources\Texture\HUD\HUD_Background.png" />
     <Image Include="Resources\Texture\HUD\HUD_EnergyIcon.png" />

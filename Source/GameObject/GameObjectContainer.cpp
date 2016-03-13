@@ -77,9 +77,6 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 					_Animations.push_back(new Explosion(getPlayerCar()->getPos(), _ExplosionTexture, sf::Vector2f(0, 0)));
 					_PlayerAlive = false;
 				}
-				else if (getPlayerCar()->getEnergy() <= 0) {
-					_PlayerAlive = false;
-				}
 			}
 
 			_GameObjects.at(i)->update(FrameTime, RoadSpeed);
@@ -447,6 +444,9 @@ void GameObjectContainer::spawnBullet()
 }
 
 bool GameObjectContainer::playerIsAlive() {
+	if (getPlayerCar()->getEnergy() <= 0) {
+		return false;
+	}
 	if (!_PlayerAlive && _Animations.size() > 0) {
 		if (_Animations[_Animations.size() - 1]->getCurrentFrameNum() >= 18) {
 			return false;

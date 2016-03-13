@@ -77,6 +77,11 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 							_PlayerAlive = false;
 						}
 						break;
+					case GameObjects::BulletObjectBoss:
+						getPlayerCar()->takeDamage(5);
+						deleteObject(i);
+						i--;
+						break;
 					}
 				}
 			}
@@ -163,9 +168,18 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 					}
 					else if (_GameObjects.at(j)->getType() == GameObjects::BulletObjectPlayer)
 					{
-						if (_GameObjects.at(i)->getSprite().getGlobalBounds().intersects(_GameObjects.at(j)->getSprite().getGlobalBounds()))
+						if (_GameObjects.at(i)->checkForCollision((_GameObjects.at(j))))
 						{
 							dynamic_cast<AICar*>(_GameObjects.at(i))->takeDamage(getPlayerCar()->getBulletdamage());
+							deleteObject(j);
+							break;
+						}
+					}
+					else if (_GameObjects.at(j)->getType() == GameObjects::BulletObjectBoss)
+					{
+						if (_GameObjects.at(i)->checkForCollision(_GameObjects.at(j)))
+						{
+							dynamic_cast<AICar*>(_GameObjects.at(i))->takeDamage(500);
 							deleteObject(j);
 							break;
 						}

@@ -13,7 +13,7 @@ BossCar::BossCar(sf::Vector2f& Position, int Health, float Speed, sf::Texture& T
 
 	//HP-Balken
 	_HealthBar.setFillColor(sf::Color(200, 0, 0));
-	_HealthBar.setSize(sf::Vector2f(getWidth() + 5, 5));
+	_HealthBar.setSize(sf::Vector2f(getWidth() - 1, 5));
 
 	_HealthBarFrame.setFillColor(sf::Color::Transparent);
 	_HealthBarFrame.setOutlineColor(sf::Color(20, 0, 0));
@@ -40,7 +40,7 @@ float BossCar::PlayerAngle(GameObject * Player)
 
 void BossCar::ShootBullet(std::vector<GameObject*>& GameObjects, sf::Vector2f Position, float Direction, int BulletSpeed)
 {
-	Bullet* newBullet = new Bullet(Position, Direction, BulletSpeed, GameObjects::BulletObjectAI, _BulletTexture);
+	Bullet* newBullet = new Bullet(Position, Direction, BulletSpeed, GameObjects::BulletObjectBoss, _BulletTexture);
 	GameObjects.push_back(newBullet);
 }
 

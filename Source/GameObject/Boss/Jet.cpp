@@ -51,6 +51,27 @@ void Jet::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameO
 			}
 			break;
 		}
+		case Phase::POWERUPLANES:
+		{
+			_Event1Frequency = 0.2f;
+			_Event2Frequency = 1.0f;
+
+			if (getBossEvent() == 1 || _Event2Counter > 0)
+			{
+				if (getBossEvent() == 2)
+				{
+					if (_Event2Counter + 1 <= 3)
+					{
+
+						++_Event2Counter;
+					}
+					else
+					{
+						_Event2Counter = 0;
+					}
+				}
+			}
+		}
 		default:
 			break;
 		}
@@ -91,6 +112,15 @@ void Jet::checkPhase()
 {
 	if (_PhaseClock.getElapsedTime().asSeconds() >= _Pattern[_CurrentPhase].second)
 	{
+		if (_CurrentPhase + 1 >= _Pattern.size())
+		{
+			_CurrentPhase = 0;
+		}
+		else
+		{
+			++_CurrentPhase;
+		}
+
 		_Movement = Movement::STRAIGHT;
 		RandomPosition();
 		_PhaseClock.restart();

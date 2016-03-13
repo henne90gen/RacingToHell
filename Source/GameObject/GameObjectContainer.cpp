@@ -334,6 +334,13 @@ void GameObjectContainer::resetGameObjects(int SelectedCar)
 	}
 	_Animations.clear();
 
+	for (unsigned int i = 0; i < _SoundEffects.size(); i++)
+	{
+		delete _SoundEffects[i].first;
+		_SoundEffects[i].first = nullptr;
+	}
+	_SoundEffects.clear();
+
 	//Spielerauto
 	PlayerCar* MainCar = new PlayerCar(SelectedCar, (*_PlayerCarTextures.at(SelectedCar)));
 	_GameObjects.push_back(MainCar);

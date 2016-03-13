@@ -18,7 +18,7 @@ public:
 
 	bool isDoneExploding(sf::Texture& ExplosionTexture);
 protected:
-	enum Phase { NOTHING, SIMPLESHOOT, SALVE, SPIN, HARDCORESPAM, BLASTSALVE, SPIRAL, RANDOMSPRAY, SHOTGUN, SIDE };
+	enum Phase { NOTHING, SIMPLESHOOT, SALVE, SPIN, HARDCORESPAM, BLASTSALVE, SPIRAL, RANDOMSPRAY, SHOTGUN, SIDE, POWERUPLANES };
 	int _CurrentPhase;
 	std::vector<std::pair<Phase, float>> _Pattern;
 	sf::Clock _PhaseClock;

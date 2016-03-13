@@ -158,6 +158,7 @@
     <ClInclude Include="Headers\Animation\Explosion.h" />
     <ClInclude Include="Headers\Collision.h" />
     <ClInclude Include="Headers\GameObject\Boss\Carrier.h" />
+    <ClInclude Include="Headers\GameObject\Boss\Jet.h" />
     <ClInclude Include="Headers\Menu\MenuItem\MenuItems.h" />
     <ClInclude Include="Headers\GameObject\Boss\BossCar.h" />
     <ClInclude Include="Headers\GameObject\Boss\Tank.h" />

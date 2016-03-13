@@ -216,6 +216,9 @@
     <ClInclude Include="Headers\Menu\MenuItems.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Menu\MenuItem\MenuResults.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Headers\GameObject\Boss\Jet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -334,6 +337,9 @@
     </ClCompile>
     <ClCompile Include="Source\Menu\MenuItem\StatBox.cpp">
       <Filter>Source Files\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObject\Boss\Jet.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

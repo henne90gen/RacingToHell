@@ -5,6 +5,7 @@
 #include "GameObject/GameObjectContainer.h"
 #include "Menu/MainMenu.h"
 #include "Menu/PauseMenu.h"
+#include "Menu/HighscoreMenu.h"
 #include "Menu/OptionsMenu.h"
 #include "Menu/GameOverScreen.h"
 #include "Menu/LoadingScreen.h"
@@ -49,6 +50,7 @@ private:
 	//Menus and Screens
 	MainMenu _MainMenu;
 	PauseMenu _PauseMenu;
+	HighscoreMenu _HighscoreMenu;
 	OptionsMenu _OptionsMenu;
 	GameOverScreen _GameOverScreen;
 	LoadingScreen _LoadingScreen;

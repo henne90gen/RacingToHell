@@ -114,31 +114,16 @@
     <ClInclude Include="Headers\Menu\Menu.h">
       <Filter>Header Files\Menu</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Menu\MenuItem.h">
-      <Filter>Header Files\Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Menu\MenuResults.h">
-      <Filter>Header Files\Menu</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\GameObject\Toolbox.h">
       <Filter>Header Files\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Headers\PlayerStats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Menu\StatBox.h">
-      <Filter>Header Files\Menu</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\Menu\LevelUpScreen.h">
       <Filter>Header Files\Menu</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Menu\Textbox.h">
-      <Filter>Header Files\Menu</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\StandardCursor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Highscore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\GameState.h">
@@ -156,16 +141,10 @@
     <ClInclude Include="Headers\Menu\LoadingScreen.h">
       <Filter>Header Files\Menu</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Menu\MenuButton.h">
-      <Filter>Header Files\Menu</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\Menu\AlignText.h">
       <Filter>Header Files\Menu</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Menu\MenuItems.h">
-      <Filter>Header Files\Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Menu\Slider.h">
       <Filter>Header Files\Menu</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Serializable.h">
@@ -209,6 +188,33 @@
     </ClInclude>
     <ClInclude Include="Headers\Menu\MenuItems.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\HighscoreMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\MenuItem\Textbox.h">
+      <Filter>Header Files\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\MenuItem\StatBox.h">
+      <Filter>Header Files\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\MenuItem\Slider.h">
+      <Filter>Header Files\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\MenuItem\HighscoreList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\MenuItem\MenuItem.h">
+      <Filter>Header Files\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\MenuItem\MenuItems.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\MenuItem\MenuButton.h">
+      <Filter>Header Files\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\MenuItem\MenuResults.h">
+      <Filter>Header Files\Menu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -257,16 +263,7 @@
     <ClCompile Include="Source\Menu\Menu.cpp">
       <Filter>Source Files\Menu</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Menu\MenuItem.cpp">
-      <Filter>Source Files\Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Menu\StatBox.cpp">
-      <Filter>Source Files\Menu</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Menu\LevelUpScreen.cpp">
-      <Filter>Source Files\Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Menu\Textbox.cpp">
       <Filter>Source Files\Menu</Filter>
     </ClCompile>
     <ClCompile Include="Source\StandardCursor.cpp">
@@ -281,16 +278,7 @@
     <ClCompile Include="Source\Menu\PauseMenu.cpp">
       <Filter>Source Files\Menu</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Highscore.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Menu\LoadingScreen.cpp">
-      <Filter>Source Files\Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Menu\MenuButton.cpp">
-      <Filter>Source Files\Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Menu\Slider.cpp">
       <Filter>Source Files\Menu</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameObject\BossCarOld.cpp">
@@ -322,6 +310,27 @@
     </ClCompile>
     <ClCompile Include="Source\Collision.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menu\HighscoreMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menu\MenuItem\HighscoreList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menu\MenuItem\MenuButton.cpp">
+      <Filter>Source Files\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menu\MenuItem\MenuItem.cpp">
+      <Filter>Source Files\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menu\MenuItem\Slider.cpp">
+      <Filter>Source Files\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menu\MenuItem\Textbox.cpp">
+      <Filter>Source Files\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menu\MenuItem\StatBox.cpp">
+      <Filter>Source Files\Menu</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

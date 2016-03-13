@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "Highscore.h"
+#include "Menu/MenuItem\HighscoreList.h"
 
-Highscore::Highscore(sf::Vector2f Position) : _Gap(42), _Filename("Resources/Data/Highscore.sco"), _NumScores(10)
+HighscoreList::HighscoreList(sf::Vector2f Position) : _Gap(42), _Filename("Resources/Data/Highscore.sco"), _NumScores(10)
 {
 	_Background.setFillColor(sf::Color(0, 0, 0, 100));
 	_Background.setSize(sf::Vector2f(450, 530));
@@ -36,12 +36,12 @@ Highscore::Highscore(sf::Vector2f Position) : _Gap(42), _Filename("Resources/Dat
 	loadScoreTable();
 }
 
-Highscore::~Highscore()
+HighscoreList::~HighscoreList()
 {
 
 }
 
-void Highscore::render(sf::RenderWindow& RenderWindow)
+void HighscoreList::render(sf::RenderWindow& RenderWindow)
 {
 	RenderWindow.draw(_Background);
 	RenderWindow.draw(_HeadlineRank);
@@ -123,7 +123,7 @@ void Highscore::render(sf::RenderWindow& RenderWindow)
 	}
 }
 
-void Highscore::loadScoreTable()
+void HighscoreList::loadScoreTable()
 {
 	std::ifstream FileStream;
 	FileStream.open(_Filename, std::ios::in | std::ifstream::binary);
@@ -142,7 +142,7 @@ void Highscore::loadScoreTable()
 	SortScoreTable();
 }
 
-void Highscore::SaveScoreTable()
+void HighscoreList::SaveScoreTable()
 {
 	std::ofstream FileStream;
 	FileStream.open(_Filename, std::ios::out | std::ofstream::binary);
@@ -155,7 +155,7 @@ void Highscore::SaveScoreTable()
 	FileStream.close();
 }
 
-void Highscore::SortScoreTable()
+void HighscoreList::SortScoreTable()
 {
 	std::sort(_PlayerList.rbegin(), _PlayerList.rend());
 	for (int i = 0; i < _PlayerList.size(); i++) {
@@ -175,7 +175,7 @@ void Highscore::SortScoreTable()
 	SaveScoreTable();
 }
 
-void Highscore::PlacePlayer(std::string& Name, int Level)
+void HighscoreList::PlacePlayer(std::string& Name, int Level)
 {
 	_CurrentName = Name;
 	_CurrentLevel = Level;

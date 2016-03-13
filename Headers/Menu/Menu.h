@@ -1,7 +1,7 @@
 #pragma once
-#include "Menu/MenuButton.h"
-#include "Menu/Slider.h"
-#include "Menu/MenuResults.h"
+#include "Menu/MenuItem\MenuButton.h"
+#include "Menu/MenuItem\Slider.h"
+#include "Menu/MenuItem\MenuResults.h"
 #include "StandardCursor.h"
 
 class Menu

@@ -1,6 +1,6 @@
 #pragma once
-#include "Menu/MenuResults.h"
-#include "Menu/MenuItems.h"
+#include "Menu/MenuItem/MenuResults.h"
+#include "Menu/MenuItem/MenuItems.h"
 #include "Menu/AlignText.h"
 
 class MenuItem

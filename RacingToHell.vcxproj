@@ -158,7 +158,7 @@
     <ClInclude Include="Headers\Animation\Explosion.h" />
     <ClInclude Include="Headers\Collision.h" />
     <ClInclude Include="Headers\GameObject\Boss\Carrier.h" />
-    <ClInclude Include="Headers\Menu\MenuItems.h" />
+    <ClInclude Include="Headers\Menu\MenuItem\MenuItems.h" />
     <ClInclude Include="Headers\GameObject\Boss\BossCar.h" />
     <ClInclude Include="Headers\GameObject\Boss\Tank.h" />
     <ClInclude Include="Headers\Menu\MenuItems.h" />
@@ -168,20 +168,20 @@
     <ClInclude Include="Headers\GameObject\Car.h" />
     <ClInclude Include="Headers\GameObject\EnergyCanister.h" />
     <ClInclude Include="Headers\GameObject\GameObjectContainer.h" />
-    <ClInclude Include="Headers\Highscore.h" />
+    <ClInclude Include="Headers\Menu\MenuItem\HighscoreList.h" />
     <ClInclude Include="Headers\Menu\AlignText.h" />
     <ClInclude Include="Headers\Menu\GameOverScreen.h" />
     <ClInclude Include="Headers\HeadsUpDisplay.h" />
     <ClInclude Include="Headers\Level\Level.h" />
-    <ClInclude Include="Headers\Menu\MenuResults.h" />
+    <ClInclude Include="Headers\Menu\MenuItem\MenuResults.h" />
     <ClInclude Include="Headers\Menu\MainMenu.h" />
-    <ClInclude Include="Headers\Menu\MenuItem.h" />
+    <ClInclude Include="Headers\Menu\MenuItem\MenuItem.h" />
     <ClInclude Include="Headers\GameObject\PlayerCar.h" />
     <ClInclude Include="Headers\GameObject\GameObjects.h" />
     <ClInclude Include="Headers\Framework.hpp" />
     <ClInclude Include="Headers\GameObject\GameObject.h" />
-    <ClInclude Include="Headers\Menu\StatBox.h" />
-    <ClInclude Include="Headers\Menu\Textbox.h" />
+    <ClInclude Include="Headers\Menu\MenuItem\StatBox.h" />
+    <ClInclude Include="Headers\Menu\MenuItem\Textbox.h" />
     <ClInclude Include="Headers\PlayerStats.h" />
     <ClInclude Include="Headers\StandardCursor.h" />
     <ClInclude Include="Headers\stdafx.h" />
@@ -192,14 +192,16 @@
     <ClInclude Include="Headers\Menu\Menu.h" />
     <ClInclude Include="Headers\Menu\LevelUpScreen.h" />
     <ClInclude Include="Headers\Menu\LoadingScreen.h" />
-    <ClInclude Include="Headers\Menu\MenuButton.h" />
-    <ClInclude Include="Headers\Menu\Slider.h" />
+    <ClInclude Include="Headers\Menu\MenuItem\MenuButton.h" />
+    <ClInclude Include="Headers\Menu\MenuItem\Slider.h" />
     <ClInclude Include="Headers\Serializable.h" />
     <ClInclude Include="Headers\Animation\MechLegs.h" />
     <ClInclude Include="Headers\GameObject\Boss\Mech.h" />
     <ClInclude Include="Headers\Animation\MechTop.h" />
+    <ClInclude Include="Headers\Menu\HighscoreMenu.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Menu\HighscoreMenu.cpp" />
     <ClCompile Include="Source\Animation\MechTop.cpp" />
     <ClCompile Include="Source\GameObject\Boss\Mech.cpp" />
     <ClCompile Include="Source\Animation\MechLegs.cpp" />
@@ -209,14 +211,14 @@
     <ClCompile Include="Source\GameObject\Boss\BossCar.cpp" />
     <ClCompile Include="Source\GameObject\Boss\Carrier.cpp" />
     <ClCompile Include="Source\GameObject\Boss\Tank.cpp" />
-    <ClCompile Include="Source\Menu\Slider.cpp" />
-    <ClCompile Include="Source\Menu\MenuButton.cpp" />
+    <ClCompile Include="Source\Menu\MenuItem\Slider.cpp" />
+    <ClCompile Include="Source\Menu\MenuItem\MenuButton.cpp" />
     <ClCompile Include="Source\GameObject\BossCarOld.cpp" />
     <ClCompile Include="Source\Menu\LoadingScreen.cpp" />
     <ClCompile Include="Source\Menu\Menu.cpp" />
     <ClCompile Include="Source\Menu\PauseMenu.cpp" />
     <ClCompile Include="Source\Menu\OptionsMenu.cpp" />
-    <ClCompile Include="Source\Highscore.cpp" />
+    <ClCompile Include="Source\Menu\MenuItem\HighscoreList.cpp" />
     <ClCompile Include="Source\Menu\LevelUpScreen.cpp" />
     <ClCompile Include="Source\GameObject\AICar.cpp" />
     <ClCompile Include="Source\GameObject\Bullet.cpp" />
@@ -226,12 +228,12 @@
     <ClCompile Include="Source\HeadsUpDisplay.cpp" />
     <ClCompile Include="Source\Level\Level.cpp" />
     <ClCompile Include="Source\Menu\MainMenu.cpp" />
-    <ClCompile Include="Source\Menu\MenuItem.cpp" />
+    <ClCompile Include="Source\Menu\MenuItem\MenuItem.cpp" />
     <ClCompile Include="Source\GameObject\GameObjectContainer.cpp" />
     <ClCompile Include="Source\GameObject\PlayerCar.cpp" />
     <ClCompile Include="Source\Framework.cpp" />
     <ClCompile Include="Source\GameObject\GameObject.cpp" />
-    <ClCompile Include="Source\Menu\Textbox.cpp" />
+    <ClCompile Include="Source\Menu\MenuItem\Textbox.cpp" />
     <ClCompile Include="Source\RacingToHell.cpp" />
     <ClCompile Include="Source\StandardCursor.cpp" />
     <ClCompile Include="Source\stdafx.cpp">
@@ -241,7 +243,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Source\GameObject\Toolbox.cpp" />
-    <ClCompile Include="Source\Menu\StatBox.cpp" />
+    <ClCompile Include="Source\Menu\MenuItem\StatBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Menu/MenuButton.h"
+#include "Menu/MenuItem\MenuButton.h"
 
 MenuButton::MenuButton(sf::Vector2f pos, sf::Vector2f size, MenuResult action, std::string text, TextAlignment align) : MenuItem(MenuItems::MButton, action), _Alignment(align)
 {

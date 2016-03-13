@@ -4,9 +4,10 @@
 MainMenu::MainMenu() : Menu(GameState::Main)
 {
 	//Menu-Items
-	sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
+	sf::Vector2f ButtonSize = sf::Vector2f(250, 50);
 
-	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 240), ButtonSize, MenuResult::Resume, "Play", TextAlignment::Center));
+	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 170), ButtonSize, MenuResult::Resume, "Play", TextAlignment::Center));
+	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 240), ButtonSize, MenuResult::Highscore, "Highscores", TextAlignment::Center));
 	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 310), ButtonSize, MenuResult::Option, "Options", TextAlignment::Center));
 	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 380), ButtonSize, MenuResult::Exit, "Exit", TextAlignment::Center));
 	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 60, SCREENHEIGHT - 335), sf::Vector2f(0, 0), MenuResult::PreviousSkin, "<<", TextAlignment::Left));
@@ -17,7 +18,7 @@ MainMenu::MainMenu() : Menu(GameState::Main)
 	_Text.setCharacterSize(53);
 	_Text.setColor(sf::Color::White);
 	_Text.setStyle(sf::Text::Style::Bold);
-	_Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 160));
+	_Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 70));
 
 	//Stats-Box
 	_StatBox = new StatBox(sf::Vector2f(SCREENWIDTH / 2, 575));
@@ -25,11 +26,6 @@ MainMenu::MainMenu() : Menu(GameState::Main)
 
 MainMenu::~MainMenu()
 {
-	for (int i = 0; i < _MenuItems.size(); i++) {
-		delete _MenuItems[i];
-		_MenuItems[i] = nullptr;
-	}
-
 	delete _StatBox;
 	_StatBox = nullptr;
 }
@@ -91,6 +87,9 @@ GameState MainMenu::handleMenuItemResult(MenuResult result)
 	switch (result) {
 	case MenuResult::Resume:
 		return GameState::Running;
+		break;
+	case MenuResult::Highscore:
+		return GameState::Highscores;
 		break;
 	case MenuResult::Option:
 		return GameState::Options;

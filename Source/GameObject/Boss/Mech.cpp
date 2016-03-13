@@ -3,7 +3,7 @@
 
 // IDEA: Mech comes in from below and "chase" the player
 
-Mech::Mech(sf::Texture& TextureTop, sf::Texture& TextureLegs, sf::Texture* BulletTexture) : BossCar(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), 10000, 100, TextureTop, BulletTexture),
+Mech::Mech(sf::Texture& TextureTop, sf::Texture& TextureLegs, sf::Texture* BulletTexture) : BossCar(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), 5000, 100, TextureTop, BulletTexture),
 	_TopAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), TextureTop), _LegsAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), TextureLegs), _MovementSwitch(false), _GunOrientation(-90),
 	_GunRadius(81.5659f)
 {
@@ -114,14 +114,13 @@ void Mech::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& Game
 	}
 
 	_TopAnim.setRotation(_GunOrientation + 90);
+	_LegsAnim.setRotation(_GunOrientation + 90);
 
 	updateHealthBar();
 	checkPhase();
 
 	_LegsAnim.update(FrameTime);
 	_TopAnim.update(FrameTime);
-
-	_TopAnim.setRotation(_TopAnim.getRotation() + 30 * FrameTime);
 }
 
 void Mech::setPos(sf::Vector2f pos) {

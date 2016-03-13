@@ -12,6 +12,7 @@
 #include "GameObject/Boss/Tank.h"
 #include "GameObject/Boss/Carrier.h"
 #include "GameObject/Boss/Mech.h"
+#include "GameObject/Boss/Jet.h"
 
 #include "Animation/Explosion.h"
 

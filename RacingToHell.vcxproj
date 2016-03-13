@@ -203,6 +203,7 @@
   <ItemGroup>
     <ClCompile Include="Source\Menu\HighscoreMenu.cpp" />
     <ClCompile Include="Source\Animation\MechTop.cpp" />
+    <ClCompile Include="Source\GameObject\Boss\Jet.cpp" />
     <ClCompile Include="Source\GameObject\Boss\Mech.cpp" />
     <ClCompile Include="Source\Animation\MechLegs.cpp" />
     <ClCompile Include="Source\Animation\Animation.cpp" />

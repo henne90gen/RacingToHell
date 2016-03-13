@@ -207,9 +207,9 @@ void Framework::update()
 	case GameState::LevelUp:
 		if (_LevelUpScreen.update()) {
 			_Clock.restart();
-			_Level.levelUp();
 			dynamic_cast<PlayerCar*>(_GameObjectContainer.getPlayerCar())->resetMovement();
 			_GameState = GameState::Running;
+			_Level.levelUp();
 		}
 		break;
 	case GameState::Main:

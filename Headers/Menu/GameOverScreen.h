@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Menu/Menu.h"
-#include "Textbox.h"
-#include "Highscore.h"
+#include "Menu/MenuItem/Textbox.h"
+#include "Menu/MenuItem/HighscoreList.h"
 
 class GameOverScreen : public Menu
 {
@@ -32,7 +32,7 @@ private:
 	sf::Text _GOTLine3;
 	sf::Text _GOTLine4;
 
-	Highscore _Highscore;
+	HighscoreList _Highscore;
 
 	sf::SoundBuffer _GameOverSoundBuffer;
 	sf::Sound _GameOverSound;

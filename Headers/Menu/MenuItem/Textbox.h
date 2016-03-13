@@ -1,6 +1,6 @@
 #pragma once
 #include "StandardCursor.h"
-#include "Menu/MenuItem.h"
+#include "Menu/MenuItem/MenuItem.h"
 
 class Textbox : public MenuItem
 {

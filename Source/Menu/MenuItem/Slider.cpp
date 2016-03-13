@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Menu/Slider.h"
+#include "Menu/MenuItem\Slider.h"
 
 Slider::Slider(sf::Vector2f pos, MenuResult action, std::string text, float value, float maxValue) : MenuItem(MenuItems::MSlider, action), _Value(value), _MaxValue(maxValue)
 {

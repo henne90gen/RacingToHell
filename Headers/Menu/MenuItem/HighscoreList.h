@@ -7,7 +7,7 @@
 
 #include "Serializable.h"
 
-class Highscore
+class HighscoreList
 {
 public:
 	struct Player : public Serializable
@@ -39,8 +39,8 @@ public:
 		}
 	};
 
-	Highscore(sf::Vector2f Position);
-	~Highscore();
+	HighscoreList(sf::Vector2f Position);
+	~HighscoreList();
 
 	void render(sf::RenderWindow& RenderWindow);
 

@@ -54,6 +54,10 @@ void Framework::render()
 		setMouseVisible(true);
 		_PauseMenu.render(_RenderWindow);
 		break;
+	case GameState::Highscores:
+		setMouseVisible(true);
+		_HighscoreMenu.render(_RenderWindow);
+		break;
 	case GameState::Options:
 		setMouseVisible(true);
 		_OptionsMenu.render(_RenderWindow);
@@ -126,6 +130,9 @@ void Framework::handleEvents()
 		_MainMenu.setCarIndex(_CurrentCarSkinIndex);
 		_GameObjectContainer.getPlayerCar()->setSkin(_CarSkins.at(_CurrentCarSkinIndex));
 		_GameObjectContainer.getPlayerCar()->setStats(_CurrentCarSkinIndex);
+		break;
+	case GameState::Highscores:
+		_GameState = _HighscoreMenu.handleEvents(_RenderWindow);
 		break;
 	case GameState::Options:
 		_GameState = _OptionsMenu.handleEvents(_RenderWindow);
@@ -210,6 +217,9 @@ void Framework::update()
 		break;
 	case GameState::GameOver:
 		_GameOverScreen.update(_Score, _Level.getDifficulty());
+		break;
+	case GameState::Highscores:
+		_Level.update(_FrameTime, _GameState);
 		break;
 	case GameState::Options:
 		_OptionsMenu.update(_FrameTime);

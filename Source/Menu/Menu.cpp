@@ -9,6 +9,10 @@ Menu::Menu(GameState menuState) : _JoystickSelection(0), _JoystickDelay(0.15f), 
 
 Menu::~Menu()
 {
+	for (int i = 0; i < _MenuItems.size(); i++) {
+		delete _MenuItems[i];
+		_MenuItems[i] = nullptr;
+	}
 }
 
 GameState Menu::handleMenuItems(sf::Event & Event)

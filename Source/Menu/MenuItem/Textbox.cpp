@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Menu\Textbox.h"
+#include "Menu\MenuItem\Textbox.h"
 
 Textbox::Textbox(sf::Vector2f Position, sf::Vector2f Size, int CharacterSize, std::string Text, bool isFocused)
 	: MenuItem(MenuItems::MTextbox, MenuResult::Nothing),

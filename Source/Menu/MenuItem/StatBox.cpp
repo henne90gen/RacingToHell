@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Menu\StatBox.h"
+#include "Menu\MenuItem\StatBox.h"
 #include "PlayerStats.h"
 
 StatBox::StatBox(sf::Vector2f Position)

@@ -2,7 +2,7 @@
 #include "GameObject/Boss/Tank.h"
 
 
-Tank::Tank(sf::Texture& Texture, sf::Texture& BulletTexture) : BossCar(sf::Vector2f(SCREENWIDTH / 2, -1 * (float)Texture.getSize().y / 2.0f), 50, 200, Texture, BulletTexture),
+Tank::Tank(sf::Texture& Texture, sf::Texture& BulletTexture) : BossCar(sf::Vector2f(SCREENWIDTH / 2, -1 * (float)Texture.getSize().y / 2.0f), 2000, 200, Texture, BulletTexture),
 	_GunOrientation(90), _GunPosition(sf::Vector2f(0.0f, -15.0f)), _Radius(130), _MovementSwitch(false)
 {
 	_GunTexture.loadFromFile("Resources/Texture/BossCar/CannonTank.png");

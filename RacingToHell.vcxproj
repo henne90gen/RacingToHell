@@ -250,6 +250,7 @@
     <None Include=".gitignore" />
     <None Include="README.md" />
     <None Include="Resources\Data\Highscore.sco" />
+    <None Include="Resources\Data\Settings.cfg" />
     <None Include="Resources\Sound\Music\level1.ogg" />
     <None Include="Resources\Sound\Music\menu1.ogg" />
   </ItemGroup>
@@ -296,9 +297,6 @@
     <Media Include="Resources\Sound\sample.wav" />
     <Media Include="Resources\Sound\shotAI.wav" />
     <Media Include="Resources\Sound\shotPlayer.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Resources\Data\Settings.cfg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -113,7 +113,7 @@ void Framework::handleEvents()
 			_Level.resetTimer();
 		}
 		else if (_GameState == GameState::Main) {
-			_GameObjectContainer.resetGameObjects(_CurrentCarSkinIndex);
+			resetGame();
 		}
 		break;
 	case GameState::Main:

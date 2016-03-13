@@ -369,6 +369,7 @@
     <None Include="Resources\Data\Highscore.sco">
       <Filter>Resource Files\Data</Filter>
     </None>
+    <None Include="Resources\Data\Settings.cfg" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Texture\TrafficCar\Traffic1.png">
@@ -489,10 +490,5 @@
     <Media Include="Resources\Sound\shotPlayer.wav">
       <Filter>Resource Files\Sound</Filter>
     </Media>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Resources\Data\Settings.cfg">
-      <Filter>Resource Files\Data</Filter>
-    </Text>
   </ItemGroup>
 </Project>

@@ -151,7 +151,7 @@ bool BossCar::isDoneExploding(sf::Texture& ExplosionTexture)
 		}
 		_Explosions.push_back(new Explosion(getPos() + position, ExplosionTexture, sf::Vector2f(0, 0)));
 	}
-	if (_Explosions.size() >= 5) {
+	if (_Explosions.size() > 5) {
 		_IsExploding = 2;
 	}
 	return (_Health <= 0 && _IsExploding == 2);

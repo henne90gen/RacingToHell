@@ -38,19 +38,11 @@ float BossCar::PlayerAngle(GameObject * Player)
 	return Angle;
 }
 
-void BossCar::ShootBullet(std::vector<GameObject*>& GameObjects, sf::Vector2f Position, float Direction)
-{
-	Bullet* newBullet = new Bullet(Position, Direction, _BulletSpeed, GameObjects::BulletObjectAI, _BulletTexture);
-	GameObjects.push_back(newBullet);
-}
-
-
 void BossCar::ShootBullet(std::vector<GameObject*>& GameObjects, sf::Vector2f Position, float Direction, int BulletSpeed)
 {
 	Bullet* newBullet = new Bullet(Position, Direction, BulletSpeed, GameObjects::BulletObjectAI, _BulletTexture);
 	GameObjects.push_back(newBullet);
 }
-
 
 int BossCar::getBossEvent()
 {

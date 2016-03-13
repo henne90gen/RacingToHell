@@ -44,7 +44,7 @@ protected:
 	bool _Attack, _Traffic;
 
 	float PlayerAngle(GameObject* Player);
-	void ShootBullet(std::vector<GameObject*>& GameObjects, sf::Vector2f Position, float Direction);
+	void ShootBullet(std::vector<GameObject*>& GameObjects, sf::Vector2f Position, float Direction) { ShootBullet(GameObjects, Position, Direction, _BulletSpeed); }
 	void ShootBullet(std::vector<GameObject*>& GameObjects, sf::Vector2f Position, float Direction, int BulletSpeed);
 	bool BossCar::DriveToNextPosition(float FrameTime);
 	void updateHealthBar();

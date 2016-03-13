@@ -12,15 +12,19 @@ GameObjectContainer::~GameObjectContainer()
 		delete _GameObjects.at(i);
 		_GameObjects.at(i) = nullptr;
 	}
-
 	_GameObjects.clear();
 
 	for (int i = 0; i < _AICarTextures.size(); i++) {
 		delete _AICarTextures.at(i);
 		_AICarTextures.at(i) = nullptr;
 	}
-
 	_AICarTextures.clear();
+
+	for (int i = 0; i < _BossCarTextures.size(); i++) {
+		delete _BossCarTextures.at(i);
+		_BossCarTextures.at(i) = nullptr;
+	}
+	_BossCarTextures.clear();
 }
 
 void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)

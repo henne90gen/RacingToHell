@@ -73,6 +73,11 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 						_Animations.push_back(new Explosion(getPlayerCar()->getPos(), _ExplosionTexture, sf::Vector2f(0,0)));
 						_PlayerAlive = false;
 						break;
+					case GameObjects::BulletObjectBoss:
+						getPlayerCar()->takeDamage(5);
+						deleteObject(i);
+						i--;
+						break;
 					}
 				}
 			}
@@ -165,6 +170,11 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 							deleteObject(j);
 							break;
 						}
+					}
+					else if (_GameObjects.at(j)->getType() == GameObjects::BulletObjectBoss)
+					{
+						dynamic_cast<AICar*>(_GameObjects.at(i))->takeDamage(500);
+						break;
 					}
 				}
 			}

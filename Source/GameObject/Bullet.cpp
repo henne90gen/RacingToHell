@@ -6,7 +6,15 @@ Bullet::Bullet(sf::Vector2f pos, float Direction, int Speed, GameObjects Type, s
 
 	if (Type == GameObjects::BulletObjectPlayer)
 	{
-		setSpriteColor(sf::Color(255, 0, 0));
+		setSpriteColor(sf::Color(225, 0, 0));
+	}
+	else if (Type == GameObjects::BulletObjectBoss)
+	{
+		setSpriteColor(sf::Color(0, 45, 255));
+	}
+	else
+	{
+		setSpriteColor(sf::Color(255, 255, 0));
 	}
 }
 

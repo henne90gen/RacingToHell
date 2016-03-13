@@ -11,7 +11,7 @@ Jet::Jet(sf::Texture & Texture, sf::Texture & BulletTexture) : BossCar(sf::Vecto
 
 	_Movement = Movement::STRAIGHT;
 
-	_Pattern = {std::make_pair(Phase::SIDE, 10.0f)};
+	_Pattern = {std::make_pair(Phase::SIDE, 10.5f)};
 }
 
 Jet::~Jet()
@@ -20,8 +20,15 @@ Jet::~Jet()
 
 void Jet::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects)
 {
-	if (DriveToNextPosition(FrameTime))
+	if (_Movement != Movement::STILL && DriveToNextPosition(FrameTime))
 	{
+		_BossEventTimer1.restart();
+		_BossEventTimer2.restart();
+		_Event1Switch = false;
+		_Event2Switch = false;
+		_Event2Counter = 0;
+		_Event1Counter = 0;
+
 		_Movement = Movement::STILL;
 	}
 
@@ -31,7 +38,7 @@ void Jet::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameO
 		{
 		case Phase::SIDE:
 		{
-			_Event1Frequency = 0.4f;
+			_Event1Frequency = 0.2f;
 
 			if (getBossEvent() == 1)
 			{
@@ -83,5 +90,4 @@ void Jet::checkPhase()
 		RandomPosition();
 		_PhaseClock.restart();
 	}
-	std::cout << _PhaseClock.getElapsedTime().asSeconds() << std::endl;
 }

@@ -162,7 +162,6 @@
     <ClInclude Include="Headers\Menu\MenuItem\MenuItems.h" />
     <ClInclude Include="Headers\GameObject\Boss\BossCar.h" />
     <ClInclude Include="Headers\GameObject\Boss\Tank.h" />
-    <ClInclude Include="Headers\Menu\MenuItems.h" />
     <ClInclude Include="Headers\GameState.h" />
     <ClInclude Include="Headers\GameObject\AICar.h" />
     <ClInclude Include="Headers\GameObject\Bullet.h" />

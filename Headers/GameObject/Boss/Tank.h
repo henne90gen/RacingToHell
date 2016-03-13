@@ -4,7 +4,7 @@
 class Tank : public BossCar
 {
 public:
-	Tank(sf::Texture& Texture, sf::Texture* BulletTexture);
+	Tank(sf::Texture& Texture, sf::Texture& BulletTexture);
 	~Tank();
 
 	void update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects);

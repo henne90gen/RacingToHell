@@ -285,7 +285,7 @@ void GameObjectContainer::enterBossFight()
 	//Tank* boss = new Tank(_BossCarTextures[0], &_BulletTexture);
 	//Carrier* boss = new Carrier(_BossCarTextures[1], &_BulletTexture);
 	//Mech* boss = new Mech(_BossCarTextures[2], _BossCarTextures[3], &_BulletTexture);
-	Jet* boss = new Jet(_BossCarTextures[4], &_BulletTexture);
+	Jet* boss = new Jet((*_BossCarTextures[4]), _BulletTexture);
 	_GameObjects.push_back(boss);
 	_BossFight = true;
 }
@@ -350,15 +350,22 @@ void GameObjectContainer::load()
 
 	_AIShotSoundBuffer.loadFromFile("Resources/Sound/shotAI.wav");
 	_PlayerShotSoundBuffer.loadFromFile("Resources/Sound/shotPlayer.wav");
-				   
+	
 	_ExplosionTexture.loadFromFile("Resources/Texture/Animation/explosion.png");
 
-	_BossCarTextures.resize(5);
-	_BossCarTextures[0].loadFromFile("Resources/Texture/BossCar/Tank.png");
-	_BossCarTextures[1].loadFromFile("Resources/Texture/BossCar/Carrier.png");
-	_BossCarTextures[2].loadFromFile("Resources/Texture/BossCar/mech-top.png");
-	_BossCarTextures[3].loadFromFile("Resources/Texture/BossCar/mech-legs.png");
-	_BossCarTextures[4].loadFromFile("Resources/Texture/BossCar/Jet.png");
+	std::string bossTextures[] = 
+	{ 
+		"Tank", 
+		"Carrier", 
+		"mech-top", "mech-legs", 
+		"Jet"
+	};
+
+	for (int i = 0; i < bossTextures->size(); i++) {
+		sf::Texture* texture = new sf::Texture();
+		texture->loadFromFile("Resources/Texture/BossCar/" + bossTextures[i] + ".png");
+		_BossCarTextures.push_back(texture);
+	}
 }
 
 void GameObjectContainer::setCarSkins(std::vector<sf::Texture*>& CarSkins)

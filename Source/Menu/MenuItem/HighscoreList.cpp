@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Menu/MenuItem\HighscoreList.h"
+#include "Menu/MenuItem/HighscoreList.h"
 
 HighscoreList::HighscoreList(sf::Vector2f Position) : _Gap(42), _Filename("Resources/Data/Highscore.sco"), _NumScores(10)
 {

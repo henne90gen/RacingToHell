@@ -4,7 +4,7 @@
 class Carrier : public BossCar
 {
 public:
-	Carrier(sf::Texture& Texture, sf::Texture* BulletTexture);
+	Carrier(sf::Texture& Texture, sf::Texture& BulletTexture);
 	~Carrier();
 
 	void update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects);

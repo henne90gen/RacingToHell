@@ -300,6 +300,7 @@ void Framework::load()
 			_CarSkins.push_back(texture);
 		}
 	}
+
 	_GameObjectContainer.load();
 	_GameObjectContainer.setCarSkins(_CarSkins);
 	_GameObjectContainer.resetGameObjects(0);
@@ -311,7 +312,7 @@ void Framework::load()
 	std::string Option;
 	std::ifstream FileStream;
 
-	FileStream.open("Resources/Data/Settings.txt");
+	FileStream.open("Resources/Data/Settings.cfg");
 	while (std::getline(FileStream, Option))
 	{
 		Settings.push_back(Option);

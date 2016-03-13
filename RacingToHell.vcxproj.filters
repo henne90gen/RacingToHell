@@ -67,6 +67,24 @@
     <Filter Include="Resource Files\Texture\BossCar">
       <UniqueIdentifier>{6a98c5d6-379f-4ae7-8db4-c1b14462f7f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Animation">
+      <UniqueIdentifier>{e854551c-7405-4e35-815e-2ba2e73b577e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Animation">
+      <UniqueIdentifier>{7190d415-7cfb-4bbd-b0fc-876fed70541a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GameObject\Boss">
+      <UniqueIdentifier>{b55f5757-70c5-45a8-8ea7-13e76139b9af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GameObject\Boss">
+      <UniqueIdentifier>{e57f8b01-8631-497e-8c6a-a1d24af79076}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Menu\MenuItem">
+      <UniqueIdentifier>{9cddd3e6-8943-44e1-b770-162ef847ed01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Menu\MenuItem">
+      <UniqueIdentifier>{e6073c5f-1daf-4551-97e3-45c6b9fc2c67}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Framework.hpp">
@@ -144,40 +162,13 @@
     <ClInclude Include="Headers\Menu\AlignText.h">
       <Filter>Header Files\Menu</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Menu\MenuItems.h">
-      <Filter>Header Files\Menu</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\Serializable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Animation\Explosion.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Animation\Animation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\Menu\MenuItems.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Menu\MenuItems.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Animation\MechLegs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Animation\MechTop.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\GameObject\Boss\BossCar.h">
-      <Filter>Header Files\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\GameObject\Boss\Carrier.h">
-      <Filter>Header Files\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\GameObject\Boss\Tank.h">
-      <Filter>Header Files\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\GameObject\Boss\Mech.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Menu\MenuItems.h">
@@ -189,38 +180,62 @@
     <ClInclude Include="Headers\Menu\MenuItems.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Menu\HighscoreMenu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Menu\MenuItem\Textbox.h">
-      <Filter>Header Files\Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Menu\MenuItem\StatBox.h">
-      <Filter>Header Files\Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Menu\MenuItem\Slider.h">
-      <Filter>Header Files\Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Menu\MenuItem\HighscoreList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Menu\MenuItem\MenuItem.h">
-      <Filter>Header Files\Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Menu\MenuItem\MenuItems.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Menu\MenuItem\MenuButton.h">
-      <Filter>Header Files\Menu</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\Menu\MenuItems.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Menu\MenuItem\MenuResults.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Headers\Animation\Explosion.h">
+      <Filter>Header Files\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Animation\Animation.h">
+      <Filter>Header Files\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Animation\MechLegs.h">
+      <Filter>Header Files\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Animation\MechTop.h">
+      <Filter>Header Files\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\GameObject\Boss\BossCar.h">
+      <Filter>Header Files\GameObject\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\GameObject\Boss\Tank.h">
+      <Filter>Header Files\GameObject\Boss</Filter>
     </ClInclude>
     <ClInclude Include="Headers\GameObject\Boss\Jet.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\GameObject\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\GameObject\Boss\Carrier.h">
+      <Filter>Header Files\GameObject\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\GameObject\Boss\Mech.h">
+      <Filter>Header Files\GameObject\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\MenuItem\MenuButton.h">
+      <Filter>Header Files\Menu\MenuItem</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\MenuItem\MenuItem.h">
+      <Filter>Header Files\Menu\MenuItem</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\MenuItem\Slider.h">
+      <Filter>Header Files\Menu\MenuItem</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\MenuItem\Textbox.h">
+      <Filter>Header Files\Menu\MenuItem</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\MenuItem\StatBox.h">
+      <Filter>Header Files\Menu\MenuItem</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\MenuItem\HighscoreList.h">
+      <Filter>Header Files\Menu\MenuItem</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\MenuItem\MenuResults.h">
+      <Filter>Header Files\Menu\MenuItem</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\MenuItem\MenuItems.h">
+      <Filter>Header Files\Menu\MenuItem</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Menu\HighscoreMenu.h">
+      <Filter>Header Files\Menu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -290,56 +305,56 @@
     <ClCompile Include="Source\GameObject\BossCarOld.cpp">
       <Filter>Source Files\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Animation\Animation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Animation\Explosion.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Animation\MechLegs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Animation\MechTop.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\GameObject\Boss\BossCar.cpp">
-      <Filter>Source Files\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\GameObject\Boss\Carrier.cpp">
-      <Filter>Source Files\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\GameObject\Boss\Mech.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\GameObject\Boss\Tank.cpp">
-      <Filter>Source Files\GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Collision.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Menu\HighscoreMenu.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Source\Animation\Animation.cpp">
+      <Filter>Source Files\Animation</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Menu\MenuItem\HighscoreList.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Source\Animation\Explosion.cpp">
+      <Filter>Source Files\Animation</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Menu\MenuItem\MenuButton.cpp">
-      <Filter>Source Files\Menu</Filter>
+    <ClCompile Include="Source\Animation\MechLegs.cpp">
+      <Filter>Source Files\Animation</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Menu\MenuItem\MenuItem.cpp">
-      <Filter>Source Files\Menu</Filter>
+    <ClCompile Include="Source\Animation\MechTop.cpp">
+      <Filter>Source Files\Animation</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Menu\MenuItem\Slider.cpp">
-      <Filter>Source Files\Menu</Filter>
+    <ClCompile Include="Source\GameObject\Boss\BossCar.cpp">
+      <Filter>Source Files\GameObject\Boss</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Menu\MenuItem\Textbox.cpp">
-      <Filter>Source Files\Menu</Filter>
+    <ClCompile Include="Source\GameObject\Boss\Carrier.cpp">
+      <Filter>Source Files\GameObject\Boss</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Menu\MenuItem\StatBox.cpp">
-      <Filter>Source Files\Menu</Filter>
+    <ClCompile Include="Source\GameObject\Boss\Tank.cpp">
+      <Filter>Source Files\GameObject\Boss</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameObject\Boss\Jet.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GameObject\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObject\Boss\Mech.cpp">
+      <Filter>Source Files\GameObject\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menu\MenuItem\Textbox.cpp">
+      <Filter>Source Files\Menu\MenuItem</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menu\MenuItem\StatBox.cpp">
+      <Filter>Source Files\Menu\MenuItem</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menu\MenuItem\Slider.cpp">
+      <Filter>Source Files\Menu\MenuItem</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menu\MenuItem\MenuItem.cpp">
+      <Filter>Source Files\Menu\MenuItem</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menu\MenuItem\MenuButton.cpp">
+      <Filter>Source Files\Menu\MenuItem</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menu\MenuItem\HighscoreList.cpp">
+      <Filter>Source Files\Menu\MenuItem</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menu\HighscoreMenu.cpp">
+      <Filter>Source Files\Menu</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

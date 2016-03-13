@@ -83,7 +83,7 @@ void OptionsMenu::update(float FrameTime)
 
 void OptionsMenu::saveOptions()
 {
-	std::string Path = "Resources/Data/Settings.txt";
+	std::string Path = "Resources/Data/Settings.cfg";
 	std::ofstream FileStream;
 	FileStream.open(Path);
 

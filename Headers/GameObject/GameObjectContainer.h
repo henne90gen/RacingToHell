@@ -48,8 +48,7 @@ public:
 private:
 	std::vector<GameObject*> _GameObjects;
 	std::vector<Animation*> _Animations;
-	std::vector<sf::Texture*> _PlayerCarTextures, _AICarTextures;
-	std::vector<sf::Texture> _BossCarTextures;
+	std::vector<sf::Texture*> _PlayerCarTextures, _AICarTextures, _BossCarTextures;
 	sf::Texture _ToolboxTexture, _EnergyCanisterTexture, _BulletTexture, _ExplosionTexture;
 
 	sf::SoundBuffer _AIShotSoundBuffer, _PlayerShotSoundBuffer;

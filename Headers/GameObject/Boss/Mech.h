@@ -6,7 +6,7 @@
 class Mech : public BossCar
 {
 public:
-	Mech(sf::Texture & TextureTop, sf::Texture & TextureLegs, sf::Texture* BulletTexture);
+	Mech(sf::Texture& TextureTop, sf::Texture& TextureLegs, sf::Texture& BulletTexture);
 	~Mech();
 
 	void render(sf::RenderWindow & Window);

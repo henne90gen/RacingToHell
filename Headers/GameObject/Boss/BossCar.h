@@ -7,7 +7,7 @@
 class BossCar : public Car
 {
 public:
-	BossCar(sf::Vector2f& Position, int Health, float Speed, sf::Texture& Texture, sf::Texture* BulletTexture);
+	BossCar(sf::Vector2f& Position, int Health, float Speed, sf::Texture& Texture, sf::Texture& BulletTexture);
 	~BossCar();
 
 	virtual void update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects) = 0;
@@ -28,7 +28,7 @@ protected:
 	sf::RectangleShape _HealthBar;
 	sf::RectangleShape _HealthBarFrame;
 
-	sf::Texture* _BulletTexture;
+	sf::Texture _BulletTexture;
 
 	int _BulletSpeed;
 

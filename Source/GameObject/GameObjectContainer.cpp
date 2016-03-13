@@ -361,7 +361,7 @@ void GameObjectContainer::load()
 		"Jet"
 	};
 
-	for (int i = 0; i < bossTextures->size(); i++) {
+	for (int i = 0; i < sizeof(bossTextures) / sizeof(std::string); i++) {
 		sf::Texture* texture = new sf::Texture();
 		texture->loadFromFile("Resources/Texture/BossCar/" + bossTextures[i] + ".png");
 		_BossCarTextures.push_back(texture);

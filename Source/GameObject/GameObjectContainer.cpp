@@ -184,6 +184,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 				}
 				else if (_GameObjects.at(i)->getType() == GameObjects::AI)
 				{
+					_Animations.push_back(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, dynamic_cast<AICar*>(_GameObjects[i])->getSpeed())));
 					deleteObject(i);
 					i--;
 				}

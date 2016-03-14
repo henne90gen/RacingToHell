@@ -2,10 +2,10 @@
 #include "Animation/Explosion.h"
 
 
-Explosion::Explosion(sf::Vector2f pos, sf::Texture & Texture, sf::Vector2f Movement) : Animation(pos, Texture, 0.0075, 81, 9, 9)
+Explosion::Explosion(sf::Vector2f pos, sf::Texture & texture, sf::Vector2f movement) : Animation(pos, texture, 0.0075, 81, 9, 9)
 {
 	_Sprite.setScale(sf::Vector2f(1.1f, 1.1f));
-	_Movement = Movement;
+	_Movement = movement;
 }
 
 
@@ -13,10 +13,10 @@ Explosion::~Explosion()
 {
 }
 
-void Explosion::render(sf::RenderWindow & Window)
+void Explosion::render(sf::RenderWindow & window)
 {
 	if (_AnimState == Animation::Play || _AnimState == Animation::Pause)
-		Window.draw(_Sprite);
+		window.draw(_Sprite);
 }
 
 void Explosion::update(float FrameTime)

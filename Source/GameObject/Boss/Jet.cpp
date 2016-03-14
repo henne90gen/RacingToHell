@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GameObject\Boss\Jet.h"
 
-Jet::Jet(sf::Texture & Texture, sf::Texture & BulletTexture) : BossCar(sf::Vector2f(-1 * Texture.getSize().x, SCREENHEIGHT / 2), 2000, 500, Texture, BulletTexture)
+Jet::Jet(sf::Texture & texture, sf::Texture & bulletTexture) : BossCar(sf::Vector2f(-1 * texture.getSize().x, SCREENHEIGHT / 2), 2000, 500, texture, bulletTexture)
 {
 	_Traffic = true;
 	_Pattern = { std::make_pair(Phase::SIDE, 6.0f) };
@@ -18,10 +18,10 @@ Jet::~Jet()
 {
 }
 
-void Jet::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects)
+void Jet::update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameObjects)
 {
 	if (!_IsExploding) {
-	if (_Movement != Movement::STILL && DriveToNextPosition(FrameTime))
+	if (_Movement != Movement::STILL && DriveToNextPosition(frameTime))
 	{
 		_BossEventTimer1.restart();
 		_BossEventTimer2.restart();
@@ -45,8 +45,8 @@ void Jet::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameO
 			{
 				for (int i = -40; i <= SCREENHEIGHT; i += 200)
 				{
-					ShootBullet(GameObjects, sf::Vector2f(0, i), 0.0f);
-					ShootBullet(GameObjects, sf::Vector2f(SCREENWIDTH, i + 100), 180.0f);
+					ShootBullet(gameObjects, sf::Vector2f(0, i), 0.0f);
+					ShootBullet(gameObjects, sf::Vector2f(SCREENWIDTH, i + 100), 180.0f);
 				}
 			}
 			break;
@@ -79,14 +79,14 @@ void Jet::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameO
 
 	if (_Movement == Movement::PARABOLA)
 	{
-		setPos(getPos() + sf::Vector2f(0, (float)RoadSpeed * FrameTime));
+		setPos(getPos() + sf::Vector2f(0, (float)roadSpeed * frameTime));
 	}
 	
 	checkPhase();
 	updateHealthBar();
 }
 	else {
-		updateExplosions(FrameTime);
+		updateExplosions(frameTime);
 	}
 }
 

@@ -7,7 +7,7 @@ Jet::Jet(sf::Texture & Texture, sf::Texture & BulletTexture) : BossCar(sf::Vecto
 	_Pattern = { std::make_pair(Phase::SIDE, 6.0f) };
 	_CurrentPhase = 0;
 
-	RandomPosition();
+	randomPosition();
 
 	_Movement = Movement::STRAIGHT;
 
@@ -98,7 +98,7 @@ void Jet::render(sf::RenderWindow & RenderWindow)
 	RenderWindow.draw(_HealthBarFrame);
 }
 
-void Jet::RandomPosition()
+void Jet::randomPosition()
 {
 	bool LeftRight = (std::rand() % 100) > 50;
 
@@ -110,19 +110,16 @@ void Jet::RandomPosition()
 
 void Jet::checkPhase()
 {
-	if (_PhaseClock.getElapsedTime().asSeconds() >= _Pattern[_CurrentPhase].second)
-	{
-		if (_CurrentPhase + 1 >= _Pattern.size())
-		{
+	if (_PhaseClock.getElapsedTime().asSeconds() >= _Pattern[_CurrentPhase].second) {
+		if (_CurrentPhase + 1 >= _Pattern.size()) {
 			_CurrentPhase = 0;
 		}
-		else
-		{
+		else {
 			++_CurrentPhase;
 		}
 
 		_Movement = Movement::STRAIGHT;
-		RandomPosition();
+		randomPosition();
 		_PhaseClock.restart();
 	}
 }

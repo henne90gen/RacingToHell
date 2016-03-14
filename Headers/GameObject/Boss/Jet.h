@@ -4,13 +4,33 @@
 class Jet : public BossCar
 {
 public:
-	Jet(sf::Texture& Texture, sf::Texture& BulletTexture);
+	/*
+		Jet boss
+		@param texture Texture for the sprite
+		@param bulletTexture Texture for all bullets the Jet shoots
+	*/
+	Jet(sf::Texture& texture, sf::Texture& bulletTexture);
 	~Jet();
 
-	void update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects);
-	void render(sf::RenderWindow& RenderWindow);
+	/*
+		See BossCar for details
+	*/
+	void update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameObjects);
+
+	/*
+		See BossCar for details
+	*/
+	void render(sf::RenderWindow& window);
 
 private:
-	void RandomPosition();
+
+	/*
+		Sets the Jet to a random position off screen and sets the next position on the opposite site
+	*/
+	void randomPosition();
+
+	/*
+		Changes to the next phase
+	*/
 	void checkPhase();
 };

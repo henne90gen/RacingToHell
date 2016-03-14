@@ -8,14 +8,38 @@
 class BossCar : public Car
 {
 public:
-	BossCar(sf::Vector2f& Position, int Health, float Speed, sf::Texture& Texture, sf::Texture& BulletTexture);
+	/*
+		BossCar is the interface for every boss. It handles creation and sprite updating.
+		@param pos				Starting position
+		@param health			Starting health of the boss 
+		@param texture			Texture for the sprite that is going to be used for collision detection
+		@param bulletTexture	Texture for the bullets the boss will shoot
+	*/
+	BossCar(sf::Vector2f& pos, int health, float speed, sf::Texture& texture, sf::Texture& bulletTexture);
 	~BossCar();
 
-	virtual void update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects) = 0;
-	virtual void render(sf::RenderWindow& RenderWindow) = 0;
+	/*
+		Renders the boss to the specified RenderWindow
+		@param window Window to draw to
+	*/
+	virtual void render(sf::RenderWindow& window) = 0;
 
+	/*
+		Updates the boss with the given frame time
+		@param frameTime Time that has passed since the last update
+		@param roadSpeed Velocity of the road
+		@param gameObjects Reference to the vector with all the game objects, so that the boss can add the bullets it shoots
+	*/
+	virtual void update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameObjects) = 0;
+
+	/*
+		Returns true if the boss allows traffic
+	*/
 	bool getTraffic() { return _Traffic; }
 
+	/*
+		Returns true if the boss is dead and all explosion animations are done playing
+	*/
 	bool isDoneExploding(sf::Texture& ExplosionTexture);
 protected:
 	enum Phase { NOTHING, SIMPLESHOOT, SALVE, SPIN, HARDCORESPAM, BLASTSALVE, SPIRAL, RANDOMSPRAY, SHOTGUN, SIDE, POWERUPLANES };
@@ -45,8 +69,6 @@ protected:
 	bool _Event1Switch, _Event2Switch;
 	int _Event1Counter, _Event2Counter;
 
-	int getBossEvent();
-
 	sf::Vector2f _NextPosition;
 	bool _Attack, _Traffic;
 
@@ -54,8 +76,9 @@ protected:
 	void ShootBullet(std::vector<GameObject*>& GameObjects, sf::Vector2f Position, float Direction) { ShootBullet(GameObjects, Position, Direction, _BulletSpeed); }
 	void ShootBullet(std::vector<GameObject*>& GameObjects, sf::Vector2f Position, float Direction, int BulletSpeed);
 	bool DriveToNextPosition(float FrameTime);
+	int getBossEvent();
 	void updateHealthBar();
-	void checkPhase();
+	virtual void checkPhase();
 	void renderExplosions(sf::RenderWindow& Window);
 	void updateExplosions(float FrameTime);
 };

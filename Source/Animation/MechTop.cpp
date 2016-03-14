@@ -20,7 +20,7 @@ void MechTop::update(float FrameTime)
 		if (_Timer.getElapsedTime().asSeconds() > _TimePerFrame) {
 			_ElapsedTime += _Timer.getElapsedTime().asSeconds();
 			_Timer.restart();
-			nextSprite();
+			nextFrame();
 		}
 	}
 }

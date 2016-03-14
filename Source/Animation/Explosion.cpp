@@ -26,7 +26,7 @@ void Explosion::update(float FrameTime)
 		if (_Timer.getElapsedTime().asSeconds() > _TimePerFrame) {
 			_ElapsedTime += _Timer.getElapsedTime().asSeconds();
 			_Timer.restart();
-			if (!nextSprite()) {
+			if (!nextFrame()) {
 				_AnimState = Animation::Stop;
 			}
 		}

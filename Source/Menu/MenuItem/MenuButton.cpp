@@ -27,12 +27,7 @@ MenuButton::MenuButton(sf::Vector2f pos, sf::Vector2f size, MenuResult action, s
 	_Text.setPosition(_Background.getPosition() + sf::Vector2f(_Background.getLocalBounds().width / 2 - _Text.getLocalBounds().width / 2, 0));
 }
 
-
-MenuButton::~MenuButton()
-{
-}
-
-void MenuButton::render(sf::RenderWindow & Window)
+void MenuButton::render(sf::RenderWindow & window)
 {
 	if ((_Hovering && _Enabled) || (_Focused && _Enabled)) {
 		_Background.setFillColor(sf::Color(50, 50, 50, 100));
@@ -47,26 +42,26 @@ void MenuButton::render(sf::RenderWindow & Window)
 		_Text.setColor(sf::Color(150, 150, 150, 255));
 	}
 
-	Window.draw(_Background);
-	Window.draw(_Text);
+	window.draw(_Background);
+	window.draw(_Text);
 }
 
-MenuResult MenuButton::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
+MenuResult MenuButton::handleEvent(sf::Event & newEvent, sf::Vector2f mousePos)
 {
 	if (_Enabled) {
-		if (Event.type == sf::Event::MouseButtonPressed) {
-			if (MousePos.y > getRect().top && MousePos.y < getRect().top + getRect().height && MousePos.x > getRect().left && MousePos.x < getRect().left + getRect().width)
+		if (newEvent.type == sf::Event::MouseButtonPressed) {
+			if (mousePos.y > getRect().top && mousePos.y < getRect().top + getRect().height && mousePos.x > getRect().left && mousePos.x < getRect().left + getRect().width)
 			{
 				return _Action;
 			}
 		}
-		else if (Event.type == sf::Event::JoystickButtonPressed) {
-			if (Event.joystickButton.button == 0 && _Focused) {
+		else if (newEvent.type == sf::Event::JoystickButtonPressed) {
+			if (newEvent.joystickButton.button == 0 && _Focused) {
 				return _Action;
 			}
 		}
-		else if (Event.type == sf::Event::MouseMoved) {
-			if (MousePos.y > getRect().top && MousePos.y < getRect().top + getRect().height && MousePos.x > getRect().left && MousePos.x < getRect().left + getRect().width){
+		else if (newEvent.type == sf::Event::MouseMoved) {
+			if (mousePos.y > getRect().top && mousePos.y < getRect().top + getRect().height && mousePos.x > getRect().left && mousePos.x < getRect().left + getRect().width){
 				_Hovering = true;
 			}
 			else {

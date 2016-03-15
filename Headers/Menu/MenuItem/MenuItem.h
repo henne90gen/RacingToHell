@@ -6,8 +6,13 @@
 class MenuItem
 {
 public:
+	/*
+		Interface for all the things that can be part of a menu
+		@param type Type of MenuItem
+		@param action Action the Button is associated with
+	*/
 	MenuItem(MenuItems type, MenuResult action);
-	~MenuItem();
+	~MenuItem() {}
 
 	virtual void render(sf::RenderWindow & Window) = 0;
 	virtual MenuResult handleEvent(sf::Event & Event, sf::Vector2f MousePos) = 0;

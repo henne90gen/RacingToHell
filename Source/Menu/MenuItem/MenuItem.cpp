@@ -5,7 +5,3 @@ MenuItem::MenuItem(MenuItems type, MenuResult action) : _Enabled(true), _Type(ty
 {
 	_Font.loadFromFile("Resources/Font/arial.ttf");
 }
-
-MenuItem::~MenuItem()
-{
-}

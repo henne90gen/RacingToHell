@@ -1,14 +1,7 @@
 #include "stdafx.h"
 #include "Level\Level.h"
 
-Level::Level() : _Difficulty(1), _LevelUp(1)
-{
-}
-
-Level::~Level()
-{
-
-}
+Level::Level() : _Difficulty(1), _LevelUp(1) {}
 
 // returns true if 'level-up' has happened
 bool Level::update(float FrameTime, GameState gameState)
@@ -32,9 +25,9 @@ bool Level::update(float FrameTime, GameState gameState)
 	return false;
 }
 
-void Level::render(sf::RenderWindow& RenderWindow)
+void Level::render(sf::RenderWindow& window)
 {
-	RenderWindow.draw(_Sprite);
+	window.draw(_Sprite);
 }
 
 void Level::playMusic() 

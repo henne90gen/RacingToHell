@@ -3,10 +3,19 @@
 class StatBox
 {
 public:
-	StatBox(sf::Vector2f Position);
+	/*
+		Statistics for PlayerCars are displayed in here
+		@param pos Position of the StatBox
+	*/
+	StatBox(sf::Vector2f pos);
 	~StatBox();
 
-	void render(sf::RenderWindow& RenderWindow, int SelectedCar);
+	/*
+		Renders the StatBox to the specified RenderWindow
+		@param window Window to draw to
+		@param selectedCar Index of the car the player has selected
+	*/
+	void render(sf::RenderWindow& window, int selectedCar);
 private:
 	sf::RectangleShape _Background;
 	sf::Font _Font;

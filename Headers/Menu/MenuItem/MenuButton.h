@@ -15,21 +15,42 @@ public:
 	~MenuButton() {}
 
 	/*
-		Renders the Button to the specified RenderWindow
-		@param window Window to draw to
+		See MenuItem for details
 	*/
 	void render(sf::RenderWindow& window);
 
 	/*
-		Handles events for the Button
-		@param newEvent Event to be handled
+		See MenuItem for details
 	*/
 	MenuResult handleEvent(sf::Event & newEvent, sf::Vector2f mousePos);
 
 	/*
-		@return sf::FloatRect Bounding box of the Button
+		See MenuItem for details
 	*/
 	sf::FloatRect & getRect();
+
+	/*
+		@return std::string Text of the Button
+	*/
+	std::string getText() { return _Text.getString(); }
+
+	/*
+		Button doesn't have a value that could be changed
+		@return bool False
+	*/
+	bool setValue(float x) { return false; }
+
+	/*
+		Button doesn't have a value that could be returned
+		@return float 0.0f
+	*/
+	float getValue() { return 0.0f; }
+	
+	/*
+		Button doesn't have a maximum value that could be returned
+		@return float 0.0f
+	*/
+	float getMaxValue() { return 0.0f; }
 private:
 	sf::Text _Text;
 	TextAlignment _Alignment;

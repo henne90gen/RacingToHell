@@ -97,7 +97,7 @@ GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
 
 GameState GameOverScreen::handleMenuItemResult(MenuResult result)
 {
-	std::string name = dynamic_cast<Textbox*>(_MenuItems[0])->getText();
+	std::string name = _MenuItems[0]->getText();
 	switch (result) {
 	case MenuResult::Back:
 		_SoundPlayed = false;
@@ -109,7 +109,7 @@ GameState GameOverScreen::handleMenuItemResult(MenuResult result)
 	case MenuResult::SubmitScore:
 		if (!_ScoreSubmitted && name != "")
 		{
-			_Highscore.PlacePlayer(name, _Level);
+			_Highscore.placePlayer(name, _Level);
 			_ScoreSubmitted = true;
 			_MenuItems[0]->setEnabled(false);
 			_MenuItems[1]->setEnabled(false);

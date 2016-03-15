@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Menu/MenuItem\MenuButton.h"
 
-MenuButton::MenuButton(sf::Vector2f pos, sf::Vector2f size, MenuResult action, std::string text, TextAlignment align) : MenuItem(MenuItems::MButton, action), _Alignment(align)
+MenuButton::MenuButton(sf::Vector2f pos, sf::Vector2f size, MenuResult action, std::string text, TextAlignment align) : MenuItem(MenuItemType::MButton, action), _Alignment(align)
 {
 	_Text.setFont(_Font);
 	_Text.setPosition(pos);

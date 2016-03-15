@@ -74,9 +74,7 @@ void OptionsMenu::update(float FrameTime)
 		_ChangeSliderValue = 1;
 	}
 
-	if (_MenuItems[_JoystickSelection]->getType() == MenuItems::MSlider) {
-		Slider* slider = dynamic_cast<Slider*>(_MenuItems[_JoystickSelection]);
-		slider->setValue(slider->getValue() + slider->getMaxValue() * _ChangeSliderValue * FrameTime);
+	if (_MenuItems[_JoystickSelection]->setValue(_MenuItems[_JoystickSelection]->getValue() + _MenuItems[_JoystickSelection]->getMaxValue() * _ChangeSliderValue * FrameTime)) {
 		_ChangeSliderValue = 0;
 	}
 }

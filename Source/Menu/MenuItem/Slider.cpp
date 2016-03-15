@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Menu/MenuItem\Slider.h"
 
-Slider::Slider(sf::Vector2f pos, MenuResult action, std::string text, float value, float maxValue) : MenuItem(MenuItems::MSlider, action), _Value(value), _MaxValue(maxValue)
+Slider::Slider(sf::Vector2f pos, MenuResult action, std::string text, float value, float maxValue) : MenuItem(MenuItemType::MSlider, action), _Value(value), _MaxValue(maxValue)
 {
 	_Line.setFillColor(sf::Color::Black);
 	_Line.setSize(sf::Vector2f(200, 5));
@@ -24,10 +24,6 @@ Slider::Slider(sf::Vector2f pos, MenuResult action, std::string text, float valu
 	_BoundingBox.top = _Slider.getPosition().y - _Slider.getLocalBounds().height / 2.0f;
 	_BoundingBox.width = _Line.getLocalBounds().width;
 	_BoundingBox.height = _Slider.getLocalBounds().height;
-}
-
-Slider::~Slider()
-{
 }
 
 void Slider::render(sf::RenderWindow & Window)
@@ -77,7 +73,7 @@ MenuResult Slider::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 	return _Action;
 }
 
-void Slider::setValue(float value)
+bool Slider::setValue(float value)
 {
 	_Value = value;
 	if (_Value < 0)
@@ -85,6 +81,7 @@ void Slider::setValue(float value)
 	else if (_Value > _MaxValue)
 		_Value = _MaxValue;
 	_Slider.setPosition(_Line.getPosition().x + _Line.getSize().x * value / _MaxValue, _Line.getPosition().y + _Line.getLocalBounds().height / 2.0f);
+	return true;
 }
 
 void Slider::setSlider(float x)

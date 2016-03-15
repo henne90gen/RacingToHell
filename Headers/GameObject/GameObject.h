@@ -3,8 +3,6 @@
 #include "GameObject/GameObjectType.h"
 #include "Collision.h"
 
-#include <string>
-
 class GameObject
 {
 public:

@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include "GameObject\GameObjectContainer.h"
 
-GameObjectContainer::GameObjectContainer() : _PlayerBulletSpeed(600), _AIBulletSpeed(400)
-{
-}
+GameObjectContainer::GameObjectContainer() : _PlayerBulletSpeed(600), _AIBulletSpeed(400) {}
 
 GameObjectContainer::~GameObjectContainer()
 {

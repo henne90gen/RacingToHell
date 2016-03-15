@@ -15,7 +15,7 @@ public:
 	~Animation();
 	
 	/*
-	 *	State an animation may be in
+		State an animation may be in
 	 */
 	enum AnimationState {
 		Stop, Play, Pause

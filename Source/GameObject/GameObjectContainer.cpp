@@ -125,10 +125,10 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 		//Kaputte Autos löschen
 		for (unsigned int i = 0; i < _GameObjects.size(); i++)
 		{
-			if (_GameObjects.at(i)->getType() == GameObjectType::AI && dynamic_cast<AICar*>(_GameObjects.at(i))->getHealth() <= 0)
+			if (_GameObjects.at(i)->getType() == GameObjectType::AI && _GameObjects.at(i)->getHealth() <= 0)
 			{
-				_CarScore += (int)(1.5 * dynamic_cast<AICar*>(_GameObjects.at(i))->getMaxHealth());
-				_Animations.push_back(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, dynamic_cast<AICar*>(_GameObjects[i])->getSpeed())));
+				_CarScore += (int)(1.5 * _GameObjects.at(i)->getMaxHealth());
+				_Animations.push_back(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0,_GameObjects[i]->getSpeed())));
 				deleteObject(i);
 				i--;
 			}
@@ -154,21 +154,21 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 				for (unsigned int j = i + 1; j < _GameObjects.size(); j++)
 				{
 					if (_GameObjects.at(j)->getType() == GameObjectType::AI && i != j &&
-						dynamic_cast<AICar*>(_GameObjects.at(i))->getLane() == dynamic_cast<AICar*>(_GameObjects.at(j))->getLane() &&
-						dynamic_cast<AICar*>(_GameObjects.at(i))->getSpeed() != dynamic_cast<AICar*>(_GameObjects.at(j))->getSpeed())
+						_GameObjects.at(i)->getLane() == _GameObjects.at(j)->getLane() &&
+						_GameObjects.at(i)->getSpeed() != _GameObjects.at(j)->getSpeed())
 					{
 						if (std::abs(_GameObjects.at(i)->getPos().y - _GameObjects.at(j)->getPos().y) < _GameObjects.at(i)->getHeight() + 20)
 						{
-							int minSpeed = std::min({ dynamic_cast<AICar*>(_GameObjects.at(i))->getSpeed(), dynamic_cast<AICar*>(_GameObjects.at(j))->getSpeed() });
-							dynamic_cast<AICar*>(_GameObjects.at(i))->setSpeed(minSpeed);
-							dynamic_cast<AICar*>(_GameObjects.at(j))->setSpeed(minSpeed);
+							int minSpeed = std::min({_GameObjects.at(i)->getSpeed(),_GameObjects.at(j)->getSpeed() });
+							_GameObjects.at(i)->setSpeed(minSpeed);
+							_GameObjects.at(j)->setSpeed(minSpeed);
 						}
 					}
 					else if (_GameObjects.at(j)->getType() == GameObjectType::BulletObjectPlayer)
 					{
 						if (_GameObjects.at(i)->checkForCollision((_GameObjects.at(j))))
 						{
-							dynamic_cast<AICar*>(_GameObjects.at(i))->takeDamage(getPlayerCar()->getBulletdamage());
+							_GameObjects.at(i)->takeDamage(getPlayerCar()->getBulletdamage());
 							deleteObject(j);
 							break;
 						}
@@ -177,7 +177,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 					{
 						if (_GameObjects.at(i)->checkForCollision(_GameObjects.at(j)))
 						{
-							dynamic_cast<AICar*>(_GameObjects.at(i))->takeDamage(500);
+							_GameObjects.at(i)->takeDamage(500);
 							deleteObject(j);
 							break;
 						}
@@ -194,13 +194,13 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			{
 				if (_GameObjects.at(i)->getType() == GameObjectType::BulletObjectPlayer)
 				{
-					dynamic_cast<BossCar*>(_GameObjects.at(1))->takeDamage(getPlayerCar()->getBulletdamage());
+					_GameObjects.at(1)->takeDamage(getPlayerCar()->getBulletdamage());
 					deleteObject(i);
 					i--;
 				}
 				else if (_GameObjects.at(i)->getType() == GameObjectType::AI)
 				{
-					_Animations.push_back(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, dynamic_cast<AICar*>(_GameObjects[i])->getSpeed())));
+					_Animations.push_back(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _GameObjects[i]->getSpeed())));
 					deleteObject(i);
 					i--;
 				}
@@ -252,7 +252,7 @@ void GameObjectContainer::render(sf::RenderWindow& Window, bool renderCrosshair)
 	for (unsigned int i = _GameObjects.size(); i > 0; i--)
 	{
 		if (_GameObjects.at(i-1)->getType() == GameObjectType::Player && _PlayerAlive) {
-			dynamic_cast<PlayerCar*>(_GameObjects.at(i-1))->render(Window, renderCrosshair);
+			_GameObjects.at(i-1)->render(Window, renderCrosshair);
 		}
 		else {
 			_GameObjects.at(i-1)->render(Window);
@@ -427,7 +427,7 @@ void GameObjectContainer::spawnAICar(int difficulty, int roadSpeed)
 	{
 		if (_GameObjects.at(i)->getType() == GameObjectType::AI)
 		{
-			if (dynamic_cast<AICar*>(_GameObjects.at(i))->getLane() == newAiCar->getLane() && _GameObjects.at(i)->getPos().y < _GameObjects.at(i)->getHeight() / 2 + 20)
+			if (_GameObjects.at(i)->getLane() == newAiCar->getLane() && _GameObjects.at(i)->getPos().y < _GameObjects.at(i)->getHeight() / 2 + 20)
 			{
 				delete newAiCar;
 				newAiCar = nullptr;
@@ -441,20 +441,20 @@ void GameObjectContainer::spawnAICar(int difficulty, int roadSpeed)
 
 void GameObjectContainer::spawnBullet()
 {
-	std::vector<AICar*> AICarVector;
+	std::vector<GameObject*> AICarVector;
 
 	for (unsigned int i = 1; i < _GameObjects.size(); i++)
 	{
 		if (_GameObjects.at(i)->getType() == GameObjectType::AI)
 		{
-			AICarVector.push_back(dynamic_cast<AICar*>(_GameObjects.at(i)));
+			AICarVector.push_back(_GameObjects.at(i));
 		}
 	}
 
 	if (AICarVector.size() == 0)
 		return;
 
-	AICar* SelectedCar = AICarVector.at(std::rand() % AICarVector.size());
+	GameObject* SelectedCar = AICarVector.at(std::rand() % AICarVector.size());
 	
 	float Direction;
 	if (getPlayerCar()->getPos().x < SelectedCar->getPos().x)

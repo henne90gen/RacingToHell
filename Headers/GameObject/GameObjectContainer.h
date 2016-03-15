@@ -30,7 +30,7 @@ public:
 		@param renderCrosshair Determines whether various aiming utilities of the PlayerCar (crosshair and aim line) are going to be rendered
 	*/
 	void render(sf::RenderWindow& window, bool renderCrosshair);
-	
+
 	/*
 		Handles events and delegates them to the correct GameObjects
 		@param newEvent Event to be handled
@@ -46,14 +46,14 @@ public:
 	void update(float frameTime, int difficulty, int roadSpeed);
 
 	/*
-		@return PlayerCar* Pointer to the PlayerCar
+		@return GameObject* Pointer to the PlayerCar
 	*/
-	PlayerCar* getPlayerCar() { return dynamic_cast<PlayerCar*>(_GameObjects.at(0)); }
+	GameObject* getPlayerCar() { return _GameObjects.at(0); }
 
 	/*
-		@return BossCar* Pointer to the BossCar
+		@return GameObject* Pointer to the BossCar
 	*/
-	BossCar* getBossCar() { return dynamic_cast<BossCar*>(_GameObjects.at(1)); }
+	GameObject* getBossCar() { return _GameObjects.at(1); }
 
 	/*
 		@return bool True if the player is still alive

@@ -15,7 +15,7 @@ public:
 	/*
 		See BossCar for details
 	*/
-	void update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameObjects);
+	void update(float frameTime, int roadSpeed, std::vector<GameObject*>& GameObjects);
 
 	/*
 		See BossCar for details

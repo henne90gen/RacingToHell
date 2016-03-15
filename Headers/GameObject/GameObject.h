@@ -22,6 +22,13 @@ public:
 	virtual void render(sf::RenderWindow& window);
 
 	/*
+		Renders the GameObject to the specified RenderWindow (PlayerCar)
+		@param window Window to draw to
+		@param renderCrosshair States whether or not the crosshair should be drawn
+	*/
+	virtual void render(sf::RenderWindow& window, bool renderCrosshair) {};
+
+	/*
 		Handles events for GameObject
 		@param newEvent Event to be handled
 	*/
@@ -33,6 +40,14 @@ public:
 		@param roadSpeed Velocity of the road
 	*/
 	virtual void update(float frameTime, int roadSpeed);
+
+	/*
+		Updates the GameObject with the given frame time (Boss)
+		@param frameTime Time that has passed since the last update
+		@param roadSpeed Velocity of the road
+		@param GameObjects GameObject-Vector
+	*/
+	virtual void update(float FrameTime, int roadSpeed, std::vector<GameObject*>& GameObjects) {};
 
 	/*
 		@return GameObjectTyoe The type of the GameObject
@@ -89,6 +104,90 @@ public:
 		@return bool True if the two GameObjects collide
 	*/
 	bool checkForCollision(GameObject* go);
+
+	/*
+		Current lane the car is on
+		@return int Number of the lane
+	*/
+	virtual int getLane() { return -1; }
+
+	/*
+		@return int Speed of the Car
+	*/
+	virtual int getSpeed() { return -1; }
+
+	/*
+		Sets the speed of the car
+		@param int New speed of the car
+	*/
+	virtual void setSpeed(int Speed) {};
+
+	/*
+		@return int Health of the Car
+	*/
+	virtual int getHealth() { return -1; }
+
+	/*
+		@return int Maximum-Health of the Car
+	*/
+	virtual int getMaxHealth() { return -1; }
+
+	/*
+		Damage the car and subtract the damage from the health
+		@param damage Amount of health to subtract
+	*/
+	virtual void takeDamage(int Damage) {}
+
+	/*
+		Adds 50 to the players energy if possible
+	*/
+	virtual void addEnergy() {}
+
+	/*
+		@return float Energy of the player
+	*/
+	virtual float getEnergy() { return -1; }
+
+	/*
+		@return float Maximum amount of energy the player can have
+	*/
+	virtual int getMaxEnergy() { return -1; }
+
+	/*
+		Adds 20 to the players health if possible
+	*/
+	virtual void addHealth() {}
+
+	/*
+		@return int Damage of a bullet fired by the player
+	*/
+	virtual int getBulletdamage() { return -1; }
+
+	/*
+		Resets angle for new bullets so that no new bullets are fired
+	*/
+	virtual void resetShotBullet() {};
+
+	/*
+		Gives back the angle of the shot bullet or 360.0f if no bullet was fired
+		@return float Angle of the shot bullet
+	*/
+	virtual float shotBullet() { return -1.0f; }
+
+	/*
+		Changes the players stats according to the id of the car he chose.
+	*/
+	virtual void setStats(int CurrentIndex) {}
+
+	/*
+		Returns true if the boss allows traffic
+	*/
+	virtual bool getTraffic() { return false; }
+
+	/*
+		Returns true if the boss is dead and all explosion animations are done playing
+	*/
+	virtual bool isDoneExploding(sf::Texture& ExplosionTexture) { return false; }
 private:
 	sf::Sprite _Sprite;
 	sf::Texture _Texture;

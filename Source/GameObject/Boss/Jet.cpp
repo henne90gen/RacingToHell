@@ -18,7 +18,7 @@ Jet::~Jet()
 {
 }
 
-void Jet::update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameObjects)
+void Jet::update(float frameTime, int roadSpeed, std::vector<GameObject*>& GameObjects)
 {
 	if (!_IsExploding) {
 	if (_Movement != Movement::STILL && DriveToNextPosition(frameTime))
@@ -45,8 +45,8 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameO
 			{
 				for (int i = -40; i <= SCREENHEIGHT; i += 200)
 				{
-					ShootBullet(gameObjects, sf::Vector2f(0, i), 0.0f);
-					ShootBullet(gameObjects, sf::Vector2f(SCREENWIDTH, i + 100), 180.0f);
+					ShootBullet(GameObjects, sf::Vector2f(0, i), 0.0f);
+					ShootBullet(GameObjects, sf::Vector2f(SCREENWIDTH, i + 100), 180.0f);
 				}
 			}
 			break;

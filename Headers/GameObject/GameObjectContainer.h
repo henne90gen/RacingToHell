@@ -24,8 +24,8 @@ public:
 	void render(sf::RenderWindow& Window, bool renderCrosshair);
 	void handleEvents(sf::Event& Event);
 
-	PlayerCar* getPlayerCar() { return dynamic_cast<PlayerCar*>(_GameObjects.at(0)); }
-	BossCar* getBossCar() { return dynamic_cast<BossCar*>(_GameObjects.at(1)); }
+	GameObject* getPlayerCar() { return _GameObjects.at(0); }
+	GameObject* getBossCar() { return _GameObjects.at(1); }
 	bool playerIsAlive();
 	bool bossIsDead();
 

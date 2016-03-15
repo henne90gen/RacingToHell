@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GameObject/Boss/BossCar.h"
 
-BossCar::BossCar(sf::Vector2f& Position, int Health, float Speed, sf::Texture& Texture, sf::Texture& BulletTetxure) : Car(Position, Health, Speed, GameObjects::Boss, Texture),
+BossCar::BossCar(sf::Vector2f& Position, int Health, float Speed, sf::Texture& Texture, sf::Texture& BulletTetxure) : Car(Position, Health, Speed, GameObjectType::Boss, Texture),
 	_BulletSpeed(500), _BulletTexture(BulletTetxure), _Movement(Movement::STILL), _Attack(false), _Traffic(false), _IsExploding(false),
 	_Event1Counter(0), _Event2Counter(0), _Event1Frequency(0), _Event2Frequency(0), _Event1Switch(false), _Event2Switch(false), _CurrentPhase(0)
 {
@@ -38,10 +38,10 @@ float BossCar::PlayerAngle(GameObject * Player)
 	return Angle;
 }
 
-void BossCar::ShootBullet(std::vector<GameObject*>& GameObjects, sf::Vector2f Position, float Direction, int BulletSpeed)
+void BossCar::ShootBullet(std::vector<GameObject*>& gameObjects, sf::Vector2f position, float direction, int bulletSpeed)
 {
-	Bullet* newBullet = new Bullet(Position, Direction, BulletSpeed, GameObjects::BulletObjectBoss, _BulletTexture);
-	GameObjects.push_back(newBullet);
+	Bullet* newBullet = new Bullet(position, direction, bulletSpeed, GameObjectType::BulletObjectBoss, _BulletTexture);
+	gameObjects.push_back(newBullet);
 }
 
 int BossCar::getBossEvent()
@@ -62,7 +62,7 @@ int BossCar::getBossEvent()
 	}
 }
 
-bool BossCar::DriveToNextPosition(float FrameTime)
+bool BossCar::DriveToNextPosition(float frameTime)
 {
 	if (std::abs((getPos().y - _NextPosition.y)) < 0.1f && std::abs((getPos().x - _NextPosition.x)) < 0.1f)
 	{
@@ -73,7 +73,7 @@ bool BossCar::DriveToNextPosition(float FrameTime)
 		float length = std::sqrtf(std::pow(movement.x, 2) + std::pow(movement.y, 2));
 		movement = movement / length;
 
-		setPos(getPos() + movement * FrameTime * (float)_Speed);
+		setPos(getPos() + movement * frameTime * (float)_Speed);
 
 		return false;
 	}
@@ -110,23 +110,23 @@ void BossCar::checkPhase()
 	}
 }
 
-void BossCar::renderExplosions(sf::RenderWindow & Window)
+void BossCar::renderExplosions(sf::RenderWindow & window)
 {
 	if (_IsExploding) {
 		for (int i = 0; i < _Explosions.size(); i++) {
-			_Explosions[i]->render(Window);
+			_Explosions[i]->render(window);
 		}
 	}
 }
 
-void BossCar::updateExplosions(float FrameTime)
+void BossCar::updateExplosions(float frameTime)
 {
 	for (int i = 0; i < _Explosions.size(); i++) {
-		_Explosions[i]->update(FrameTime);
+		_Explosions[i]->update(frameTime);
 	}
 }
 
-bool BossCar::isDoneExploding(sf::Texture& ExplosionTexture)
+bool BossCar::isDoneExploding(sf::Texture& explosionTexture)
 {
 	if (_Health <= 0 && !_IsExploding) {
 		_IsExploding = 1;
@@ -149,9 +149,9 @@ bool BossCar::isDoneExploding(sf::Texture& ExplosionTexture)
 			position = sf::Vector2f(getWidth() / -3.0f, getHeight() / 3.0f);
 			break;
 		}
-		_Explosions.push_back(new Explosion(getPos() + position, ExplosionTexture, sf::Vector2f(0, 0)));
+		_Explosions.push_back(new Explosion(getPos() + position, explosionTexture, sf::Vector2f(0, 0)));
 	}
-	if (_Explosions.size() >= 5) {
+	if (_Explosions.size() > 5) {
 		_IsExploding = 2;
 	}
 	return (_Health <= 0 && _IsExploding == 2);

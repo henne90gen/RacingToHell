@@ -166,7 +166,6 @@
     <ClInclude Include="Headers\GameObject\AICar.h" />
     <ClInclude Include="Headers\GameObject\Bullet.h" />
     <ClInclude Include="Headers\GameObject\Car.h" />
-    <ClInclude Include="Headers\GameObject\EnergyCanister.h" />
     <ClInclude Include="Headers\GameObject\GameObjectContainer.h" />
     <ClInclude Include="Headers\Menu\MenuItem\HighscoreList.h" />
     <ClInclude Include="Headers\Menu\AlignText.h" />
@@ -177,7 +176,7 @@
     <ClInclude Include="Headers\Menu\MainMenu.h" />
     <ClInclude Include="Headers\Menu\MenuItem\MenuItem.h" />
     <ClInclude Include="Headers\GameObject\PlayerCar.h" />
-    <ClInclude Include="Headers\GameObject\GameObjects.h" />
+    <ClInclude Include="Headers\GameObject\GameObjectType.h" />
     <ClInclude Include="Headers\Framework.hpp" />
     <ClInclude Include="Headers\GameObject\GameObject.h" />
     <ClInclude Include="Headers\Menu\MenuItem\StatBox.h" />
@@ -186,7 +185,6 @@
     <ClInclude Include="Headers\StandardCursor.h" />
     <ClInclude Include="Headers\stdafx.h" />
     <ClInclude Include="Headers\targetver.h" />
-    <ClInclude Include="Headers\GameObject\Toolbox.h" />
     <ClInclude Include="Headers\Menu\OptionsMenu.h" />
     <ClInclude Include="Headers\Menu\PauseMenu.h" />
     <ClInclude Include="Headers\Menu\Menu.h" />
@@ -224,7 +222,6 @@
     <ClCompile Include="Source\GameObject\AICar.cpp" />
     <ClCompile Include="Source\GameObject\Bullet.cpp" />
     <ClCompile Include="Source\GameObject\Car.cpp" />
-    <ClCompile Include="Source\GameObject\EnergyCanister.cpp" />
     <ClCompile Include="Source\Menu\GameOverScreen.cpp" />
     <ClCompile Include="Source\HeadsUpDisplay.cpp" />
     <ClCompile Include="Source\Level\Level.cpp" />
@@ -243,13 +240,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Source\GameObject\Toolbox.cpp" />
     <ClCompile Include="Source\Menu\MenuItem\StatBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="README.md" />
     <None Include="Resources\Data\Highscore.sco" />
+    <None Include="Resources\Data\Settings.cfg" />
     <None Include="Resources\Sound\Music\level1.ogg" />
     <None Include="Resources\Sound\Music\menu1.ogg" />
   </ItemGroup>
@@ -296,9 +293,6 @@
     <Media Include="Resources\Sound\sample.wav" />
     <Media Include="Resources\Sound\shotAI.wav" />
     <Media Include="Resources\Sound\shotPlayer.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Resources\Data\Settings.cfg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

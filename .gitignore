@@ -213,4 +213,5 @@ ModelManifest.xml
 
 #Custom ignores
 RacingToHell.VC.opendb
-ReadMe.txt
+Resources/Data/Settings.cfg
+Resources/Data/Highscore.sco

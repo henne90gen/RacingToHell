@@ -1,12 +1,10 @@
 #pragma once
 
 #include "GameObject/GameObject.h"
-#include "GameObject/GameObjects.h"
+#include "GameObject/GameObjectType.h"
 #include "GameObject/AICar.h"
 #include "GameObject/PlayerCar.h"
 #include "GameObject/Bullet.h"
-#include "GameObject/EnergyCanister.h"
-#include "GameObject/Toolbox.h"
 
 #include "GameObject/Boss/BossCar.h"
 #include "GameObject/Boss/Tank.h"
@@ -59,7 +57,7 @@ private:
 	int _CarScore, _PlayerBulletSpeed, _AIBulletSpeed;
 	bool _PlayerAlive, _AboutToLevelUp, _BossFight;
 
-	void playShotSound(GameObjects go);
+	void playShotSound(GameObjectType go);
 	void spawnAICar(int Difficulty, int RoadSpeed);
 	void spawnBullet();
 	void deleteObject(unsigned int id);

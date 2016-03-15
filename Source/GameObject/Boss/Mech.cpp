@@ -3,8 +3,8 @@
 
 // IDEA: Mech comes in from below and "chase" the player
 
-Mech::Mech(sf::Texture& TextureTop, sf::Texture& TextureLegs, sf::Texture& BulletTexture) : BossCar(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), 5000, 100, TextureTop, BulletTexture),
-	_TopAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), TextureTop), _LegsAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), TextureLegs), _MovementSwitch(false), _GunOrientation(-90),
+Mech::Mech(sf::Texture& textureTop, sf::Texture& textureLegs, sf::Texture& bulletTexture) : BossCar(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), 5000, 100, textureTop, bulletTexture),
+	_TopAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureTop), _LegsAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureLegs), _MovementSwitch(false), _GunOrientation(-90),
 	_GunRadius(81.5659f)
 {
 	setSprite(_TopAnim.getSprite());
@@ -25,19 +25,19 @@ Mech::~Mech()
 {
 }
 
-void Mech::render(sf::RenderWindow & Window)
+void Mech::render(sf::RenderWindow & window)
 {
-	_LegsAnim.render(Window);
-	_TopAnim.render(Window);
+	_LegsAnim.render(window);
+	_TopAnim.render(window);
 
-	Window.draw(_HealthBar);
-	Window.draw(_HealthBarFrame);
+	window.draw(_HealthBar);
+	window.draw(_HealthBarFrame);
 }
 
-void Mech::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameObjects)
+void Mech::update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameObjects)
 {
 	if (!_IsExploding) {
-		if (DriveToNextPosition(FrameTime))
+		if (DriveToNextPosition(frameTime))
 		{
 			switch (_Movement)
 			{
@@ -71,14 +71,14 @@ void Mech::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& Game
 			{
 				_Event1Frequency = 11.0f;
 
-				_GunOrientation += 180 * FrameTime;
+				_GunOrientation += 180 * frameTime;
 
 				if (getBossEvent() == 1)
 				{
 					std::pair<sf::Vector2f, sf::Vector2f> Positions = calcGunPositions();
 
-					ShootBullet(GameObjects, Positions.first, _GunOrientation);
-					ShootBullet(GameObjects, Positions.second, _GunOrientation);
+					ShootBullet(gameObjects, Positions.first, _GunOrientation);
+					ShootBullet(gameObjects, Positions.second, _GunOrientation);
 				}
 				break;
 			}
@@ -86,7 +86,7 @@ void Mech::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& Game
 			{
 				_Event1Frequency = 1.5f;
 
-				_GunOrientation = PlayerAngle(GameObjects[0]);
+				_GunOrientation = PlayerAngle(gameObjects[0]);
 
 				if (getBossEvent() == 1)
 				{
@@ -96,11 +96,11 @@ void Mech::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& Game
 
 						if (Hand)
 						{
-							ShootBullet(GameObjects, calcGunPositions().first, (_GunOrientation - 12.5) + 25 * (std::rand() % 100) / 100, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed));
+							ShootBullet(gameObjects, calcGunPositions().first, (_GunOrientation - 12.5) + 25 * (std::rand() % 100) / 100, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed));
 						}
 						else
 						{
-							ShootBullet(GameObjects, calcGunPositions().second, (_GunOrientation - 12.5) + 25 * (std::rand() % 100) / 100, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed));
+							ShootBullet(gameObjects, calcGunPositions().second, (_GunOrientation - 12.5) + 25 * (std::rand() % 100) / 100, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed));
 						}
 					}
 
@@ -112,7 +112,7 @@ void Mech::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& Game
 			{
 				_Event1Frequency = 1.5f;
 
-				_GunOrientation = PlayerAngle(GameObjects[0]);
+				_GunOrientation = PlayerAngle(gameObjects[0]);
 
 				if (getBossEvent() == 1)
 				{
@@ -122,11 +122,11 @@ void Mech::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& Game
 					{
 						if (Hand)
 						{
-							ShootBullet(GameObjects, calcGunPositions().first, _GunOrientation - 7 * (i - 2));
+							ShootBullet(gameObjects, calcGunPositions().first, _GunOrientation - 7 * (i - 2));
 						}
 						else
 						{
-							ShootBullet(GameObjects, calcGunPositions().first, _GunOrientation - 7 * (i - 2));
+							ShootBullet(gameObjects, calcGunPositions().first, _GunOrientation - 7 * (i - 2));
 						}
 					}
 				}
@@ -147,11 +147,11 @@ void Mech::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& Game
 			checkPhase();
 		}
 
-		_LegsAnim.update(FrameTime);
-		_TopAnim.update(FrameTime);
+		_LegsAnim.update(frameTime);
+		_TopAnim.update(frameTime);
 	}
 	else {
-		updateExplosions(FrameTime);
+		updateExplosions(frameTime);
 	}
 }
 

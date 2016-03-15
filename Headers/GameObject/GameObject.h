@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameObjects.h"
+#include "GameObject/GameObjectType.h"
 #include "Collision.h"
 
 #include <string>
@@ -8,29 +8,93 @@
 class GameObject
 {
 public:
-	GameObject(sf::Vector2f pos, GameObjects Type, sf::Texture& texture);
-	~GameObject();
+	/*
+		Any object that can be on the screen
+		@param pos Position of the GameObject
+		@param type Type of the GameObject
+		@param texture Texture that is going to be used for the Sprite
+	*/
+	GameObject(sf::Vector2f pos, GameObjectType type, sf::Texture& texture);
+	~GameObject() {}
 
-	virtual void render(sf::RenderWindow& Window);
-	virtual void handleEvent(sf::Event& Event) = 0;
-	virtual void update(float FrameTime, int RoadSpeed) = 0;
+	/*
+		Renders the GameObject to the specified RenderWindow
+		@param window Window to draw to
+	*/
+	virtual void render(sf::RenderWindow& window);
 
-	GameObjects getType() { return _Type; }
+	/*
+		Handles events for GameObject
+		@param newEvent Event to be handled
+	*/
+	virtual void handleEvent(sf::Event& newEvent) {}
+
+	/*
+		Updates the GameObject with the given frame time
+		@param frameTime Time that has passed since the last update
+		@param roadSpeed Velocity of the road
+	*/
+	virtual void update(float frameTime, int roadSpeed);
+
+	/*
+		@return GameObjectTyoe The type of the GameObject
+	*/
+	GameObjectType getType() { return _Type; }
+
+	/*
+		@return Vectorf2f The position of the GameObject on the screen
+	*/
 	virtual sf::Vector2f getPos() { return  _Sprite.getPosition(); }
+
+	/*
+		@return float The Width of the sprite of the GameObject
+	*/
 	virtual float getWidth() { return _Sprite.getLocalBounds().width; }
+
+	/*
+		@return float The Height of the sprite of the GameObject
+	*/
 	virtual float getHeight() { return _Sprite.getLocalBounds().height; }
+
+	/*
+		@return float The Sprite of the GameObject
+	*/
 	virtual sf::Sprite& getSprite() { return _Sprite; }
-	void setSprite(sf::Sprite & Sprite) { _Sprite = Sprite; }
 
-	virtual void setPos(sf::Vector2f Pos) { _Sprite.setPosition(Pos); }
-	void setSkin(sf::Texture* skin);
-	void setSpriteColor(sf::Color Color) { _Sprite.setColor(Color); }
+	/*
+		Sets the sprite of the GameObject
+		@param sprite New sprite for this GameObject
+	*/
+	void setSprite(sf::Sprite & sprite) { _Sprite = sprite; }
 
+	/*
+		Sets the position of the GameObject
+		@param pos New position for this GameObject
+	*/
+	virtual void setPos(sf::Vector2f pos) { _Sprite.setPosition(pos); }
+
+	/*
+		Sets the texture of the GameObject
+		@param texture New texture for this GameObject
+	*/
+	void setTexture(sf::Texture& texture);
+
+	/*
+		Changes the color of the sprite
+		@param color New color for the sprite
+	*/
+	void setSpriteColor(sf::Color color) { _Sprite.setColor(color); }
+
+	/*
+		Compares this GameObject with another one to see if they are colliding
+		@param go GameObject to compare this one to
+		@return bool True if the two GameObjects collide
+	*/
 	bool checkForCollision(GameObject* go);
 private:
 	sf::Sprite _Sprite;
 	sf::Texture _Texture;
 	
-	GameObjects _Type;
+	GameObjectType _Type;
 };
 

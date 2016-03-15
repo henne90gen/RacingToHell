@@ -2,7 +2,7 @@
 #include "GameObject\GameObject.h"
 
 
-GameObject::GameObject(sf::Vector2f pos, GameObjects Type, sf::Texture& texture) : _Type(Type)
+GameObject::GameObject(sf::Vector2f pos, GameObjectType type, sf::Texture& texture) : _Type(type)
 {
 	//Setting up texture and sprite
 	_Texture = texture;
@@ -11,19 +11,18 @@ GameObject::GameObject(sf::Vector2f pos, GameObjects Type, sf::Texture& texture)
 	_Sprite.setPosition(pos);
 }
 
-GameObject::~GameObject()
+void GameObject::render(sf::RenderWindow& window)
 {
-
+	window.draw(_Sprite);
 }
 
-void GameObject::render(sf::RenderWindow& Window)
-{
-	Window.draw(_Sprite);
+void GameObject::update(float frameTime, int roadSpeed) {
+	setPos(sf::Vector2f(getPos().x, getPos().y + frameTime * roadSpeed));
 }
 
-void GameObject::setSkin(sf::Texture* skin)
+void GameObject::setTexture(sf::Texture& texture)
 {
-	_Texture = *skin;
+	_Texture = texture;
 	_Sprite.setTexture(_Texture);
 }
 

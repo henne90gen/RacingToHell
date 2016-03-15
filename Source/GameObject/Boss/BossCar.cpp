@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GameObject/Boss/BossCar.h"
 
-BossCar::BossCar(sf::Vector2f& Position, int Health, float Speed, sf::Texture& Texture, sf::Texture& BulletTetxure) : Car(Position, Health, Speed, GameObjects::Boss, Texture),
+BossCar::BossCar(sf::Vector2f& Position, int Health, float Speed, sf::Texture& Texture, sf::Texture& BulletTetxure) : Car(Position, Health, Speed, GameObjectType::Boss, Texture),
 	_BulletSpeed(500), _BulletTexture(BulletTetxure), _Movement(Movement::STILL), _Attack(false), _Traffic(false), _IsExploding(false),
 	_Event1Counter(0), _Event2Counter(0), _Event1Frequency(0), _Event2Frequency(0), _Event1Switch(false), _Event2Switch(false), _CurrentPhase(0)
 {
@@ -40,7 +40,7 @@ float BossCar::PlayerAngle(GameObject * Player)
 
 void BossCar::ShootBullet(std::vector<GameObject*>& gameObjects, sf::Vector2f position, float direction, int bulletSpeed)
 {
-	Bullet* newBullet = new Bullet(position, direction, bulletSpeed, GameObjects::BulletObjectBoss, _BulletTexture);
+	Bullet* newBullet = new Bullet(position, direction, bulletSpeed, GameObjectType::BulletObjectBoss, _BulletTexture);
 	gameObjects.push_back(newBullet);
 }
 

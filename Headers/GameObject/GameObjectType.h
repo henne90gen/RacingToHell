@@ -1,5 +1,5 @@
 #pragma once
 
-enum GameObjects {
+enum GameObjectType {
 	Player, AI, BulletObjectAI, BulletObjectPlayer, BulletObjectBoss, Canister, Tools, Boss
 };

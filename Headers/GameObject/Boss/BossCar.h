@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GameObject\Car.h"
-#include "GameObject\GameObjects.h"
+#include "GameObject\GameObjectType.h"
 #include "GameObject\Bullet.h"
 #include "Animation\Explosion.h"
 

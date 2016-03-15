@@ -131,7 +131,7 @@ void Framework::handleEvents()
 			_CurrentCarSkinIndex = 0;
 		}
 		_MainMenu.setCarIndex(_CurrentCarSkinIndex);
-		_GameObjectContainer.getPlayerCar()->setSkin(_CarSkins.at(_CurrentCarSkinIndex));
+		_GameObjectContainer.getPlayerCar()->setTexture((*_CarSkins.at(_CurrentCarSkinIndex)));
 		_GameObjectContainer.getPlayerCar()->setStats(_CurrentCarSkinIndex);
 		break;
 	case GameState::Highscores:

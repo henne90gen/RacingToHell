@@ -23,7 +23,9 @@ public:
 	Framework();
 	~Framework();
 
-	//Functions
+	/*
+		Starts the main game loop
+	*/
 	void run();
 
 private:
@@ -41,6 +43,8 @@ private:
 	GameState _GameState;
 	GameObjectContainer _GameObjectContainer;
 	std::vector<sf::Texture*> _CarSkins;
+
+	//Level
 	Level _Level;
 
 	//Music

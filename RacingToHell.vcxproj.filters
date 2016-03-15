@@ -108,16 +108,10 @@
     <ClInclude Include="Headers\GameObject\Car.h">
       <Filter>Header Files\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\GameObject\EnergyCanister.h">
-      <Filter>Header Files\GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\GameObject\GameObject.h">
       <Filter>Header Files\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Headers\GameObject\GameObjectContainer.h">
-      <Filter>Header Files\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\GameObject\GameObjects.h">
       <Filter>Header Files\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Headers\GameObject\PlayerCar.h">
@@ -131,9 +125,6 @@
     </ClInclude>
     <ClInclude Include="Headers\Menu\Menu.h">
       <Filter>Header Files\Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\GameObject\Toolbox.h">
-      <Filter>Header Files\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Headers\PlayerStats.h">
       <Filter>Header Files</Filter>
@@ -163,9 +154,6 @@
       <Filter>Header Files\Menu</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Serializable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Menu\MenuItems.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Menu\MenuItems.h">
@@ -237,6 +225,9 @@
     <ClInclude Include="Headers\Menu\HighscoreMenu.h">
       <Filter>Header Files\Menu</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\GameObject\GameObjectType.h">
+      <Filter>Header Files\GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Framework.cpp">
@@ -260,9 +251,6 @@
     <ClCompile Include="Source\GameObject\Car.cpp">
       <Filter>Source Files\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameObject\EnergyCanister.cpp">
-      <Filter>Source Files\GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="Source\GameObject\GameObject.cpp">
       <Filter>Source Files\GameObject</Filter>
     </ClCompile>
@@ -270,9 +258,6 @@
       <Filter>Source Files\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameObject\PlayerCar.cpp">
-      <Filter>Source Files\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\GameObject\Toolbox.cpp">
       <Filter>Source Files\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Source\Level\Level.cpp">

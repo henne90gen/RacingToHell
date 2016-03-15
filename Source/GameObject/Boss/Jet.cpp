@@ -11,7 +11,7 @@ Jet::Jet(sf::Texture & Texture, sf::Texture & BulletTexture) : BossCar(sf::Vecto
 
 	_Movement = Movement::STRAIGHT;
 
-	_Pattern = {std::make_pair(Phase::SIDE, 10.5f)};
+	_Pattern = {std::make_pair(Phase::SIDE, 10.5f), std::make_pair(Phase::SAVELANES, 10.5f)};
 }
 
 Jet::~Jet()
@@ -51,17 +51,26 @@ void Jet::update(float FrameTime, int RoadSpeed, std::vector<GameObject*>& GameO
 			}
 			break;
 		}
-		case Phase::POWERUPLANES:
+		case Phase::SAVELANES:
 		{
 			_Event1Frequency = 0.2f;
-			_Event2Frequency = 1.0f;
+			_Event2Frequency = 0.0f;
 
 			if (getBossEvent() == 1 || _Event2Counter > 0)
 			{
+				_Event2Frequency = 3.0f;
+
 				if (getBossEvent() == 2)
 				{
 					if (_Event2Counter + 1 <= 3)
 					{
+						for (int i = 0; i < 3; i++)
+						{
+							ShootBullet(GameObjects, sf::Vector2f(i * 150 + 150, 0), 90.0f);
+						}
+
+						ShootBullet(GameObjects, sf::Vector2f(20, 0), 90.0f);
+						ShootBullet(GameObjects, sf::Vector2f(SCREENWIDTH - 20, 0), 90.0f);
 
 						++_Event2Counter;
 					}

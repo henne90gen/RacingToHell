@@ -16,11 +16,12 @@ public:
 		@param texture Texture that is going to be used for the sprite
 	*/
 	PlayerCar(int selectedCar, sf::Texture& texture);
-	~PlayerCar();
+	~PlayerCar() {}
 
 	/*
 		Renders the PlayerCar to the specified RenderWindow
 		@param window Window to draw to
+		@param renderCrosshair Determines whether various aiming utilities (crosshair and aim line) are going to be rendered
 	*/
 	void render(sf::RenderWindow& window, bool renderCrosshair);
 	

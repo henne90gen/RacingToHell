@@ -20,12 +20,6 @@ PlayerCar::PlayerCar(int SelectedCar, sf::Texture& texture) : Car(sf::Vector2f(0
 	}
 }
 
-
-PlayerCar::~PlayerCar()
-{
-
-}
-
 void PlayerCar::render(sf::RenderWindow& Window, bool renderCrosshair) {
 	Window.draw(getSprite());
 	if (renderCrosshair) {

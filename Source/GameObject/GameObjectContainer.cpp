@@ -264,12 +264,12 @@ void GameObjectContainer::render(sf::RenderWindow& Window, bool renderCrosshair)
 	}
 }
 
-void GameObjectContainer::handleEvents(sf::Event& Event)
+void GameObjectContainer::handleEvent(sf::Event& newEvent)
 {
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
 		if (_PlayerAlive) {
-			_GameObjects.at(i)->handleEvent(Event);
+			_GameObjects.at(i)->handleEvent(newEvent);
 		}
 	}
 }
@@ -419,9 +419,9 @@ void GameObjectContainer::playShotSound(GameObjectType go)
 	_SoundEffects.push_back({ shotSound, 0 });
 }
 
-void GameObjectContainer::spawnAICar(int Difficulty, int RoadSpeed)
+void GameObjectContainer::spawnAICar(int difficulty, int roadSpeed)
 {
-	AICar* newAiCar = new AICar(Difficulty, RoadSpeed, (*_AICarTextures.at(std::rand() % 7)));
+	AICar* newAiCar = new AICar(difficulty, roadSpeed, (*_AICarTextures.at(std::rand() % 7)));
 
 	for (unsigned int i = 1; i < _GameObjects.size(); i++)
 	{

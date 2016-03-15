@@ -100,7 +100,7 @@ void Framework::handleEvents()
 					_GameState = GameState::Pause;
 				}
 				else {
-					_GameObjectContainer.handleEvents(_Event);
+					_GameObjectContainer.handleEvent(_Event);
 				}
 			}
 		}
@@ -160,7 +160,7 @@ void Framework::handleEvents()
 					_GameState = GameState::Pause;
 				}
 				else {
-					_GameObjectContainer.handleEvents(_Event);
+					_GameObjectContainer.handleEvent(_Event);
 				}
 			}
 		}

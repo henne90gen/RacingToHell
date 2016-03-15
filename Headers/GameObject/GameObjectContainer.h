@@ -17,31 +17,98 @@
 class GameObjectContainer
 {
 public:
+	/*
+		GameObjectContainer is the manager class for all GameObjects.
+		It handles their creation and deletion, as well as updating and rendering them
+	*/
 	GameObjectContainer();
 	~GameObjectContainer();
 
-	void update(float FrameTime, int Difficulty, int RoadSpeed);
-	void render(sf::RenderWindow& Window, bool renderCrosshair);
-	void handleEvents(sf::Event& Event);
+	/*
+		Renders all the GameObjects to the screen
+		@param window RenderWindow to draw to
+		@param renderCrosshair Determines whether various aiming utilities of the PlayerCar (crosshair and aim line) are going to be rendered
+	*/
+	void render(sf::RenderWindow& window, bool renderCrosshair);
 
+	/*
+		Handles events and delegates them to the correct GameObjects
+		@param newEvent Event to be handled
+	*/
+	void handleEvent(sf::Event& newEvent);
+
+	/*
+		Updates all the GameObjects with the given frame time
+		@param frameTime Time that has passed since the last update
+		@param difficulty Difficulty of the level
+		@param roadSpeed Speed of the road
+	*/
+	void update(float frameTime, int difficulty, int roadSpeed);
+
+	/*
+		@return GameObject* Pointer to the PlayerCar
+	*/
 	GameObject* getPlayerCar() { return _GameObjects.at(0); }
+
+	/*
+		@return GameObject* Pointer to the BossCar
+	*/
 	GameObject* getBossCar() { return _GameObjects.at(1); }
+
+	/*
+		@return bool True if the player is still alive
+	*/
 	bool playerIsAlive();
+
+	/*
+		@return bool True if the boss is still alive
+	*/
 	bool bossIsDead();
 
+	/*
+		Sets all the necessary variables for a boss fight
+	*/
 	void enterBossFight();
 
-	void resetGameObjects(int SelectedCar);
+	/*
+		Resets the GameObjectManager to a state where a new game can begin
+		@param selectedCar Index of the car that was selected by the player
+	*/
+	void resetGameObjects(int selectedCar);
+
+	/*
+		Empties the screen
+		@return bool True as soon as there are no GamObjects other than the player on the screen
+	*/
 	bool emptyScreen();
 
+	/*
+		Loads textures and sounds for all GameObjects
+	*/
 	void load();
 
+	/*
+		Plays sounds for every GameObject
+	*/
 	void playSounds();
-	void setVolume(float Volume) { _Volume = Volume; }
 
+	/*
+		Sets the Volume for all GamObjects
+		@param volume New volume that's being applied
+	*/
+	void setVolume(float volume) { _Volume = volume; }
+
+	/*
+		Returns and resets the car score
+		@return int Score the player has accumulated since the last call to this method
+	*/
 	int getCarScore() { int result = _CarScore; _CarScore = 0; return result; }
 
-	void setCarSkins(std::vector<sf::Texture*>& CarSkins);
+	/*
+		Passes in the car skin texture so that the right one can be applied to the player car
+		@param carSkins Vector with all car skin textures
+	*/
+	void setCarSkins(std::vector<sf::Texture*>& carSkins);
 
 private:
 	std::vector<GameObject*> _GameObjects;
@@ -54,11 +121,33 @@ private:
 	float _Volume;
 
 	float _CarFrequency, _BulletFrequency, _CanisterFrequency, _ToolboxFrequency, _TimePassedCar, _TimePassedBullet, _TimePassedCanister, _TimePassedToolbox;
-	int _CarScore, _PlayerBulletSpeed, _AIBulletSpeed;
+
+	// Score the player accumulates for shooting other cars
+	int _CarScore;
+	int _PlayerBulletSpeed, _AIBulletSpeed;
 	bool _PlayerAlive, _AboutToLevelUp, _BossFight;
 
+	/*
+		Plays a shot sound depending on the type of the firing entity
+		@param go Type of the GameObject that is emitting the shot sound
+	*/
 	void playShotSound(GameObjectType go);
-	void spawnAICar(int Difficulty, int RoadSpeed);
+
+	/*
+		Spawns a new AICar on a random lane
+		@param difficulty Difficulty of the level
+		@param roadSpeed Speed of the road
+	*/
+	void spawnAICar(int difficulty, int roadSpeed);
+
+	/*
+		Makes a random AICar shoot a bullet at the player
+	*/
 	void spawnBullet();
+
+	/*
+		Deletes a GameObject from the vector of GameObjects
+		@param id Index of the GameObject that will be deleted
+	*/
 	void deleteObject(unsigned int id);
 };

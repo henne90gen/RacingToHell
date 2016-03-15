@@ -66,11 +66,11 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<GameObject*>& GameO
 					{
 						for (int i = 0; i < 3; i++)
 						{
-							ShootBullet(GameObjects, sf::Vector2f(i * 150 + 150, 0), 90.0f);
+							ShootBullet(gameObjects, sf::Vector2f(i * 150 + 150, 0), 90.0f);
 						}
 
-						ShootBullet(GameObjects, sf::Vector2f(20, 0), 90.0f);
-						ShootBullet(GameObjects, sf::Vector2f(SCREENWIDTH - 20, 0), 90.0f);
+						ShootBullet(gameObjects, sf::Vector2f(20, 0), 90.0f);
+						ShootBullet(gameObjects, sf::Vector2f(SCREENWIDTH - 20, 0), 90.0f);
 
 						++_Event2Counter;
 					}
@@ -99,12 +99,12 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<GameObject*>& GameO
 	}
 }
 
-void Jet::render(sf::RenderWindow & RenderWindow)
+void Jet::render(sf::RenderWindow & window)
 {
-	RenderWindow.draw(getSprite());
+	window.draw(getSprite());
 
-	RenderWindow.draw(_HealthBar);
-	RenderWindow.draw(_HealthBarFrame);
+	window.draw(_HealthBar);
+	window.draw(_HealthBarFrame);
 }
 
 void Jet::randomPosition()

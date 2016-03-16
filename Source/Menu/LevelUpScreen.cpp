@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Menu/LevelUpScreen.h"
 
-
 LevelUpScreen::LevelUpScreen() : _ShowTime(2.0f), _FadeTime(0.1f)
 {
 	if (_Font.loadFromFile("Resources/Font/arial.ttf")) {
@@ -17,12 +16,7 @@ LevelUpScreen::LevelUpScreen() : _ShowTime(2.0f), _FadeTime(0.1f)
 	_Timer.restart();
 }
 
-
-LevelUpScreen::~LevelUpScreen()
-{
-}
-
-void LevelUpScreen::render(sf::RenderWindow& Window) {
+void LevelUpScreen::render(sf::RenderWindow& window) {
 	float alpha = 0.0f;
 	if (_FadeTimer.getElapsedTime().asSeconds() <= _FadeTime) {
 		alpha = (_FadeTimer.getElapsedTime().asSeconds() * 255.0f) / _FadeTime;
@@ -31,9 +25,9 @@ void LevelUpScreen::render(sf::RenderWindow& Window) {
 		alpha = 255.0f;
 	}
 	_Background.setFillColor(sf::Color(0, 0, 0, alpha));
-	Window.draw(_Background);
+	window.draw(_Background);
 	if (alpha == 255.0f) {
-		Window.draw(_Text);
+		window.draw(_Text);
 	}
 }
 

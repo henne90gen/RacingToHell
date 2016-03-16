@@ -15,11 +15,6 @@ HighscoreMenu::HighscoreMenu() : Menu(GameState::Highscores), _List(sf::Vector2f
 	_Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 160));
 }
 
-
-HighscoreMenu::~HighscoreMenu()
-{
-}
-
 void HighscoreMenu::render(sf::RenderWindow & Window)
 {
 	_List.render(Window);

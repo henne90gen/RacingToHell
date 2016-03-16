@@ -14,12 +14,7 @@ LoadingScreen::LoadingScreen() : Menu(GameState::Loading), _IsFadingAway(false),
 	_Background.setFillColor(sf::Color(0, 0, 0));
 }
 
-
-LoadingScreen::~LoadingScreen()
-{
-}
-
-void LoadingScreen::render(sf::RenderWindow & Window)
+void LoadingScreen::render(sf::RenderWindow & window)
 {
 	float alpha = 255.0f;
 	if (_IsFadingAway) {
@@ -27,11 +22,11 @@ void LoadingScreen::render(sf::RenderWindow & Window)
 		_Background.setFillColor(sf::Color(_Background.getFillColor().r, _Background.getFillColor().g, _Background.getFillColor().b, alpha));
 		_Text.setColor(sf::Color(_Text.getColor().r, _Text.getColor().g, _Text.getColor().b, alpha));
 	}
-	Window.draw(_Background);
-	Window.draw(_Text);
+	window.draw(_Background);
+	window.draw(_Text);
 }
 
-GameState LoadingScreen::handleEvents(sf::RenderWindow & Window)
+GameState LoadingScreen::handleEvents(sf::RenderWindow & window)
 {
 	return _MenuGameState;
 }

@@ -30,23 +30,23 @@ MainMenu::~MainMenu()
 	_StatBox = nullptr;
 }
 
-void MainMenu::render(sf::RenderWindow& Window)
+void MainMenu::render(sf::RenderWindow& window)
 {
-	Window.draw(_CarSkin);
-	_StatBox->render(Window, _SelectedCar);
+	window.draw(_CarSkin);
+	_StatBox->render(window, _SelectedCar);
 
 	for (int i = 0; i < _MenuItems.size(); i++) {
-		_MenuItems[i]->render(Window);
+		_MenuItems[i]->render(window);
 	}
 
-	Window.draw(_Text);
+	window.draw(_Text);
 
-	checkMenuItemHovered(Window);
+	checkMenuItemHovered(window);
 }
 
-GameState MainMenu::handleEvents(sf::RenderWindow& Window)
+GameState MainMenu::handleEvents(sf::RenderWindow& window)
 {
-	while (Window.pollEvent(_Event)) {
+	while (window.pollEvent(_Event)) {
 
 		float X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
 		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);

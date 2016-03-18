@@ -14,15 +14,6 @@ OptionsMenu::OptionsMenu() : Menu(GameState::Options)
 	_Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 160));
 }
 
-
-OptionsMenu::~OptionsMenu()
-{
-	for (int i = 0; i < _MenuItems.size(); i++) {
-		delete _MenuItems[i];
-		_MenuItems[i] = nullptr;
-	}
-}
-
 void OptionsMenu::render(sf::RenderWindow & Window)
 {
 	Window.draw(_Text);

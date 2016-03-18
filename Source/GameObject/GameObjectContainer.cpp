@@ -293,7 +293,6 @@ bool GameObjectContainer::bossIsDead()
 {
 	if (_BossFight) {
 		if (getBossCar()->getHealth() <= 0) {
-			// TODO: Spawn explosions
 			_AboutToLevelUp = true;
 		}
 		if (_AboutToLevelUp && getBossCar()->isDoneExploding(_ExplosionTexture)) {

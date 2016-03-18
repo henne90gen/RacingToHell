@@ -29,13 +29,19 @@ Slider::Slider(sf::Vector2f pos, MenuResult action, std::string text, float valu
 void Slider::render(sf::RenderWindow & Window)
 {
 	if ((_Hovering && _Enabled) || (_Focused && _Enabled)) {
+		_Slider.setOutlineColor(sf::Color::Black);
 		_Slider.setOutlineThickness(3);
+		_Slider.setFillColor(sf::Color::White);
 	}
 	else if (_Enabled) {
+		_Slider.setOutlineColor(sf::Color::Black);
 		_Slider.setOutlineThickness(1);
+		_Slider.setFillColor(sf::Color::White);
 	}
 	else {
-		//TODO: Add design for disabled slider
+		_Slider.setOutlineThickness(1);
+		_Slider.setFillColor(sf::Color(170, 161, 161));
+		_Slider.setOutlineColor(sf::Color(80, 73, 73));
 	}
 
 	Window.draw(_Text);

@@ -14,97 +14,95 @@ Jet::Jet(sf::Texture & texture, sf::Texture & bulletTexture) : BossCar(sf::Vecto
 	_Pattern = {std::make_pair(Phase::SIDE, 10.5f), std::make_pair(Phase::SAVELANES, 10.5f)};
 }
 
-Jet::~Jet()
-{
-}
-
-void Jet::update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameObjects)
-{
-	if (!_IsExploding) {
-	if (_Movement != Movement::STILL && DriveToNextPosition(frameTime))
-	{
-		_BossEventTimer1.restart();
-		_BossEventTimer2.restart();
-		_Event1Switch = false;
-		_Event2Switch = false;
-		_Event2Counter = 0;
-		_Event1Counter = 0;
-
-		_Movement = Movement::STILL;
-	}
-
-	if (_Movement == Movement::STILL)
-	{
-		switch (_Pattern[_CurrentPhase].first)
-		{
-		case Phase::SIDE:
-		{
-			_Event1Frequency = 0.2f;
-
-			if (getBossEvent() == 1)
-			{
-				for (int i = -40; i <= SCREENHEIGHT; i += 200)
-				{
-					ShootBullet(gameObjects, sf::Vector2f(0, i), 0.0f);
-					ShootBullet(gameObjects, sf::Vector2f(SCREENWIDTH, i + 100), 180.0f);
-				}
-			}
-			break;
-		}
-		case Phase::SAVELANES:
-		{
-			_Event1Frequency = 0.2f;
-			_Event2Frequency = 0.0f;
-
-			if (getBossEvent() == 1 || _Event2Counter > 0)
-			{
-				_Event2Frequency = 3.0f;
-
-				if (getBossEvent() == 2)
-				{
-					if (_Event2Counter + 1 <= 3)
-					{
-						for (int i = 0; i < 3; i++)
-						{
-							ShootBullet(gameObjects, sf::Vector2f(i * 150 + 150, 0), 90.0f);
-						}
-
-						ShootBullet(gameObjects, sf::Vector2f(20, 0), 90.0f);
-						ShootBullet(gameObjects, sf::Vector2f(SCREENWIDTH - 20, 0), 90.0f);
-
-						++_Event2Counter;
-					}
-					else
-					{
-						_Event2Counter = 0;
-					}
-				}
-			}
-		}
-		default:
-			break;
-		}
-	}
-
-	if (_Movement == Movement::PARABOLA)
-	{
-		setPos(getPos() + sf::Vector2f(0, (float)roadSpeed * frameTime));
-	}
-	
-	checkPhase();
-	updateHealthBar();
-}
-	else {
-		updateExplosions(frameTime);
-	}
-}
-
 void Jet::render(sf::RenderWindow & window)
 {
 	window.draw(getSprite());
 
 	window.draw(_HealthBar);
 	window.draw(_HealthBarFrame);
+
+	renderExplosions(window);
+}
+
+void Jet::update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameObjects)
+{
+	if (!_IsExploding) {
+		if (_Movement != Movement::STILL && DriveToNextPosition(frameTime))
+		{
+			_BossEventTimer1.restart();
+			_BossEventTimer2.restart();
+			_Event1Switch = false;
+			_Event2Switch = false;
+			_Event2Counter = 0;
+			_Event1Counter = 0;
+
+			_Movement = Movement::STILL;
+		}
+
+		if (_Movement == Movement::STILL)
+		{
+			switch (_Pattern[_CurrentPhase].first)
+			{
+			case Phase::SIDE:
+			{
+				_Event1Frequency = 0.2f;
+
+				if (getBossEvent() == 1)
+				{
+					for (int i = -40; i <= SCREENHEIGHT; i += 200)
+					{
+						ShootBullet(gameObjects, sf::Vector2f(0, i), 0.0f);
+						ShootBullet(gameObjects, sf::Vector2f(SCREENWIDTH, i + 100), 180.0f);
+					}
+				}
+				break;
+			}
+			case Phase::SAVELANES:
+			{
+				_Event1Frequency = 0.2f;
+				_Event2Frequency = 0.0f;
+
+				if (getBossEvent() == 1 || _Event2Counter > 0)
+				{
+					_Event2Frequency = 3.0f;
+
+					if (getBossEvent() == 2)
+					{
+						if (_Event2Counter + 1 <= 3)
+						{
+							for (int i = 0; i < 3; i++)
+							{
+								ShootBullet(gameObjects, sf::Vector2f(i * 150 + 150, 0), 90.0f);
+							}
+
+							ShootBullet(gameObjects, sf::Vector2f(20, 0), 90.0f);
+							ShootBullet(gameObjects, sf::Vector2f(SCREENWIDTH - 20, 0), 90.0f);
+
+							++_Event2Counter;
+						}
+						else
+						{
+							_Event2Counter = 0;
+						}
+					}
+				}
+			}
+			default:
+				break;
+			}
+		}
+
+		if (_Movement == Movement::PARABOLA)
+		{
+			setPos(getPos() + sf::Vector2f(0, (float)roadSpeed * frameTime));
+		}
+
+		checkPhase();
+		updateHealthBar();
+	}
+	else {
+		updateExplosions(frameTime);
+	}
 }
 
 void Jet::randomPosition()

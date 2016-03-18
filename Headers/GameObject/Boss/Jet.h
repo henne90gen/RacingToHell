@@ -10,7 +10,7 @@ public:
 		@param bulletTexture Texture for all bullets the Jet shoots
 	*/
 	Jet(sf::Texture& texture, sf::Texture& bulletTexture);
-	~Jet();
+	~Jet() {}
 
 	/*
 		See BossCar for details

@@ -19,7 +19,10 @@
 class Framework
 {
 public:
-	//Constructor, Destructor
+	/*
+		The Framework takes care of all the major aspects of the game.
+		Rendering, updating and event handling are all managed in here.
+	*/
 	Framework();
 	~Framework();
 
@@ -29,29 +32,29 @@ public:
 	void run();
 
 private:
-	//SFML-Graphics
+	// SFML-Graphics
 	sf::RenderWindow _RenderWindow;
 	sf::Event _Event;
 	sf::Clock _Clock;
 
-	//Variables
+	// Variables
 	float _FrameTime, _LastFPSPrint, _LastFPSCheck, _Score, _FPS;
 	bool _IsRunning;
 	int _CurrentCarSkinIndex;
 
-	//GameObjects
+	// GameObjects
 	GameState _GameState;
 	GameObjectContainer _GameObjectContainer;
 	std::vector<sf::Texture*> _CarSkins;
 
-	//Level
+	// Level
 	Level _Level;
 
-	//Music
+	// Music
 	sf::SoundBuffer _MenuMusicBuffer;
 	sf::Sound _MenuMusic;
 
-	//Menus and Screens
+	// Menus and Screens
 	MainMenu _MainMenu;
 	PauseMenu _PauseMenu;
 	HighscoreMenu _HighscoreMenu;
@@ -60,8 +63,8 @@ private:
 	LoadingScreen _LoadingScreen;
 	LevelUpScreen _LevelUpScreen;
 	HeadsUpDisplay _HeadsUpDisplay;
-	
-	//Functions
+
+	// Functions
 	void render();
 	void handleEvents();
 	void update();

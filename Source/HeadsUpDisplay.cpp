@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "HeadsUpDisplay.h"
 
-
 HeadsUpDisplay::HeadsUpDisplay()
 {
 	//Font
@@ -64,35 +63,31 @@ HeadsUpDisplay::HeadsUpDisplay()
 	_ScoreText.setString("Score: 0000000");
 }
 
-HeadsUpDisplay::~HeadsUpDisplay()
+void HeadsUpDisplay::render(sf::RenderWindow & window)
 {
+	window.draw(_Background);
+
+	window.draw(_HealthBar);
+	window.draw(_HealthBarOutline);
+	window.draw(_HealthText);
+	window.draw(_HealthIconSprite);
+
+	window.draw(_EnergyBar);
+	window.draw(_EnergyBarOutline);
+	window.draw(_EnergyText);
+	window.draw(_EnergyIconSprite);
+
+	window.draw(_ScoreText);
 }
 
-void HeadsUpDisplay::render(sf::RenderWindow & Window)
+void HeadsUpDisplay::update(int score, int health, int energy)
 {
-	Window.draw(_Background);
-
-	Window.draw(_HealthBar);
-	Window.draw(_HealthBarOutline);
-	Window.draw(_HealthText);
-	Window.draw(_HealthIconSprite);
-
-	Window.draw(_EnergyBar);
-	Window.draw(_EnergyBarOutline);
-	Window.draw(_EnergyText);
-	Window.draw(_EnergyIconSprite);
-
-	Window.draw(_ScoreText);
-}
-
-void HeadsUpDisplay::update(int Score, int Health, int MaxHealth, int Energy, int MaxEnergy)
-{
-	_HealthBar.setSize(sf::Vector2f((float)Health / (float)MaxHealth * 150, 30));
-	_HealthText.setString(std::to_string(Health) + "/" + std::to_string(MaxHealth));
+	_HealthBar.setSize(sf::Vector2f((float)health / (float)_MaxHealth * 150, 30));
+	_HealthText.setString(std::to_string(health) + "/" + std::to_string(_MaxHealth));
 	_HealthText.setPosition(sf::Vector2f(	_HealthBarOutline.getGlobalBounds().left + _HealthBarOutline.getLocalBounds().width - _HealthText.getLocalBounds().width - 7, 
 											_HealthBarOutline.getGlobalBounds().top + 3));
 
-	if (Health <= 10)
+	if (health <= 10)
 	{
 		_HealthText.setColor(sf::Color(255, 75, 75));
 	}
@@ -101,12 +96,12 @@ void HeadsUpDisplay::update(int Score, int Health, int MaxHealth, int Energy, in
 		_HealthText.setColor(sf::Color::White);
 	}
 
-	_EnergyBar.setSize(sf::Vector2f((float)Energy / (float)MaxEnergy * 150, 30));
-	_EnergyText.setString(std::to_string(Energy) + "/" + std::to_string(MaxEnergy));
+	_EnergyBar.setSize(sf::Vector2f((float)energy / (float)_MaxEnergy * 150, 30));
+	_EnergyText.setString(std::to_string(energy) + "/" + std::to_string(_MaxEnergy));
 	_EnergyText.setPosition(sf::Vector2f(_EnergyBarOutline.getGlobalBounds().left + _EnergyBarOutline.getLocalBounds().width - _EnergyText.getLocalBounds().width - 7,
 		_EnergyBarOutline.getGlobalBounds().top + 3));
 
-	if (Energy <= 10)
+	if (energy <= 10)
 	{
 		_EnergyText.setColor(sf::Color(255, 75, 75));
 	}
@@ -115,13 +110,13 @@ void HeadsUpDisplay::update(int Score, int Health, int MaxHealth, int Energy, in
 		_EnergyText.setColor(sf::Color::White);
 	}
 
-	_ScoreText.setString("Score: " + ConvertScore(Score));
+	_ScoreText.setString("Score: " + ConvertScore(score));
 }
 
-std::string HeadsUpDisplay::ConvertScore(int Score)
+std::string HeadsUpDisplay::ConvertScore(int score)
 {
 	std::string ScoreString;
-	int ScoreLength = std::to_string(Score).length();
+	int ScoreLength = std::to_string(score).length();
 
 	if (ScoreLength < 7)
 	{
@@ -130,11 +125,11 @@ std::string HeadsUpDisplay::ConvertScore(int Score)
 			ScoreString += "0";
 		}
 
-		ScoreString += std::to_string(Score);
+		ScoreString += std::to_string(score);
 	}
 	else
 	{
-		ScoreString = std::to_string(Score);
+		ScoreString = std::to_string(score);
 	}
 
 	return ScoreString;

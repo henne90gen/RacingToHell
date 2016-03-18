@@ -19,6 +19,7 @@ public:
 		Updates the Level with the given frame time
 		@param frameTime Time that has passed since the last update
 		@param gameState State of the game
+		@return bool True if 'level up' has happened
 	*/
 	bool update(float frameTime, GameState gameState);
 	

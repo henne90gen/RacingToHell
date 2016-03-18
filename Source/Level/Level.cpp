@@ -3,7 +3,6 @@
 
 Level::Level() : _Difficulty(1), _LevelUp(1) {}
 
-// returns true if 'level-up' has happened
 bool Level::update(float FrameTime, GameState gameState)
 {
 	if (_Sprite.getPosition().y + FrameTime * _Difficulty >= 0)

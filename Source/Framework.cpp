@@ -16,6 +16,7 @@ Framework::~Framework()
 		delete _CarSkins.at(i);
 		_CarSkins.at(i) = nullptr;
 	}
+
 }
 
 void Framework::run()

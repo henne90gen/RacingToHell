@@ -66,11 +66,11 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<GameObject*>& GameO
 					{
 						for (int i = 0; i < 3; i++)
 						{
-							ShootBullet(gameObjects, sf::Vector2f(i * 150 + 150, 0), 90.0f);
+							ShootBullet(GameObjects, sf::Vector2f(i * 150 + 150, 0), 90.0f);
 						}
 
-						ShootBullet(gameObjects, sf::Vector2f(20, 0), 90.0f);
-						ShootBullet(gameObjects, sf::Vector2f(SCREENWIDTH - 20, 0), 90.0f);
+						ShootBullet(GameObjects, sf::Vector2f(20, 0), 90.0f);
+						ShootBullet(GameObjects, sf::Vector2f(SCREENWIDTH - 20, 0), 90.0f);
 
 						++_Event2Counter;
 					}

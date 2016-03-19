@@ -8,7 +8,6 @@ Mech::Mech(sf::Texture& textureTop, sf::Texture& textureLegs, sf::Texture& bulle
 	_GunRadius(81.5659f)
 {
 	setSprite(_TopAnim.getSprite());
-	//_LegsAnim.getSprite().setRotation(180);
 
 	//HP-Balken
 	_HealthBar.setSize(sf::Vector2f(getWidth() + 5, 5));
@@ -21,10 +20,6 @@ Mech::Mech(sf::Texture& textureTop, sf::Texture& textureLegs, sf::Texture& bulle
 	_Pattern = { std::make_pair(Phase::SPIN, 2.0f), std::make_pair(Phase::SHOTGUN, 7.0f), std::make_pair(Phase::SALVE, 7.0f) };
 }
 
-Mech::~Mech()
-{
-}
-
 void Mech::render(sf::RenderWindow & window)
 {
 	_LegsAnim.render(window);
@@ -32,6 +27,8 @@ void Mech::render(sf::RenderWindow & window)
 
 	window.draw(_HealthBar);
 	window.draw(_HealthBarFrame);
+
+	renderExplosions(window);
 }
 
 void Mech::update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameObjects)

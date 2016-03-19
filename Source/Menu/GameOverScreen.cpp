@@ -11,54 +11,50 @@ GameOverScreen::GameOverScreen() : Menu(GameState::GameOver), _SoundPlayed(false
 		_GOTLine1.setOrigin(_GOTLine1.getLocalBounds().left + _GOTLine1.getLocalBounds().width / 2.0f, _GOTLine1.getLocalBounds().top + _GOTLine1.getLocalBounds().height / 2.0f);
 		_GOTLine1.setPosition(SCREENWIDTH / 2.0f, 50);
 
+		_GOTLine2.setFont(_Font);
+		_GOTLine2.setColor(sf::Color(200, 0, 0));
+		_GOTLine2.setCharacterSize(40);
+		_GOTLine2.setString("Your score was: ");
+		_GOTLine2.setPosition(SCREENWIDTH / 2 - 225, _GOTLine1.getGlobalBounds().top + _GOTLine1.getLocalBounds().height * 1.2f);
+
 		_GOTLine3.setFont(_Font);
 		_GOTLine3.setColor(sf::Color(200, 0, 0));
 		_GOTLine3.setCharacterSize(40);
-		_GOTLine3.setString("Your score was: ");
-		_GOTLine3.setPosition(SCREENWIDTH / 2 - 225, _GOTLine1.getGlobalBounds().top + _GOTLine1.getLocalBounds().height * 1.2f);
-
-		_GOTLine4.setFont(_Font);
-		_GOTLine4.setColor(sf::Color(200, 0, 0));
-		_GOTLine4.setCharacterSize(40);
-		_GOTLine4.setString("Enter your name:");
-		_GOTLine4.setPosition(_GOTLine3.getPosition().x, _GOTLine3.getGlobalBounds().top + _GOTLine3.getLocalBounds().height + 10);
+		_GOTLine3.setString("Enter your name:");
+		_GOTLine3.setPosition(_GOTLine2.getPosition().x, _GOTLine2.getGlobalBounds().top + _GOTLine2.getLocalBounds().height + 10);
 	}
 		
 	sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
 
-	_MenuItems.push_back(new Textbox(sf::Vector2f(_GOTLine4.getPosition().x + _GOTLine4.getLocalBounds().width + 20, _GOTLine4.getPosition().y + 10), sf::Vector2f(450 - _GOTLine4.getLocalBounds().width - 20, _GOTLine4.getLocalBounds().height), 25, "Test", true));
+	_MenuItems.push_back(new Textbox(sf::Vector2f(_GOTLine3.getPosition().x + _GOTLine3.getLocalBounds().width + 20, _GOTLine3.getPosition().y + 10), sf::Vector2f(450 - _GOTLine3.getLocalBounds().width - 20, _GOTLine3.getLocalBounds().height), 25, "Test", true));
 	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2 + 200, 735), ButtonSize, MenuResult::SubmitScore, "Submit", TextAlignment::Center));
 	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 200, 735), ButtonSize, MenuResult::Back, "Back", TextAlignment::Center));
 
 	_JoystickSelection = 1;
 }
 
-GameOverScreen::~GameOverScreen()
+void GameOverScreen::render(sf::RenderWindow& window)
 {
-}
+	_GOTLine2.setString("Your score was: " + std::to_string(_Highscore.getScore()));
 
-void GameOverScreen::render(sf::RenderWindow& Window)
-{
-	_GOTLine3.setString("Your score was: " + std::to_string(_Highscore.getScore()));
+	window.draw(_GOTLine1);
+	window.draw(_GOTLine2);
+	window.draw(_GOTLine3);
 
-	Window.draw(_GOTLine1);
-	Window.draw(_GOTLine3);
-	Window.draw(_GOTLine4);
-
-	_Highscore.render(Window);
+	_Highscore.render(window);
 
 	for (unsigned int i = 0; i < _MenuItems.size(); i++)
 	{
-		_MenuItems[i]->render(Window);
+		_MenuItems[i]->render(window);
 	}
 
-	checkMenuItemHovered(Window);
+	checkMenuItemHovered(window);
 }
 
-void GameOverScreen::update(int Score, int Level)
+void GameOverScreen::update(int score, int level)
 {
-	_Highscore.setScore(Score);
-	_Level = Level;
+	_Highscore.setScore(score);
+	_Level = level;
 }
 
 void GameOverScreen::playSounds()
@@ -71,19 +67,19 @@ void GameOverScreen::playSounds()
 	}
 }
 
-void GameOverScreen::setVolume(float Volume)
+void GameOverScreen::setVolume(float volume)
 {
-	if (Volume > 0) {
-		_GameOverSound.setVolume(Volume + 10);
+	if (volume > 0) {
+		_GameOverSound.setVolume(volume + 10);
 	}
 	else {
-		_GameOverSound.setVolume(Volume);
+		_GameOverSound.setVolume(volume);
 	}
 }
 
-GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
+GameState GameOverScreen::handleEvents(sf::RenderWindow & window)
 {
-	while (Window.pollEvent(_Event)) {
+	while (window.pollEvent(_Event)) {
 		
 		float X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
 		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
@@ -97,7 +93,7 @@ GameState GameOverScreen::handleEvents(sf::RenderWindow & Window)
 
 GameState GameOverScreen::handleMenuItemResult(MenuResult result)
 {
-	std::string name = dynamic_cast<Textbox*>(_MenuItems[0])->getText();
+	std::string name = _MenuItems[0]->getText();
 	switch (result) {
 	case MenuResult::Back:
 		_SoundPlayed = false;
@@ -109,7 +105,7 @@ GameState GameOverScreen::handleMenuItemResult(MenuResult result)
 	case MenuResult::SubmitScore:
 		if (!_ScoreSubmitted && name != "")
 		{
-			_Highscore.PlacePlayer(name, _Level);
+			_Highscore.placePlayer(name, _Level);
 			_ScoreSubmitted = true;
 			_MenuItems[0]->setEnabled(false);
 			_MenuItems[1]->setEnabled(false);

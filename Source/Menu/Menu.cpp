@@ -62,7 +62,7 @@ void Menu::handleJoystick(float axis)
 void Menu::applyJoystickSelection()
 {
 	for (int i = 0; i < _MenuItems.size(); i++) {
-		if (_MenuItems[i]->getType() != MenuItems::MTextbox) {
+		if (_MenuItems[i]->getType() != MenuItemType::MTextbox) {
 			if (i == _JoystickSelection) {
 				_MenuItems[i]->setFocused(true);
 			}
@@ -81,13 +81,13 @@ void Menu::checkMenuItemHovered(sf::RenderWindow& Window)
 		if (_MenuItems[i]->getHoverState() && _MenuItems[i]->getEnabled())
 		{
 			switch (_MenuItems[i]->getType()) {
-			case MenuItems::MButton:
+			case MenuItemType::MButton:
 				Cursor.set(Window.getSystemHandle(), sf::StandardCursor::HAND);
 				break;
-			case MenuItems::MTextbox:
+			case MenuItemType::MTextbox:
 				Cursor.set(Window.getSystemHandle(), sf::StandardCursor::TEXT);
 				break;
-			case MenuItems::MSlider:
+			case MenuItemType::MSlider:
 				Cursor.set(Window.getSystemHandle(), sf::StandardCursor::HAND);
 				break;
 			}

@@ -1,20 +1,20 @@
 #include "stdafx.h"
 #include "Menu/MenuItem/HighscoreList.h"
 
-HighscoreList::HighscoreList(sf::Vector2f Position) : _Gap(42), _Filename("Resources/Data/Highscore.sco"), _NumScores(10)
+HighscoreList::HighscoreList(sf::Vector2f pos) : _Gap(42), _Filename("Resources/Data/Highscore.sco"), _NumScores(10)
 {
 	_Background.setFillColor(sf::Color(0, 0, 0, 100));
 	_Background.setSize(sf::Vector2f(450, 530));
-	_Background.setPosition(Position);
+	_Background.setPosition(pos);
 	
-	Position += sf::Vector2f(15, 15);
+	pos += sf::Vector2f(15, 15);
 
 	_Font.loadFromFile("Resources/Font/arial.ttf");
 
 	_HeadlineRank.setFont(_Font);
 	_HeadlineRank.setCharacterSize(30);
 	_HeadlineRank.setStyle(sf::Text::Style::Bold);
-	_HeadlineRank.setPosition(Position);
+	_HeadlineRank.setPosition(pos);
 	_HeadlineRank.setString("Rank");
 	_HeadlineRankWidth = _HeadlineRank.getLocalBounds().width;
 
@@ -36,18 +36,13 @@ HighscoreList::HighscoreList(sf::Vector2f Position) : _Gap(42), _Filename("Resou
 	loadScoreTable();
 }
 
-HighscoreList::~HighscoreList()
+void HighscoreList::render(sf::RenderWindow& window)
 {
-
-}
-
-void HighscoreList::render(sf::RenderWindow& RenderWindow)
-{
-	RenderWindow.draw(_Background);
-	RenderWindow.draw(_HeadlineRank);
-	RenderWindow.draw(_HeadlineName);
-	RenderWindow.draw(_HeadlineLevel);
-	RenderWindow.draw(_HeadlineScore);
+	window.draw(_Background);
+	window.draw(_HeadlineRank);
+	window.draw(_HeadlineName);
+	window.draw(_HeadlineLevel);
+	window.draw(_HeadlineScore);
 
 	for (unsigned int i = 0; i < _PlayerList.size(); i++)
 	{
@@ -81,10 +76,10 @@ void HighscoreList::render(sf::RenderWindow& RenderWindow)
 				_HighscoreTexts[i + 3 * _NumScores].setColor(sf::Color::White);
 			}
 
-			RenderWindow.draw(_HighscoreTexts[i]);
-			RenderWindow.draw(_HighscoreTexts[i + _NumScores]);
-			RenderWindow.draw(_HighscoreTexts[i + 2 * _NumScores]);
-			RenderWindow.draw(_HighscoreTexts[i + 3 * _NumScores]);
+			window.draw(_HighscoreTexts[i]);
+			window.draw(_HighscoreTexts[i + _NumScores]);
+			window.draw(_HighscoreTexts[i + 2 * _NumScores]);
+			window.draw(_HighscoreTexts[i + 3 * _NumScores]);
 		}
 		// Stop the for loop if player made it into the top 10
 		else if (newTopTen) {
@@ -114,10 +109,10 @@ void HighscoreList::render(sf::RenderWindow& RenderWindow)
 			_HighscoreTexts[_NumScores + 2 * _NumScores].setColor(sf::Color::Yellow);
 			_HighscoreTexts[_NumScores + 3 * _NumScores].setColor(sf::Color::Yellow);
 
-			RenderWindow.draw(_HighscoreTexts[_NumScores]);
-			RenderWindow.draw(_HighscoreTexts[_NumScores + _NumScores]);
-			RenderWindow.draw(_HighscoreTexts[_NumScores + 2 * _NumScores]);
-			RenderWindow.draw(_HighscoreTexts[_NumScores + 3 * _NumScores]);
+			window.draw(_HighscoreTexts[_NumScores]);
+			window.draw(_HighscoreTexts[_NumScores + _NumScores]);
+			window.draw(_HighscoreTexts[_NumScores + 2 * _NumScores]);
+			window.draw(_HighscoreTexts[_NumScores + 3 * _NumScores]);
 			break;
 		}
 	}
@@ -125,37 +120,37 @@ void HighscoreList::render(sf::RenderWindow& RenderWindow)
 
 void HighscoreList::loadScoreTable()
 {
-	std::ifstream FileStream;
-	FileStream.open(_Filename, std::ios::in | std::ifstream::binary);
+	std::ifstream fileStream;
+	fileStream.open(_Filename, std::ios::in | std::ifstream::binary);
 	int length;
-	FileStream.read((char*)&length, sizeof(length));
+	fileStream.read((char*)&length, sizeof(length));
 
 	_PlayerList.clear();
 	for (int i = 0; i < length; i++) {
 		Player newPlayer;
-		newPlayer << FileStream;
+		newPlayer << fileStream;
 		_PlayerList.push_back(newPlayer);
 	}
 
-	FileStream.close();
+	fileStream.close();
 
-	SortScoreTable();
+	sortScoreTable();
 }
 
-void HighscoreList::SaveScoreTable()
+void HighscoreList::saveScoreTable()
 {
-	std::ofstream FileStream;
-	FileStream.open(_Filename, std::ios::out | std::ofstream::binary);
+	std::ofstream fileStream;
+	fileStream.open(_Filename, std::ios::out | std::ofstream::binary);
 	int length = _PlayerList.size();
-	FileStream.write((char*)&length, sizeof(length));
+	fileStream.write((char*)&length, sizeof(length));
 	for (unsigned int i = 0; i < _PlayerList.size(); i++)
 	{
-		_PlayerList[i] >> FileStream;
+		_PlayerList[i] >> fileStream;
 	}
-	FileStream.close();
+	fileStream.close();
 }
 
-void HighscoreList::SortScoreTable()
+void HighscoreList::sortScoreTable()
 {
 	std::sort(_PlayerList.rbegin(), _PlayerList.rend());
 	for (int i = 0; i < _PlayerList.size(); i++) {
@@ -172,13 +167,13 @@ void HighscoreList::SortScoreTable()
 		_HighscoreTexts.push_back(HighscoreText);
 	}
 
-	SaveScoreTable();
+	saveScoreTable();
 }
 
-void HighscoreList::PlacePlayer(std::string& Name, int Level)
+void HighscoreList::placePlayer(std::string& name, int level)
 {
-	_CurrentName = Name;
-	_CurrentLevel = Level;
+	_CurrentName = name;
+	_CurrentLevel = level;
 	
 	Player newPlayer;
 	newPlayer.Name = _CurrentName;
@@ -187,5 +182,5 @@ void HighscoreList::PlacePlayer(std::string& Name, int Level)
 
 	_PlayerList.push_back(newPlayer);
 
-	SortScoreTable();
+	sortScoreTable();
 }

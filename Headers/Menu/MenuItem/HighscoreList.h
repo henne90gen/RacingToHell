@@ -10,6 +10,10 @@
 class HighscoreList
 {
 public:
+	/*
+		Player representation containing the rank, name, level and score of a player.
+		All those variables can be written and also read back to and from a file.
+	*/
 	struct Player : public Serializable
 	{
 		int Rank;
@@ -39,18 +43,47 @@ public:
 		}
 	};
 
-	HighscoreList(sf::Vector2f Position);
-	~HighscoreList();
+	/*
+		Prints out the ranks 1-10 of the highscore list.
+		If the new highscore didn't make the top 10 it will be displayed below with the corresponding rank
+		@param pos Position of the HighscoreList on screen
+	*/
+	HighscoreList(sf::Vector2f pos);
+	~HighscoreList() {}
 
-	void render(sf::RenderWindow& RenderWindow);
+	/*
+		Renders the HighscoreList to the specified RenderWindow
+		@param window Window to draw to
+	*/
+	void render(sf::RenderWindow& window);
 
+	/*
+		Loads the highscore list from file
+	*/
 	void loadScoreTable();
-	void SaveScoreTable();
+	
+	/*
+		Saves the HighscoreList to file
+	*/
+	void saveScoreTable();
 
+	/*
+			@return int Score of the last round played
+	*/
 	int getScore() { return _CurrentScore; }
-	void setScore(int Score) { _CurrentScore = Score; }
+	
+	/*
+		Sets the score of the last round
+		@param score Score of the last round
+	*/
+	void setScore(int score) { _CurrentScore = score; }
 
-	void PlacePlayer(std::string& Name, int Level);
+	/*
+		Adds the player of the last round to the HighscoreList
+		@param name Name of the player
+		@param level Level the player reached
+	*/
+	void placePlayer(std::string& name, int level);
 private:
 	sf::RectangleShape _Background;
 	sf::Font _Font;
@@ -67,6 +100,9 @@ private:
 	std::vector<sf::Text> _HighscoreTexts;
 	std::string _Filename;
 
-	void SortScoreTable();
-	void TestPrintPlayers();
+	/*
+		Sorts the player in the score table by score
+	*/
+	void sortScoreTable();
+	//void TestPrintPlayers();
 };

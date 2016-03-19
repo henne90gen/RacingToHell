@@ -14,11 +14,17 @@ Jet::Jet(sf::Texture & texture, sf::Texture & bulletTexture) : BossCar(sf::Vecto
 	_Pattern = {std::make_pair(Phase::SIDE, 10.5f), std::make_pair(Phase::SAVELANES, 10.5f)};
 }
 
-Jet::~Jet()
+void Jet::render(sf::RenderWindow & window)
 {
+	window.draw(getSprite());
+
+	window.draw(_HealthBar);
+	window.draw(_HealthBarFrame);
+
+	renderExplosions(window);
 }
 
-void Jet::update(float frameTime, int roadSpeed, std::vector<GameObject*>& GameObjects)
+void Jet::update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameObjects)
 {
 	if (!_IsExploding) {
 	if (_Movement != Movement::STILL && DriveToNextPosition(frameTime))
@@ -45,8 +51,8 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<GameObject*>& GameO
 			{
 				for (int i = -40; i <= SCREENHEIGHT; i += 200)
 				{
-					ShootBullet(GameObjects, sf::Vector2f(0, i), 0.0f);
-					ShootBullet(GameObjects, sf::Vector2f(SCREENWIDTH, i + 100), 180.0f);
+						ShootBullet(gameObjects, sf::Vector2f(0, i), 0.0f);
+						ShootBullet(gameObjects, sf::Vector2f(SCREENWIDTH, i + 100), 180.0f);
 				}
 			}
 			break;
@@ -69,8 +75,8 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<GameObject*>& GameO
 							ShootBullet(GameObjects, sf::Vector2f(i * 150 + 150, 0), 90.0f);
 						}
 
-						ShootBullet(GameObjects, sf::Vector2f(20, 0), 90.0f);
-						ShootBullet(GameObjects, sf::Vector2f(SCREENWIDTH - 20, 0), 90.0f);
+						ShootBullet(gameObjects, sf::Vector2f(20, 0), 90.0f);
+						ShootBullet(gameObjects, sf::Vector2f(SCREENWIDTH - 20, 0), 90.0f);
 
 						++_Event2Counter;
 					}
@@ -97,14 +103,6 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<GameObject*>& GameO
 	else {
 		updateExplosions(frameTime);
 	}
-}
-
-void Jet::render(sf::RenderWindow & window)
-{
-	window.draw(getSprite());
-
-	window.draw(_HealthBar);
-	window.draw(_HealthBarFrame);
 }
 
 void Jet::randomPosition()

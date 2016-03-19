@@ -15,8 +15,15 @@ Carrier::Carrier(sf::Texture & texture, sf::Texture & bulletTexture) : BossCar(s
 	_Pattern = { std::make_pair(Phase::BLASTSALVE, 5.0f), std::make_pair(Phase::RANDOMSPRAY, 6.0f), std::make_pair(Phase::SPIRAL, 10.0f), std::make_pair(Phase::HARDCORESPAM, 7.0f) };
 }
 
-Carrier::~Carrier()
+void Carrier::render(sf::RenderWindow & window)
 {
+	window.draw(getSprite());
+	window.draw(_GunSprite);
+
+	window.draw(_HealthBar);
+	window.draw(_HealthBarFrame);
+
+	renderExplosions(window);
 }
 
 void Carrier::update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameObjects)
@@ -189,15 +196,6 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<GameObject*>& g
 	else {
 		updateExplosions(frameTime);
 	}
-}
-
-void Carrier::render(sf::RenderWindow & window)
-{
-	window.draw(getSprite());
-	window.draw(_GunSprite);
-
-	window.draw(_HealthBar);
-	window.draw(_HealthBarFrame);
 }
 
 sf::Vector2f & Carrier::calcBulletPosition()

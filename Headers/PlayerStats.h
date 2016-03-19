@@ -55,7 +55,6 @@ struct PlayerStats
 
 	static std::vector<int> getMaxStats()
 	{
-
 		std::vector<int> CurrentStats = getPlayerStats(0);
 		std::vector<int> MaxStats = { 0, 0, 0, 0 };
 

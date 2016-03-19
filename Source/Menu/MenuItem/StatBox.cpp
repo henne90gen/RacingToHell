@@ -2,10 +2,10 @@
 #include "Menu\MenuItem\StatBox.h"
 #include "PlayerStats.h"
 
-StatBox::StatBox(sf::Vector2f Position)
+StatBox::StatBox(sf::Vector2f pos)
 {
 	_Background.setSize(sf::Vector2f(400, 200));
-	_Background.setPosition(Position - sf::Vector2f(_Background.getSize().x / 2, 0));
+	_Background.setPosition(pos - sf::Vector2f(_Background.getSize().x / 2, 0));
 	_Background.setFillColor(sf::Color(0, 0, 0, 100));
 	_Background.setOutlineColor(sf::Color::Black);
 	_Background.setOutlineThickness(2);
@@ -25,17 +25,17 @@ StatBox::~StatBox()
 
 }
 
-void StatBox::render(sf::RenderWindow& RenderWindow, int SelectedCar)
+void StatBox::render(sf::RenderWindow& window, int selectedCar)
 {
 	//Background
-	RenderWindow.draw(_Background);
+	window.draw(_Background);
 
 	//Überschrift
-	RenderWindow.draw(_Headline);
+	window.draw(_Headline);
 
 	//Balken
 	std::vector<std::string> StatNames = { "Max. Health:", "Max. Energy:", "Speed:", "Damage:" };
-	std::vector<int> Stats = PlayerStats::getPlayerStats(SelectedCar);
+	std::vector<int> Stats = PlayerStats::getPlayerStats(selectedCar);
 	std::vector<int> MaxStats = PlayerStats::getMaxStats();
 
 	for (unsigned int i = 0; i < Stats.size() && i < StatNames.size(); i++)
@@ -51,7 +51,7 @@ void StatBox::render(sf::RenderWindow& RenderWindow, int SelectedCar)
 		StatBar.setPosition(_Background.getPosition() + sf::Vector2f(140, 53 + 35 * i));
 		StatBar.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(((int)(float)Stats[i] / (float)MaxStats[i] * (float)StatBar.getLocalBounds().width), 20)));
 
-		RenderWindow.draw(StatName);
-		RenderWindow.draw(StatBar);
+		window.draw(StatName);
+		window.draw(StatBar);
 	}
 }

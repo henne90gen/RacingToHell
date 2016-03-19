@@ -10,7 +10,7 @@ public:
 		@param bulletTexture Texture for all bullets the tank shoots
 	*/
 	Tank(sf::Texture& Texture, sf::Texture& BulletTexture);
-	~Tank();
+	~Tank() {}
 
 	/*
 		See BossCar for details

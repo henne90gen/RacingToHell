@@ -16,9 +16,15 @@ Tank::Tank(sf::Texture& texture, sf::Texture& bulletTexture) : BossCar(sf::Vecto
 	_Pattern = {std::make_pair(Phase::SIMPLESHOOT, 4.0f), std::make_pair(Phase::SALVE, 10.0f), std::make_pair(Phase::SPIN, 10.0f), std::make_pair(Phase::HARDCORESPAM, 6.0f)};
 }
 
-Tank::~Tank()
+void Tank::render(sf::RenderWindow& window)
 {
-	
+	window.draw(getSprite());
+	window.draw(_GunSprite);
+
+	window.draw(_HealthBar);
+	window.draw(_HealthBarFrame);
+
+	renderExplosions(window);
 }
 
 void Tank::update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameObjects)
@@ -121,17 +127,6 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 	else {
 		updateExplosions(frameTime);
 	}
-}
-
-void Tank::render(sf::RenderWindow& window)
-{
-	window.draw(getSprite());
-	window.draw(_GunSprite);
-
-	window.draw(_HealthBar);
-	window.draw(_HealthBarFrame);
-
-	renderExplosions(window);
 }
 
 sf::Vector2f& Tank::calcBulletPosition()

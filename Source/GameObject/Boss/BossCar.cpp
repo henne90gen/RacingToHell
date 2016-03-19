@@ -21,11 +21,6 @@ BossCar::BossCar(sf::Vector2f& Position, int Health, float Speed, sf::Texture& T
 	_HealthBarFrame.setSize(_HealthBar.getSize());
 }
 
-BossCar::~BossCar()
-{
-
-}
-
 float BossCar::PlayerAngle(GameObject * Player)
 {
 	float Angle;

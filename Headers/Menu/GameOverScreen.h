@@ -7,20 +7,54 @@
 class GameOverScreen : public Menu
 {
 public:
+	/*
+		After the player dies this screen is shown. It has the HighscoreList on it to add the players score
+	*/
 	GameOverScreen();
-	~GameOverScreen();
+	~GameOverScreen() {}
 
-	void render(sf::RenderWindow& Window);
+	/*
+		Renders the GameOverScreen to the specified RenderWindow
+		@param window Window to draw to
+	*/
+	void render(sf::RenderWindow& window);
 
-	GameState handleEvents(sf::RenderWindow& Window);
+	/*
+		Handles events for the GameOverScreen
+		@param window RenderWindow to poll the events from
+		@return GameState New GameState the game should be in
+	*/
+	GameState handleEvents(sf::RenderWindow& window);
+	
+	/*
+		Handles the result of the different MenuItems that are on the GameOverScreen
+		@param result What the MenuItems returned as a MenuResult
+		@return GameState New GameState the game should be in
+	*/
 	GameState handleMenuItemResult(MenuResult result); 
 	
-	void update(int Score, int Level);
+	/*
+		Update the GameOverScreen with score and level
+		@parame score Score of the player
+		@param level Level the player is at
+	*/
+	void update(int score, int level);
 
+	/*
+		Loads the game over sound
+	*/
 	void load();
 
+	/*
+		Plays the game over sound
+	*/
 	void playSounds();
-	void setVolume(float Volume);
+
+	/*
+		Sets the volume for the game over sound
+		@param volume New volume
+	*/
+	void setVolume(float volume);
 
 private:
 	int _Level;
@@ -30,7 +64,6 @@ private:
 	sf::Text _GOTLine1;
 	sf::Text _GOTLine2;
 	sf::Text _GOTLine3;
-	sf::Text _GOTLine4;
 
 	HighscoreList _Highscore;
 

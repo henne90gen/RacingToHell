@@ -12,7 +12,7 @@ public:
 		@param bulletTexture Texture for all bullets the Mech shoots
 	*/
 	Mech(sf::Texture& TextureTop, sf::Texture& TextureLegs, sf::Texture& BulletTexture);
-	~Mech();
+	~Mech() {}
 
 	/*
 		See BossCar for details

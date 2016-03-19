@@ -2,7 +2,7 @@
 #include "Menu\MenuItem\Textbox.h"
 
 Textbox::Textbox(sf::Vector2f Position, sf::Vector2f Size, int CharacterSize, std::string Text, bool isFocused)
-	: MenuItem(MenuItems::MTextbox, MenuResult::Nothing),
+	: MenuItem(MenuItemType::MTextbox, MenuResult::Nothing),
 	_FillColor(sf::Color(255, 255, 255)), _FillColorDisabled(sf::Color(140, 140, 140)), _OutlineColor(sf::Color(0, 0, 0)), _OutlineColorFocused(sf::Color(0, 150, 205)), 
 	_TextColor(sf::Color(0, 0, 0)), _ShowCursor(true), _CursorPosition(0)
 {
@@ -26,10 +26,6 @@ Textbox::Textbox(sf::Vector2f Position, sf::Vector2f Size, int CharacterSize, st
 	_Focused = true;
 
 	setCursor();
-}
-
-Textbox::~Textbox()
-{
 }
 
 void Textbox::render(sf::RenderWindow& RenderWindow)
@@ -110,7 +106,7 @@ MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 				if (Event.key.code < 26) {
 					std::string newString = _Text.getString().substring(0, _CursorPosition) + (char)(Event.key.code + 97 - 32 * (int)(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition);
 
-					if (!StringTooLarge(newString)) {
+					if (!isStringTooLarge(newString)) {
 						_Text.setString(newString);
 						_CursorPosition++;
 						setCursor();
@@ -118,7 +114,7 @@ MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 				}
 				else if (Event.key.code < 36 && !sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
 					std::string newString = _Text.getString().substring(0, _CursorPosition) + (char)(Event.key.code + 22) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition);
-					if (!StringTooLarge(newString)) {
+					if (!isStringTooLarge(newString)) {
 						_Text.setString(newString);
 						_CursorPosition++;
 						setCursor();
@@ -159,7 +155,7 @@ sf::FloatRect & Textbox::getRect()
 	return _Box.getGlobalBounds();
 }
 
-bool Textbox::StringTooLarge(std::string str)
+bool Textbox::isStringTooLarge(std::string str)
 {
 	sf::Text TmpText = _Text;
 	TmpText.setString(str);

@@ -16,7 +16,7 @@ public:
 		@param bulletTexture	Texture for the bullets the boss will shoot
 	*/
 	BossCar(sf::Vector2f& pos, int health, float speed, sf::Texture& texture, sf::Texture& bulletTexture);
-	~BossCar();
+	~BossCar() {}
 
 	/*
 		Renders the boss to the specified RenderWindow
@@ -81,4 +81,10 @@ protected:
 	virtual void checkPhase();
 	void renderExplosions(sf::RenderWindow& Window);
 	void updateExplosions(float FrameTime);
+
+	/*
+		Calculates the position where a bullet can be spawned
+		@return sf::Vector2f Position for the bullet
+	*/
+	virtual sf::Vector2f& calcBulletPosition() { return sf::Vector2f(); }
 };

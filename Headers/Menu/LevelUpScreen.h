@@ -3,12 +3,27 @@
 class LevelUpScreen
 {
 public:
+	/*
+		Shows changes that are going to be made to the difficulty
+	*/
 	LevelUpScreen();
-	~LevelUpScreen();
+	~LevelUpScreen() {}
 
-	void render(sf::RenderWindow& Window);
+	/*
+		Renders the HighscoreMenu to the specified RenderWindow
+		@param window Window to draw to
+	*/
+	void render(sf::RenderWindow& window);
+
+	/*
+		Updates the LevelUpScreen and all the animations
+		@return bool True when the animations are done
+	*/
 	bool update();
 
+	/*
+		Sets up the LevelUpScreen for the next level
+	*/
 	void levelUp();
 
 private:

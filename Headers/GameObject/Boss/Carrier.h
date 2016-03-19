@@ -10,7 +10,7 @@ public:
 		@param bulletTexture Texture for all bullets the boss shoots
 	*/
 	Carrier(sf::Texture& texture, sf::Texture& bulletTexture);
-	~Carrier();
+	~Carrier() {}
 
 	/*
 		See BossCar for details

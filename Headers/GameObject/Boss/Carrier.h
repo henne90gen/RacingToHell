@@ -25,8 +25,7 @@ private:
 	sf::Texture _GunTexture;
 	sf::Sprite _GunSprite;
 
-	sf::Vector2f _GunPosition;
-	float _GunOrientation, _Radius;
+	float /*_GunOrientation,*/ _Radius;
 
 	bool _MovementSwitchLeftRight, _MovementSwitchUpDown;
 	sf::Clock _SwitchSidesClock;
@@ -36,5 +35,5 @@ private:
 		Calculates the position where a bullet can be spawned
 		@return sf::Vector2f Position for the bullet
 	*/
-	sf::Vector2f& calcBulletPosition();
+	//sf::Vector2f calcBulletPosition();
 };

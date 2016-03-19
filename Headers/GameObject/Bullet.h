@@ -8,13 +8,13 @@ class Bullet : public GameObject
 public:
 	/*
 		Bullet that can be shot by any Car
-		@param position Starting position of the Bullet
-		@param direction Angle at which the Bullet will fly
+		@param pos Starting position of the Bullet
+		@param dir Angle at which the Bullet will fly
 		@param speed Speed of the Bullet
 		@param type Specifies the type of the Bullet, thus who shot it
 		@param texture Texture that is going to be used for the sprite
 	*/
-	Bullet(sf::Vector2f position, float direction, int speed, GameObjectType type, sf::Texture& texture);
+	Bullet(sf::Vector2f pos, sf::Vector2f dir, int speed, GameObjectType type, sf::Texture& texture);
 	~Bullet() {}
 
 	/*
@@ -32,5 +32,6 @@ public:
 	
 
 private:
-	float _Speed, _Direction;
+	float _Speed;
+	sf::Vector2f _Direction;
 };

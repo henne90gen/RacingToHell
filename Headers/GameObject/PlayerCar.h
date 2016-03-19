@@ -42,12 +42,12 @@ public:
 		Gives back the angle of the shot bullet or 360.0f if no bullet was fired
 		@return float Angle of the shot bullet
 	*/
-	float shotBullet() { return _ShotBullet; }
+	sf::Vector2f shotBullet() { return _ShotBullet; }
 
 	/*
 		Resets angle for new bullets so that no new bullets are fired
 	*/
-	void resetShotBullet() { _ShotBullet = 360.0f; }
+	void resetShotBullet() { _ShotBullet = sf::Vector2f(0, 0); }
 
 	/*
 		Adds 20 to the players health if possible
@@ -84,8 +84,10 @@ public:
 	*/
 	void resetMovement() { _Movement = sf::Vector2f(0, 0); }
 private:
-	float _ShotBullet, _Energy;
+	float _Energy;
 	int _MaxEnergy, _Bulletdamage;
+
+	sf::Vector2f _ShotBullet;
 
 	sf::RectangleShape _AimLine;
 	sf::Vector2f _CrosshairMovement;

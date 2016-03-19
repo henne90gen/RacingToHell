@@ -172,7 +172,7 @@ public:
 		Gives back the angle of the shot bullet or 360.0f if no bullet was fired
 		@return float Angle of the shot bullet
 	*/
-	virtual float shotBullet() { return -1.0f; }
+	virtual sf::Vector2f shotBullet() { return sf::Vector2f(0, 0); }
 
 	/*
 		Changes the players stats according to the id of the car he chose.
@@ -188,6 +188,15 @@ public:
 		Returns true if the boss is dead and all explosion animations are done playing
 	*/
 	virtual bool isDoneExploding(sf::Texture& ExplosionTexture) { return false; }
+
+	/*
+		Calculates the angle a vector is at
+		@param vec Vector whoms angle is going to be calculated
+		@return float Angle in degrees
+	*/
+	float getAngleFromVector(sf::Vector2f vec);
+
+	sf::Vector2f divideByLength(sf::Vector2f vec);
 private:
 	sf::Sprite _Sprite;
 	sf::Texture _Texture;

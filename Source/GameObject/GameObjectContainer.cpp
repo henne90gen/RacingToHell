@@ -236,7 +236,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 	}
 
 	//Prüfen ob Spieler geschossen hat
-	if (getPlayerCar()->shotBullet() != 360.0f)
+	if (getPlayerCar()->shotBullet().x != 0 && getPlayerCar()->shotBullet().y != 0)
 	{
 		Bullet* newBullet = new Bullet(getPlayerCar()->getPos(), getPlayerCar()->shotBullet(), _PlayerBulletSpeed, GameObjectType::BulletObjectPlayer, _BulletTexture);
 		_GameObjects.push_back(newBullet);
@@ -308,8 +308,8 @@ bool GameObjectContainer::bossIsDead()
 void GameObjectContainer::enterBossFight()   
 {
 	//Tank* boss = new Tank((*_BossCarTextures[0]), _BulletTexture);
-	//Carrier* boss = new Carrier(_BossCarTextures[1], &_BulletTexture);
-	Mech* boss = new Mech((*_BossCarTextures[2]), (*_BossCarTextures[3]), _BulletTexture);
+	Carrier* boss = new Carrier((*_BossCarTextures[1]), _BulletTexture);
+	//Mech* boss = new Mech((*_BossCarTextures[2]), (*_BossCarTextures[3]), _BulletTexture);
 	//Jet* boss = new Jet((*_BossCarTextures[4]), _BulletTexture);
 	_GameObjects.push_back(boss);
 	_BossFight = true;
@@ -454,29 +454,10 @@ void GameObjectContainer::spawnBullet()
 		return;
 
 	GameObject* SelectedCar = AICarVector.at(std::rand() % AICarVector.size());
-	
-	float Direction;
-	if (getPlayerCar()->getPos().x < SelectedCar->getPos().x)
-	{
-		Direction = std::atanf((SelectedCar->getPos().y - getPlayerCar()->getPos().y) / (SelectedCar->getPos().x - getPlayerCar()->getPos().x)) * 180.0f / PI + 180;
-	}
-	else if (getPlayerCar()->getPos().x > SelectedCar->getPos().x)
-	{
-		Direction = std::atanf((getPlayerCar()->getPos().y - SelectedCar->getPos().y) / (getPlayerCar()->getPos().x - SelectedCar->getPos().x)) * 180.0f / PI;
-	}
-	else
-	{
-		if (getPlayerCar()->getPos().y > SelectedCar->getPos().y)
-		{
-			Direction = 90;
-		}
-		else
-		{
-			Direction = -90;
-		}
-	}
 
-	Bullet* newBullet = new Bullet(SelectedCar->getPos(), Direction, _AIBulletSpeed, GameObjectType::BulletObjectAI, _BulletTexture);
+	sf::Vector2f dir = SelectedCar->divideByLength(getPlayerCar()->getPos() - SelectedCar->getPos());
+
+	Bullet* newBullet = new Bullet(SelectedCar->getPos(), dir, _AIBulletSpeed, GameObjectType::BulletObjectAI, _BulletTexture);
 	_GameObjects.push_back(newBullet);
 	
 	playShotSound(GameObjectType::AI);

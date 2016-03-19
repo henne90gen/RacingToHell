@@ -50,6 +50,10 @@ protected:
 	enum Movement { STILL, DRIVETODEFAULT, LEFTRIGHT, SWITCHSIDES, STRAIGHT, PARABOLA};
 	Movement _Movement;
 
+	sf::Vector2f _GunPosition;
+	sf::Vector2f _GunOrientation;
+	float _GunLength;
+
 	sf::Vector2f _DefaultPosition;
 
 	sf::RectangleShape _HealthBar;
@@ -72,10 +76,10 @@ protected:
 	sf::Vector2f _NextPosition;
 	bool _Attack, _Traffic;
 
-	float PlayerAngle(GameObject* Player);
-	void ShootBullet(std::vector<GameObject*>& GameObjects, sf::Vector2f Position, float Direction) { ShootBullet(GameObjects, Position, Direction, _BulletSpeed); }
-	void ShootBullet(std::vector<GameObject*>& GameObjects, sf::Vector2f Position, float Direction, int BulletSpeed);
-	bool DriveToNextPosition(float FrameTime);
+	float getPlayerAngle(GameObject* Player);
+	void shootBullet(std::vector<GameObject*>& gameObjects, sf::Vector2f pos, sf::Vector2f dir) { shootBullet(gameObjects, pos, dir, _BulletSpeed); }
+	void shootBullet(std::vector<GameObject*>& gameObjects, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed);
+	bool driveToNextPosition(float frameTime);
 	int getBossEvent();
 	void updateHealthBar();
 	virtual void checkPhase();
@@ -86,5 +90,5 @@ protected:
 		Calculates the position where a bullet can be spawned
 		@return sf::Vector2f Position for the bullet
 	*/
-	virtual sf::Vector2f& calcBulletPosition() { return sf::Vector2f(); }
+	virtual sf::Vector2f calcBulletPosition();
 };

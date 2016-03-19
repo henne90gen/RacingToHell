@@ -27,7 +27,7 @@ void Jet::render(sf::RenderWindow & window)
 void Jet::update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameObjects)
 {
 	if (!_IsExploding) {
-		if (_Movement != Movement::STILL && DriveToNextPosition(frameTime))
+		if (_Movement != Movement::STILL && driveToNextPosition(frameTime))
 		{
 			_BossEventTimer1.restart();
 			_BossEventTimer2.restart();
@@ -51,8 +51,8 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameO
 				{
 					for (int i = -40; i <= SCREENHEIGHT; i += 200)
 					{
-						ShootBullet(gameObjects, sf::Vector2f(0, i), 0.0f);
-						ShootBullet(gameObjects, sf::Vector2f(SCREENWIDTH, i + 100), 180.0f);
+						shootBullet(gameObjects, sf::Vector2f(0, i), sf::Vector2f(1, 0));
+						shootBullet(gameObjects, sf::Vector2f(SCREENWIDTH, i + 100), sf::Vector2f(-1, 0));
 					}
 				}
 				break;
@@ -72,11 +72,11 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameO
 						{
 							for (int i = 0; i < 3; i++)
 							{
-								ShootBullet(gameObjects, sf::Vector2f(i * 150 + 150, 0), 90.0f);
+								shootBullet(gameObjects, sf::Vector2f(i * 150 + 150, 0), sf::Vector2f(0, 1));
 							}
 
-							ShootBullet(gameObjects, sf::Vector2f(20, 0), 90.0f);
-							ShootBullet(gameObjects, sf::Vector2f(SCREENWIDTH - 20, 0), 90.0f);
+							shootBullet(gameObjects, sf::Vector2f(20, 0), sf::Vector2f(0, 1));
+							shootBullet(gameObjects, sf::Vector2f(SCREENWIDTH - 20, 0), sf::Vector2f(0, 1));
 
 							++_Event2Counter;
 						}

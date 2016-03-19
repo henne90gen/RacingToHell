@@ -81,7 +81,8 @@ void PlayerCar::handleEvent(sf::Event& Event)
 	else if (Event.type == sf::Event::MouseButtonPressed || (Event.type == sf::Event::JoystickButtonPressed && sf::Joystick::isButtonPressed(0, 5))) {
 		if (_Energy - 5 >= 10) {
 			_Energy -= 5;
-			_ShotBullet = _AimLine.getRotation();
+			_ShotBullet = _Crosshair.getPosition() - getPos();
+			_ShotBullet = _ShotBullet / std::sqrtf(std::powf(_ShotBullet.x, 2) + std::powf(_ShotBullet.y, 2));
 		}
 	}
 }

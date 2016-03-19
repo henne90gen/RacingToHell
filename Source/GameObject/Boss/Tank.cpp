@@ -13,7 +13,8 @@ Tank::Tank(sf::Texture& texture, sf::Texture& bulletTexture) : BossCar(sf::Vecto
 	_NextPosition = _DefaultPosition;
 	_Movement = Movement::DRIVETODEFAULT;
 
-	_Pattern = {std::make_pair(Phase::SIMPLESHOOT, 4.0f), std::make_pair(Phase::SALVE, 10.0f), std::make_pair(Phase::SPIN, 10.0f), std::make_pair(Phase::HARDCORESPAM, 6.0f)};
+	_Pattern = { std::make_pair(Phase::SIMPLESHOOT, 4.0f), std::make_pair(Phase::SALVE, 10.0f), std::make_pair(Phase::SPIN, 10.0f), std::make_pair(Phase::HARDCORESPAM, 6.0f) };
+	_Pattern = { std::make_pair(Phase::SALVE, 10.0f) };
 }
 
 void Tank::render(sf::RenderWindow& window)

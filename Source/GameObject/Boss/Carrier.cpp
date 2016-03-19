@@ -13,6 +13,7 @@ Carrier::Carrier(sf::Texture & texture, sf::Texture & bulletTexture) : BossCar(s
 	_Movement = Movement::DRIVETODEFAULT;
 
 	_Pattern = { std::make_pair(Phase::BLASTSALVE, 5.0f), std::make_pair(Phase::RANDOMSPRAY, 6.0f), std::make_pair(Phase::SPIRAL, 10.0f), std::make_pair(Phase::HARDCORESPAM, 7.0f) };
+	_Pattern = { std::make_pair(Phase::SPIRAL, 10.0f) };
 }
 
 void Carrier::render(sf::RenderWindow & window)

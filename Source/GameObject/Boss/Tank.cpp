@@ -18,7 +18,7 @@ Tank::Tank(sf::Texture& texture, sf::Texture& bulletTexture) : BossCar(sf::Vecto
 	_Movement = Movement::DRIVETODEFAULT;
 
 	_Pattern = { std::make_pair(Phase::SIMPLESHOOT, 4.0f), std::make_pair(Phase::SALVE, 10.0f), std::make_pair(Phase::SPIN, 10.0f), std::make_pair(Phase::HARDCORESPAM, 6.0f) };
-	_Pattern = { std::make_pair(Phase::SPIN, 10.0f) };
+	_Pattern = { std::make_pair(Phase::SALVE, 10.0f) };
 }
 
 void Tank::render(sf::RenderWindow& window)
@@ -63,7 +63,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 			float angle = getAngleFromVector(_GunOrientation);
 
 			switch (_Pattern[_CurrentPhase].first) {
-			/*case Phase::SIMPLESHOOT:{
+			/*case Phase::SIMPLESHOOT:
 				_Event1Frequency = 4.0f;
 
 				_GunOrientation = getPlayerAngle(gameObjects[0]);
@@ -72,7 +72,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 					shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
 				}
 				break;
-			}
+			*/
 			case Phase::SALVE:
 				_Event1Frequency = 1.0f;
 				_Event2Frequency = 10.0f;
@@ -97,7 +97,6 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 					}
 				}
 				break;
-				*/
 			case Phase::SPIN:
 				_Event1Frequency = 11.0f;
 				if (_Event1Switch) {

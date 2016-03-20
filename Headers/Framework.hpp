@@ -45,7 +45,7 @@ private:
 	// GameObjects
 	GameState _GameState;
 	GameObjectContainer _GameObjectContainer;
-	std::vector<sf::Texture*> _CarSkins;
+	std::vector<std::shared_ptr<sf::Texture>> _CarSkins;
 
 	// Level
 	Level _Level;

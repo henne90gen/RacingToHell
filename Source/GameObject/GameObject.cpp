@@ -26,8 +26,8 @@ void GameObject::setTexture(sf::Texture& texture)
 	_Sprite.setTexture(_Texture);
 }
 
-bool GameObject::checkForCollision(GameObject * go)
+bool GameObject::checkForCollision(GameObject &go)
 {
-	return Collision::BoundingBoxTest(getSprite(), go->getSprite());
+	return Collision::BoundingBoxTest(getSprite(), go.getSprite());
 }
 

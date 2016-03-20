@@ -47,7 +47,7 @@ public:
 		@param roadSpeed Velocity of the road
 		@param GameObjects GameObject-Vector
 	*/
-	virtual void update(float FrameTime, int roadSpeed, std::vector<GameObject*>& GameObjects) {};
+	virtual void update(float FrameTime, int roadSpeed, std::vector<std::shared_ptr<GameObject>>& GameObjects) {};
 
 	/*
 		@return GameObjectTyoe The type of the GameObject
@@ -103,7 +103,7 @@ public:
 		@param go GameObject to compare this one to
 		@return bool True if the two GameObjects collide
 	*/
-	bool checkForCollision(GameObject* go);
+	bool checkForCollision(GameObject& go);
 
 	/*
 		Current lane the car is on

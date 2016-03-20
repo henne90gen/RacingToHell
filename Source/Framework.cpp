@@ -12,11 +12,7 @@ Framework::Framework() : _FrameTime(0), _FPS(60.0f), _IsRunning(true), _GameStat
 
 Framework::~Framework()
 {
-	for (unsigned int i = 0; i < _CarSkins.size(); i++) {
-		delete _CarSkins.at(i);
-		_CarSkins.at(i) = nullptr;
-	}
-
+	_CarSkins.clear();
 }
 
 void Framework::run()
@@ -297,10 +293,12 @@ void Framework::load()
 	
 	_Level.load();
 
-	for (unsigned int i = 1; i < 7; i++) {
-		sf::Texture* texture = new sf::Texture();
-		if (texture->loadFromFile("Resources/Texture/PlayerCar/playercar" + std::to_string(i) + ".png")) {
-			_CarSkins.push_back(texture);
+	for (unsigned int i = 1; i < 7; i++) 
+	{
+		sf::Texture texture;
+		if (texture.loadFromFile("Resources/Texture/PlayerCar/playercar" + std::to_string(i) + ".png")) 
+		{
+			_CarSkins.push_back(std::make_shared<sf::Texture>(texture));
 		}
 	}
 

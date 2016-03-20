@@ -48,12 +48,12 @@ public:
 	/*
 		@return GameObject* Pointer to the PlayerCar
 	*/
-	GameObject* getPlayerCar() { return _GameObjects.at(0); }
+	GameObject& getPlayerCar() { return *_GameObjects.at(0); }
 
 	/*
 		@return GameObject* Pointer to the BossCar
 	*/
-	GameObject* getBossCar() { return _GameObjects.at(1); }
+	GameObject& getBossCar() { return *_GameObjects.at(1); }
 
 	/*
 		@return bool True if the player is still alive
@@ -108,12 +108,13 @@ public:
 		Passes in the car skin texture so that the right one can be applied to the player car
 		@param carSkins Vector with all car skin textures
 	*/
-	void setCarSkins(std::vector<sf::Texture*>& carSkins);
+	void setCarSkins(std::vector<std::shared_ptr<sf::Texture>>& carSkins);
 
 private:
-	std::vector<GameObject*> _GameObjects;
-	std::vector<Animation*> _Animations;
-	std::vector<sf::Texture*> _PlayerCarTextures, _AICarTextures, _BossCarTextures;
+	std::vector<std::shared_ptr<GameObject>> _GameObjects;
+	std::vector<std::shared_ptr<Animation>> _Animations;
+	std::vector<std::shared_ptr<sf::Texture>> _PlayerCarTextures, _AICarTextures, _BossCarTextures;
+
 	sf::Texture _ToolboxTexture, _EnergyCanisterTexture, _BulletTexture, _ExplosionTexture;
 
 	sf::SoundBuffer _AIShotSoundBuffer, _PlayerShotSoundBuffer;

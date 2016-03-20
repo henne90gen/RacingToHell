@@ -37,9 +37,6 @@ float GameObject::getAngleFromVector(sf::Vector2f vec)
 	if (vec.x < 0) {
 		angle += 180;
 	}
-	/*if (vec.y < 0) {
-		angle + 180;
-	}*/
 	return angle;
 }
 

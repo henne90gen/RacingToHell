@@ -9,7 +9,7 @@ Tank::Tank(sf::Texture& texture, sf::Texture& bulletTexture) : BossCar(sf::Vecto
 	_GunSprite.setTexture(_GunTexture);
 	_GunSprite.setOrigin(_GunTexture.getSize().x / 2, 50);
 
-	_GunPosition = sf::Vector2f(_GunSprite.getPosition().x, _GunSprite.getPosition().y - 50 + _GunSprite.getLocalBounds().height);
+	_GunPosition = sf::Vector2f(0, -15);
 
 	_DefaultPosition = sf::Vector2f(SCREENWIDTH / 2, 150);
 	_NextPosition = _DefaultPosition;
@@ -106,24 +106,22 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 					shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
 				}
 				break;
+				*/
 			case Phase::HARDCORESPAM:
 				_Event1Frequency = 40.0f;
 				if (getBossEvent() == 1) {
 					float Orientation = (std::rand() % 270) - 30.0f;
 					_GunOrientation = Orientation;
 
-					shootBullet(gameObjects, calcBulletPosition(), Orientation);
+					shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
 				}
 				break;
-			default:
-				break;
-				*/
 			}
 			
 		}
-
+		_GunOrientation = sf::Vector2f(0, 1);
 		_GunSprite.setPosition(getPos() + _GunPosition);
-		_GunSprite.setRotation(getAngleFromVector(_GunOrientation));
+		_GunSprite.setRotation(getAngleFromVector(_GunOrientation) - 90);
 		
 		updateHealthBar();
 		checkPhase();

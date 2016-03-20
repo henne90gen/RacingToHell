@@ -16,7 +16,6 @@ Carrier::Carrier(sf::Texture & texture, sf::Texture & bulletTexture) : BossCar(s
 	_Movement = Movement::DRIVETODEFAULT;
 
 	_Pattern = { std::make_pair(Phase::BLASTSALVE, 5.0f), std::make_pair(Phase::RANDOMSPRAY, 6.0f), std::make_pair(Phase::SPIRAL, 10.0f), std::make_pair(Phase::HARDCORESPAM, 7.0f) };
-	_Pattern = { std::make_pair(Phase::BLASTSALVE, 5.0f) };
 }
 
 void Carrier::render(sf::RenderWindow & window)
@@ -92,12 +91,6 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<GameObject*>& g
 		{
 			switch (_Pattern[_CurrentPhase].first)
 			{
-			/*
-			*
-			*
-			*
-			*
-			*/
 			case Phase::BLASTSALVE:
 				_Event1Frequency = 0.4f;
 				_Event2Frequency = 7.0f;
@@ -106,9 +99,10 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<GameObject*>& g
 				{
 					if (getBossEvent() == 2)
 					{
-						for (int i = 2 * _Event1Counter; i <= 360; i += 20)
+						for (float i = (2 * _Event1Counter) * PI / 180; i <= 2 * PI; i += PI / 9)
 						{
-							shootBullet(gameObjects, getPos(), (float)i);
+							sf::Vector2f orientation = sf::Vector2f(std::cosf(i), std::sinf(i));
+							shootBullet(gameObjects, getPos(), orientation);
 						}
 
 						if (_Event1Counter + 1 < 5)
@@ -138,9 +132,9 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<GameObject*>& g
 				{
 					if (getBossEvent() == 2)
 					{
-						for (float i = 0.0f; i < 2*PI; i += PI/5)
+						for (float i = 0.0f; i < 2 * PI; i += PI / 5)
 						{
-							sf::Vector2f position = getPos() + sf::Vector2f(50.0f * std::cosf(i / 180 * PI), 50.0f * std::sinf(i / 180 * PI));
+							sf::Vector2f position = getPos() + sf::Vector2f(50.0f * std::cosf(i), 50.0f * std::sinf(i));
 							sf::Vector2f orientation = sf::Vector2f(std::cosf(i), std::sinf(i));
 
 							shootBullet(gameObjects, getPos(), orientation);
@@ -159,8 +153,8 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<GameObject*>& g
 				_Event1Frequency = 0.8f;
 
 				if (getBossEvent() == 1) {
-					for (float i = 0.0f; i < 360.0f; i += 10.0f) {
-						sf::Vector2f position = getPos() + sf::Vector2f(50.0f * std::cosf(i / 180 * PI), 50.0f * std::sinf(i / 180 * PI));
+					for (float i = 0.0f; i < 2 * PI; i += PI / 5) {
+						sf::Vector2f position = getPos() + sf::Vector2f(50.0f * std::cosf(i), 50.0f * std::sinf(i));
 						sf::Vector2f orientation = divideByLength(sf::Vector2f(((double)(std::rand() - RAND_MAX / 2) / RAND_MAX), ((double)(std::rand() - RAND_MAX / 2) / RAND_MAX)));
 						shootBullet(gameObjects, position, orientation);
 					}

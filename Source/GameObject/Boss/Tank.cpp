@@ -10,12 +10,14 @@ Tank::Tank(sf::Texture& texture, sf::Texture& bulletTexture) : BossCar(sf::Vecto
 	_GunSprite.setOrigin(_GunTexture.getSize().x / 2, 50);
 
 	_GunPosition = sf::Vector2f(0, -15);
+	_GunOrientation = sf::Vector2f(0, 1);
 
 	_DefaultPosition = sf::Vector2f(SCREENWIDTH / 2, 150);
 	_NextPosition = _DefaultPosition;
 	_Movement = Movement::DRIVETODEFAULT;
 
-	_Pattern = {std::make_pair(Phase::SIMPLESHOOT, 4.0f), std::make_pair(Phase::SALVE, 10.0f), std::make_pair(Phase::SPIN, 10.0f), std::make_pair(Phase::HARDCORESPAM, 6.0f)};
+	_Pattern = { std::make_pair(Phase::SIMPLESHOOT, 4.0f), std::make_pair(Phase::SALVE, 10.0f), std::make_pair(Phase::SPIN, 10.0f), std::make_pair(Phase::HARDCORESPAM, 6.0f) };
+	_Pattern = { std::make_pair(Phase::HARDCORESPAM, 6.0f) };
 }
 
 void Tank::render(sf::RenderWindow& window)
@@ -92,6 +94,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 					}
 				}
 				break;
+				*/
 			case Phase::SPIN:
 				_Event1Frequency = 11.0f;
 				if (_GunOrientation > 180.0f || _GunOrientation < 0.0f) {
@@ -106,20 +109,16 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 					shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
 				}
 				break;
-				*/
 			case Phase::HARDCORESPAM:
 				_Event1Frequency = 40.0f;
 				if (getBossEvent() == 1) {
-					float Orientation = (std::rand() % 270) - 30.0f;
-					_GunOrientation = Orientation;
-
+					_GunOrientation = divideByLength(sf::Vector2f(((double)(std::rand() - RAND_MAX / 2) / RAND_MAX), ((double)(std::rand() - RAND_MAX / 2) / RAND_MAX)));
 					shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
 				}
 				break;
 			}
 			
 		}
-		_GunOrientation = sf::Vector2f(0, 1);
 		_GunSprite.setPosition(getPos() + _GunPosition);
 		_GunSprite.setRotation(getAngleFromVector(_GunOrientation) - 90);
 		

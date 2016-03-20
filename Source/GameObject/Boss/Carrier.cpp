@@ -134,10 +134,9 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<GameObject*>& g
 					{
 						for (float i = 0.0f; i < 2 * PI; i += PI / 5)
 						{
-							sf::Vector2f position = getPos() + sf::Vector2f(50.0f * std::cosf(i), 50.0f * std::sinf(i));
-							sf::Vector2f orientation = sf::Vector2f(std::cosf(i), std::sinf(i));
-
-							shootBullet(gameObjects, getPos(), orientation);
+							_GunOrientation = sf::Vector2f(std::cosf(i), std::sinf(i));
+							shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
+							_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
 						}
 					}
 				}

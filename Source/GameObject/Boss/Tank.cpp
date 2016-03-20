@@ -11,13 +11,14 @@ Tank::Tank(sf::Texture& texture, sf::Texture& bulletTexture) : BossCar(sf::Vecto
 
 	_GunPosition = sf::Vector2f(0, -15);
 	_GunOrientation = sf::Vector2f(0, 1);
+	_GunLength = _GunSprite.getLocalBounds().height - 50;
 
 	_DefaultPosition = sf::Vector2f(SCREENWIDTH / 2, 150);
 	_NextPosition = _DefaultPosition;
 	_Movement = Movement::DRIVETODEFAULT;
 
 	_Pattern = { std::make_pair(Phase::SIMPLESHOOT, 4.0f), std::make_pair(Phase::SALVE, 10.0f), std::make_pair(Phase::SPIN, 10.0f), std::make_pair(Phase::HARDCORESPAM, 6.0f) };
-	_Pattern = { std::make_pair(Phase::HARDCORESPAM, 6.0f) };
+	_Pattern = { std::make_pair(Phase::SPIN, 10.0f) };
 }
 
 void Tank::render(sf::RenderWindow& window)
@@ -59,6 +60,8 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 
 		if (_Attack)
 		{
+			float angle = getAngleFromVector(_GunOrientation);
+
 			switch (_Pattern[_CurrentPhase].first) {
 			/*case Phase::SIMPLESHOOT:{
 				_Event1Frequency = 4.0f;
@@ -97,13 +100,24 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 				*/
 			case Phase::SPIN:
 				_Event1Frequency = 11.0f;
-				if (_GunOrientation > 180.0f || _GunOrientation < 0.0f) {
-					_GunOrientation = (int)(!_Event1Switch) * 180.0f;
-					_Event1Switch = !_Event1Switch;
+				if (_Event1Switch) {
+					if (angle + frameTime * 100 > 180.0f) {
+						_Event1Switch = false;
+					}
+					else {
+						angle += frameTime * 100;
+					}
 				}
 				else {
-					_GunOrientation += 100.0f * frameTime * std::pow(-1, (int)_Event1Switch);
+					if (angle - frameTime * 100 < 0.0f) {
+						_Event1Switch = true;
+					}
+					else {
+						angle -= frameTime * 100;
+					}
 				}
+				_GunOrientation = sf::Vector2f(std::cosf(angle * PI / 180), std::sinf(angle * PI / 180));
+				_GunOrientation = divideByLength(_GunOrientation);
 
 				if (getBossEvent() == 1) {
 					shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);

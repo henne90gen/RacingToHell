@@ -126,7 +126,8 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 			case Phase::HARDCORESPAM:
 				_Event1Frequency = 40.0f;
 				if (getBossEvent() == 1) {
-					_GunOrientation = divideByLength(sf::Vector2f(((double)(std::rand() - RAND_MAX / 2) / RAND_MAX), ((double)(std::rand() - RAND_MAX / 2) / RAND_MAX)));
+					_GunOrientation = divideByLength(sf::Vector2f(((float)(std::rand() - (float)(RAND_MAX) / 2) / (float)(RAND_MAX)), 
+						((float)(std::rand() - (float)(RAND_MAX) / 2) / (float)(RAND_MAX))));
 					shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
 				}
 				break;

@@ -63,11 +63,11 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<GameObject*>& g
 					_NextPosition = sf::Vector2f(getWidth() / 2 + (SCREENWIDTH - getWidth()) * (std::rand() % 100) / 100, ((int)(!_MovementSwitchUpDown) * (SCREENHEIGHT - 2 * _DefaultPosition.y)) + _DefaultPosition.y);
 					_Speed = 450;
 					_Attack = false;
-					_MovementSwitchUpDown = !_MovementSwitchUpDown;
 				}
 				break;
 			case Movement::SWITCHSIDES:
 				_Movement = Movement::LEFTRIGHT;
+				_MovementSwitchUpDown = !_MovementSwitchUpDown;
 				_Attack = true;
 				_Speed = 200;
 				_SwitchSidesClock.restart();
@@ -153,8 +153,9 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<GameObject*>& g
 				_Event1Frequency = 0.8f;
 
 				if (getBossEvent() == 1) {
-					for (float i = 0.0f; i < 2 * PI; i += PI / 5) {
-						sf::Vector2f orientation = divideByLength(sf::Vector2f(((double)(std::rand() - RAND_MAX / 2) / RAND_MAX), ((double)(std::rand() - RAND_MAX / 2) / RAND_MAX)));
+					for (float i = PI * (float)_MovementSwitchUpDown; i < PI + PI * (float) _MovementSwitchUpDown; i += PI / 10) {
+						_GunOrientation = sf::Vector2f(std::cosf(i), std::sinf(i));
+						sf::Vector2f orientation = divideByLength(sf::Vector2f(((float)(std::rand() - (float)(RAND_MAX) / 2) / (float)(RAND_MAX)), (float)(std::rand() / (float)(RAND_MAX)) * std::pow(-1, (int)(_MovementSwitchUpDown))));
 						shootBullet(gameObjects, calcBulletPosition(), orientation);
 					}
 				}
@@ -164,7 +165,7 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<GameObject*>& g
 				_Event1Frequency = 60.0f;
 
 				if (getBossEvent() == 1) {
-					_GunOrientation = divideByLength(sf::Vector2f(((double) (std::rand() - RAND_MAX / 2) / RAND_MAX), ((double) (std::rand() - RAND_MAX / 2) / RAND_MAX)));
+					_GunOrientation = divideByLength(sf::Vector2f(((float) (std::rand() - (float)(RAND_MAX) / 2) / (float)(RAND_MAX)), ((float) (std::rand() - (float)(RAND_MAX) / 2) / (float)(RAND_MAX))));
 					shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
 				}
 				break;

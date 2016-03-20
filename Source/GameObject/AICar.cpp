@@ -17,6 +17,8 @@ AICar::AICar(int difficulty, int roadSpeed, sf::Texture& texture) : Car(sf::Vect
 	_HealthBarFrame.setSize(_HealthBar.getSize());
 }
 
+
+
 void AICar::update(float frameTime, int roadSpeed)
 {
 	setPos(sf::Vector2f(getPos().x, getPos().y + (roadSpeed - _Speed) * frameTime));

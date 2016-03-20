@@ -74,6 +74,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 				break;
 			*/
 			case Phase::SALVE:
+				/*
 				_Event1Frequency = 1.0f;
 				_Event2Frequency = 10.0f;
 
@@ -96,7 +97,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 						_Event1Switch = true;
 					}
 				}
-				break;
+				break;*/
 			case Phase::SPIN:
 				_Event1Frequency = 11.0f;
 				if (_Event1Switch) {

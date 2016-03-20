@@ -16,6 +16,7 @@ Carrier::Carrier(sf::Texture & texture, sf::Texture & bulletTexture) : BossCar(s
 	_Movement = Movement::DRIVETODEFAULT;
 
 	_Pattern = { std::make_pair(Phase::BLASTSALVE, 5.0f), std::make_pair(Phase::RANDOMSPRAY, 6.0f), std::make_pair(Phase::SPIRAL, 10.0f), std::make_pair(Phase::HARDCORESPAM, 7.0f) };
+	_Pattern = { std::make_pair(Phase::RANDOMSPRAY, 6.0f) };
 }
 
 void Carrier::render(sf::RenderWindow & window)
@@ -153,9 +154,8 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<GameObject*>& g
 
 				if (getBossEvent() == 1) {
 					for (float i = 0.0f; i < 2 * PI; i += PI / 5) {
-						sf::Vector2f position = getPos() + sf::Vector2f(50.0f * std::cosf(i), 50.0f * std::sinf(i));
 						sf::Vector2f orientation = divideByLength(sf::Vector2f(((double)(std::rand() - RAND_MAX / 2) / RAND_MAX), ((double)(std::rand() - RAND_MAX / 2) / RAND_MAX)));
-						shootBullet(gameObjects, position, orientation);
+						shootBullet(gameObjects, calcBulletPosition(), orientation);
 					}
 				}
 				break;

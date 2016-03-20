@@ -307,8 +307,8 @@ bool GameObjectContainer::bossIsDead()
 
 void GameObjectContainer::enterBossFight()   
 {
-	Tank* boss = new Tank((*_BossCarTextures[0]), _BulletTexture);
-	//Carrier* boss = new Carrier((*_BossCarTextures[1]), _BulletTexture);
+	//Tank* boss = new Tank((*_BossCarTextures[0]), _BulletTexture);
+	Carrier* boss = new Carrier((*_BossCarTextures[1]), _BulletTexture);
 	//Mech* boss = new Mech((*_BossCarTextures[2]), (*_BossCarTextures[3]), _BulletTexture);
 	//Jet* boss = new Jet((*_BossCarTextures[4]), _BulletTexture);
 	_GameObjects.push_back(boss);

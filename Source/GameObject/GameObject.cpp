@@ -33,7 +33,14 @@ bool GameObject::checkForCollision(GameObject * go)
 
 float GameObject::getAngleFromVector(sf::Vector2f vec) 
 {
-	return std::atanf(vec.y / vec.x) * 180.0f / PI;
+	float angle = std::atan(vec.y / vec.x) * 180.0f / PI;
+	if (vec.x < 0) {
+		angle += 180;
+	}
+	/*if (vec.y < 0) {
+		angle + 180;
+	}*/
+	return angle;
 }
 
 sf::Vector2f GameObject::divideByLength(sf::Vector2f vec) 

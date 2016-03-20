@@ -16,7 +16,7 @@ Carrier::Carrier(sf::Texture & texture, sf::Texture & bulletTexture) : BossCar(s
 	_Movement = Movement::DRIVETODEFAULT;
 
 	_Pattern = { std::make_pair(Phase::BLASTSALVE, 5.0f), std::make_pair(Phase::RANDOMSPRAY, 6.0f), std::make_pair(Phase::SPIRAL, 10.0f), std::make_pair(Phase::HARDCORESPAM, 7.0f) };
-	_Pattern = { std::make_pair(Phase::SPIRAL, 10.0f) };
+	_Pattern = { std::make_pair(Phase::BLASTSALVE, 5.0f) };
 }
 
 void Carrier::render(sf::RenderWindow & window)
@@ -78,8 +78,6 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<GameObject*>& g
 				_Event2Counter = 0;
 				_Event1Counter = 0;
 				break;
-			default:
-				break;
 			}
 		}
 
@@ -88,13 +86,19 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<GameObject*>& g
 			getSprite().setRotation((getPos().y - _DefaultPosition.y) * 180 / (SCREENHEIGHT - 2 * _DefaultPosition.y));
 		}
 
-		//_GunOrientation = getPlayerAngle(gameObjects[0]);
+		_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
 
 		if (_Attack)
 		{
 			switch (_Pattern[_CurrentPhase].first)
 			{
-			/*case Phase::BLASTSALVE:
+			/*
+			*
+			*
+			*
+			*
+			*/
+			case Phase::BLASTSALVE:
 				_Event1Frequency = 0.4f;
 				_Event2Frequency = 7.0f;
 
@@ -126,23 +130,20 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<GameObject*>& g
 					}
 				}
 				break;
-				*/
 			case Phase::SPIRAL:
 				_Event1Frequency = 3.0f;
 				_Event2Frequency = 10.0f;
-
-				_GunOrientation = 90;
 
 				if (_Event1Switch)
 				{
 					if (getBossEvent() == 2)
 					{
-						for (float i = 0.0f; i < 360.0f; i += 36.0f)
+						for (float i = 0.0f; i < 2*PI; i += PI/5)
 						{
-							sf::Vector2f Position = getPos() + sf::Vector2f(50.0f * std::cosf(i / 180 * PI), 50.0f * std::sinf(i / 180 * PI));
-							float Orientation = 90 + i;
+							sf::Vector2f position = getPos() + sf::Vector2f(50.0f * std::cosf(i / 180 * PI), 50.0f * std::sinf(i / 180 * PI));
+							sf::Vector2f orientation = sf::Vector2f(std::cosf(i), std::sinf(i));
 
-							shootBullet(gameObjects, Position, Orientation);
+							shootBullet(gameObjects, getPos(), orientation);
 						}
 					}
 				}
@@ -178,7 +179,7 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<GameObject*>& g
 		}
 
 		_GunSprite.setPosition(getPos() + _GunPosition);
-		_GunSprite.setRotation(getAngleFromVector(_GunOrientation));
+		_GunSprite.setRotation(getAngleFromVector(_GunOrientation) - 90);
 
 		updateHealthBar();
 		checkPhase();

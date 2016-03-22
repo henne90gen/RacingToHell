@@ -4,10 +4,13 @@
 // IDEA: Mech comes in from below and "chase" the player
 
 Mech::Mech(sf::Texture& textureTop, sf::Texture& textureLegs, sf::Texture& bulletTexture) : BossCar(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), 5000, 100, textureTop, bulletTexture),
-	_TopAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureTop), _LegsAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureLegs), _MovementSwitch(false), _GunOrientation(-90),
-	_GunRadius(81.5659f)
+	_TopAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureTop), _LegsAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureLegs), _MovementSwitch(false), _GunRadius(81.5659f)
 {
 	setSprite(_TopAnim.getSprite());
+
+	_GunOrientation = sf::Vector2f(0, -1);
+	_GunPosition = sf::Vector2f(62, 0);
+	_GunLength = 53.0f;
 
 	//HP-Balken
 	_HealthBar.setSize(sf::Vector2f(getWidth() + 5, 5));
@@ -33,8 +36,12 @@ void Mech::render(sf::RenderWindow & window)
 
 void Mech::update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameObjects)
 {
+	float gunPosLength = std::sqrtf(std::pow(_GunPosition.x, 2) + std::pow(_GunPosition.y, 2));
+	_GunPosition = sf::Vector2f(cosf(std::atanf(_GunOrientation.y / _GunOrientation.x) + PI / 2), 
+								sinf(std::atanf(_GunOrientation.y / _GunOrientation.x) + PI / 2)) * gunPosLength;
+
 	if (!_IsExploding) {
-		if (DriveToNextPosition(frameTime))
+		if (driveToNextPosition(frameTime))
 		{
 			switch (_Movement)
 			{
@@ -62,54 +69,52 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 
 		if (_Attack)
 		{
+
+			_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
+
 			switch (_Pattern[_CurrentPhase].first)
 			{
 			case Phase::SPIN:
 			{
 				_Event1Frequency = 11.0f;
 
-				_GunOrientation += 180 * frameTime;
+				float gunAngle = getAngleFromVector(_GunOrientation) + 180 * frameTime;
+				_GunOrientation = sf::Vector2f(std::cosf(gunAngle * PI / 180), std::sinf(gunAngle * PI / 180));
 
 				if (getBossEvent() == 1)
 				{
 					std::pair<sf::Vector2f, sf::Vector2f> Positions = calcGunPositions();
 
-					ShootBullet(gameObjects, Positions.first, _GunOrientation);
-					ShootBullet(gameObjects, Positions.second, _GunOrientation);
+					shootBullet(gameObjects, Positions.first, _GunOrientation);
+					shootBullet(gameObjects, Positions.second, _GunOrientation);
 				}
 				break;
 			}
 			case Phase::SHOTGUN:
-			{
 				_Event1Frequency = 1.5f;
-
-				_GunOrientation = PlayerAngle(gameObjects[0]);
 
 				if (getBossEvent() == 1)
 				{
 					bool Hand = (std::rand() % 100) > 50;
 					for (int i = 0; i < 10; i++)
 					{
-
+						float bulAngle = (getAngleFromVector(_GunOrientation) * PI / 180 - PI / 28.8) + PI / 14.4 * ((std::rand() % 100) / 100.0f);
+						sf::Vector2f bulOrientation = divideByLength(sf::Vector2f(std::cosf(bulAngle), std::sinf(bulAngle)));
 						if (Hand)
 						{
-							ShootBullet(gameObjects, calcGunPositions().first, (_GunOrientation - 12.5) + 25 * (std::rand() % 100) / 100, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed));
+							shootBullet(gameObjects, calcGunPositions().first, bulOrientation, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed));
 						}
 						else
 						{
-							ShootBullet(gameObjects, calcGunPositions().second, (_GunOrientation - 12.5) + 25 * (std::rand() % 100) / 100, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed));
+							shootBullet(gameObjects, calcGunPositions().second, bulOrientation, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed));
 						}
 					}
 
 					_Event1Switch = !_Event1Switch;
 				}
 				break;
-			}
 			case Phase::SALVE:
-			{
 				_Event1Frequency = 1.5f;
-
-				_GunOrientation = PlayerAngle(gameObjects[0]);
 
 				if (getBossEvent() == 1)
 				{
@@ -119,23 +124,21 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 					{
 						if (Hand)
 						{
-							ShootBullet(gameObjects, calcGunPositions().first, _GunOrientation - 7 * (i - 2));
+							shootBullet(gameObjects, calcGunPositions().first, _GunOrientation);
 						}
 						else
 						{
-							ShootBullet(gameObjects, calcGunPositions().first, _GunOrientation - 7 * (i - 2));
+							shootBullet(gameObjects, calcGunPositions().second, _GunOrientation);
 						}
 					}
 				}
 				break;
 			}
-			default:
-				break;
-			}
+			
 		}
 
-		_TopAnim.setRotation(_GunOrientation + 90);
-		_LegsAnim.setRotation(_GunOrientation + 90);
+		_TopAnim.setRotation(getAngleFromVector(_GunOrientation) + 90);
+		_LegsAnim.setRotation(getAngleFromVector(_GunOrientation) + 90);
 
 		updateHealthBar();
 
@@ -159,8 +162,7 @@ void Mech::setPos(sf::Vector2f pos) {
 
 std::pair<sf::Vector2f, sf::Vector2f>& Mech::calcGunPositions()
 {
-	sf::Vector2f Position1 = getPos() + sf::Vector2f(_GunRadius * std::cos((_GunOrientation - 40.5) / 180 * PI), _GunRadius * std::sin((_GunOrientation - 40.5) / 180 * PI));
-	sf::Vector2f Position2 = getPos() + sf::Vector2f(_GunRadius * std::cos((_GunOrientation + 40.5) / 180 * PI), _GunRadius * std::sin((_GunOrientation + 40.5) / 180 * PI));
-
-	return std::make_pair(Position1, Position2);
+	sf::Vector2f pos1 = getPos() - _GunPosition + _GunOrientation * _GunLength;
+	sf::Vector2f pos2 = getPos() + _GunPosition + _GunOrientation * _GunLength;
+	return std::make_pair(pos1, pos2);
 }

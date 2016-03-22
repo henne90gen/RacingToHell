@@ -63,22 +63,21 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 			float angle = getAngleFromVector(_GunOrientation);
 
 			switch (_Pattern[_CurrentPhase].first) {
-			/*case Phase::SIMPLESHOOT:
+			case Phase::SIMPLESHOOT:
 				_Event1Frequency = 4.0f;
 
-				_GunOrientation = getPlayerAngle(gameObjects[0]);
+				_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
 
 				if (getBossEvent() == 1) {
 					shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
 				}
 				break;
-			*/
 			case Phase::SALVE:
-				/*
+				
 				_Event1Frequency = 1.0f;
 				_Event2Frequency = 10.0f;
 
-				_GunOrientation = getPlayerAngle(gameObjects[0]);
+				_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
 
 				if (_Event1Switch) {
 					if (getBossEvent() == 2) {
@@ -97,7 +96,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 						_Event1Switch = true;
 					}
 				}
-				break;*/
+				break;
 			case Phase::SPIN:
 				_Event1Frequency = 11.0f;
 				if (_Event1Switch) {
@@ -116,8 +115,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 						angle -= frameTime * 100;
 					}
 				}
-				_GunOrientation = sf::Vector2f(std::cosf(angle * PI / 180), std::sinf(angle * PI / 180));
-				_GunOrientation = divideByLength(_GunOrientation);
+				_GunOrientation = divideByLength(sf::Vector2f(std::cosf(angle * PI / 180), std::sinf(angle * PI / 180)));
 
 				if (getBossEvent() == 1) {
 					shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);

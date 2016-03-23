@@ -22,7 +22,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			_Animations[i]->update(FrameTime);
 		}
 	}
-
+	
 	//Kollision Spieler
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
@@ -79,7 +79,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			_GameObjects.at(i)->update(FrameTime, RoadSpeed);
 		}
 	}
-
+	
 	//Objekt löschen wenn es sich nicht mehr im Screen befindet
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
@@ -92,7 +92,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			}
 		}
 	}
-
+	
 	if (!_BossFight || (_BossFight && getBossCar().getTraffic())) 
 	{
 		if (!_AboutToLevelUp) {
@@ -299,7 +299,7 @@ void GameObjectContainer::enterBossFight()
 	//Carrier* boss = new Carrier(_BossCarTextures[1], &_BulletTexture);
 	std::shared_ptr<Mech> boss(new Mech((*_BossCarTextures[2]), (*_BossCarTextures[3]), _BulletTexture));
 	//Jet* boss = new Jet((*_BossCarTextures[4]), _BulletTexture);
-	_GameObjects.push_back(std::static_pointer_cast<GameObject>(boss));
+	//_GameObjects.push_back(std::static_pointer_cast<GameObject>(boss));
 	_BossFight = true;
 }
 

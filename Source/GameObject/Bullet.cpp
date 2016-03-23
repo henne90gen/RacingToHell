@@ -1,14 +1,14 @@
 #include "stdafx.h"
 #include "GameObject\Bullet.h"
 
-Bullet::Bullet(sf::Vector2f pos, float Direction, int Speed, GameObjectType Type, sf::Texture& texture) : GameObject(pos, Type, texture), _Direction(Direction), _Speed(Speed)
+Bullet::Bullet(sf::Vector2f pos, sf::Vector2f dir, int speed, GameObjectType type, sf::Texture& texture) : GameObject(pos, type, texture), _Direction(dir), _Speed(speed)
 {
 
-	if (Type == GameObjectType::BulletObjectPlayer)
+	if (type == GameObjectType::BulletObjectPlayer)
 	{
 		setSpriteColor(sf::Color(225, 0, 0));
 	}
-	else if (Type == GameObjectType::BulletObjectBoss)
+	else if (type == GameObjectType::BulletObjectBoss)
 	{
 		setSpriteColor(sf::Color(0, 45, 255));
 	}
@@ -20,6 +20,7 @@ Bullet::Bullet(sf::Vector2f pos, float Direction, int Speed, GameObjectType Type
 
 void Bullet::update(float FrameTime, int RoadSpeed)
 {
-	sf::Vector2f move = sf::Vector2f(std::cosf(PI * _Direction / 180.0f), std::sinf(PI * _Direction / 180.0f)) * FrameTime * _Speed;
+	_Direction = _Direction  / std::sqrt(std::pow(_Direction.x, 2) + std::pow(_Direction.y, 2));
+	sf::Vector2f move = _Direction * FrameTime * _Speed;
 	setPos(getPos() + move);
 }

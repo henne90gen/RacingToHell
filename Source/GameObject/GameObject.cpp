@@ -31,3 +31,16 @@ bool GameObject::checkForCollision(GameObject * go)
 	return Collision::BoundingBoxTest(getSprite(), go->getSprite());
 }
 
+float GameObject::getAngleFromVector(sf::Vector2f vec) 
+{
+	float angle = std::atan(vec.y / vec.x) * 180.0f / PI;
+	if (vec.x < 0) {
+		angle += 180;
+	}
+	return angle;
+}
+
+sf::Vector2f GameObject::divideByLength(sf::Vector2f vec) 
+{
+	return vec / std::sqrtf(std::powf(vec.x, 2) + std::powf(vec.y, 2));
+}

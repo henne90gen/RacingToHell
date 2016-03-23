@@ -21,7 +21,7 @@ BossCar::BossCar(sf::Vector2f& Position, int Health, float Speed, sf::Texture& T
 	_HealthBarFrame.setSize(_HealthBar.getSize());
 }
 
-float BossCar::PlayerAngle(GameObject * Player)
+float BossCar::getPlayerAngle(GameObject * Player)
 {
 	float Angle;
 	sf::Vector2f dir = Player->getPos() - getPos();
@@ -33,9 +33,9 @@ float BossCar::PlayerAngle(GameObject * Player)
 	return Angle;
 }
 
-void BossCar::ShootBullet(std::vector<GameObject*>& gameObjects, sf::Vector2f position, float direction, int bulletSpeed)
+void BossCar::shootBullet(std::vector<GameObject*>& gameObjects, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed)
 {
-	Bullet* newBullet = new Bullet(position, direction, bulletSpeed, GameObjectType::BulletObjectBoss, _BulletTexture);
+	Bullet* newBullet = new Bullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss, _BulletTexture);
 	gameObjects.push_back(newBullet);
 }
 
@@ -57,7 +57,7 @@ int BossCar::getBossEvent()
 	}
 }
 
-bool BossCar::DriveToNextPosition(float frameTime)
+bool BossCar::driveToNextPosition(float frameTime)
 {
 	if (std::abs((getPos().y - _NextPosition.y)) < 0.1f && std::abs((getPos().x - _NextPosition.x)) < 0.1f)
 	{
@@ -150,4 +150,9 @@ bool BossCar::isDoneExploding(sf::Texture& explosionTexture)
 		_IsExploding = 2;
 	}
 	return (_Health <= 0 && _IsExploding == 2);
+}
+
+sf::Vector2f BossCar::calcBulletPosition() 
+{
+	return getPos() + _GunPosition + _GunOrientation * _GunLength;
 }

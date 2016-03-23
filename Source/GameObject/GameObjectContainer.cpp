@@ -5,25 +5,6 @@ GameObjectContainer::GameObjectContainer() : _PlayerBulletSpeed(600), _AIBulletS
 
 GameObjectContainer::~GameObjectContainer()
 {
-	/*for (unsigned int i = 0; i < _GameObjects.size(); i++)
-	{
-		delete _GameObjects.at(i);
-		_GameObjects.at(i) = nullptr;
-	}
-	_GameObjects.clear();
-
-	for (int i = 0; i < _AICarTextures.size(); i++) {
-		delete _AICarTextures.at(i);
-		_AICarTextures.at(i) = nullptr;
-	}
-	_AICarTextures.clear();
-
-	for (int i = 0; i < _BossCarTextures.size(); i++) {
-		delete _BossCarTextures.at(i);
-		_BossCarTextures.at(i) = nullptr;
-	}
-	_BossCarTextures.clear(); */
-
 	_GameObjects.clear();
 	_AICarTextures.clear();
 	_BossCarTextures.clear();
@@ -34,9 +15,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 	// Update Animations
 	for (int i = 0; i < _Animations.size(); i++) {
 		if (_Animations[i]->getAnimationState() == Animation::Stop) {
-			//delete _Animations.at(i);
 			_Animations.erase(_Animations.begin() + i);
-			//_Animations.at(i) = nullptr;
 			i--;
 		}
 		else {
@@ -54,7 +33,8 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 					{
 					case GameObjectType::AI:
 						if (!_AboutToLevelUp) {
-						//	_Animations.push_back(std::make_shared<Explosion>(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0))));
+							std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0)));
+							_Animations.push_back(std::static_pointer_cast<Animation>(newExplosion));
 							_PlayerAlive = false;
 						}
 						break;
@@ -75,7 +55,8 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 						break;
 					case GameObjectType::Boss:
 						if (!_AboutToLevelUp) {
-					//		_Animations.push_back(std::make_shared<Explosion>(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0))));
+							std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0)));
+							_Animations.push_back(std::static_pointer_cast<Animation>(newExplosion));
 							_PlayerAlive = false;
 						}
 						break;
@@ -89,7 +70,8 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			}
 			else {
 				if (getPlayerCar().getHealth() <= 0) {
-				//	_Animations.push_back(std::make_shared<Explosion>(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0))));
+					std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0)));
+					_Animations.push_back(std::static_pointer_cast<Animation>(newExplosion));
 					_PlayerAlive = false;
 				}
 			}
@@ -132,7 +114,8 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			if (_GameObjects.at(i)->getType() == GameObjectType::AI && _GameObjects.at(i)->getHealth() <= 0)
 			{
 				_CarScore += (int)(1.5 * _GameObjects.at(i)->getMaxHealth());
-			//	_Animations.push_back(std::make_shared<Explosion>(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0,_GameObjects[i]->getSpeed()))));
+				std::shared_ptr<Explosion> newExplosion(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _GameObjects[i]->getSpeed())));
+				_Animations.push_back(std::static_pointer_cast<Animation>(newExplosion));
 				deleteObject(i);
 				i--;
 			}
@@ -204,8 +187,9 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 				}
 				else if (_GameObjects.at(i)->getType() == GameObjectType::AI)
 				{
-			//		_Animations.push_back(std::make_shared<Explosion>(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _GameObjects[i]->getSpeed()))));
-					_Animations.push_back(std::make_shared<Animation>(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _GameObjects[i]->getSpeed()))));
+					std::shared_ptr<Explosion> newExplosion(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _GameObjects[i]->getSpeed())));
+					_Animations.push_back(std::static_pointer_cast<Animation>(newExplosion));
+			
 					deleteObject(i);
 					i--;
 				}
@@ -241,7 +225,9 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 	//Prüfen ob Spieler geschossen hat
 	if (getPlayerCar().shotBullet() != 360.0f)
 	{
-		_GameObjects.push_back(std::make_shared<GameObject>(new Bullet(getPlayerCar().getPos(), getPlayerCar().shotBullet(), _PlayerBulletSpeed, GameObjectType::BulletObjectPlayer, _BulletTexture)));
+		std::shared_ptr<Bullet> newBullet(new Bullet(getPlayerCar().getPos(), getPlayerCar().shotBullet(), _PlayerBulletSpeed, GameObjectType::BulletObjectPlayer, _BulletTexture));
+
+		_GameObjects.push_back(std::static_pointer_cast<GameObject>(newBullet));
 
 		getPlayerCar().resetShotBullet();
 
@@ -313,7 +299,7 @@ void GameObjectContainer::enterBossFight()
 	//Carrier* boss = new Carrier(_BossCarTextures[1], &_BulletTexture);
 	std::shared_ptr<Mech> boss(new Mech((*_BossCarTextures[2]), (*_BossCarTextures[3]), _BulletTexture));
 	//Jet* boss = new Jet((*_BossCarTextures[4]), _BulletTexture);
-	_GameObjects.push_back(boss);
+	_GameObjects.push_back(std::static_pointer_cast<GameObject>(boss));
 	_BossFight = true;
 }
 
@@ -325,7 +311,7 @@ void GameObjectContainer::resetGameObjects(int SelectedCar)
 
 	//Spielerauto
 	std::shared_ptr<PlayerCar> MainCar(new PlayerCar(SelectedCar, (*_PlayerCarTextures.at(SelectedCar))));
-	_GameObjects.push_back(MainCar);
+	_GameObjects.push_back(std::static_pointer_cast<GameObject>(MainCar));
 
 	//Frequenz
 	_CarFrequency = 2;
@@ -418,7 +404,7 @@ void GameObjectContainer::spawnAICar(int difficulty, int roadSpeed)
 		}
 	}
 
-	_GameObjects.push_back(newAiCar);
+	_GameObjects.push_back(std::static_pointer_cast<GameObject>(newAiCar));
 }
 
 void GameObjectContainer::spawnBullet()
@@ -429,7 +415,7 @@ void GameObjectContainer::spawnBullet()
 	{
 		if (_GameObjects.at(i)->getType() == GameObjectType::AI)
 		{
-			AICarVector.push_back(_GameObjects.at(i));
+			AICarVector.push_back(std::static_pointer_cast<GameObject>(_GameObjects.at(i)));
 		}
 	}
 
@@ -460,7 +446,7 @@ void GameObjectContainer::spawnBullet()
 	}
 
 	std::shared_ptr<Bullet> newBullet(new Bullet(SelectedCar->getPos(), Direction, _AIBulletSpeed, GameObjectType::BulletObjectAI, _BulletTexture));
-	_GameObjects.push_back(newBullet);
+	_GameObjects.push_back(std::static_pointer_cast<GameObject>(newBullet));
 	
 	playShotSound(GameObjectType::AI);
 }

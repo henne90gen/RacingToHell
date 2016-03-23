@@ -380,7 +380,7 @@ void GameObjectContainer::setCarSkins(std::vector<std::shared_ptr<sf::Texture>>&
 
 void GameObjectContainer::playShotSound(GameObjectType go)
 {
-	sf::Sound* shotSound = new sf::Sound();
+	std::shared_ptr<sf::Sound> shotSound(new sf::Sound());
 	if (go == GameObjectType::AI) {
 		shotSound->setBuffer(_AIShotSoundBuffer);
 	}

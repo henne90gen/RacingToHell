@@ -22,14 +22,14 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			_Animations[i]->update(FrameTime);
 		}
 	}
-	
+
 	//Kollision Spieler
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
 		if (_PlayerAlive) {
 			if (i > 0) {
 				if (getPlayerCar().checkForCollision(*_GameObjects.at(i))) {
-					switch (_GameObjects.at(i)->getType())
+					switch (_GameObjects[i]->getType())
 					{
 					case GameObjectType::AI:
 						if (!_AboutToLevelUp) {
@@ -79,7 +79,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			_GameObjects.at(i)->update(FrameTime, RoadSpeed);
 		}
 	}
-	
+
 	//Objekt löschen wenn es sich nicht mehr im Screen befindet
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
@@ -92,7 +92,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			}
 		}
 	}
-	
+
 	if (!_BossFight || (_BossFight && getBossCar().getTraffic())) 
 	{
 		if (!_AboutToLevelUp) {
@@ -204,7 +204,8 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 		if (_TimePassedCanister + FrameTime > 1 / _CanisterFrequency)
 		{
 			_TimePassedCanister += FrameTime - 1 / _CanisterFrequency;
-			_GameObjects.push_back(std::make_shared<GameObject>(new GameObject(sf::Vector2f(std::rand() % 3 * 150 + 150, -25), GameObjectType::Canister, _EnergyCanisterTexture)));
+			std::shared_ptr<GameObject> newCanister(new GameObject(sf::Vector2f(std::rand() % 3 * 150 + 150, -25), GameObjectType::Canister, _EnergyCanisterTexture));
+			_GameObjects.push_back(newCanister);
 		}
 		else {
 			_TimePassedCanister += FrameTime;
@@ -215,7 +216,8 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 		{
 			_TimePassedToolbox += FrameTime - 1 / _ToolboxFrequency;
 			_ToolboxFrequency = (float)(std::rand() % 150) / 1000.0f;
-			_GameObjects.push_back(std::make_shared<GameObject>(new GameObject(sf::Vector2f(std::rand() % 3 * 150 + 150, -10), GameObjectType::Tools, _ToolboxTexture)));
+			std::shared_ptr<GameObject> newToolbox(new GameObject(sf::Vector2f(std::rand() % 3 * 150 + 150, -10), GameObjectType::Tools, _ToolboxTexture));
+			_GameObjects.push_back(newToolbox);
 		}
 		else {
 			_TimePassedToolbox += FrameTime;
@@ -415,7 +417,7 @@ void GameObjectContainer::spawnBullet()
 	{
 		if (_GameObjects.at(i)->getType() == GameObjectType::AI)
 		{
-			AICarVector.push_back(std::static_pointer_cast<GameObject>(_GameObjects.at(i)));
+			AICarVector.push_back(_GameObjects.at(i));
 		}
 	}
 

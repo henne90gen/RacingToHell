@@ -12,7 +12,6 @@ GameObjectContainer::~GameObjectContainer()
 
 void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 {
-	
 	// Update Animations
 	for (int i = 0; i < _Animations.size(); i++) {
 		if (_Animations[i]->getAnimationState() == Animation::Stop) {
@@ -24,7 +23,6 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 		}
 	}
 
-	
 	//Kollision Spieler
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
@@ -82,7 +80,6 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 		}
 	}
 
-	
 	//Objekt löschen wenn es sich nicht mehr im Screen befindet
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
@@ -94,7 +91,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 				i--;
 			}
 		}
-	} 
+	}
 
 	if (!_BossFight || (_BossFight && getBossCar().getTraffic())) 
 	{
@@ -176,8 +173,6 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			}
 		}
 	}
-
-	
 	if (_BossFight)
 	{
 		for (unsigned int i = 2; i < _GameObjects.size(); i++)
@@ -203,7 +198,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 
 		getBossCar().update(FrameTime, RoadSpeed, _GameObjects);
 	} 
-	
+
 	if (!_AboutToLevelUp) {
 		//EnergyCanister spawnen
 		if (_TimePassedCanister + FrameTime > 1 / _CanisterFrequency)
@@ -229,7 +224,6 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 		}
 	}
 
-	
 	//Prüfen ob Spieler geschossen hat
 	if (getPlayerCar().shotBullet() != 360.0f)
 	{
@@ -241,8 +235,6 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 
 		playShotSound(GameObjectType::Player);
 	}
-
-	
 }
 
 void GameObjectContainer::render(sf::RenderWindow& Window, bool renderCrosshair)
@@ -309,7 +301,7 @@ void GameObjectContainer::enterBossFight()
 	//Carrier* boss = new Carrier(_BossCarTextures[1], &_BulletTexture);
 	std::shared_ptr<Mech> boss(new Mech((*_BossCarTextures[2]), (*_BossCarTextures[3]), _BulletTexture));
 	//Jet* boss = new Jet((*_BossCarTextures[4]), _BulletTexture);
-	_GameObjects.push_back(std::static_pointer_cast<GameObject>(boss));
+	//_GameObjects.push_back(std::static_pointer_cast<GameObject>(boss));
 	_BossFight = true;
 }
 
@@ -477,4 +469,3 @@ void GameObjectContainer::deleteObject(unsigned int id)
 {
 	_GameObjects.erase(_GameObjects.begin() + id);
 }
-

@@ -33,6 +33,7 @@ void Framework::run()
 
 void Framework::render()
 {
+	/*
 	if (_GameState != GameState::Loading || _LoadingScreen.isFadingAway()) {
 		_Level.render(_RenderWindow);
 		_GameObjectContainer.render(_RenderWindow, _GameState == GameState::Running || _GameState == GameState::BossFight);
@@ -81,10 +82,12 @@ void Framework::render()
 	}
 
 	_RenderWindow.display();
+	*/
 }
 
 void Framework::handleEvents()
 {
+	/*
 	switch (_GameState) {
 	case GameState::Running:
 		while (_RenderWindow.pollEvent(_Event))
@@ -172,10 +175,12 @@ void Framework::handleEvents()
 		}
 		break;
 	}
+	*/
 }
 
 void Framework::update()
 {
+	/*
 	switch (_GameState) {
 	case GameState::Running:
 		if (_Level.update(_FrameTime, _GameState)) {
@@ -246,11 +251,11 @@ void Framework::update()
 		_IsRunning = false;
 		_RenderWindow.close();
 		break;
-	}
+	}*/
 }
 
 void Framework::playSounds() {
-	if (_GameState == GameState::Running) {
+	/*if (_GameState == GameState::Running) {
 		_MenuMusic.stop();
 		_Level.playMusic();
 		_GameObjectContainer.playSounds();
@@ -264,7 +269,7 @@ void Framework::playSounds() {
 	else if (_GameState == GameState::GameOver) {
 		_Level.stopMusic();
 		_GameOverScreen.playSounds();
-	}
+	}*/
 }
 
 bool Framework::measureTime()
@@ -287,7 +292,7 @@ bool Framework::measureTime()
 
 void Framework::load()
 {
-	if (_MenuMusicBuffer.loadFromFile("Resources/Sound/Music/menu1.ogg")) {
+	/*if (_MenuMusicBuffer.loadFromFile("Resources/Sound/Music/menu1.ogg")) {
 		_MenuMusic.setBuffer(_MenuMusicBuffer);
 	}
 	
@@ -327,14 +332,14 @@ void Framework::load()
 		_OptionsMenu.setVolume(std::stoi(Settings[1]));
 	}
 	
-	setVolume(_OptionsMenu.getVolume());
+	setVolume(_OptionsMenu.getVolume());*/
 }
 
 void Framework::resetGame() 
 {
 	_Clock.restart();
 	_Score = 0;
-	_GameObjectContainer.resetGameObjects(_CurrentCarSkinIndex);
+	//_GameObjectContainer.resetGameObjects(_CurrentCarSkinIndex);
 	_Level.resetLevel();
 }
 
@@ -342,7 +347,7 @@ void Framework::setVolume(float Volume)
 {
 	_MenuMusic.setVolume(Volume);
 	_Level.setVolume(Volume);
-	_GameObjectContainer.setVolume(Volume);
+	//_GameObjectContainer.setVolume(Volume);
 	_GameOverScreen.setVolume(Volume);
 }
 

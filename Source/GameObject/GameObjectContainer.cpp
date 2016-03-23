@@ -457,17 +457,17 @@ void GameObjectContainer::spawnBullet()
 	GameObject* SelectedCar = AICarVector.at(std::rand() % AICarVector.size());
 	
 	float Direction;
-	if (getPlayerCar()->getPos().x < SelectedCar->getPos().x)
+	if (getPlayerCar().getPos().x < SelectedCar->getPos().x)
 	{
-		Direction = std::atanf((SelectedCar->getPos().y - getPlayerCar()->getPos().y) / (SelectedCar->getPos().x - getPlayerCar()->getPos().x)) * 180.0f / PI + 180;
+		Direction = std::atanf((SelectedCar->getPos().y - getPlayerCar().getPos().y) / (SelectedCar->getPos().x - getPlayerCar().getPos().x)) * 180.0f / PI + 180;
 	}
-	else if (getPlayerCar()->getPos().x > SelectedCar->getPos().x)
+	else if (getPlayerCar().getPos().x > SelectedCar->getPos().x)
 	{
-		Direction = std::atanf((getPlayerCar()->getPos().y - SelectedCar->getPos().y) / (getPlayerCar()->getPos().x - SelectedCar->getPos().x)) * 180.0f / PI;
+		Direction = std::atanf((getPlayerCar().getPos().y - SelectedCar->getPos().y) / (getPlayerCar().getPos().x - SelectedCar->getPos().x)) * 180.0f / PI;
 	}
 	else
 	{
-		if (getPlayerCar()->getPos().y > SelectedCar->getPos().y)
+		if (getPlayerCar().getPos().y > SelectedCar->getPos().y)
 		{
 			Direction = 90;
 		}

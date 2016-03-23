@@ -188,6 +188,11 @@ public:
 		Returns true if the boss is dead and all explosion animations are done playing
 	*/
 	virtual bool isDoneExploding(sf::Texture& ExplosionTexture) { return false; }
+
+	/*
+		Resets Movement Vector
+	*/
+	virtual void resetMovement();
 private:
 	sf::Sprite _Sprite;
 	sf::Texture _Texture;

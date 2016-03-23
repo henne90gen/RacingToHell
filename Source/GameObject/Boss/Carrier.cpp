@@ -26,7 +26,7 @@ void Carrier::render(sf::RenderWindow & window)
 	renderExplosions(window);
 }
 
-void Carrier::update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameObjects)
+void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<GameObject>>& gameObjects)
 {
 	if (!_IsExploding) {
 		if (DriveToNextPosition(frameTime))
@@ -84,7 +84,7 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<GameObject*>& g
 			getSprite().setRotation((getPos().y - _DefaultPosition.y) * 180 / (SCREENHEIGHT - 2 * _DefaultPosition.y));
 		}
 
-		_GunOrientation = PlayerAngle(gameObjects[0]);
+		_GunOrientation = PlayerAngle(*gameObjects[0]);
 
 		if (_Attack)
 		{

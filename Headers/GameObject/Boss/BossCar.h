@@ -72,7 +72,7 @@ protected:
 	sf::Vector2f _NextPosition;
 	bool _Attack, _Traffic;
 
-	float PlayerAngle(GameObject* Player);
+	float PlayerAngle(GameObject& Player);
 	void ShootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f Position, float Direction) { ShootBullet(GameObjects, Position, Direction, _BulletSpeed); }
 	void ShootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f Position, float Direction, int BulletSpeed);
 	bool DriveToNextPosition(float FrameTime);

@@ -118,8 +118,8 @@ void Framework::handleEvents()
 		_GameState = _MainMenu.handleEvents(_RenderWindow);
 		_CurrentCarSkinIndex = _MainMenu.getCarIndex();
 		if (_GameState == GameState::Running) {
-			_HeadsUpDisplay.setMaxHealth(_GameObjectContainer.getPlayerCar()->getMaxHealth());
-			_HeadsUpDisplay.setMaxEnergy(_GameObjectContainer.getPlayerCar()->getMaxEnergy());
+			_HeadsUpDisplay.setMaxHealth(_GameObjectContainer.getPlayerCar().getMaxHealth());
+			_HeadsUpDisplay.setMaxEnergy(_GameObjectContainer.getPlayerCar().getMaxEnergy());
 			_Clock.restart();
 			_Level.resetTimer();
 		}
@@ -130,8 +130,8 @@ void Framework::handleEvents()
 			_CurrentCarSkinIndex = 0;
 		}
 		_MainMenu.setCarIndex(_CurrentCarSkinIndex);
-		_GameObjectContainer.getPlayerCar()->setTexture((*_CarSkins.at(_CurrentCarSkinIndex)));
-		_GameObjectContainer.getPlayerCar()->setStats(_CurrentCarSkinIndex);
+		_GameObjectContainer.getPlayerCar().setTexture((*_CarSkins.at(_CurrentCarSkinIndex)));
+		_GameObjectContainer.getPlayerCar().setStats(_CurrentCarSkinIndex);
 		break;
 	case GameState::Highscores:
 		_GameState = _HighscoreMenu.handleEvents(_RenderWindow);
@@ -185,7 +185,7 @@ void Framework::update()
 			}
 		}
 		_GameObjectContainer.update(_FrameTime, _Level.getDifficulty(), _Level.getRoadSpeed());
-		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar()->getHealth(), _GameObjectContainer.getPlayerCar()->getEnergy());
+		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy());
 		if (!_GameObjectContainer.playerIsAlive()) {
 			_GameState = GameState::GameOver;
 		}
@@ -199,7 +199,7 @@ void Framework::update()
 			_GameState = GameState::LevelUp;
 		}
 		_GameObjectContainer.update(_FrameTime, _Level.getDifficulty(), _Level.getRoadSpeed());
-		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar()->getHealth(), _GameObjectContainer.getPlayerCar()->getEnergy());
+		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy());
 		if (!_GameObjectContainer.playerIsAlive()) {
 			_GameState = GameState::GameOver;
 		}
@@ -209,7 +209,7 @@ void Framework::update()
 	case GameState::LevelUp:
 		if (_LevelUpScreen.update()) {
 			_Clock.restart();
-			dynamic_cast<PlayerCar*>(_GameObjectContainer.getPlayerCar())->resetMovement();
+			_GameObjectContainer.getPlayerCar().resetMovement();
 			_GameState = GameState::Running;
 			_Level.levelUp();
 		}

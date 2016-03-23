@@ -24,7 +24,7 @@ void Jet::render(sf::RenderWindow & window)
 	renderExplosions(window);
 }
 
-void Jet::update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameObjects)
+void Jet::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<GameObject>>& gameObjects)
 {
 	if (!_IsExploding) {
 	if (_Movement != Movement::STILL && DriveToNextPosition(frameTime))

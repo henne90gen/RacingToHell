@@ -27,7 +27,7 @@ void Tank::render(sf::RenderWindow& window)
 	renderExplosions(window);
 }
 
-void Tank::update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameObjects)
+void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<GameObject>>& gameObjects)
 {
 	if (!_IsExploding) {
 		if (DriveToNextPosition(frameTime))
@@ -59,7 +59,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 			case Phase::SIMPLESHOOT:{
 				_Event1Frequency = 4.0f;
 
-				_GunOrientation = PlayerAngle(gameObjects[0]);
+				_GunOrientation = PlayerAngle(*gameObjects[0]);
 
 				if (getBossEvent() == 1) {
 					ShootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
@@ -70,7 +70,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 				_Event1Frequency = 1.0f;
 				_Event2Frequency = 10.0f;
 
-				_GunOrientation = PlayerAngle(gameObjects[0]);
+				_GunOrientation = PlayerAngle(*gameObjects[0]);
 
 				if (_Event1Switch) {
 					if (getBossEvent() == 2) {

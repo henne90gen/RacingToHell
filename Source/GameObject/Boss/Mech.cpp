@@ -31,7 +31,7 @@ void Mech::render(sf::RenderWindow & window)
 	renderExplosions(window);
 }
 
-void Mech::update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameObjects)
+void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<GameObject>>& gameObjects)
 {
 	if (!_IsExploding) {
 		if (DriveToNextPosition(frameTime))
@@ -83,7 +83,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 			{
 				_Event1Frequency = 1.5f;
 
-				_GunOrientation = PlayerAngle(gameObjects[0]);
+				_GunOrientation = PlayerAngle(*gameObjects[0]);
 
 				if (getBossEvent() == 1)
 				{
@@ -109,7 +109,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 			{
 				_Event1Frequency = 1.5f;
 
-				_GunOrientation = PlayerAngle(gameObjects[0]);
+				_GunOrientation = PlayerAngle(*gameObjects[0]);
 
 				if (getBossEvent() == 1)
 				{

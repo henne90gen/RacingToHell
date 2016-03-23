@@ -346,7 +346,6 @@
       <Filter>Resource Files\Sound\Music</Filter>
     </None>
     <None Include="Resources\Data\Settings.cfg" />
-    <None Include="Resources\Data\Highscore.sco" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Texture\TrafficCar\Traffic1.png">

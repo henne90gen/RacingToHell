@@ -8,7 +8,7 @@ class Menu
 {
 public:
 	Menu(GameState menuState);
-	~Menu();
+	~Menu() {}
 
 	virtual void render(sf::RenderWindow & Window) = 0;
 	virtual GameState handleEvents(sf::RenderWindow & Window) = 0;
@@ -19,7 +19,7 @@ public:
 	void applyJoystickSelection();
 
 protected:
-	std::vector<MenuItem*> _MenuItems;
+	std::vector<std::shared_ptr<MenuItem>> _MenuItems;
 	sf::Font _Font;
 	sf::Text _Text;
 	sf::Event _Event;

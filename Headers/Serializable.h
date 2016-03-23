@@ -63,7 +63,9 @@ public:
 		stream.read((char*)&length, sizeof(length));
 		char * buffer = new char[length];
 		stream.read(buffer, length);
-		result = buffer;
+		for (unsigned int i = 0; i < length; i++) {
+			result += buffer[i];
+		}
 		delete[] buffer;
 	}
 };

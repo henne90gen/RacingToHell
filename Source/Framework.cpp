@@ -123,6 +123,9 @@ void Framework::handleEvents()
 			_Clock.restart();
 			_Level.resetTimer();
 		}
+		else if (_GameState == GameState::Highscores) {
+			_HighscoreMenu.loadScoreTable();
+		}
 		if (_CurrentCarSkinIndex < 0) {
 			_CurrentCarSkinIndex = _CarSkins.size() - 1;
 		}

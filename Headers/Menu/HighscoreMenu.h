@@ -31,6 +31,8 @@ public:
 	*/
 	GameState handleMenuItemResult(MenuResult result);
 
+	void loadScoreTable() { _List.loadScoreTable(); }
+
 private:
 	HighscoreList _List;
 };

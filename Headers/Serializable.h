@@ -61,12 +61,10 @@ public:
 	{
 		int length;
 		stream.read((char*)&length, sizeof(length));
-		char* newString = new char[length];
-		stream.read(newString, length);
-		for (int i = 0; i < length; i++) {
-			result += newString[i];
-		}
-		delete newString;
+		char * buffer = new char[length];
+		stream.read(buffer, length);
+		result = buffer;
+		delete[] buffer;
 	}
 };
 

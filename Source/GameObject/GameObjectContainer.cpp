@@ -301,7 +301,7 @@ void GameObjectContainer::enterBossFight()
 	//Carrier* boss = new Carrier(_BossCarTextures[1], &_BulletTexture);
 	std::shared_ptr<Mech> boss(new Mech((*_BossCarTextures[2]), (*_BossCarTextures[3]), _BulletTexture));
 	//Jet* boss = new Jet((*_BossCarTextures[4]), _BulletTexture);
-	//_GameObjects.push_back(std::static_pointer_cast<GameObject>(boss));
+	_GameObjects.push_back(std::static_pointer_cast<GameObject>(boss));
 	_BossFight = true;
 }
 

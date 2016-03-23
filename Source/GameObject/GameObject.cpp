@@ -31,3 +31,7 @@ bool GameObject::checkForCollision(GameObject &go)
 	return Collision::BoundingBoxTest(getSprite(), go.getSprite());
 }
 
+void GameObject::resetMovement()
+{
+
+}

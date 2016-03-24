@@ -9,7 +9,7 @@ OptionsMenu::OptionsMenu() : Menu(GameState::Options)
 	_MenuItems.push_back(slider2);
 	std::shared_ptr<MenuButton> button1(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 350), sf::Vector2f(150, 50), MenuResult::Credits, "Credits", TextAlignment::Center));
 	_MenuItems.push_back(button1);
-	std::shared_ptr<MenuButton> button2(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 400), sf::Vector2f(150, 50), MenuResult::Back, "Back", TextAlignment::Center));
+	std::shared_ptr<MenuButton> button2(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 420), sf::Vector2f(150, 50), MenuResult::Back, "Back", TextAlignment::Center));
 	_MenuItems.push_back(button2);
 
 	_Text.setString("Options");

@@ -425,7 +425,7 @@ void GameObjectContainer::spawnBullet()
 		return;
 
 	std::shared_ptr<GameObject> SelectedCar = AICarVector.at(std::rand() % AICarVector.size());
-	
+
 	sf::Vector2f dir = SelectedCar.divideByLength(getPlayerCar().getPos() - SelectedCar.getPos());
 
 	std::shared_ptr<Bullet> newBullet(new Bullet(SelectedCar->getPos(), dir, _AIBulletSpeed, GameObjectType::BulletObjectAI, _BulletTexture));

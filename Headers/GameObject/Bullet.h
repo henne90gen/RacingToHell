@@ -14,7 +14,7 @@ public:
 		@param type Specifies the type of the Bullet, thus who shot it
 		@param texture Texture that is going to be used for the sprite
 	*/
-	Bullet(sf::Vector2f pos, sf::Vector2f dir, int speed, GameObjectType type, sf::Texture& texture);
+	Bullet(sf::Vector2f& pos, sf::Vector2f& dir, int speed, GameObjectType type, sf::Texture& texture);
 	~Bullet() {}
 
 	/*

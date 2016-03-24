@@ -32,7 +32,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 					switch (_GameObjects[i]->getType())
 					{
 					case GameObjectType::AI:
-						{	
+						{
 							std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0)));
 							_Animations.push_back(newExplosion);
 							_PlayerAlive = false;
@@ -390,7 +390,7 @@ void GameObjectContainer::playShotSound(GameObjectType go, sf::Vector2f position
 	}
 	else if (go == GameObjectType::Player) {
 		shotSound->setBuffer(_PlayerShotSoundBuffer);
-		shotSound->setVolume(_Volume);
+	shotSound->setVolume(_Volume);
 	}
 	
 	_SoundEffects.push_back({ shotSound, 0 });
@@ -430,7 +430,7 @@ void GameObjectContainer::spawnBullet()
 		return;
 
 	std::shared_ptr<GameObject> SelectedCar = AICarVector.at(std::rand() % AICarVector.size());
-
+	
 	sf::Vector2f dir = SelectedCar->divideByLength(getPlayerCar().getPos() - SelectedCar->getPos());
 
 	std::shared_ptr<Bullet> newBullet(new Bullet(SelectedCar->getPos(), dir, _AIBulletSpeed, GameObjectType::BulletObjectAI, _BulletTexture));

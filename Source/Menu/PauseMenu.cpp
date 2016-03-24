@@ -23,19 +23,19 @@ PauseMenu::PauseMenu() : Menu(GameState::Pause)
 	_Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 160));
 }
 
-void PauseMenu::render(sf::RenderWindow & Window)
+void PauseMenu::render(sf::RenderWindow & window)
 {
 	for (int i = 0; i < _MenuItems.size(); i++) {
-		_MenuItems[i]->render(Window);
+		_MenuItems[i]->render(window);
 	}
-	Window.draw(_Text);
+	window.draw(_Text);
 
-	checkMenuItemHovered(Window);
+	checkMenuItemHovered(window);
 }
 
-GameState PauseMenu::handleEvents(sf::RenderWindow & Window)
+GameState PauseMenu::handleEvents(sf::RenderWindow & window)
 {
-	while (Window.pollEvent(_Event)) {
+	while (window.pollEvent(_Event)) {
 		
 		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
 

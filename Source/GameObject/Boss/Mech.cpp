@@ -69,9 +69,6 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 
 		if (_Attack)
 		{
-
-			_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
-
 			switch (_Pattern[_CurrentPhase].first)
 			{
 			case Phase::SPIN:
@@ -91,6 +88,8 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 				break;
 			}
 			case Phase::SHOTGUN:
+				_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
+
 				_Event1Frequency = 1.5f;
 
 				if (getBossEvent() == 1)
@@ -114,21 +113,29 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 				}
 				break;
 			case Phase::SALVE:
+				_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
+
 				_Event1Frequency = 1.5f;
 
 				if (getBossEvent() == 1)
 				{
 					bool Hand = (std::rand() % 100) > 50;
 
+					float bulAngle = getAngleFromVector(_GunOrientation);
+
+					std::cout << bulAngle << std::endl;
+
 					for (int i = 0; i < 5; i++)
 					{
+						sf::Vector2f bulOrientation = sf::Vector2f(std::cosf((bulAngle + (i - 2) * 10) / 180 * PI), std::sinf((bulAngle + (i - 2) * 10) / 180 * PI));
+
 						if (Hand)
 						{
-							shootBullet(gameObjects, calcGunPositions().first, _GunOrientation);
+							shootBullet(gameObjects, calcGunPositions().first, bulOrientation);
 						}
 						else
 						{
-							shootBullet(gameObjects, calcGunPositions().second, _GunOrientation);
+							shootBullet(gameObjects, calcGunPositions().second, bulOrientation);
 					}
 				}
 			}

@@ -386,11 +386,13 @@ void GameObjectContainer::playShotSound(GameObjectType go, sf::Vector2f position
 		shotSound->setPosition(position.x, 0.f, position.y);
 		shotSound->setMinDistance(500.f);
 		shotSound->setAttenuation(4.f); 
+		shotSound->setVolume(_Volume + 10);
 	}
 	else if (go == GameObjectType::Player) {
 		shotSound->setBuffer(_PlayerShotSoundBuffer);
+		shotSound->setVolume(_Volume);
 	}
-	shotSound->setVolume(_Volume + 40);
+	
 	_SoundEffects.push_back({ shotSound, 0 });
 }
 

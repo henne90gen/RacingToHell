@@ -59,6 +59,10 @@ void Framework::render()
 		setMouseVisible(true);
 		_OptionsMenu.render(_RenderWindow);
 		break;
+	case GameState::About:
+		setMouseVisible(true);
+		_AboutScreen.render(_RenderWindow);
+		break;
 	case GameState::LevelUp:
 		setMouseVisible(false);
 		_LevelUpScreen.render(_RenderWindow);
@@ -143,6 +147,9 @@ void Framework::handleEvents()
 		_GameState = _OptionsMenu.handleEvents(_RenderWindow);
 		setVolume(_OptionsMenu.getVolume());
 		_FPS = _OptionsMenu.getFPS();
+		break;
+	case GameState::About:
+		_GameState = _AboutScreen.handleEvents(_RenderWindow);
 		break;
 	case GameState::LevelUp:
 		while (_RenderWindow.pollEvent(_Event)) {
@@ -231,6 +238,9 @@ void Framework::update()
 		if (_OptionsMenu.getReturnState() == GameState::Main) {
 			_Level.update(_FrameTime, _GameState);
 		}
+		break;
+	case GameState::About:
+		_Level.update(_FrameTime, _GameState);
 		break;
 	case GameState::Loading:
 		if (!_LoadingScreen.isFadingAway()) {

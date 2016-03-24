@@ -154,6 +154,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\Menu\AboutScreen.h" />
     <ClInclude Include="Headers\Animation\Animation.h" />
     <ClInclude Include="Headers\Animation\Explosion.h" />
     <ClInclude Include="Headers\Collision.h" />
@@ -199,6 +200,7 @@
     <ClInclude Include="Headers\Menu\HighscoreMenu.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Menu\AboutScreen.cpp" />
     <ClCompile Include="Source\Menu\HighscoreMenu.cpp" />
     <ClCompile Include="Source\Animation\MechTop.cpp" />
     <ClCompile Include="Source\GameObject\Boss\Jet.cpp" />
@@ -245,6 +247,7 @@
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="README.md" />
+    <None Include="Resources\Data\Highscore.sco" />
     <None Include="Resources\Data\Settings.cfg" />
     <None Include="Resources\Sound\Music\level1.ogg" />
     <None Include="Resources\Sound\Music\menu1.ogg" />

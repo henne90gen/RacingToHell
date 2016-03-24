@@ -7,8 +7,10 @@ OptionsMenu::OptionsMenu() : Menu(GameState::Options)
 	_MenuItems.push_back(slider1);
 	std::shared_ptr<Slider> slider2(new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 300)), MenuResult::Nothing, "Volume", 0.0f, 5.0f));
 	_MenuItems.push_back(slider2);
-	std::shared_ptr<MenuButton> button(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 350), sf::Vector2f(150, 50), MenuResult::Back, "Back", TextAlignment::Center));
-	_MenuItems.push_back(button);
+	std::shared_ptr<MenuButton> button1(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 350), sf::Vector2f(150, 50), MenuResult::Credits, "Credits", TextAlignment::Center));
+	_MenuItems.push_back(button1);
+	std::shared_ptr<MenuButton> button2(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 400), sf::Vector2f(150, 50), MenuResult::Back, "Back", TextAlignment::Center));
+	_MenuItems.push_back(button2);
 
 	_Text.setString("Options");
 	_Text.setCharacterSize(53);
@@ -53,6 +55,9 @@ GameState OptionsMenu::handleMenuItemResult(MenuResult result)
 	case MenuResult::Back:
 		saveOptions();
 		return _ReturnState;
+		break;
+	case MenuResult::Credits:
+		return GameState::About;
 		break;
 	}
 	return _MenuGameState;

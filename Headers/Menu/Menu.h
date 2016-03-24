@@ -12,7 +12,6 @@ public:
 
 	virtual void render(sf::RenderWindow & Window) = 0;
 	virtual GameState handleEvents(sf::RenderWindow & Window) = 0;
-	virtual GameState handleMenuItemResult(MenuResult result) = 0;
 
 	GameState handleMenuItems(sf::Event & Event);
 	void handleJoystick(float axis);
@@ -26,6 +25,7 @@ protected:
 	GameState _MenuGameState;
 	sf::Vector2f _MousePos;
 
+	virtual GameState handleMenuItemResult(MenuResult result) = 0;
 	void checkMenuItemHovered(sf::RenderWindow& Window);
 
 	int _JoystickSelection;

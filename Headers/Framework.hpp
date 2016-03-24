@@ -7,6 +7,7 @@
 #include "Menu/PauseMenu.h"
 #include "Menu/HighscoreMenu.h"
 #include "Menu/OptionsMenu.h"
+#include "Menu/AboutScreen.h"
 #include "Menu/GameOverScreen.h"
 #include "Menu/LoadingScreen.h"
 #include "Menu/LevelUpScreen.h"
@@ -59,6 +60,7 @@ private:
 	PauseMenu _PauseMenu;
 	HighscoreMenu _HighscoreMenu;
 	OptionsMenu _OptionsMenu;
+	AboutScreen _AboutScreen;
 	GameOverScreen _GameOverScreen;
 	LoadingScreen _LoadingScreen;
 	LevelUpScreen _LevelUpScreen;

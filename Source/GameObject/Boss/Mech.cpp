@@ -34,7 +34,7 @@ void Mech::render(sf::RenderWindow & window)
 	renderExplosions(window);
 }
 
-void Mech::update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameObjects)
+void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<GameObject>>& gameObjects)
 {
 	float gunPosLength = std::sqrtf(std::pow(_GunPosition.x, 2) + std::pow(_GunPosition.y, 2));
 	_GunPosition = sf::Vector2f(cosf(std::atanf(_GunOrientation.y / _GunOrientation.x) + PI / 2), 
@@ -129,9 +129,9 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 						else
 						{
 							shootBullet(gameObjects, calcGunPositions().second, _GunOrientation);
-						}
 					}
 				}
+			}
 				break;
 			}
 			

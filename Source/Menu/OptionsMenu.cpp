@@ -3,9 +3,12 @@
 
 OptionsMenu::OptionsMenu() : Menu(GameState::Options)
 {
-	_MenuItems.push_back(new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 250)), MenuResult::Nothing, "FPS", 0.0f, 210.0f));
-	_MenuItems.push_back(new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 300)), MenuResult::Nothing, "Volume", 0.0f, 5.0f));
-	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 350), sf::Vector2f(150, 50), MenuResult::Back, "Back", TextAlignment::Center));
+	std::shared_ptr<Slider> slider1(new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 250)), MenuResult::Nothing, "FPS", 0.0f, 210.0f));
+	_MenuItems.push_back(slider1);
+	std::shared_ptr<Slider> slider2(new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 300)), MenuResult::Nothing, "Volume", 0.0f, 5.0f));
+	_MenuItems.push_back(slider2);
+	std::shared_ptr<MenuButton> button(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 350), sf::Vector2f(150, 50), MenuResult::Back, "Back", TextAlignment::Center));
+	_MenuItems.push_back(button);
 
 	_Text.setString("Options");
 	_Text.setCharacterSize(53);

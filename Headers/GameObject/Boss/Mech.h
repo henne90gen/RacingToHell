@@ -22,7 +22,7 @@ public:
 	/*
 		See BossCar for details
 	*/
-	void update(float FrameTime, int RoadSpeed, std::vector<GameObject*> & GameObjects);
+	void update(float FrameTime, int RoadSpeed, std::vector<std::shared_ptr<GameObject>> & GameObjects);
 
 	/*
 		Overriding setPos() of GameObject

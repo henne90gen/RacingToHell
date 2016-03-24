@@ -63,7 +63,7 @@ void Level::levelUp()
 void Level::load()
 {
 	for (int i = 0; i < 4; i++) {
-		sf::Texture* texture = new sf::Texture();
+		std::shared_ptr<sf::Texture> texture(new sf::Texture());
 		(*texture).loadFromFile("Resources/Texture/Road/Road" + std::to_string(i + 1) + ".jpg");
 		_Textures.push_back(texture);
 	}

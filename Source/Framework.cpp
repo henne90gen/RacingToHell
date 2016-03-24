@@ -12,11 +12,7 @@ Framework::Framework() : _FrameTime(0), _FPS(60.0f), _IsRunning(true), _GameStat
 
 Framework::~Framework()
 {
-	for (unsigned int i = 0; i < _CarSkins.size(); i++) {
-		delete _CarSkins.at(i);
-		_CarSkins.at(i) = nullptr;
-	}
-
+	_CarSkins.clear();
 }
 
 void Framework::run()
@@ -122,10 +118,13 @@ void Framework::handleEvents()
 		_GameState = _MainMenu.handleEvents(_RenderWindow);
 		_CurrentCarSkinIndex = _MainMenu.getCarIndex();
 		if (_GameState == GameState::Running) {
-			_HeadsUpDisplay.setMaxHealth(_GameObjectContainer.getPlayerCar()->getMaxHealth());
-			_HeadsUpDisplay.setMaxEnergy(_GameObjectContainer.getPlayerCar()->getMaxEnergy());
+			_HeadsUpDisplay.setMaxHealth(_GameObjectContainer.getPlayerCar().getMaxHealth());
+			_HeadsUpDisplay.setMaxEnergy(_GameObjectContainer.getPlayerCar().getMaxEnergy());
 			_Clock.restart();
 			_Level.resetTimer();
+		}
+		else if (_GameState == GameState::Highscores) {
+			_HighscoreMenu.loadScoreTable();
 		}
 		if (_CurrentCarSkinIndex < 0) {
 			_CurrentCarSkinIndex = _CarSkins.size() - 1;
@@ -134,8 +133,8 @@ void Framework::handleEvents()
 			_CurrentCarSkinIndex = 0;
 		}
 		_MainMenu.setCarIndex(_CurrentCarSkinIndex);
-		_GameObjectContainer.getPlayerCar()->setTexture((*_CarSkins.at(_CurrentCarSkinIndex)));
-		_GameObjectContainer.getPlayerCar()->setStats(_CurrentCarSkinIndex);
+		_GameObjectContainer.getPlayerCar().setTexture((*_CarSkins.at(_CurrentCarSkinIndex)));
+		_GameObjectContainer.getPlayerCar().setStats(_CurrentCarSkinIndex);
 		break;
 	case GameState::Highscores:
 		_GameState = _HighscoreMenu.handleEvents(_RenderWindow);
@@ -189,7 +188,7 @@ void Framework::update()
 			}
 		}
 		_GameObjectContainer.update(_FrameTime, _Level.getDifficulty(), _Level.getRoadSpeed());
-		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar()->getHealth(), _GameObjectContainer.getPlayerCar()->getEnergy());
+		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy());
 		if (!_GameObjectContainer.playerIsAlive()) {
 			_GameState = GameState::GameOver;
 		}
@@ -203,7 +202,7 @@ void Framework::update()
 			_GameState = GameState::LevelUp;
 		}
 		_GameObjectContainer.update(_FrameTime, _Level.getDifficulty(), _Level.getRoadSpeed());
-		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar()->getHealth(), _GameObjectContainer.getPlayerCar()->getEnergy());
+		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy());
 		if (!_GameObjectContainer.playerIsAlive()) {
 			_GameState = GameState::GameOver;
 		}
@@ -213,7 +212,7 @@ void Framework::update()
 	case GameState::LevelUp:
 		if (_LevelUpScreen.update()) {
 			_Clock.restart();
-			dynamic_cast<PlayerCar*>(_GameObjectContainer.getPlayerCar())->resetMovement();
+			_GameObjectContainer.getPlayerCar().resetMovement();
 			_GameState = GameState::Running;
 			_Level.levelUp();
 		}
@@ -297,10 +296,12 @@ void Framework::load()
 	
 	_Level.load();
 
-	for (unsigned int i = 1; i < 7; i++) {
-		sf::Texture* texture = new sf::Texture();
-		if (texture->loadFromFile("Resources/Texture/PlayerCar/playercar" + std::to_string(i) + ".png")) {
-			_CarSkins.push_back(texture);
+	for (unsigned int i = 1; i < 7; i++) 
+	{
+		sf::Texture texture;
+		if (texture.loadFromFile("Resources/Texture/PlayerCar/playercar" + std::to_string(i) + ".png")) 
+		{
+			_CarSkins.push_back(std::make_shared<sf::Texture>(texture));
 		}
 	}
 

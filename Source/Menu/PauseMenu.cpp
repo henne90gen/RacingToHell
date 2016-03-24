@@ -6,11 +6,14 @@ PauseMenu::PauseMenu() : Menu(GameState::Pause)
 {
 	//Menu-Items
 	sf::Vector2f ButtonSize = sf::Vector2f(250, 50);
-
-	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 240), ButtonSize, MenuResult::Resume, "Resume", TextAlignment::Center));
-	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 310), ButtonSize, MenuResult::Option, "Options", TextAlignment::Center));
-	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 380), ButtonSize, MenuResult::Back, "Main Menu", TextAlignment::Center));
-	_MenuItems.push_back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 450), ButtonSize, MenuResult::Exit, "Exit", TextAlignment::Center));
+	std::shared_ptr<MenuButton> button1(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 240), ButtonSize, MenuResult::Resume, "Resume", TextAlignment::Center));
+	_MenuItems.push_back(button1);
+	std::shared_ptr<MenuButton> button2(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 310), ButtonSize, MenuResult::Option, "Options", TextAlignment::Center));
+	_MenuItems.push_back(button2);
+	std::shared_ptr<MenuButton> button3(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 380), ButtonSize, MenuResult::Back, "Main Menu", TextAlignment::Center));
+	_MenuItems.push_back(button3);
+	std::shared_ptr<MenuButton> button4(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 450), ButtonSize, MenuResult::Exit, "Exit", TextAlignment::Center));
+	_MenuItems.push_back(button4);
 
 	//Menu-Text
 	_Text.setString("Pause Menu");

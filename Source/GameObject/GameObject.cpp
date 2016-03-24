@@ -26,9 +26,9 @@ void GameObject::setTexture(sf::Texture& texture)
 	_Sprite.setTexture(_Texture);
 }
 
-bool GameObject::checkForCollision(GameObject * go)
+bool GameObject::checkForCollision(GameObject &go)
 {
-	return Collision::BoundingBoxTest(getSprite(), go->getSprite());
+	return Collision::BoundingBoxTest(getSprite(), go.getSprite());
 }
 
 float GameObject::getAngleFromVector(sf::Vector2f vec) 
@@ -43,4 +43,7 @@ float GameObject::getAngleFromVector(sf::Vector2f vec)
 sf::Vector2f GameObject::divideByLength(sf::Vector2f vec) 
 {
 	return vec / std::sqrtf(std::powf(vec.x, 2) + std::powf(vec.y, 2));
+}
+void GameObject::resetMovement() {
+	
 }

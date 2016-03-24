@@ -30,7 +30,7 @@ void Carrier::render(sf::RenderWindow & window)
 	renderExplosions(window);
 }
 
-void Carrier::update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameObjects)
+void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<GameObject>>& gameObjects)
 {
 	if (!_IsExploding) {
 		if (driveToNextPosition(frameTime))
@@ -167,7 +167,7 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<GameObject*>& g
 				if (getBossEvent() == 1) {
 					_GunOrientation = divideByLength(sf::Vector2f(((float) (std::rand() - (float)(RAND_MAX) / 2) / (float)(RAND_MAX)), ((float) (std::rand() - (float)(RAND_MAX) / 2) / (float)(RAND_MAX))));
 					shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
-				}
+			}
 				break;
 			}
 		}

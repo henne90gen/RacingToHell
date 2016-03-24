@@ -21,10 +21,10 @@ BossCar::BossCar(sf::Vector2f& Position, int Health, float Speed, sf::Texture& T
 	_HealthBarFrame.setSize(_HealthBar.getSize());
 }
 
-float BossCar::getPlayerAngle(GameObject * Player)
+float BossCar::PlayerAngle(GameObject& Player)
 {
 	float Angle;
-	sf::Vector2f dir = Player->getPos() - getPos();
+	sf::Vector2f dir = Player.getPos() - getPos();
 
 	Angle = std::atan(dir.y / dir.x) * 180.0f / PI;
 	if (dir.x < 0)
@@ -33,9 +33,9 @@ float BossCar::getPlayerAngle(GameObject * Player)
 	return Angle;
 }
 
-void BossCar::shootBullet(std::vector<GameObject*>& gameObjects, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed)
+void BossCar::ShootBullet(std::vector<std::shared_ptr<GameObject>>& gameObjects, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed)
 {
-	Bullet* newBullet = new Bullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss, _BulletTexture);
+	std::shared_ptr<Bullet> newBullet(new Bullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss, _BulletTexture));
 	gameObjects.push_back(newBullet);
 }
 

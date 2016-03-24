@@ -32,7 +32,7 @@ void Tank::render(sf::RenderWindow& window)
 	renderExplosions(window);
 }
 
-void Tank::update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameObjects)
+void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<GameObject>>& gameObjects)
 {
 	if (!_IsExploding) {
 		if (driveToNextPosition(frameTime))
@@ -110,8 +110,8 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 				else {
 					if (angle - frameTime * 100 < 0.0f) {
 						_Event1Switch = true;
-					}
-					else {
+				}
+				else {
 						angle -= frameTime * 100;
 					}
 				}
@@ -130,11 +130,11 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<GameObject*>& game
 				}
 				break;
 			}
-			
+
 		}
 		_GunSprite.setPosition(getPos() + _GunPosition);
 		_GunSprite.setRotation(getAngleFromVector(_GunOrientation) - 90);
-		
+
 		updateHealthBar();
 		checkPhase();
 	}

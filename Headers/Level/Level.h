@@ -75,7 +75,7 @@ public:
 	void resetTimer() { _Timer.restart(); }
 
 private:
-	std::vector<sf::Texture*> _Textures;
+	std::vector<std::shared_ptr<sf::Texture>> _Textures;
 	sf::Sprite _Sprite;
 
 	sf::SoundBuffer _MusicBuffer;

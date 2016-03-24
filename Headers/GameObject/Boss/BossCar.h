@@ -30,7 +30,7 @@ public:
 		@param roadSpeed Velocity of the road
 		@param gameObjects Reference to the vector with all the game objects, so that the boss can add the bullets it shoots
 	*/
-	virtual void update(float frameTime, int roadSpeed, std::vector<GameObject*>& gameObjects) = 0;
+	virtual void update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<GameObject>>& gameObjects) = 0;
 
 	/*
 		Returns true if the boss allows traffic
@@ -76,10 +76,10 @@ protected:
 	sf::Vector2f _NextPosition;
 	bool _Attack, _Traffic;
 
-	float getPlayerAngle(GameObject* Player);
-	void shootBullet(std::vector<GameObject*>& gameObjects, sf::Vector2f pos, sf::Vector2f dir) { shootBullet(gameObjects, pos, dir, _BulletSpeed); }
-	void shootBullet(std::vector<GameObject*>& gameObjects, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed);
-	bool driveToNextPosition(float frameTime);
+	float PlayerAngle(GameObject& Player);
+	void ShootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir) { ShootBullet(GameObjects, pos, dir, _BulletSpeed); }
+	void ShootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir, int BulletSpeed);
+	bool DriveToNextPosition(float FrameTime);
 	int getBossEvent();
 	void updateHealthBar();
 	virtual void checkPhase();

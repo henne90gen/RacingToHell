@@ -245,7 +245,6 @@
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="README.md" />
-    <None Include="Resources\Data\Highscore.sco" />
     <None Include="Resources\Data\Settings.cfg" />
     <None Include="Resources\Sound\Music\level1.ogg" />
     <None Include="Resources\Sound\Music\menu1.ogg" />

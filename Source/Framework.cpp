@@ -351,12 +351,13 @@ void Framework::resetGame()
 	_Level.resetLevel();
 }
 
-void Framework::setVolume(float Volume)
+void Framework::setVolume(float volume)
 {
-	_MenuMusic.setVolume(Volume);
-	_Level.setVolume(Volume);
-	_GameObjectContainer.setVolume(Volume);
-	_GameOverScreen.setVolume(Volume);
+	sf::Listener::setGlobalVolume(volume);
+	_MenuMusic.setVolume(volume * 10);
+	_Level.setVolume(volume * 10);
+	_GameObjectContainer.setVolume(volume * 10);
+	_GameOverScreen.setVolume(volume * 10);
 }
 
 void Framework::setMouseVisible(bool visible)

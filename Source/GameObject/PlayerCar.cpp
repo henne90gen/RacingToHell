@@ -118,7 +118,6 @@ void PlayerCar::update(float FrameTime, int RoadSpeed)
 
 	//Listener
 	sf::Listener::setPosition(getPos().x, 0.f, getPos().y);
-	sf::Listener::setGlobalVolume(100);
 }
 
 void PlayerCar::addHealth()

@@ -32,7 +32,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 					switch (_GameObjects[i]->getType())
 					{
 					case GameObjectType::AI:
-						if (!_AboutToLevelUp) {
+						{	
 							std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0)));
 							_Animations.push_back(newExplosion);
 							_PlayerAlive = false;
@@ -54,7 +54,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 						i--;
 						break;
 					case GameObjectType::Boss:
-						if (!_AboutToLevelUp) {
+						{
 							std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0)));
 							_Animations.push_back(newExplosion);
 							_PlayerAlive = false;
@@ -225,7 +225,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 	}
 
 	//Prüfen ob Spieler geschossen hat
-	if (getPlayerCar()->shotBullet().x != 0 && getPlayerCar()->shotBullet().y != 0)
+	if (getPlayerCar().shotBullet().x != 0 && getPlayerCar().shotBullet().y != 0)
 	{
 		std::shared_ptr<Bullet> newBullet(new Bullet(getPlayerCar().getPos(), getPlayerCar().shotBullet(), _PlayerBulletSpeed, GameObjectType::BulletObjectPlayer, _BulletTexture));
 
@@ -426,7 +426,7 @@ void GameObjectContainer::spawnBullet()
 
 	std::shared_ptr<GameObject> SelectedCar = AICarVector.at(std::rand() % AICarVector.size());
 
-	sf::Vector2f dir = SelectedCar.divideByLength(getPlayerCar().getPos() - SelectedCar.getPos());
+	sf::Vector2f dir = SelectedCar->divideByLength(getPlayerCar().getPos() - SelectedCar->getPos());
 
 	std::shared_ptr<Bullet> newBullet(new Bullet(SelectedCar->getPos(), dir, _AIBulletSpeed, GameObjectType::BulletObjectAI, _BulletTexture));
 	_GameObjects.push_back(newBullet);

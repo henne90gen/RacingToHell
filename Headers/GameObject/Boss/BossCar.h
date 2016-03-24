@@ -77,9 +77,9 @@ protected:
 	bool _Attack, _Traffic;
 
 	float PlayerAngle(GameObject& Player);
-	void ShootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir) { ShootBullet(GameObjects, pos, dir, _BulletSpeed); }
-	void ShootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir, int BulletSpeed);
-	bool DriveToNextPosition(float FrameTime);
+	void shootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir) { shootBullet(GameObjects, pos, dir, _BulletSpeed); }
+	void shootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir, int BulletSpeed);
+	bool driveToNextPosition(float FrameTime);
 	int getBossEvent();
 	void updateHealthBar();
 	virtual void checkPhase();

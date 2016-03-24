@@ -21,6 +21,8 @@ void HighscoreMenu::render(sf::RenderWindow & Window)
 	for (int i = 0; i < _MenuItems.size(); i++) {
 		_MenuItems[i]->render(Window);
 	}
+
+	checkMenuItemHovered(Window);
 }
 
 GameState HighscoreMenu::handleEvents(sf::RenderWindow & Window)

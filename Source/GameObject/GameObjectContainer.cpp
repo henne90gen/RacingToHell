@@ -32,7 +32,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 					switch (_GameObjects[i]->getType())
 					{
 					case GameObjectType::AI:
-						if (!_AboutToLevelUp) {
+						{
 							std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0)));
 							_Animations.push_back(newExplosion);
 							_PlayerAlive = false;
@@ -54,7 +54,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 						i--;
 						break;
 					case GameObjectType::Boss:
-						if (!_AboutToLevelUp) {
+						{
 							std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0)));
 							_Animations.push_back(newExplosion);
 							_PlayerAlive = false;

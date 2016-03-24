@@ -378,16 +378,19 @@ void GameObjectContainer::setCarSkins(std::vector<std::shared_ptr<sf::Texture>>&
 	_PlayerCarTextures = CarSkins;
 }
 
-void GameObjectContainer::playShotSound(GameObjectType go)
+void GameObjectContainer::playShotSound(GameObjectType go, sf::Vector2f position)
 {
 	std::shared_ptr<sf::Sound> shotSound(new sf::Sound());
 	if (go == GameObjectType::AI) {
 		shotSound->setBuffer(_AIShotSoundBuffer);
+		shotSound->setPosition(position.x, 0.f, position.y);
+		shotSound->setMinDistance(500.f);
+		shotSound->setAttenuation(4.f); 
 	}
 	else if (go == GameObjectType::Player) {
 		shotSound->setBuffer(_PlayerShotSoundBuffer);
 	}
-	shotSound->setVolume(_Volume);
+	shotSound->setVolume(_Volume + 40);
 	_SoundEffects.push_back({ shotSound, 0 });
 }
 
@@ -431,7 +434,7 @@ void GameObjectContainer::spawnBullet()
 	std::shared_ptr<Bullet> newBullet(new Bullet(SelectedCar->getPos(), dir, _AIBulletSpeed, GameObjectType::BulletObjectAI, _BulletTexture));
 	_GameObjects.push_back(newBullet);
 	
-	playShotSound(GameObjectType::AI);
+	playShotSound(GameObjectType::AI, SelectedCar->getPos());
 }
 
 bool GameObjectContainer::playerIsAlive() {

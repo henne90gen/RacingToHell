@@ -132,7 +132,7 @@ private:
 		Plays a shot sound depending on the type of the firing entity
 		@param go Type of the GameObject that is emitting the shot sound
 	*/
-	void playShotSound(GameObjectType go);
+	void playShotSound(GameObjectType go, sf::Vector2f position = sf::Vector2f(0.f, 0.f));
 
 	/*
 		Spawns a new AICar on a random lane

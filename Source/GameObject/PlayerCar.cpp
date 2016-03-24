@@ -18,6 +18,8 @@ PlayerCar::PlayerCar(int SelectedCar, sf::Texture& texture) : Car(sf::Vector2f(0
 		_Crosshair.setScale(sf::Vector2f(0.15f, 0.15f));
 		_Crosshair.setPosition(SCREENWIDTH / 2.0f, SCREENHEIGHT / 2.0f);
 	}
+
+	sf::Listener::setDirection(0.f, 0.f, -1.f);
 }
 
 void PlayerCar::render(sf::RenderWindow& Window, bool renderCrosshair) {
@@ -113,6 +115,10 @@ void PlayerCar::update(float FrameTime, int RoadSpeed)
 
 	//Energieverbrauch
 	_Energy -= 2 * FrameTime;
+
+	//Listener
+	sf::Listener::setPosition(getPos().x, 0.f, getPos().y);
+	sf::Listener::setGlobalVolume(100);
 }
 
 void PlayerCar::addHealth()

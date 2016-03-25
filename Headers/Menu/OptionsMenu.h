@@ -35,13 +35,20 @@ public:
 
 	void setReturnState(GameState returnState) { _ReturnState = returnState; }
 	GameState getReturnState() { return _ReturnState; }
-	float getVolume() { return _MenuItems[1]->getValue(); }
-	float getFPS() { return _MenuItems[0]->getValue() + 30.0f; }
-	void setFPS(float fps) { _MenuItems[0]->setValue(fps-30); }
-	void setVolume(float volume) { _MenuItems[1]->setValue(volume); }
+	float getFPS() { return _MenuItems[FPS]->getValue() + 30.0f; }
+	void setFPS(float fps) { _MenuItems[FPS]->setValue(fps - 30.0f); }
+	float getVolume() { return _MenuItems[Volume]->getValue(); }
+	void setVolume(float volume) { _MenuItems[Volume]->setValue(volume); }
 	void saveOptions();
 private:
 	int _ChangeSliderValue;
+
+	enum Items {
+		FPS, Volume
+	};
+
+	sf::Text _FPS;
+	sf::Text _Volume;
 
 	GameState _ReturnState;
 };

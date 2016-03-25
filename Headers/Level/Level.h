@@ -78,7 +78,7 @@ private:
 	std::vector<std::shared_ptr<sf::Texture>> _Textures;
 	sf::Sprite _Sprite;
 
-	sf::SoundBuffer _MusicBuffer;
+	std::vector<std::shared_ptr<sf::SoundBuffer>> _MusicBuffers;
 	sf::Sound _Music;
 
 	sf::Clock _Timer;

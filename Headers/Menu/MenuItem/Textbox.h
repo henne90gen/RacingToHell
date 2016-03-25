@@ -40,7 +40,7 @@ public:
 		Textbox doesn't have a value that could be changed
 		@return bool False
 	*/
-	bool setValue(float x) { return false; }
+	void setValue(float x) {}
 
 	/*
 		Textbox doesn't have a value that could be returned

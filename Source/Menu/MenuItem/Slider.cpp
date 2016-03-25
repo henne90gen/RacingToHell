@@ -79,7 +79,7 @@ MenuResult Slider::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 	return _Action;
 }
 
-bool Slider::setValue(float value)
+void Slider::setValue(float value)
 {
 	_Value = value;
 	if (_Value < 0)
@@ -87,7 +87,6 @@ bool Slider::setValue(float value)
 	else if (_Value > _MaxValue)
 		_Value = _MaxValue;
 	_Slider.setPosition(_Line.getPosition().x + _Line.getSize().x * value / _MaxValue, _Line.getPosition().y + _Line.getLocalBounds().height / 2.0f);
-	return true;
 }
 
 void Slider::setSlider(float x)

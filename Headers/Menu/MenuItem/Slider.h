@@ -39,7 +39,7 @@ public:
 		@param value New value for the Slider
 		@return bool True if the value was set successfully
 	*/
-	bool setValue(float value);
+	void setValue(float value);
 
 	/*
 		@return float Value of the Slider

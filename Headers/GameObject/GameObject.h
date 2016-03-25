@@ -1,9 +1,9 @@
 #pragma once
-
 #include "GameObject/GameObjectType.h"
 #include "Collision.h"
+#include "Serializable.h"
 
-class GameObject
+class GameObject : public Serializable
 {
 public:
 	/*
@@ -202,6 +202,16 @@ public:
 	float getAngleFromVector(sf::Vector2f vec);
 
 	sf::Vector2f divideByLength(sf::Vector2f vec);
+
+	/*
+		Writes the necessary data for the player to a stream
+	*/
+	virtual void operator>>(std::ostream& stream) {}
+
+	/*
+		Reads the necessary data for the player from a stream
+	*/
+	virtual void operator<<(std::istream& stream) {}
 private:
 	sf::Sprite _Sprite;
 	sf::Texture _Texture;

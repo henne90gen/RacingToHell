@@ -5,8 +5,6 @@
 #include <algorithm>
 #include "Serializable.h"
 
-#include "Serializable.h"
-
 class HighscoreList
 {
 public:
@@ -26,7 +24,7 @@ public:
 			return Score < Player2.Score;
 		}
 
-		virtual void operator>>(std::ofstream & stream)
+		void operator>>(std::ostream & stream)
 		{
 			write(stream, Rank);
 			write(stream, Name);
@@ -34,7 +32,7 @@ public:
 			write(stream, Score);
 		}
 
-		virtual void operator<<(std::ifstream & stream)
+		void operator<<(std::istream & stream)
 		{
 			read(stream, Rank);
 			read(stream, Name);
@@ -104,5 +102,4 @@ private:
 		Sorts the player in the score table by score
 	*/
 	void sortScoreTable();
-	//void TestPrintPlayers();
 };

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Menu/HighscoreMenu.h"
 
-
 HighscoreMenu::HighscoreMenu() : Menu(GameState::Highscores), _List(sf::Vector2f(75, 100))
 {
 	sf::Vector2f ButtonSize = sf::Vector2f(150, 50);

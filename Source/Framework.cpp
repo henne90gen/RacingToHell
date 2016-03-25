@@ -354,10 +354,6 @@ void Framework::resetGame()
 void Framework::setVolume(float volume)
 {
 	sf::Listener::setGlobalVolume(volume);
-	_MenuMusic.setVolume(volume * 10);
-	_Level.setVolume(volume * 10);
-	_GameObjectContainer.setVolume(volume * 10);
-	_GameOverScreen.setVolume(volume * 10);
 }
 
 void Framework::setMouseVisible(bool visible)

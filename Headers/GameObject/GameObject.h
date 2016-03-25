@@ -204,15 +204,15 @@ public:
 	sf::Vector2f divideByLength(sf::Vector2f vec);
 
 	/*
-		Writes the necessary data for the player to a stream
+		Writes the necessary data for a gameobject to a stream
 	*/
-	virtual void operator>>(std::ostream& stream) {}
+	virtual void operator>>(std::ostream& stream) = 0;
 
 	/*
-		Reads the necessary data for the player from a stream
+		Reads the necessary data for a gameobject from a stream
 	*/
-	virtual void operator<<(std::istream& stream) {}
-private:
+	virtual void operator<<(std::istream& stream) = 0;
+protected:
 	sf::Sprite _Sprite;
 	sf::Texture _Texture;
 	

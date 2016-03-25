@@ -17,6 +17,14 @@ public:
 		@param texture Texture that is going to be used for the sprite
 	*/
 	Car(sf::Vector2f pos, int maxHealth, float speed, GameObjectType type, sf::Texture& texture);
+
+	/*
+		Car that can drive around on the road
+		@param stream Input stream that contains all the other information needed to make a Car
+		@param type Type of the Car
+		@param texture Texture that is going to be used for the sprite
+	*/
+	Car(std::istream& stream, GameObjectType type, sf::Texture& texture);
 	~Car() {}
 
 	/*
@@ -63,6 +71,15 @@ public:
 	*/
 	void takeDamage(int damage) { _Health -= damage; }
 
+	/*
+		Writes the necessary data for a car to a stream
+	*/
+	virtual void operator>>(std::ostream& stream);
+
+	/*
+		Reads the necessary data for a car from a stream
+	*/
+	virtual void operator<<(std::istream& stream);
 protected:
 	int _Health, _Speed, _MaxHealth;
 

@@ -30,6 +30,9 @@ private:
 	sf::Font _Font;
 	sf::Text _Text;
 
+	sf::Texture _Texture;
+	sf::Sprite _Sprite;
+
 	sf::RectangleShape _Background;
 
 	sf::Clock _Timer;

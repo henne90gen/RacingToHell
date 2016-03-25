@@ -26,7 +26,7 @@ public:
 			return Score < Player2.Score;
 		}
 
-		virtual void operator>>(std::ofstream & stream)
+		virtual void operator>>(std::ostream & stream)
 		{
 			write(stream, Rank);
 			write(stream, Name);
@@ -34,7 +34,7 @@ public:
 			write(stream, Score);
 		}
 
-		virtual void operator<<(std::ifstream & stream)
+		virtual void operator<<(std::istream & stream)
 		{
 			read(stream, Rank);
 			read(stream, Name);

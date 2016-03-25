@@ -8,11 +8,6 @@ Explosion::Explosion(sf::Vector2f pos, sf::Texture & texture, sf::Vector2f movem
 	_Movement = movement;
 }
 
-
-Explosion::~Explosion()
-{
-}
-
 void Explosion::render(sf::RenderWindow & window)
 {
 	if (_AnimState == Animation::Play || _AnimState == Animation::Pause)

@@ -11,6 +11,7 @@ OptionsMenu::OptionsMenu() : Menu(GameState::Options)
 
 	std::vector<std::string> difficulties = { "Easy", "Normal", "Hard", "Insane" };
 	std::shared_ptr<ComboBox> combobox(new ComboBox(sf::Vector2f(SCREENWIDTH / 2, 350), difficulties, MenuResult::Nothing));
+	_MenuItems.push_back(combobox);
 
 	std::shared_ptr<MenuButton> button1(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 420), sf::Vector2f(150, 50), MenuResult::Credits, "Credits", TextAlignment::Center));
 	_MenuItems.push_back(button1);

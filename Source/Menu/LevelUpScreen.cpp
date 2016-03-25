@@ -6,14 +6,18 @@ LevelUpScreen::LevelUpScreen() : _ShowTime(2.0f), _FadeTime(0.1f)
 	if (_Font.loadFromFile("Resources/Font/arial.ttf")) {
 		_Text.setFont(_Font);
 		_Text.setColor(sf::Color::White);
-		_Text.setString("Level up!\nPrepare for stronger and faster enemies");
+		_Text.setString("Prepare for stronger and faster enemies!");
 		_Text.setPosition(sf::Vector2f(50, 50));
 	}
 
-	_Texture.loadFromFile("Resources/Texture/fast_forward.png");
-	_Sprite.setTexture(_Texture);
-	_Sprite.setColor(sf::Color::White);
-	_Sprite.setPosition(sf::Vector2f());
+	_FasterTexture.loadFromFile("Resources/Texture/fast_forward.png");
+	_Faster.setTexture(_FasterTexture);
+	_Faster.setScale(sf::Vector2f(0.5f, 0.5f));
+	_Faster.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Faster.getLocalBounds().width / 2, 150));
+	
+	_StrongerTexture.loadFromFile("Resources/Texture/double_arrow.png");
+	_Stronger.setTexture(_StrongerTexture);
+	_Stronger.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Stronger.getLocalBounds().width / 2, 250));
 
 	_Background.setPosition(sf::Vector2f(0, 0));
 	_Background.setSize(sf::Vector2f(SCREENWIDTH, SCREENHEIGHT));
@@ -33,7 +37,8 @@ void LevelUpScreen::render(sf::RenderWindow& window) {
 	window.draw(_Background);
 	if (alpha >= 200.0f) {
 		window.draw(_Text);
-		window.draw(_Sprite);
+		window.draw(_Faster);
+		window.draw(_Stronger);
 	}
 }
 

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Menu/LevelUpScreen.h"
 
-LevelUpScreen::LevelUpScreen() : _ShowTime(2.0f), _FadeTime(0.1f)
+LevelUpScreen::LevelUpScreen() : _ShowTime(3.0f), _FadeTime(0.1f), _SoundPlayed(false)
 {
 	if (_Font.loadFromFile("Resources/Font/arial.ttf")) {
 		_Text.setFont(_Font);
@@ -11,16 +11,21 @@ LevelUpScreen::LevelUpScreen() : _ShowTime(2.0f), _FadeTime(0.1f)
 	}
 
 	_FasterTexture.loadFromFile("Resources/Texture/fast_forward.png");
+	_FasterTexture.setSmooth(true);
 	_Faster.setTexture(_FasterTexture);
 	_Faster.setScale(sf::Vector2f(0.5f, 0.5f));
 	_Faster.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Faster.getLocalBounds().width / 4, 150));
 	
 	_StrongerTexture.loadFromFile("Resources/Texture/double_arrow.png");
+	_StrongerTexture.setSmooth(true);
 	_Stronger.setTexture(_StrongerTexture);
 	_Stronger.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Stronger.getLocalBounds().width / 2, 450));
 
 	_Background.setPosition(sf::Vector2f(0, 0));
 	_Background.setSize(sf::Vector2f(SCREENWIDTH, SCREENHEIGHT));
+
+	_SoundBuffer.loadFromFile("Resources/Sound/levelUp.wav");
+	_Sound.setBuffer(_SoundBuffer);
 
 	_Timer.restart();
 }
@@ -54,4 +59,13 @@ void LevelUpScreen::levelUp()
 {
 	_Timer.restart();
 	_FadeTimer.restart();
+}
+
+void LevelUpScreen::playSound()
+{
+	// TODO: Add delay programmatically
+	if ((_Sound.getStatus() == sf::Sound::Paused || _Sound.getStatus() == sf::Sound::Stopped) && !_SoundPlayed) {
+		_Sound.play();
+		_SoundPlayed = true;
+	}
 }

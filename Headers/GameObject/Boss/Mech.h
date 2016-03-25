@@ -11,7 +11,7 @@ public:
 		@param texture Texture for the sprite
 		@param bulletTexture Texture for all bullets the Mech shoots
 	*/
-	Mech(sf::Texture& TextureTop, sf::Texture& TextureLegs, sf::Texture& BulletTexture);
+	Mech(sf::Texture& TextureTop, sf::Texture& TextureLegs, sf::Texture& BulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume);
 	~Mech() {}
 
 	/*

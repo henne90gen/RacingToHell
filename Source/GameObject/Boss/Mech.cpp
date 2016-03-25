@@ -3,7 +3,7 @@
 
 // IDEA: Mech comes in from below and "chase" the player
 
-Mech::Mech(sf::Texture& textureTop, sf::Texture& textureLegs, sf::Texture& bulletTexture) : BossCar(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), 5000, 100, textureTop, bulletTexture),
+Mech::Mech(sf::Texture& textureTop, sf::Texture& textureLegs, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume) : BossCar(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), 5000, 100, textureTop, bulletTexture, soundEffects, soundBuffer, Volume),
 	_TopAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureTop), _LegsAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureLegs), _MovementSwitch(false), _GunRadius(81.5659f)
 {
 	setSprite(_TopAnim.getSprite());

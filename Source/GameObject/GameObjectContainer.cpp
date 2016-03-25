@@ -35,6 +35,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 						{
 							std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0)));
 							_Animations.push_back(newExplosion);
+							playExplosionSound(getPlayerCar().getPos());
 							_PlayerAlive = false;
 						}
 						break;
@@ -57,6 +58,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 						{
 							std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0)));
 							_Animations.push_back(newExplosion);
+							playExplosionSound(getPlayerCar().getPos());
 							_PlayerAlive = false;
 						}
 						break;
@@ -72,6 +74,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 				if (getPlayerCar().getHealth() <= 0) {
 					std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0)));
 					_Animations.push_back(newExplosion);
+					playExplosionSound(getPlayerCar().getPos());
 					_PlayerAlive = false;
 				}
 			}
@@ -116,6 +119,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 				_CarScore += (int)(1.5 * _GameObjects.at(i)->getMaxHealth());
 				std::shared_ptr<Explosion> newExplosion(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _GameObjects[i]->getSpeed())));
 				_Animations.push_back(newExplosion);
+				playExplosionSound(_GameObjects.at(i)->getPos());
 				deleteObject(i);
 				i--;
 			}
@@ -189,7 +193,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 				{
 					std::shared_ptr<Explosion> newExplosion(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _GameObjects[i]->getSpeed())));
 					_Animations.push_back(newExplosion);
-			
+					playExplosionSound(_GameObjects.at(i)->getPos());
 					deleteObject(i);
 					i--;
 				}
@@ -355,6 +359,7 @@ void GameObjectContainer::load()
 
 	_AIShotSoundBuffer.loadFromFile("Resources/Sound/shotAI.wav");
 	_PlayerShotSoundBuffer.loadFromFile("Resources/Sound/shotPlayer.wav");
+	_ExplosionSoundBuffer.loadFromFile("Resources/Sound/explosion.wav");
 	
 	_ExplosionTexture.loadFromFile("Resources/Texture/Animation/explosion.png");
 
@@ -394,6 +399,18 @@ void GameObjectContainer::playShotSound(GameObjectType go, sf::Vector2f position
 	}
 	
 	_SoundEffects.push_back({ shotSound, 0 });
+}
+
+void GameObjectContainer::playExplosionSound(sf::Vector2f position)
+{
+	std::shared_ptr<sf::Sound> explosionSound(new sf::Sound());
+	explosionSound->setBuffer(_ExplosionSoundBuffer);
+	explosionSound->setPosition(position.x, 0.f, position.y);
+	explosionSound->setMinDistance(500.f);
+	explosionSound->setAttenuation(4.f);
+	explosionSound->setVolume(_Volume + 30);
+
+	_SoundEffects.push_back({ explosionSound, 0 });
 }
 
 void GameObjectContainer::spawnAICar(int difficulty, int roadSpeed)

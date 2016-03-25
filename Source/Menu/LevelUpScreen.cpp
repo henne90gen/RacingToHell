@@ -10,6 +10,11 @@ LevelUpScreen::LevelUpScreen() : _ShowTime(2.0f), _FadeTime(0.1f)
 		_Text.setPosition(sf::Vector2f(50, 50));
 	}
 
+	_Texture.loadFromFile("Resources/Texture/fast_forward.png");
+	_Sprite.setTexture(_Texture);
+	_Sprite.setColor(sf::Color::White);
+	_Sprite.setPosition(sf::Vector2f());
+
 	_Background.setPosition(sf::Vector2f(0, 0));
 	_Background.setSize(sf::Vector2f(SCREENWIDTH, SCREENHEIGHT));
 
@@ -28,7 +33,7 @@ void LevelUpScreen::render(sf::RenderWindow& window) {
 	window.draw(_Background);
 	if (alpha >= 200.0f) {
 		window.draw(_Text);
-		
+		window.draw(_Sprite);
 	}
 }
 

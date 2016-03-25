@@ -2,10 +2,10 @@
 
 #include "MenuItem.h"
 
-class ComboBox : MenuItem
+class ComboBox : public MenuItem
 {
 public:
-	ComboBox(sf::Vector2f &Position, std::vector<std::string> &Items, MenuResult Action);
+	ComboBox(sf::Vector2f Position, std::vector<std::string> &Items, MenuResult Action);
 	~ComboBox();
 
 	/*
@@ -58,5 +58,7 @@ private:
 
 	bool _HoveringLeft, _HoveringRight;
 	int _CurrentItem, _Height, _ButtonWidth, _BodyWidth, _TextSize;
+
+	void centerText();
 };
 

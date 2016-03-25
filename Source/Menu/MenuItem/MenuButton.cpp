@@ -67,8 +67,9 @@ MenuResult MenuButton::handleEvent(sf::Event & newEvent, sf::Vector2f mousePos)
 			else {
 				_Hovering = false;
 			}
+
+			_Focused = false; //?
 		}
-		_Focused = false; //?
 	}
 	return MenuResult::Nothing;
 }

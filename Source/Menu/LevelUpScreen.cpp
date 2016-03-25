@@ -7,17 +7,17 @@ LevelUpScreen::LevelUpScreen() : _ShowTime(2.0f), _FadeTime(0.1f)
 		_Text.setFont(_Font);
 		_Text.setColor(sf::Color::White);
 		_Text.setString("Prepare for stronger and faster enemies!");
-		_Text.setPosition(sf::Vector2f(50, 50));
+		_Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 50));
 	}
 
 	_FasterTexture.loadFromFile("Resources/Texture/fast_forward.png");
 	_Faster.setTexture(_FasterTexture);
 	_Faster.setScale(sf::Vector2f(0.5f, 0.5f));
-	_Faster.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Faster.getLocalBounds().width / 2, 150));
+	_Faster.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Faster.getLocalBounds().width / 4, 150));
 	
 	_StrongerTexture.loadFromFile("Resources/Texture/double_arrow.png");
 	_Stronger.setTexture(_StrongerTexture);
-	_Stronger.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Stronger.getLocalBounds().width / 2, 250));
+	_Stronger.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Stronger.getLocalBounds().width / 2, 450));
 
 	_Background.setPosition(sf::Vector2f(0, 0));
 	_Background.setSize(sf::Vector2f(SCREENWIDTH, SCREENHEIGHT));

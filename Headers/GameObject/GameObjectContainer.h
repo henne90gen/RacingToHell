@@ -117,7 +117,7 @@ private:
 
 	sf::Texture _ToolboxTexture, _EnergyCanisterTexture, _BulletTexture, _ExplosionTexture;
 
-	sf::SoundBuffer _AIShotSoundBuffer, _PlayerShotSoundBuffer;
+	sf::SoundBuffer _AIShotSoundBuffer, _PlayerShotSoundBuffer, _ExplosionSoundBuffer;
 	std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>> _SoundEffects;
 	float _Volume;
 
@@ -131,8 +131,15 @@ private:
 	/*
 		Plays a shot sound depending on the type of the firing entity
 		@param go Type of the GameObject that is emitting the shot sound
+		@param position Position of the Soundobject
 	*/
 	void playShotSound(GameObjectType go, sf::Vector2f position = sf::Vector2f(0.f, 0.f));
+
+	/*
+		Plays a explosion sound
+		@param position Position of the explosion
+	*/
+	void playExplosionSound(sf::Vector2f position);
 
 	/*
 		Spawns a new AICar on a random lane

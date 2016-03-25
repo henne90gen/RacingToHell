@@ -40,7 +40,7 @@ public:
 	/*
 		Returns true if the boss is dead and all explosion animations are done playing
 	*/
-	bool isDoneExploding(sf::Texture& ExplosionTexture);
+	bool isDoneExploding(sf::Texture& ExplosionTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume);
 protected:
 	enum Phase { NOTHING, SIMPLESHOOT, SALVE, SPIN, HARDCORESPAM, BLASTSALVE, SPIRAL, RANDOMSPRAY, SHOTGUN, SIDE, SAVELANES };
 	int _CurrentPhase;

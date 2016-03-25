@@ -30,8 +30,10 @@ private:
 	sf::Font _Font;
 	sf::Text _Text;
 
-	sf::Texture _Texture;
-	sf::Sprite _Sprite;
+	sf::Texture _FasterTexture;
+	sf::Sprite _Faster;
+	sf::Texture _StrongerTexture;
+	sf::Sprite _Stronger;
 
 	sf::RectangleShape _Background;
 

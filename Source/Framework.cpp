@@ -265,7 +265,7 @@ void Framework::update()
 }
 
 void Framework::playSounds() {
-	if (_GameState == GameState::Running || _GameState == GameState::BossFight) {
+	if (_GameState == GameState::Running || _GameState == GameState::BossFight || _GameState == GameState::LevelUp) {
 		_MenuMusic.stop();
 		_Level.playMusic();
 		_GameObjectContainer.playSounds();

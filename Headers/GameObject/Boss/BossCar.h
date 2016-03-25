@@ -15,7 +15,7 @@ public:
 		@param texture			Texture for the sprite that is going to be used for collision detection
 		@param bulletTexture	Texture for the bullets the boss will shoot
 	*/
-	BossCar(sf::Vector2f& pos, int health, float speed, sf::Texture& texture, sf::Texture& bulletTexture);
+	BossCar(sf::Vector2f& pos, int health, float speed, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume);
 	~BossCar() {}
 
 	/*
@@ -40,12 +40,16 @@ public:
 	/*
 		Returns true if the boss is dead and all explosion animations are done playing
 	*/
-	bool isDoneExploding(sf::Texture& ExplosionTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume);
+	bool isDoneExploding(sf::Texture& ExplosionTexture);
 protected:
 	enum Phase { NOTHING, SIMPLESHOOT, SALVE, SPIN, HARDCORESPAM, BLASTSALVE, SPIRAL, RANDOMSPRAY, SHOTGUN, SIDE, SAVELANES };
 	int _CurrentPhase;
 	std::vector<std::pair<Phase, float>> _Pattern;
 	sf::Clock _PhaseClock;
+
+	std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>> &_soundEffects;
+	sf::SoundBuffer &_soundBuffer;
+	float _Volume;
 
 	enum Movement { STILL, DRIVETODEFAULT, LEFTRIGHT, SWITCHSIDES, STRAIGHT, PARABOLA};
 	Movement _Movement;

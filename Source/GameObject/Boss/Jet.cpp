@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GameObject\Boss\Jet.h"
 
-Jet::Jet(sf::Texture & texture, sf::Texture & bulletTexture) : BossCar(sf::Vector2f(-1 * texture.getSize().x, SCREENHEIGHT / 2), 2000, 500, texture, bulletTexture)
+Jet::Jet(sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume) : BossCar(sf::Vector2f(-1 * texture.getSize().x, SCREENHEIGHT / 2), 2000, 500, texture, bulletTexture, soundEffects, soundBuffer, Volume)
 {
 	_Traffic = true;
 	_Pattern = { std::make_pair(Phase::SIDE, 6.0f) };

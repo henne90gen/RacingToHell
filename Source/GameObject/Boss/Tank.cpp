@@ -2,7 +2,7 @@
 #include "GameObject/Boss/Tank.h"
 
 
-Tank::Tank(sf::Texture& texture, sf::Texture& bulletTexture) : BossCar(sf::Vector2f(SCREENWIDTH / 2, -1 * (float)texture.getSize().y / 2.0f), 2000, 200, texture, bulletTexture),
+Tank::Tank(sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume) : BossCar(sf::Vector2f(SCREENWIDTH / 2, -1 * (float)texture.getSize().y / 2.0f), 2000, 200, texture, bulletTexture, soundEffects, soundBuffer, Volume),
 	_Radius(130), _MovementSwitch(false)
 {
 	_GunTexture.loadFromFile("Resources/Texture/BossCar/CannonTank.png");

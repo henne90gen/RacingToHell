@@ -226,13 +226,11 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 	//Prüfen ob Spieler geschossen hat
 	if (getPlayerCar().shotBullet().x != 0 && getPlayerCar().shotBullet().y != 0)
 	{
-		std::shared_ptr<Bullet> newBullet(new Bullet(getPlayerCar().getPos(), getPlayerCar().shotBullet(), _PlayerBulletSpeed, GameObjectType::BulletObjectPlayer, _BulletTexture));
+		std::shared_ptr<Bullet> newBullet(new Bullet(getPlayerCar().getPos(), getPlayerCar().shotBullet(), _PlayerBulletSpeed, GameObjectType::BulletObjectPlayer, _BulletTexture, _SoundEffects, _PlayerShotSoundBuffer, _Volume));
 
 		_GameObjects.push_back(newBullet);
 
 		getPlayerCar().resetShotBullet();
-
-		playShotSound(GameObjectType::Player);
 	}
 }
 
@@ -284,7 +282,7 @@ bool GameObjectContainer::bossIsDead()
 		if (getBossCar().getHealth() <= 0) {
 			_AboutToLevelUp = true;
 		}
-		if (_AboutToLevelUp && getBossCar().isDoneExploding(_ExplosionTexture, _SoundEffects, _ExplosionSoundBuffer, _Volume)) {
+		if (_AboutToLevelUp && getBossCar().isDoneExploding(_ExplosionTexture)) {
 			_BossFight = false;
 			_AboutToLevelUp = false;
 			deleteObject(1);
@@ -297,7 +295,7 @@ bool GameObjectContainer::bossIsDead()
 void GameObjectContainer::enterBossFight()   
 {
 	//std::shared_ptr<Tank> boss(new Tank((*_BossCarTextures[0]), _BulletTexture));
-	std::shared_ptr<Carrier> boss(new Carrier((*_BossCarTextures[1]), _BulletTexture));
+	std::shared_ptr<Carrier> boss(new Carrier((*_BossCarTextures[1]), _BulletTexture, _SoundEffects, _AIShotSoundBuffer, _Volume));
 	//std::shared_ptr<Mech> boss(new Mech((*_BossCarTextures[2]), (*_BossCarTextures[3]), _BulletTexture));
 	//Jet* boss = new Jet((*_BossCarTextures[4]), _BulletTexture);
 	_GameObjects.push_back(boss);
@@ -434,7 +432,7 @@ void GameObjectContainer::spawnBullet()
 	
 	sf::Vector2f dir = SelectedCar->divideByLength(getPlayerCar().getPos() - SelectedCar->getPos());
 
-	std::shared_ptr<Bullet> newBullet(new Bullet(SelectedCar->getPos(), dir, _AIBulletSpeed, GameObjectType::BulletObjectAI, _BulletTexture));
+	std::shared_ptr<Bullet> newBullet(new Bullet(SelectedCar->getPos(), dir, _AIBulletSpeed, GameObjectType::BulletObjectAI, _BulletTexture, _SoundEffects, _AIShotSoundBuffer, _Volume));
 	_GameObjects.push_back(newBullet);
 	
 	playShotSound(GameObjectType::AI, SelectedCar->getPos());

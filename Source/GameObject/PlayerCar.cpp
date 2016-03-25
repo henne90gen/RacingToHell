@@ -113,9 +113,6 @@ void PlayerCar::update(float FrameTime, int RoadSpeed)
 
 	_Crosshair.setPosition(_Crosshair.getPosition() + _CrosshairMovement * FrameTime * _CrosshairSpeed);
 
-	// Energy drain
-	_Energy -= 2 * FrameTime;
-
 	// Sound listener
 	sf::Listener::setPosition(getPos().x, 0.f, getPos().y);
 }

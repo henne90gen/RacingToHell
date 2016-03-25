@@ -214,13 +214,15 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 		if (_TimePassedToolbox + FrameTime > 1.0f / _ToolboxFrequency)
 		{
 			_TimePassedToolbox += FrameTime - 1.0f / _ToolboxFrequency;
-			_ToolboxFrequency = (float)(std::rand() % 45) / 1000.0f + 0.080f;
+			_ToolboxFrequency = (float)(std::rand() % 20) / 1000.0f + 0.020f;
 			std::shared_ptr<GameObject> newToolbox(new GameObject(sf::Vector2f(std::rand() % 3 * 150 + 150, -10), GameObjectType::Tools, _ToolboxTexture));
 			_GameObjects.push_back(newToolbox);
 		}
 		else {
 			_TimePassedToolbox += FrameTime;
 		}
+
+		getPlayerCar().drainEnergy(FrameTime);
 	}
 
 	//Prüfen ob Spieler geschossen hat

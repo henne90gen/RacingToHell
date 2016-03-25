@@ -63,7 +63,7 @@ void Textbox::render(sf::RenderWindow& RenderWindow)
 MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 {
 	if (Event.type == sf::Event::MouseButtonPressed) {
-		if (MousePos.y > getRect().top && MousePos.y < getRect().top + getRect().height && MousePos.x > getRect().left && MousePos.x < getRect().left + getRect().width) {
+		if (pointInRectangle(getRect(), MousePos)) {
 			_Focused = true;
 		}
 		else {
@@ -90,7 +90,7 @@ MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 		}
 	}
 	else if (Event.type == sf::Event::MouseMoved) {
-		if (MousePos.y > getRect().top && MousePos.y < getRect().top + getRect().height && MousePos.x > getRect().left && MousePos.x < getRect().left + getRect().width) {
+		if (pointInRectangle(getRect(), MousePos)) {
 			_Hovering = true;
 		}
 		else {

@@ -137,10 +137,10 @@ private:
 
 	/*
 		Spawns a new AICar on a random lane
-		@param difficulty Difficulty of the level
+		@param level Levelnumber
 		@param roadSpeed Speed of the road
 	*/
-	void spawnAICar(int difficulty, int roadSpeed);
+	void spawnAICar(int level, int roadSpeed);
 
 	/*
 		Makes a random AICar shoot a bullet at the player

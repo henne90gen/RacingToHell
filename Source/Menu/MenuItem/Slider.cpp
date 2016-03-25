@@ -53,7 +53,7 @@ MenuResult Slider::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 {
 	if (_Enabled) {
 		if (Event.type == sf::Event::MouseButtonPressed) {
-			if (MousePos.y > getRect().top && MousePos.y < getRect().top + getRect().height && MousePos.x > getRect().left && MousePos.x < getRect().left + getRect().width)
+			if (pointInRectangle(getRect(), MousePos))
 			{
 				setSlider(MousePos.x);
 				_MouseButtonPressed = true;
@@ -63,7 +63,7 @@ MenuResult Slider::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 			_MouseButtonPressed = false;
 		}
 		else if (Event.type == sf::Event::MouseMoved) {
-			if (MousePos.y > getRect().top && MousePos.y < getRect().top + getRect().height && MousePos.x > getRect().left && MousePos.x < getRect().left + getRect().width) {
+			if (pointInRectangle(getRect(), MousePos)) {
 				_Hovering = true;
 			}
 			else {

@@ -91,5 +91,7 @@ protected:
 	MenuItemType _Type;
 	MenuResult _Action;
 	bool _Hovering, _Enabled, _Focused;
+
+	bool pointInRectangle(sf::FloatRect &Rect, sf::Vector2f Position);
 };
 

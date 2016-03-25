@@ -1,7 +1,8 @@
 #pragma once
-#include "Menu/MenuItem\MenuButton.h"
-#include "Menu/MenuItem\Slider.h"
-#include "Menu/MenuItem\MenuResults.h"
+#include "Menu/MenuItem/MenuButton.h"
+#include "Menu/MenuItem/Slider.h"
+#include "Menu/MenuItem/MenuResults.h"
+#include "Menu/MenuItem/ComboBox.h"
 #include "StandardCursor.h"
 
 class Menu

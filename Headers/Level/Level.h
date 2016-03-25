@@ -67,7 +67,7 @@ public:
 	/*
 		@return int Speed of the road
 	*/
-	int getRoadSpeed() { return (100 * _Level + 100); }
+	int getRoadSpeed() { return (110 * _Level + 150); }
 
 	/*
 		Resets the internal timer of the Level

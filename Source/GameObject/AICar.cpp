@@ -2,7 +2,7 @@
 #include "GameObject\AICar.h"
 
 
-AICar::AICar(int difficulty, int roadSpeed, sf::Texture& texture) : Car(sf::Vector2f(0, 0), 60 + difficulty * 20, std::rand() % ((int)(roadSpeed / 3)) + ((int)(roadSpeed / 3)), GameObjectType::AI, texture)
+AICar::AICar(int level, int roadSpeed, sf::Texture& texture) : Car(sf::Vector2f(0, 0), 65 + level * 25, std::rand() % ((int)(roadSpeed / 3)) + ((int)(roadSpeed / 3)), GameObjectType::AI, texture)
 {
 	_Lane = std::rand() % 4;
 	setPos(sf::Vector2f(_Lane * SCREENWIDTH / 4 + SCREENWIDTH / 8, -getHeight() /2));

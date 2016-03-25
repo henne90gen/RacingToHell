@@ -211,10 +211,10 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 		}
 
 		//Toolbox spawnen
-		if (_TimePassedToolbox + FrameTime > 1 / _ToolboxFrequency)
+		if (_TimePassedToolbox + FrameTime > 1.0f / _ToolboxFrequency)
 		{
-			_TimePassedToolbox += FrameTime - 1 / _ToolboxFrequency;
-			_ToolboxFrequency = (float)(std::rand() % 150) / 1000.0f;
+			_TimePassedToolbox += FrameTime - 1.0f / _ToolboxFrequency;
+			_ToolboxFrequency = (float)(std::rand() % 45) / 1000.0f + 0.080f;
 			std::shared_ptr<GameObject> newToolbox(new GameObject(sf::Vector2f(std::rand() % 3 * 150 + 150, -10), GameObjectType::Tools, _ToolboxTexture));
 			_GameObjects.push_back(newToolbox);
 		}
@@ -311,12 +311,12 @@ void GameObjectContainer::resetGameObjects(int SelectedCar)
 	//Spielerauto
 	std::shared_ptr<PlayerCar> MainCar(new PlayerCar(SelectedCar, (*_PlayerCarTextures.at(SelectedCar))));
 	_GameObjects.push_back(MainCar);
-
+	
 	//Frequenz
-	_CarFrequency = 2;
-	_BulletFrequency = 1.0f;
+	_CarFrequency = 2.25f;
+	_BulletFrequency = 2.55f;
 	_CanisterFrequency = 0.3f;
-	_ToolboxFrequency = (float)(std::rand() % 150) / 1000.0f;
+	_ToolboxFrequency = (float)(std::rand() % 20) / 1000.0f + 0.020f;
 
 	_TimePassedCar = 0.0f;
 	_TimePassedBullet = 0.0f;
@@ -395,9 +395,9 @@ void GameObjectContainer::playShotSound(GameObjectType go, sf::Vector2f position
 }
 
 
-void GameObjectContainer::spawnAICar(int difficulty, int roadSpeed)
+void GameObjectContainer::spawnAICar(int level, int roadSpeed)
 {
-	std::shared_ptr<AICar> newAiCar(new AICar(difficulty, roadSpeed, (*_AICarTextures.at(std::rand() % 7))));
+	std::shared_ptr<AICar> newAiCar(new AICar(level, roadSpeed, (*_AICarTextures.at(std::rand() % 7))));
 
 	for (unsigned int i = 1; i < _GameObjects.size(); i++)
 	{

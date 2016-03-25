@@ -123,7 +123,7 @@ void BossCar::updateExplosions(float frameTime)
 
 bool BossCar::isDoneExploding(sf::Texture& explosionTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume)
 {
-	if (_Health <= 0 && !_IsExploding) {
+	if (_Health <= 0 && !(bool)_IsExploding) {
 		_IsExploding = 1;
 		_ExplosionTimer.restart();
 	}

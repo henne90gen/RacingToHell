@@ -391,11 +391,11 @@ void GameObjectContainer::playShotSound(GameObjectType go, sf::Vector2f position
 		shotSound->setPosition(position.x, 0.f, position.y);
 		shotSound->setMinDistance(500.f);
 		shotSound->setAttenuation(4.f); 
-		shotSound->setVolume(_Volume + 10);
+		shotSound->setVolume(_Volume * 2);
 	}
 	else if (go == GameObjectType::Player) {
 		shotSound->setBuffer(_PlayerShotSoundBuffer);
-	shotSound->setVolume(_Volume);
+		shotSound->setVolume(_Volume * 2);
 	}
 	
 	_SoundEffects.push_back({ shotSound, 0 });
@@ -408,7 +408,7 @@ void GameObjectContainer::playExplosionSound(sf::Vector2f position)
 	explosionSound->setPosition(position.x, 0.f, position.y);
 	explosionSound->setMinDistance(500.f);
 	explosionSound->setAttenuation(4.f);
-	explosionSound->setVolume(_Volume + 30);
+	explosionSound->setVolume(_Volume * 2);
 
 	_SoundEffects.push_back({ explosionSound, 0 });
 }

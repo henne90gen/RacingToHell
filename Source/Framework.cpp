@@ -222,6 +222,7 @@ void Framework::update()
 			_GameObjectContainer.getPlayerCar().resetMovement();
 			_GameState = GameState::Running;
 			_Level.levelUp();
+			setVolume(_OptionsMenu.getVolume());
 		}
 		break;
 	case GameState::Main:
@@ -338,14 +339,13 @@ void Framework::load()
 	}
 	FileStream.close();
 
-	if (Settings.size() == 2)
+	if (Settings.size() >= 2)
 	{
 		_FPS = std::stoi(Settings[0]);
 		_OptionsMenu.setFPS(_FPS);
 		_OptionsMenu.setVolume(std::stoi(Settings[1]));
+		setVolume(_OptionsMenu.getVolume());
 	}
-	
-	setVolume(_OptionsMenu.getVolume());
 }
 
 void Framework::resetGame() 
@@ -360,7 +360,7 @@ void Framework::setVolume(float volume)
 {
 	sf::Listener::setGlobalVolume(volume * 10);
 	_MenuMusic.setVolume(volume * 7);
-	_Level.setVolume(volume * 7);
+	_Level.setVolume(volume * 8);
 	_GameObjectContainer.setVolume(volume * 10);
 	_LevelUpScreen.setVolume(volume * 100);
 	_GameOverScreen.setVolume(volume * 10);

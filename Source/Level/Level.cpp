@@ -57,22 +57,26 @@ void Level::levelUp()
 	_Difficulty++;
 	if (_Difficulty - 1 < _Textures.size()) {
 		_Sprite.setTexture((*_Textures.at(_Difficulty - 1)));
+		_Music.setBuffer((*_MusicBuffers.at(_Difficulty - 1)));
 	}
 }
 
 void Level::load()
 {
-	for (int i = 0; i < 4; i++) {
+	for (int i = 1; i <= 4; i++) {
 		std::shared_ptr<sf::Texture> texture(new sf::Texture());
-		(*texture).loadFromFile("Resources/Texture/Road/Road" + std::to_string(i + 1) + ".jpg");
+		(*texture).loadFromFile("Resources/Texture/Road/Road" + std::to_string(i) + ".jpg");
 		_Textures.push_back(texture);
 	}
 	_Sprite.setTexture((*_Textures.at(0)));
 	_Sprite.setPosition(sf::Vector2f(0, -1600));
 
-	if (_MusicBuffer.loadFromFile("Resources/Sound/Music/level1.ogg")) {
-		_Music.setBuffer(_MusicBuffer);
+	for (int i = 1; i <= 5; i++) {
+		std::shared_ptr<sf::SoundBuffer> buffer(new sf::SoundBuffer());
+		//(*buffer).loadFromFile("Resources/Sound/Music/level" + std::to_string(i) + ".ogg");
+		_MusicBuffers.push_back(buffer);
 	}
+	_Music.setBuffer((*_MusicBuffers.at(0)));
 }
 
 void Level::resetLevel()

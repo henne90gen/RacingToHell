@@ -17,17 +17,26 @@ OptionsMenu::OptionsMenu() : Menu(GameState::Options)
 	_Text.setColor(sf::Color::White);
 	_Text.setStyle(sf::Text::Style::Bold);
 	_Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 160));
+
+	_FPS.setFont(_Font);
+	_FPS.setString("");
+	_FPS.setPosition(sf::Vector2f(_MenuItems[FPS]->getRect().left + _MenuItems[FPS]->getRect().width + 5, _MenuItems[FPS]->getRect().top - 5));
+
+	_Volume.setFont(_Font);
+	_Volume.setString("");
+	_Volume.setPosition(sf::Vector2f(_MenuItems[Volume]->getRect().left + _MenuItems[Volume]->getRect().width + 5, _MenuItems[Volume]->getRect().top - 5));
 }
 
-void OptionsMenu::render(sf::RenderWindow & Window)
+void OptionsMenu::render(sf::RenderWindow & window)
 {
-	Window.draw(_Text);
-
+	window.draw(_Text);
+	window.draw(_FPS);
+	window.draw(_Volume);
 	for (int i = 0; i < _MenuItems.size(); i++) {
-		_MenuItems[i]->render(Window);
+		_MenuItems[i]->render(window);
 	}
 
-	checkMenuItemHovered(Window);
+	checkMenuItemHovered(window);
 }
 
 GameState OptionsMenu::handleEvents(sf::RenderWindow & Window)
@@ -73,9 +82,13 @@ void OptionsMenu::update(float FrameTime)
 		_ChangeSliderValue = 1;
 	}
 
-	if (_MenuItems[_JoystickSelection]->setValue(_MenuItems[_JoystickSelection]->getValue() + _MenuItems[_JoystickSelection]->getMaxValue() * _ChangeSliderValue * FrameTime)) {
-		_ChangeSliderValue = 0;
-	}
+	_MenuItems[_JoystickSelection]->setValue(_MenuItems[_JoystickSelection]->getValue() + _MenuItems[_JoystickSelection]->getMaxValue() * _ChangeSliderValue * FrameTime);
+	_ChangeSliderValue = 0;
+
+	_FPS.setString(std::to_string((int)_MenuItems[FPS]->getValue()));
+	int volume = _MenuItems[Volume]->getValue() * 100 / _MenuItems[Volume]->getMaxValue();
+	
+	_Volume.setString(std::to_string(volume));
 }
 
 void OptionsMenu::saveOptions()

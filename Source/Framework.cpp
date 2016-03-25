@@ -194,13 +194,13 @@ void Framework::update()
 				_GameState = GameState::BossFight;
 			}
 		}
-		_GameObjectContainer.update(_FrameTime, _Level.getDifficulty(), _Level.getRoadSpeed());
+		_GameObjectContainer.update(_FrameTime, _Level.getLevel(), _Level.getRoadSpeed());
 		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy());
 		if (!_GameObjectContainer.playerIsAlive()) {
 			_GameState = GameState::GameOver;
 		}
 		_Score += _GameObjectContainer.getCarScore();
-		_Score += 10 * _Level.getDifficulty() * _FrameTime;
+		_Score += 10 * _Level.getLevel() * _FrameTime;
 		break;
 	case GameState::BossFight:
 		_Level.update(_FrameTime, _GameState);
@@ -208,13 +208,13 @@ void Framework::update()
 			_LevelUpScreen.levelUp();
 			_GameState = GameState::LevelUp;
 		}
-		_GameObjectContainer.update(_FrameTime, _Level.getDifficulty(), _Level.getRoadSpeed());
+		_GameObjectContainer.update(_FrameTime, _Level.getLevel(), _Level.getRoadSpeed());
 		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy());
 		if (!_GameObjectContainer.playerIsAlive()) {
 			_GameState = GameState::GameOver;
 		}
 		_Score += _GameObjectContainer.getCarScore();
-		_Score += 100 * _Level.getDifficulty() * _FrameTime;
+		_Score += 10 * _Level.getLevel() * _FrameTime;
 		break;
 	case GameState::LevelUp:
 		if (_LevelUpScreen.update()) {
@@ -228,7 +228,7 @@ void Framework::update()
 		_Level.update(_FrameTime, _GameState);
 		break;
 	case GameState::GameOver:
-		_GameOverScreen.update(_Score, _Level.getDifficulty());
+		_GameOverScreen.update(_Score, _Level.getLevel());
 		break;
 	case GameState::Highscores:
 		_Level.update(_FrameTime, _GameState);

@@ -62,12 +62,12 @@ public:
 	/*
 		@return int Difficulty of the Level
 	*/
-	int getDifficulty() { return _Difficulty; }
+	int getLevel() { return _Level; }
 
 	/*
 		@return int Speed of the road
 	*/
-	int getRoadSpeed() { return (100 * _Difficulty + 100); }
+	int getRoadSpeed() { return (100 * _Level + 100); }
 
 	/*
 		Resets the internal timer of the Level
@@ -83,6 +83,6 @@ private:
 
 	sf::Clock _Timer;
 
-	int _Difficulty;
-	float _LevelUp;
+	int _Level;
+	float _LevelTime;
 };

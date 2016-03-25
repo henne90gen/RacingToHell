@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "Level\Level.h"
 
-Level::Level() : _Difficulty(1), _LevelUp(1) {}
+Level::Level() : _Level(1), _LevelTime(1.f) {}
 
 bool Level::update(float FrameTime, GameState gameState)
 {
-	if (_Sprite.getPosition().y + FrameTime * _Difficulty >= 0)
+	if (_Sprite.getPosition().y + FrameTime * _Level >= 0)
 	{
 		_Sprite.setPosition(sf::Vector2f(0, -1600));
 	}
@@ -14,9 +14,9 @@ bool Level::update(float FrameTime, GameState gameState)
 		_Sprite.setPosition(sf::Vector2f(_Sprite.getPosition().x, _Sprite.getPosition().y + FrameTime * getRoadSpeed()));
 	}
 
-	if (gameState == GameState::Running && _Difficulty < 4)
+	if (gameState == GameState::Running && _Level < 4)
 	{
-		if (_Timer.getElapsedTime().asSeconds() >= _LevelUp)
+		if (_Timer.getElapsedTime().asSeconds() >= _LevelTime)
 		{
 			return true;
 		}
@@ -54,9 +54,9 @@ void Level::setVolume(float Volume)
 void Level::levelUp()
 {
 	_Timer.restart();
-	_Difficulty++;
-	if (_Difficulty - 1 < _Textures.size()) {
-		_Sprite.setTexture((*_Textures.at(_Difficulty - 1)));
+	_Level++;
+	if (_Level - 1 < _Textures.size()) {
+		_Sprite.setTexture((*_Textures.at(_Level - 1)));
 	}
 }
 
@@ -77,6 +77,6 @@ void Level::load()
 
 void Level::resetLevel()
 {
-	_Difficulty = 1;
-	_Sprite.setTexture((*_Textures.at(_Difficulty - 1)));
+	_Level = 1;
+	_Sprite.setTexture((*_Textures.at(_Level - 1)));
 }

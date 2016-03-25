@@ -33,9 +33,8 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 					{
 					case GameObjectType::AI:
 						{
-							std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0)));
+							std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0), _SoundEffects, _ExplosionSoundBuffer, _Volume));
 							_Animations.push_back(newExplosion);
-							playExplosionSound(getPlayerCar().getPos());
 							_PlayerAlive = false;
 						}
 						break;
@@ -56,9 +55,8 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 						break;
 					case GameObjectType::Boss:
 						{
-							std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0)));
+							std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0), _SoundEffects, _ExplosionSoundBuffer, _Volume));
 							_Animations.push_back(newExplosion);
-							playExplosionSound(getPlayerCar().getPos());
 							_PlayerAlive = false;
 						}
 						break;
@@ -72,9 +70,8 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			}
 			else {
 				if (getPlayerCar().getHealth() <= 0) {
-					std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0)));
+					std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0), _SoundEffects, _ExplosionSoundBuffer, _Volume));
 					_Animations.push_back(newExplosion);
-					playExplosionSound(getPlayerCar().getPos());
 					_PlayerAlive = false;
 				}
 			}
@@ -117,9 +114,8 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			if (_GameObjects.at(i)->getType() == GameObjectType::AI && _GameObjects.at(i)->getHealth() <= 0)
 			{
 				_CarScore += (int)(1.5 * _GameObjects.at(i)->getMaxHealth());
-				std::shared_ptr<Explosion> newExplosion(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _GameObjects[i]->getSpeed())));
+				std::shared_ptr<Explosion> newExplosion(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _GameObjects[i]->getSpeed()), _SoundEffects, _ExplosionSoundBuffer, _Volume));
 				_Animations.push_back(newExplosion);
-				playExplosionSound(_GameObjects.at(i)->getPos());
 				deleteObject(i);
 				i--;
 			}
@@ -191,9 +187,8 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 				}
 				else if (_GameObjects.at(i)->getType() == GameObjectType::AI)
 				{
-					std::shared_ptr<Explosion> newExplosion(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _GameObjects[i]->getSpeed())));
+					std::shared_ptr<Explosion> newExplosion(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _GameObjects[i]->getSpeed()), _SoundEffects, _ExplosionSoundBuffer, _Volume));
 					_Animations.push_back(newExplosion);
-					playExplosionSound(_GameObjects.at(i)->getPos());
 					deleteObject(i);
 					i--;
 				}
@@ -289,7 +284,7 @@ bool GameObjectContainer::bossIsDead()
 		if (getBossCar().getHealth() <= 0) {
 			_AboutToLevelUp = true;
 		}
-		if (_AboutToLevelUp && getBossCar().isDoneExploding(_ExplosionTexture)) {
+		if (_AboutToLevelUp && getBossCar().isDoneExploding(_ExplosionTexture, _SoundEffects, _ExplosionSoundBuffer, _Volume)) {
 			_BossFight = false;
 			_AboutToLevelUp = false;
 			deleteObject(1);
@@ -401,17 +396,6 @@ void GameObjectContainer::playShotSound(GameObjectType go, sf::Vector2f position
 	_SoundEffects.push_back({ shotSound, 0 });
 }
 
-void GameObjectContainer::playExplosionSound(sf::Vector2f position)
-{
-	std::shared_ptr<sf::Sound> explosionSound(new sf::Sound());
-	explosionSound->setBuffer(_ExplosionSoundBuffer);
-	explosionSound->setPosition(position.x, 0.f, position.y);
-	explosionSound->setMinDistance(500.f);
-	explosionSound->setAttenuation(4.f);
-	explosionSound->setVolume(_Volume * 2);
-
-	_SoundEffects.push_back({ explosionSound, 0 });
-}
 
 void GameObjectContainer::spawnAICar(int difficulty, int roadSpeed)
 {

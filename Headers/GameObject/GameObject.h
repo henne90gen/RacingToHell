@@ -187,7 +187,7 @@ public:
 	/*
 		Returns true if the boss is dead and all explosion animations are done playing
 	*/
-	virtual bool isDoneExploding(sf::Texture& ExplosionTexture) { return false; }
+	virtual bool isDoneExploding(sf::Texture& ExplosionTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume) { return false; }
 
 	/*
 		Resets Movement Vector

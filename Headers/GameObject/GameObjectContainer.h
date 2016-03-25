@@ -136,12 +136,6 @@ private:
 	void playShotSound(GameObjectType go, sf::Vector2f position = sf::Vector2f(0.f, 0.f));
 
 	/*
-		Plays a explosion sound
-		@param position Position of the explosion
-	*/
-	void playExplosionSound(sf::Vector2f position);
-
-	/*
 		Spawns a new AICar on a random lane
 		@param difficulty Difficulty of the level
 		@param roadSpeed Speed of the road

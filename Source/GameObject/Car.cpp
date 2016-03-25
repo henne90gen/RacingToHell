@@ -8,3 +8,11 @@ Car::Car(sf::Vector2f pos, int maxhealth, float speed, GameObjectType Type, sf::
 	_MaxHealth = maxhealth;
 	_Health = maxhealth;
 }
+
+int Car::getHealth() 
+{
+	if (_Health < 0) {
+		_Health = 0;
+	}
+	return _Health;
+}

@@ -11,7 +11,7 @@ public:
 		@param movement Vector that is going to be applied to the explosion to make it move
 	*/
 	Explosion(sf::Vector2f pos, sf::Texture & texture, sf::Vector2f movement);
-	~Explosion();
+	~Explosion() {}
 
 	/*
 		See Animation for details

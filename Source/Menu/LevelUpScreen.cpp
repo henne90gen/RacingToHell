@@ -6,7 +6,7 @@ LevelUpScreen::LevelUpScreen() : _ShowTime(2.0f), _FadeTime(0.1f)
 	if (_Font.loadFromFile("Resources/Font/arial.ttf")) {
 		_Text.setFont(_Font);
 		_Text.setColor(sf::Color::White);
-		_Text.setString("LevelUp!");
+		_Text.setString("Level up!\nPrepare for stronger and faster enemies");
 		_Text.setPosition(sf::Vector2f(50, 50));
 	}
 
@@ -26,8 +26,9 @@ void LevelUpScreen::render(sf::RenderWindow& window) {
 	}
 	_Background.setFillColor(sf::Color(0, 0, 0, alpha));
 	window.draw(_Background);
-	if (alpha == 255.0f) {
+	if (alpha >= 200.0f) {
 		window.draw(_Text);
+		
 	}
 }
 

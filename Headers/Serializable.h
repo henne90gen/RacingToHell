@@ -13,19 +13,19 @@ public:
 	/*
 		Writes the necessary data for an object to a stream
 	*/
-	virtual void operator>>(std::ofstream& stream) = 0;
+	virtual void operator>>(std::ostream& stream) = 0;
 
 	/*
 		Reads the necessary data for an object from a stream
 	*/
-	virtual void operator<<(std::ifstream& stream) = 0;
+	virtual void operator<<(std::istream& stream) = 0;
 
 	/*
 		Writes any data (except std::string) to a stream
 		@param stream Output stream that is going to be written to
 		@param input Primitive type that will be written to a stream
 	*/
-	template <typename T> void write(std::ofstream& stream, T input)
+	template <typename T> void write(std::ostream& stream, T input)
 	{
 		stream.write((char*)&input, sizeof(input));
 	}
@@ -35,7 +35,7 @@ public:
 		@param stream Input stream that is going to be read from
 		@param result Data that was read will be saved here
 	*/
-	template <typename T> void read(std::ifstream& stream, T& result)
+	template <typename T> void read(std::istream& stream, T& result)
 	{
 		stream.read((char*)&result, sizeof(result));
 	}
@@ -45,7 +45,7 @@ public:
 		@param stream Output stream that is going to be written to
 		@param input String that will be written to the stream
 	*/
-	template <> void write(std::ofstream& stream, std::string input)
+	template <> void write(std::ostream& stream, std::string input)
 	{
 		int length = input.size();
 		stream.write((char*)&length, sizeof(length));
@@ -57,7 +57,7 @@ public:
 		@param stream Input stream that is going to be read from
 		@param result String that was read will be saved here
 	*/
-	template <> void read(std::ifstream& stream, std::string& result)
+	template <> void read(std::istream& stream, std::string& result)
 	{
 		int length;
 		stream.read((char*)&length, sizeof(length));

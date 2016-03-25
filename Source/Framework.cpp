@@ -269,6 +269,9 @@ void Framework::playSounds() {
 		_MenuMusic.stop();
 		_Level.playMusic();
 		_GameObjectContainer.playSounds();
+		if (_GameState == GameState::LevelUp) {
+			_LevelUpScreen.playSound();
+		}
 	}
 	else if (_GameState == GameState::Main || _GameState == GameState::Pause || _GameState == GameState::Options) {
 		_Level.pauseMusic();
@@ -359,6 +362,7 @@ void Framework::setVolume(float volume)
 	_MenuMusic.setVolume(volume * 7);
 	_Level.setVolume(volume * 7);
 	_GameObjectContainer.setVolume(volume * 10);
+	_LevelUpScreen.setVolume(volume * 100);
 	_GameOverScreen.setVolume(volume * 10);
 }
 

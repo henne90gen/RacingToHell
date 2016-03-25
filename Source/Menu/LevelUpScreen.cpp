@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Menu/LevelUpScreen.h"
 
-LevelUpScreen::LevelUpScreen() : _ShowTime(3.0f), _FadeTime(0.1f), _SoundPlayed(false)
+LevelUpScreen::LevelUpScreen() : _ShowTime(2.6f), _FadeTime(0.1f), _SoundPlayed(false), _SoundDelay(0.4f)
 {
 	if (_Font.loadFromFile("Resources/Font/arial.ttf")) {
 		_Text.setFont(_Font);
@@ -59,13 +59,15 @@ void LevelUpScreen::levelUp()
 {
 	_Timer.restart();
 	_FadeTimer.restart();
+	_SoundPlayed = false;
 }
 
 void LevelUpScreen::playSound()
 {
-	// TODO: Add delay programmatically
 	if ((_Sound.getStatus() == sf::Sound::Paused || _Sound.getStatus() == sf::Sound::Stopped) && !_SoundPlayed) {
-		_Sound.play();
-		_SoundPlayed = true;
+		if (_Timer.getElapsedTime().asSeconds() > _SoundDelay) {
+			_Sound.play();
+			_SoundPlayed = true;
+		}
 	}
 }

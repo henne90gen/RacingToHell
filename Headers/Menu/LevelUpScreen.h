@@ -50,6 +50,7 @@ private:
 	sf::SoundBuffer _SoundBuffer;
 	sf::Sound _Sound;
 	bool _SoundPlayed;
+	float _SoundDelay;
 
 	sf::Clock _Timer;
 	sf::Clock _FadeTimer;

@@ -17,7 +17,7 @@ Bullet::Bullet(sf::Vector2f& pos, sf::Vector2f& dir, int speed, GameObjectType t
 		setSpriteColor(sf::Color(255, 255, 0));
 	}
 
-	playShootSound(pos, soundEffects, soundBuffer, Volume);
+	playShotSound(pos, soundEffects, soundBuffer, Volume);
 }
 
 void Bullet::update(float FrameTime, int RoadSpeed)
@@ -28,14 +28,14 @@ void Bullet::update(float FrameTime, int RoadSpeed)
 }
 
 
-void Bullet::playShootSound(sf::Vector2f position, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume)
+void Bullet::playShotSound(sf::Vector2f position, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume)
 {
-	std::shared_ptr<sf::Sound> ShootSound(new sf::Sound());
-	ShootSound->setBuffer(soundBuffer);
-	ShootSound->setPosition(position.x, 0.f, position.y);
-	ShootSound->setMinDistance(500.f);
-	ShootSound->setAttenuation(4.f);
-	ShootSound->setVolume(Volume * 2);
+	std::shared_ptr<sf::Sound> ShotSound(new sf::Sound());
+	ShotSound->setBuffer(soundBuffer);
+	ShotSound->setPosition(position.x, 0.f, position.y);
+	ShotSound->setMinDistance(500.f);
+	ShotSound->setAttenuation(4.f);
+	ShotSound->setVolume(Volume * 2);
 
-	soundEffects.push_back({ ShootSound, 0 });
+	soundEffects.push_back({ ShotSound, 0 });
 }

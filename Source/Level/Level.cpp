@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Level\Level.h"
 
-Level::Level() : _Level(1), _LevelTime(90.f) {}
+Level::Level() : _Level(1), _LevelTime(0.0f) {}
 
 bool Level::update(float FrameTime, GameState gameState)
 {

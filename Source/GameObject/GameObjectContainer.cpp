@@ -297,10 +297,10 @@ bool GameObjectContainer::bossIsDead()
 
 void GameObjectContainer::enterBossFight()   
 {
-	std::shared_ptr<Tank> boss(new Tank((*_BossCarTextures[0]), _BulletTexture, _SoundEffects, _AIShotSoundBuffer, _ExplosionSoundBuffer, _Volume));
+	//std::shared_ptr<Tank> boss(new Tank((*_BossCarTextures[0]), _BulletTexture, _SoundEffects, _AIShotSoundBuffer, _ExplosionSoundBuffer, _Volume));
 	//std::shared_ptr<Carrier> boss(new Carrier((*_BossCarTextures[1]), _BulletTexture, _SoundEffects, _AIShotSoundBuffer, _ExplosionSoundBuffer, _Volume));
 	//std::shared_ptr<Mech> boss(new Mech((*_BossCarTextures[2]), (*_BossCarTextures[3]), _BulletTexture));
-	//Jet* boss = new Jet((*_BossCarTextures[4]), _BulletTexture);
+	std::shared_ptr<Jet> boss(new Jet((*_BossCarTextures[4]), _BulletTexture, _SoundEffects, _AIShotSoundBuffer, _ExplosionSoundBuffer, _JetSoundBuffer, _Volume));
 	_GameObjects.push_back(boss);
 	_BossFight = true;
 }
@@ -352,12 +352,12 @@ void GameObjectContainer::load()
 	_BulletTexture.loadFromFile("Resources/Texture/Object/Bullet.png");
 	_ToolboxTexture.loadFromFile("Resources/Texture/Object/toolbox.png");
 	_EnergyCanisterTexture.loadFromFile("Resources/Texture/Object/canister.png");
+	_ExplosionTexture.loadFromFile("Resources/Texture/Animation/explosion.png");
 
 	_AIShotSoundBuffer.loadFromFile("Resources/Sound/shotAI.wav");
 	_PlayerShotSoundBuffer.loadFromFile("Resources/Sound/shotPlayer.wav");
 	_ExplosionSoundBuffer.loadFromFile("Resources/Sound/explosion.wav");
-	
-	_ExplosionTexture.loadFromFile("Resources/Texture/Animation/explosion.png");
+	_JetSoundBuffer.loadFromFile("Resources/Sound/jetengine.wav");
 
 	std::string bossTextures[] = 
 	{ 

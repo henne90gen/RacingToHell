@@ -13,6 +13,14 @@ Car::Car(std::istream& stream, GameObjectType type, sf::Texture& texture) : Game
 	*this << stream;
 }
 
+int Car::getHealth()
+{
+	if (_Health < 0) {
+		_Health = 0;
+	}
+	return _Health;
+}
+
 void Car::operator>>(std::ostream& stream) 
 {
 	write(stream, getType());

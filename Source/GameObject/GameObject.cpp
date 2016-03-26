@@ -51,10 +51,15 @@ void GameObject::resetMovement() {
 
 void GameObject::operator>>(std::ostream& stream)
 {
-
+	write(stream, getType());
+	write(stream, getPos().x);
+	write(stream, getPos().y);
 }
 
 void GameObject::operator<<(std::istream& stream)
 {
-
+	float x, y;
+	read(stream, x);
+	read(stream, y);
+	setPos(sf::Vector2f(x, y));
 }

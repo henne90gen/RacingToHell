@@ -56,7 +56,7 @@ GameState PauseMenu::handleMenuItemResult(MenuResult result)
 {
 	switch (result) {
 	case MenuResult::Resume:
-		return GameState::Running;
+		return _ReturnState;
 		break;
 	case MenuResult::Option:
 		return GameState::Options;

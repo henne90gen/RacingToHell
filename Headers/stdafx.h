@@ -11,8 +11,10 @@
 #include <tchar.h>
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <memory>
+#include <thread>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 

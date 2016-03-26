@@ -79,6 +79,8 @@ public:
 		@param dif Difficulty
 	*/
 	void setDifficulty(int dif) { _Difficulty = dif; }
+
+	
 private:
 	std::vector<std::shared_ptr<sf::Texture>> _Textures;
 	sf::Sprite _Sprite;
@@ -90,4 +92,6 @@ private:
 
 	int _Level, _Difficulty;
 	float _LevelTime;
+
+	void loadSongByID(int id);
 };

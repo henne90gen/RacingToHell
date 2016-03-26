@@ -1,6 +1,5 @@
 #pragma once
 #include "Menu/Menu.h"
-#include "Menu/MenuItem/HighscoreList.h"
 
 class HighscoreMenu : public Menu
 {

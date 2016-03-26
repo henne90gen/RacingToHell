@@ -69,16 +69,14 @@ void Level::load()
 	_Sprite.setTexture((*_Textures.at(0)));
 	_Sprite.setPosition(sf::Vector2f(0, -1600));
 
-	for (int i = 1; i <= 5; i++) {
-		std::shared_ptr<sf::SoundBuffer> buffer(new sf::SoundBuffer());
-		(*buffer).loadFromFile("Resources/Sound/Music/level" + std::to_string(i) + ".ogg");
-		_MusicBuffers.push_back(buffer);
-	}
-	_Music.setBuffer((*_MusicBuffers.at(0)));
+	std::vector<std::thread> loadingThreads;
+	for (int i = 1; i <= 5; i++) loadingThreads.push_back(std::thread(&Level::loadSongByID, this, i));
+	for (auto& t: loadingThreads) t.join();
 }
 
 void Level::resetLevel()
 {
+	_Music.setBuffer((*_MusicBuffers.at(0)));
 	_Level = 1;
 	_Sprite.setTexture((*_Textures.at((_Level - 1) % _Textures.size())));
 }
@@ -100,4 +98,11 @@ int Level::getRoadSpeed()
 		break;
 	}
 
+}
+
+void Level::loadSongByID(int id)
+{
+	std::shared_ptr<sf::SoundBuffer> buffer(new sf::SoundBuffer());
+	(*buffer).loadFromFile("Resources/Sound/Music/level" + std::to_string(id) + ".ogg");
+	_MusicBuffers.push_back(buffer);
 }

@@ -39,6 +39,7 @@ void Textbox::render(sf::RenderWindow& RenderWindow)
 				_ShowCursor = !_ShowCursor;
 				_CursorClock.restart();
 			}
+			_ShowCursor = true;
 		}
 		else {
 			_Box.setOutlineColor(_OutlineColor);
@@ -152,6 +153,7 @@ void Textbox::setCursor()
 
 sf::FloatRect & Textbox::getRect()
 {
+	sf::FloatRect rect = sf::FloatRect(_Box.getPosition().x, _Box.getPosition().y, _Box.getLocalBounds().width, _Box.getLocalBounds().height);
 	return _Box.getGlobalBounds();
 }
 

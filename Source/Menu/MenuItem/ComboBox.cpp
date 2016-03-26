@@ -41,10 +41,6 @@ ComboBox::ComboBox(sf::Vector2f Position, std::vector<std::string> &Items, MenuR
 	centerText();
 }
 
-ComboBox::~ComboBox()
-{
-}
-
 void ComboBox::render(sf::RenderWindow & RenderWidnow)
 {
 	if (_Enabled)

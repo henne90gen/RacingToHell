@@ -1,6 +1,5 @@
 #pragma once
 #include "Menu/Menu.h"
-#include <fstream>
 
 class OptionsMenu : public Menu
 {

@@ -1,8 +1,10 @@
 #pragma once
 #include "Menu/MenuItem/MenuButton.h"
 #include "Menu/MenuItem/Slider.h"
+#include "Menu/MenuItem/Textbox.h"
 #include "Menu/MenuItem/MenuResults.h"
 #include "Menu/MenuItem/ComboBox.h"
+#include "Menu/MenuItem/HighscoreList.h"
 #include "StandardCursor.h"
 
 class Menu
@@ -11,12 +13,12 @@ public:
 	Menu(GameState menuState);
 	~Menu() {}
 
-	virtual void render(sf::RenderWindow & Window) = 0;
-	virtual GameState handleEvents(sf::RenderWindow & Window) = 0;
+	virtual void render(sf::RenderWindow & window) = 0;
+	virtual GameState handleEvents(sf::RenderWindow & window) = 0;
 
 	GameState handleMenuItems(sf::Event & Event);
 	void handleJoystick(float axis);
-	void applyJoystickSelection();
+	void applyJoystickSelection(sf::Event & Event);
 
 protected:
 	std::vector<std::shared_ptr<MenuItem>> _MenuItems;

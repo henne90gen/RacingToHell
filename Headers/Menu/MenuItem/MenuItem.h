@@ -29,7 +29,7 @@ public:
 	/*
 		@return sf::FloatRect Bounding box of the MenuItem
 	*/
-	virtual sf::FloatRect & getRect() = 0;
+	virtual sf::FloatRect getRect() = 0;
 
 	/*
 		@return std::string Text of the MenuItem
@@ -40,7 +40,7 @@ public:
 		@param vlaue New value for the MenuItem
 		@return bool True if value was set successfully
 	*/
-	virtual bool setValue(float value) = 0;
+	virtual void setValue(float value) = 0;
 
 	/*
 		@return float Value of the MenuItem
@@ -91,5 +91,7 @@ protected:
 	MenuItemType _Type;
 	MenuResult _Action;
 	bool _Hovering, _Enabled, _Focused;
+
+	bool pointInRectangle(sf::FloatRect Rect, sf::Vector2f Position);
 };
 

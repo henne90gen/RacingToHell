@@ -26,11 +26,31 @@ public:
 	*/
 	void levelUp();
 
+	/*
+		Plays the level up sound effect
+	*/
+	void playSound();
+
+	/*
+		Sets the volume for the level up sound effect
+		@param volume New volume level
+	*/
+	void setVolume(float volume) { _Sound.setVolume(volume); }
 private:
 	sf::Font _Font;
 	sf::Text _Text;
 
+	sf::Texture _FasterTexture;
+	sf::Sprite _Faster;
+	sf::Texture _StrongerTexture;
+	sf::Sprite _Stronger;
+
 	sf::RectangleShape _Background;
+
+	sf::SoundBuffer _SoundBuffer;
+	sf::Sound _Sound;
+	bool _SoundPlayed;
+	float _SoundDelay;
 
 	sf::Clock _Timer;
 	sf::Clock _FadeTimer;

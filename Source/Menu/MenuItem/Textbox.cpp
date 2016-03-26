@@ -39,6 +39,7 @@ void Textbox::render(sf::RenderWindow& RenderWindow)
 				_ShowCursor = !_ShowCursor;
 				_CursorClock.restart();
 			}
+			_ShowCursor = true;
 		}
 		else {
 			_Box.setOutlineColor(_OutlineColor);
@@ -63,7 +64,7 @@ void Textbox::render(sf::RenderWindow& RenderWindow)
 MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 {
 	if (Event.type == sf::Event::MouseButtonPressed) {
-		if (MousePos.y > getRect().top && MousePos.y < getRect().top + getRect().height && MousePos.x > getRect().left && MousePos.x < getRect().left + getRect().width) {
+		if (pointInRectangle(getRect(), MousePos)) {
 			_Focused = true;
 		}
 		else {
@@ -90,7 +91,7 @@ MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 		}
 	}
 	else if (Event.type == sf::Event::MouseMoved) {
-		if (MousePos.y > getRect().top && MousePos.y < getRect().top + getRect().height && MousePos.x > getRect().left && MousePos.x < getRect().left + getRect().width) {
+		if (pointInRectangle(getRect(), MousePos)) {
 			_Hovering = true;
 		}
 		else {
@@ -150,7 +151,7 @@ void Textbox::setCursor()
 	_Cursor.setPosition(_Text.getPosition() + sf::Vector2f(TmpText.getLocalBounds().width + 1, 4));
 }
 
-sf::FloatRect & Textbox::getRect()
+sf::FloatRect Textbox::getRect()
 {
 	return _Box.getGlobalBounds();
 }

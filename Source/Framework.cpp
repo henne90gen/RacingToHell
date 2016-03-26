@@ -99,6 +99,7 @@ void Framework::handleEvents()
 			else {
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, 7)) {
 					_GameState = GameState::Pause;
+					_PauseMenu.setReturnState(GameState::Running);
 				}
 				else {
 					_GameObjectContainer.handleEvent(_Event);
@@ -107,7 +108,6 @@ void Framework::handleEvents()
 		}
 		break;
 	case GameState::Pause:
-		_OptionsMenu.setReturnState(_GameState);
 		_GameState = _PauseMenu.handleEvents(_RenderWindow);
 		if (_GameState == GameState::Running) {
 			_Clock.restart();
@@ -116,9 +116,12 @@ void Framework::handleEvents()
 		else if (_GameState == GameState::Main) {
 			resetGame();
 		}
+		else if (_GameState == GameState::Options) {
+			_OptionsMenu.enableDifficultySelection(false);
+			_OptionsMenu.setReturnState(GameState::Pause);
+		}
 		break;
 	case GameState::Main:
-		_OptionsMenu.setReturnState(_GameState);
 		_GameState = _MainMenu.handleEvents(_RenderWindow);
 		_CurrentCarSkinIndex = _MainMenu.getCarIndex();
 		if (_GameState == GameState::Running) {
@@ -126,10 +129,16 @@ void Framework::handleEvents()
 			_HeadsUpDisplay.setMaxEnergy(_GameObjectContainer.getPlayerCar().getMaxEnergy());
 			_Clock.restart();
 			_Level.resetTimer();
+			setDifficulty(_OptionsMenu.getDifficulty());
 		}
 		else if (_GameState == GameState::Highscores) {
 			_HighscoreMenu.loadScoreTable();
 		}
+		else if (_GameState == GameState::Options) {
+			_OptionsMenu.enableDifficultySelection(true);
+			_OptionsMenu.setReturnState(GameState::Main);
+		}
+
 		if (_CurrentCarSkinIndex < 0) {
 			_CurrentCarSkinIndex = _CarSkins.size() - 1;
 		}
@@ -167,6 +176,7 @@ void Framework::handleEvents()
 			else {
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, 7)) {
 					_GameState = GameState::Pause;
+					_PauseMenu.setReturnState(GameState::BossFight);
 				}
 				else {
 					_GameObjectContainer.handleEvent(_Event);
@@ -194,13 +204,13 @@ void Framework::update()
 				_GameState = GameState::BossFight;
 			}
 		}
-		_GameObjectContainer.update(_FrameTime, _Level.getDifficulty(), _Level.getRoadSpeed());
+		_GameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
 		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy());
 		if (!_GameObjectContainer.playerIsAlive()) {
 			_GameState = GameState::GameOver;
 		}
 		_Score += _GameObjectContainer.getCarScore();
-		_Score += 10 * _Level.getDifficulty() * _FrameTime;
+		_Score += 10 * _Level.getLevel() * _FrameTime;
 		break;
 	case GameState::BossFight:
 		_Level.update(_FrameTime, _GameState);
@@ -208,13 +218,13 @@ void Framework::update()
 			_LevelUpScreen.levelUp();
 			_GameState = GameState::LevelUp;
 		}
-		_GameObjectContainer.update(_FrameTime, _Level.getDifficulty(), _Level.getRoadSpeed());
+		_GameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
 		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy());
 		if (!_GameObjectContainer.playerIsAlive()) {
 			_GameState = GameState::GameOver;
 		}
 		_Score += _GameObjectContainer.getCarScore();
-		_Score += 100 * _Level.getDifficulty() * _FrameTime;
+		_Score += 10 * _Level.getLevel() * _FrameTime;
 		break;
 	case GameState::LevelUp:
 		if (_LevelUpScreen.update()) {
@@ -222,13 +232,15 @@ void Framework::update()
 			_GameObjectContainer.getPlayerCar().resetMovement();
 			_GameState = GameState::Running;
 			_Level.levelUp();
+			setVolume(_OptionsMenu.getVolume());
+			_GameObjectContainer.setLevel(_Level.getLevel());
 		}
 		break;
 	case GameState::Main:
 		_Level.update(_FrameTime, _GameState);
 		break;
 	case GameState::GameOver:
-		_GameOverScreen.update(_Score, _Level.getDifficulty());
+		_GameOverScreen.update(_Score, _Level.getLevel());
 		break;
 	case GameState::Highscores:
 		_Level.update(_FrameTime, _GameState);
@@ -240,7 +252,9 @@ void Framework::update()
 		}
 		break;
 	case GameState::About:
+		if (_OptionsMenu.getReturnState() == GameState::Main) {
 		_Level.update(_FrameTime, _GameState);
+		}
 		break;
 	case GameState::Loading:
 		if (!_LoadingScreen.isFadingAway()) {
@@ -263,10 +277,13 @@ void Framework::update()
 }
 
 void Framework::playSounds() {
-	if (_GameState == GameState::Running || _GameState == GameState::BossFight) {
+	if (_GameState == GameState::Running || _GameState == GameState::BossFight || _GameState == GameState::LevelUp) {
 		_MenuMusic.stop();
 		_Level.playMusic();
 		_GameObjectContainer.playSounds();
+		if (_GameState == GameState::LevelUp) {
+			_LevelUpScreen.playSound();
+		}
 	}
 	else if (_GameState == GameState::Main || _GameState == GameState::Pause || _GameState == GameState::Options) {
 		_Level.pauseMusic();
@@ -333,14 +350,15 @@ void Framework::load()
 	}
 	FileStream.close();
 
-	if (Settings.size() == 2)
+	if (Settings.size() >= 3)
 	{
 		_FPS = std::stoi(Settings[0]);
 		_OptionsMenu.setFPS(_FPS);
 		_OptionsMenu.setVolume(std::stoi(Settings[1]));
+		_OptionsMenu.setDifficulty(std::stoi(Settings[2]));
+		setVolume(_OptionsMenu.getVolume());
 	}
-	
-	setVolume(_OptionsMenu.getVolume());
+	_Level.resetLevel();
 }
 
 void Framework::resetGame() 
@@ -353,7 +371,12 @@ void Framework::resetGame()
 
 void Framework::setVolume(float volume)
 {
-	sf::Listener::setGlobalVolume(volume);
+	sf::Listener::setGlobalVolume(volume * 7);
+	_MenuMusic.setVolume(volume * 9);
+	_Level.setVolume(volume * 7);
+	_GameObjectContainer.setVolume(volume * 2.7);
+	_LevelUpScreen.setVolume(volume * 100);
+	_GameOverScreen.setVolume(volume * 10);
 }
 
 void Framework::setMouseVisible(bool visible)
@@ -370,4 +393,10 @@ void Framework::setMouseVisible(bool visible)
 			cursor = ShowCursor(1);
 		}
 	}
+}
+
+void Framework::setDifficulty(int Difficulty)
+{
+	_Level.setDifficulty(Difficulty);
+	_GameObjectContainer.setDifficulty(Difficulty);
 }

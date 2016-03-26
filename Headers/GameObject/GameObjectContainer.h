@@ -40,10 +40,10 @@ public:
 	/*
 		Updates all the GameObjects with the given frame time
 		@param frameTime Time that has passed since the last update
-		@param difficulty Difficulty of the level
+		@param level Level
 		@param roadSpeed Speed of the road
 	*/
-	void update(float frameTime, int difficulty, int roadSpeed);
+	void update(float frameTime, int roadSpeed);
 
 	/*
 		@return GameObject* Pointer to the PlayerCar
@@ -110,6 +110,17 @@ public:
 	*/
 	void setCarSkins(std::vector<std::shared_ptr<sf::Texture>>& carSkins);
 
+	/*
+		Sets the current level
+		@param lvl Level
+	*/
+	void setLevel(int lvl) { _Level = lvl; }
+
+	/*
+		Sets selected diffculty
+		@param dif Difficulty
+	*/
+	void setDifficulty(int dif) { _Difficulty = dif; }
 private:
 	std::vector<std::shared_ptr<GameObject>> _GameObjects;
 	std::vector<std::shared_ptr<Animation>> _Animations;
@@ -117,29 +128,30 @@ private:
 
 	sf::Texture _ToolboxTexture, _EnergyCanisterTexture, _BulletTexture, _ExplosionTexture;
 
-	sf::SoundBuffer _AIShotSoundBuffer, _PlayerShotSoundBuffer;
+	sf::SoundBuffer _AIShotSoundBuffer, _PlayerShotSoundBuffer, _ExplosionSoundBuffer, _JetSoundBuffer;
 	std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>> _SoundEffects;
 	float _Volume;
 
 	float _CarFrequency, _BulletFrequency, _CanisterFrequency, _ToolboxFrequency, _TimePassedCar, _TimePassedBullet, _TimePassedCanister, _TimePassedToolbox;
 
 	// Score the player accumulates for shooting other cars
-	int _CarScore;
+	int _CarScore, _Level, _Difficulty;
 	int _PlayerBulletSpeed, _AIBulletSpeed;
 	bool _PlayerAlive, _AboutToLevelUp, _BossFight;
 
 	/*
 		Plays a shot sound depending on the type of the firing entity
 		@param go Type of the GameObject that is emitting the shot sound
+		@param position Position of the Soundobject
 	*/
 	void playShotSound(GameObjectType go, sf::Vector2f position = sf::Vector2f(0.f, 0.f));
 
 	/*
 		Spawns a new AICar on a random lane
-		@param difficulty Difficulty of the level
+		@param level Levelnumber
 		@param roadSpeed Speed of the road
 	*/
-	void spawnAICar(int difficulty, int roadSpeed);
+	void spawnAICar(int roadSpeed);
 
 	/*
 		Makes a random AICar shoot a bullet at the player
@@ -151,4 +163,25 @@ private:
 		@param id Index of the GameObject that will be deleted
 	*/
 	void deleteObject(unsigned int id);
+
+	/*
+		calculates the hp of a AIcar
+		@return HP of the AICar
+	*/
+	int getAiHP();
+
+	/*
+		Sets all frequencies dependig on the selected difficulty
+	*/
+	void setAllFrequencies();
+
+	void setAiCarFrequency();
+	void setBulletFrequency();
+	void setCanisterFrequency();
+	void setToolboxFrequency();
+
+	/*
+		@retun Boss HP at given level
+	*/
+	int getBossHP();
 };

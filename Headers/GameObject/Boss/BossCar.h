@@ -11,11 +11,12 @@ public:
 	/*
 		BossCar is the interface for every boss. It handles creation and sprite updating.
 		@param pos				Starting position
+		@param difficulty		selected difficulty
 		@param health			Starting health of the boss 
 		@param texture			Texture for the sprite that is going to be used for collision detection
 		@param bulletTexture	Texture for the bullets the boss will shoot
 	*/
-	BossCar(sf::Vector2f& pos, int health, float speed, sf::Texture& texture, sf::Texture& bulletTexture);
+	BossCar(sf::Vector2f& pos, int difficulty, int health, float speed, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float Volume);
 	~BossCar() {}
 
 	/*
@@ -42,12 +43,18 @@ public:
 	*/
 	bool isDoneExploding(sf::Texture& ExplosionTexture);
 protected:
-	enum Phase { NOTHING, SIMPLESHOOT, SALVE, SPIN, HARDCORESPAM, BLASTSALVE, SPIRAL, RANDOMSPRAY, SHOTGUN, SIDE, SAVELANES };
+	enum Phase { NOTHING, SIMPLESHOOT, SALVE, SPIN, HARDCORESPAM, BLASTSALVE, SPIRAL, RANDOMSPRAY, SHOTGUN, SIDE, SAVELANES, RUNARPLAYERPHASE };
 	int _CurrentPhase;
 	std::vector<std::pair<Phase, float>> _Pattern;
 	sf::Clock _PhaseClock;
 
-	enum Movement { STILL, DRIVETODEFAULT, LEFTRIGHT, SWITCHSIDES, STRAIGHT, PARABOLA};
+	std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>> &_soundEffects;
+	sf::SoundBuffer &_soundBufferShot, &_soundBufferExplosion;
+	float _Volume;
+
+	int _Difficulty;
+
+	enum Movement { STILL, DRIVETODEFAULT, LEFTRIGHT, SWITCHSIDES, STRAIGHT, PARABOLA, RUNATPLAYER};
 	Movement _Movement;
 
 	sf::Vector2f _GunPosition;

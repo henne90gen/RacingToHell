@@ -5,11 +5,18 @@ OptionsMenu::OptionsMenu() : Menu(GameState::Options)
 {
 	std::shared_ptr<Slider> slider1(new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 250)), MenuResult::Nothing, "FPS", 0.0f, 210.0f));
 	_MenuItems.push_back(slider1);
+
 	std::shared_ptr<Slider> slider2(new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 300)), MenuResult::Nothing, "Volume", 0.0f, 5.0f));
 	_MenuItems.push_back(slider2);
-	std::shared_ptr<MenuButton> button1(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 350), sf::Vector2f(150, 50), MenuResult::Credits, "Credits", TextAlignment::Center));
+
+	std::vector<std::string> difficulties = { "Easy", "Normal", "Hard", "Insane" };
+	std::shared_ptr<ComboBox> combobox(new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 100, 350), difficulties, MenuResult::Nothing));
+	_MenuItems.push_back(combobox);
+
+	std::shared_ptr<MenuButton> button1(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 420), sf::Vector2f(150, 50), MenuResult::Credits, "Credits", TextAlignment::Center));
 	_MenuItems.push_back(button1);
-	std::shared_ptr<MenuButton> button2(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 420), sf::Vector2f(150, 50), MenuResult::Back, "Back", TextAlignment::Center));
+
+	std::shared_ptr<MenuButton> button2(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 490), sf::Vector2f(150, 50), MenuResult::Back, "Back", TextAlignment::Center));
 	_MenuItems.push_back(button2);
 
 	_Text.setString("Options");
@@ -17,17 +24,26 @@ OptionsMenu::OptionsMenu() : Menu(GameState::Options)
 	_Text.setColor(sf::Color::White);
 	_Text.setStyle(sf::Text::Style::Bold);
 	_Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 160));
+
+	_FPS.setFont(_Font);
+	_FPS.setString("");
+	_FPS.setPosition(sf::Vector2f(_MenuItems[FPS]->getRect().left + _MenuItems[FPS]->getRect().width + 5, _MenuItems[FPS]->getRect().top - 5));
+
+	_Volume.setFont(_Font);
+	_Volume.setString("");
+	_Volume.setPosition(sf::Vector2f(_MenuItems[Volume]->getRect().left + _MenuItems[Volume]->getRect().width + 5, _MenuItems[Volume]->getRect().top - 5));
 }
 
-void OptionsMenu::render(sf::RenderWindow & Window)
+void OptionsMenu::render(sf::RenderWindow & window)
 {
-	Window.draw(_Text);
-
+	window.draw(_Text);
+	window.draw(_FPS);
+	window.draw(_Volume);
 	for (int i = 0; i < _MenuItems.size(); i++) {
-		_MenuItems[i]->render(Window);
+		_MenuItems[i]->render(window);
 	}
 
-	checkMenuItemHovered(Window);
+	checkMenuItemHovered(window);
 }
 
 GameState OptionsMenu::handleEvents(sf::RenderWindow & Window)
@@ -73,9 +89,13 @@ void OptionsMenu::update(float FrameTime)
 		_ChangeSliderValue = 1;
 	}
 
-	if (_MenuItems[_JoystickSelection]->setValue(_MenuItems[_JoystickSelection]->getValue() + _MenuItems[_JoystickSelection]->getMaxValue() * _ChangeSliderValue * FrameTime)) {
-		_ChangeSliderValue = 0;
-	}
+	_MenuItems[_JoystickSelection]->setValue(_MenuItems[_JoystickSelection]->getValue() + _MenuItems[_JoystickSelection]->getMaxValue() * _ChangeSliderValue * FrameTime);
+	_ChangeSliderValue = 0;
+
+	_FPS.setString(std::to_string((int)getFPS()));
+	int volume = _MenuItems[Volume]->getValue() * 100 / _MenuItems[Volume]->getMaxValue();
+	
+	_Volume.setString(std::to_string(volume));
 }
 
 void OptionsMenu::saveOptions()
@@ -84,7 +104,7 @@ void OptionsMenu::saveOptions()
 	std::ofstream FileStream;
 	FileStream.open(Path);
 
-	FileStream << getFPS() << std::endl << getVolume();
+	FileStream << getFPS() << std::endl << getVolume() << std::endl << getDifficulty();
 
 	FileStream.close();
 }

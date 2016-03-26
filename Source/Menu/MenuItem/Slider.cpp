@@ -20,9 +20,9 @@ Slider::Slider(sf::Vector2f pos, MenuResult action, std::string text, float valu
 	_Slider.setPosition(sf::Vector2f(_Line.getPosition().x + _Line.getLocalBounds().width * _Value / _MaxValue,
 		_Line.getPosition().y + _Line.getLocalBounds().height / 2.0f));
 
-	_BoundingBox.left = _Line.getPosition().x;
+	_BoundingBox.left = _Line.getPosition().x - _Slider.getLocalBounds().width;
 	_BoundingBox.top = _Slider.getPosition().y - _Slider.getLocalBounds().height / 2.0f;
-	_BoundingBox.width = _Line.getLocalBounds().width;
+	_BoundingBox.width = _Line.getLocalBounds().width + _Slider.getLocalBounds().width * 1.3f;
 	_BoundingBox.height = _Slider.getLocalBounds().height;
 }
 
@@ -53,7 +53,7 @@ MenuResult Slider::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 {
 	if (_Enabled) {
 		if (Event.type == sf::Event::MouseButtonPressed) {
-			if (MousePos.y > getRect().top && MousePos.y < getRect().top + getRect().height && MousePos.x > getRect().left && MousePos.x < getRect().left + getRect().width)
+			if (pointInRectangle(getRect(), MousePos))
 			{
 				setSlider(MousePos.x);
 				_MouseButtonPressed = true;
@@ -63,7 +63,7 @@ MenuResult Slider::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 			_MouseButtonPressed = false;
 		}
 		else if (Event.type == sf::Event::MouseMoved) {
-			if (MousePos.y > getRect().top && MousePos.y < getRect().top + getRect().height && MousePos.x > getRect().left && MousePos.x < getRect().left + getRect().width) {
+			if (pointInRectangle(getRect(), MousePos)) {
 				_Hovering = true;
 			}
 			else {
@@ -79,7 +79,7 @@ MenuResult Slider::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 	return _Action;
 }
 
-bool Slider::setValue(float value)
+void Slider::setValue(float value)
 {
 	_Value = value;
 	if (_Value < 0)
@@ -87,7 +87,6 @@ bool Slider::setValue(float value)
 	else if (_Value > _MaxValue)
 		_Value = _MaxValue;
 	_Slider.setPosition(_Line.getPosition().x + _Line.getSize().x * value / _MaxValue, _Line.getPosition().y + _Line.getLocalBounds().height / 2.0f);
-	return true;
 }
 
 void Slider::setSlider(float x)

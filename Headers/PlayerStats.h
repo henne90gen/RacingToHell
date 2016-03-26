@@ -7,7 +7,7 @@ struct PlayerStats
 	static std::vector<int> getPlayerStats(int id)
 	{
 		int MaxHealth, MaxEnergy, Speed, Bulletdamage;
-		switch (id)
+		switch (id) //dmg 40, 50, 75, 80, 100
 		{
 		case 0:
 			MaxHealth = 50;
@@ -19,29 +19,29 @@ struct PlayerStats
 			MaxHealth = 100;
 			MaxEnergy = 50;
 			Speed = 600;
-			Bulletdamage = 75;
+			Bulletdamage = 50;
 			break;
 		case 2:
-			MaxHealth = 75;
-			MaxEnergy = 125;
-			Speed = 350;
-			Bulletdamage = 100;
+			MaxHealth = 100;
+			MaxEnergy = 75;
+			Speed = 400;
+			Bulletdamage = 75;
 			break;
 		case 3:
-			MaxHealth = 50;
+			MaxHealth = 40;
 			MaxEnergy = 50;
-			Speed = 500;
-			Bulletdamage = 80;
+			Speed = 600;
+			Bulletdamage = 100;
 			break;
 		case 4:
-			MaxHealth = 200;
-			MaxEnergy = 200;
+			MaxHealth = 175;
+			MaxEnergy = 150;
 			Speed = 250;
 			Bulletdamage = 40;
 			break;
 		case 5:
-			MaxHealth = 150;
-			MaxEnergy = 125;
+			MaxHealth = 100;
+			MaxEnergy = 150;
 			Speed = 350;
 			Bulletdamage = 50;
 			break;

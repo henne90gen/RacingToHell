@@ -28,7 +28,7 @@ public:
 	/*
 		See MenuItem for details
 	*/
-	sf::FloatRect & getRect() { return _BoundingBox; }
+	sf::FloatRect getRect() { return _BoundingBox; }
 
 	/*
 		@return float Value of the Slider
@@ -39,7 +39,7 @@ public:
 		@param value New value for the Slider
 		@return bool True if the value was set successfully
 	*/
-	bool setValue(float value);
+	void setValue(float value);
 
 	/*
 		@return float Value of the Slider

@@ -29,7 +29,7 @@ public:
 	/*
 		See MenuItem for details
 	*/
-	sf::FloatRect& getRect();
+	sf::FloatRect getRect();
 
 	/*
 		@return std::string Text of the Textbox
@@ -40,7 +40,7 @@ public:
 		Textbox doesn't have a value that could be changed
 		@return bool False
 	*/
-	bool setValue(float x) { return false; }
+	void setValue(float x) {}
 
 	/*
 		Textbox doesn't have a value that could be returned

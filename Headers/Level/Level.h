@@ -62,27 +62,36 @@ public:
 	/*
 		@return int Difficulty of the Level
 	*/
-	int getDifficulty() { return _Difficulty; }
+	int getLevel() { return _Level; }
 
 	/*
 		@return int Speed of the road
 	*/
-	int getRoadSpeed() { return (100 * _Difficulty + 100); }
+	int getRoadSpeed();
 
 	/*
 		Resets the internal timer of the Level
 	*/
 	void resetTimer() { _Timer.restart(); }
 
+	/*
+		Sets the selected difficulty
+		@param dif Difficulty
+	*/
+	void setDifficulty(int dif) { _Difficulty = dif; }
+
+	
 private:
 	std::vector<std::shared_ptr<sf::Texture>> _Textures;
 	sf::Sprite _Sprite;
 
-	sf::SoundBuffer _MusicBuffer;
+	std::vector<std::shared_ptr<sf::SoundBuffer>> _MusicBuffers;
 	sf::Sound _Music;
 
 	sf::Clock _Timer;
 
-	int _Difficulty;
-	float _LevelUp;
+	int _Level, _Difficulty;
+	float _LevelTime;
+
+	void loadSongByID(int id);
 };

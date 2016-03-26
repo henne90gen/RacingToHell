@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "GameObject/Boss/BossCar.h"
 
-BossCar::BossCar(sf::Vector2f& Position, int Health, float Speed, sf::Texture& Texture, sf::Texture& BulletTetxure) : Car(Position, Health, Speed, GameObjectType::Boss, Texture),
+BossCar::BossCar(sf::Vector2f& Position, int difficulty, int Health, float Speed, sf::Texture& Texture, sf::Texture& BulletTetxure, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float Volume) : Car(Position, Health, Speed, GameObjectType::Boss, Texture),
+	_soundEffects(soundEffects), _soundBufferShot(soundBufferShot), _soundBufferExplosion(soundBufferExplosion), _Volume(Volume), _Difficulty(difficulty),
 	_BulletSpeed(500), _BulletTexture(BulletTetxure), _Movement(Movement::STILL), _Attack(false), _Traffic(false), _IsExploding(false),
 	_Event1Counter(0), _Event2Counter(0), _Event1Frequency(0), _Event2Frequency(0), _Event1Switch(false), _Event2Switch(false), _CurrentPhase(0)
 {
@@ -35,7 +36,7 @@ float BossCar::PlayerAngle(GameObject& Player)
 
 void BossCar::shootBullet(std::vector<std::shared_ptr<GameObject>>& gameObjects, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed)
 {
-	std::shared_ptr<Bullet> newBullet(new Bullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss, _BulletTexture));
+	std::shared_ptr<Bullet> newBullet(new Bullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss, _BulletTexture, _soundEffects, _soundBufferShot, _Volume));
 	gameObjects.push_back(newBullet);
 }
 
@@ -123,7 +124,7 @@ void BossCar::updateExplosions(float frameTime)
 
 bool BossCar::isDoneExploding(sf::Texture& explosionTexture)
 {
-	if (_Health <= 0 && !_IsExploding) {
+	if (_Health <= 0 && !(bool)_IsExploding) {
 		_IsExploding = 1;
 		_ExplosionTimer.restart();
 	}
@@ -144,7 +145,7 @@ bool BossCar::isDoneExploding(sf::Texture& explosionTexture)
 			position = sf::Vector2f(getWidth() / -3.0f, getHeight() / 3.0f);
 			break;
 		}
-		_Explosions.push_back(new Explosion(getPos() + position, explosionTexture, sf::Vector2f(0, 0)));
+		_Explosions.push_back(new Explosion(getPos() + position, explosionTexture, sf::Vector2f(0, 0), _soundEffects, _soundBufferExplosion, _Volume));
 	}
 	if (_Explosions.size() > 5) {
 		_IsExploding = 2;

@@ -29,5 +29,11 @@ public:
 		@return GameState New GameState the game should be in
 	*/
 	GameState handleMenuItemResult(MenuResult result);
+
+	void setReturnState(GameState returnState) { _ReturnState = returnState; }
+	GameState getReturnState() { return _ReturnState; }
+
+private:
+	GameState _ReturnState;
 };
 

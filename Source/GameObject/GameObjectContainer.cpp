@@ -10,7 +10,7 @@ GameObjectContainer::~GameObjectContainer()
 	_BossCarTextures.clear();
 }
 
-void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
+void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 {
 	// Update Animations
 	for (int i = 0; i < _Animations.size(); i++) {
@@ -33,7 +33,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 					{
 					case GameObjectType::AI:
 						{
-							std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0)));
+							std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0), _SoundEffects, _ExplosionSoundBuffer, _Volume));
 							_Animations.push_back(newExplosion);
 							_PlayerAlive = false;
 						}
@@ -55,7 +55,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 						break;
 					case GameObjectType::Boss:
 						{
-							std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0)));
+							std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0), _SoundEffects, _ExplosionSoundBuffer, _Volume));
 							_Animations.push_back(newExplosion);
 							_PlayerAlive = false;
 						}
@@ -70,7 +70,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			}
 			else {
 				if (getPlayerCar().getHealth() <= 0) {
-					std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0)));
+					std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0), _SoundEffects, _ExplosionSoundBuffer, _Volume));
 					_Animations.push_back(newExplosion);
 					_PlayerAlive = false;
 				}
@@ -100,7 +100,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			if (_TimePassedCar + FrameTime > 1 / _CarFrequency)
 			{
 				_TimePassedCar += FrameTime - 1 / _CarFrequency;
-				spawnAICar(Difficulty, RoadSpeed);
+				spawnAICar(RoadSpeed);
 			}
 			else
 			{
@@ -114,7 +114,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			if (_GameObjects.at(i)->getType() == GameObjectType::AI && _GameObjects.at(i)->getHealth() <= 0)
 			{
 				_CarScore += (int)(1.5 * _GameObjects.at(i)->getMaxHealth());
-				std::shared_ptr<Explosion> newExplosion(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _GameObjects[i]->getSpeed())));
+				std::shared_ptr<Explosion> newExplosion(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _GameObjects[i]->getSpeed()), _SoundEffects, _ExplosionSoundBuffer, _Volume));
 				_Animations.push_back(newExplosion);
 				deleteObject(i);
 				i--;
@@ -127,7 +127,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			_TimePassedBullet += FrameTime - 1 / _BulletFrequency;
 			spawnBullet();
 
-			_BulletFrequency = 1.0f + 0.1f * (float)(Difficulty);
+			setBulletFrequency();
 		}
 		else {
 			_TimePassedBullet += FrameTime;
@@ -138,7 +138,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 		{
 			if (_GameObjects.at(i)->getType() == GameObjectType::AI)
 			{
-				for (unsigned int j = i + 1; j < _GameObjects.size(); j++)
+				for (unsigned int j = 1 + (int)(_BossFight); j < _GameObjects.size(); j++)
 				{
 					if (_GameObjects.at(j)->getType() == GameObjectType::AI && i != j &&
 						_GameObjects.at(i)->getLane() == _GameObjects.at(j)->getLane() &&
@@ -187,9 +187,8 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 				}
 				else if (_GameObjects.at(i)->getType() == GameObjectType::AI)
 				{
-					std::shared_ptr<Explosion> newExplosion(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _GameObjects[i]->getSpeed())));
+					std::shared_ptr<Explosion> newExplosion(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _GameObjects[i]->getSpeed()), _SoundEffects, _ExplosionSoundBuffer, _Volume));
 					_Animations.push_back(newExplosion);
-			
 					deleteObject(i);
 					i--;
 				}
@@ -212,28 +211,28 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 		}
 
 		//Toolbox spawnen
-		if (_TimePassedToolbox + FrameTime > 1 / _ToolboxFrequency)
+		if (_TimePassedToolbox + FrameTime > 1.0f / _ToolboxFrequency)
 		{
-			_TimePassedToolbox += FrameTime - 1 / _ToolboxFrequency;
-			_ToolboxFrequency = (float)(std::rand() % 150) / 1000.0f;
+			_TimePassedToolbox += FrameTime - 1.0f / _ToolboxFrequency;
 			std::shared_ptr<GameObject> newToolbox(new GameObject(sf::Vector2f(std::rand() % 3 * 150 + 150, -10), GameObjectType::Tools, _ToolboxTexture));
 			_GameObjects.push_back(newToolbox);
+			setToolboxFrequency();
 		}
 		else {
 			_TimePassedToolbox += FrameTime;
 		}
+
+		getPlayerCar().drainEnergy(FrameTime);
 	}
 
 	//Prüfen ob Spieler geschossen hat
 	if (getPlayerCar().shotBullet().x != 0 && getPlayerCar().shotBullet().y != 0)
 	{
-		std::shared_ptr<Bullet> newBullet(new Bullet(getPlayerCar().getPos(), getPlayerCar().shotBullet(), _PlayerBulletSpeed, GameObjectType::BulletObjectPlayer, _BulletTexture));
+		std::shared_ptr<Bullet> newBullet(new Bullet(getPlayerCar().getPos(), getPlayerCar().shotBullet(), _PlayerBulletSpeed, GameObjectType::BulletObjectPlayer, _BulletTexture, _SoundEffects, _PlayerShotSoundBuffer, _Volume));
 
 		_GameObjects.push_back(newBullet);
 
 		getPlayerCar().resetShotBullet();
-
-		playShotSound(GameObjectType::Player);
 	}
 }
 
@@ -289,6 +288,7 @@ bool GameObjectContainer::bossIsDead()
 			_BossFight = false;
 			_AboutToLevelUp = false;
 			deleteObject(1);
+			getPlayerCar().resetResources();
 			return true;
 		}
 	}
@@ -297,12 +297,37 @@ bool GameObjectContainer::bossIsDead()
 
 void GameObjectContainer::enterBossFight()   
 {
-	//std::shared_ptr<Tank> boss(new Tank((*_BossCarTextures[0]), _BulletTexture));
-	std::shared_ptr<Carrier> boss(new Carrier((*_BossCarTextures[1]), _BulletTexture));
-	//std::shared_ptr<Mech> boss(new Mech((*_BossCarTextures[2]), (*_BossCarTextures[3]), _BulletTexture));
-	//Jet* boss = new Jet((*_BossCarTextures[4]), _BulletTexture);
+	switch ((_Level - 1) % 4)
+	{
+	case 0:
+	{
+		std::shared_ptr<Tank> boss(new Tank(_Difficulty, getBossHP(), (*_BossCarTextures[0]), _BulletTexture, _SoundEffects, _AIShotSoundBuffer, _ExplosionSoundBuffer, _Volume));
+		_GameObjects.push_back(boss);
+		break;
+	}
+		
+	case 1:
+	{
+		std::shared_ptr<Mech> boss(new Mech(_Difficulty, getBossHP(), (*_BossCarTextures[2]), (*_BossCarTextures[3]), _BulletTexture, _SoundEffects, _AIShotSoundBuffer, _ExplosionSoundBuffer, _Volume));
+		_GameObjects.push_back(boss);
+		break;
+	}
+	case 2:
+	{
+		std::shared_ptr<Jet> boss(new Jet(_Difficulty, getBossHP(), (*_BossCarTextures[4]), _BulletTexture, _SoundEffects, _AIShotSoundBuffer, _ExplosionSoundBuffer, _JetSoundBuffer, _Volume));
+		_GameObjects.push_back(boss);
+		break;
+	}	
+	case 3:
+	{
+		std::shared_ptr<Carrier> boss(new Carrier(_Difficulty, getBossHP(), (*_BossCarTextures[1]), _BulletTexture, _SoundEffects, _AIShotSoundBuffer, _ExplosionSoundBuffer, _Volume));
 	_GameObjects.push_back(boss);
+		break;
+	}
+	}
+
 	_BossFight = true;
+	
 }
 
 void GameObjectContainer::resetGameObjects(int SelectedCar)
@@ -311,15 +336,15 @@ void GameObjectContainer::resetGameObjects(int SelectedCar)
 	_Animations.clear();
 	_SoundEffects.clear();
 
+	//Level
+	_Level = 1;
+
 	//Spielerauto
 	std::shared_ptr<PlayerCar> MainCar(new PlayerCar(SelectedCar, (*_PlayerCarTextures.at(SelectedCar))));
 	_GameObjects.push_back(MainCar);
-
+	
 	//Frequenz
-	_CarFrequency = 2;
-	_BulletFrequency = 1.0f;
-	_CanisterFrequency = 0.3f;
-	_ToolboxFrequency = (float)(std::rand() % 150) / 1000.0f;
+	setAllFrequencies();
 
 	_TimePassedCar = 0.0f;
 	_TimePassedBullet = 0.0f;
@@ -352,11 +377,12 @@ void GameObjectContainer::load()
 	_BulletTexture.loadFromFile("Resources/Texture/Object/Bullet.png");
 	_ToolboxTexture.loadFromFile("Resources/Texture/Object/toolbox.png");
 	_EnergyCanisterTexture.loadFromFile("Resources/Texture/Object/canister.png");
+	_ExplosionTexture.loadFromFile("Resources/Texture/Animation/explosion.png");
 
 	_AIShotSoundBuffer.loadFromFile("Resources/Sound/shotAI.wav");
 	_PlayerShotSoundBuffer.loadFromFile("Resources/Sound/shotPlayer.wav");
-	
-	_ExplosionTexture.loadFromFile("Resources/Texture/Animation/explosion.png");
+	_ExplosionSoundBuffer.loadFromFile("Resources/Sound/explosion.wav");
+	_JetSoundBuffer.loadFromFile("Resources/Sound/jetengine.wav");
 
 	std::string bossTextures[] = 
 	{ 
@@ -386,19 +412,20 @@ void GameObjectContainer::playShotSound(GameObjectType go, sf::Vector2f position
 		shotSound->setPosition(position.x, 0.f, position.y);
 		shotSound->setMinDistance(500.f);
 		shotSound->setAttenuation(4.f); 
-		shotSound->setVolume(_Volume + 10);
+		shotSound->setVolume(_Volume * 2);
 	}
 	else if (go == GameObjectType::Player) {
 		shotSound->setBuffer(_PlayerShotSoundBuffer);
-	shotSound->setVolume(_Volume);
+		shotSound->setVolume(_Volume * 2);
 	}
 	
 	_SoundEffects.push_back({ shotSound, 0 });
 }
 
-void GameObjectContainer::spawnAICar(int difficulty, int roadSpeed)
+
+void GameObjectContainer::spawnAICar(int roadSpeed)
 {
-	std::shared_ptr<AICar> newAiCar(new AICar(difficulty, roadSpeed, (*_AICarTextures.at(std::rand() % 7))));
+	std::shared_ptr<AICar> newAiCar(new AICar(getAiHP(), roadSpeed, (*_AICarTextures.at(std::rand() % 7))));
 
 	for (unsigned int i = 1; i < _GameObjects.size(); i++)
 	{
@@ -433,7 +460,7 @@ void GameObjectContainer::spawnBullet()
 	
 	sf::Vector2f dir = SelectedCar->divideByLength(getPlayerCar().getPos() - SelectedCar->getPos());
 
-	std::shared_ptr<Bullet> newBullet(new Bullet(SelectedCar->getPos(), dir, _AIBulletSpeed, GameObjectType::BulletObjectAI, _BulletTexture));
+	std::shared_ptr<Bullet> newBullet(new Bullet(SelectedCar->getPos(), dir, _AIBulletSpeed, GameObjectType::BulletObjectAI, _BulletTexture, _SoundEffects, _AIShotSoundBuffer, _Volume));
 	_GameObjects.push_back(newBullet);
 	
 	playShotSound(GameObjectType::AI, SelectedCar->getPos());
@@ -455,3 +482,140 @@ void GameObjectContainer::deleteObject(unsigned int id)
 {
 	_GameObjects.erase(_GameObjects.begin() + id);
 }
+
+void GameObjectContainer::setAllFrequencies()
+{
+	setAiCarFrequency();
+	setBulletFrequency();
+	setCanisterFrequency();
+	setToolboxFrequency();
+}
+
+void GameObjectContainer::setAiCarFrequency()
+{
+	switch (_Difficulty)
+	{
+	case 0:
+		_CarFrequency = 1.5f + 0.1f * (float)_Level;
+		break;
+	case 1:
+		_CarFrequency = 1.75f + 0.11f * std::powf((float)_Level, 1.3f);
+		break;
+	case 2:
+		_CarFrequency = 2.0f + 0.15f * std::powf((float)_Level, 1.3f);
+		break;
+	case 3:
+		_CarFrequency = 2.15f + 0.17 * std::powf((float)_Level, 1.45f);
+		break;
+	default:
+		break;
+	}
+}
+
+void GameObjectContainer::setBulletFrequency()
+{
+	switch (_Difficulty)
+	{
+	case 0:
+		_BulletFrequency = 0.8f + 0.065f * (float)_Level;
+		break;
+	case 1:
+		_BulletFrequency = 1.2f + 0.08f * std::powf((float)_Level, 1.1f);
+		break;
+	case 2:
+		_BulletFrequency = 1.2f + 1.0f * std::powf((float)_Level, 1.2f);
+		break;
+	case 3:
+		_BulletFrequency = 1.4f + 1.0f * std::powf((float)_Level, 1.33f);
+		break;
+	default:
+		break;
+	}
+}
+
+
+void GameObjectContainer::setCanisterFrequency()
+{
+	switch (_Difficulty)
+	{
+	case 0:
+		_CanisterFrequency = 0.5f;
+		break;
+	case 1:
+		_CanisterFrequency = 0.4f;
+		break;
+	case 2:
+		_CanisterFrequency = 0.3f;
+		break;
+	case 3:
+		_CanisterFrequency = 0.3f;
+		break;
+	default:
+		break;
+	}
+}
+
+
+void GameObjectContainer::setToolboxFrequency()
+{
+	switch (_Difficulty)
+	{
+	case 0:
+		_ToolboxFrequency = (float)(std::rand() % 45) / 1000.f + 0.080f;
+		break;
+	case 1:
+		_ToolboxFrequency = (float)(std::rand() % 20) / 1000.f + 0.060f;
+		break;
+	case 2:
+		_ToolboxFrequency = (float)(std::rand() % 20) / 1000.f + 0.040f;
+		break;
+	case 3:
+		_ToolboxFrequency = (float)(std::rand() % 20) / 1000.f + 0.020f;
+		break;
+	default:
+		break;
+	}
+}
+
+int GameObjectContainer::getAiHP()
+{
+	switch (_Difficulty)
+	{
+	case 0:
+		return 40 + _Level * 10;
+		break;
+	case 1:
+		return 50 + _Level * 15;
+		break;
+	case 2:
+		return 60 + _Level * 20;
+		break;
+	case 3:
+		return 65 + _Level * 25;
+		break;
+	default:
+		break;
+	}
+}
+
+int GameObjectContainer::getBossHP()
+{
+	switch ((_Level - 1) % 4)
+	{
+	case 0:
+		//return 6000 + (int)((_Level - 1) / 4.0f) * 3000;
+		return 1;
+		break;
+	case 1:
+		return 8000 + (int)((_Level - 1) / 4.0f) * 3000;
+		break;
+	case 2:
+		return 100;
+		break;
+	case 3:
+		return 100;
+		break;
+	}
+
+}
+

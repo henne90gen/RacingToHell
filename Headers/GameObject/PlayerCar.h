@@ -83,6 +83,16 @@ public:
 		Resets the movemnt vector that is applied to the PlayerCar
 	*/
 	void resetMovement() { _Movement = sf::Vector2f(0, 0); }
+
+	/*
+		Player loses Energy
+	*/
+	void drainEnergy(float FrameTime) { _Energy -= 2 * FrameTime; }
+
+	/*
+		Fills up resources to its maximum
+	*/
+	void resetResources() { _Health = _MaxHealth; _Energy = _MaxEnergy; }
 private:
 	float _Energy;
 	int _MaxEnergy, _Bulletdamage;

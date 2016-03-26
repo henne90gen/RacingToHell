@@ -358,6 +358,7 @@ void Framework::load()
 		_OptionsMenu.setDifficulty(std::stoi(Settings[2]));
 		setVolume(_OptionsMenu.getVolume());
 	}
+	_Level.resetLevel();
 }
 
 void Framework::resetGame() 

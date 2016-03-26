@@ -29,7 +29,7 @@ public:
 	/*
 		See MenuItem for details
 	*/
-	sf::FloatRect& getRect();
+	sf::FloatRect getRect();
 
 	/*
 		@return std::string Text of the Textbox

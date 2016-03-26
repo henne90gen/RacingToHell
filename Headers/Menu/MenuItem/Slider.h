@@ -28,7 +28,7 @@ public:
 	/*
 		See MenuItem for details
 	*/
-	sf::FloatRect & getRect() { return _BoundingBox; }
+	sf::FloatRect getRect() { return _BoundingBox; }
 
 	/*
 		@return float Value of the Slider

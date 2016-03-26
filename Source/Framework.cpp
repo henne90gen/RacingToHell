@@ -99,6 +99,7 @@ void Framework::handleEvents()
 			else {
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, 7)) {
 					_GameState = GameState::Pause;
+					_PauseMenu.setReturnState(GameState::Running);
 				}
 				else {
 					_GameObjectContainer.handleEvent(_Event);
@@ -107,7 +108,6 @@ void Framework::handleEvents()
 		}
 		break;
 	case GameState::Pause:
-		_OptionsMenu.setReturnState(_GameState);
 		_GameState = _PauseMenu.handleEvents(_RenderWindow);
 		if (_GameState == GameState::Running) {
 			_Clock.restart();
@@ -116,13 +116,12 @@ void Framework::handleEvents()
 		else if (_GameState == GameState::Main) {
 			resetGame();
 		} 
-		else if (_GameState == GameState::Options)
-		{
+		else if (_GameState == GameState::Options) {
 			_OptionsMenu.enableDifficultySelection(false);
+			_OptionsMenu.setReturnState(GameState::Pause);
 		}
 		break;
 	case GameState::Main:
-		_OptionsMenu.setReturnState(_GameState);
 		_GameState = _MainMenu.handleEvents(_RenderWindow);
 		_CurrentCarSkinIndex = _MainMenu.getCarIndex();
 		if (_GameState == GameState::Running) {
@@ -135,9 +134,9 @@ void Framework::handleEvents()
 		else if (_GameState == GameState::Highscores) {
 			_HighscoreMenu.loadScoreTable();
 		}
-		else if (_GameState == GameState::Options)
-		{
+		else if (_GameState == GameState::Options) {
 			_OptionsMenu.enableDifficultySelection(true);
+			_OptionsMenu.setReturnState(GameState::Main);
 		}
 
 		if (_CurrentCarSkinIndex < 0) {
@@ -177,6 +176,7 @@ void Framework::handleEvents()
 			else {
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, 7)) {
 					_GameState = GameState::Pause;
+					_PauseMenu.setReturnState(GameState::BossFight);
 				}
 				else {
 					_GameObjectContainer.handleEvent(_Event);

@@ -114,7 +114,7 @@ MenuResult ComboBox::handleEvent(sf::Event & newEvent, sf::Vector2f mousePos)
 	return MenuResult::Nothing;
 }
 
-sf::FloatRect & ComboBox::getRect()
+sf::FloatRect ComboBox::getRect()
 {
 	return _Body.getGlobalBounds();
 }

@@ -29,7 +29,7 @@ public:
 	/*
 		@return sf::FloatRect Bounding box of the MenuItem
 	*/
-	virtual sf::FloatRect & getRect() = 0;
+	virtual sf::FloatRect getRect() = 0;
 
 	/*
 		@return std::string Text of the MenuItem
@@ -92,6 +92,6 @@ protected:
 	MenuResult _Action;
 	bool _Hovering, _Enabled, _Focused;
 
-	bool pointInRectangle(sf::FloatRect &Rect, sf::Vector2f Position);
+	bool pointInRectangle(sf::FloatRect Rect, sf::Vector2f Position);
 };
 

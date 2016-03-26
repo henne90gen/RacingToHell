@@ -153,7 +153,6 @@ void Textbox::setCursor()
 
 sf::FloatRect & Textbox::getRect()
 {
-	sf::FloatRect rect = sf::FloatRect(_Box.getPosition().x, _Box.getPosition().y, _Box.getLocalBounds().width, _Box.getLocalBounds().height);
 	return _Box.getGlobalBounds();
 }
 

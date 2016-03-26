@@ -20,7 +20,7 @@ Mech::Mech(int difficulty, int HP, sf::Texture& textureTop, sf::Texture& texture
 	_NextPosition = _DefaultPosition;
 	_Movement = Movement::DRIVETODEFAULT;
 
-	_Pattern = { std::make_pair(Phase::SPIN, 2.0f), std::make_pair(Phase::SHOTGUN, 7.0f), std::make_pair(Phase::SALVE, 7.0f) };
+	_Pattern = { std::make_pair(Phase::SPIN, ((2.0f + (float)_Difficulty) * 360.0f) / (180.0f + 135.f * (float)_Difficulty)) , std::make_pair(Phase::SHOTGUN, 7.0f), std::make_pair(Phase::SALVE, 7.0f) };
 }
 
 void Mech::render(sf::RenderWindow & window)
@@ -45,12 +45,12 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 		{
 			switch (_Movement)
 			{
-			case BossCar::DRIVETODEFAULT:
+			case Movement::DRIVETODEFAULT:
 				_Movement = Movement::LEFTRIGHT;
 				_Attack = true;
 				_PhaseClock.restart();
 				break;
-			case BossCar::LEFTRIGHT:
+			case Movement::LEFTRIGHT:
 				_MovementSwitch = !_MovementSwitch;
 
 				if (_MovementSwitch)
@@ -62,6 +62,9 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 					_NextPosition = getPos() - sf::Vector2f((getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
 				}
 				break;
+			case Movement::RUNATPLAYER:
+				_Movement = Movement::LEFTRIGHT;
+
 			default:
 				break;
 			}
@@ -73,9 +76,9 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 			{
 			case Phase::SPIN:
 			{
-				_Event1Frequency = 11.0f;
+				_Event1Frequency = 11.0f + 3.0f * (float)_Difficulty;
 
-				float gunAngle = getAngleFromVector(_GunOrientation) + 180 * frameTime;
+				float gunAngle = getAngleFromVector(_GunOrientation) + (180 + 135 * _Difficulty) * frameTime;
 				_GunOrientation = sf::Vector2f(std::cosf(gunAngle * PI / 180), std::sinf(gunAngle * PI / 180));
 
 				if (getBossEvent() == 1)
@@ -90,12 +93,12 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 			case Phase::SHOTGUN:
 				_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
 
-				_Event1Frequency = 1.5f;
+				_Event1Frequency = 1.25f + 0.25f * (float)(_Difficulty);
 
 				if (getBossEvent() == 1)
 				{
 					bool Hand = (std::rand() % 100) > 50;
-					for (int i = 0; i < 10; i++)
+					for (int i = 0; i < 8 + 2 * _Difficulty; i++)
 					{
 						float bulAngle = (getAngleFromVector(_GunOrientation) * PI / 180 - PI / 28.8) + PI / 14.4 * ((std::rand() % 100) / 100.0f);
 						sf::Vector2f bulOrientation = divideByLength(sf::Vector2f(std::cosf(bulAngle), std::sinf(bulAngle)));
@@ -115,19 +118,20 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 			case Phase::SALVE:
 				_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
 
-				_Event1Frequency = 1.5f;
+				_Event1Frequency = 1.0f + 0.2f * (float)_Difficulty;
 
 				if (getBossEvent() == 1)
 				{
 					bool Hand = (std::rand() % 100) > 50;
 
 					float bulAngle = getAngleFromVector(_GunOrientation);
+					
+					int NumberofBullets = (int)(5 + 0.5f * (float)_Difficulty);
+					float dAngle = (42.5f + 2.5f * (float)_Difficulty) / (float)NumberofBullets;
 
-					std::cout << bulAngle << std::endl;
-
-					for (int i = 0; i < 5; i++)
+					for (int i = 0; i < NumberofBullets; i++)
 					{
-						sf::Vector2f bulOrientation = sf::Vector2f(std::cosf((bulAngle + (i - 2) * 10) / 180 * PI), std::sinf((bulAngle + (i - 2) * 10) / 180 * PI));
+						sf::Vector2f bulOrientation = sf::Vector2f(std::cosf((bulAngle + (i - (int)(NumberofBullets / 2)) * dAngle) / 180 * PI), std::sinf((bulAngle + (i - (int)(NumberofBullets / 2)) * dAngle) / 180 * PI));
 
 						if (Hand)
 						{
@@ -140,7 +144,13 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 				}
 			}
 				break;
+			case Phase::RUNARPLAYERPHASE:
+				_NextPosition = gameObjects[0]->getPos();
+				_Movement = Movement::RUNATPLAYER;
+				break;
 			}
+			
+
 			
 		}
 

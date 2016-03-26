@@ -179,4 +179,9 @@ private:
 	void setBulletFrequency();
 	void setCanisterFrequency();
 	void setToolboxFrequency();
+
+	/*
+		@retun Boss HP at given level
+	*/
+	int getBossHP();
 };

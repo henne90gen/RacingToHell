@@ -1,8 +1,5 @@
 #pragma once
-
 #include "Menu/Menu.h"
-#include "Menu/MenuItem/Textbox.h"
-#include "Menu/MenuItem/HighscoreList.h"
 
 class GameOverScreen : public Menu
 {

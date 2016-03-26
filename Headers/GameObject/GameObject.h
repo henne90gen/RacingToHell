@@ -211,17 +211,22 @@ public:
 	*/
 	float getAngleFromVector(sf::Vector2f vec);
 
+	/*
+		Divides a vector by it's length, basically providing the normalized vector
+		@param vec Vector that is going to be normalized
+		@return sf::Vector2f Resulting normalized vector
+	*/
 	sf::Vector2f divideByLength(sf::Vector2f vec);
 
 	/*
 		Writes the necessary data for a gameobject to a stream
 	*/
-	virtual void operator>>(std::ostream& stream) = 0;
+	virtual void operator>>(std::ostream& stream);
 
 	/*
 		Reads the necessary data for a gameobject from a stream
 	*/
-	virtual void operator<<(std::istream& stream) = 0;
+	virtual void operator<<(std::istream& stream);
 protected:
 	sf::Sprite _Sprite;
 	sf::Texture _Texture;

@@ -44,6 +44,17 @@ sf::Vector2f GameObject::divideByLength(sf::Vector2f vec)
 {
 	return vec / std::sqrtf(std::powf(vec.x, 2) + std::powf(vec.y, 2));
 }
+
 void GameObject::resetMovement() {
 	
+}
+
+void GameObject::operator>>(std::ostream& stream)
+{
+
+}
+
+void GameObject::operator<<(std::istream& stream)
+{
+
 }

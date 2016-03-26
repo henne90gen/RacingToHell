@@ -43,7 +43,7 @@ public:
 	/*
 		@return int Health of the Car
 	*/
-	int getHealth();
+	int getHealth() { return _Health; }
 
 	/*
 		@return int Maximum health of the Car

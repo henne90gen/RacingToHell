@@ -115,6 +115,10 @@ void Framework::handleEvents()
 		}
 		else if (_GameState == GameState::Main) {
 			resetGame();
+		} 
+		else if (_GameState == GameState::Options)
+		{
+			_OptionsMenu.enableDifficultySelection(false);
 		}
 		break;
 	case GameState::Main:
@@ -126,10 +130,16 @@ void Framework::handleEvents()
 			_HeadsUpDisplay.setMaxEnergy(_GameObjectContainer.getPlayerCar().getMaxEnergy());
 			_Clock.restart();
 			_Level.resetTimer();
+			setDifficulty(_OptionsMenu.getDifficulty());
 		}
 		else if (_GameState == GameState::Highscores) {
 			_HighscoreMenu.loadScoreTable();
 		}
+		else if (_GameState == GameState::Options)
+		{
+			_OptionsMenu.enableDifficultySelection(true);
+		}
+
 		if (_CurrentCarSkinIndex < 0) {
 			_CurrentCarSkinIndex = _CarSkins.size() - 1;
 		}
@@ -194,7 +204,7 @@ void Framework::update()
 				_GameState = GameState::BossFight;
 			}
 		}
-		_GameObjectContainer.update(_FrameTime, _Level.getLevel(), _Level.getRoadSpeed());
+		_GameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
 		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy());
 		if (!_GameObjectContainer.playerIsAlive()) {
 			_GameState = GameState::GameOver;
@@ -208,7 +218,7 @@ void Framework::update()
 			_LevelUpScreen.levelUp();
 			_GameState = GameState::LevelUp;
 		}
-		_GameObjectContainer.update(_FrameTime, _Level.getLevel(), _Level.getRoadSpeed());
+		_GameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
 		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy());
 		if (!_GameObjectContainer.playerIsAlive()) {
 			_GameState = GameState::GameOver;
@@ -223,6 +233,7 @@ void Framework::update()
 			_GameState = GameState::Running;
 			_Level.levelUp();
 			setVolume(_OptionsMenu.getVolume());
+			_GameObjectContainer.setLevel(_Level.getLevel());
 		}
 		break;
 	case GameState::Main:
@@ -339,11 +350,12 @@ void Framework::load()
 	}
 	FileStream.close();
 
-	if (Settings.size() >= 2)
+	if (Settings.size() >= 3)
 	{
 		_FPS = std::stoi(Settings[0]);
 		_OptionsMenu.setFPS(_FPS);
 		_OptionsMenu.setVolume(std::stoi(Settings[1]));
+		_OptionsMenu.setDifficulty(std::stoi(Settings[2]));
 		setVolume(_OptionsMenu.getVolume());
 	}
 }
@@ -380,4 +392,10 @@ void Framework::setMouseVisible(bool visible)
 			cursor = ShowCursor(1);
 		}
 	}
+}
+
+void Framework::setDifficulty(int Difficulty)
+{
+	_Level.setDifficulty(Difficulty);
+	_GameObjectContainer.setDifficulty(Difficulty);
 }

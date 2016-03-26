@@ -82,3 +82,22 @@ void Level::resetLevel()
 	_Level = 1;
 	_Sprite.setTexture((*_Textures.at((_Level - 1) % _Textures.size())));
 }
+
+int Level::getRoadSpeed()
+{
+	switch (_Difficulty)
+	{
+	case 0:
+	case 1:
+	case 2:
+		return (60 + _Difficulty * 20) * _Level + 100;
+		break;
+	case 3:
+		return (110 * _Level + 150);
+		break;
+	default:
+		return -100;
+		break;
+	}
+
+}

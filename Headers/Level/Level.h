@@ -67,13 +67,18 @@ public:
 	/*
 		@return int Speed of the road
 	*/
-	int getRoadSpeed() { return (110 * _Level + 150); }
+	int getRoadSpeed();
 
 	/*
 		Resets the internal timer of the Level
 	*/
 	void resetTimer() { _Timer.restart(); }
 
+	/*
+		Sets the selected difficulty
+		@param dif Difficulty
+	*/
+	void setDifficulty(int dif) { _Difficulty = dif; }
 private:
 	std::vector<std::shared_ptr<sf::Texture>> _Textures;
 	sf::Sprite _Sprite;
@@ -83,6 +88,6 @@ private:
 
 	sf::Clock _Timer;
 
-	int _Level;
+	int _Level, _Difficulty;
 	float _LevelTime;
 };

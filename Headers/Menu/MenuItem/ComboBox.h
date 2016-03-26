@@ -32,7 +32,7 @@ public:
 	set currentItem
 	@return bool False
 	*/
-	void setValue(float x) { _CurrentItem = ((int)x % _Items.size()); }
+	void setValue(float x);
 
 	/*
 	return current Item

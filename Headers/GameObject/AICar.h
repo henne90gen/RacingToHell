@@ -12,7 +12,7 @@ public:
 		@param roadSpeed Speed of the road
 		@param texture Texture that is going to be used for the sprite
 	*/
-	AICar(int level, int roadSpeed, sf::Texture& texture);
+	AICar(int hp, int roadSpeed, sf::Texture& texture);
 	~AICar() {}
 
 	/*

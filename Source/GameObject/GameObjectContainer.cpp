@@ -10,7 +10,7 @@ GameObjectContainer::~GameObjectContainer()
 	_BossCarTextures.clear();
 }
 
-void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
+void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 {
 	// Update Animations
 	for (int i = 0; i < _Animations.size(); i++) {
@@ -100,7 +100,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			if (_TimePassedCar + FrameTime > 1 / _CarFrequency)
 			{
 				_TimePassedCar += FrameTime - 1 / _CarFrequency;
-				spawnAICar(Difficulty, RoadSpeed);
+				spawnAICar(RoadSpeed);
 			}
 			else
 			{
@@ -127,7 +127,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 			_TimePassedBullet += FrameTime - 1 / _BulletFrequency;
 			spawnBullet();
 
-			_BulletFrequency = 1.0f + 0.1f * (float)(Difficulty);
+			setBulletFrequency();
 		}
 		else {
 			_TimePassedBullet += FrameTime;
@@ -138,7 +138,7 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 		{
 			if (_GameObjects.at(i)->getType() == GameObjectType::AI)
 			{
-				for (unsigned int j = i + 1; j < _GameObjects.size(); j++)
+				for (unsigned int j = 1 + (int)(_BossFight); j < _GameObjects.size(); j++)
 				{
 					if (_GameObjects.at(j)->getType() == GameObjectType::AI && i != j &&
 						_GameObjects.at(i)->getLane() == _GameObjects.at(j)->getLane() &&
@@ -214,9 +214,9 @@ void GameObjectContainer::update(float FrameTime, int Difficulty, int RoadSpeed)
 		if (_TimePassedToolbox + FrameTime > 1.0f / _ToolboxFrequency)
 		{
 			_TimePassedToolbox += FrameTime - 1.0f / _ToolboxFrequency;
-			_ToolboxFrequency = (float)(std::rand() % 20) / 1000.0f + 0.020f;
 			std::shared_ptr<GameObject> newToolbox(new GameObject(sf::Vector2f(std::rand() % 3 * 150 + 150, -10), GameObjectType::Tools, _ToolboxTexture));
 			_GameObjects.push_back(newToolbox);
+			setToolboxFrequency();
 		}
 		else {
 			_TimePassedToolbox += FrameTime;
@@ -310,15 +310,15 @@ void GameObjectContainer::resetGameObjects(int SelectedCar)
 	_Animations.clear();
 	_SoundEffects.clear();
 
+	//Level
+	_Level = 1;
+
 	//Spielerauto
 	std::shared_ptr<PlayerCar> MainCar(new PlayerCar(SelectedCar, (*_PlayerCarTextures.at(SelectedCar))));
 	_GameObjects.push_back(MainCar);
 	
 	//Frequenz
-	_CarFrequency = 2.25f;
-	_BulletFrequency = 2.55f;
-	_CanisterFrequency = 0.3f;
-	_ToolboxFrequency = (float)(std::rand() % 20) / 1000.0f + 0.020f;
+	setAllFrequencies();
 
 	_TimePassedCar = 0.0f;
 	_TimePassedBullet = 0.0f;
@@ -397,9 +397,9 @@ void GameObjectContainer::playShotSound(GameObjectType go, sf::Vector2f position
 }
 
 
-void GameObjectContainer::spawnAICar(int level, int roadSpeed)
+void GameObjectContainer::spawnAICar(int roadSpeed)
 {
-	std::shared_ptr<AICar> newAiCar(new AICar(level, roadSpeed, (*_AICarTextures.at(std::rand() % 7))));
+	std::shared_ptr<AICar> newAiCar(new AICar(getAiHP(), roadSpeed, (*_AICarTextures.at(std::rand() % 7))));
 
 	for (unsigned int i = 1; i < _GameObjects.size(); i++)
 	{
@@ -456,3 +456,119 @@ void GameObjectContainer::deleteObject(unsigned int id)
 {
 	_GameObjects.erase(_GameObjects.begin() + id);
 }
+
+void GameObjectContainer::setAllFrequencies()
+{
+	setAiCarFrequency();
+	setBulletFrequency();
+	setCanisterFrequency();
+	setToolboxFrequency();
+}
+
+void GameObjectContainer::setAiCarFrequency()
+{
+	switch (_Difficulty)
+	{
+	case 0:
+		_CarFrequency = 1.5f + 0.1f * (float)_Level;
+		break;
+	case 1:
+		_CarFrequency = 1.75f + 0.125f * (float)_Level;
+		break;
+	case 2:
+		_CarFrequency = 2.0f;
+		break;
+	case 3:
+		_CarFrequency = 2.25f;
+		break;
+	default:
+		break;
+	}
+}
+
+void GameObjectContainer::setBulletFrequency()
+{
+	switch (_Difficulty)
+	{
+	case 0:
+		_BulletFrequency = 0.8f + 0.065f * (float)_Level;
+		break;
+	case 1:
+		_BulletFrequency = 1.2f + 0.09f * (float)_Level;
+		break;
+	case 2:
+		_BulletFrequency = 1.4f;
+		break;
+	case 3:
+		_BulletFrequency = 1.8f;
+		break;
+	default:
+		break;
+	}
+}
+
+
+void GameObjectContainer::setCanisterFrequency()
+{
+	switch (_Difficulty)
+	{
+	case 0:
+		_CanisterFrequency = 0.5f;
+		break;
+	case 1:
+		_CanisterFrequency = 0.4f;
+		break;
+	case 2:
+		_CanisterFrequency = 0.3f;
+		break;
+	case 3:
+		_CanisterFrequency = 0.3;
+		break;
+	default:
+		break;
+	}
+}
+
+
+void GameObjectContainer::setToolboxFrequency()
+{
+	switch (_Difficulty)
+	{
+	case 0:
+		_ToolboxFrequency = (float)(std::rand() % 45) / 1000.f + 0.080f;
+		break;
+	case 1:
+		_ToolboxFrequency = (float)(std::rand() % 20) / 1000.f + 0.060f;
+		break;
+	case 2:
+		_ToolboxFrequency = (float)(std::rand() % 20) / 1000.f + 0.040f;
+		break;
+	case 3:
+		_ToolboxFrequency = (float)(std::rand() % 20) / 1000.f + 0.020f;
+		break;
+	default:
+		break;
+	}
+}
+
+int GameObjectContainer::getAiHP()
+{
+	switch (_Difficulty)
+	{
+	case 0:
+		return 40 + _Level * 10;
+		break;
+	case 1:
+		return 50 + _Level * 15;
+		break;
+	case 2:
+		return 60 + _Level * 20;
+		break;
+	case 3:
+		return 65 + _Level * 25;
+		break;
+	default:
+		break;
+	}
+}
+

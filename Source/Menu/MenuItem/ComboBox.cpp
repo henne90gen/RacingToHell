@@ -128,3 +128,9 @@ void ComboBox::centerText()
 	_Text.setPosition(_Position + sf::Vector2f(_ButtonWidth + 0.5f * _BodyWidth - 0.5f * (float)_Text.getGlobalBounds().width, 0));
 }
 
+void ComboBox::setValue(float x)
+{
+	_CurrentItem = ((int)x % _Items.size());
+	_Text.setString(_Items[_CurrentItem]);
+	centerText();
+}

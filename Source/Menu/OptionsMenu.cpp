@@ -19,7 +19,6 @@ OptionsMenu::OptionsMenu() : Menu(GameState::Options)
 	std::shared_ptr<MenuButton> button2(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 490), sf::Vector2f(150, 50), MenuResult::Back, "Back", TextAlignment::Center));
 	_MenuItems.push_back(button2);
 
-
 	_Text.setString("Options");
 	_Text.setCharacterSize(53);
 	_Text.setColor(sf::Color::White);
@@ -105,7 +104,7 @@ void OptionsMenu::saveOptions()
 	std::ofstream FileStream;
 	FileStream.open(Path);
 
-	FileStream << getFPS() << std::endl << getVolume();
+	FileStream << getFPS() << std::endl << getVolume() << std::endl << getDifficulty();
 
 	FileStream.close();
 }

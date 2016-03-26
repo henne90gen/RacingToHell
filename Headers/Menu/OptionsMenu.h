@@ -40,11 +40,14 @@ public:
 	float getVolume() { return _MenuItems[Volume]->getValue(); }
 	void setVolume(float volume) { _MenuItems[Volume]->setValue(volume); }
 	void saveOptions();
+	int getDifficulty() { return (int)_MenuItems[Difficulty]->getValue(); }
+	void setDifficulty(int Dif) { _MenuItems[Difficulty]->setValue(Dif); }
+	void enableDifficultySelection(bool enabled) { _MenuItems[Difficulty]->setEnabled(enabled); }
 private:
 	int _ChangeSliderValue;
 
 	enum Items {
-		FPS, Volume
+		FPS, Volume, Difficulty
 	};
 
 	sf::Text _FPS;

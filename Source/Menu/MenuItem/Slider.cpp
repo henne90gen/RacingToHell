@@ -20,9 +20,9 @@ Slider::Slider(sf::Vector2f pos, MenuResult action, std::string text, float valu
 	_Slider.setPosition(sf::Vector2f(_Line.getPosition().x + _Line.getLocalBounds().width * _Value / _MaxValue,
 		_Line.getPosition().y + _Line.getLocalBounds().height / 2.0f));
 
-	_BoundingBox.left = _Line.getPosition().x;
+	_BoundingBox.left = _Line.getPosition().x - _Slider.getLocalBounds().width;
 	_BoundingBox.top = _Slider.getPosition().y - _Slider.getLocalBounds().height / 2.0f;
-	_BoundingBox.width = _Line.getLocalBounds().width;
+	_BoundingBox.width = _Line.getLocalBounds().width + _Slider.getLocalBounds().width;
 	_BoundingBox.height = _Slider.getLocalBounds().height;
 }
 

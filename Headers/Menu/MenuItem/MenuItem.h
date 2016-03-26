@@ -92,6 +92,6 @@ protected:
 	MenuResult _Action;
 	bool _Hovering, _Enabled, _Focused;
 
-	bool pointInRectangle(sf::FloatRect &Rect, sf::Vector2f Position);
+	bool pointInRectangle(sf::FloatRect Rect, sf::Vector2f Position);
 };
 

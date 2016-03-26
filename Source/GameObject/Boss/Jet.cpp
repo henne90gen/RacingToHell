@@ -34,9 +34,6 @@ void Jet::render(sf::RenderWindow & window)
 
 void Jet::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<GameObject>>& gameObjects)
 {
-
-	std::cout << getPos().x << " | " << getPos().y << " || " << _NextPosition.x << " | " << _NextPosition.y << std::endl;
-
 	if (!_IsExploding) {
 		if (_Movement != Movement::STILL) {
 			if (driveToNextPosition(frameTime)) {

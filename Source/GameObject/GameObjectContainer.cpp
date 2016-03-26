@@ -297,12 +297,37 @@ bool GameObjectContainer::bossIsDead()
 
 void GameObjectContainer::enterBossFight()   
 {
-	std::shared_ptr<Tank> boss(new Tank((*_BossCarTextures[0]), _BulletTexture, _SoundEffects, _AIShotSoundBuffer, _ExplosionSoundBuffer, _Volume));
-	//std::shared_ptr<Carrier> boss(new Carrier((*_BossCarTextures[1]), _BulletTexture, _SoundEffects, _AIShotSoundBuffer, _ExplosionSoundBuffer, _Volume));
-	//std::shared_ptr<Mech> boss(new Mech((*_BossCarTextures[2]), (*_BossCarTextures[3]), _BulletTexture));
-	//Jet* boss = new Jet((*_BossCarTextures[4]), _BulletTexture);
-	_GameObjects.push_back(boss);
+	switch ((_Level - 1) % 4)
+	{
+	case 0:
+	{
+		std::shared_ptr<Tank> boss(new Tank(_Difficulty, getBossHP(), (*_BossCarTextures[0]), _BulletTexture, _SoundEffects, _AIShotSoundBuffer, _ExplosionSoundBuffer, _Volume));
+		_GameObjects.push_back(boss);
+		break;
+	}
+		
+	case 1:
+	{
+		std::shared_ptr<Mech> boss(new Mech(_Difficulty, getBossHP(), (*_BossCarTextures[2]), (*_BossCarTextures[3]), _BulletTexture, _SoundEffects, _AIShotSoundBuffer, _ExplosionSoundBuffer, _Volume));
+		_GameObjects.push_back(boss);
+		break;
+	}
+	case 2:
+	{
+		std::shared_ptr<Jet> boss(new Jet(_Difficulty, getBossHP(), (*_BossCarTextures[4]), _BulletTexture, _SoundEffects, _AIShotSoundBuffer, _ExplosionSoundBuffer, _Volume));
+		_GameObjects.push_back(boss);
+		break;
+	}	
+	case 3:
+	{
+		std::shared_ptr<Carrier> boss(new Carrier(_Difficulty, getBossHP(), (*_BossCarTextures[1]), _BulletTexture, _SoundEffects, _AIShotSoundBuffer, _ExplosionSoundBuffer, _Volume));
+		_GameObjects.push_back(boss);
+		break;
+	}
+	}
+
 	_BossFight = true;
+	
 }
 
 void GameObjectContainer::resetGameObjects(int SelectedCar)
@@ -571,5 +596,25 @@ int GameObjectContainer::getAiHP()
 	default:
 		break;
 	}
+}
+
+int GameObjectContainer::getBossHP()
+{
+	switch ((_Level - 1) % 4)
+	{
+	case 0:
+		return 6000 + (int)((_Level - 1) / 4.0f) * 3000;
+		break;
+	case 1:
+		return 100;
+		break;
+	case 2:
+		return 100;
+		break;
+	case 3:
+		return 100;
+		break;
+	}
+
 }
 

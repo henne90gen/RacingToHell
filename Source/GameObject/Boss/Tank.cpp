@@ -2,7 +2,7 @@
 #include "GameObject/Boss/Tank.h"
 
 
-Tank::Tank(sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float Volume) : BossCar(sf::Vector2f(SCREENWIDTH / 2, -1 * (float)texture.getSize().y / 2.0f), 100, 200, texture, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, Volume),
+Tank::Tank(int difficulty, int HP, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float Volume) : BossCar(sf::Vector2f(SCREENWIDTH / 2, -1 * (float)texture.getSize().y / 2.0f), difficulty, HP, 200, texture, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, Volume),
 	_Radius(130), _MovementSwitch(false)
 {
 	_GunTexture.loadFromFile("Resources/Texture/BossCar/CannonTank.png");
@@ -17,7 +17,7 @@ Tank::Tank(sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pa
 	_NextPosition = _DefaultPosition;
 	_Movement = Movement::DRIVETODEFAULT;
 
-	_Pattern = { std::make_pair(Phase::SIMPLESHOOT, 4.0f), std::make_pair(Phase::SALVE, 10.0f), std::make_pair(Phase::SPIN, 10.0f), std::make_pair(Phase::HARDCORESPAM, 6.0f) };
+	_Pattern = { std::make_pair(Phase::SIMPLESHOOT, 4.0f), std::make_pair(Phase::SPIN, 10.0f), std::make_pair(Phase::SALVE, 10.0f), std::make_pair(Phase::HARDCORESPAM, 6.0f) };
 }
 
 void Tank::render(sf::RenderWindow& window)
@@ -63,7 +63,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 
 			switch (_Pattern[_CurrentPhase].first) {
 			case Phase::SIMPLESHOOT:
-				_Event1Frequency = 4.0f;
+				_Event1Frequency = 4.0f + 1.75f * (float)_Difficulty;
 
 				_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
 
@@ -73,8 +73,8 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 				break;
 			case Phase::SALVE:
 				
-				_Event1Frequency = 1.0f;
-				_Event2Frequency = 10.0f;
+				_Event1Frequency = 1.0f + 0.75f * (float)_Difficulty;
+				_Event2Frequency = 10.0f + 1.0f * (float)_Difficulty;
 
 				_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
 
@@ -97,7 +97,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 				}
 				break;
 			case Phase::SPIN:
-				_Event1Frequency = 11.0f;
+				_Event1Frequency = 9.0f + 1.0f * (float)_Difficulty;
 				if (_Event1Switch) {
 					if (angle + frameTime * 100 > 180.0f) {
 						_Event1Switch = false;
@@ -121,7 +121,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 				}
 				break;
 			case Phase::HARDCORESPAM:
-				_Event1Frequency = 40.0f;
+				_Event1Frequency = 40.0f + 15.0f * (float)_Difficulty;
 				if (getBossEvent() == 1) {
 					_GunOrientation = divideByLength(sf::Vector2f(((float)(std::rand() - (float)(RAND_MAX) / 2) / (float)(RAND_MAX)), 
 						((float)(std::rand() - (float)(RAND_MAX) / 2) / (float)(RAND_MAX))));

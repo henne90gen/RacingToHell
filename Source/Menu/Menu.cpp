@@ -9,7 +9,7 @@ Menu::Menu(GameState menuState) : _JoystickSelection(0), _JoystickDelay(0.15f), 
 
 GameState Menu::handleMenuItems(sf::Event & Event)
 {
-	applyJoystickSelection();
+	applyJoystickSelection(Event);
 
 	if (Event.type == sf::Event::MouseButtonPressed) {
 		_MousePos = sf::Vector2f(Event.mouseButton.x, Event.mouseButton.y);
@@ -51,15 +51,17 @@ void Menu::handleJoystick(float axis)
 	}
 }
 
-void Menu::applyJoystickSelection()
+void Menu::applyJoystickSelection(sf::Event & Event)
 {
-	for (int i = 0; i < _MenuItems.size(); i++) {
-		if (_MenuItems[i]->getType() != MenuItemType::MTextbox) {
-			if (i == _JoystickSelection) {
-				_MenuItems[i]->setFocused(true);
-			}
-			else {
-				_MenuItems[i]->setFocused(false);
+	if (Event.type != sf::Event::MouseButtonPressed && Event.type != sf::Event::MouseButtonReleased) {
+		for (int i = 0; i < _MenuItems.size(); i++) {
+			if (_MenuItems[i]->getType() != MenuItemType::MTextbox) {
+				if (i == _JoystickSelection) {
+					_MenuItems[i]->setFocused(true);
+				}
+				else {
+					_MenuItems[i]->setFocused(false);
+				}
 			}
 		}
 	}

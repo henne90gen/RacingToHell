@@ -11,12 +11,12 @@ public:
 	Menu(GameState menuState);
 	~Menu() {}
 
-	virtual void render(sf::RenderWindow & Window) = 0;
-	virtual GameState handleEvents(sf::RenderWindow & Window) = 0;
+	virtual void render(sf::RenderWindow & window) = 0;
+	virtual GameState handleEvents(sf::RenderWindow & window) = 0;
 
 	GameState handleMenuItems(sf::Event & Event);
 	void handleJoystick(float axis);
-	void applyJoystickSelection();
+	void applyJoystickSelection(sf::Event & Event);
 
 protected:
 	std::vector<std::shared_ptr<MenuItem>> _MenuItems;

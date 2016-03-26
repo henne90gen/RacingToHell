@@ -371,10 +371,10 @@ void Framework::resetGame()
 
 void Framework::setVolume(float volume)
 {
-	sf::Listener::setGlobalVolume(volume * 10);
-	_MenuMusic.setVolume(volume * 7);
-	_Level.setVolume(volume * 8);
-	_GameObjectContainer.setVolume(volume * 10);
+	sf::Listener::setGlobalVolume(volume * 7);
+	_MenuMusic.setVolume(volume * 9);
+	_Level.setVolume(volume * 9);
+	_GameObjectContainer.setVolume(volume * 2.7);
 	_LevelUpScreen.setVolume(volume * 100);
 	_GameOverScreen.setVolume(volume * 10);
 }

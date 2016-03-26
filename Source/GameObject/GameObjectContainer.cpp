@@ -288,6 +288,7 @@ bool GameObjectContainer::bossIsDead()
 			_BossFight = false;
 			_AboutToLevelUp = false;
 			deleteObject(1);
+			getPlayerCar().resetResources();
 			return true;
 		}
 	}
@@ -473,13 +474,13 @@ void GameObjectContainer::setAiCarFrequency()
 		_CarFrequency = 1.5f + 0.1f * (float)_Level;
 		break;
 	case 1:
-		_CarFrequency = 1.75f + 0.125f * (float)_Level;
+		_CarFrequency = 1.75f + 0.11f * std::powf((float)_Level, 1.3f);
 		break;
 	case 2:
-		_CarFrequency = 2.0f;
+		_CarFrequency = 2.0f + 0.15f * std::powf((float)_Level, 1.3f);
 		break;
 	case 3:
-		_CarFrequency = 2.25f;
+		_CarFrequency = 2.15f + 0.17 * std::powf((float)_Level, 1.45f);
 		break;
 	default:
 		break;
@@ -494,13 +495,13 @@ void GameObjectContainer::setBulletFrequency()
 		_BulletFrequency = 0.8f + 0.065f * (float)_Level;
 		break;
 	case 1:
-		_BulletFrequency = 1.2f + 0.09f * (float)_Level;
+		_BulletFrequency = 1.2f + 0.08f * std::powf((float)_Level, 1.1f);
 		break;
 	case 2:
-		_BulletFrequency = 1.4f;
+		_BulletFrequency = 1.2f + 1.0f * std::powf((float)_Level, 1.2f);
 		break;
 	case 3:
-		_BulletFrequency = 1.8f;
+		_BulletFrequency = 1.4f + 1.0f * std::powf((float)_Level, 1.33f);
 		break;
 	default:
 		break;
@@ -522,7 +523,7 @@ void GameObjectContainer::setCanisterFrequency()
 		_CanisterFrequency = 0.3f;
 		break;
 	case 3:
-		_CanisterFrequency = 0.3;
+		_CanisterFrequency = 0.3f;
 		break;
 	default:
 		break;

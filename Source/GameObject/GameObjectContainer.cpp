@@ -314,7 +314,7 @@ void GameObjectContainer::enterBossFight()
 	}
 	case 2:
 	{
-		std::shared_ptr<Jet> boss(new Jet(_Difficulty, getBossHP(), (*_BossCarTextures[4]), _BulletTexture, _SoundEffects, _AIShotSoundBuffer, _ExplosionSoundBuffer, _Volume));
+		std::shared_ptr<Jet> boss(new Jet(_Difficulty, getBossHP(), (*_BossCarTextures[4]), _BulletTexture, _SoundEffects, _AIShotSoundBuffer, _ExplosionSoundBuffer, _JetSoundBuffer, _Volume));
 		_GameObjects.push_back(boss);
 		break;
 	}	

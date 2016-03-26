@@ -29,7 +29,7 @@ public:
 	/*
 		@return sf::FloatRect Bounding box of the MenuItem
 	*/
-	virtual sf::FloatRect & getRect() = 0;
+	virtual sf::FloatRect getRect() = 0;
 
 	/*
 		@return std::string Text of the MenuItem

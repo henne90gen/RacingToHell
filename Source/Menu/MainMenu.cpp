@@ -19,6 +19,9 @@ MainMenu::MainMenu() : Menu(GameState::Main)
 	std::shared_ptr<MenuButton> button6(new MenuButton(sf::Vector2f(SCREENWIDTH / 2 + 50, SCREENHEIGHT - 335), sf::Vector2f(0, 0), MenuResult::NextSkin, ">>", TextAlignment::Left));
 	_MenuItems.push_back(button6);
 
+	std::shared_ptr<Textbox> textbox(new Textbox(sf::Vector2f(SCREENWIDTH / 2 + 50, 55), sf::Vector2f(200, 35), 25, "Test", true));
+	_MenuItems.push_back(textbox);
+
 	//Main-Menu Text
 	_Text.setString("Main Menu");
 	_Text.setCharacterSize(53);

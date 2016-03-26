@@ -151,7 +151,7 @@ void Textbox::setCursor()
 	_Cursor.setPosition(_Text.getPosition() + sf::Vector2f(TmpText.getLocalBounds().width + 1, 4));
 }
 
-sf::FloatRect & Textbox::getRect()
+sf::FloatRect Textbox::getRect()
 {
 	return _Box.getGlobalBounds();
 }

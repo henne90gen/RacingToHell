@@ -20,7 +20,10 @@ Mech::Mech(int difficulty, int HP, sf::Texture& textureTop, sf::Texture& texture
 	_NextPosition = _DefaultPosition;
 	_Movement = Movement::DRIVETODEFAULT;
 
-	_Pattern = { std::make_pair(Phase::SPIN, ((2.0f + (float)_Difficulty) * 360.0f) / (180.0f + 135.f * (float)_Difficulty)) , std::make_pair(Phase::SHOTGUN, 7.0f), std::make_pair(Phase::SALVE, 7.0f) };
+	_BaseSpeed = _Speed;
+
+	_Pattern = { std::make_pair(Phase::SPIN, ((2.0f + (float)_Difficulty) * 360.0f) / (180.0f + 135.f * (float)_Difficulty)) , std::make_pair(Phase::SHOTGUN, 7.0f), std::make_pair(Phase::SALVE, 7.0f), std::make_pair(Phase::RUNARPLAYERPHASE, 0.25f) };
+	//_Pattern = { std::make_pair(Phase::RUNARPLAYERPHASE, 0.25f) };
 }
 
 void Mech::render(sf::RenderWindow & window)
@@ -49,6 +52,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 				_Movement = Movement::LEFTRIGHT;
 				_Attack = true;
 				_PhaseClock.restart();
+				_Speed = _BaseSpeed;
 				break;
 			case Movement::LEFTRIGHT:
 				_MovementSwitch = !_MovementSwitch;
@@ -63,8 +67,9 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 				}
 				break;
 			case Movement::RUNATPLAYER:
-				_Movement = Movement::LEFTRIGHT;
-
+				_Movement = Movement::DRIVETODEFAULT;
+				_NextPosition = _DefaultPosition;
+				break;
 			default:
 				break;
 			}
@@ -145,13 +150,17 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 			}
 				break;
 			case Phase::RUNARPLAYERPHASE:
-				_NextPosition = gameObjects[0]->getPos();
-				_Movement = Movement::RUNATPLAYER;
+				if (!_Event1Switch)
+				{
+					_NextPosition = gameObjects[0]->getPos();
+					_Movement = Movement::RUNATPLAYER;
+					_Speed = (5 + 2 * _Difficulty) * _Speed;
+					_Attack = false;
+
+					_Event1Switch = true;
+				}
 				break;
 			}
-			
-
-			
 		}
 
 		_TopAnim.setRotation(getAngleFromVector(_GunOrientation) + 90);

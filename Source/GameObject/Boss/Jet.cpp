@@ -2,7 +2,7 @@
 #include "GameObject\Boss\Jet.h"
 
 Jet::Jet(int difficulty, int HP, sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, sf::SoundBuffer &soundBufferEngine, float Volume) : 
-	BossCar(sf::Vector2f(-1 * texture.getSize().x, SCREENHEIGHT / 2), difficulty, HP, 500, texture, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, Volume)
+	BossCar(sf::Vector2f(-1 * texture.getSize().x, SCREENHEIGHT / 2), difficulty, HP, 500, texture, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, Volume),
 	_EngineSoundBuffer(soundBufferEngine)
 {
 	_EngineSound.setBuffer(_EngineSoundBuffer);

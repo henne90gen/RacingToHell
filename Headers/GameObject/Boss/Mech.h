@@ -62,6 +62,7 @@ private:
 	
 	float _GunRadius;
 
+	int _BaseSpeed;
 	/*
 		Calculates the positions of the two guns of the Mech
 		@return pair<Vector2f, Vector2f> First is the position of the left gun and second is the position of the right gun

@@ -92,7 +92,7 @@ void OptionsMenu::update(float FrameTime)
 	_MenuItems[_JoystickSelection]->setValue(_MenuItems[_JoystickSelection]->getValue() + _MenuItems[_JoystickSelection]->getMaxValue() * _ChangeSliderValue * FrameTime);
 	_ChangeSliderValue = 0;
 
-	_FPS.setString(std::to_string((int)_MenuItems[FPS]->getValue()));
+	_FPS.setString(std::to_string((int)getFPS()));
 	int volume = _MenuItems[Volume]->getValue() * 100 / _MenuItems[Volume]->getMaxValue();
 	
 	_Volume.setString(std::to_string(volume));

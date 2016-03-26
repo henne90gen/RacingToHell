@@ -1,8 +1,16 @@
 #include "stdafx.h"
 #include "GameObject\Boss\Jet.h"
 
-Jet::Jet(int difficulty, int HP, sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float Volume) : BossCar(sf::Vector2f(-1 * texture.getSize().x, SCREENHEIGHT / 2), difficulty, HP, 500, texture, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, Volume)
+Jet::Jet(int difficulty, int HP, sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, sf::SoundBuffer &soundBufferEngine, float Volume) : 
+	BossCar(sf::Vector2f(-1 * texture.getSize().x, SCREENHEIGHT / 2), difficulty, HP, 500, texture, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, Volume)
+	_EngineSoundBuffer(soundBufferEngine)
 {
+	_EngineSound.setBuffer(_EngineSoundBuffer);
+	_EngineSound.setVolume(Volume * 4);
+	_EngineSound.setPosition(getPos().x, 0.f, getPos().y);
+	_EngineSound.setMinDistance(500.f);
+	_EngineSound.setAttenuation(10.f);
+
 	_Traffic = true;
 	_Pattern = { std::make_pair(Phase::SIDE, 6.0f) };
 	_CurrentPhase = 0;
@@ -26,9 +34,12 @@ void Jet::render(sf::RenderWindow & window)
 
 void Jet::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<GameObject>>& gameObjects)
 {
+
+	std::cout << getPos().x << " | " << getPos().y << " || " << _NextPosition.x << " | " << _NextPosition.y << std::endl;
+
 	if (!_IsExploding) {
-		if (_Movement != Movement::STILL && driveToNextPosition(frameTime))
-	{
+		if (_Movement != Movement::STILL) {
+			if (driveToNextPosition(frameTime)) {
 		_BossEventTimer1.restart();
 		_BossEventTimer2.restart();
 		_Event1Switch = false;
@@ -38,9 +49,16 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Gam
 
 		_Movement = Movement::STILL;
 	}
+			else {
+				_EngineSound.setPosition(getPos().x, 0.f, getPos().y);
+				if (_EngineSound.getStatus() == sf::Sound::Paused || _EngineSound.getStatus() == sf::Sound::Stopped) {
+					_EngineSound.play();
+				}
+			}
+		}
+		else if (_Movement == Movement::STILL) {
+			if (_EngineSound.getStatus() == sf::Sound::Playing) _EngineSound.stop();
 
-	if (_Movement == Movement::STILL)
-	{
 		switch (_Pattern[_CurrentPhase].first)
 		{
 		case Phase::SIDE:
@@ -109,10 +127,10 @@ void Jet::randomPosition()
 {
 	bool LeftRight = (std::rand() % 100) > 50;
 
-	setPos(sf::Vector2f(-0.5f * getWidth() + (int)(LeftRight) * (SCREENWIDTH + getWidth()), 0.5f * getHeight() + ((std::rand() % 100) / 100.0f) * (SCREENHEIGHT - getHeight())));
+	setPos(sf::Vector2f(-0.5f * getWidth() + std::pow(-1, (int)!LeftRight) * (SCREENWIDTH * (int)LeftRight + getWidth() * 4), 0.5f * getHeight() + ((std::rand() % 100) / 100.0f) * (SCREENHEIGHT - getHeight())));
 	getSprite().setRotation(-180.0f * (int)(LeftRight));
 
-	_NextPosition = getPos() +  sf::Vector2f(std::pow(-1, (int)LeftRight) * (SCREENWIDTH + getWidth()), 0);
+	_NextPosition = sf::Vector2f(std::pow(-1, (int)LeftRight) * (SCREENWIDTH * (int)!LeftRight + getWidth() * 4), getPos().y);
 }
 
 void Jet::checkPhase()

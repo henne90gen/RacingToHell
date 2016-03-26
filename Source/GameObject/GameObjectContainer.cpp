@@ -321,7 +321,7 @@ void GameObjectContainer::enterBossFight()
 	case 3:
 	{
 		std::shared_ptr<Carrier> boss(new Carrier(_Difficulty, getBossHP(), (*_BossCarTextures[1]), _BulletTexture, _SoundEffects, _AIShotSoundBuffer, _ExplosionSoundBuffer, _Volume));
-		_GameObjects.push_back(boss);
+	_GameObjects.push_back(boss);
 		break;
 	}
 	}
@@ -377,12 +377,12 @@ void GameObjectContainer::load()
 	_BulletTexture.loadFromFile("Resources/Texture/Object/Bullet.png");
 	_ToolboxTexture.loadFromFile("Resources/Texture/Object/toolbox.png");
 	_EnergyCanisterTexture.loadFromFile("Resources/Texture/Object/canister.png");
+	_ExplosionTexture.loadFromFile("Resources/Texture/Animation/explosion.png");
 
 	_AIShotSoundBuffer.loadFromFile("Resources/Sound/shotAI.wav");
 	_PlayerShotSoundBuffer.loadFromFile("Resources/Sound/shotPlayer.wav");
 	_ExplosionSoundBuffer.loadFromFile("Resources/Sound/explosion.wav");
-	
-	_ExplosionTexture.loadFromFile("Resources/Texture/Animation/explosion.png");
+	_JetSoundBuffer.loadFromFile("Resources/Sound/jetengine.wav");
 
 	std::string bossTextures[] = 
 	{ 

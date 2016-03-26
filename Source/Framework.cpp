@@ -373,7 +373,7 @@ void Framework::setVolume(float volume)
 {
 	sf::Listener::setGlobalVolume(volume * 7);
 	_MenuMusic.setVolume(volume * 9);
-	_Level.setVolume(volume * 9);
+	_Level.setVolume(volume * 7);
 	_GameObjectContainer.setVolume(volume * 2.7);
 	_LevelUpScreen.setVolume(volume * 100);
 	_GameOverScreen.setVolume(volume * 10);

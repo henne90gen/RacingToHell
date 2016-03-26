@@ -128,7 +128,7 @@ private:
 
 	sf::Texture _ToolboxTexture, _EnergyCanisterTexture, _BulletTexture, _ExplosionTexture;
 
-	sf::SoundBuffer _AIShotSoundBuffer, _PlayerShotSoundBuffer, _ExplosionSoundBuffer;
+	sf::SoundBuffer _AIShotSoundBuffer, _PlayerShotSoundBuffer, _ExplosionSoundBuffer, _JetSoundBuffer;
 	std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>> _SoundEffects;
 	float _Volume;
 

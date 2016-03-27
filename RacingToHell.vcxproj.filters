@@ -352,6 +352,7 @@
       <Filter>Resource Files\Sound\Music</Filter>
     </None>
     <None Include="Resources\Data\Settings.cfg" />
+    <None Include="Resources\Data\Highscore.sco" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Texture\TrafficCar\Traffic1.png">
@@ -459,6 +460,21 @@
     <Image Include="Resources\Texture\Icon\Icon.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Resources\Texture\BossCar\Jet.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\Animation\explosion.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\MainMenu\ComboboxArrow.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\LevelUp\double_arrow.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\LevelUp\fast_forward.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\Font\arial.ttf">
@@ -477,6 +493,15 @@
     </Media>
     <Media Include="Resources\Sound\shotPlayer.wav">
       <Filter>Resource Files\Sound</Filter>
+    </Media>
+    <Media Include="Resources\Sound\explosion.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="Resources\Sound\jetengine.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="Resources\Sound\levelUp.wav">
+      <Filter>Resource Files</Filter>
     </Media>
   </ItemGroup>
 </Project>

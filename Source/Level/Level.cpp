@@ -74,8 +74,8 @@ void Level::load()
 
 void Level::resetLevel()
 {
-	_Level = 1;
-	_LevelTime = 60.0f;
+	_Level = 2;
+	_LevelTime = 00.0f;
 	_Music.setBuffer((*_MusicBuffers.at(0)));
 	_Sprite.setTexture((*_Textures.at((_Level - 1) % _Textures.size())));
 }

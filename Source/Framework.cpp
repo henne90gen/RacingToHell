@@ -130,6 +130,7 @@ void Framework::handleEvents()
 			_Clock.restart();
 			_Level.resetTimer();
 			setDifficulty(_OptionsMenu.getDifficulty());
+			_GameObjectContainer.setLevel(_Level.getLevel());
 		}
 		else if (_GameState == GameState::Highscores) {
 			_HighscoreMenu.loadScoreTable();

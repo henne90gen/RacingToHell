@@ -6,7 +6,7 @@ public:
 	/*
 		Manager class for the level, draws background and plays music
 	*/
-	Level();
+	Level() {}
 	~Level() {}
 
 	/*

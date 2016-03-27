@@ -29,7 +29,6 @@ Mech::Mech(int difficulty, int HP, sf::Texture& textureTop, sf::Texture& texture
 		std::make_pair(Phase::ZICKZACKPHASE, 0.25f), std::make_pair(Phase::SALVE, 3.0f), std::make_pair(Phase::NOTHING, 0.75f),
 		std::make_pair(Phase::RUNATPLAYERPHASE, 0.25f)
 	};
-	_Pattern = { std::make_pair(Phase::ZICKZACKPHASE, 0.25f), std::make_pair(Phase::SALVE, 3.0f) };
 }
 
 void Mech::render(sf::RenderWindow & window)

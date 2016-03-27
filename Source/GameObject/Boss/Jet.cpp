@@ -17,9 +17,11 @@ Jet::Jet(int difficulty, int HP, sf::Texture & texture, sf::Texture & bulletText
 
 	randomPosition();
 
+	_Speed = (0.8f + 0.2f * (float)_Difficulty) * _Speed;
+
 	_Movement = Movement::STRAIGHT;
 
-	_Pattern = {std::make_pair(Phase::SIDE, 10.5f), std::make_pair(Phase::SAVELANES, 10.5f)};
+	_Pattern = {std::make_pair(Phase::SIDE, 10.5f), std::make_pair(Phase::SAVELANES, 9.f)};
 }
 
 void Jet::render(sf::RenderWindow & window)
@@ -37,12 +39,12 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Gam
 	if (!_IsExploding) {
 		if (_Movement != Movement::STILL) {
 			if (driveToNextPosition(frameTime)) {
-				_BossEventTimer1.restart();
-				_BossEventTimer2.restart();
-				_Event1Switch = false;
-				_Event2Switch = false;
-				_Event2Counter = 0;
-				_Event1Counter = 0;
+				//_BossEventTimer1.restart();
+				//_BossEventTimer2.restart();
+				//_Event1Switch = false;
+				//_Event2Switch = false;
+				//_Event2Counter = 0;
+				//_Event1Counter = 0;
 
 				_Movement = Movement::STILL;
 			}
@@ -66,8 +68,8 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Gam
 				{
 					for (int i = -40; i <= SCREENHEIGHT; i += 200)
 					{
-							shootBullet(gameObjects, sf::Vector2f(0, i), sf::Vector2f(1, 0));
-							shootBullet(gameObjects, sf::Vector2f(SCREENWIDTH, i + 100), sf::Vector2f(-1, 0));
+						shootBullet(gameObjects, sf::Vector2f(0, i), sf::Vector2f(1, 0));
+						shootBullet(gameObjects, sf::Vector2f(SCREENWIDTH, i + 100), sf::Vector2f(-1, 0));
 					}
 				}
 				break;
@@ -79,12 +81,17 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Gam
 
 				if (getBossEvent() == 1 || _Event2Counter > 0)
 				{
-					_Event2Frequency = 3.0f;
+					_Event2Frequency = 3.0f + 1.0f * (float)_Difficulty;
 
 					if (getBossEvent() == 2)
 					{
-						if (_Event2Counter + 1 <= 3)
+						if (_Event2Counter + 1 <= 3 + 2 * _Difficulty)
 						{
+							std::cout << _Event2Counter + 1 << "/" << 4 + 2 * _Difficulty << std::endl;
+							std::cout << _BossEventTimer1.getElapsedTime().asSeconds() << "/" << 1 / _Event1Frequency << std::endl;
+							std::cout << _BossEventTimer2.getElapsedTime().asSeconds() << "/" << 1 / _Event2Frequency << std::endl;
+
+
 							for (int i = 0; i < 3; i++)
 							{
 									shootBullet(gameObjects, sf::Vector2f(i * 150 + 150, 0), sf::Vector2f(0, 1));
@@ -98,6 +105,7 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Gam
 						else
 						{
 							_Event2Counter = 0;
+							_Event2Frequency = 0.0f;
 						}
 					}
 				}

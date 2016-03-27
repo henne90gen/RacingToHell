@@ -611,7 +611,7 @@ int GameObjectContainer::getBossHP()
 		return 1;
 		break;
 	case 2:
-		return 100;
+		return 1000 + 500 * (int)((_Level - 1) / 4.0f);
 		break;
 	case 3:
 		return 100;

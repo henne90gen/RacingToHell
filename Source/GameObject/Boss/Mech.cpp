@@ -27,7 +27,7 @@ Mech::Mech(int difficulty, int HP, sf::Texture& textureTop, sf::Texture& texture
 		std::make_pair(Phase::SALVE, 7.0f), std::make_pair(Phase::NOTHING, 0.75f),
 		std::make_pair(Phase::RUNATPLAYERPHASE, 0.25f),
 		std::make_pair(Phase::SHOTGUN, 7.0f), std::make_pair(Phase::NOTHING, 1.5f), 
-		std::make_pair(Phase::ZICKZACKPHASE, 0.25f), std::make_pair(Phase::SALVE, 3.0f), std::make_pair(Phase::NOTHING, 0.75f)
+		std::make_pair(Phase::ZICKZACKPHASE, 0.25f), std::make_pair(Phase::SALVEZICKZACK, 3.0f), std::make_pair(Phase::NOTHING, 0.75f)
 	};
 }
 
@@ -137,11 +137,12 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 			case Phase::SALVE:
 				_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
 
-				_Event1Frequency = 1.0f + 0.2f * (float)_Difficulty;
+				_Event1Frequency = 1.25f + 0.25f * (float)_Difficulty;
 
 				if (getBossEvent() == 1)
 				{
-					bool Hand = (std::rand() % 100) > 50;
+					bool Hand = _Event1Switch;//(std::rand() % 100) > 50;
+					_Event1Switch = !_Event1Switch;
 
 					float bulAngle = getAngleFromVector(_GunOrientation);
 					
@@ -159,9 +160,39 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 						else
 						{
 							shootBullet(gameObjects, calcGunPositions().second, bulOrientation);
+						}
 					}
 				}
-			}
+				break;
+			case Phase::SALVEZICKZACK:
+				_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
+
+				_Event1Frequency = 1.25f + 0.25f * (float)_Difficulty;
+
+				if (getBossEvent() == 1)
+				{
+					bool Hand = _Event1Switch;//(std::rand() % 100) > 50;
+					_Event1Switch = !_Event1Switch;
+
+					float bulAngle = getAngleFromVector(_GunOrientation);
+
+					int NumberofBullets = (int)(3 + 0.5f * (float)_Difficulty);
+					float dAngle = (37.0f + 2.5f * (float)_Difficulty) / (float)NumberofBullets;
+
+					for (int i = 0; i < NumberofBullets; i++)
+					{
+						sf::Vector2f bulOrientation = sf::Vector2f(std::cosf((bulAngle + (i - (int)(NumberofBullets / 2)) * dAngle) / 180 * PI), std::sinf((bulAngle + (i - (int)(NumberofBullets / 2)) * dAngle) / 180 * PI));
+
+						if (Hand)
+						{
+							shootBullet(gameObjects, calcGunPositions().first, bulOrientation);
+						}
+						else
+						{
+							shootBullet(gameObjects, calcGunPositions().second, bulOrientation);
+						}
+					}
+				}
 				break;
 			case Phase::RUNATPLAYERPHASE:
 				if (!_Event1Switch)

@@ -59,8 +59,8 @@ HeadsUpDisplay::HeadsUpDisplay()
 	_ScoreText.setFont(_Font);
 	_ScoreText.setCharacterSize(30);
 	_ScoreText.setColor(sf::Color::White);
-	_ScoreText.setPosition(sf::Vector2f(370, SCREENHEIGHT - _Background.getLocalBounds().height));
-	_ScoreText.setString("Score: 0000000");
+	_ScoreText.setPosition(sf::Vector2f(350, SCREENHEIGHT - _Background.getLocalBounds().height));
+	_ScoreText.setString("Score: 00000000");
 }
 
 void HeadsUpDisplay::render(sf::RenderWindow & window)
@@ -76,6 +76,8 @@ void HeadsUpDisplay::render(sf::RenderWindow & window)
 	window.draw(_EnergyBarOutline);
 	window.draw(_EnergyText);
 	window.draw(_EnergyIconSprite);
+
+	window.draw(_LevelProgress);
 
 	window.draw(_ScoreText);
 }
@@ -120,7 +122,7 @@ std::string HeadsUpDisplay::ConvertScore(int score)
 
 	if (ScoreLength < 7)
 	{
-		for (unsigned int i = 0; i < 7 - ScoreLength; i++)
+		for (unsigned int i = 0; i < 8 - ScoreLength; i++)
 		{
 			ScoreString += "0";
 		}

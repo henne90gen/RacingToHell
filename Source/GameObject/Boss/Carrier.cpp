@@ -16,7 +16,8 @@ Carrier::Carrier(int difficulty, int HP, sf::Texture & texture, sf::Texture & bu
 	_NextPosition = _DefaultPosition;
 	_Movement = Movement::DRIVETODEFAULT;
 
-	_Pattern = { std::make_pair(Phase::BLASTSALVE, 5.0f), std::make_pair(Phase::RANDOMSPRAY, 6.0f), std::make_pair(Phase::SPIRAL, 8.0f), std::make_pair(Phase::NOTHING, 2.0f), std::make_pair(Phase::HARDCORESPAM, 7.0f) };
+	_Pattern = { std::make_pair(Phase::BLASTSALVE, 5.0f), std::make_pair(Phase::NOTHING, 1.5f), std::make_pair(Phase::RANDOMSPRAY, 6.0f), std::make_pair(Phase::NOTHING, 1.5f),
+		std::make_pair(Phase::SPIRAL, 8.0f), std::make_pair(Phase::NOTHING, 2.0f), std::make_pair(Phase::HARDCORESPAM, 7.0f), std::make_pair(Phase::NOTHING, 1.5f) };
 }
 
 void Carrier::render(sf::RenderWindow & window)
@@ -195,6 +196,11 @@ void Carrier::checkPhase()
 {
 	if (_PhaseClock.getElapsedTime().asSeconds() > _Pattern[_CurrentPhase].second)
 	{
+		if (_Pattern[_CurrentPhase].first != Phase::NOTHING && std::rand() % RAND_MAX > 0.5f *  RAND_MAX)
+		{
+			_SwitchSides = true;
+		}
+
 		if (_CurrentPhase + 1 >= _Pattern.size())
 		{
 			_CurrentPhase = 0;
@@ -212,11 +218,6 @@ void Carrier::checkPhase()
 		_Event1Counter = 0;
 
 		_PhaseClock.restart();
-
-		if (_CurrentPhase != Phase::NOTHING && std::rand() % RAND_MAX > 0.5f *  RAND_MAX)
-		{
-			_SwitchSides = true;
-		}
 	}
 }
 

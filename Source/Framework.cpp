@@ -210,8 +210,8 @@ void Framework::update()
 		if (!_GameObjectContainer.playerIsAlive()) {
 			_GameState = GameState::GameOver;
 		}
-		_Score += _GameObjectContainer.getCarScore();
-		_Score += 10 * _Level.getLevel() * _FrameTime;
+		
+		addScore();
 		break;
 	case GameState::BossFight:
 		_Level.update(_FrameTime, _GameState);
@@ -224,8 +224,8 @@ void Framework::update()
 		if (!_GameObjectContainer.playerIsAlive()) {
 			_GameState = GameState::GameOver;
 		}
-		_Score += _GameObjectContainer.getCarScore();
-		_Score += 10 * _Level.getLevel() * _FrameTime;
+		
+		addScore();
 		break;
 	case GameState::LevelUp:
 		if (_LevelUpScreen.update()) {
@@ -400,4 +400,27 @@ void Framework::setDifficulty(int Difficulty)
 {
 	_Level.setDifficulty(Difficulty);
 	_GameObjectContainer.setDifficulty(Difficulty);
+}
+
+void Framework::addScore()
+{
+	_Score += _GameObjectContainer.getCarScore();
+	
+	switch (_OptionsMenu.getDifficulty())
+	{
+	case 0:
+		_Score += 5 * _Level.getLevel() * _FrameTime;
+		break;
+	case 1:
+		_Score += 10 * (int)std::powf((float)_Level.getLevel(), 1.15f) * _FrameTime;
+		break;
+	case 2:
+		_Score += 30 * (int)std::powf((float)_Level.getLevel(), 1.3f) * _FrameTime;
+		break;
+	case 3:
+		_Score += 60 * (int)std::powf((float)_Level.getLevel(), 1.6f) * _FrameTime;
+		break;
+	default:
+		break;
+	}
 }

@@ -93,6 +93,11 @@ public:
 	void playSounds();
 
 	/*
+		Stops all sounds from playing
+	*/
+	void stopSounds();
+
+	/*
 		Sets the Volume for all GamObjects
 		@param volume New volume that's being applied
 	*/

@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "GameObject/Boss/Mech.h"
 
-// IDEA: Mech comes in from below and "chase" the player
-
 Mech::Mech(int difficulty, int HP, sf::Texture& textureTop, sf::Texture& textureLegs, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float Volume) : BossCar(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), difficulty, HP, 100, textureTop, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, Volume),
 	_TopAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureTop), _LegsAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureLegs), _MovementSwitch(false), _GunRadius(81.5659f)
 {

@@ -108,6 +108,7 @@ void Framework::handleEvents()
 		}
 		break;
 	case GameState::Pause:
+		_GameObjectContainer.stopSounds();
 		_GameState = _PauseMenu.handleEvents(_RenderWindow);
 		if (_GameState == GameState::Running) {
 			_Clock.restart();

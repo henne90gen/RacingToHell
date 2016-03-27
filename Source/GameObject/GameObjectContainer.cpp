@@ -278,6 +278,14 @@ void GameObjectContainer::playSounds()
 	}
 }
 
+void GameObjectContainer::stopSounds() 
+{
+	_SoundEffects.clear();
+	if (_BossFight) {
+		getBossCar().stopSounds();
+	}
+}
+
 bool GameObjectContainer::bossIsDead()
 {
 	if (_BossFight) {

@@ -72,7 +72,7 @@ public:
 	/*
 		Resets the internal timer of the Level
 	*/
-	void resetTimer() { _Timer.restart(); }
+	void resetTimer() { _LevelTime = 0; }
 
 	/*
 		Sets the selected difficulty
@@ -83,12 +83,12 @@ public:
 	/*
 		@return float Time in seconds that has passed since the start of the level
 	*/
-	float getLevelTime() { return _Timer.getElapsedTime().asSeconds(); }
+	float getLevelTime() { return _LevelTime; }
 
 	/*
 		@return float Time in seconds that this level will last in total
 	*/
-	float getTotalLevelTime() { return _LevelTime; }
+	float getTotalLevelTime() { return _TotalLevelTime; }
 private:
 	std::vector<std::shared_ptr<sf::Texture>> _Textures;
 	sf::Sprite _Sprite;
@@ -96,10 +96,11 @@ private:
 	std::vector<std::shared_ptr<sf::SoundBuffer>> _MusicBuffers;
 	sf::Sound _Music;
 
-	sf::Clock _Timer;
+	float _LevelTime;
+	float _TotalLevelTime;
 
 	int _Level, _Difficulty;
-	float _LevelTime;
+	
 
 	void loadSongByID(int id);
 };

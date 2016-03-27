@@ -3,6 +3,8 @@
 
 bool Level::update(float FrameTime, GameState gameState)
 {
+	_LevelTime += FrameTime;
+
 	if (_Sprite.getPosition().y + FrameTime * _Level >= 0)
 	{
 		_Sprite.setPosition(sf::Vector2f(0, -1600));
@@ -14,7 +16,7 @@ bool Level::update(float FrameTime, GameState gameState)
 
 	if (gameState == GameState::Running)
 	{
-		if (_Timer.getElapsedTime().asSeconds() >= _LevelTime)
+		if (_LevelTime >= _TotalLevelTime)
 		{
 			return true;
 		}
@@ -51,7 +53,7 @@ void Level::setVolume(float Volume)
 
 void Level::levelUp()
 {
-	_Timer.restart();
+	_LevelTime = 0;
 	_Level++;
 	_Sprite.setTexture((*_Textures.at((_Level - 1) % _Textures.size())));
 	_Music.setBuffer((*_MusicBuffers.at((_Level - 1) % _Textures.size())));
@@ -74,8 +76,9 @@ void Level::load()
 
 void Level::resetLevel()
 {
-	_Level = 2;
-	_LevelTime = 00.0f;
+	_Level = 1;
+	_TotalLevelTime = 60.0f;
+	_LevelTime = 0;
 	_Music.setBuffer((*_MusicBuffers.at(0)));
 	_Sprite.setTexture((*_Textures.at((_Level - 1) % _Textures.size())));
 }

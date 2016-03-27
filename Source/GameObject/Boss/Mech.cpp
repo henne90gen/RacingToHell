@@ -25,9 +25,9 @@ Mech::Mech(int difficulty, int HP, sf::Texture& textureTop, sf::Texture& texture
 	_Pattern = { 
 		std::make_pair(Phase::SPIN, ((2.0f + (float)_Difficulty) * 360.0f) / (180.0f + 135.f * (float)_Difficulty)) , std::make_pair(Phase::NOTHING, 1.5f), 
 		std::make_pair(Phase::SALVE, 7.0f), std::make_pair(Phase::NOTHING, 0.75f),
+		std::make_pair(Phase::RUNATPLAYERPHASE, 0.25f),
 		std::make_pair(Phase::SHOTGUN, 7.0f), std::make_pair(Phase::NOTHING, 1.5f), 
-		std::make_pair(Phase::ZICKZACKPHASE, 0.25f), std::make_pair(Phase::SALVE, 3.0f), std::make_pair(Phase::NOTHING, 0.75f),
-		std::make_pair(Phase::RUNATPLAYERPHASE, 0.25f)
+		std::make_pair(Phase::ZICKZACKPHASE, 0.25f), std::make_pair(Phase::SALVE, 3.0f), std::make_pair(Phase::NOTHING, 0.75f)
 	};
 }
 

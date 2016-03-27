@@ -6,9 +6,10 @@ HeadsUpDisplay::HeadsUpDisplay()
 	//Font
 	_Font.loadFromFile("Resources/Font/arial.ttf");
 
+	//Displays the current level
 	_LevelText.setFont(_Font);
-	_LevelText.setPosition(sf::Vector2f(10, 10));
-	_LevelText.setColor(sf::Color(255, 255, 255));
+	_LevelText.setPosition(sf::Vector2f(0, 10));
+	_LevelText.setColor(sf::Color::White);
 
 	//Progressbar
 	_ProgressBar.setFillColor(sf::Color(255, 255, 255, 100));

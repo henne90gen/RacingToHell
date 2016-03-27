@@ -16,7 +16,7 @@ Carrier::Carrier(int difficulty, int HP, sf::Texture & texture, sf::Texture & bu
 	_NextPosition = _DefaultPosition;
 	_Movement = Movement::DRIVETODEFAULT;
 
-	_Pattern = { std::make_pair(Phase::BLASTSALVE, 5.0f), std::make_pair(Phase::RANDOMSPRAY, 6.0f), std::make_pair(Phase::SPIRAL, 10.0f), std::make_pair(Phase::HARDCORESPAM, 7.0f) };
+	_Pattern = { std::make_pair(Phase::BLASTSALVE, 5.0f), std::make_pair(Phase::RANDOMSPRAY, 6.0f), std::make_pair(Phase::SPIRAL, 8.0f), std::make_pair(Phase::NOTHING, 2.0f), std::make_pair(Phase::HARDCORESPAM, 7.0f) };
 }
 
 void Carrier::render(sf::RenderWindow & window)
@@ -157,7 +157,7 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr
 				}
 				break;
 			case Phase::RANDOMSPRAY:
-				_Event1Frequency = 0.8f + 0.15f * (float)_Difficulty;
+				_Event1Frequency = 0.8f + 0.10f * (float)_Difficulty;
 
 				if (getBossEvent() == 1) {
 					for (float i = PI * (float)_MovementSwitchUpDown; i < PI + PI * (float) _MovementSwitchUpDown; i += PI / (10 + 3 * _Difficulty)) {
@@ -169,7 +169,7 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr
 				break;
 			
 			case Phase::HARDCORESPAM:
-				_Event1Frequency = 50.0f + 15.0f * (float)_Difficulty;
+				_Event1Frequency = 40.0f + 15.0f * (float)_Difficulty;
 
 				if (getBossEvent() == 1) {
 					_GunOrientation = divideByLength(sf::Vector2f(((float)(std::rand() - (float)(RAND_MAX) / 2) / (float)(RAND_MAX)),
@@ -213,7 +213,7 @@ void Carrier::checkPhase()
 
 		_PhaseClock.restart();
 
-		if (std::rand() % RAND_MAX > 0.5f *  RAND_MAX)
+		if (_CurrentPhase != Phase::NOTHING && std::rand() % RAND_MAX > 0.5f *  RAND_MAX)
 		{
 			_SwitchSides = true;
 		}

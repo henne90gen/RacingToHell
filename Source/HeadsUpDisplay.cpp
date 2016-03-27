@@ -6,6 +6,21 @@ HeadsUpDisplay::HeadsUpDisplay()
 	//Font
 	_Font.loadFromFile("Resources/Font/arial.ttf");
 
+	_LevelText.setFont(_Font);
+	_LevelText.setPosition(sf::Vector2f(0, 10));
+	_LevelText.setColor(sf::Color(30, 255, 0));
+
+	//Progressbar
+	_ProgressBar.setFillColor(sf::Color(30, 255, 0));
+	_ProgressBar.setSize(sf::Vector2f(SCREENWIDTH, 10));
+	_ProgressBar.setPosition(0, 0);
+
+	//Progressbar outline
+	_ProgressBarOutline.setFillColor(sf::Color::Transparent);
+	_ProgressBarOutline.setOutlineColor(sf::Color(20, 0, 0));
+	_ProgressBarOutline.setOutlineThickness(1);
+	_ProgressBarOutline.setSize(_ProgressBar.getSize());
+
 	//Background
 	_BackgroundTexture.loadFromFile("Resources/Texture/HUD/HUD_Background.png");
 	_Background.setTexture(_BackgroundTexture);
@@ -65,6 +80,11 @@ HeadsUpDisplay::HeadsUpDisplay()
 
 void HeadsUpDisplay::render(sf::RenderWindow & window)
 {
+	window.draw(_LevelText);
+
+	window.draw(_ProgressBar);
+	window.draw(_ProgressBarOutline);
+
 	window.draw(_Background);
 
 	window.draw(_HealthBar);
@@ -82,8 +102,12 @@ void HeadsUpDisplay::render(sf::RenderWindow & window)
 	window.draw(_ScoreText);
 }
 
-void HeadsUpDisplay::update(int score, int health, int energy)
+void HeadsUpDisplay::update(int score, int health, int energy, int level, float levelTime)
 {
+	_LevelText.setString("Level: " + std::to_string(level));
+
+	_ProgressBar.setSize(sf::Vector2f(levelTime * SCREENWIDTH / _TotalLevelTime, 10));
+
 	_HealthBar.setSize(sf::Vector2f((float)health / (float)_MaxHealth * 150, 30));
 	_HealthText.setString(std::to_string(health) + "/" + std::to_string(_MaxHealth));
 	_HealthText.setPosition(sf::Vector2f(	_HealthBarOutline.getGlobalBounds().left + _HealthBarOutline.getLocalBounds().width - _HealthText.getLocalBounds().width - 7, 

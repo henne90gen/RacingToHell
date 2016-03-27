@@ -127,6 +127,7 @@ void Framework::handleEvents()
 		if (_GameState == GameState::Running) {
 			_HeadsUpDisplay.setMaxHealth(_GameObjectContainer.getPlayerCar().getMaxHealth());
 			_HeadsUpDisplay.setMaxEnergy(_GameObjectContainer.getPlayerCar().getMaxEnergy());
+			_HeadsUpDisplay.setTotalLevelTime(_Level.getTotalLevelTime());
 			_Clock.restart();
 			_Level.resetTimer();
 			setDifficulty(_OptionsMenu.getDifficulty());
@@ -206,7 +207,7 @@ void Framework::update()
 			}
 		}
 		_GameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
-		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy());
+		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
 		if (!_GameObjectContainer.playerIsAlive()) {
 			_GameState = GameState::GameOver;
 		}
@@ -220,7 +221,7 @@ void Framework::update()
 			_GameState = GameState::LevelUp;
 		}
 		_GameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
-		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy());
+		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
 		if (!_GameObjectContainer.playerIsAlive()) {
 			_GameState = GameState::GameOver;
 		}
@@ -235,6 +236,7 @@ void Framework::update()
 			_Level.levelUp();
 			setVolume(_OptionsMenu.getVolume());
 			_GameObjectContainer.setLevel(_Level.getLevel());
+			_HeadsUpDisplay.setTotalLevelTime(_Level.getTotalLevelTime());
 		}
 		break;
 	case GameState::Main:
@@ -339,26 +341,10 @@ void Framework::load()
 
 	_GameOverScreen.load();
 
-	//Einstellungen laden
-	std::vector<std::string> Settings;
-	std::string Option;
-	std::ifstream FileStream;
-
-	FileStream.open("Resources/Data/Settings.cfg");
-	while (std::getline(FileStream, Option))
-	{
-		Settings.push_back(Option);
-	}
-	FileStream.close();
-
-	if (Settings.size() >= 3)
-	{
-		_FPS = std::stoi(Settings[0]);
-		_OptionsMenu.setFPS(_FPS);
-		_OptionsMenu.setVolume(std::stoi(Settings[1]));
-		_OptionsMenu.setDifficulty(std::stoi(Settings[2]));
-		setVolume(_OptionsMenu.getVolume());
-	}
+	_OptionsMenu.loadOptions();
+	_FPS = _OptionsMenu.getFPS();
+	setVolume(_OptionsMenu.getVolume());
+	
 	_Level.resetLevel();
 }
 

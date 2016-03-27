@@ -22,8 +22,13 @@ Mech::Mech(int difficulty, int HP, sf::Texture& textureTop, sf::Texture& texture
 
 	_BaseSpeed = _Speed;
 
-	_Pattern = { std::make_pair(Phase::SPIN, ((2.0f + (float)_Difficulty) * 360.0f) / (180.0f + 135.f * (float)_Difficulty)) , std::make_pair(Phase::NOTHING, 1.5f), std::make_pair(Phase::SHOTGUN, 7.0f), std::make_pair(Phase::NOTHING, 1.5f), std::make_pair(Phase::SALVE, 7.0f), std::make_pair(Phase::NOTHING, 0.75f), std::make_pair(Phase::RUNARPLAYERPHASE, 0.25f) };
-	//_Pattern = { std::make_pair(Phase::RUNARPLAYERPHASE, 0.25f) };
+	_Pattern = { 
+		std::make_pair(Phase::SPIN, ((2.0f + (float)_Difficulty) * 360.0f) / (180.0f + 135.f * (float)_Difficulty)) , std::make_pair(Phase::NOTHING, 1.5f), 
+		std::make_pair(Phase::SALVE, 7.0f), std::make_pair(Phase::NOTHING, 0.75f),
+		std::make_pair(Phase::SHOTGUN, 7.0f), std::make_pair(Phase::NOTHING, 1.5f), 
+		std::make_pair(Phase::ZICKZACKPHASE, 0.25f), std::make_pair(Phase::SALVE, 3.0f), std::make_pair(Phase::NOTHING, 0.75f),
+		std::make_pair(Phase::RUNATPLAYERPHASE, 0.25f)
+	};
 }
 
 void Mech::render(sf::RenderWindow & window)
@@ -70,6 +75,15 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 				_Movement = Movement::DRIVETODEFAULT;
 				_NextPosition = _DefaultPosition;
 				break;
+			case Movement::ZICKZACK:
+				if (_Event1Counter < 4) {
+					_Event1Counter++;
+					_NextPosition = sf::Vector2f(std::abs((int)_Event2Switch * SCREENWIDTH - 65) + std::pow(-1, (int)_Event2Switch) * (_Event1Counter % 2) * (SCREENWIDTH - 130), (SCREENHEIGHT / 5) * _Event1Counter);
+				}
+				else {
+					_Event1Counter = 0;
+					_Movement = Movement::DRIVETODEFAULT;
+				}
 			default:
 				break;
 			}
@@ -149,7 +163,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 				}
 			}
 				break;
-			case Phase::RUNARPLAYERPHASE:
+			case Phase::RUNATPLAYERPHASE:
 				if (!_Event1Switch)
 				{
 					_NextPosition = gameObjects[0]->getPos();
@@ -160,6 +174,16 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 					_Event1Switch = true;
 				}
 				break;
+			case Phase::ZICKZACKPHASE:
+				if (!_Event1Switch) {
+					_NextPosition = _DefaultPosition;
+					_Movement = Movement::ZICKZACK;
+					_CurrentPhase++;
+					_Speed = (2 + _Difficulty) * _BaseSpeed;
+					_Attack = true;
+					_Event1Switch = true;
+					_Event2Switch = (std::rand() % 100) > 50;
+				}
 			}
 		}
 
@@ -168,7 +192,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 
 		updateHealthBar();
 
-		if (_Movement != Movement::DRIVETODEFAULT)
+		if (_Movement != Movement::DRIVETODEFAULT && _Movement != Movement::ZICKZACK)
 		{
 			checkPhase();
 		}

@@ -6,7 +6,7 @@ public:
 	/*
 		Manager class for the level, draws background and plays music
 	*/
-	Level();
+	Level() {}
 	~Level() {}
 
 	/*
@@ -80,7 +80,15 @@ public:
 	*/
 	void setDifficulty(int dif) { _Difficulty = dif; }
 
-	
+	/*
+		@return float Time in seconds that has passed since the start of the level
+	*/
+	float getLevelTime() { return _Timer.getElapsedTime().asSeconds(); }
+
+	/*
+		@return float Time in seconds that this level will last in total
+	*/
+	float getTotalLevelTime() { return _LevelTime; }
 private:
 	std::vector<std::shared_ptr<sf::Texture>> _Textures;
 	sf::Sprite _Sprite;

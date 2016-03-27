@@ -43,7 +43,7 @@ public:
 	*/
 	bool isDoneExploding(sf::Texture& ExplosionTexture);
 protected:
-	enum Phase { NOTHING, SIMPLESHOOT, SALVE, SPIN, HARDCORESPAM, BLASTSALVE, SPIRAL, RANDOMSPRAY, SHOTGUN, SIDE, SAVELANES, RUNARPLAYERPHASE };
+	enum Phase { NOTHING, SIMPLESHOOT, SALVE, SPIN, HARDCORESPAM, BLASTSALVE, SPIRAL, RANDOMSPRAY, SHOTGUN, SIDE, SAVELANES, RUNATPLAYERPHASE, ZICKZACKPHASE };
 	int _CurrentPhase;
 	std::vector<std::pair<Phase, float>> _Pattern;
 	sf::Clock _PhaseClock;
@@ -54,7 +54,7 @@ protected:
 
 	int _Difficulty;
 
-	enum Movement { STILL, DRIVETODEFAULT, LEFTRIGHT, SWITCHSIDES, STRAIGHT, PARABOLA, RUNATPLAYER};
+	enum Movement { STILL, DRIVETODEFAULT, LEFTRIGHT, SWITCHSIDES, STRAIGHT, PARABOLA, RUNATPLAYER, ZICKZACK};
 	Movement _Movement;
 
 	sf::Vector2f _GunPosition;

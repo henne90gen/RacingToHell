@@ -153,3 +153,8 @@ void Jet::checkPhase()
 		_PhaseClock.restart();
 	}
 }
+
+void Jet::stopSounds()
+{
+	_EngineSound.stop();
+}

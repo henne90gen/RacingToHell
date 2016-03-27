@@ -22,6 +22,7 @@ public:
 	*/
 	void render(sf::RenderWindow& window);
 
+	void stopSounds();
 private:
 
 	/*

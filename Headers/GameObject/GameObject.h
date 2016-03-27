@@ -212,6 +212,11 @@ public:
 	float getAngleFromVector(sf::Vector2f vec);
 
 	sf::Vector2f divideByLength(sf::Vector2f vec);
+
+	/*
+		Stops all sounds of the GameObject
+	*/
+	virtual void stopSounds() {}
 private:
 	sf::Sprite _Sprite;
 	sf::Texture _Texture;

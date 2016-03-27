@@ -12,7 +12,7 @@ HeadsUpDisplay::HeadsUpDisplay()
 	_LevelText.setColor(sf::Color::White);
 
 	//Progressbar
-	_ProgressBar.setFillColor(sf::Color(30, 255, 0, 150));
+	_ProgressBar.setFillColor(sf::Color(255, 255, 255, 100));
 	_ProgressBar.setSize(sf::Vector2f(SCREENWIDTH, 10));
 	_ProgressBar.setPosition(0, 0);
 
@@ -75,8 +75,8 @@ HeadsUpDisplay::HeadsUpDisplay()
 	_ScoreText.setFont(_Font);
 	_ScoreText.setCharacterSize(30);
 	_ScoreText.setColor(sf::Color::White);
-	_ScoreText.setPosition(sf::Vector2f(370, SCREENHEIGHT - _Background.getLocalBounds().height));
-	_ScoreText.setString("Score: 0000000");
+	_ScoreText.setPosition(sf::Vector2f(350, SCREENHEIGHT - _Background.getLocalBounds().height));
+	_ScoreText.setString("Score: 00000000");
 }
 
 void HeadsUpDisplay::render(sf::RenderWindow & window)
@@ -145,7 +145,7 @@ std::string HeadsUpDisplay::ConvertScore(int score)
 
 	if (ScoreLength < 7)
 	{
-		for (unsigned int i = 0; i < 7 - ScoreLength; i++)
+		for (unsigned int i = 0; i < 8 - ScoreLength; i++)
 		{
 			ScoreString += "0";
 		}

@@ -295,6 +295,8 @@ bool GameObjectContainer::bossIsDead()
 				deleteObject(i);
 			}
 
+			_CarScore = 5000 + 10000 * _Difficulty * _Difficulty;
+
 			return true;
 		}
 	}
@@ -618,7 +620,7 @@ int GameObjectContainer::getBossHP()
 		return 1000 + 500 * (int)((_Level - 1) / 4.0f);
 		break;
 	case 3:
-		return 7500 + (int)((_Level - 1) / 4.0f) * 2500;
+		return 6500 + (int)((_Level - 1) / 4.0f) * 2500;
 		break;
 	}
 

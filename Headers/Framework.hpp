@@ -77,4 +77,5 @@ private:
 	void setVolume(float Volume);
 	void setMouseVisible(bool visible);
 	void setDifficulty(int Difficulty);
+	void addScore();
 };

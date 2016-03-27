@@ -267,6 +267,8 @@
     <Image Include="Resources\Texture\HUD\HUD_Background.png" />
     <Image Include="Resources\Texture\HUD\HUD_EnergyIcon.png" />
     <Image Include="Resources\Texture\HUD\HUD_HealthIcon.png" />
+    <Image Include="Resources\Texture\Icon\Icon.ico" />
+    <Image Include="Resources\Texture\Icon\Icon.png" />
     <Image Include="Resources\Texture\MainMenu\StatBar.png" />
     <Image Include="Resources\Texture\Object\Bullet.png" />
     <Image Include="Resources\Texture\Object\canister.png" />

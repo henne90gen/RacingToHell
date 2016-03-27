@@ -453,6 +453,12 @@
     <Image Include="Resources\Texture\BossCar\mech-top.png">
       <Filter>Resource Files\Texture\BossCar</Filter>
     </Image>
+    <Image Include="Resources\Texture\Icon\Icon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\Icon\Icon.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\Font\arial.ttf">

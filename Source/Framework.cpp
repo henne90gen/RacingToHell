@@ -6,6 +6,10 @@ Framework::Framework() : _FrameTime(0), _FPS(60.0f), _IsRunning(true), _GameStat
 	_RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell", sf::Style::Close);
 	_RenderWindow.setMouseCursorVisible(false);
 
+	sf::Image Icon;
+	Icon.loadFromFile("Resources/Texture/Icon.ico");
+	_RenderWindow.setIcon(Icon.getSize().x, Icon.getSize().y, Icon.getPixelsPtr());
+
 	//Seed
 	srand(time(NULL));
 }

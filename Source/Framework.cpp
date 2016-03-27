@@ -284,7 +284,7 @@ void Framework::playSounds() {
 		_GameState == GameState::BossFight || 
 		_GameState == GameState::LevelUp || 
 		_GameState == GameState::Pause || 
-		(_GameState == GameState::Options && _OptionsMenu.getReturnState() == GameState::Pause)) 
+		(_GameState == GameState::Options && _OptionsMenu.getReturnState() == GameState::Pause))
 	{
 		_MenuMusic.stop();
 		_Level.playMusic();

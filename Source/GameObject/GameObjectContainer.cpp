@@ -289,6 +289,12 @@ bool GameObjectContainer::bossIsDead()
 			_AboutToLevelUp = false;
 			deleteObject(1);
 			getPlayerCar().resetResources();
+
+			for (unsigned int i = 1; i < _GameObjects.size(); i++)
+			{
+				deleteObject(i);
+			}
+
 			return true;
 		}
 	}
@@ -603,16 +609,13 @@ int GameObjectContainer::getBossHP()
 	switch ((_Level - 1) % 4)
 	{
 	case 0:
-		//return 6000 + (int)((_Level - 1) / 4.0f) * 3000;
-		return 0;
+		return 6000 + (int)((_Level - 1) / 4.0f) * 3000;
 		break;
 	case 1:
-		//return 8000 + (int)((_Level - 1) / 4.0f) * 3000;
-		return 0;
+		return 8000 + (int)((_Level - 1) / 4.0f) * 3000;
 		break;
 	case 2:
-		return 0;
-		//return 1000 + 500 * (int)((_Level - 1) / 4.0f);
+		return 1000 + 500 * (int)((_Level - 1) / 4.0f);
 		break;
 	case 3:
 		return 9000 + (int)((_Level - 1) / 4.0f) * 3000;

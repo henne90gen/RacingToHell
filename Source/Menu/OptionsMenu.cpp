@@ -98,6 +98,26 @@ void OptionsMenu::update(float FrameTime)
 	_Volume.setString(std::to_string(volume));
 }
 
+void OptionsMenu::loadOptions() {
+	std::vector<std::string> Settings;
+	std::string Option;
+	std::ifstream FileStream;
+
+	FileStream.open("Resources/Data/Settings.cfg");
+	while (std::getline(FileStream, Option))
+	{
+		Settings.push_back(Option);
+	}
+	FileStream.close();
+
+	if (Settings.size() >= 3)
+	{
+		setFPS(std::stoi(Settings[0]));
+		setVolume(std::stof(Settings[1]));
+		setDifficulty(std::stoi(Settings[2]));
+	}
+}
+
 void OptionsMenu::saveOptions()
 {
 	std::string Path = "Resources/Data/Settings.cfg";

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Level\Level.h"
 
-Level::Level() : _Level(3), _LevelTime(0.0f) {}
+Level::Level() : _LevelTime(0.0f) {}
 
 bool Level::update(float FrameTime, GameState gameState)
 {
@@ -77,7 +77,7 @@ void Level::load()
 void Level::resetLevel()
 {
 	_Music.setBuffer((*_MusicBuffers.at(0)));
-	_Level = 3;
+	_Level = 2;
 	_Sprite.setTexture((*_Textures.at((_Level - 1) % _Textures.size())));
 }
 

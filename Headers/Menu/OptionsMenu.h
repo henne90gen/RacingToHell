@@ -32,13 +32,16 @@ public:
 
 	void update(float FrameTime);
 
+	void loadOptions();
+	void saveOptions();
+
 	void setReturnState(GameState returnState) { _ReturnState = returnState; }
 	GameState getReturnState() { return _ReturnState; }
 	float getFPS() { return _MenuItems[FPS]->getValue() + 30.0f; }
 	void setFPS(float fps) { _MenuItems[FPS]->setValue(fps - 30.0f); }
 	float getVolume() { return _MenuItems[Volume]->getValue(); }
 	void setVolume(float volume) { _MenuItems[Volume]->setValue(volume); }
-	void saveOptions();
+	
 	int getDifficulty() { return (int)_MenuItems[Difficulty]->getValue(); }
 	void setDifficulty(int Dif) { _MenuItems[Difficulty]->setValue(Dif); }
 	void enableDifficultySelection(bool enabled) { _MenuItems[Difficulty]->setEnabled(enabled); }

@@ -5,7 +5,6 @@
 
 #include "Framework.hpp"
 
-//int main()
 int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpszArgument, int nCmdShow)
 {
 	Framework _Framework;

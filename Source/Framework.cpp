@@ -284,7 +284,12 @@ void Framework::update()
 }
 
 void Framework::playSounds() {
-	if (_GameState == GameState::Running || _GameState == GameState::BossFight || _GameState == GameState::LevelUp) {
+	if (_GameState == GameState::Running || 
+		_GameState == GameState::BossFight || 
+		_GameState == GameState::LevelUp || 
+		_GameState == GameState::Pause || 
+		(_GameState == GameState::Options && _OptionsMenu.getReturnState() == GameState::Pause))
+	{
 		_MenuMusic.stop();
 		_Level.playMusic();
 		_GameObjectContainer.playSounds();
@@ -292,7 +297,7 @@ void Framework::playSounds() {
 			_LevelUpScreen.playSound();
 		}
 	}
-	else if (_GameState == GameState::Main || _GameState == GameState::Pause || _GameState == GameState::Options) {
+	else if (_GameState == GameState::Main || _GameState == GameState::Highscores || (_GameState == GameState::Options && _OptionsMenu.getReturnState() == GameState::Pause)) {
 		_Level.pauseMusic();
 		if (_MenuMusic.getStatus() == sf::Sound::Stopped || _MenuMusic.getStatus() == sf::Sound::Paused) {
 			_MenuMusic.play();

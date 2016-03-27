@@ -1,4 +1,5 @@
 #pragma once
+#include <future>
 
 class Level 
 {
@@ -101,6 +102,7 @@ private:
 
 	int _Level, _Difficulty;
 	
+	std::mutex _ThreadGuard;
 
 	void loadSongByID(int id);
 };

@@ -63,7 +63,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 
 			switch (_Pattern[_CurrentPhase].first) {
 			case Phase::SIMPLESHOOT:
-				_Event1Frequency = 4.0f + 1.75f * (float)_Difficulty;
+				_Event1Frequency = 4.25f + 1.25f * (float)_Difficulty;
 
 				_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
 

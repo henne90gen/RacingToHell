@@ -22,7 +22,7 @@ Mech::Mech(int difficulty, int HP, sf::Texture& textureTop, sf::Texture& texture
 
 	_BaseSpeed = _Speed;
 
-	_Pattern = { std::make_pair(Phase::SPIN, ((2.0f + (float)_Difficulty) * 360.0f) / (180.0f + 135.f * (float)_Difficulty)) , std::make_pair(Phase::SHOTGUN, 7.0f), std::make_pair(Phase::SALVE, 7.0f), std::make_pair(Phase::RUNARPLAYERPHASE, 0.25f) };
+	_Pattern = { std::make_pair(Phase::SPIN, ((2.0f + (float)_Difficulty) * 360.0f) / (180.0f + 135.f * (float)_Difficulty)) , std::make_pair(Phase::NOTHING, 1.5f), std::make_pair(Phase::SHOTGUN, 7.0f), std::make_pair(Phase::NOTHING, 1.5f), std::make_pair(Phase::SALVE, 7.0f), std::make_pair(Phase::NOTHING, 0.75f), std::make_pair(Phase::RUNARPLAYERPHASE, 0.25f) };
 	//_Pattern = { std::make_pair(Phase::RUNARPLAYERPHASE, 0.25f) };
 }
 
@@ -98,7 +98,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 			case Phase::SHOTGUN:
 				_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
 
-				_Event1Frequency = 1.25f + 0.25f * (float)(_Difficulty);
+				_Event1Frequency = 1.0f + 0.25f * (float)(_Difficulty);
 
 				if (getBossEvent() == 1)
 				{
@@ -154,7 +154,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 				{
 					_NextPosition = gameObjects[0]->getPos();
 					_Movement = Movement::RUNATPLAYER;
-					_Speed = (5 + 2 * _Difficulty) * _Speed;
+					_Speed = (3.5 + 2 * _Difficulty) * _BaseSpeed;
 					_Attack = false;
 
 					_Event1Switch = true;

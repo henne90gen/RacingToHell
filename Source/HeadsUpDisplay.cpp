@@ -7,11 +7,11 @@ HeadsUpDisplay::HeadsUpDisplay()
 	_Font.loadFromFile("Resources/Font/arial.ttf");
 
 	_LevelText.setFont(_Font);
-	_LevelText.setPosition(sf::Vector2f(0, 10));
-	_LevelText.setColor(sf::Color(30, 255, 0));
+	_LevelText.setPosition(sf::Vector2f(10, 10));
+	_LevelText.setColor(sf::Color(255, 255, 255));
 
 	//Progressbar
-	_ProgressBar.setFillColor(sf::Color(30, 255, 0));
+	_ProgressBar.setFillColor(sf::Color(255, 255, 255, 100));
 	_ProgressBar.setSize(sf::Vector2f(SCREENWIDTH, 10));
 	_ProgressBar.setPosition(0, 0);
 
@@ -96,8 +96,6 @@ void HeadsUpDisplay::render(sf::RenderWindow & window)
 	window.draw(_EnergyBarOutline);
 	window.draw(_EnergyText);
 	window.draw(_EnergyIconSprite);
-
-	window.draw(_LevelProgress);
 
 	window.draw(_ScoreText);
 }

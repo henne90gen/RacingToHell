@@ -111,7 +111,6 @@ void Framework::handleEvents()
 		_GameState = _PauseMenu.handleEvents(_RenderWindow);
 		if (_GameState == GameState::Running) {
 			_Clock.restart();
-			_Level.resetTimer();
 		}
 		else if (_GameState == GameState::Main) {
 			resetGame();

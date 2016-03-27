@@ -37,5 +37,8 @@ void Bullet::playShotSound(sf::Vector2f position, std::vector<std::pair<std::sha
 	ShotSound->setAttenuation(4.f);
 	ShotSound->setVolume(Volume * 2);
 
-	soundEffects.push_back({ ShotSound, 0 });
+	if (soundEffects.size() <= 200)
+	{
+		soundEffects.push_back({ ShotSound, 0 });
+	}
 }

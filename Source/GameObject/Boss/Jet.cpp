@@ -87,11 +87,6 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Gam
 					{
 						if (_Event2Counter + 1 <= 3 + 2 * _Difficulty)
 						{
-							std::cout << _Event2Counter + 1 << "/" << 4 + 2 * _Difficulty << std::endl;
-							std::cout << _BossEventTimer1.getElapsedTime().asSeconds() << "/" << 1 / _Event1Frequency << std::endl;
-							std::cout << _BossEventTimer2.getElapsedTime().asSeconds() << "/" << 1 / _Event2Frequency << std::endl;
-
-
 							for (int i = 0; i < 3; i++)
 							{
 									shootBullet(gameObjects, sf::Vector2f(i * 150 + 150, 0), sf::Vector2f(0, 1));

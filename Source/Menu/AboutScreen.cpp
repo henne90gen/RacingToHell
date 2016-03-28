@@ -12,20 +12,22 @@ AboutScreen::AboutScreen() : Menu(GameState::About)
 	_Text.setString("This game was made by \nAlex Ivliev and Hendrik Müller.");
 	_Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 100));
 
-	_LevelUp.setFont(_Font);
-	_LevelUp.setColor(sf::Color::Black);
-	_LevelUp.setString("'Level up sound effect' by Bart Kelsey. Commissioned by Will Corwin for OpenGameArt.org");
-	_LevelUp.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 100));
+	_Music.setFont(_Font);
+	_Music.setColor(sf::Color::Black);
+	_Music.setString("Music by KsTBeats");
+	_Music.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 200));
 
-	_Text.setFont(_Font);
-	_Text.setColor(sf::Color::Black);
-	_Text.setString("'Music by KsTBeats");
-	_Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 100));
+	_Cars.setFont(_Font);
+	_Cars.setColor(sf::Color::Black);
+	_Cars.setString("Enemy cars by sujit1717");
+	_Cars.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 300));
 }
 
 void AboutScreen::render(sf::RenderWindow & window)
 {
 	window.draw(_Text);
+	window.draw(_Music);
+	window.draw(_Cars);
 
 	for (int i = 0; i < _MenuItems.size(); i++) {
 		_MenuItems[i]->render(window);

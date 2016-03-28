@@ -12,6 +12,6 @@ public:
 	GameState handleMenuItemResult(MenuResult result);
 
 private:
-	sf::Text _LevelUp;
+	sf::Text _LevelUp, _Music, _Cars;
 };
 

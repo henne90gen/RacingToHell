@@ -9,8 +9,14 @@ Slider::Slider(sf::Vector2f pos, MenuResult action, std::string text, float valu
 
 	_Text.setFont(_Font);
 	_Text.setString(text);
-	_Text.setPosition(sf::Vector2f(_Line.getPosition().x - _Text.getLocalBounds().width - 10,
+	_Text.setPosition(sf::Vector2f(_Line.getPosition().x - _Text.getLocalBounds().width - 30,
 		_Line.getPosition().y - _Text.getLocalBounds().height + _Line.getLocalBounds().height / 2.0f));
+
+	_TextBackground.setPosition(sf::Vector2f(_Text.getPosition().x - 10, _Text.getPosition().y - 3));
+	_TextBackground.setSize(sf::Vector2f(_Text.getLocalBounds().width + 20, _Text.getLocalBounds().height + 20));
+	_TextBackground.setFillColor(sf::Color(0, 0, 0, 175));
+	_TextBackground.setOutlineThickness(1);
+	_TextBackground.setOutlineColor(sf::Color::Black);
 
 	_Slider.setFillColor(sf::Color::White);
 	_Slider.setSize(sf::Vector2f(10, 30));
@@ -44,6 +50,7 @@ void Slider::render(sf::RenderWindow & Window)
 		_Slider.setOutlineColor(sf::Color(80, 73, 73));
 	}
 
+	Window.draw(_TextBackground);
 	Window.draw(_Text);
 	Window.draw(_Line);
 	Window.draw(_Slider);

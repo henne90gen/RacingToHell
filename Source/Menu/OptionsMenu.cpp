@@ -26,18 +26,32 @@ OptionsMenu::OptionsMenu() : Menu(GameState::Options)
 	_Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 160));
 
 	_FPS.setFont(_Font);
-	_FPS.setString("");
-	_FPS.setPosition(sf::Vector2f(_MenuItems[FPS]->getRect().left + _MenuItems[FPS]->getRect().width + 5, _MenuItems[FPS]->getRect().top - 5));
+	_FPS.setString("000");
+	_FPS.setPosition(sf::Vector2f(_MenuItems[FPS]->getRect().left + _MenuItems[FPS]->getRect().width + 20, _MenuItems[FPS]->getRect().top - 5));
+	
+	_FPSBackground.setPosition(sf::Vector2f(_FPS.getPosition().x - 10, _FPS.getPosition().y - 3));
+	_FPSBackground.setSize(sf::Vector2f(_FPS.getLocalBounds().width + 20, _FPS.getLocalBounds().height + 20));
+	_FPSBackground.setFillColor(sf::Color(0, 0, 0, 175));
+	_FPSBackground.setOutlineThickness(1);
+	_FPSBackground.setOutlineColor(sf::Color::Black);
 
 	_Volume.setFont(_Font);
-	_Volume.setString("");
-	_Volume.setPosition(sf::Vector2f(_MenuItems[Volume]->getRect().left + _MenuItems[Volume]->getRect().width + 5, _MenuItems[Volume]->getRect().top - 5));
+	_Volume.setString("000");
+	_Volume.setPosition(sf::Vector2f(_MenuItems[Volume]->getRect().left + _MenuItems[Volume]->getRect().width + 20, _MenuItems[Volume]->getRect().top - 5));
+	
+	_VolumeBackground.setPosition(sf::Vector2f(_Volume.getPosition().x - 10, _Volume.getPosition().y - 3));
+	_VolumeBackground.setSize(sf::Vector2f(_Volume.getLocalBounds().width + 20, _Volume.getLocalBounds().height + 20));
+	_VolumeBackground.setFillColor(sf::Color(0, 0, 0, 175));
+	_VolumeBackground.setOutlineThickness(1);
+	_VolumeBackground.setOutlineColor(sf::Color::Black);
 }
 
 void OptionsMenu::render(sf::RenderWindow & window)
 {
 	window.draw(_Text);
+	window.draw(_FPSBackground);
 	window.draw(_FPS);
+	window.draw(_VolumeBackground);
 	window.draw(_Volume);
 	for (int i = 0; i < _MenuItems.size(); i++) {
 		_MenuItems[i]->render(window);
@@ -93,9 +107,12 @@ void OptionsMenu::update(float FrameTime)
 	_ChangeSliderValue = 0;
 
 	_FPS.setString(std::to_string((int)getFPS()));
-	int volume = _MenuItems[Volume]->getValue() * 100 / _MenuItems[Volume]->getMaxValue();
+	_FPS.setPosition(sf::Vector2f(	_FPSBackground.getPosition().x + _FPSBackground.getLocalBounds().width / 2.0f - _FPS.getLocalBounds().width / 2.0f,
+									_FPSBackground.getPosition().y + _FPSBackground.getLocalBounds().height / 2.0f - _FPS.getLocalBounds().height + 2));
 	
-	_Volume.setString(std::to_string(volume));
+	_Volume.setString(std::to_string((int)(_MenuItems[Volume]->getValue() * 100 / _MenuItems[Volume]->getMaxValue())));
+	_Volume.setPosition(sf::Vector2f(	_VolumeBackground.getPosition().x + _VolumeBackground.getLocalBounds().width / 2.0f - _Volume.getLocalBounds().width / 2.0f,
+										_VolumeBackground.getPosition().y + _VolumeBackground.getLocalBounds().height / 2.0f - _Volume.getLocalBounds().height + 2));
 }
 
 void OptionsMenu::loadOptions() {

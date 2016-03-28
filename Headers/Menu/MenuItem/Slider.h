@@ -58,8 +58,7 @@ public:
 	std::string getText() { return _Text.getString(); }
 private:
 	sf::Text _Text;
-	sf::RectangleShape _Slider;
-	sf::RectangleShape _Line;
+	sf::RectangleShape _Slider, _Line, _TextBackground;
 	sf::FloatRect _BoundingBox;
 
 	bool _MouseButtonPressed;

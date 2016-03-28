@@ -106,20 +106,25 @@ int Level::getRoadSpeed()
 
 void Level::loadSongByID(int id)
 {
-	bool checked = false;
-	while (!checked) {
-		std::shared_ptr<sf::SoundBuffer> buffer(new sf::SoundBuffer());
-		if (_CrtIsValidHeapPointer((const void *)buffer.get())) {
-			(*buffer).loadFromFile("Resources/Sound/Music/level" + std::to_string(id) + ".ogg");
-			std::lock_guard<std::mutex>{ _ThreadGuard };
-			_MusicBuffers.push_back(buffer);
-			checked = true;
+	try {
+		bool checked = false;
+		while (!checked) {
+			std::shared_ptr<sf::SoundBuffer> buffer(new sf::SoundBuffer());
+			if (_CrtIsValidHeapPointer((const void *)buffer.get())) {
+				(*buffer).loadFromFile("Resources/Sound/Music/level" + std::to_string(id) + ".ogg");
+				std::lock_guard<std::mutex>{ _ThreadGuard };
+				_MusicBuffers.push_back(buffer);
+				checked = true;
+			}
+			else {
+				buffer.reset();
+			}
 		}
-		else {
-			buffer.reset();
+		if (id == 1) {
+			_FirstLevelSoundLoaded = true;
 		}
 	}
-	if (id == 1) {
-		_FirstLevelSoundLoaded = true;
+	catch (...) {
+		std::exit(1);
 	}
 }

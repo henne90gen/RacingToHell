@@ -52,8 +52,8 @@ private:
 		FPS, Volume, Difficulty
 	};
 
-	sf::Text _FPS;
-	sf::Text _Volume;
+	sf::Text _FPS, _Volume;
+	sf::RectangleShape _FPSBackground, _VolumeBackground;
 
 	GameState _ReturnState;
 };

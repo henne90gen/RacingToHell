@@ -106,8 +106,6 @@ int Level::getRoadSpeed()
 
 void Level::loadSongByID(int id)
 {
-	try
-	{
 	bool checked = false;
 	while (!checked) {
 		std::shared_ptr<sf::SoundBuffer> buffer(new sf::SoundBuffer());
@@ -123,10 +121,5 @@ void Level::loadSongByID(int id)
 	}
 	if (id == 1) {
 		_FirstLevelSoundLoaded = true;
-	}
-}
-	catch (...)
-	{
-		std::exit;
 	}
 }

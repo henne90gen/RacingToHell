@@ -331,31 +331,36 @@ bool Framework::measureTime()
 
 void Framework::load()
 {
-	if (_MenuMusicBuffer.loadFromFile("Resources/Sound/Music/menu1.ogg")) {
-		_MenuMusic.setBuffer(_MenuMusicBuffer);
-	}
-
-	for (unsigned int i = 1; i < 7; i++) 
-	{
-		sf::Texture texture;
-		if (texture.loadFromFile("Resources/Texture/PlayerCar/playercar" + std::to_string(i) + ".png")) 
-		{
-			_CarSkins.push_back(std::make_shared<sf::Texture>(texture));
+	try {
+		if (_MenuMusicBuffer.loadFromFile("Resources/Sound/Music/menu1.ogg")) {
+			_MenuMusic.setBuffer(_MenuMusicBuffer);
 		}
-	}
 
-	_GameObjectContainer.load();
-	_GameObjectContainer.setCarSkins(_CarSkins);
-	_GameObjectContainer.resetGameObjects(0);
+		for (unsigned int i = 1; i < 7; i++) 
+		{
+			sf::Texture texture;
+			if (texture.loadFromFile("Resources/Texture/PlayerCar/playercar" + std::to_string(i) + ".png")) 
+			{
+				_CarSkins.push_back(std::make_shared<sf::Texture>(texture));
+			}
+		}
 
-	_GameOverScreen.load();
+		_GameObjectContainer.load();
+		_GameObjectContainer.setCarSkins(_CarSkins);
+		_GameObjectContainer.resetGameObjects(0);
 
-	_OptionsMenu.loadOptions();
-	_FPS = _OptionsMenu.getFPS();
-	setVolume(_OptionsMenu.getVolume());
+		_GameOverScreen.load();
+
+		_OptionsMenu.loadOptions();
+		_FPS = _OptionsMenu.getFPS();
+		setVolume(_OptionsMenu.getVolume());
 	
-	_Level.load();
-	_Level.resetLevel();
+		_Level.load();
+		_Level.resetLevel();
+	} 
+	catch (...) {
+		std::exit;
+	}
 }
 
 void Framework::resetGame() 

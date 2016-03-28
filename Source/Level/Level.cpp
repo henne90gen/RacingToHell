@@ -99,7 +99,6 @@ int Level::getRoadSpeed()
 		return -100;
 		break;
 	}
-
 }
 
 void Level::loadSongByID(int id)

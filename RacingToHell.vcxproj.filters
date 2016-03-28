@@ -222,6 +222,9 @@
     <ClInclude Include="Headers\Menu\MenuItem\ComboBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Framework.cpp">
@@ -338,6 +341,9 @@
     <ClCompile Include="Source\Menu\AboutScreen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Serializable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Menu\MenuItem\ComboBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -353,6 +359,7 @@
     </None>
     <None Include="Resources\Data\Settings.cfg" />
     <None Include="Resources\Data\Highscore.sco" />
+    <None Include="Resources\Texture\Icon.ico.part" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Texture\TrafficCar\Traffic1.png">
@@ -454,25 +461,16 @@
     <Image Include="Resources\Texture\BossCar\mech-top.png">
       <Filter>Resource Files\Texture\BossCar</Filter>
     </Image>
-    <Image Include="Resources\Texture\Icon\Icon.ico">
+    <Image Include="Resources\Texture\LevelUp\double_arrow.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\LevelUp\fast_forward.png">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Resources\Texture\Icon\Icon.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Resources\Texture\BossCar\Jet.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Resources\Texture\Animation\explosion.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Resources\Texture\MainMenu\ComboboxArrow.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Resources\Texture\LevelUp\double_arrow.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Resources\Texture\LevelUp\fast_forward.png">
+    <Image Include="Resources\Texture\Icon\Icon.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
@@ -494,14 +492,10 @@
     <Media Include="Resources\Sound\shotPlayer.wav">
       <Filter>Resource Files\Sound</Filter>
     </Media>
-    <Media Include="Resources\Sound\explosion.wav">
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RacingToHell.rc">
       <Filter>Resource Files</Filter>
-    </Media>
-    <Media Include="Resources\Sound\jetengine.wav">
-      <Filter>Resource Files</Filter>
-    </Media>
-    <Media Include="Resources\Sound\levelUp.wav">
-      <Filter>Resource Files</Filter>
-    </Media>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

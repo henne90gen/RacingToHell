@@ -35,7 +35,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -76,7 +76,7 @@
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -107,7 +107,7 @@
       <AdditionalIncludeDirectories>SFML-x64\include;Headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>SFML-x64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-audio-s-d.lib;sfml-network-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;jpeg.lib;winmm.lib;gdi32.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -117,20 +117,25 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <Optimization>Disabled</Optimization>
+      <FunctionLevelLinking>
+      </FunctionLevelLinking>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
       <PreprocessorDefinitions>SFML_STATIC;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>SFML-x86\include;Headers</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>SFML-x86\include;Headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <MinimalRebuild>true</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>
+      </EnableCOMDATFolding>
+      <OptimizeReferences>
+      </OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>SFML-x86\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics-s.lib;sfml-window-s.lib;sfml-audio-s.lib;sfml-network-s.lib;sfml-system-s.lib;opengl32.lib;freetype.lib;jpeg.lib;winmm.lib;gdi32.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;ws2_32.lib</AdditionalDependencies>
+      <AdditionalDependencies>sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-audio-s-d.lib;sfml-network-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;jpeg.lib;winmm.lib;gdi32.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -145,7 +150,7 @@
       <AdditionalIncludeDirectories>SFML-x64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -199,6 +204,7 @@
     <ClInclude Include="Headers\GameObject\Boss\Mech.h" />
     <ClInclude Include="Headers\Animation\MechTop.h" />
     <ClInclude Include="Headers\Menu\HighscoreMenu.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Menu\AboutScreen.cpp" />
@@ -237,6 +243,7 @@
     <ClCompile Include="Source\GameObject\GameObject.cpp" />
     <ClCompile Include="Source\Menu\MenuItem\Textbox.cpp" />
     <ClCompile Include="Source\RacingToHell.cpp" />
+    <ClCompile Include="Source\Serializable.cpp" />
     <ClCompile Include="Source\StandardCursor.cpp" />
     <ClCompile Include="Source\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -253,17 +260,16 @@
     <None Include="Resources\Data\Settings.cfg" />
     <None Include="Resources\Sound\Music\level1.ogg" />
     <None Include="Resources\Sound\Music\menu1.ogg" />
+    <None Include="Resources\Texture\Icon.ico.part" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\Font\arial.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\Texture\Animation\explosion.png" />
     <Image Include="Resources\Texture\BossCar\cannon.png" />
     <Image Include="Resources\Texture\BossCar\cannonCarrier.png" />
     <Image Include="Resources\Texture\BossCar\CannonTank.png" />
     <Image Include="Resources\Texture\BossCar\Carrier.png" />
-    <Image Include="Resources\Texture\BossCar\Jet.png" />
     <Image Include="Resources\Texture\BossCar\mech-legs.png" />
     <Image Include="Resources\Texture\BossCar\mech-top.png" />
     <Image Include="Resources\Texture\BossCar\tank.png" />
@@ -274,7 +280,6 @@
     <Image Include="Resources\Texture\Icon\Icon.png" />
     <Image Include="Resources\Texture\LevelUp\double_arrow.png" />
     <Image Include="Resources\Texture\LevelUp\fast_forward.png" />
-    <Image Include="Resources\Texture\MainMenu\ComboboxArrow.png" />
     <Image Include="Resources\Texture\MainMenu\StatBar.png" />
     <Image Include="Resources\Texture\Object\Bullet.png" />
     <Image Include="Resources\Texture\Object\canister.png" />
@@ -300,13 +305,13 @@
     <Image Include="Resources\Texture\TrafficCar\Traffic7.png" />
   </ItemGroup>
   <ItemGroup>
-    <Media Include="Resources\Sound\explosion.wav" />
     <Media Include="Resources\Sound\gameOver.wav" />
-    <Media Include="Resources\Sound\jetengine.wav" />
-    <Media Include="Resources\Sound\levelUp.wav" />
     <Media Include="Resources\Sound\sample.wav" />
     <Media Include="Resources\Sound\shotAI.wav" />
     <Media Include="Resources\Sound\shotPlayer.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RacingToHell.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

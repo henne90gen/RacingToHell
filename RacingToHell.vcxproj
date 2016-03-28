@@ -222,7 +222,6 @@
     <ClCompile Include="Source\Menu\MenuItem\ComboBox.cpp" />
     <ClCompile Include="Source\Menu\MenuItem\Slider.cpp" />
     <ClCompile Include="Source\Menu\MenuItem\MenuButton.cpp" />
-    <ClCompile Include="Source\GameObject\BossCarOld.cpp" />
     <ClCompile Include="Source\Menu\LoadingScreen.cpp" />
     <ClCompile Include="Source\Menu\Menu.cpp" />
     <ClCompile Include="Source\Menu\PauseMenu.cpp" />

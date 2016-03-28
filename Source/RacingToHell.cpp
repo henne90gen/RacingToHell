@@ -1,8 +1,7 @@
-// RacingToHell.cpp : Defines the entry point for the console application.
+// RacingToHell.cpp : Defines the entry point for the application.
 //
 
 #include "stdafx.h"
-
 #include "Framework.hpp"
 
 int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpszArgument, int nCmdShow)

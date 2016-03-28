@@ -20,7 +20,17 @@ AboutScreen::AboutScreen() : Menu(GameState::About)
 	_Cars.setFont(_Font);
 	_Cars.setColor(sf::Color::Black);
 	_Cars.setString("Enemy cars by sujit1717");
-	_Cars.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 300));
+	_Cars.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 250));
+
+	_Mech.setFont(_Font);
+	_Mech.setColor(sf::Color::Black);
+	_Mech.setString("Boss sprites by Skorpio, MillionthVector and Bleed");
+	_Mech.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 300));
+
+	_LevelUp.setFont(_Font);
+	_LevelUp.setColor(sf::Color::Black);
+	_LevelUp.setString("'Level up sound effect' by Bart Kelsey");
+	_LevelUp.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 350));
 }
 
 void AboutScreen::render(sf::RenderWindow & window)
@@ -28,10 +38,12 @@ void AboutScreen::render(sf::RenderWindow & window)
 	window.draw(_Text);
 	window.draw(_Music);
 	window.draw(_Cars);
+	window.draw(_LevelUp);
 
 	for (int i = 0; i < _MenuItems.size(); i++) {
 		_MenuItems[i]->render(window);
 	}
+
 	checkMenuItemHovered(window);
 }
 

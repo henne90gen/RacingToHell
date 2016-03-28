@@ -10,5 +10,8 @@ public:
 	void render(sf::RenderWindow& window);
 	GameState handleEvents(sf::RenderWindow & window);
 	GameState handleMenuItemResult(MenuResult result);
+
+private:
+	sf::Text _LevelUp;
 };
 

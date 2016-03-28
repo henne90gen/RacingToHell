@@ -11,6 +11,16 @@ AboutScreen::AboutScreen() : Menu(GameState::About)
 	_Text.setColor(sf::Color::Black);
 	_Text.setString("This game was made by \nAlex Ivliev and Hendrik Müller.");
 	_Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 100));
+
+	_LevelUp.setFont(_Font);
+	_LevelUp.setColor(sf::Color::Black);
+	_LevelUp.setString("'Level up sound effect' by Bart Kelsey. Commissioned by Will Corwin for OpenGameArt.org");
+	_LevelUp.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 100));
+
+	_Text.setFont(_Font);
+	_Text.setColor(sf::Color::Black);
+	_Text.setString("'Music by KsTBeats");
+	_Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 100));
 }
 
 void AboutScreen::render(sf::RenderWindow & window)

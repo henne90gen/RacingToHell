@@ -335,16 +335,17 @@ void Framework::load()
 		_MenuMusic.setBuffer(_MenuMusicBuffer);
 	}
 	
-	_Level.load();
-
 	for (unsigned int i = 1; i < 7; i++) 
 	{
 		sf::Texture texture;
 		if (texture.loadFromFile("Resources/Texture/PlayerCar/playercar" + std::to_string(i) + ".png")) 
 		{
+			texture.setSmooth(true);
 			_CarSkins.push_back(std::make_shared<sf::Texture>(texture));
 		}
 	}
+	
+	_Level.load();
 
 	_GameObjectContainer.load();
 	_GameObjectContainer.setCarSkins(_CarSkins);

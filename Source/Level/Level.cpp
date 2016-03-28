@@ -69,8 +69,8 @@ void Level::load()
 	_Sprite.setTexture((*_Textures.at(0)));
 	_Sprite.setPosition(sf::Vector2f(0, -1600));
 
-	std::vector<std::thread> loadingThreads;
-	for (int i = 1; i <= 5; i++) loadingThreads.push_back(std::thread(&Level::loadSongByID, this, i));
+	std::thread loadingThreads[5];
+	for (int i = 1; i <= 5; i++) loadingThreads[i - 1] = (std::thread(&Level::loadSongByID, this, i));
 	for (auto& t: loadingThreads) t.join();
 }
 
@@ -103,17 +103,24 @@ int Level::getRoadSpeed()
 
 void Level::loadSongByID(int id)
 {
-	bool checked = false;
-	while (!checked) {
-		std::shared_ptr<sf::SoundBuffer> buffer(new sf::SoundBuffer());
-		if (_CrtIsValidHeapPointer((const void *)buffer.get())) {
-			(*buffer).loadFromFile("Resources/Sound/Music/level" + std::to_string(id) + ".ogg");
-			std::lock_guard<std::mutex>{ _ThreadGuard };
-			_MusicBuffers.push_back(buffer);
-			checked = true;
+	try
+	{
+		bool checked = false;
+		while (!checked) {
+			std::shared_ptr<sf::SoundBuffer> buffer(new sf::SoundBuffer());
+			if (_CrtIsValidHeapPointer((const void *)buffer.get())) {
+				(*buffer).loadFromFile("Resources/Sound/Music/level" + std::to_string(id) + ".ogg");
+				std::lock_guard<std::mutex>{ _ThreadGuard };
+				_MusicBuffers.push_back(buffer);
+				checked = true;
+			}
+			else {
+				buffer.reset();
+			}
 		}
-		else {
-			buffer.reset();
-		}
+	}
+	catch (...)
+	{
+		std::exit;
 	}
 }

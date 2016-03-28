@@ -12,6 +12,7 @@ public:
 	GameState handleMenuItemResult(MenuResult result);
 
 private:
-	sf::Text _LevelUp, _Music, _Cars, _Mech;
+	sf::Text _Text2, _LevelUp, _LevelUp2, _Music, _Cars, _Boss, _Boss2;
+	sf::RectangleShape _Frame;
 };
 

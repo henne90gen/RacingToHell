@@ -334,8 +334,6 @@ void Framework::load()
 	if (_MenuMusicBuffer.loadFromFile("Resources/Sound/Music/menu1.ogg")) {
 		_MenuMusic.setBuffer(_MenuMusicBuffer);
 	}
-	
-	_Level.load();
 
 	for (unsigned int i = 1; i < 7; i++) 
 	{
@@ -356,6 +354,7 @@ void Framework::load()
 	_FPS = _OptionsMenu.getFPS();
 	setVolume(_OptionsMenu.getVolume());
 	
+	_Level.load();
 	_Level.resetLevel();
 }
 

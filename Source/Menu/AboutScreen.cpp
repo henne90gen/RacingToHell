@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Menu/AboutScreen.h"
 
-
 AboutScreen::AboutScreen() : Menu(GameState::About)
 {
 	sf::Vector2f ButtonSize = sf::Vector2f(150, 50);

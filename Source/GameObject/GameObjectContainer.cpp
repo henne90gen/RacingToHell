@@ -384,9 +384,9 @@ bool GameObjectContainer::emptyScreen()
 
 void GameObjectContainer::load()
 {
-	for (int i = 0; i < 7; i++) {
+	for (int i = 1; i <= 8; i++) {
 		std::shared_ptr<sf::Texture> texture(new sf::Texture());
-		(*texture).loadFromFile("Resources/Texture/TrafficCar/Traffic" + std::to_string(i + 1) + ".png");
+		(*texture).loadFromFile("Resources/Texture/TrafficCar/Traffic" + std::to_string(i) + ".png");
 		_AICarTextures.push_back(texture);
 	}
 

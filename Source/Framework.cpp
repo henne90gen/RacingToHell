@@ -331,6 +331,7 @@ bool Framework::measureTime()
 
 void Framework::load()
 {
+	try {
 	if (_MenuMusicBuffer.loadFromFile("Resources/Sound/Music/menu1.ogg")) {
 		_MenuMusic.setBuffer(_MenuMusicBuffer);
 	}
@@ -344,8 +345,6 @@ void Framework::load()
 			_CarSkins.push_back(std::make_shared<sf::Texture>(texture));
 		}
 	}
-	
-	_Level.load();
 
 	_GameObjectContainer.load();
 	_GameObjectContainer.setCarSkins(_CarSkins);
@@ -357,7 +356,12 @@ void Framework::load()
 	_FPS = _OptionsMenu.getFPS();
 	setVolume(_OptionsMenu.getVolume());
 	
+		_Level.load();
 	_Level.resetLevel();
+}
+	catch (...) {
+		std::exit;
+	}
 }
 
 void Framework::resetGame() 

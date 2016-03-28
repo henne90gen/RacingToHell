@@ -79,6 +79,9 @@ void Level::resetLevel()
 	_Level = 1;
 	_TotalLevelTime = 60.0f;
 	_LevelTime = 0;
+	while (!_FirstLevelSoundLoaded) {
+		
+	}
 	_Music.setBuffer((*_MusicBuffers.at(0)));
 	_Sprite.setTexture((*_Textures.at((_Level - 1) % _Textures.size())));
 }
@@ -103,8 +106,7 @@ int Level::getRoadSpeed()
 
 void Level::loadSongByID(int id)
 {
-	try
-	{
+	try {
 		bool checked = false;
 		while (!checked) {
 			std::shared_ptr<sf::SoundBuffer> buffer(new sf::SoundBuffer());
@@ -118,9 +120,11 @@ void Level::loadSongByID(int id)
 				buffer.reset();
 			}
 		}
+		if (id == 1) {
+			_FirstLevelSoundLoaded = true;
+		}
 	}
-	catch (...)
-	{
-		std::exit;
+	catch (...) {
+		std::exit(1);
 	}
 }

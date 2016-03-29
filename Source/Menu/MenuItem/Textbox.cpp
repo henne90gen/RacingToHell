@@ -23,7 +23,7 @@ Textbox::Textbox(sf::Vector2f Position, sf::Vector2f Size, int CharacterSize, st
 	_Cursor.setSize(sf::Vector2f(1, CharacterSize));
 	_Cursor.setFillColor(sf::Color::Black);
 	
-	_Focused = true;
+	_Focused = isFocused;
 
 	setCursor();
 }

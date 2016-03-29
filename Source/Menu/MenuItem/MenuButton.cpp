@@ -6,7 +6,7 @@ MenuButton::MenuButton(sf::Vector2f pos, sf::Vector2f size, MenuResult action, s
 	_Text.setFont(_Font);
 	_Text.setPosition(pos);
 	_Text.setColor(sf::Color::White);
-	_Text.setCharacterSize(40);
+	_Text.setCharacterSize(0.8f * size.y);
 	_Text.setString(text);
 
 	_Background.setPosition(pos);

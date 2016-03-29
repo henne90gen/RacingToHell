@@ -53,6 +53,7 @@ void OptionsMenu::render(sf::RenderWindow & window)
 	window.draw(_FPS);
 	window.draw(_VolumeBackground);
 	window.draw(_Volume);
+
 	for (int i = 0; i < _MenuItems.size(); i++) {
 		_MenuItems[i]->render(window);
 	}

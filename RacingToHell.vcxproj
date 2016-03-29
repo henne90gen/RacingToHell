@@ -188,6 +188,8 @@
     <ClInclude Include="Headers\GameObject\GameObject.h" />
     <ClInclude Include="Headers\Menu\MenuItem\StatBox.h" />
     <ClInclude Include="Headers\Menu\MenuItem\Textbox.h" />
+    <ClInclude Include="Headers\Menu\MultiplayerMenu.h" />
+    <ClInclude Include="Headers\Multiplayer\NetworkHandle.h" />
     <ClInclude Include="Headers\PlayerStats.h" />
     <ClInclude Include="Headers\StandardCursor.h" />
     <ClInclude Include="Headers\stdafx.h" />
@@ -224,6 +226,7 @@
     <ClCompile Include="Source\Menu\MenuItem\MenuButton.cpp" />
     <ClCompile Include="Source\Menu\LoadingScreen.cpp" />
     <ClCompile Include="Source\Menu\Menu.cpp" />
+    <ClCompile Include="Source\Menu\MultiplayerMenu.cpp" />
     <ClCompile Include="Source\Menu\PauseMenu.cpp" />
     <ClCompile Include="Source\Menu\OptionsMenu.cpp" />
     <ClCompile Include="Source\Menu\MenuItem\HighscoreList.cpp" />
@@ -241,6 +244,7 @@
     <ClCompile Include="Source\Framework.cpp" />
     <ClCompile Include="Source\GameObject\GameObject.cpp" />
     <ClCompile Include="Source\Menu\MenuItem\Textbox.cpp" />
+    <ClCompile Include="Source\Multiplayer\NetworkHandle.cpp" />
     <ClCompile Include="Source\RacingToHell.cpp" />
     <ClCompile Include="Source\Serializable.cpp" />
     <ClCompile Include="Source\StandardCursor.cpp" />

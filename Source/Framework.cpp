@@ -88,6 +88,10 @@ void Framework::render()
 		}
 		_LoadingScreen.render(_RenderWindow);
 		break;
+	case GameState::MultiplayerSelection:
+		setMouseVisible(true);
+		_MultiplayerMenu.render(_RenderWindow);
+		break;
 	}
 
 	_RenderWindow.display();
@@ -199,6 +203,9 @@ void Framework::handleEvents()
 			resetGame();
 		}
 		break;
+	case GameState::MultiplayerSelection:
+		_GameState = _MultiplayerMenu.handleEvents(_RenderWindow);
+		break;
 	}
 }
 
@@ -281,6 +288,10 @@ void Framework::update()
 	case GameState::Exiting:
 		_IsRunning = false;
 		_RenderWindow.close();
+		break;
+	case GameState::MultiplayerSelection:
+		_MultiplayerMenu.update(_FrameTime);
+		_Level.update(_FrameTime, _GameState);
 		break;
 	}
 }

@@ -34,7 +34,6 @@ MainMenu::MainMenu() : Menu(GameState::Main)
 
 void MainMenu::render(sf::RenderWindow& window)
 {
-	window.draw(_CarSkin);
 	_StatBox->render(window, _SelectedCar);
 
 	for (int i = 0; i < _MenuItems.size(); i++) {

@@ -63,7 +63,7 @@ void OptionsMenu::render(sf::RenderWindow & window)
 
 GameState OptionsMenu::handleEvents(sf::RenderWindow & Window)
 {
-	while (Window.pollEvent(_Event)) {
+	if (Window.pollEvent(_Event)) {
 
 		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
 

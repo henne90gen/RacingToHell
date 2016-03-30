@@ -234,10 +234,10 @@
     <ClInclude Include="Headers\Menu\MultiplayerLobby.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\GameObject\GameObjectFactory.h">
+    <ClInclude Include="Headers\Menu\MenuItem\PlayerTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Menu\MenuItem\PlayerTable.h">
+    <ClInclude Include="Headers\GameObject\GameObjectFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -368,10 +368,10 @@
     <ClCompile Include="Source\Menu\MultiplayerLobby.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameObject\GameObjectFactory.cpp">
+    <ClCompile Include="Source\Menu\MenuItem\PlayerTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Menu\MenuItem\PlayerTable.cpp">
+    <ClCompile Include="Source\GameObject\GameObjectFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -498,6 +498,18 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Resources\Texture\Icon\Icon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\PlayerTable\Admin.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\PlayerTable\Cross.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\PlayerTable\Tick.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\PlayerTable\Trash.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

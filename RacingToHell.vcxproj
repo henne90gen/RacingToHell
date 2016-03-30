@@ -299,6 +299,10 @@
     <Image Include="Resources\Texture\PlayerCar\playercar4.png" />
     <Image Include="Resources\Texture\PlayerCar\playercar5.png" />
     <Image Include="Resources\Texture\PlayerCar\playercar6.png" />
+    <Image Include="Resources\Texture\PlayerTable\Admin.png" />
+    <Image Include="Resources\Texture\PlayerTable\Cross.png" />
+    <Image Include="Resources\Texture\PlayerTable\Tick.png" />
+    <Image Include="Resources\Texture\PlayerTable\Trash.png" />
     <Image Include="Resources\Texture\Road\Road1.jpg" />
     <Image Include="Resources\Texture\Road\Road2.jpg" />
     <Image Include="Resources\Texture\Road\Road3.jpg" />

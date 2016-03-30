@@ -512,6 +512,15 @@
     <Image Include="Resources\Texture\PlayerTable\Trash.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Resources\Texture\MainMenu\ComboboxArrow.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\Animation\explosion.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\BossCar\Jet.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\Font\arial.ttf">
@@ -530,6 +539,15 @@
     </Media>
     <Media Include="Resources\Sound\shotPlayer.wav">
       <Filter>Resource Files\Sound</Filter>
+    </Media>
+    <Media Include="Resources\Sound\levelUp.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="Resources\Sound\explosion.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="Resources\Sound\jetengine.wav">
+      <Filter>Resource Files</Filter>
     </Media>
   </ItemGroup>
   <ItemGroup>

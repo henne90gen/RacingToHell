@@ -4,12 +4,13 @@
 
 GameObject::GameObject(sf::Vector2f pos, GameObjectType type, sf::Texture& texture) : _Type(type)
 {
-	//Setting up texture and sprite
 	_Texture = texture;
 	_Sprite.setTexture(_Texture);
 	_Sprite.setOrigin(_Sprite.getLocalBounds().width / 2, _Sprite.getLocalBounds().height / 2);
 	_Sprite.setPosition(pos);
 }
+
+
 
 void GameObject::render(sf::RenderWindow& window)
 {

@@ -234,6 +234,9 @@
     <ClInclude Include="Headers\Menu\MultiplayerLobby.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\GameObject\GameObjectFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Framework.cpp">
@@ -360,6 +363,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Menu\MultiplayerLobby.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObject\GameObjectFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

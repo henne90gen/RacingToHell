@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GameObject/GameObjectFactory.h"
 #include "GameObject/GameObject.h"
 #include "GameObject/GameObjectType.h"
 #include "GameObject/AICar.h"
@@ -127,13 +128,14 @@ public:
 	*/
 	void setDifficulty(int dif) { _Difficulty = dif; }
 private:
+	GameObjectFactory _GOFactory;
+
 	std::vector<std::shared_ptr<GameObject>> _GameObjects;
 	std::vector<std::shared_ptr<Animation>> _Animations;
-	std::vector<std::shared_ptr<sf::Texture>> _PlayerCarTextures, _AICarTextures, _BossCarTextures;
 
-	sf::Texture _ToolboxTexture, _EnergyCanisterTexture, _BulletTexture, _ExplosionTexture;
+	sf::Texture _ExplosionTexture;
+	sf::SoundBuffer _ExplosionSoundBuffer;
 
-	sf::SoundBuffer _AIShotSoundBuffer, _PlayerShotSoundBuffer, _ExplosionSoundBuffer, _JetSoundBuffer;
 	std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>> _SoundEffects;
 	float _Volume;
 

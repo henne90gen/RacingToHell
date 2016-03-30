@@ -8,7 +8,7 @@ class AICar : public Car
 public:
 	/*
 		Car that is controlled by the computer.
-		@param difficulty Difficulty of the level
+		@param hp Helath of the car
 		@param roadSpeed Speed of the road
 		@param texture Texture that is going to be used for the sprite
 	*/

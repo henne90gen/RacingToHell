@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GameObject\Bullet.h"
 
-Bullet::Bullet(sf::Vector2f& pos, sf::Vector2f& dir, int speed, GameObjectType type, sf::Texture& texture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume) : GameObject(pos, type, texture), _Direction(dir), _Speed(speed)
+Bullet::Bullet(sf::Vector2f pos, sf::Vector2f dir, int speed, GameObjectType type, sf::Texture& texture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume) : GameObject(pos, type, texture), _Direction(dir), _Speed(speed)
 {
 
 	if (type == GameObjectType::BulletObjectPlayer)

@@ -179,8 +179,8 @@ public:
 	virtual void resetShotBullet() {};
 
 	/*
-		Gives back the angle of the shot bullet or 360.0f if no bullet was fired
-		@return float Angle of the shot bullet
+		Gives back the direction of the shot bullet, if x or y are 0 then no bullet was fired
+		@return sf::Vector2f Direction of the shot bullet
 	*/
 	virtual sf::Vector2f shotBullet() { return sf::Vector2f(0, 0); }
 
@@ -227,7 +227,6 @@ public:
 		Reads the necessary data for a gameobject from a stream
 	*/
 	virtual void operator<<(std::istream& stream);
-protected:
 
 	/*
 		Stops all sounds of the GameObject

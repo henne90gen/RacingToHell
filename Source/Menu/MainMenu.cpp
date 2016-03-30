@@ -16,9 +16,9 @@ MainMenu::MainMenu() : Menu(GameState::Main)
 	_MenuItems.push_back(button4);
 	std::shared_ptr<MenuButton> button5(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 380), ButtonSize, MenuResult::Exit, "Exit", TextAlignment::Center));
 	_MenuItems.push_back(button5);
-	std::shared_ptr<MenuButton> button6(new MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 60, SCREENHEIGHT - 335), sf::Vector2f(0, 0), MenuResult::PreviousSkin, "<<", TextAlignment::Left));
+	std::shared_ptr<MenuButton> button6(new MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 60, SCREENHEIGHT - 335), sf::Vector2f(0, 70), MenuResult::PreviousSkin, "<<", TextAlignment::Left));
 	_MenuItems.push_back(button6);
-	std::shared_ptr<MenuButton> button7(new MenuButton(sf::Vector2f(SCREENWIDTH / 2 + 50, SCREENHEIGHT - 335), sf::Vector2f(0, 0), MenuResult::NextSkin, ">>", TextAlignment::Left));
+	std::shared_ptr<MenuButton> button7(new MenuButton(sf::Vector2f(SCREENWIDTH / 2 + 50, SCREENHEIGHT - 335), sf::Vector2f(0, 70), MenuResult::NextSkin, ">>", TextAlignment::Left));
 	_MenuItems.push_back(button7);
 
 	//Main-Menu Text

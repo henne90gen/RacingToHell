@@ -41,7 +41,6 @@ public:
 	*/
 	int getCarIndex() { return _SelectedCar; }
 private:
-	sf::Sprite _CarSkin;
 	std::shared_ptr<StatBox> _StatBox;
 
 	int _SelectedCar;

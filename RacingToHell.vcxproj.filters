@@ -231,6 +231,9 @@
     <ClInclude Include="Headers\Menu\MultiplayerMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Menu\MultiplayerLobby.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Framework.cpp">
@@ -354,6 +357,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Menu\MultiplayerMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menu\MultiplayerLobby.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

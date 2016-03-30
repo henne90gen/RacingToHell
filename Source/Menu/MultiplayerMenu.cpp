@@ -45,10 +45,10 @@ MultiplayerMenu::MultiplayerMenu() : Menu(GameState::MultiplayerSelection)
 	_PasswordText.setPosition(_BackgroundJoin.getPosition() + sf::Vector2f(20, 150));
 	_PasswordText.setString("Password:");
 
-	std::shared_ptr<Textbox> PasswordTextBox(new Textbox(_BackgroundJoin.getPosition() + sf::Vector2f(200, 150), sf::Vector2f(200, 40), 30, "Password", false));
+	std::shared_ptr<Textbox> PasswordTextBox(new Textbox(_BackgroundJoin.getPosition() + sf::Vector2f(200, 150), sf::Vector2f(200, 40), 30, "Password", false, true));
 	_MenuItems.push_back(PasswordTextBox);
 
-	std::shared_ptr<MenuButton> JoinButton(new MenuButton(_BackgroundJoin.getPosition() + sf::Vector2f(120, 220), sf::Vector2f(200, 40), MenuResult::Back, "Join Lobby", TextAlignment::Center));
+	std::shared_ptr<MenuButton> JoinButton(new MenuButton(_BackgroundJoin.getPosition() + sf::Vector2f(120, 220), sf::Vector2f(200, 40), MenuResult::JoinCreate, "Join Lobby", TextAlignment::Center));
 	_MenuItems.push_back(JoinButton);
 
 	_FeedbackText.setFont(_Font);
@@ -74,10 +74,10 @@ MultiplayerMenu::MultiplayerMenu() : Menu(GameState::MultiplayerSelection)
 	_CreatePassword.setPosition(_BackgroundCreate.getPosition() + sf::Vector2f(20, 75));
 	_CreatePassword.setString("Password:");
 
-	std::shared_ptr<Textbox> PasswordTextBoxCreate(new Textbox(_BackgroundCreate.getPosition() + sf::Vector2f(200, 75), sf::Vector2f(200, 40), 30, "Password", false));
+	std::shared_ptr<Textbox> PasswordTextBoxCreate(new Textbox(_BackgroundCreate.getPosition() + sf::Vector2f(200, 75), sf::Vector2f(200, 40), 30, "Password", false, true));
 	_MenuItems.push_back(PasswordTextBoxCreate);
 
-	std::shared_ptr<MenuButton> CreateButton(new MenuButton(_BackgroundCreate.getPosition() + sf::Vector2f(120, 145), sf::Vector2f(200, 40), MenuResult::Back, "Create Lobby", TextAlignment::Center));
+	std::shared_ptr<MenuButton> CreateButton(new MenuButton(_BackgroundCreate.getPosition() + sf::Vector2f(120, 145), sf::Vector2f(200, 40), MenuResult::JoinCreate, "Create Lobby", TextAlignment::Center));
 	_MenuItems.push_back(CreateButton);
 
 	std::shared_ptr<MenuButton> BackButton(new MenuButton(sf::Vector2f(100, 700), sf::Vector2f(150, 50), MenuResult::Back, "Back", TextAlignment::Center));
@@ -122,6 +122,9 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result)
 	case MenuResult::Back:
 		return GameState::Main;
 		break;
+	case MenuResult::JoinCreate:
+		return GameState::Lobby;
+			break;
 	default:
 		break;
 	}

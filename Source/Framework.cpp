@@ -92,6 +92,10 @@ void Framework::render()
 		setMouseVisible(true);
 		_MultiplayerMenu.render(_RenderWindow);
 		break;
+	case GameState::Lobby:
+		setMouseVisible(true);
+		_MultiplayerLobby.render(_RenderWindow);
+		break;
 	}
 
 	_RenderWindow.display();
@@ -206,6 +210,9 @@ void Framework::handleEvents()
 	case GameState::MultiplayerSelection:
 		_GameState = _MultiplayerMenu.handleEvents(_RenderWindow);
 		break;
+	case GameState::Lobby:
+		_GameState = _MultiplayerLobby.handleEvents(_RenderWindow);
+		break;
 	}
 }
 
@@ -291,6 +298,10 @@ void Framework::update()
 		break;
 	case GameState::MultiplayerSelection:
 		_MultiplayerMenu.update(_FrameTime);
+		_Level.update(_FrameTime, _GameState);
+		break;
+	case GameState::Lobby:
+		_MultiplayerLobby.update(_FrameTime);
 		_Level.update(_FrameTime, _GameState);
 		break;
 	}

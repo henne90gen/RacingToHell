@@ -12,6 +12,7 @@
 #include "Menu/LoadingScreen.h"
 #include "Menu/LevelUpScreen.h"
 #include "Menu/MultiplayerMenu.h"
+#include "Menu/MultiplayerLobby.h"
 #include "HeadsUpDisplay.h"
 #include "Level/Level.h" 
 
@@ -67,6 +68,7 @@ private:
 	LevelUpScreen _LevelUpScreen;
 	HeadsUpDisplay _HeadsUpDisplay;
 	MultiplayerMenu _MultiplayerMenu;
+	MultiplayerLobby _MultiplayerLobby;
 
 	// Functions
 	void render();

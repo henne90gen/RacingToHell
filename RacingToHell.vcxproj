@@ -91,7 +91,7 @@
       <AdditionalIncludeDirectories>SFML-x86\include;Headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>SFML-x86\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-audio-s-d.lib;sfml-network-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;jpeg.lib;winmm.lib;gdi32.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -128,7 +128,7 @@
       <MinimalRebuild>true</MinimalRebuild>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>
       </EnableCOMDATFolding>
       <OptimizeReferences>
@@ -188,6 +188,7 @@
     <ClInclude Include="Headers\GameObject\GameObject.h" />
     <ClInclude Include="Headers\Menu\MenuItem\StatBox.h" />
     <ClInclude Include="Headers\Menu\MenuItem\Textbox.h" />
+    <ClInclude Include="Headers\Menu\MultiplayerLobby.h" />
     <ClInclude Include="Headers\Menu\MultiplayerMenu.h" />
     <ClInclude Include="Headers\Multiplayer\NetworkHandle.h" />
     <ClInclude Include="Headers\PlayerStats.h" />
@@ -226,6 +227,7 @@
     <ClCompile Include="Source\Menu\MenuItem\MenuButton.cpp" />
     <ClCompile Include="Source\Menu\LoadingScreen.cpp" />
     <ClCompile Include="Source\Menu\Menu.cpp" />
+    <ClCompile Include="Source\Menu\MultiplayerLobby.cpp" />
     <ClCompile Include="Source\Menu\MultiplayerMenu.cpp" />
     <ClCompile Include="Source\Menu\PauseMenu.cpp" />
     <ClCompile Include="Source\Menu\OptionsMenu.cpp" />

@@ -8,7 +8,7 @@ MainMenu::MainMenu() : Menu(GameState::Main)
 
 	std::shared_ptr<MenuButton> button1(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 100), ButtonSize, MenuResult::Resume, "Play", TextAlignment::Center));
 	_MenuItems.push_back(button1);
-	std::shared_ptr<MenuButton> button2(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 170), ButtonSize, MenuResult::MpSelectionResult, "Multiplayer", TextAlignment::Center));
+	std::shared_ptr<MenuButton> button2(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 170), ButtonSize, MenuResult::Multiplayer, "Multiplayer", TextAlignment::Center));
 	_MenuItems.push_back(button2);
 	std::shared_ptr<MenuButton> button3(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 240), ButtonSize, MenuResult::Highscore, "Highscores", TextAlignment::Center));
 	_MenuItems.push_back(button3);
@@ -98,7 +98,7 @@ GameState MainMenu::handleMenuItemResult(MenuResult result)
 	case MenuResult::Exit:
 		return GameState::Exiting;
 		break;
-	case MenuResult::MpSelectionResult:
+	case MenuResult::Multiplayer:
 		return GameState::MultiplayerSelection;
 		break;
 	}

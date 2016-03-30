@@ -32,7 +32,7 @@ public:
 	void update(float frametime);
 private:
 	sf::RectangleShape _TablePlaceHolder;
-	
+
 	std::shared_ptr<StatBox> _StatBox;
 
 	int _SelectedCar;

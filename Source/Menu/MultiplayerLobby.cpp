@@ -9,14 +9,25 @@ MultiplayerLobby::MultiplayerLobby() : Menu(GameState::Lobby), _SelectedCar(0)
 	_TablePlaceHolder.setPosition(sf::Vector2f(25, 25));
 	_TablePlaceHolder.setSize(sf::Vector2f(550, 80));
 
-	std::shared_ptr<MenuButton> buttonprev(new MenuButton(sf::Vector2f(0, 0), sf::Vector2f(0, 0), MenuResult::Back, "<<", TextAlignment::Left));
+	std::shared_ptr<MenuButton> StartButton(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 165), sf::Vector2f(200, 50), MenuResult::Nothing, "Start", TextAlignment::Center));
+	_MenuItems.push_back(StartButton);
+
+	std::vector<std::string> difficulties = { "Easy", "Normal", "Hard", "Insane" };
+	std::shared_ptr<ComboBox> comboboxDifficulty(new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 100, 235), difficulties, MenuResult::Nothing));
+	_MenuItems.push_back(comboboxDifficulty);
+
+	std::vector<std::string> modes = { "Standard" };
+	std::shared_ptr<ComboBox> comboboxMode(new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 100, 305), modes, MenuResult::Nothing));
+	_MenuItems.push_back(comboboxMode);
+
+	std::shared_ptr<MenuButton> buttonprev(new MenuButton(sf::Vector2f(0, 0), sf::Vector2f(0, 0), MenuResult::PreviousSkin, "<<", TextAlignment::Left));
 	_MenuItems.push_back(buttonprev);
-	std::shared_ptr<MenuButton> buttonnext(new MenuButton(sf::Vector2f(0, 0), sf::Vector2f(0, 0), MenuResult::Back, ">>", TextAlignment::Left));
+	std::shared_ptr<MenuButton> buttonnext(new MenuButton(sf::Vector2f(0, 0), sf::Vector2f(0, 0), MenuResult::NextSkin, ">>", TextAlignment::Left));
 	_MenuItems.push_back(buttonnext);
 
 	_StatBox = std::make_shared<StatBox>(sf::Vector2f(SCREENWIDTH / 2, 575));
 
-	std::shared_ptr<MenuButton> LeaveButton(new MenuButton(sf::Vector2f(100, 700), sf::Vector2f(150, 50), MenuResult::Back, "Leave", TextAlignment::Center));
+	std::shared_ptr<MenuButton> LeaveButton(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 375), sf::Vector2f(200, 50), MenuResult::Back, "Leave", TextAlignment::Center));
 	_MenuItems.push_back(LeaveButton);
 }
 
@@ -28,7 +39,6 @@ void MultiplayerLobby::render(sf::RenderWindow& Window)
 
 	for (int i = 0; i < _MenuItems.size(); i++) {
 		_MenuItems[i]->render(Window);
-		std::cout << "Test" << std::endl;
 	}
 }
 

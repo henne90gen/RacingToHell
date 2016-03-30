@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "GameObject/Boss/Mech.h"
 
-// IDEA: Mech comes in from below and "chase" the player
-
 Mech::Mech(int difficulty, int HP, sf::Texture& textureTop, sf::Texture& textureLegs, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float Volume) : BossCar(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), difficulty, HP, 100, textureTop, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, Volume),
 	_TopAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureTop), _LegsAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureLegs), _MovementSwitch(false), _GunRadius(81.5659f)
 {
@@ -20,7 +18,15 @@ Mech::Mech(int difficulty, int HP, sf::Texture& textureTop, sf::Texture& texture
 	_NextPosition = _DefaultPosition;
 	_Movement = Movement::DRIVETODEFAULT;
 
-	_Pattern = { std::make_pair(Phase::SPIN, ((2.0f + (float)_Difficulty) * 360.0f) / (180.0f + 135.f * (float)_Difficulty)) , std::make_pair(Phase::SHOTGUN, 7.0f), std::make_pair(Phase::SALVE, 7.0f) };
+	_BaseSpeed = _Speed;
+
+	_Pattern = { 
+		std::make_pair(Phase::SPIN, ((2.0f + (float)_Difficulty) * 360.0f) / (180.0f + 135.f * (float)_Difficulty)) , std::make_pair(Phase::NOTHING, 1.5f), 
+		std::make_pair(Phase::SALVE, 7.0f), std::make_pair(Phase::NOTHING, 0.75f),
+		std::make_pair(Phase::RUNATPLAYERPHASE, 0.25f),
+		std::make_pair(Phase::SHOTGUN, 7.0f), std::make_pair(Phase::NOTHING, 1.5f), 
+		std::make_pair(Phase::ZICKZACKPHASE, 0.25f), std::make_pair(Phase::SALVEZICKZACK, 3.0f), std::make_pair(Phase::NOTHING, 0.75f)
+	};
 }
 
 void Mech::render(sf::RenderWindow & window)
@@ -49,6 +55,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 				_Movement = Movement::LEFTRIGHT;
 				_Attack = true;
 				_PhaseClock.restart();
+				_Speed = _BaseSpeed;
 				break;
 			case Movement::LEFTRIGHT:
 				_MovementSwitch = !_MovementSwitch;
@@ -63,8 +70,18 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 				}
 				break;
 			case Movement::RUNATPLAYER:
-				_Movement = Movement::LEFTRIGHT;
-
+				_Movement = Movement::DRIVETODEFAULT;
+				_NextPosition = _DefaultPosition;
+				break;
+			case Movement::ZICKZACK:
+				if (_Event1Counter < 4) {
+					_Event1Counter++;
+					_NextPosition = sf::Vector2f(std::abs((int)_Event2Switch * SCREENWIDTH - 65) + std::pow(-1, (int)_Event2Switch) * (_Event1Counter % 2) * (SCREENWIDTH - 130), (SCREENHEIGHT / 5) * _Event1Counter);
+				}
+				else {
+					_Event1Counter = 0;
+					_Movement = Movement::DRIVETODEFAULT;
+				}
 			default:
 				break;
 			}
@@ -93,7 +110,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 			case Phase::SHOTGUN:
 				_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
 
-				_Event1Frequency = 1.25f + 0.25f * (float)(_Difficulty);
+				_Event1Frequency = 1.0f + 0.25f * (float)(_Difficulty);
 
 				if (getBossEvent() == 1)
 				{
@@ -118,11 +135,12 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 			case Phase::SALVE:
 				_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
 
-				_Event1Frequency = 1.0f + 0.2f * (float)_Difficulty;
+				_Event1Frequency = 1.25f + 0.25f * (float)_Difficulty;
 
 				if (getBossEvent() == 1)
 				{
-					bool Hand = (std::rand() % 100) > 50;
+					bool Hand = _Event1Switch;//(std::rand() % 100) > 50;
+					_Event1Switch = !_Event1Switch;
 
 					float bulAngle = getAngleFromVector(_GunOrientation);
 					
@@ -140,18 +158,62 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 						else
 						{
 							shootBullet(gameObjects, calcGunPositions().second, bulOrientation);
+						}
 					}
 				}
-			}
 				break;
-			case Phase::RUNARPLAYERPHASE:
-				_NextPosition = gameObjects[0]->getPos();
-				_Movement = Movement::RUNATPLAYER;
-				break;
-			}
-			
+			case Phase::SALVEZICKZACK:
+				_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
 
-			
+				_Event1Frequency = 1.25f + 0.25f * (float)_Difficulty;
+
+				if (getBossEvent() == 1)
+				{
+					bool Hand = _Event1Switch;//(std::rand() % 100) > 50;
+					_Event1Switch = !_Event1Switch;
+
+					float bulAngle = getAngleFromVector(_GunOrientation);
+
+					int NumberofBullets = (int)(3 + 0.5f * (float)_Difficulty);
+					float dAngle = (37.0f + 2.5f * (float)_Difficulty) / (float)NumberofBullets;
+
+					for (int i = 0; i < NumberofBullets; i++)
+					{
+						sf::Vector2f bulOrientation = sf::Vector2f(std::cosf((bulAngle + (i - (int)(NumberofBullets / 2)) * dAngle) / 180 * PI), std::sinf((bulAngle + (i - (int)(NumberofBullets / 2)) * dAngle) / 180 * PI));
+
+						if (Hand)
+						{
+							shootBullet(gameObjects, calcGunPositions().first, bulOrientation);
+						}
+						else
+						{
+							shootBullet(gameObjects, calcGunPositions().second, bulOrientation);
+						}
+					}
+				}
+				break;
+			case Phase::RUNATPLAYERPHASE:
+				if (!_Event1Switch)
+				{
+					_NextPosition = gameObjects[0]->getPos();
+					_Movement = Movement::RUNATPLAYER;
+					_Speed = (3.5 + 2 * _Difficulty) * _BaseSpeed;
+					_Attack = false;
+
+					_Event1Switch = true;
+				}
+				break;
+			case Phase::ZICKZACKPHASE:
+				if (!_Event1Switch) {
+					_NextPosition = _DefaultPosition;
+					_Movement = Movement::ZICKZACK;
+					_CurrentPhase++;
+					_Speed = (2 + _Difficulty) * _BaseSpeed;
+					_Attack = true;
+					_Event1Switch = true;
+					_Event2Switch = (std::rand() % 100) > 50;
+				}
+			}
 		}
 
 		_TopAnim.setRotation(getAngleFromVector(_GunOrientation) + 90);
@@ -159,7 +221,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 
 		updateHealthBar();
 
-		if (_Movement != Movement::DRIVETODEFAULT)
+		if (_Movement != Movement::DRIVETODEFAULT && _Movement != Movement::ZICKZACK)
 		{
 			checkPhase();
 		}

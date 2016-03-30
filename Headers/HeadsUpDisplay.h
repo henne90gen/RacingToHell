@@ -20,8 +20,10 @@ public:
 		@param score Score the player has earned
 		@param health Current health of the player
 		@param energy Current energy of the player
+		@param level Current level
+		@param levelTime Current time within the level
 	*/
-	void update(int score, int health, int energy);
+	void update(int score, int health, int energy, int level, float levelTime);
 
 	/*
 		@param maxHealth Maximum health the player can have
@@ -33,10 +35,18 @@ public:
 	*/
 	void setMaxEnergy(int maxEnergy) { _MaxEnergy = maxEnergy; }
 
+	/*
+		@param totalLevelTime Length of the current level in seconds
+	*/
+	void setTotalLevelTime(float totalLevelTime) { _TotalLevelTime = totalLevelTime; }
 private:
 	sf::Font _Font;
 	sf::Texture _BackgroundTexture;
 	sf::Sprite _Background;
+
+	sf::Text _LevelText;
+	sf::RectangleShape _ProgressBar;
+	sf::RectangleShape _ProgressBarOutline;
 
 	sf::RectangleShape _HealthBar;
 	sf::RectangleShape _HealthBarOutline;
@@ -53,6 +63,7 @@ private:
 	sf::Text _ScoreText;
 
 	int _MaxHealth, _MaxEnergy;
+	float _TotalLevelTime;
 
 	std::string ConvertScore(int score);
 };

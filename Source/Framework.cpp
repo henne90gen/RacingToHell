@@ -6,6 +6,12 @@ Framework::Framework() : _FrameTime(0), _FPS(60.0f), _IsRunning(true), _GameStat
 	_RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell", sf::Style::Close);
 	_RenderWindow.setMouseCursorVisible(false);
 
+	sf::Image Icon;
+	if (Icon.loadFromFile("Resources/Texture/Icon/Icon.png"))
+	{
+		_RenderWindow.setIcon(Icon.getSize().x, Icon.getSize().y, Icon.getPixelsPtr());
+	}
+
 	//Seed
 	srand(time(NULL));
 }
@@ -108,10 +114,10 @@ void Framework::handleEvents()
 		}
 		break;
 	case GameState::Pause:
+		_GameObjectContainer.stopSounds();
 		_GameState = _PauseMenu.handleEvents(_RenderWindow);
 		if (_GameState == GameState::Running) {
 			_Clock.restart();
-			_Level.resetTimer();
 		}
 		else if (_GameState == GameState::Main) {
 			resetGame();
@@ -127,9 +133,11 @@ void Framework::handleEvents()
 		if (_GameState == GameState::Running) {
 			_HeadsUpDisplay.setMaxHealth(_GameObjectContainer.getPlayerCar().getMaxHealth());
 			_HeadsUpDisplay.setMaxEnergy(_GameObjectContainer.getPlayerCar().getMaxEnergy());
+			_HeadsUpDisplay.setTotalLevelTime(_Level.getTotalLevelTime());
 			_Clock.restart();
 			_Level.resetTimer();
 			setDifficulty(_OptionsMenu.getDifficulty());
+			_GameObjectContainer.setLevel(_Level.getLevel());
 		}
 		else if (_GameState == GameState::Highscores) {
 			_HighscoreMenu.loadScoreTable();
@@ -205,12 +213,12 @@ void Framework::update()
 			}
 		}
 		_GameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
-		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy());
+		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
 		if (!_GameObjectContainer.playerIsAlive()) {
 			_GameState = GameState::GameOver;
 		}
-		_Score += _GameObjectContainer.getCarScore();
-		_Score += 10 * _Level.getLevel() * _FrameTime;
+		
+		addScore();
 		break;
 	case GameState::BossFight:
 		_Level.update(_FrameTime, _GameState);
@@ -219,12 +227,12 @@ void Framework::update()
 			_GameState = GameState::LevelUp;
 		}
 		_GameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
-		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy());
+		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
 		if (!_GameObjectContainer.playerIsAlive()) {
 			_GameState = GameState::GameOver;
 		}
-		_Score += _GameObjectContainer.getCarScore();
-		_Score += 10 * _Level.getLevel() * _FrameTime;
+		
+		addScore();
 		break;
 	case GameState::LevelUp:
 		if (_LevelUpScreen.update()) {
@@ -234,6 +242,7 @@ void Framework::update()
 			_Level.levelUp();
 			setVolume(_OptionsMenu.getVolume());
 			_GameObjectContainer.setLevel(_Level.getLevel());
+			_HeadsUpDisplay.setTotalLevelTime(_Level.getTotalLevelTime());
 		}
 		break;
 	case GameState::Main:
@@ -277,7 +286,12 @@ void Framework::update()
 }
 
 void Framework::playSounds() {
-	if (_GameState == GameState::Running || _GameState == GameState::BossFight || _GameState == GameState::LevelUp) {
+	if (_GameState == GameState::Running || 
+		_GameState == GameState::BossFight || 
+		_GameState == GameState::LevelUp || 
+		_GameState == GameState::Pause || 
+		(_GameState == GameState::Options && _OptionsMenu.getReturnState() == GameState::Pause))
+	{
 		_MenuMusic.stop();
 		_Level.playMusic();
 		_GameObjectContainer.playSounds();
@@ -285,7 +299,7 @@ void Framework::playSounds() {
 			_LevelUpScreen.playSound();
 		}
 	}
-	else if (_GameState == GameState::Main || _GameState == GameState::Pause || _GameState == GameState::Options) {
+	else if (_GameState == GameState::Main || _GameState == GameState::Highscores || (_GameState == GameState::Options && _OptionsMenu.getReturnState() == GameState::Pause)) {
 		_Level.pauseMusic();
 		if (_MenuMusic.getStatus() == sf::Sound::Stopped || _MenuMusic.getStatus() == sf::Sound::Paused) {
 			_MenuMusic.play();
@@ -317,17 +331,17 @@ bool Framework::measureTime()
 
 void Framework::load()
 {
+	try {
 	if (_MenuMusicBuffer.loadFromFile("Resources/Sound/Music/menu1.ogg")) {
 		_MenuMusic.setBuffer(_MenuMusicBuffer);
 	}
 	
-	_Level.load();
-
 	for (unsigned int i = 1; i < 7; i++) 
 	{
 		sf::Texture texture;
 		if (texture.loadFromFile("Resources/Texture/PlayerCar/playercar" + std::to_string(i) + ".png")) 
 		{
+			texture.setSmooth(true);
 			_CarSkins.push_back(std::make_shared<sf::Texture>(texture));
 		}
 	}
@@ -338,27 +352,16 @@ void Framework::load()
 
 	_GameOverScreen.load();
 
-	//Einstellungen laden
-	std::vector<std::string> Settings;
-	std::string Option;
-	std::ifstream FileStream;
-
-	FileStream.open("Resources/Data/Settings.cfg");
-	while (std::getline(FileStream, Option))
-	{
-		Settings.push_back(Option);
-	}
-	FileStream.close();
-
-	if (Settings.size() >= 3)
-	{
-		_FPS = std::stoi(Settings[0]);
-		_OptionsMenu.setFPS(_FPS);
-		_OptionsMenu.setVolume(std::stoi(Settings[1]));
-		_OptionsMenu.setDifficulty(std::stoi(Settings[2]));
-		setVolume(_OptionsMenu.getVolume());
-	}
+	_OptionsMenu.loadOptions();
+	_FPS = _OptionsMenu.getFPS();
+	setVolume(_OptionsMenu.getVolume());
+	
+		_Level.load();
 	_Level.resetLevel();
+}
+	catch (...) {
+		std::exit;
+	}
 }
 
 void Framework::resetGame() 
@@ -399,4 +402,27 @@ void Framework::setDifficulty(int Difficulty)
 {
 	_Level.setDifficulty(Difficulty);
 	_GameObjectContainer.setDifficulty(Difficulty);
+}
+
+void Framework::addScore()
+{
+	_Score += _GameObjectContainer.getCarScore();
+	
+	switch (_OptionsMenu.getDifficulty())
+	{
+	case 0:
+		_Score += 5 * _Level.getLevel() * _FrameTime;
+		break;
+	case 1:
+		_Score += 10 * (int)std::powf((float)_Level.getLevel(), 1.15f) * _FrameTime;
+		break;
+	case 2:
+		_Score += 30 * (int)std::powf((float)_Level.getLevel(), 1.3f) * _FrameTime;
+		break;
+	case 3:
+		_Score += 60 * (int)std::powf((float)_Level.getLevel(), 1.6f) * _FrameTime;
+		break;
+	default:
+		break;
+	}
 }

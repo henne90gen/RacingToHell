@@ -10,13 +10,13 @@ LevelUpScreen::LevelUpScreen() : _ShowTime(2.6f), _FadeTime(0.1f), _SoundPlayed(
 		_Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 50));
 	}
 
-	_FasterTexture.loadFromFile("Resources/Texture/fast_forward.png");
+	_FasterTexture.loadFromFile("Resources/Texture/LevelUp/fast_forward.png");
 	_FasterTexture.setSmooth(true);
 	_Faster.setTexture(_FasterTexture);
 	_Faster.setScale(sf::Vector2f(0.5f, 0.5f));
 	_Faster.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Faster.getLocalBounds().width / 4, 150));
 	
-	_StrongerTexture.loadFromFile("Resources/Texture/double_arrow.png");
+	_StrongerTexture.loadFromFile("Resources/Texture/LevelUp/double_arrow.png");
 	_StrongerTexture.setSmooth(true);
 	_Stronger.setTexture(_StrongerTexture);
 	_Stronger.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Stronger.getLocalBounds().width / 2, 450));

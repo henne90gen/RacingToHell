@@ -53,7 +53,7 @@ void Menu::handleJoystick(float axis)
 
 void Menu::applyJoystickSelection(sf::Event & Event)
 {
-	if (Event.type != sf::Event::MouseButtonPressed && Event.type != sf::Event::MouseButtonReleased) {
+	if (Event.type == sf::Event::MouseMoved && Event.type == sf::Event::JoystickMoved) {
 		for (int i = 0; i < _MenuItems.size(); i++) {
 			if (_MenuItems[i]->getType() != MenuItemType::MTextbox) {
 				if (i == _JoystickSelection) {

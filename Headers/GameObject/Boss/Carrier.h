@@ -27,7 +27,9 @@ private:
 
 	float _Radius;
 
-	bool _MovementSwitchLeftRight, _MovementSwitchUpDown;
+	bool _MovementSwitchLeftRight, _MovementSwitchUpDown, _SwitchSides;
 	sf::Clock _SwitchSidesClock;
 	float _SwitchSideTime;
+
+	void checkPhase();
 };

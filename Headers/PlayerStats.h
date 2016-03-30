@@ -43,7 +43,7 @@ struct PlayerStats
 			MaxHealth = 100;
 			MaxEnergy = 150;
 			Speed = 350;
-			Bulletdamage = 50;
+			Bulletdamage = 40;
 			break;
 		default:
 			return {};

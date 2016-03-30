@@ -278,6 +278,14 @@ void GameObjectContainer::playSounds()
 	}
 }
 
+void GameObjectContainer::stopSounds() 
+{
+	_SoundEffects.clear();
+	if (_BossFight) {
+		getBossCar().stopSounds();
+	}
+}
+
 bool GameObjectContainer::bossIsDead()
 {
 	if (_BossFight) {
@@ -289,6 +297,14 @@ bool GameObjectContainer::bossIsDead()
 			_AboutToLevelUp = false;
 			deleteObject(1);
 			getPlayerCar().resetResources();
+
+			for (unsigned int i = 1; i < _GameObjects.size(); i++)
+			{
+				deleteObject(i);
+			}
+
+			_CarScore = 5000 + 10000 * _Difficulty * _Difficulty;
+
 			return true;
 		}
 	}
@@ -368,9 +384,9 @@ bool GameObjectContainer::emptyScreen()
 
 void GameObjectContainer::load()
 {
-	for (int i = 0; i < 7; i++) {
+	for (int i = 1; i <= 8; i++) {
 		std::shared_ptr<sf::Texture> texture(new sf::Texture());
-		(*texture).loadFromFile("Resources/Texture/TrafficCar/Traffic" + std::to_string(i + 1) + ".png");
+		(*texture).loadFromFile("Resources/Texture/TrafficCar/Traffic" + std::to_string(i) + ".png");
 		_AICarTextures.push_back(texture);
 	}
 
@@ -603,17 +619,16 @@ int GameObjectContainer::getBossHP()
 	switch ((_Level - 1) % 4)
 	{
 	case 0:
-		//return 6000 + (int)((_Level - 1) / 4.0f) * 3000;
-		return 1;
+		return 4500 + (int)((_Level - 1) / 4.0f) * 2500;
 		break;
 	case 1:
-		return 8000 + (int)((_Level - 1) / 4.0f) * 3000;
+		return 5500 + (int)((_Level - 1) / 4.0f) * 3000;
 		break;
 	case 2:
-		return 100;
+		return 1000 + 500 * (int)((_Level - 1) / 4.0f);
 		break;
 	case 3:
-		return 100;
+		return 6500 + (int)((_Level - 1) / 4.0f) * 2500;
 		break;
 	}
 

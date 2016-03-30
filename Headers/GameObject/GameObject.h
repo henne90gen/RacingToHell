@@ -228,6 +228,12 @@ public:
 	*/
 	virtual void operator<<(std::istream& stream);
 protected:
+
+	/*
+		Stops all sounds of the GameObject
+	*/
+	virtual void stopSounds() {}
+private:
 	sf::Sprite _Sprite;
 	sf::Texture _Texture;
 	

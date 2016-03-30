@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "Level\Level.h"
 
-Level::Level() : _Level(1), _LevelTime(0.0f) {}
-
 bool Level::update(float FrameTime, GameState gameState)
 {
+	_LevelTime += FrameTime;
+
 	if (_Sprite.getPosition().y + FrameTime * _Level >= 0)
 	{
 		_Sprite.setPosition(sf::Vector2f(0, -1600));
@@ -16,7 +16,7 @@ bool Level::update(float FrameTime, GameState gameState)
 
 	if (gameState == GameState::Running)
 	{
-		if (_Timer.getElapsedTime().asSeconds() >= _LevelTime)
+		if (_LevelTime >= _TotalLevelTime)
 		{
 			return true;
 		}
@@ -53,7 +53,7 @@ void Level::setVolume(float Volume)
 
 void Level::levelUp()
 {
-	_Timer.restart();
+	_LevelTime = 0;
 	_Level++;
 	_Sprite.setTexture((*_Textures.at((_Level - 1) % _Textures.size())));
 	_Music.setBuffer((*_MusicBuffers.at((_Level - 1) % _Textures.size())));
@@ -69,15 +69,20 @@ void Level::load()
 	_Sprite.setTexture((*_Textures.at(0)));
 	_Sprite.setPosition(sf::Vector2f(0, -1600));
 
-	std::vector<std::thread> loadingThreads;
-	for (int i = 1; i <= 5; i++) loadingThreads.push_back(std::thread(&Level::loadSongByID, this, i));
+	std::thread loadingThreads[5];
+	for (int i = 1; i <= 5; i++) loadingThreads[i - 1] = (std::thread(&Level::loadSongByID, this, i));
 	for (auto& t: loadingThreads) t.join();
 }
 
 void Level::resetLevel()
 {
-	_Music.setBuffer((*_MusicBuffers.at(0)));
 	_Level = 1;
+	_TotalLevelTime = 60.0f;
+	_LevelTime = 0;
+	while (!_FirstLevelSoundLoaded) {
+		
+	}
+	_Music.setBuffer((*_MusicBuffers.at(0)));
 	_Sprite.setTexture((*_Textures.at((_Level - 1) % _Textures.size())));
 }
 
@@ -97,12 +102,29 @@ int Level::getRoadSpeed()
 		return -100;
 		break;
 	}
-
 }
 
 void Level::loadSongByID(int id)
 {
-	std::shared_ptr<sf::SoundBuffer> buffer(new sf::SoundBuffer());
-	(*buffer).loadFromFile("Resources/Sound/Music/level" + std::to_string(id) + ".ogg");
-	_MusicBuffers.push_back(buffer);
+	try {
+		bool checked = false;
+		while (!checked) {
+			std::shared_ptr<sf::SoundBuffer> buffer(new sf::SoundBuffer());
+			if (_CrtIsValidHeapPointer((const void *)buffer.get())) {
+				(*buffer).loadFromFile("Resources/Sound/Music/level" + std::to_string(id) + ".ogg");
+				std::lock_guard<std::mutex>{ _ThreadGuard };
+				_MusicBuffers.push_back(buffer);
+				checked = true;
+			}
+			else {
+				buffer.reset();
+			}
+		}
+		if (id == 1) {
+			_FirstLevelSoundLoaded = true;
+		}
+	}
+	catch (...) {
+		std::exit(1);
+	}
 }

@@ -6,6 +6,22 @@ HeadsUpDisplay::HeadsUpDisplay()
 	//Font
 	_Font.loadFromFile("Resources/Font/arial.ttf");
 
+	//Displays the current level
+	_LevelText.setFont(_Font);
+	_LevelText.setPosition(sf::Vector2f(0, 10));
+	_LevelText.setColor(sf::Color::White);
+
+	//Progressbar
+	_ProgressBar.setFillColor(sf::Color(255, 255, 255, 100));
+	_ProgressBar.setSize(sf::Vector2f(SCREENWIDTH, 10));
+	_ProgressBar.setPosition(0, 0);
+
+	//Progressbar outline
+	_ProgressBarOutline.setFillColor(sf::Color::Transparent);
+	_ProgressBarOutline.setOutlineColor(sf::Color(20, 0, 0));
+	_ProgressBarOutline.setOutlineThickness(1);
+	_ProgressBarOutline.setSize(_ProgressBar.getSize());
+
 	//Background
 	_BackgroundTexture.loadFromFile("Resources/Texture/HUD/HUD_Background.png");
 	_Background.setTexture(_BackgroundTexture);
@@ -59,12 +75,17 @@ HeadsUpDisplay::HeadsUpDisplay()
 	_ScoreText.setFont(_Font);
 	_ScoreText.setCharacterSize(30);
 	_ScoreText.setColor(sf::Color::White);
-	_ScoreText.setPosition(sf::Vector2f(370, SCREENHEIGHT - _Background.getLocalBounds().height));
-	_ScoreText.setString("Score: 0000000");
+	_ScoreText.setPosition(sf::Vector2f(350, SCREENHEIGHT - _Background.getLocalBounds().height));
+	_ScoreText.setString("Score: 00000000");
 }
 
 void HeadsUpDisplay::render(sf::RenderWindow & window)
 {
+	window.draw(_LevelText);
+
+	window.draw(_ProgressBar);
+	window.draw(_ProgressBarOutline);
+
 	window.draw(_Background);
 
 	window.draw(_HealthBar);
@@ -80,8 +101,12 @@ void HeadsUpDisplay::render(sf::RenderWindow & window)
 	window.draw(_ScoreText);
 }
 
-void HeadsUpDisplay::update(int score, int health, int energy)
+void HeadsUpDisplay::update(int score, int health, int energy, int level, float levelTime)
 {
+	_LevelText.setString("Level: " + std::to_string(level));
+
+	_ProgressBar.setSize(sf::Vector2f(levelTime * SCREENWIDTH / _TotalLevelTime, 10));
+
 	_HealthBar.setSize(sf::Vector2f((float)health / (float)_MaxHealth * 150, 30));
 	_HealthText.setString(std::to_string(health) + "/" + std::to_string(_MaxHealth));
 	_HealthText.setPosition(sf::Vector2f(	_HealthBarOutline.getGlobalBounds().left + _HealthBarOutline.getLocalBounds().width - _HealthText.getLocalBounds().width - 7, 
@@ -120,7 +145,7 @@ std::string HeadsUpDisplay::ConvertScore(int score)
 
 	if (ScoreLength < 7)
 	{
-		for (unsigned int i = 0; i < 7 - ScoreLength; i++)
+		for (unsigned int i = 0; i < 8 - ScoreLength; i++)
 		{
 			ScoreString += "0";
 		}

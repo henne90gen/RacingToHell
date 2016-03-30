@@ -1,4 +1,5 @@
 #pragma once
+#include <future>
 
 class Level 
 {
@@ -6,7 +7,7 @@ public:
 	/*
 		Manager class for the level, draws background and plays music
 	*/
-	Level();
+	Level() {}
 	~Level() {}
 
 	/*
@@ -72,7 +73,7 @@ public:
 	/*
 		Resets the internal timer of the Level
 	*/
-	void resetTimer() { _Timer.restart(); }
+	void resetTimer() { _LevelTime = 0; }
 
 	/*
 		Sets the selected difficulty
@@ -80,18 +81,29 @@ public:
 	*/
 	void setDifficulty(int dif) { _Difficulty = dif; }
 
-	
+	/*
+		@return float Time in seconds that has passed since the start of the level
+	*/
+	float getLevelTime() { return _LevelTime; }
+
+	/*
+		@return float Time in seconds that this level will last in total
+	*/
+	float getTotalLevelTime() { return _TotalLevelTime; }
 private:
 	std::vector<std::shared_ptr<sf::Texture>> _Textures;
 	sf::Sprite _Sprite;
 
 	std::vector<std::shared_ptr<sf::SoundBuffer>> _MusicBuffers;
 	sf::Sound _Music;
+	bool _FirstLevelSoundLoaded;
 
-	sf::Clock _Timer;
+	float _LevelTime;
+	float _TotalLevelTime;
 
 	int _Level, _Difficulty;
-	float _LevelTime;
+	
+	std::mutex _ThreadGuard;
 
 	void loadSongByID(int id);
 };

@@ -53,6 +53,7 @@ void OptionsMenu::render(sf::RenderWindow & window)
 	window.draw(_FPS);
 	window.draw(_VolumeBackground);
 	window.draw(_Volume);
+
 	for (int i = 0; i < _MenuItems.size(); i++) {
 		_MenuItems[i]->render(window);
 	}
@@ -62,7 +63,7 @@ void OptionsMenu::render(sf::RenderWindow & window)
 
 GameState OptionsMenu::handleEvents(sf::RenderWindow & Window)
 {
-	while (Window.pollEvent(_Event)) {
+	if (Window.pollEvent(_Event)) {
 
 		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
 

@@ -112,7 +112,7 @@ void Level::loadSongByID(int id)
 			std::shared_ptr<sf::SoundBuffer> buffer(new sf::SoundBuffer());
 			if (_CrtIsValidHeapPointer((const void *)buffer.get())) {
 				(*buffer).loadFromFile("Resources/Sound/Music/level" + std::to_string(id) + ".ogg");
-				std::lock_guard<std::mutex>{ _ThreadGuard };
+				std::lock_guard<std::mutex> lock(_ThreadGuard);
 				_MusicBuffers.push_back(buffer);
 				checked = true;
 			}

@@ -20,9 +20,9 @@ MultiplayerLobby::MultiplayerLobby() : Menu(GameState::Lobby), _SelectedCar(0)
 	std::shared_ptr<ComboBox> comboboxMode(new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 100, 305), modes, MenuResult::Nothing));
 	_MenuItems.push_back(comboboxMode);
 
-	std::shared_ptr<MenuButton> buttonprev(new MenuButton(sf::Vector2f(0, 0), sf::Vector2f(0, 0), MenuResult::PreviousSkin, "<<", TextAlignment::Left));
+	std::shared_ptr<MenuButton> buttonprev(new MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 60, SCREENHEIGHT - 335), sf::Vector2f(0, 50), MenuResult::PreviousSkin, "<<", TextAlignment::Left));
 	_MenuItems.push_back(buttonprev);
-	std::shared_ptr<MenuButton> buttonnext(new MenuButton(sf::Vector2f(0, 0), sf::Vector2f(0, 0), MenuResult::NextSkin, ">>", TextAlignment::Left));
+	std::shared_ptr<MenuButton> buttonnext(new MenuButton(sf::Vector2f(SCREENWIDTH / 2 + 50, SCREENHEIGHT - 335), sf::Vector2f(0, 50), MenuResult::NextSkin, ">>", TextAlignment::Left));
 	_MenuItems.push_back(buttonnext);
 
 	_StatBox = std::make_shared<StatBox>(sf::Vector2f(SCREENWIDTH / 2, 575));

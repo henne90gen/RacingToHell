@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Menu.h"
+#include "MenuItem\StatBox.h"
 
 class MultiplayerLobby : public Menu
 {
@@ -30,6 +31,9 @@ public:
 
 	void update(float frametime);
 private:
+	sf::RectangleShape _TablePlaceHolder;
+	
+	std::shared_ptr<StatBox> _StatBox;
 
-
+	int _SelectedCar;
 };

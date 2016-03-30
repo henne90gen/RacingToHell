@@ -29,13 +29,7 @@ MainMenu::MainMenu() : Menu(GameState::Main)
 	_Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 20));
 
 	//Stats-Box
-	_StatBox = new StatBox(sf::Vector2f(SCREENWIDTH / 2, 575));
-}
-
-MainMenu::~MainMenu()
-{
-	delete _StatBox;
-	_StatBox = nullptr;
+	_StatBox = std::make_shared<StatBox>(sf::Vector2f(SCREENWIDTH / 2, 575));
 }
 
 void MainMenu::render(sf::RenderWindow& window)

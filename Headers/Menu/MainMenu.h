@@ -9,7 +9,7 @@ public:
 		The main menu in the game. It has buttons to start playing, view the highscores, go to options or exit.
 	*/
 	MainMenu();
-	~MainMenu();
+	~MainMenu() {}
 
 	/*
 		Renders the MainMenu to the specified RenderWindow
@@ -42,7 +42,7 @@ public:
 	int getCarIndex() { return _SelectedCar; }
 private:
 	sf::Sprite _CarSkin;
-	StatBox* _StatBox;
+	std::shared_ptr<StatBox> _StatBox;
 
 	int _SelectedCar;
 };

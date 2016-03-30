@@ -1,5 +1,4 @@
 #pragma once
-#include "stdafx.h"
 
 class Serializable
 {
@@ -20,6 +19,7 @@ public:
 	*/
 	virtual void operator<<(std::istream& stream) = 0;
 
+protected:
 	/*
 		Writes any data (except std::string) to a stream
 		@param stream Output stream that is going to be written to
@@ -69,4 +69,3 @@ public:
 		delete[] buffer;
 	}
 };
-

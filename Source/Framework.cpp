@@ -129,7 +129,7 @@ void Framework::handleEvents()
 		}
 		else if (_GameState == GameState::Main) {
 			resetGame();
-		} 
+		}
 		else if (_GameState == GameState::Options) {
 			_OptionsMenu.enableDifficultySelection(false);
 			_OptionsMenu.setReturnState(GameState::Pause);
@@ -291,7 +291,7 @@ void Framework::update()
 		break;
 	case GameState::About:
 		if (_OptionsMenu.getReturnState() == GameState::Main) {
-			_Level.update(_FrameTime, _GameState);
+		_Level.update(_FrameTime, _GameState);
 		}
 		break;
 	case GameState::Loading:

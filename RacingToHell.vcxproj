@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\GameObject\GameObjectFactory.h" />
     <ClInclude Include="Headers\Animation\Animation.h" />
     <ClInclude Include="Headers\Animation\Explosion.h" />
     <ClInclude Include="Headers\Collision.h" />
@@ -211,6 +212,7 @@
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\GameObject\GameObjectFactory.cpp" />
     <ClCompile Include="Source\Menu\AboutScreen.cpp" />
     <ClCompile Include="Source\Menu\HighscoreMenu.cpp" />
     <ClCompile Include="Source\Animation\MechTop.cpp" />

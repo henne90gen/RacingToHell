@@ -29,7 +29,11 @@ public:
 	GameState handleMenuItemResult(MenuResult result);
 
 	void update(float frametime);
+
+	bool getCreatedLobby() { return _CreatedLobby; }
 private:
 	sf::RectangleShape _BackgroundJoin, _BackgroundName, _BackgroundCreate;
 	sf::Text _NameText, _JoinText, _IPText, _PasswordText, _FeedbackText, _CreateText, _CreatePassword;
+
+	int _CreatedLobby;
 };

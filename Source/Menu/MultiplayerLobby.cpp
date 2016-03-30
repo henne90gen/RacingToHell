@@ -3,11 +3,10 @@
 
 MultiplayerLobby::MultiplayerLobby() : Menu(GameState::Lobby), _SelectedCar(0)
 {
-	_TablePlaceHolder.setFillColor(sf::Color(0, 0, 0, 100));
-	_TablePlaceHolder.setOutlineThickness(1);
-	_TablePlaceHolder.setOutlineColor(sf::Color::Black);
-	_TablePlaceHolder.setPosition(sf::Vector2f(25, 25));
-	_TablePlaceHolder.setSize(sf::Vector2f(550, 80));
+	//_LobbyMemberList = std::make_shared<PlayerTable>(sf::Vector2f(25, 25));
+
+	std::shared_ptr<PlayerTable> Table(new PlayerTable(sf::Vector2f(25, 25)));
+	_MenuItems.push_back(Table);
 
 	std::shared_ptr<MenuButton> StartButton(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 165), sf::Vector2f(200, 50), MenuResult::Nothing, "Start", TextAlignment::Center));
 	_MenuItems.push_back(StartButton);
@@ -19,6 +18,9 @@ MultiplayerLobby::MultiplayerLobby() : Menu(GameState::Lobby), _SelectedCar(0)
 	std::vector<std::string> modes = { "Standard" };
 	std::shared_ptr<ComboBox> comboboxMode(new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 100, 305), modes, MenuResult::Nothing));
 	_MenuItems.push_back(comboboxMode);
+
+	std::shared_ptr<MenuButton> ReadyButton(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 165), sf::Vector2f(200, 50), MenuResult::Ready, "Ready", TextAlignment::Center));
+	_MenuItems.push_back(ReadyButton);
 
 	std::shared_ptr<MenuButton> buttonprev(new MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 60, SCREENHEIGHT - 335), sf::Vector2f(0, 50), MenuResult::PreviousSkin, "<<", TextAlignment::Left));
 	_MenuItems.push_back(buttonprev);
@@ -34,8 +36,7 @@ MultiplayerLobby::MultiplayerLobby() : Menu(GameState::Lobby), _SelectedCar(0)
 void MultiplayerLobby::render(sf::RenderWindow& Window)
 {
 	_StatBox->render(Window, _SelectedCar);
-
-	Window.draw(_TablePlaceHolder);
+	//_LobbyMemberList->render(Window);
 
 	for (int i = 0; i < _MenuItems.size(); i++) {
 		_MenuItems[i]->render(Window);
@@ -77,4 +78,23 @@ GameState MultiplayerLobby::handleMenuItemResult(MenuResult result)
 void MultiplayerLobby::update(float frametime)
 {
 
+}
+
+void MultiplayerLobby::EnableButtons(bool isAdmin)
+{
+	if (isAdmin)
+	{
+		_MenuItems[(int)MenuItemIndex::Start]->setVisible(true);
+		_MenuItems[(int)MenuItemIndex::Difficulty]->setEnabled(true);
+		_MenuItems[(int)MenuItemIndex::Modes]->setEnabled(true);
+		_MenuItems[(int)MenuItemIndex::Ready]->setVisible(false);
+
+	}
+	else
+	{
+		_MenuItems[(int)MenuItemIndex::Start]->setVisible(false);
+		_MenuItems[(int)MenuItemIndex::Difficulty]->setEnabled(false);
+		_MenuItems[(int)MenuItemIndex::Modes]->setEnabled(false);
+		_MenuItems[(int)MenuItemIndex::Ready]->setVisible(true);
+	}
 }

@@ -186,6 +186,7 @@
     <ClInclude Include="Headers\GameObject\GameObjectType.h" />
     <ClInclude Include="Headers\Framework.hpp" />
     <ClInclude Include="Headers\GameObject\GameObject.h" />
+    <ClInclude Include="Headers\Menu\MenuItem\PlayerTable.h" />
     <ClInclude Include="Headers\Menu\MenuItem\StatBox.h" />
     <ClInclude Include="Headers\Menu\MenuItem\Textbox.h" />
     <ClInclude Include="Headers\Menu\MultiplayerLobby.h" />
@@ -223,6 +224,7 @@
     <ClCompile Include="Source\GameObject\Boss\Carrier.cpp" />
     <ClCompile Include="Source\GameObject\Boss\Tank.cpp" />
     <ClCompile Include="Source\Menu\MenuItem\ComboBox.cpp" />
+    <ClCompile Include="Source\Menu\MenuItem\PlayerTable.cpp" />
     <ClCompile Include="Source\Menu\MenuItem\Slider.cpp" />
     <ClCompile Include="Source\Menu\MenuItem\MenuButton.cpp" />
     <ClCompile Include="Source\Menu\LoadingScreen.cpp" />

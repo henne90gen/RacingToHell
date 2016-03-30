@@ -209,9 +209,24 @@ void Framework::handleEvents()
 		break;
 	case GameState::MultiplayerSelection:
 		_GameState = _MultiplayerMenu.handleEvents(_RenderWindow);
+
+		if (_GameState == GameState::Lobby)
+		{
+			_MultiplayerLobby.EnableButtons(_MultiplayerMenu.getCreatedLobby() == 1);
+		}
 		break;
 	case GameState::Lobby:
 		_GameState = _MultiplayerLobby.handleEvents(_RenderWindow);
+		_CurrentCarSkinIndex = _MultiplayerLobby.getCarIndex();
+		if (_CurrentCarSkinIndex < 0) {
+			_CurrentCarSkinIndex = _CarSkins.size() - 1;
+		}
+		else if (_CurrentCarSkinIndex >= _CarSkins.size()) {
+			_CurrentCarSkinIndex = 0;
+		}
+		_MultiplayerLobby.setCarIndex(_CurrentCarSkinIndex);
+		_GameObjectContainer.getPlayerCar().setTexture((*_CarSkins.at(_CurrentCarSkinIndex)));
+		_GameObjectContainer.getPlayerCar().setStats(_CurrentCarSkinIndex);
 		break;
 	}
 }

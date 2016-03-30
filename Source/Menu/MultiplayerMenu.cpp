@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Menu\MultiplayerMenu.h"
 
-MultiplayerMenu::MultiplayerMenu() : Menu(GameState::MultiplayerSelection)
+MultiplayerMenu::MultiplayerMenu() : Menu(GameState::MultiplayerSelection), _CreatedLobby(-1)
 {			  
 	_BackgroundName.setFillColor(sf::Color(0, 0, 0, 100));
 	_BackgroundName.setOutlineThickness(1);
@@ -48,7 +48,7 @@ MultiplayerMenu::MultiplayerMenu() : Menu(GameState::MultiplayerSelection)
 	std::shared_ptr<Textbox> PasswordTextBox(new Textbox(_BackgroundJoin.getPosition() + sf::Vector2f(200, 150), sf::Vector2f(200, 40), 30, "Password", false, true));
 	_MenuItems.push_back(PasswordTextBox);
 
-	std::shared_ptr<MenuButton> JoinButton(new MenuButton(_BackgroundJoin.getPosition() + sf::Vector2f(120, 220), sf::Vector2f(200, 40), MenuResult::JoinCreate, "Join Lobby", TextAlignment::Center));
+	std::shared_ptr<MenuButton> JoinButton(new MenuButton(_BackgroundJoin.getPosition() + sf::Vector2f(120, 220), sf::Vector2f(200, 40), MenuResult::Join, "Join Lobby", TextAlignment::Center));
 	_MenuItems.push_back(JoinButton);
 
 	_FeedbackText.setFont(_Font);
@@ -77,7 +77,7 @@ MultiplayerMenu::MultiplayerMenu() : Menu(GameState::MultiplayerSelection)
 	std::shared_ptr<Textbox> PasswordTextBoxCreate(new Textbox(_BackgroundCreate.getPosition() + sf::Vector2f(200, 75), sf::Vector2f(200, 40), 30, "Password", false, true));
 	_MenuItems.push_back(PasswordTextBoxCreate);
 
-	std::shared_ptr<MenuButton> CreateButton(new MenuButton(_BackgroundCreate.getPosition() + sf::Vector2f(120, 145), sf::Vector2f(200, 40), MenuResult::JoinCreate, "Create Lobby", TextAlignment::Center));
+	std::shared_ptr<MenuButton> CreateButton(new MenuButton(_BackgroundCreate.getPosition() + sf::Vector2f(120, 145), sf::Vector2f(200, 40), MenuResult::Create, "Create Lobby", TextAlignment::Center));
 	_MenuItems.push_back(CreateButton);
 
 	std::shared_ptr<MenuButton> BackButton(new MenuButton(sf::Vector2f(100, 700), sf::Vector2f(150, 50), MenuResult::Back, "Back", TextAlignment::Center));
@@ -120,11 +120,17 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result)
 	switch (result)
 	{
 	case MenuResult::Back:
+		_CreatedLobby = -1;
 		return GameState::Main;
 		break;
-	case MenuResult::JoinCreate:
+	case MenuResult::Join:
+		_CreatedLobby = 0;
 		return GameState::Lobby;
-			break;
+		break;
+	case MenuResult::Create:
+		_CreatedLobby = 1;
+		return GameState::Lobby;
+		break;
 	default:
 		break;
 	}

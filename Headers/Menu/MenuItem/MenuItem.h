@@ -83,6 +83,11 @@ public:
 	void setFocused(bool focused) { _Focused = focused; }
 
 	/*
+		@param visible or not
+	*/
+	void setVisible(bool visible) { _Visible = visible; }
+
+	/*
 		@return MenuItemType
 	*/
 	MenuItemType getType() { return _Type; }
@@ -90,7 +95,7 @@ protected:
 	sf::Font _Font;
 	MenuItemType _Type;
 	MenuResult _Action;
-	bool _Hovering, _Enabled, _Focused;
+	bool _Hovering, _Enabled, _Focused, _Visible;
 
 	bool pointInRectangle(sf::FloatRect Rect, sf::Vector2f Position);
 };

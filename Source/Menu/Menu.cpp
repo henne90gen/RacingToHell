@@ -87,6 +87,9 @@ void Menu::checkMenuItemHovered(sf::RenderWindow& Window)
 			case MenuItemType::MCombobox:
 				Cursor.set(Window.getSystemHandle(), sf::StandardCursor::HAND);
 				break;
+			case MenuItemType::MLobbyList:
+				Cursor.set(Window.getSystemHandle(), sf::StandardCursor::HAND);
+				break;
 			}
 			return;
 		}

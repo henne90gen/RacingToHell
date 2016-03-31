@@ -57,10 +57,14 @@ void NetworkHandle::disconnect()
 
 void NetworkHandle::run()
 {
+	std::cout << "Starting network thread" << std::endl;
+
 	_Socket.setBlocking(false);
 	_Listener.setBlocking(false);
 
-	_Listener.listen(_Port);
+	if (_Relationship == NetworkRelation::Host) {
+		_Listener.listen(_Port);
+	}
 
 	while (_Relationship != NetworkRelation::None)
 	{
@@ -69,8 +73,7 @@ void NetworkHandle::run()
 		{
 			_Listener.accept(_Socket);
 		}
-
-		if (_Socket.getRemoteAddress() != sf::IpAddress::None)
+		else if ((_State == NetworkState::Lobby || _State == NetworkState::Ingame) && _Socket.getRemoteAddress() != sf::IpAddress::None)
 		{
 			sf::Packet IncommingPacket;
 			_Socket.receive(IncommingPacket);
@@ -106,29 +109,7 @@ void NetworkHandle::run()
 			}
 			else
 			{
-				//sends data
-				while (_SendPackets.size() > 0)
-				{
-					std::lock_guard<std::mutex> lock(_Mutex);
-					sf::Packet TmpPacket;
-					TmpPacket << sf::Uint8(_SendPackets[0].first) << _Tick << _SendPackets[0].second;
-					
-					_Socket.send(TmpPacket);
-
-					if (_SendPackets[0].first == NetworkCommunication::Disconnect)
-					{
-						std::cout << "You left the lobby." << std::endl;
-						disconnect();
-						break;
-					}
-					else
-					{
-						_SendPackets.erase(_SendPackets.begin());
-					}
-				}
-
 				//receives data
-
 				if (IncommingPacket.getDataSize() > 0)
 				{
 					sf::Packet TmpPacket = IncommingPacket;
@@ -147,16 +128,37 @@ void NetworkHandle::run()
 						break;
 					}
 				}
+
+				//sends data
+				while (_SendPackets.size() > 0)
+				{
+					std::lock_guard<std::mutex> lock(_Mutex);
+					sf::Packet TmpPacket;
+					TmpPacket << sf::Uint8(_SendPackets[0].first) << _Tick << _SendPackets[0].second;
+
+					_Socket.send(TmpPacket);
+
+					if (_SendPackets[0].first == NetworkCommunication::Disconnect)
+					{
+						std::cout << "You left the lobby." << std::endl;
+						disconnect();
+						break;
+					}
+					else
+					{
+						_SendPackets.erase(_SendPackets.begin());
+					}
+				}
 			}
 		}
 
-		std::cout << _Authenticated << _Tick << std::endl;
-
+		//std::cout << _Authenticated << _Tick << std::endl;
 
 		++_Tick;
 		sf::sleep(sf::seconds(1.0f / (float)_TickRate)); 
 	}
 
+	disconnect();
 	_State = NetworkState::None;
 }
 

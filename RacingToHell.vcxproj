@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\Communication.h" />
     <ClInclude Include="Headers\GameObject\GameObjectFactory.h" />
     <ClInclude Include="Headers\Animation\Animation.h" />
     <ClInclude Include="Headers\Animation\Explosion.h" />

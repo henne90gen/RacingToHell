@@ -124,8 +124,20 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result)
 		return GameState::Main;
 		break;
 	case MenuResult::Join:
+	{
+		_FeedbackText.setColor(sf::Color::White);
+		_FeedbackText.setString("Connecting to " + _MenuItems[(int)MenuItemIndex::IP]->getText() + ":" + _MenuItems[(int)MenuItemIndex::Port]->getText() + ". Please wait.");
+
+		std::future<NetworkCommunication> Respone = std::async(std::launch::async, &NetworkHandle::connect, _NetworkHandle, _MenuItems[(int)MenuItemIndex::IP]->getText(), _MenuItems[(int)MenuItemIndex::PasswordJoin]->getText(), std::stoi(_MenuItems[(int)MenuItemIndex::Port]->getText()), 1.2f);
+
+		if (Respone.get() == NetworkCommunication::ConnectionFailed)
+		{
+			std::cout << "Failed" << std::endl;
+		}
+
 		_CreatedLobby = 0;
-		return GameState::Lobby;
+		return GameState::MultiplayerSelection;
+	}	
 		break;
 	case MenuResult::Create:
 		_CreatedLobby = 1;

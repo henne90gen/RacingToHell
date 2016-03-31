@@ -14,10 +14,12 @@
 #include "Menu/MultiplayerMenu.h"
 #include "Menu/MultiplayerLobby.h"
 #include "HeadsUpDisplay.h"
+#include "Multiplayer\NetworkHandle.h"
 #include "Level/Level.h" 
 
 #include <sstream>
 #include <fstream>
+#include <thread>
 
 class Framework
 {
@@ -69,6 +71,9 @@ private:
 	HeadsUpDisplay _HeadsUpDisplay;
 	MultiplayerMenu _MultiplayerMenu;
 	MultiplayerLobby _MultiplayerLobby;
+
+	//Multiplayer
+	NetworkHandle _NetworkHandle;
 
 	// Functions
 	void render();

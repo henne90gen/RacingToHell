@@ -14,6 +14,9 @@ Framework::Framework() : _FrameTime(0), _FPS(60.0f), _IsRunning(true), _GameStat
 
 	//Seed
 	srand(time(NULL));
+
+	//Multiplayer
+	_MultiplayerMenu.setNetWorkHandle(&_NetworkHandle);
 }
 
 Framework::~Framework()

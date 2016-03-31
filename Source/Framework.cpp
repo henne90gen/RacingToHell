@@ -223,7 +223,7 @@ void Framework::handleEvents()
 		}
 		break;
 	case GameState::Connecting:
-		_MultiplayerMenu.handleEvents(_RenderWindow);
+		_GameState = _MultiplayerMenu.handleEvents(_RenderWindow);
 		break;
 	case GameState::Lobby:
 		_GameState = _MultiplayerLobby.handleEvents(_RenderWindow);
@@ -327,7 +327,10 @@ void Framework::update()
 		break;
 	case GameState::Connecting:
 		_Level.update(_FrameTime, _GameState);
-		_MultiplayerMenu.update(_FrameTime);
+		if (_MultiplayerMenu.update(_FrameTime) == NetworkCommunication::ConnectionSuccesfull) 
+		{
+			_GameState = GameState::Lobby;
+		}
 		break;
 	case GameState::Lobby:
 		_MultiplayerLobby.update(_FrameTime);

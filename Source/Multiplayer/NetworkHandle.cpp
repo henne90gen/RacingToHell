@@ -9,6 +9,8 @@ void NetworkHandle::connect(std::string ip, std::string password, int port, floa
 {
 	_Socket.setBlocking(true);
 
+	std::cout << "Connecting..." << std::endl;
+
 	if (_Socket.connect(ip, port, sf::seconds(timeout)) == sf::Socket::Status::Done)
 	{
 		sf::Packet AuthentificationPacket;
@@ -151,7 +153,6 @@ void NetworkHandle::run()
 		}
 
 		std::cout << _Authenticated << _Tick << std::endl;
-
 
 		++_Tick;
 		sf::sleep(sf::seconds(1.0f / (float)_TickRate)); 

@@ -236,9 +236,12 @@ void Framework::handleEvents()
 		if (_GameState == GameState::Lobby)
 		{
 			_NetworkHandle.setState(NetworkState::Lobby);
+			_NetworkHandle.setRelation(NetworkRelation::Client);
 
 			_NetworkThread = std::thread(&NetworkHandle::run, &_NetworkHandle);
 			_NetworkThread.detach();
+
+			std::cout << "TEST" << std::endl;
 		}
 		break;
 	case GameState::Lobby:
@@ -348,7 +351,6 @@ void Framework::update()
 		NetworkCommunication netComm = _MultiplayerMenu.update(_FrameTime);
 		if (netComm == NetworkCommunication::ConnectionSuccesfull) {
 			_GameState = GameState::Lobby;
-			_NetworkHandle.setRelation(NetworkRelation::Client);
 		}
 		else if (netComm == NetworkCommunication::ConnectionFailed && netComm == NetworkCommunication::WrongPassword) {
 			_GameState = GameState::MultiplayerSelection;

@@ -55,12 +55,13 @@ void NetworkHandle::run()
 	_Socket.setBlocking(false);
 	_Listener.setBlocking(false);
 
+	_Listener.listen(_Port);
+
 	while (_Relationship != NetworkRelation::None)
 	{
 		//waits for incomming connections
 		if (_State == NetworkState::Lobby && _Socket.getRemoteAddress() == sf::IpAddress::None)
 		{
-			_Listener.listen(_Port);
 			_Listener.accept(_Socket);
 		}
 

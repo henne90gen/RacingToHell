@@ -234,6 +234,9 @@
     <ClInclude Include="Headers\Menu\MultiplayerLobby.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Menu\MenuItem\PlayerTable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Headers\GameObject\GameObjectFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -365,6 +368,9 @@
     <ClCompile Include="Source\Menu\MultiplayerLobby.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Menu\MenuItem\PlayerTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Source\GameObject\GameObjectFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -494,6 +500,27 @@
     <Image Include="Resources\Texture\Icon\Icon.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Resources\Texture\PlayerTable\Admin.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\PlayerTable\Cross.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\PlayerTable\Tick.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\PlayerTable\Trash.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\MainMenu\ComboboxArrow.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\Animation\explosion.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Texture\BossCar\Jet.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\Font\arial.ttf">
@@ -512,6 +539,15 @@
     </Media>
     <Media Include="Resources\Sound\shotPlayer.wav">
       <Filter>Resource Files\Sound</Filter>
+    </Media>
+    <Media Include="Resources\Sound\levelUp.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="Resources\Sound\explosion.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="Resources\Sound\jetengine.wav">
+      <Filter>Resource Files</Filter>
     </Media>
   </ItemGroup>
   <ItemGroup>

@@ -5,6 +5,7 @@
 #include "Menu/MenuItem/MenuResults.h"
 #include "Menu/MenuItem/ComboBox.h"
 #include "Menu/MenuItem/HighscoreList.h"
+#include "Menu/MenuItem/PlayerTable.h"
 #include "StandardCursor.h"
 
 class Menu

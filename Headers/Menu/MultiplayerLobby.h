@@ -30,9 +30,15 @@ public:
 	GameState handleMenuItemResult(MenuResult result);
 
 	void update(float frametime);
-private:
-	sf::RectangleShape _TablePlaceHolder;
 
+	void EnableButtons(bool isAdmin);
+
+	int getCarIndex() { return _SelectedCar; }
+	void setCarIndex(int x) { _SelectedCar = x; }
+private:
+	enum class MenuItemIndex {Start = 0, Difficulty = 1, Modes = 2, Ready = 3};
+
+	std::shared_ptr<PlayerTable> _LobbyMemberList;
 	std::shared_ptr<StatBox> _StatBox;
 
 	int _SelectedCar;

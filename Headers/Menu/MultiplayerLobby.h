@@ -2,6 +2,8 @@
 
 #include "Menu.h"
 #include "MenuItem\StatBox.h"
+#include "Multiplayer\NetworkHandle.h"
+#include "Communication.h"
 
 class MultiplayerLobby : public Menu
 {
@@ -31,6 +33,8 @@ public:
 
 	void update(float frametime);
 
+	void setNetworkHandle(NetworkHandle *Handle) { _NetworkHandle = Handle; }
+
 	void EnableButtons(bool isAdmin);
 
 	int getCarIndex() { return _SelectedCar; }
@@ -40,6 +44,8 @@ private:
 
 	std::shared_ptr<PlayerTable> _LobbyMemberList;
 	std::shared_ptr<StatBox> _StatBox;
+
+	NetworkHandle *_NetworkHandle;
 
 	int _SelectedCar;
 };

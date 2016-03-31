@@ -17,6 +17,9 @@ public:
 
 	NetworkRelation getRelationship() { return _Relationship; }
 	NetworkCommunication getLastResponse() { return _LastResponse; }
+	NetworkState getState() { return _State; }
+
+	void addPacket(NetworkCommunication Type, sf::Packet newPacket);
 
 	bool getAuthenticated() { return _Authenticated; }
 
@@ -29,7 +32,8 @@ private:
 	sf::TcpSocket _Socket;
 	sf::TcpListener _Listener;
 
-	std::vector<sf::Packet> _SendPackets, _ReveivedPackets;
+	std::vector<sf::Packet> _ReceivedPackets;
+	std::vector < std::pair<NetworkCommunication, sf::Packet>> _SendPackets;
 	std::mutex _Mutex;
 
 	unsigned int _TickRate, _Port, _Authenticated;

@@ -240,8 +240,6 @@ void Framework::handleEvents()
 
 			_NetworkThread = std::thread(&NetworkHandle::run, &_NetworkHandle);
 			_NetworkThread.detach();
-
-			std::cout << "TEST" << std::endl;
 		}
 		_GameState = _MultiplayerLobby.handleEvents(_RenderWindow);
 		_CurrentCarSkinIndex = _MultiplayerLobby.getCarIndex();

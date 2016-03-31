@@ -65,13 +65,13 @@ void NetworkHandle::run()
 	_Listener.setBlocking(false);
 
 	if (_Relationship == NetworkRelation::Host) {
-	_Listener.listen(_Port);
+		_Listener.listen(_Port);
 	}
 
 	while (_Relationship != NetworkRelation::None)
 	{
 		//waits for incomming connections
-		if (_State == NetworkState::Lobby && _Socket.getRemoteAddress() == sf::IpAddress::None)
+		if (_State == NetworkState::Lobby && _Socket.getRemoteAddress() == sf::IpAddress::None && _Relationship == NetworkRelation::Host)
 		{
 			_Listener.accept(_Socket);
 		}
@@ -160,7 +160,7 @@ void NetworkHandle::run()
 		sf::sleep(sf::seconds(1.0f / (float)_TickRate)); 
 	}
 
-	disconnect();
+	//disconnect();
 	_State = NetworkState::None;
 }
 

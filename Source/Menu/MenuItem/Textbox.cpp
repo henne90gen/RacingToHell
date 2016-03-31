@@ -138,6 +138,17 @@ MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 					_CursorPosition--;
 					setCursor();
 				}
+
+				if (Event.key.code == 50 && !sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && !sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt))
+				{
+					std::string newString = _String.substr(0, _CursorPosition) + "." + _String.substr(_CursorPosition, _String.length() - _CursorPosition);
+					if (!isStringTooLarge(newString)) {
+						_String = newString;
+						setString();
+						_CursorPosition++;
+						setCursor();
+					}
+				}
 			}
 
 			if (_CursorPosition > 0 && Event.key.code == 71) {

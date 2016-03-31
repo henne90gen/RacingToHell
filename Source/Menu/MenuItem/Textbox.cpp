@@ -161,10 +161,6 @@ MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 				setCursor();
 			}
 		}
-		if (_Focused)
-		{
-			std::cout << getText() << std::endl;
-		}
 	}
 
 	return _Action;

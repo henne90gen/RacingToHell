@@ -46,7 +46,7 @@ void NetworkHandle::connect(std::string ip, std::string password, int port, floa
 
 void NetworkHandle::disconnect()
 {
-	//d::lock_guard<std::mutex> lock(_Mutex);
+	//std::lock_guard<std::mutex> lock(_Mutex);
 	_Socket.disconnect();
 	_Listener.close();
 	_Authenticated = false;

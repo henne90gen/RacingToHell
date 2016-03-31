@@ -1,31 +1,24 @@
 #include "stdafx.h"
 #include "GameObject/Boss/BossCar.h"
 
-BossCar::BossCar(sf::Vector2f& Position, int difficulty, int Health, float Speed, sf::Texture& Texture, sf::Texture& BulletTetxure, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float Volume) : 
+BossCar::BossCar(sf::Vector2f& Position, int difficulty, int Health, float Speed, sf::Texture& Texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume) : 
 	Car(Position, Health, Speed, GameObjectType::Boss, Texture),
-	_soundEffects(soundEffects), _soundBufferShot(soundBufferShot), _soundBufferExplosion(soundBufferExplosion), _Volume(Volume), _Difficulty(difficulty),
-	_BulletSpeed(500), _BulletTexture(BulletTetxure), _Movement(Movement::STILL), _Attack(false), _Traffic(false), _IsExploding(false),
+	_soundEffects(soundEffects), _soundBufferShot(soundBufferShot), _soundBufferExplosion(soundBufferExplosion), _Volume(volume), _Difficulty(difficulty),
+	_BulletSpeed(500), _BulletTexture(bulletTexture), _Movement(Movement::STILL), _Attack(false), _Traffic(false), _IsExploding(false),
 	_Event1Counter(0), _Event2Counter(0), _Event1Frequency(0), _Event2Frequency(0), _Event1Switch(false), _Event2Switch(false), _CurrentPhase(0)
 {
-	_BossEventTimer1.restart();
-	_BossEventTimer2.restart();
-	_PhaseClock.restart();
-
-	_Pattern = { std::make_pair(Phase::NOTHING, 1.0f) };
-
-	//HP-Balken
-	_HealthBar.setFillColor(sf::Color(200, 0, 0));
-	_HealthBar.setSize(sf::Vector2f(getWidth() - 1, 5));
-
-	_HealthBarFrame.setFillColor(sf::Color::Transparent);
-	_HealthBarFrame.setOutlineColor(sf::Color(20, 0, 0));
-	_HealthBarFrame.setOutlineThickness(1);
-	_HealthBarFrame.setSize(_HealthBar.getSize());
+	initBoss();
 }
 
-BossCar::BossCar(std::istream& stream, sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer & soundBufferShot, sf::SoundBuffer & soundBufferExplosion, float Volume) :
+BossCar::BossCar(std::istream& stream, sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer & soundBufferShot, sf::SoundBuffer & soundBufferExplosion, float volume) :
 	Car(stream, GameObjectType::Boss, texture),
-	_soundEffects(soundEffects), _soundBufferShot(soundBufferShot), _soundBufferExplosion(soundBufferExplosion), _BulletSpeed(500) {}
+	_soundEffects(soundEffects), _soundBufferShot(soundBufferShot), _soundBufferExplosion(soundBufferExplosion), _Volume(volume), _BulletSpeed(500), 
+	_BulletTexture(bulletTexture), _Movement(Movement::STILL), _Attack(false), _Traffic(false), _IsExploding(false),
+	_Event1Counter(0), _Event2Counter(0), _Event1Frequency(0), _Event2Frequency(0), _Event1Switch(false), _Event2Switch(false), _CurrentPhase(0)
+{
+	*this << stream;
+	initBoss();
+}
 
 float BossCar::PlayerAngle(GameObject& Player)
 {
@@ -161,4 +154,34 @@ bool BossCar::isDoneExploding(sf::Texture& explosionTexture)
 sf::Vector2f BossCar::calcBulletPosition() 
 {
 	return getPos() + _GunPosition + _GunOrientation * _GunLength;
+}
+
+void BossCar::operator>>(std::ostream& stream)
+{
+	Car::operator>>(stream);
+	write(stream, _Difficulty);
+}
+
+void BossCar::operator<<(std::istream& stream)
+{
+	Car::operator<<(stream);
+	read(stream, _Difficulty);
+}
+
+void BossCar::initBoss()
+{
+	_BossEventTimer1.restart();
+	_BossEventTimer2.restart();
+	_PhaseClock.restart();
+
+	_Pattern = { std::make_pair(Phase::NOTHING, 1.0f) };
+
+	//HP-Balken
+	_HealthBar.setFillColor(sf::Color(200, 0, 0));
+	_HealthBar.setSize(sf::Vector2f(getWidth() - 1, 5));
+
+	_HealthBarFrame.setFillColor(sf::Color::Transparent);
+	_HealthBarFrame.setOutlineColor(sf::Color(20, 0, 0));
+	_HealthBarFrame.setOutlineThickness(1);
+	_HealthBarFrame.setSize(_HealthBar.getSize());
 }

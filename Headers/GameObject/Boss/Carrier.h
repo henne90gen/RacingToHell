@@ -10,6 +10,7 @@ public:
 		@param bulletTexture Texture for all bullets the boss shoots
 	*/
 	Carrier(int difficulty, int HP, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float Volume);
+	Carrier(std::istream& stream, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float Volume);
 	~Carrier() {}
 
 	/*
@@ -21,6 +22,8 @@ public:
 		See BossCar for details
 	*/
 	void render(sf::RenderWindow& RenderWindow);
+
+	void init();
 private:
 	sf::Texture _GunTexture;
 	sf::Sprite _GunSprite;

@@ -1,32 +1,18 @@
 #include "stdafx.h"
 #include "GameObject/Boss/Mech.h"
 
-Mech::Mech(int difficulty, int HP, sf::Texture& textureTop, sf::Texture& textureLegs, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float Volume) : BossCar(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), difficulty, HP, 100, textureTop, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, Volume),
-	_TopAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureTop), _LegsAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureLegs), _MovementSwitch(false), _GunRadius(81.5659f)
+Mech::Mech(int difficulty, int HP, sf::Texture& textureTop, sf::Texture& textureLegs, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume) : 
+	BossCar(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), difficulty, HP, 100, textureTop, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, volume),
+	_TopAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureTop), _LegsAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureLegs), _MovementSwitch(false)
 {
-	setSprite(_TopAnim.getSprite());
+	init();
+}
 
-	_GunOrientation = sf::Vector2f(0, -1);
-	_GunPosition = sf::Vector2f(62, 0);
-	_GunLength = 53.0f;
-
-	//HP-Balken
-	_HealthBar.setSize(sf::Vector2f(getWidth() + 5, 5));
-	_HealthBarFrame.setSize(_HealthBar.getSize());
-
-	_DefaultPosition = sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT - 200);
-	_NextPosition = _DefaultPosition;
-	_Movement = Movement::DRIVETODEFAULT;
-
-	_BaseSpeed = _Speed;
-
-	_Pattern = { 
-		std::make_pair(Phase::SPIN, ((2.0f + (float)_Difficulty) * 360.0f) / (180.0f + 135.f * (float)_Difficulty)) , std::make_pair(Phase::NOTHING, 1.5f), 
-		std::make_pair(Phase::SALVE, 7.0f), std::make_pair(Phase::NOTHING, 0.75f),
-		std::make_pair(Phase::RUNATPLAYERPHASE, 0.25f),
-		std::make_pair(Phase::SHOTGUN, 7.0f), std::make_pair(Phase::NOTHING, 1.5f), 
-		std::make_pair(Phase::ZICKZACKPHASE, 0.25f), std::make_pair(Phase::SALVEZICKZACK, 3.0f), std::make_pair(Phase::NOTHING, 0.75f)
-	};
+Mech::Mech(std::istream & stream, sf::Texture & textureTop, sf::Texture & textureLegs, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer & soundBufferShot, sf::SoundBuffer & soundBufferExplosion, float volume) :
+	BossCar(stream, textureTop, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, volume),
+	_TopAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureTop), _LegsAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureLegs), _MovementSwitch(false) 
+{
+	init();
 }
 
 void Mech::render(sf::RenderWindow & window)
@@ -237,6 +223,33 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 void Mech::setPos(sf::Vector2f pos) {
 	_TopAnim.getSprite().setPosition(pos);
 	_LegsAnim.getSprite().setPosition(pos);
+}
+
+void Mech::init()
+{
+	setSprite(_TopAnim.getSprite());
+
+	_GunOrientation = sf::Vector2f(0, -1);
+	_GunPosition = sf::Vector2f(62, 0);
+	_GunLength = 53.0f;
+
+	//HP-Balken
+	_HealthBar.setSize(sf::Vector2f(getWidth() + 5, 5));
+	_HealthBarFrame.setSize(_HealthBar.getSize());
+
+	_DefaultPosition = sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT - 200);
+	_NextPosition = _DefaultPosition;
+	_Movement = Movement::DRIVETODEFAULT;
+
+	_BaseSpeed = _Speed;
+
+	_Pattern = {
+		std::make_pair(Phase::SPIN, ((2.0f + (float)_Difficulty) * 360.0f) / (180.0f + 135.f * (float)_Difficulty)) , std::make_pair(Phase::NOTHING, 1.5f),
+		std::make_pair(Phase::SALVE, 7.0f), std::make_pair(Phase::NOTHING, 0.75f),
+		std::make_pair(Phase::RUNATPLAYERPHASE, 0.25f),
+		std::make_pair(Phase::SHOTGUN, 7.0f), std::make_pair(Phase::NOTHING, 1.5f),
+		std::make_pair(Phase::ZICKZACKPHASE, 0.25f), std::make_pair(Phase::SALVEZICKZACK, 3.0f), std::make_pair(Phase::NOTHING, 0.75f)
+	};
 }
 
 std::pair<sf::Vector2f, sf::Vector2f>& Mech::calcGunPositions()

@@ -16,6 +16,7 @@ public:
 		@param texture Texture that is going to be used for the sprite
 	*/
 	PlayerCar(int selectedCar, sf::Texture& texture);
+	PlayerCar(std::istream& stream, std::vector<std::shared_ptr<sf::Texture>>& textures);
 	~PlayerCar() {}
 
 	/*
@@ -93,9 +94,13 @@ public:
 		Fills up resources to its maximum
 	*/
 	void resetResources() { _Health = _MaxHealth; _Energy = _MaxEnergy; }
+
+	void operator>>(std::ostream& stream);
+
+	void operator<<(std::istream& stream);
 private:
 	float _Energy;
-	int _MaxEnergy, _Bulletdamage;
+	int _MaxEnergy, _Bulletdamage, _SelectedCar;
 
 	sf::Vector2f _ShotBullet;
 

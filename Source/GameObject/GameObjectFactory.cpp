@@ -53,7 +53,7 @@ std::shared_ptr<BossCar> GameObjectFactory::getBossCar(int level, int diff, int 
 
 std::shared_ptr<Bullet> GameObjectFactory::getBullet(sf::Vector2f pos, sf::Vector2f dir, int speed, GameObjectType type, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, float volume)
 {
-	if (type == GameObjectType::BulletObjectAI) {
+	if (type == GameObjectType::BulletObjectAI || type == GameObjectType::BulletObjectBoss) {
 		std::shared_ptr<Bullet> bullet(new Bullet(pos, dir, speed, type, _BulletTexture, soundEffects, _AIShotSoundBuffer, volume));
 		return bullet;
 	}
@@ -81,6 +81,63 @@ std::shared_ptr<GameObject> GameObjectFactory::getCanister(sf::Vector2f pos)
 	return canister;
 }
 
+
+
+std::shared_ptr<PlayerCar> GameObjectFactory::getPlayerCar(std::istream& stream)
+{
+	std::shared_ptr<PlayerCar> player(new PlayerCar(stream, _PlayerCarTextures));
+	return player;
+}
+
+std::shared_ptr<BossCar> GameObjectFactory::getBossCar(int level, std::istream& stream, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer& expSB, float volume)
+{
+	switch (level)
+	{
+	case 0:
+	{
+		std::shared_ptr<Tank> boss(new Tank(stream, (*_BossCarTextures[0]), _BulletTexture, soundEffects, _AIShotSoundBuffer, expSB, volume));
+		return boss;
+		break;
+	}
+	case 1:
+	{
+		std::shared_ptr<Mech> boss(new Mech(stream, (*_BossCarTextures[2]), (*_BossCarTextures[3]), _BulletTexture, soundEffects, _AIShotSoundBuffer, expSB, volume));
+		return boss;
+		break;
+	}
+	case 2:
+	{
+		std::shared_ptr<Jet> boss(new Jet(stream, (*_BossCarTextures[4]), _BulletTexture, soundEffects, _AIShotSoundBuffer, expSB, _JetSoundBuffer, volume));
+		return boss;
+		break;
+	}
+	case 3:
+	{
+		std::shared_ptr<Carrier> boss(new Carrier(stream, (*_BossCarTextures[1]), _BulletTexture, soundEffects, _AIShotSoundBuffer, expSB, volume));
+		return boss;
+		break;
+	}
+	}
+}
+
+std::shared_ptr<Bullet> GameObjectFactory::getBullet(std::istream& stream, GameObjectType type, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, float volume)
+{
+	if (type == GameObjectType::BulletObjectAI || type == GameObjectType::BulletObjectBoss) {
+		std::shared_ptr<Bullet> bullet(new Bullet(stream, type, _BulletTexture, soundEffects, _AIShotSoundBuffer, volume));
+		return bullet;
+	}
+	else if (type == GameObjectType::BulletObjectPlayer) {
+		std::shared_ptr<Bullet> bullet(new Bullet(stream, type, _BulletTexture, soundEffects, _PlayerShotSoundBuffer, volume));
+		return bullet;
+	}
+}
+
+std::shared_ptr<AICar> GameObjectFactory::getAICar(std::istream& stream)
+{
+	std::shared_ptr<AICar> car(new AICar(stream, (*_AICarTextures.at(std::rand() % 7))));
+	return car;
+}
+
 std::shared_ptr<GameObject> GameObjectFactory::getToolbox(std::istream& stream)
 {
 	std::shared_ptr<GameObject> toolbox(new GameObject(stream, GameObjectType::Tools, _ToolboxTexture));
@@ -91,6 +148,38 @@ std::shared_ptr<GameObject> GameObjectFactory::getCanister(std::istream& stream)
 {
 	std::shared_ptr<GameObject> canister(new GameObject(stream, GameObjectType::Canister, _EnergyCanisterTexture));
 	return canister;
+}
+
+void GameObjectFactory::scanStreamForGOs(int level, std::istream& stream, std::vector<std::shared_ptr<GameObject>>& gos, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer& expSB, float volume)
+{
+	GameObjectType type;
+	stream.read((char*)& type, sizeof(sf::Uint8));
+	switch (type) {
+	case GameObjectType::AI:
+		gos.push_back(getAICar(stream));
+		break;
+	case GameObjectType::BulletObjectAI:
+		gos.push_back(getBullet(stream, type, soundEffects, volume));
+		break;
+	case GameObjectType::BulletObjectBoss:
+		gos.push_back(getBullet(stream, type, soundEffects, volume));
+		break;
+	case GameObjectType::BulletObjectPlayer:
+		gos.push_back(getBullet(stream, type, soundEffects, volume));
+		break;
+	case GameObjectType::Tools:
+		gos.push_back(getToolbox(stream));
+		break;
+	case GameObjectType::Canister:
+		gos.push_back(getCanister(stream));
+		break;
+	case GameObjectType::Boss:
+		gos.push_back(getPlayerCar(stream));
+		break;
+	case GameObjectType::Player:
+		gos.push_back(getBossCar(level, stream, soundEffects, expSB, volume));
+		break;
+	}
 }
 
 void GameObjectFactory::load()

@@ -5,23 +5,13 @@ Jet::Jet(int difficulty, int HP, sf::Texture & texture, sf::Texture & bulletText
 	BossCar(sf::Vector2f(-1 * texture.getSize().x, SCREENHEIGHT / 2), difficulty, HP, 500, texture, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, Volume),
 	_EngineSoundBuffer(soundBufferEngine)
 {
-	_EngineSound.setBuffer(_EngineSoundBuffer);
-	_EngineSound.setVolume(Volume * 4);
-	_EngineSound.setPosition(getPos().x, 0.f, getPos().y);
-	_EngineSound.setMinDistance(500.f);
-	_EngineSound.setAttenuation(10.f);
+	init();
+}
 
-	_Traffic = true;
-	_Pattern = { std::make_pair(Phase::SIDE, 6.0f) };
-	_CurrentPhase = 0;
-
-	randomPosition();
-
-	_Speed = (0.8f + 0.2f * (float)_Difficulty) * _Speed;
-
-	_Movement = Movement::STRAIGHT;
-
-	_Pattern = {std::make_pair(Phase::SIDE, 10.5f), std::make_pair(Phase::SAVELANES, 9.f)};
+Jet::Jet(std::istream & stream, sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer & soundBufferShot, sf::SoundBuffer & soundBufferExplosion, sf::SoundBuffer & soundBufferEngine, float volume) :
+	BossCar(stream, texture, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, volume)
+{
+	init();
 }
 
 void Jet::render(sf::RenderWindow & window)
@@ -152,4 +142,25 @@ void Jet::checkPhase()
 void Jet::stopSounds()
 {
 	_EngineSound.stop();
+}
+
+void Jet::init()
+{
+	_EngineSound.setBuffer(_EngineSoundBuffer);
+	_EngineSound.setVolume(_Volume * 4);
+	_EngineSound.setPosition(getPos().x, 0.f, getPos().y);
+	_EngineSound.setMinDistance(500.f);
+	_EngineSound.setAttenuation(10.f);
+
+	_Traffic = true;
+	_Pattern = { std::make_pair(Phase::SIDE, 6.0f) };
+	_CurrentPhase = 0;
+
+	randomPosition();
+
+	_Speed = (0.8f + 0.2f * (float)_Difficulty) * _Speed;
+
+	_Movement = Movement::STRAIGHT;
+
+	_Pattern = { std::make_pair(Phase::SIDE, 10.5f), std::make_pair(Phase::SAVELANES, 9.f) };
 }

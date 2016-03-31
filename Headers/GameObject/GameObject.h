@@ -13,7 +13,23 @@ public:
 		@param texture Texture that is going to be used for the Sprite
 	*/
 	GameObject(sf::Vector2f pos, GameObjectType type, sf::Texture& texture);
+
+	/*
+		Any object that can be on the screen
+		@param stream Input stream that contains all the other information needed to make a GameObject
+		@param type Type of the GameObject
+		@param texture Texture that is going to be used for the Sprite
+	*/
 	GameObject(std::istream& stream, GameObjectType type, sf::Texture& texture);
+
+	/*
+		Any object that can be on the screen
+		Use this constructor with extrem caution, no texture is being specified
+		To fully use the GameObject one has to specifiy a texture!
+		@param stream Input stream that contains all the other information needed to make a GameObject
+		@param type Type of the GameObject
+	*/
+	GameObject(std::istream& stream, GameObjectType type);
 	~GameObject() {}
 
 	/*
@@ -233,12 +249,15 @@ public:
 		Stops all sounds of the GameObject
 	*/
 	virtual void stopSounds() {}
+
+	/*
+		Initializes the texture for this GameObject
+	*/
+	void initTexture(sf::Texture& texture);
 private:
 	sf::Sprite _Sprite;
 	sf::Texture _Texture;
 	
 	GameObjectType _Type;
-
-	void initTexture(sf::Texture& texture);
 };
 

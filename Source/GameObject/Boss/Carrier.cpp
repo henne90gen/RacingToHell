@@ -2,9 +2,31 @@
 #include "GameObject/Boss/Carrier.h"
 
 //TODO: Change health of Carrier back to 2000
-Carrier::Carrier(int difficulty, int HP, sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion,float Volume) : 
-	BossCar(sf::Vector2f(SCREENWIDTH / 2, -1 * (float)texture.getSize().y / 2.0f), difficulty, HP, 200, texture, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, Volume),
+Carrier::Carrier(int difficulty, int HP, sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion,float volume) : 
+	BossCar(sf::Vector2f(SCREENWIDTH / 2, -1 * (float)texture.getSize().y / 2.0f), difficulty, HP, 200, texture, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, volume),
 	_MovementSwitchLeftRight(false), _MovementSwitchUpDown(false), _Radius(50), _SwitchSideTime(8.0f), _SwitchSides(false)
+{
+	init();
+}
+
+Carrier::Carrier(std::istream & stream, sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer & soundBufferShot, sf::SoundBuffer & soundBufferExplosion, float volume) :
+	BossCar(stream, texture, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, volume)
+{
+	init();
+}
+
+void Carrier::render(sf::RenderWindow & window)
+{
+	window.draw(getSprite());
+	window.draw(_GunSprite);
+
+	window.draw(_HealthBar);
+	window.draw(_HealthBarFrame);
+
+	renderExplosions(window);
+}
+
+void Carrier::init()
 {
 	_GunTexture.loadFromFile("Resources/Texture/BossCar/CannonCarrier.png");
 	_GunSprite.setTexture(_GunTexture);
@@ -19,17 +41,6 @@ Carrier::Carrier(int difficulty, int HP, sf::Texture & texture, sf::Texture & bu
 
 	_Pattern = { std::make_pair(Phase::BLASTSALVE, 5.0f), std::make_pair(Phase::NOTHING, 1.5f), std::make_pair(Phase::RANDOMSPRAY, 6.0f), std::make_pair(Phase::NOTHING, 1.5f),
 		std::make_pair(Phase::SPIRAL, 8.0f), std::make_pair(Phase::NOTHING, 2.0f), std::make_pair(Phase::HARDCORESPAM, 7.0f), std::make_pair(Phase::NOTHING, 1.5f) };
-}
-
-void Carrier::render(sf::RenderWindow & window)
-{
-	window.draw(getSprite());
-	window.draw(_GunSprite);
-
-	window.draw(_HealthBar);
-	window.draw(_HealthBarFrame);
-
-	renderExplosions(window);
 }
 
 void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<GameObject>>& gameObjects)

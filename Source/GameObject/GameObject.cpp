@@ -15,6 +15,12 @@ GameObject::GameObject(std::istream& stream, GameObjectType type, sf::Texture& t
 	_Sprite.setPosition(getPos());
 }
 
+GameObject::GameObject(std::istream& stream, GameObjectType type) : _Type(type)
+{
+	*this << stream;
+	_Sprite.setPosition(getPos());
+}
+
 void GameObject::render(sf::RenderWindow& window)
 {
 	window.draw(_Sprite);

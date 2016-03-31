@@ -2,9 +2,9 @@
 #include "GameObject\PlayerCar.h"
 
 
-PlayerCar::PlayerCar(int SelectedCar, sf::Texture& texture) : Car(sf::Vector2f(0, 0), 100, 500, GameObjectType::Player, texture), _CrosshairSpeed(600.0f)
+PlayerCar::PlayerCar(int selectedCar, sf::Texture& texture) : Car(sf::Vector2f(0, 0), 100, 500, GameObjectType::Player, texture), _CrosshairSpeed(600.0f), _SelectedCar(selectedCar)
 {
-	setStats(SelectedCar);
+	setStats(_SelectedCar);
 	resetShotBullet();
 	setPos(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT - 300));
 	
@@ -20,6 +20,13 @@ PlayerCar::PlayerCar(int SelectedCar, sf::Texture& texture) : Car(sf::Vector2f(0
 	}
 
 	sf::Listener::setDirection(0.f, 0.f, -1.f);
+}
+
+PlayerCar::PlayerCar(std::istream& stream, std::vector<std::shared_ptr<sf::Texture>>& textures) : Car(stream, GameObjectType::Player)
+{
+	*this << stream;
+	setStats(_SelectedCar);
+	initTexture((*textures.at(_SelectedCar)));
 }
 
 void PlayerCar::render(sf::RenderWindow& Window, bool renderCrosshair) {
@@ -146,4 +153,16 @@ void PlayerCar::setStats(int id)
 	_Energy = _MaxEnergy;
 	_Speed = Stats[2];
 	_Bulletdamage = Stats[3];
+}
+
+void PlayerCar::operator>>(std::ostream& stream)
+{
+	Car::operator>>(stream);
+	write(stream, _SelectedCar);
+}
+
+void PlayerCar::operator<<(std::istream& stream)
+{
+	Car::operator<<(stream);
+	read(stream, _SelectedCar);
 }

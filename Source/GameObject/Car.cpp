@@ -8,10 +8,6 @@ Car::Car(sf::Vector2f pos, int maxhealth, float speed, GameObjectType Type, sf::
 	_Health = maxhealth;
 }
 
-Car::Car(std::istream& stream, GameObjectType type, sf::Texture& texture) : 
-	GameObject(stream, type, texture) 
-{}
-
 int Car::getHealth()
 {
 	if (_Health < 0) {

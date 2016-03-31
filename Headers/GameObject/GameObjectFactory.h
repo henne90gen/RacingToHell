@@ -76,12 +76,12 @@ public:
 	/*
 		@param stream Stream to get the necessary data from
 	*/
-	std::shared_ptr<BossCar> GameObjectFactory::getBossCar(std::istream& stream);
+	std::shared_ptr<BossCar> GameObjectFactory::getBossCar(int level, std::istream& stream, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer& expSB, float volume);
 
 	/*
 		@param stream Stream to get the necessary data from
 	*/
-	std::shared_ptr<Bullet> getBullet(std::istream& stream);
+	std::shared_ptr<Bullet> getBullet(std::istream& stream, GameObjectType type, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, float volume);
 
 	/*
 		@param stream Stream to get the necessary data from
@@ -97,6 +97,8 @@ public:
 		@param stream Stream to get the necessary data from
 	*/
 	std::shared_ptr<GameObject> getToolbox(std::istream& stream);
+
+	void scanStreamForGOs(int level, std::istream& stream, std::vector<std::shared_ptr<GameObject>>& gos, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer& expSB, float volume);
 
 	void setPlayerCarTextures(std::vector<std::shared_ptr<sf::Texture>>& carSkins) { _PlayerCarTextures = carSkins; }
 private:

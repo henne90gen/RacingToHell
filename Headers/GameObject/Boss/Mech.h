@@ -11,7 +11,8 @@ public:
 		@param texture Texture for the sprite
 		@param bulletTexture Texture for all bullets the Mech shoots
 	*/
-	Mech(int difficulty, int HP, sf::Texture& TextureTop, sf::Texture& TextureLegs, sf::Texture& BulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float Volume);
+	Mech(int difficulty, int HP, sf::Texture& textureTop, sf::Texture& textureLegs, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
+	Mech(std::istream& stream, sf::Texture& textureTop, sf::Texture& textureLegs, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
 	~Mech() {}
 
 	/*
@@ -54,13 +55,13 @@ public:
 		@return sf::Sprite Sprite of the Mech
 	*/
 	sf::Sprite& getSprite() { return _TopAnim.getSprite(); }
+
+	void init();
 private:
 	MechTop _TopAnim;
 	MechLegs _LegsAnim;
 
 	bool _MovementSwitch;
-	
-	float _GunRadius;
 
 	int _BaseSpeed;
 	/*

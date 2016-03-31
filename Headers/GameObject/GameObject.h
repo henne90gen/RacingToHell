@@ -13,6 +13,7 @@ public:
 		@param texture Texture that is going to be used for the Sprite
 	*/
 	GameObject(sf::Vector2f pos, GameObjectType type, sf::Texture& texture);
+	GameObject(std::istream& stream, GameObjectType type, sf::Texture& texture);
 	~GameObject() {}
 
 	/*
@@ -237,5 +238,7 @@ private:
 	sf::Texture _Texture;
 	
 	GameObjectType _Type;
+
+	void initTexture(sf::Texture& texture);
 };
 

@@ -8,10 +8,9 @@ Car::Car(sf::Vector2f pos, int maxhealth, float speed, GameObjectType Type, sf::
 	_Health = maxhealth;
 }
 
-Car::Car(std::istream& stream, GameObjectType type, sf::Texture& texture) : GameObject(sf::Vector2f(), type, texture) 
-{
-	*this << stream;
-}
+Car::Car(std::istream& stream, GameObjectType type, sf::Texture& texture) : 
+	GameObject(stream, type, texture) 
+{}
 
 int Car::getHealth()
 {
@@ -23,9 +22,7 @@ int Car::getHealth()
 
 void Car::operator>>(std::ostream& stream) 
 {
-	write(stream, getType());
-	write(stream, getPos().x);
-	write(stream, getPos().y);
+	GameObject::operator>>(stream);
 	write(stream, _Speed);
 	write(stream, _Health);
 	write(stream, _MaxHealth);
@@ -33,10 +30,7 @@ void Car::operator>>(std::ostream& stream)
 
 void Car::operator<<(std::istream& stream) 
 {
-	float x, y;
-	read(stream, x);
-	read(stream, y);
-	setPos(sf::Vector2f(x, y));
+	GameObject::operator<<(stream);
 	read(stream, _Speed);
 	read(stream, _Health);
 	read(stream, _MaxHealth);

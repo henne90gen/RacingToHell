@@ -4,13 +4,16 @@
 
 GameObject::GameObject(sf::Vector2f pos, GameObjectType type, sf::Texture& texture) : _Type(type)
 {
-	_Texture = texture;
-	_Sprite.setTexture(_Texture);
-	_Sprite.setOrigin(_Sprite.getLocalBounds().width / 2, _Sprite.getLocalBounds().height / 2);
+	initTexture(texture);
 	_Sprite.setPosition(pos);
 }
 
-
+GameObject::GameObject(std::istream& stream, GameObjectType type, sf::Texture& texture) : _Type(type)
+{
+	*this << stream;
+	initTexture(texture);
+	_Sprite.setPosition(getPos());
+}
 
 void GameObject::render(sf::RenderWindow& window)
 {
@@ -63,4 +66,11 @@ void GameObject::operator<<(std::istream& stream)
 	read(stream, x);
 	read(stream, y);
 	setPos(sf::Vector2f(x, y));
+}
+
+void GameObject::initTexture(sf::Texture& texture)
+{
+	_Texture = texture;
+	_Sprite.setTexture(_Texture);
+	_Sprite.setOrigin(_Sprite.getLocalBounds().width / 2, _Sprite.getLocalBounds().height / 2);
 }

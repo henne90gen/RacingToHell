@@ -13,6 +13,7 @@ public:
 		@param texture Texture that is going to be used for the sprite
 	*/
 	AICar(int hp, int roadSpeed, sf::Texture& texture);
+	AICar(std::istream& stream, sf::Texture& texture);
 	~AICar() {}
 
 	/*
@@ -39,10 +40,16 @@ public:
 		@return int Number of the lane
 	*/
 	int getLane() { return _Lane; }
+
+	void operator>>(std::ostream& stream);
+
+	void operator<<(std::istream& stream);
 private:
 	sf::RectangleShape _HealthBar;
 	sf::RectangleShape _HealthBarFrame;
 
 	int _Lane;
+
+	void init();
 };
 

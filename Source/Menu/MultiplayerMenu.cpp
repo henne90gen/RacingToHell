@@ -54,8 +54,8 @@ MultiplayerMenu::MultiplayerMenu() : Menu(GameState::MultiplayerSelection), _Cre
 	_FeedbackText.setFont(_Font);
 	_FeedbackText.setCharacterSize(20);
 	_FeedbackText.setPosition(_BackgroundJoin.getPosition() + sf::Vector2f(20, 275));
-	_FeedbackText.setColor(sf::Color(220, 0, 0));
-	_FeedbackText.setString("Connecting to 127.0.0.1:8080 failed. Please try again.");
+	//_FeedbackText.setColor(sf::Color(220, 0, 0));
+	//_FeedbackText.setString("Connecting to 127.0.0.1:8080 failed. Please try again.");
 
 	_BackgroundCreate.setFillColor(sf::Color(0, 0, 0, 100));
 	_BackgroundCreate.setOutlineThickness(1);
@@ -132,7 +132,8 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result)
 		_ConnectionThread.detach();
 
 		_CreatedLobby = 0;
-		return GameState::Connecting;
+		_MenuGameState = GameState::Connecting;
+		return _MenuGameState;
 	}	
 		break;
 	case MenuResult::Create:
@@ -152,21 +153,25 @@ NetworkCommunication MultiplayerMenu::update(float frametime)
 	switch (_NetworkHandle->getLastResponse())
 	{
 	case NetworkCommunication::ConnectionSuccesfull:
+		_MenuGameState = GameState::MultiplayerSelection;
 		return NetworkCommunication::ConnectionSuccesfull;
 		break;
 	case NetworkCommunication::ConnectionFailed:
 		_FeedbackText.setColor(sf::Color(220, 0, 0));
 		_FeedbackText.setString("Connecting to " + _MenuItems[(int)MenuItemIndex::IP]->getText() + ":" + _MenuItems[(int)MenuItemIndex::Port]->getText() + " failed. Please try again.");
-
+		
+		_MenuGameState = GameState::MultiplayerSelection;
 		return NetworkCommunication::ConnectionFailed;
 		break;
 	case NetworkCommunication::WrongPassword:
 		_FeedbackText.setColor(sf::Color(220, 0, 0));
 		_FeedbackText.setString("Wrong password. Please try again.");
-
+		
+		_MenuGameState = GameState::MultiplayerSelection;
 		return NetworkCommunication::WrongPassword;
 		break;
 	default:
+		return NetworkCommunication::None;
 		break;
 	}
 }

@@ -49,6 +49,7 @@ void NetworkHandle::disconnect()
 	//d::lock_guard<std::mutex> lock(_Mutex);
 	_Socket.disconnect();
 	_Listener.close();
+	_Relationship = NetworkRelation::None;
 	_Authenticated = false;
 	_SendPackets.clear();
 	_ReceivedPackets.clear();
@@ -127,24 +128,30 @@ void NetworkHandle::run()
 				}
 
 				//receives data
-				sf::Packet TmpPacket = IncommingPacket;
-				sf::Uint8 Type;
 
-				TmpPacket >> Type;
-
-				switch ((NetworkCommunication)Type)
+				if (IncommingPacket.getDataSize() > 0)
 				{
-				case NetworkCommunication::Disconnect:
-					disconnect();
-					std::cout << "The other player left the lobby." << std::endl;
-					break;
-				default:
-					break;
+					sf::Packet TmpPacket = IncommingPacket;
+					sf::Uint8 Type;
+
+					TmpPacket >> Type;
+
+					switch ((NetworkCommunication)Type)
+					{
+					case NetworkCommunication::Disconnect:
+						disconnect();
+						std::cout << "The other player left the lobby." << std::endl;
+						break;
+					default:
+						std::cout << "WTF" << std::endl;
+						break;
+					}
 				}
 			}
 		}
 
-		//std::cout << "Tick:" << _Tick << std::endl;
+		std::cout << _Authenticated << _Tick << std::endl;
+
 
 		++_Tick;
 		sf::sleep(sf::seconds(1.0f / (float)_TickRate)); 

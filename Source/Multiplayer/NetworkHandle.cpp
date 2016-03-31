@@ -107,7 +107,6 @@ void NetworkHandle::run()
 				//sends data
 				while (_SendPackets.size() > 0)
 				{
-
 					std::lock_guard<std::mutex> lock(_Mutex);
 					sf::Packet TmpPacket;
 					TmpPacket << sf::Uint8(_SendPackets[0].first) << _Tick << _SendPackets[0].second;
@@ -118,6 +117,7 @@ void NetworkHandle::run()
 					{
 						std::cout << "You left the lobby." << std::endl;
 						disconnect();
+						break;
 					}
 					else
 					{

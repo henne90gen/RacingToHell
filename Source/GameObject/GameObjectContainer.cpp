@@ -109,7 +109,7 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 		//Kaputte Autos löschen
 		for (unsigned int i = 0; i < _GameObjects.size(); i++)
 		{
-			if (_GameObjects.at(i)->getType() == GameObjectType::AI && _GameObjects.at(i)->getHealth() <= 0)
+			if (_GameObjects.at(i)->getType() == GameObjectType::AI && _GameObjects.at(i)->getHealth() == 0)
 			{
 				_CarScore += (int)(1.5 * _GameObjects.at(i)->getMaxHealth());
 				std::shared_ptr<Explosion> newExplosion(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _GameObjects[i]->getSpeed()), _SoundEffects, _ExplosionSoundBuffer, _Volume));

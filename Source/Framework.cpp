@@ -345,6 +345,7 @@ void Framework::update()
 		NetworkCommunication netComm = _MultiplayerMenu.update(_FrameTime);
 		if (netComm == NetworkCommunication::ConnectionSuccesfull) {
 			_GameState = GameState::Lobby;
+			_NetworkHandle.setRelation(NetworkRelation::Client);
 		}
 		else if (netComm == NetworkCommunication::ConnectionFailed && netComm == NetworkCommunication::WrongPassword) {
 			_GameState = GameState::MultiplayerSelection;

@@ -96,7 +96,6 @@ private:
 
 	std::vector<std::shared_ptr<sf::SoundBuffer>> _MusicBuffers;
 	sf::Sound _Music;
-	bool _FirstLevelSoundLoaded;
 
 	float _LevelTime;
 	float _TotalLevelTime;

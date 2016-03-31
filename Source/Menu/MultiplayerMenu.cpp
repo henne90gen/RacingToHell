@@ -169,6 +169,8 @@ NetworkCommunication MultiplayerMenu::update(float frametime)
 		_FeedbackText.setColor(sf::Color(220, 0, 0));
 		_FeedbackText.setString("Wrong password. Please try again.");
 		
+		_NetworkHandle = new NetworkHandle();
+
 		_MenuGameState = GameState::MultiplayerSelection;
 		return NetworkCommunication::WrongPassword;
 		break;

@@ -29,9 +29,9 @@ void NetworkHandle::connect(std::string ip, std::string password, int port, floa
 			_Authenticated = true;
 			_LastResponse = NetworkCommunication::ConnectionSuccesfull;
 		}
-		else if (Response == (sf::Uint8)(NetworkCommunication::ConnectionSuccesfull))
+		else if (Response == (sf::Uint8)(NetworkCommunication::WrongPassword))
 		{
-			_LastResponse = NetworkCommunication::ConnectionFailed;
+			_LastResponse = NetworkCommunication::WrongPassword;
 		}
 		else
 		{

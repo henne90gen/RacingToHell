@@ -177,6 +177,7 @@ void Framework::handleEvents()
 		break;
 	case GameState::Options:
 		_GameState = _OptionsMenu.handleEvents(_RenderWindow);
+		_OptionsMenu.saveOptions(_MultiplayerMenu);
 		setVolume(_OptionsMenu.getVolume());
 		_FPS = _OptionsMenu.getFPS();
 		break;
@@ -216,7 +217,7 @@ void Framework::handleEvents()
 		break;
 	case GameState::MultiplayerSelection:
 		_GameState = _MultiplayerMenu.handleEvents(_RenderWindow);
-
+		_OptionsMenu.saveOptions(_MultiplayerMenu);
 		if (_GameState == GameState::Lobby)
 		{
 			_MultiplayerLobby.EnableButtons(_MultiplayerMenu.getCreatedLobby() == 1);
@@ -406,33 +407,33 @@ bool Framework::measureTime()
 void Framework::load()
 {
 	try {
-	if (_MenuMusicBuffer.loadFromFile("Resources/Sound/Music/menu1.ogg")) {
-		_MenuMusic.setBuffer(_MenuMusicBuffer);
-	}
-	
-	for (unsigned int i = 1; i < 7; i++) 
-	{
-		sf::Texture texture;
-		if (texture.loadFromFile("Resources/Texture/PlayerCar/playercar" + std::to_string(i) + ".png")) 
-		{
-			texture.setSmooth(true);
-			_CarSkins.push_back(std::make_shared<sf::Texture>(texture));
+		if (_MenuMusicBuffer.loadFromFile("Resources/Sound/Music/menu1.ogg")) {
+			_MenuMusic.setBuffer(_MenuMusicBuffer);
 		}
-	}
+	
+		for (unsigned int i = 1; i < 7; i++) 
+		{
+			sf::Texture texture;
+			if (texture.loadFromFile("Resources/Texture/PlayerCar/playercar" + std::to_string(i) + ".png")) 
+			{
+				texture.setSmooth(true);
+				_CarSkins.push_back(std::make_shared<sf::Texture>(texture));
+			}
+		}
 
-	_GameObjectContainer.load();
-	_GameObjectContainer.setCarSkins(_CarSkins);
-	_GameObjectContainer.resetGameObjects(0);
+		_GameObjectContainer.load();
+		_GameObjectContainer.setCarSkins(_CarSkins);
+		_GameObjectContainer.resetGameObjects(0);
 
-	_GameOverScreen.load();
+		_GameOverScreen.load();
 
-	_OptionsMenu.loadOptions();
-	_FPS = _OptionsMenu.getFPS();
-	setVolume(_OptionsMenu.getVolume());
+		_OptionsMenu.loadOptions(_MultiplayerMenu);
+		_FPS = _OptionsMenu.getFPS();
+		setVolume(_OptionsMenu.getVolume());
 	
 		_Level.load();
-	_Level.resetLevel();
-}
+		_Level.resetLevel();
+	}
 	catch (...) {
 		std::exit;
 	}

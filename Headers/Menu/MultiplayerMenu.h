@@ -38,6 +38,9 @@ public:
 	bool getCreatedLobby() { return _CreatedLobby; }
 
 	void setNetWorkHandle(NetworkHandle *Handle) { _NetworkHandle = Handle; }
+	
+	std::string getPlayerName();
+	void setPlayerName(std::string name);
 private:
 	sf::RectangleShape _BackgroundJoin, _BackgroundName, _BackgroundCreate;
 	sf::Text _NameText, _JoinText, _IPText, _PasswordText, _FeedbackText, _CreateText, _CreatePassword;

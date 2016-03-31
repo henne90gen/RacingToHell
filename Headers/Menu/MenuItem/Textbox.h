@@ -36,6 +36,12 @@ public:
 	*/
 	std::string getText() { return _String; }
 
+	void setText(std::string str) 
+	{ 
+		_String = str; 
+		setString(); 
+	}
+
 	/*
 		Textbox doesn't have a value that could be changed
 		@return bool False

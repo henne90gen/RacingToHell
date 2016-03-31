@@ -19,11 +19,23 @@ void NetworkHandle::disconnect()
 
 void NetworkHandle::run()
 {
-	while (_Relationship != NetworkType::None)
-	{
-		_Socket.setBlocking(false);
+	_Socket.setBlocking(false);
+	_Listener.setBlocking(false);
 
-		sf::Packet TestPacket, SendPacket;
+	while (_Relationship != NetworkRelation::None)
+	{
+		//sends data
+		while (_SendPackets.size() > 0)
+		{
+			sf::Packet TmpPacket;
+			TmpPacket << _Tick << _SendPackets[0];
+
+			_Socket.send(TmpPacket);
+
+			_SendPackets.erase(_SendPackets.begin());
+		}
+
+		sf::Uin
 
 		++_Tick;
 		sf::sleep(sf::seconds(1.0f / (float)_TickRate));

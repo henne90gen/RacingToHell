@@ -14,13 +14,19 @@ public:
 
 	void run();
 
-	NetworkType getRelationship() { return _Relationship; }
+	NetworkRelation getRelationship() { return _Relationship; }
+
+	void setState(NetworkState state) { _State = state; }
+	void setPort(unsigned int port) { _Port = port; }
 private:
 	sf::TcpSocket _Socket;
 	sf::TcpListener _Listener;
 
-	unsigned int _TickRate;
+	std::vector<sf::Packet> _SendPackets, _ReveivedPackets;
+
+	unsigned int _TickRate, _Port;
 	sf::Uint32 _Tick;
 	
-	NetworkType _Relationship;
+	NetworkRelation _Relationship;
+	NetworkState _State;
 };

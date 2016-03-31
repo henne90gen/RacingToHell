@@ -1,7 +1,7 @@
 #pragma once
 
-enum class NetworkType {None, Host, Client};
+enum class NetworkRelation {None, Host, Client};
 
-enum class NetworkSend {};
+enum class NetworkCommunication {};
 
-enum class NetworkResponse {};
+enum class NetworkState {None, Lobby, Ingame};

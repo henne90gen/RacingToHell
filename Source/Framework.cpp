@@ -220,14 +220,29 @@ void Framework::handleEvents()
 		if (_GameState == GameState::Lobby)
 		{
 			_MultiplayerLobby.EnableButtons(_MultiplayerMenu.getCreatedLobby() == 1);
+
+			_NetworkHandle.setRelation(NetworkRelation::Host);
+			_NetworkHandle.setState(NetworkState::Lobby);
+
+			_NetworkThread = std::thread(&NetworkHandle::run, &_NetworkHandle);
+			_NetworkThread.detach();
 		}
 		break;
 	case GameState::Connecting:
 		_GameState = _MultiplayerMenu.handleEvents(_RenderWindow);
+
+		if (_GameState == GameState::Lobby)
+		{
+			_NetworkHandle.setState(NetworkState::Lobby);
+
+			_NetworkThread = std::thread(&NetworkHandle::run, &_NetworkHandle);
+			_NetworkThread.detach();
+		}
 		break;
 	case GameState::Lobby:
 		_GameState = _MultiplayerLobby.handleEvents(_RenderWindow);
 		_CurrentCarSkinIndex = _MultiplayerLobby.getCarIndex();
+
 		if (_CurrentCarSkinIndex < 0) {
 			_CurrentCarSkinIndex = _CarSkins.size() - 1;
 		}
@@ -329,6 +344,7 @@ void Framework::update()
 		_Level.update(_FrameTime, _GameState);
 		if (_MultiplayerMenu.update(_FrameTime) == NetworkCommunication::ConnectionSuccesfull) 
 		{
+			_NetworkHandle.setRelation(NetworkRelation::Client);
 			_GameState = GameState::Lobby;
 		}
 		break;
@@ -374,7 +390,7 @@ bool Framework::measureTime()
 	
 	if (_LastFPSCheck >= 1 / _FPS) {
 		if (_LastFPSPrint > 1) {
-			std::cout << "FPS: " << 1 / _LastFPSCheck << std::endl;
+			//std::cout << "FPS: " << 1 / _LastFPSCheck << std::endl;
 			_LastFPSPrint = 0;
 		}
 		_LastFPSCheck = 0;

@@ -119,7 +119,7 @@ void NetworkHandle::run()
 
 		
 
-
+		std::cout << "Tick:" << _Tick << std::endl;
 
 		++_Tick;
 		sf::sleep(sf::seconds(1.0f / (float)_TickRate)); 

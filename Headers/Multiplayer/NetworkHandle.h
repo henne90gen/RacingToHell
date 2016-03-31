@@ -24,6 +24,7 @@ public:
 	void setPort(unsigned int port) { _Port = port; }
 	void setPassword(std::string pw) { _Password = pw; }
 	void setAuthenticated(bool Authenticated) { _Authenticated = Authenticated; }
+	void setRelation(NetworkRelation relation) { _Relationship = relation; }
 private:
 	sf::TcpSocket _Socket;
 	sf::TcpListener _Listener;

@@ -10,16 +10,20 @@ public:
 	NetworkHandle();
 	~NetworkHandle() {}
 
-	NetworkCommunication connect(std::string ip, std::string password, int port, float timeout);
+	void connect(std::string ip, std::string password, int port, float timeout);
 	void disconnect();
 
 	void run();
 
 	NetworkRelation getRelationship() { return _Relationship; }
+	NetworkCommunication getLastResponse() { return _LastResponse; }
+
+	bool getAuthenticated() { return _Authenticated; }
 
 	void setState(NetworkState state) { _State = state; }
 	void setPort(unsigned int port) { _Port = port; }
 	void setPassword(std::string pw) { _Password = pw; }
+	void setAuthenticated(bool Authenticated) { _Authenticated = Authenticated; }
 private:
 	sf::TcpSocket _Socket;
 	sf::TcpListener _Listener;
@@ -33,4 +37,5 @@ private:
 
 	NetworkRelation _Relationship;
 	NetworkState _State;
+	NetworkCommunication _LastResponse;
 };

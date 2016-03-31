@@ -33,7 +33,7 @@ public:
 	*/
 	GameState handleMenuItemResult(MenuResult result);
 
-	void update(float frametime);
+	NetworkCommunication update(float frametime);
 
 	bool getCreatedLobby() { return _CreatedLobby; }
 
@@ -46,4 +46,7 @@ private:
 	NetworkHandle *_NetworkHandle;
 
 	enum class MenuItemIndex {Name = 0, IP = 1, Port = 2, PasswordJoin = 3, PasswordCreate = 5};
+
+	std::thread _ConnectionThread;
+	std::mutex _Mutex;
 };

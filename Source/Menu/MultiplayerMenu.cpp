@@ -128,15 +128,11 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result)
 		_FeedbackText.setColor(sf::Color::White);
 		_FeedbackText.setString("Connecting to " + _MenuItems[(int)MenuItemIndex::IP]->getText() + ":" + _MenuItems[(int)MenuItemIndex::Port]->getText() + ". Please wait.");
 
-		std::future<NetworkCommunication> Respone = std::async(std::launch::async, &NetworkHandle::connect, _NetworkHandle, _MenuItems[(int)MenuItemIndex::IP]->getText(), _MenuItems[(int)MenuItemIndex::PasswordJoin]->getText(), std::stoi(_MenuItems[(int)MenuItemIndex::Port]->getText()), 1.2f);
-
-		if (Respone.get() == NetworkCommunication::ConnectionFailed)
-		{
-			std::cout << "Failed" << std::endl;
-		}
+		_ConnectionThread = std::thread(&NetworkHandle::connect, _NetworkHandle, _MenuItems[(int)MenuItemIndex::IP]->getText(), _MenuItems[(int)MenuItemIndex::PasswordJoin]->getText(), std::stoi(_MenuItems[(int)MenuItemIndex::Port]->getText()), 2.0f);
+		_ConnectionThread.detach();
 
 		_CreatedLobby = 0;
-		return GameState::MultiplayerSelection;
+		return GameState::Connecting;
 	}	
 		break;
 	case MenuResult::Create:
@@ -150,7 +146,27 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result)
 	return _MenuGameState;
 }
 
-void MultiplayerMenu::update(float frametime)
+NetworkCommunication MultiplayerMenu::update(float frametime)
 {
+	std::lock_guard<std::mutex> lock(_Mutex);
+	switch (_NetworkHandle->getLastResponse())
+	{
+	case NetworkCommunication::ConnectionSuccesfull:
+		return NetworkCommunication::ConnectionSuccesfull;
+		break;
+	case NetworkCommunication::ConnectionFailed:
+		_FeedbackText.setColor(sf::Color(220, 0, 0));
+		_FeedbackText.setString("Connecting to " + _MenuItems[(int)MenuItemIndex::IP]->getText() + ":" + _MenuItems[(int)MenuItemIndex::Port]->getText() + " failed. Please try again.");
 
+		return NetworkCommunication::ConnectionFailed;
+		break;
+	case NetworkCommunication::WrongPassword:
+		_FeedbackText.setColor(sf::Color(220, 0, 0));
+		_FeedbackText.setString("Wrong password. Please try again.");
+
+		return NetworkCommunication::WrongPassword;
+		break;
+	default:
+		break;
+	}
 }

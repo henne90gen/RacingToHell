@@ -95,6 +95,10 @@ void Framework::render()
 		setMouseVisible(true);
 		_MultiplayerMenu.render(_RenderWindow);
 		break;
+	case GameState::Connecting:
+		setMouseVisible(true);
+		_MultiplayerMenu.render(_RenderWindow);
+		break;
 	case GameState::Lobby:
 		setMouseVisible(true);
 		_MultiplayerLobby.render(_RenderWindow);
@@ -218,6 +222,9 @@ void Framework::handleEvents()
 			_MultiplayerLobby.EnableButtons(_MultiplayerMenu.getCreatedLobby() == 1);
 		}
 		break;
+	case GameState::Connecting:
+		_GameState = _MultiplayerMenu.handleEvents(_RenderWindow);
+		break;
 	case GameState::Lobby:
 		_GameState = _MultiplayerLobby.handleEvents(_RenderWindow);
 		_CurrentCarSkinIndex = _MultiplayerLobby.getCarIndex();
@@ -317,6 +324,13 @@ void Framework::update()
 	case GameState::MultiplayerSelection:
 		_MultiplayerMenu.update(_FrameTime);
 		_Level.update(_FrameTime, _GameState);
+		break;
+	case GameState::Connecting:
+		_Level.update(_FrameTime, _GameState);
+		if (_MultiplayerMenu.update(_FrameTime) == NetworkCommunication::ConnectionSuccesfull) 
+		{
+			_GameState = GameState::Lobby;
+		}
 		break;
 	case GameState::Lobby:
 		_MultiplayerLobby.update(_FrameTime);

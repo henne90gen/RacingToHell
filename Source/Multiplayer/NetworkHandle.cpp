@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "Multiplayer\NetworkHandle.h"
 
-NetworkHandle::NetworkHandle() : _TickRate(128), _Relationship(NetworkRelation::None), _Tick(0), _Authenticated(false)
+NetworkHandle::NetworkHandle() : _TickRate(128), _Relationship(NetworkRelation::None), _Tick(0), _Authenticated(false), _Port(12345)
 {
 }
 
-NetworkCommunication NetworkHandle::connect(std::string ip, std::string password, int port, float timeout)
+void NetworkHandle::connect(std::string ip, std::string password, int port, float timeout)
 {
 	_Socket.setBlocking(true);
 
@@ -25,21 +25,22 @@ NetworkCommunication NetworkHandle::connect(std::string ip, std::string password
 
 		if (Response == (sf::Uint8)(NetworkCommunication::ConnectionSuccesfull))
 		{
+			std::lock_guard<std::mutex> lock(_Mutex);
 			_Authenticated = true;
-			return NetworkCommunication::ConnectionSuccesfull;
+			_LastResponse = NetworkCommunication::ConnectionSuccesfull;
 		}
 		else if (Response == (sf::Uint8)(NetworkCommunication::ConnectionSuccesfull))
 		{
-			return NetworkCommunication::ConnectionFailed;
+			_LastResponse = NetworkCommunication::ConnectionFailed;
 		}
 		else
 		{
-			return NetworkCommunication::ConnectionFailed;
+			_LastResponse = NetworkCommunication::ConnectionFailed;
 		}
 	}
 	else
 	{
-		return NetworkCommunication::ConnectionFailed;
+		_LastResponse = NetworkCommunication::ConnectionFailed;
 	}
 }
 

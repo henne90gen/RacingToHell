@@ -11,12 +11,12 @@ public:
 	~NetworkHandle() {}
 
 	void connect(std::string ip, std::string password, int port, float timeout);
-	void disconnect();
+	void disconnect(bool self);
 
 	void run();
 
 	NetworkRelation getRelationship() { return _Relationship; }
-	NetworkCommunication getLastResponse() { return _LastResponse; }
+	NetworkCommunication getLastResponse();
 	NetworkState getState() { return _State; }
 
 	void addPacket(NetworkCommunication Type, sf::Packet newPacket);

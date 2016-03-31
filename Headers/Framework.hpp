@@ -74,6 +74,7 @@ private:
 
 	//Multiplayer
 	NetworkHandle _NetworkHandle;
+	std::thread _NetworkThread;
 
 	// Functions
 	void render();

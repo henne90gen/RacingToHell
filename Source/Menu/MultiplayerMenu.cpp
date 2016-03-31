@@ -14,7 +14,7 @@ MultiplayerMenu::MultiplayerMenu() : Menu(GameState::MultiplayerSelection), _Cre
 	_NameText.setPosition(_BackgroundName.getPosition() + sf::Vector2f(20, 12));
 	_NameText.setString("Name:");
 
-	std::shared_ptr<Textbox> NameTextBox(new Textbox(_NameText.getPosition() + sf::Vector2f(_NameText.getGlobalBounds().width, 0) + sf::Vector2f(20, 0), sf::Vector2f(200, 40), 30, "Name", true));
+	std::shared_ptr<Textbox> NameTextBox(new Textbox(_NameText.getPosition() + sf::Vector2f(_NameText.getGlobalBounds().width, 0) + sf::Vector2f(20, 0), sf::Vector2f(200, 40), 30, "", true));
 	_MenuItems.push_back(NameTextBox);
 
 	_BackgroundJoin.setFillColor(sf::Color(0, 0, 0, 100));
@@ -178,4 +178,14 @@ NetworkCommunication MultiplayerMenu::update(float frametime)
 		return NetworkCommunication::None;
 		break;
 	}
+}
+
+void MultiplayerMenu::setPlayerName(std::string name)
+{
+	_MenuItems[0]->setText(name);
+}
+
+std::string MultiplayerMenu::getPlayerName()
+{
+	return _MenuItems[0]->getText();
 }

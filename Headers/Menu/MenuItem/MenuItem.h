@@ -36,6 +36,8 @@ public:
 	*/
 	virtual std::string getText() = 0;
 
+	virtual void setText(std::string str) {}
+
 	/*
 		@param vlaue New value for the MenuItem
 		@return bool True if value was set successfully

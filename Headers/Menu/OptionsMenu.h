@@ -1,5 +1,6 @@
 #pragma once
 #include "Menu/Menu.h"
+#include "Menu/MultiplayerMenu.h"
 
 class OptionsMenu : public Menu
 {
@@ -32,8 +33,8 @@ public:
 
 	void update(float FrameTime);
 
-	void loadOptions();
-	void saveOptions();
+	void loadOptions(MultiplayerMenu& mpMenu);
+	void saveOptions(MultiplayerMenu& mpMenu);
 
 	void setReturnState(GameState returnState) { _ReturnState = returnState; }
 	GameState getReturnState() { return _ReturnState; }

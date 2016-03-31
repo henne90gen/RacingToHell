@@ -154,6 +154,7 @@ NetworkCommunication MultiplayerMenu::update(float frametime)
 	{
 	case NetworkCommunication::ConnectionSuccesfull:
 		_MenuGameState = GameState::MultiplayerSelection;
+		_FeedbackText.setString("");
 		return NetworkCommunication::ConnectionSuccesfull;
 		break;
 	case NetworkCommunication::ConnectionFailed:

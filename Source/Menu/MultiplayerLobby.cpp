@@ -63,7 +63,7 @@ GameState MultiplayerLobby::handleMenuItemResult(MenuResult result)
 	{
 		sf::Packet EmptyPacket;
 		_NetworkHandle->addPacket(NetworkCommunication::Disconnect, EmptyPacket);
-
+		std::cout << "Sending diconnect" << std::endl;
 		return GameState::Main;
 	}
 		break;

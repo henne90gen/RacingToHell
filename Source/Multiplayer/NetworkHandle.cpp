@@ -59,10 +59,14 @@ void NetworkHandle::disconnect()
 
 void NetworkHandle::run()
 {
+	std::cout << "Starting network thread" << std::endl;
+
 	_Socket.setBlocking(false);
 	_Listener.setBlocking(false);
 
+	if (_Relationship == NetworkRelation::Host) {
 	_Listener.listen(_Port);
+	}
 
 	while (_Relationship != NetworkRelation::None)
 	{
@@ -71,8 +75,7 @@ void NetworkHandle::run()
 		{
 			_Listener.accept(_Socket);
 		}
-
-		if (_Socket.getRemoteAddress() != sf::IpAddress::None)
+		else if ((_State == NetworkState::Lobby || _State == NetworkState::Ingame) && _Socket.getRemoteAddress() != sf::IpAddress::None)
 		{
 			sf::Packet IncommingPacket;
 			_Socket.receive(IncommingPacket);
@@ -108,6 +111,26 @@ void NetworkHandle::run()
 			}
 			else
 			{
+				//receives data
+				if (IncommingPacket.getDataSize() > 0)
+				{
+					sf::Packet TmpPacket = IncommingPacket;
+					sf::Uint8 Type;
+
+					TmpPacket >> Type;
+
+					switch ((NetworkCommunication)Type)
+					{
+					case NetworkCommunication::Disconnect:
+						disconnect();
+						std::cout << "The other player left the lobby." << std::endl;
+						break;
+					default:
+						std::cout << "WTF" << std::endl;
+						break;
+					}
+				}
+
 				//sends data
 				while (_SendPackets.size() > 0)
 				{
@@ -128,36 +151,16 @@ void NetworkHandle::run()
 						_SendPackets.erase(_SendPackets.begin());
 					}
 				}
-
-				//receives data
-
-				if (IncommingPacket.getDataSize() > 0)
-				{
-					sf::Packet TmpPacket = IncommingPacket;
-					sf::Uint8 Type;
-
-					TmpPacket >> Type;
-
-					switch ((NetworkCommunication)Type)
-					{
-					case NetworkCommunication::Disconnect:
-						disconnect();
-						std::cout << "The other player left the lobby." << std::endl;
-						break;
-					default:
-						std::cout << "WTF" << std::endl;
-						break;
-					}
-				}
 			}
 		}
 
-		std::cout << _Authenticated << _Tick << std::endl;
+		//std::cout << _Authenticated << _Tick << std::endl;
 
 		++_Tick;
 		sf::sleep(sf::seconds(1.0f / (float)_TickRate)); 
 	}
 
+	disconnect();
 	_State = NetworkState::None;
 }
 

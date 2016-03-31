@@ -232,9 +232,9 @@ void Framework::handleEvents()
 		break;
 	case GameState::Connecting:
 		_GameState = _MultiplayerMenu.handleEvents(_RenderWindow);
-
-		if (_GameState == GameState::Lobby)
-		{
+		break;
+	case GameState::Lobby:
+		if (_MultiplayerMenu.getCreatedLobby() == 0 && _NetworkHandle.getState() == NetworkState::None) {
 			_NetworkHandle.setState(NetworkState::Lobby);
 			_NetworkHandle.setRelation(NetworkRelation::Client);
 
@@ -243,8 +243,6 @@ void Framework::handleEvents()
 
 			std::cout << "TEST" << std::endl;
 		}
-		break;
-	case GameState::Lobby:
 		_GameState = _MultiplayerLobby.handleEvents(_RenderWindow);
 		_CurrentCarSkinIndex = _MultiplayerLobby.getCarIndex();
 
@@ -351,6 +349,7 @@ void Framework::update()
 		NetworkCommunication netComm = _MultiplayerMenu.update(_FrameTime);
 		if (netComm == NetworkCommunication::ConnectionSuccesfull) {
 			_GameState = GameState::Lobby;
+			
 		}
 		else if (netComm == NetworkCommunication::ConnectionFailed && netComm == NetworkCommunication::WrongPassword) {
 			_GameState = GameState::MultiplayerSelection;

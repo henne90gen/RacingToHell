@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML\Network.hpp>
+#include <mutex>
 #include "Communication.h"
 
 class NetworkHandle
@@ -9,7 +10,7 @@ public:
 	NetworkHandle();
 	~NetworkHandle() {}
 
-	bool connect(std::string ip, int port, float timeout);
+	NetworkCommunication connect(std::string ip, std::string password, int port, float timeout);
 	void disconnect();
 
 	void run();
@@ -18,15 +19,18 @@ public:
 
 	void setState(NetworkState state) { _State = state; }
 	void setPort(unsigned int port) { _Port = port; }
+	void setPassword(std::string pw) { _Password = pw; }
 private:
 	sf::TcpSocket _Socket;
 	sf::TcpListener _Listener;
 
 	std::vector<sf::Packet> _SendPackets, _ReveivedPackets;
+	std::mutex _Mutex;
 
-	unsigned int _TickRate, _Port;
+	unsigned int _TickRate, _Port, _Authenticated;
 	sf::Uint32 _Tick;
-	
+	std::string _Password;
+
 	NetworkRelation _Relationship;
 	NetworkState _State;
 };

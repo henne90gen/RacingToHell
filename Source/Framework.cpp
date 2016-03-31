@@ -221,7 +221,7 @@ void Framework::handleEvents()
 		_OptionsMenu.saveOptions(_MultiplayerMenu);
 		if (_GameState == GameState::Lobby)
 		{
-			_MultiplayerLobby.EnableButtons(_MultiplayerMenu.getCreatedLobby() == 1);
+			_MultiplayerLobby.EnableButtons(true);
 
 			_NetworkHandle.setRelation(NetworkRelation::Host);
 			_NetworkHandle.setState(NetworkState::Lobby);
@@ -241,6 +241,7 @@ void Framework::handleEvents()
 			_NetworkThread.detach();
 		}
 		_GameState = _MultiplayerLobby.handleEvents(_RenderWindow);
+
 		_CurrentCarSkinIndex = _MultiplayerLobby.getCarIndex();
 
 		if (_CurrentCarSkinIndex < 0) {
@@ -356,6 +357,9 @@ void Framework::update()
 	case GameState::Lobby:
 		_MultiplayerLobby.update(_FrameTime);
 		_Level.update(_FrameTime, _GameState);
+		if (_NetworkHandle.getLastResponse() == NetworkCommunication::Disconnect) {
+			_GameState = GameState::MultiplayerSelection;
+		}
 		break;
 	}
 }

@@ -28,6 +28,7 @@ void NetworkHandle::connect(std::string ip, std::string password, int port, floa
 			std::lock_guard<std::mutex> lock(_Mutex);
 			_Authenticated = true;
 			_LastResponse = NetworkCommunication::ConnectionSuccesfull;
+			std::cout << "Connected" << std::endl;
 		}
 		else if (Response == (sf::Uint8)(NetworkCommunication::WrongPassword))
 		{
@@ -44,15 +45,41 @@ void NetworkHandle::connect(std::string ip, std::string password, int port, floa
 	}
 }
 
-void NetworkHandle::disconnect()
+void NetworkHandle::disconnect(bool self)
 {
-	//std::lock_guard<std::mutex> lock(_Mutex);
-	_Socket.disconnect();
-	_Listener.close();
-	_Relationship = NetworkRelation::None;
-	_Authenticated = false;
-	_SendPackets.clear();
-	_ReceivedPackets.clear();
+	if (_Relationship == NetworkRelation::Host && self) {
+		_Socket.disconnect();
+		_Authenticated = false;
+		_Listener.close();
+		_SendPackets.clear();
+		_ReceivedPackets.clear();
+		_Relationship = NetworkRelation::None;
+		std::cout << "You closed the lobby." << std::endl;
+	}
+	else if (_Relationship == NetworkRelation::Host && !self) {
+		_Socket.disconnect();
+		_Authenticated = false;
+		_SendPackets.clear();
+		_ReceivedPackets.clear();
+		std::cout << "The other player left the lobby." << std::endl;
+	}
+	else if (_Relationship == NetworkRelation::Client && self) {
+		_Socket.disconnect();
+		_Authenticated = false;
+		_SendPackets.clear();
+		_ReceivedPackets.clear();
+		_Relationship = NetworkRelation::None;
+		std::cout << "You left the lobby." << std::endl;
+	}
+	else if (_Relationship == NetworkRelation::Client && !self) {
+		_Socket.disconnect();
+		_Authenticated = false;
+		_SendPackets.clear();
+		_ReceivedPackets.clear();
+		_Relationship = NetworkRelation::None;
+		_LastResponse = NetworkCommunication::Disconnect;
+		std::cout << "Lobby closed." << std::endl;
+	}
 }
 
 void NetworkHandle::run()
@@ -69,11 +96,15 @@ void NetworkHandle::run()
 	while (_Relationship != NetworkRelation::None)
 	{
 		//waits for incomming connections
-		if (_State == NetworkState::Lobby && _Socket.getRemoteAddress() == sf::IpAddress::None)
+		if (_State == NetworkState::Lobby && _Socket.getRemoteAddress() == sf::IpAddress::None && _Relationship == NetworkRelation::Host)
 		{
 			_Listener.accept(_Socket);
+			if (_Socket.getRemoteAddress() != sf::IpAddress::None) {
+				std::cout << "New player connected" << std::endl;
+			}
 		}
-		else if ((_State == NetworkState::Lobby || _State == NetworkState::Ingame) && _Socket.getRemoteAddress() != sf::IpAddress::None)
+		
+		if (_Socket.getRemoteAddress() != sf::IpAddress::None)
 		{
 			sf::Packet IncommingPacket;
 			_Socket.receive(IncommingPacket);
@@ -103,6 +134,9 @@ void NetworkHandle::run()
 							AuthPacket << (sf::Uint8)(NetworkCommunication::WrongPassword);
 							_Socket.send(AuthPacket);
 							_Socket.disconnect();
+							_SendPackets.clear();
+							_ReceivedPackets.clear();
+							_Authenticated = false;
 						}
 					}
 				}
@@ -120,8 +154,7 @@ void NetworkHandle::run()
 					switch ((NetworkCommunication)Type)
 					{
 					case NetworkCommunication::Disconnect:
-						disconnect();
-						std::cout << "The other player left the lobby." << std::endl;
+						disconnect(false);
 						break;
 					default:
 						std::cout << "WTF" << std::endl;
@@ -140,14 +173,27 @@ void NetworkHandle::run()
 
 					if (_SendPackets[0].first == NetworkCommunication::Disconnect)
 					{
-						std::cout << "You left the lobby." << std::endl;
-						disconnect();
+						disconnect(true);
 						break;
 					}
 					else
 					{
 						_SendPackets.erase(_SendPackets.begin());
 					}
+				}
+			}
+		}
+		else {
+			while (_SendPackets.size() > 0)
+			{
+				if (_SendPackets[0].first == NetworkCommunication::Disconnect)
+				{
+					disconnect(true);
+					break;
+				}
+				else
+				{
+					_SendPackets.erase(_SendPackets.begin());
 				}
 			}
 		}
@@ -158,8 +204,15 @@ void NetworkHandle::run()
 		sf::sleep(sf::seconds(1.0f / (float)_TickRate)); 
 	}
 
-	disconnect();
 	_State = NetworkState::None;
+}
+
+NetworkCommunication NetworkHandle::getLastResponse()
+{
+	std::lock_guard<std::mutex> lock(_Mutex);
+	NetworkCommunication tmp = _LastResponse;
+	_LastResponse = NetworkCommunication::None;
+	return tmp;
 }
 
 void NetworkHandle::addPacket(NetworkCommunication Type, sf::Packet newPacket)

@@ -100,7 +100,7 @@ public:
 	void operator<<(std::istream& stream);
 private:
 	float _Energy;
-	int _MaxEnergy, _Bulletdamage, _SelectedCar;
+	sf::Uint16 _MaxEnergy, _Bulletdamage, _SelectedCar;
 
 	sf::Vector2f _ShotBullet;
 

@@ -11,7 +11,7 @@ AICar::AICar(int hp, int roadSpeed, sf::Texture& texture) : Car(sf::Vector2f(0, 
 AICar::AICar(std::istream & stream, sf::Texture & texture) :
 	Car(stream, GameObjectType::AI, texture)
 {
-	*this << stream;
+	AICar::operator<<(stream);
 	init();
 }
 
@@ -38,7 +38,6 @@ void AICar::operator>>(std::ostream& stream)
 
 void AICar::operator<<(std::istream& stream)
 {
-	Car::operator<<(stream);
 	read(stream, _Lane);
 }
 

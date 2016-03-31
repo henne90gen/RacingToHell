@@ -26,7 +26,6 @@ void Car::operator>>(std::ostream& stream)
 
 void Car::operator<<(std::istream& stream) 
 {
-	GameObject::operator<<(stream);
 	read(stream, _Speed);
 	read(stream, _Health);
 	read(stream, _MaxHealth);

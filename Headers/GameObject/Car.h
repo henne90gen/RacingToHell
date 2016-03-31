@@ -24,7 +24,7 @@ public:
 		@param type Type of the Car
 		@param texture Texture that is going to be used for the sprite
 	*/
-	Car(std::istream& stream, GameObjectType type, sf::Texture& texture) : GameObject(stream, type, texture) {}
+	Car(std::istream& stream, GameObjectType type, sf::Texture& texture) : GameObject(stream, type, texture) { Car::operator<<(stream); }
 
 	/*
 		Car that can drive around on the road
@@ -90,7 +90,7 @@ public:
 	*/
 	virtual void operator<<(std::istream& stream);
 protected:
-	int _Health, _Speed, _MaxHealth;
+	sf::Uint16 _Health, _Speed, _MaxHealth;
 
 	sf::Vector2f _Movement;
 };

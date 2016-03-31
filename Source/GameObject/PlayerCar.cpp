@@ -24,7 +24,7 @@ PlayerCar::PlayerCar(int selectedCar, sf::Texture& texture) : Car(sf::Vector2f(0
 
 PlayerCar::PlayerCar(std::istream& stream, std::vector<std::shared_ptr<sf::Texture>>& textures) : Car(stream, GameObjectType::Player)
 {
-	*this << stream;
+	PlayerCar::operator<<(stream);
 	setStats(_SelectedCar);
 	initTexture((*textures.at(_SelectedCar)));
 }
@@ -163,6 +163,5 @@ void PlayerCar::operator>>(std::ostream& stream)
 
 void PlayerCar::operator<<(std::istream& stream)
 {
-	Car::operator<<(stream);
 	read(stream, _SelectedCar);
 }

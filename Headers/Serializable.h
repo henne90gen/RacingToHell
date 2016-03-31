@@ -35,7 +35,7 @@ protected:
 		@param stream Input stream that is going to be read from
 		@param result Data that was read will be saved here
 	*/
-	template <typename T> void read(std::istream& stream, T& result)
+	template <typename T> void read(std::istream& stream, T &result)
 	{
 		stream.read((char*)&result, sizeof(result));
 	}

@@ -23,10 +23,12 @@ public:
 
 	void load();
 
+	/*
+		@param carSkin Index of the car texture
+	*/
 	std::shared_ptr<PlayerCar> getPlayerCar(int carSkin);
 
 	/*
-		
 		@param level
 		@param diff
 		@param hp
@@ -35,7 +37,7 @@ public:
 		@return BossCar Constructed BossCar
 	*/
 	std::shared_ptr<BossCar> GameObjectFactory::getBossCar(int level, int diff, int hp, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer expSB, float volume);
-
+	
 	/*
 		Bullet that can be shot by any Car
 		@param pos Starting position of the Bullet
@@ -56,9 +58,45 @@ public:
 	*/
 	std::shared_ptr<AICar> getAICar(int hp, int roadSpeed);
 
+	/*
+		@param pos Position of the Toolbox
+	*/
 	std::shared_ptr<GameObject> getToolbox(sf::Vector2f pos);
 
+	/*
+		@param pos Position of the Canister
+	*/
 	std::shared_ptr<GameObject> getCanister(sf::Vector2f pos);
+
+	/*
+		@param stream Stream to get the necessary data from
+	*/
+	std::shared_ptr<PlayerCar> getPlayerCar(std::istream& stream);
+
+	/*
+		@param stream Stream to get the necessary data from
+	*/
+	std::shared_ptr<BossCar> GameObjectFactory::getBossCar(std::istream& stream);
+
+	/*
+		@param stream Stream to get the necessary data from
+	*/
+	std::shared_ptr<Bullet> getBullet(std::istream& stream);
+
+	/*
+		@param stream Stream to get the necessary data from
+	*/
+	std::shared_ptr<AICar> getAICar(std::istream& stream);
+
+	/*
+		@param stream Stream to get the necessary data from
+	*/
+	std::shared_ptr<GameObject> getCanister(std::istream& stream);
+
+	/*
+		@param stream Stream to get the necessary data from
+	*/
+	std::shared_ptr<GameObject> getToolbox(std::istream& stream);
 
 	void setPlayerCarTextures(std::vector<std::shared_ptr<sf::Texture>>& carSkins) { _PlayerCarTextures = carSkins; }
 private:

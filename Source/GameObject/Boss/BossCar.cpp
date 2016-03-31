@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "GameObject/Boss/BossCar.h"
 
-BossCar::BossCar(sf::Vector2f& Position, int difficulty, int Health, float Speed, sf::Texture& Texture, sf::Texture& BulletTetxure, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float Volume) : Car(Position, Health, Speed, GameObjectType::Boss, Texture),
+BossCar::BossCar(sf::Vector2f& Position, int difficulty, int Health, float Speed, sf::Texture& Texture, sf::Texture& BulletTetxure, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float Volume) : 
+	Car(Position, Health, Speed, GameObjectType::Boss, Texture),
 	_soundEffects(soundEffects), _soundBufferShot(soundBufferShot), _soundBufferExplosion(soundBufferExplosion), _Volume(Volume), _Difficulty(difficulty),
 	_BulletSpeed(500), _BulletTexture(BulletTetxure), _Movement(Movement::STILL), _Attack(false), _Traffic(false), _IsExploding(false),
 	_Event1Counter(0), _Event2Counter(0), _Event1Frequency(0), _Event2Frequency(0), _Event1Switch(false), _Event2Switch(false), _CurrentPhase(0)
@@ -21,6 +22,10 @@ BossCar::BossCar(sf::Vector2f& Position, int difficulty, int Health, float Speed
 	_HealthBarFrame.setOutlineThickness(1);
 	_HealthBarFrame.setSize(_HealthBar.getSize());
 }
+
+BossCar::BossCar(std::istream& stream, sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer & soundBufferShot, sf::SoundBuffer & soundBufferExplosion, float Volume) :
+	Car(stream, GameObjectType::Boss, texture),
+	_soundEffects(soundEffects), _soundBufferShot(soundBufferShot), _soundBufferExplosion(soundBufferExplosion), _BulletSpeed(500) {}
 
 float BossCar::PlayerAngle(GameObject& Player)
 {

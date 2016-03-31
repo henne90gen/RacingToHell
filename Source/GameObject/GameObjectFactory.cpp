@@ -81,6 +81,18 @@ std::shared_ptr<GameObject> GameObjectFactory::getCanister(sf::Vector2f pos)
 	return canister;
 }
 
+std::shared_ptr<GameObject> GameObjectFactory::getToolbox(std::istream& stream)
+{
+	std::shared_ptr<GameObject> toolbox(new GameObject(stream, GameObjectType::Tools, _ToolboxTexture));
+	return toolbox;
+}
+
+std::shared_ptr<GameObject> GameObjectFactory::getCanister(std::istream& stream)
+{
+	std::shared_ptr<GameObject> canister(new GameObject(stream, GameObjectType::Canister, _EnergyCanisterTexture));
+	return canister;
+}
+
 void GameObjectFactory::load()
 {
 	// Loading Textures

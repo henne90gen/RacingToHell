@@ -16,7 +16,7 @@ BossCar::BossCar(std::istream& stream, sf::Texture & texture, sf::Texture & bull
 	_BulletTexture(bulletTexture), _Movement(Movement::STILL), _Attack(false), _Traffic(false), _IsExploding(false),
 	_Event1Counter(0), _Event2Counter(0), _Event1Frequency(0), _Event2Frequency(0), _Event1Switch(false), _Event2Switch(false), _CurrentPhase(0)
 {
-	*this << stream;
+	BossCar::operator<<(stream);
 	initBoss();
 }
 
@@ -164,7 +164,6 @@ void BossCar::operator>>(std::ostream& stream)
 
 void BossCar::operator<<(std::istream& stream)
 {
-	Car::operator<<(stream);
 	read(stream, _Difficulty);
 }
 

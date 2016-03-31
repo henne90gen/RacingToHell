@@ -24,7 +24,7 @@ Bullet::Bullet(sf::Vector2f pos, sf::Vector2f dir, int speed, GameObjectType typ
 Bullet::Bullet(std::istream& stream, GameObjectType type, sf::Texture& texture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume) : 
 	GameObject(stream, type, texture)
 {
-	*this << stream;
+	Bullet::operator<<(stream);
 	if (type == GameObjectType::BulletObjectPlayer)
 	{
 		setSpriteColor(sf::Color(225, 0, 0));
@@ -72,7 +72,6 @@ void Bullet::operator>>(std::ostream& stream)
 
 void Bullet::operator<<(std::istream& stream)
 {
-	GameObject::operator<<(stream);
 	float dx, dy;
 	read(stream, dx);
 	read(stream, dy);

@@ -10,7 +10,7 @@ GameObject::GameObject(sf::Vector2f pos, GameObjectType type, sf::Texture& textu
 
 GameObject::GameObject(std::istream& stream, GameObjectType type, sf::Texture& texture) : _Type(type)
 {
-	*this << stream;
+	GameObject::operator<<(stream);
 	initTexture(texture);
 	_Sprite.setPosition(getPos());
 }

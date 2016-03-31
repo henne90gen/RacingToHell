@@ -232,9 +232,3 @@ void Carrier::checkPhase()
 		_PhaseClock.restart();
 	}
 }
-
-/*sf::Vector2f Carrier::calcBulletPosition()
-{
-	//return getPos() + _GunPosition + sf::Vector2f(_Radius * std::cos(_GunOrientation / 180 * PI), _Radius * std::sin(_GunOrientation / 180 * PI));
-	return sf::Vector2f();
-}*/

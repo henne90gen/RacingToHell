@@ -48,7 +48,7 @@ private:
 	sf::RectangleShape _HealthBar;
 	sf::RectangleShape _HealthBarFrame;
 
-	int _Lane;
+	sf::Uint8 _Lane;
 
 	void init();
 };

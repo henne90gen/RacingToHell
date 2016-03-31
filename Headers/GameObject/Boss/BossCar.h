@@ -60,7 +60,7 @@ protected:
 	sf::SoundBuffer &_soundBufferShot, &_soundBufferExplosion;
 	float _Volume;
 
-	int _Difficulty;
+	sf::Uint16 _Difficulty;
 
 	enum Movement { STILL, DRIVETODEFAULT, LEFTRIGHT, SWITCHSIDES, STRAIGHT, PARABOLA, RUNATPLAYER, ZICKZACK};
 	Movement _Movement;

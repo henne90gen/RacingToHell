@@ -17,7 +17,7 @@ GameObject::GameObject(std::istream& stream, GameObjectType type, sf::Texture& t
 
 GameObject::GameObject(std::istream& stream, GameObjectType type) : _Type(type)
 {
-	*this << stream;
+	GameObject::operator<<(stream);
 	_Sprite.setPosition(getPos());
 }
 
@@ -61,7 +61,7 @@ void GameObject::resetMovement() {
 
 void GameObject::operator>>(std::ostream& stream)
 {
-	write(stream, getType());
+	write(stream, (sf::Uint8)getType());
 	write(stream, getPos().x);
 	write(stream, getPos().y);
 }

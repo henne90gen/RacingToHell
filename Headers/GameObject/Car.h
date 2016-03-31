@@ -90,7 +90,7 @@ public:
 	*/
 	virtual void operator<<(std::istream& stream);
 protected:
-	int _Health, _Speed, _MaxHealth;
+	sf::Uint16 _Health, _Speed, _MaxHealth;
 
 	sf::Vector2f _Movement;
 };

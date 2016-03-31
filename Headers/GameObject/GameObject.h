@@ -134,18 +134,18 @@ public:
 	virtual int getSpeed() { return -1; }
 
 	/*
-		Sets the speed of the car
-		@param int New speed of the car
+		Sets the speed of the GameObject
+		@param int New speed of the GameObject
 	*/
 	virtual void setSpeed(int Speed) {};
 
 	/*
-		@return int Health of the Car
+		@return int Health of the GameObject
 	*/
 	virtual int getHealth() { return -1; }
 
 	/*
-		@return int Maximum-Health of the Car
+		@return int Maximum-Health of the GameObject
 	*/
 	virtual int getMaxHealth() { return -1; }
 

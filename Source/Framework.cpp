@@ -17,6 +17,7 @@ Framework::Framework() : _FrameTime(0), _FPS(60.0f), _IsRunning(true), _GameStat
 
 	//Multiplayer
 	_MultiplayerMenu.setNetWorkHandle(&_NetworkHandle);
+	_MultiplayerLobby.setNetworkHandle(&_NetworkHandle);
 }
 
 Framework::~Framework()
@@ -26,7 +27,7 @@ Framework::~Framework()
 
 void Framework::run()
 {
-	while (_IsRunning)
+	while (_IsRunning || _NetworkHandle.getState() != NetworkState::None)
 	{
 		if (measureTime()) {
 			render();
@@ -335,6 +336,7 @@ void Framework::update()
 		break;
 	case GameState::Exiting:
 		_IsRunning = false;
+		_NetworkHandle.setRelation(NetworkRelation::None);
 		_RenderWindow.close();
 		break;
 	case GameState::MultiplayerSelection:

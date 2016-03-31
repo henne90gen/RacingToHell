@@ -60,7 +60,12 @@ GameState MultiplayerLobby::handleMenuItemResult(MenuResult result)
 	switch (result)
 	{
 	case MenuResult::Back:
+	{
+		sf::Packet EmptyPacket;
+		_NetworkHandle->addPacket(NetworkCommunication::Disconnect, EmptyPacket);
+
 		return GameState::Main;
+	}
 		break;
 	case MenuResult::PreviousSkin:
 		_SelectedCar--;
@@ -88,7 +93,6 @@ void MultiplayerLobby::EnableButtons(bool isAdmin)
 		_MenuItems[(int)MenuItemIndex::Difficulty]->setEnabled(true);
 		_MenuItems[(int)MenuItemIndex::Modes]->setEnabled(true);
 		_MenuItems[(int)MenuItemIndex::Ready]->setVisible(false);
-
 	}
 	else
 	{

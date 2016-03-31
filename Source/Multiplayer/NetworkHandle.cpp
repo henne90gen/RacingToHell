@@ -46,8 +46,11 @@ void NetworkHandle::connect(std::string ip, std::string password, int port, floa
 
 void NetworkHandle::disconnect()
 {
+	std::lock_guard<std::mutex> lock(_Mutex);
 	_Socket.disconnect();
 	_Authenticated = false;
+	_SendPackets.clear();
+	_ReceivedPackets.clear();
 }
 
 void NetworkHandle::run()
@@ -104,25 +107,54 @@ void NetworkHandle::run()
 				//sends data
 				while (_SendPackets.size() > 0)
 				{
-					sf::Packet TmpPacket;
-
 					std::lock_guard<std::mutex> lock(_Mutex);
-					TmpPacket << _Tick << _SendPackets[0];
-
+					sf::Packet TmpPacket;
+					TmpPacket << sf::Uint8(_SendPackets[0].first) << _Tick << _SendPackets[0].second;
+					
 					_Socket.send(TmpPacket);
 
-					_SendPackets.erase(_SendPackets.begin());
+					if (_SendPackets[0].first == NetworkCommunication::Disconnect)
+					{
+						std::cout << "You left the lobby." << std::endl;
+						disconnect();
+						break;
+					}
+					else
+					{
+						_SendPackets.erase(_SendPackets.begin());
+					}
 				}
 
 				//receives data
+				sf::Packet TmpPacket = IncommingPacket;
+				sf::Uint8 Type;
+
+				TmpPacket >> Type;
+
+				switch ((NetworkCommunication)Type)
+				{
+				case NetworkCommunication::Disconnect:
+					disconnect();
+					std::cout << "The other player left the lobby." << std::endl;
+					break;
+				default:
+					break;
+				}
 			}
 		}
 
-		
-
-		std::cout << "Tick:" << _Tick << std::endl;
+		//std::cout << "Tick:" << _Tick << std::endl;
 
 		++_Tick;
 		sf::sleep(sf::seconds(1.0f / (float)_TickRate)); 
 	}
+
+	_State = NetworkState::None;
+}
+
+void NetworkHandle::addPacket(NetworkCommunication Type, sf::Packet newPacket)
+{
+	std::lock_guard<std::mutex> lock(_Mutex);
+
+	_SendPackets.push_back(std::make_pair(Type, newPacket));
 }

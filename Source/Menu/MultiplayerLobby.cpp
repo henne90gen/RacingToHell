@@ -87,7 +87,7 @@ GameState MultiplayerLobby::handleMenuItemResult(MenuResult result)
 			else
 			{
 				_MenuItems[(int)MenuItemIndex::Ready]->setText("Ready");
-				ReadyPacket << (sf::Uint8)(20);
+				ReadyPacket << (sf::Uint8)(255);
 				_MenuItems[(int)MenuItemIndex::PlayerTable]->setMember(1, false);
 			}
 

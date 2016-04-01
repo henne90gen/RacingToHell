@@ -38,14 +38,17 @@ void MultiplayerLobby::render(sf::RenderWindow& Window)
 	_StatBox->render(Window, _SelectedCar);
 	//_LobbyMemberList->render(Window);
 
+	bool oneIsHovering = false;
 	for (int i = 0; i < _MenuItems.size(); i++) {
+		if (!oneIsHovering) {
+			oneIsHovering = checkMenuItemHovered(Window, i);
+		}
 		_MenuItems[i]->render(Window);
 	}
 }
 
 GameState MultiplayerLobby::handleEvents(sf::RenderWindow& Window)
 {
-	checkMenuItemHovered(Window);
 
 	if (Window.pollEvent(_Event))
 	{

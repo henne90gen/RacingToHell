@@ -30,7 +30,7 @@ protected:
 	sf::Vector2f _MousePos;
 
 	virtual GameState handleMenuItemResult(MenuResult result) = 0;
-	void checkMenuItemHovered(sf::RenderWindow& Window);
+	bool checkMenuItemHovered(sf::RenderWindow& Window, int index);
 
 	int _JoystickSelection;
 	sf::Clock _JoystickTimer;

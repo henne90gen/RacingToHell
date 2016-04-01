@@ -36,13 +36,15 @@ void MainMenu::render(sf::RenderWindow& window)
 {
 	_StatBox->render(window, _SelectedCar);
 
+	bool oneIsHovering = false;
 	for (int i = 0; i < _MenuItems.size(); i++) {
+		if (!oneIsHovering) {
+			oneIsHovering = checkMenuItemHovered(window, i);
+		}
 		_MenuItems[i]->render(window);
 	}
 
 	window.draw(_Text);
-
-	checkMenuItemHovered(window);
 }
 
 GameState MainMenu::handleEvents(sf::RenderWindow& window)

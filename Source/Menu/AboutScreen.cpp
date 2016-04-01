@@ -74,11 +74,13 @@ void AboutScreen::render(sf::RenderWindow & window)
 	window.draw(_LevelUp);
 	window.draw(_LevelUp2);
 
+	bool oneIsHovering = false;
 	for (int i = 0; i < _MenuItems.size(); i++) {
+		if (!oneIsHovering) {
+			oneIsHovering = checkMenuItemHovered(window, i);
+		}
 		_MenuItems[i]->render(window);
 	}
-
-	checkMenuItemHovered(window);
 }
 
 GameState AboutScreen::handleEvents(sf::RenderWindow & window)

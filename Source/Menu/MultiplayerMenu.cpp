@@ -95,7 +95,11 @@ void MultiplayerMenu::render(sf::RenderWindow& Window)
 	Window.draw(_BackgroundJoin);
 	Window.draw(_BackgroundCreate);
 
+	bool oneIsHovering = false;
 	for (int i = 0; i < _MenuItems.size(); i++) {
+		if (!oneIsHovering) {
+			oneIsHovering = checkMenuItemHovered(Window, i);
+		}
 		_MenuItems[i]->render(Window);
 	}
 
@@ -111,8 +115,6 @@ void MultiplayerMenu::render(sf::RenderWindow& Window)
 
 GameState MultiplayerMenu::handleEvents(sf::RenderWindow& Window)
 {
-	checkMenuItemHovered(Window);
-
 	if (Window.pollEvent(_Event))
 	{
 		return handleMenuItems(_Event);

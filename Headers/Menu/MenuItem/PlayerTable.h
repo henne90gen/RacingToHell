@@ -53,7 +53,7 @@ public:
 	void resetTable();
 	void setAdmin(bool admin) { _isAdmin = admin; };
 	void setMember(unsigned int index, bool ready, int score = -1, std::string name = "");
-	bool getPlayerReady() { return _MemberList[1]._Ready; }
+	bool getPlayerReady();
 
 private:
 	struct LobbyMember

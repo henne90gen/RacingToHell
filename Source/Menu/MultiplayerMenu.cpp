@@ -72,7 +72,7 @@ MultiplayerMenu::MultiplayerMenu() : Menu(GameState::MultiplayerSelection), _Cre
 	_CreatePassword.setPosition(_BackgroundCreate.getPosition() + sf::Vector2f(20, 75));
 	_CreatePassword.setString("Password:");
 
-	std::shared_ptr<Textbox> PasswordTextBoxCreate(new Textbox(_BackgroundCreate.getPosition() + sf::Vector2f(180, 75), sf::Vector2f(220, 40), 30, "Password", false, true));
+	std::shared_ptr<Textbox> PasswordTextBoxCreate(new Textbox(_BackgroundCreate.getPosition() + sf::Vector2f(180, 75), sf::Vector2f(220, 40), 30, "", false, true));
 	_MenuItems.push_back(PasswordTextBoxCreate);
 
 	std::shared_ptr<Textbox> PortCreate(new Textbox(_BackgroundCreate.getPosition() + sf::Vector2f(425, 75), sf::Vector2f(100, 40), 30, "12345", false, false));

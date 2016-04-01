@@ -6,7 +6,7 @@ MultiplayerLobby::MultiplayerLobby() : Menu(GameState::Lobby), _SelectedCar(0)
 	std::shared_ptr<PlayerTable> Table(new PlayerTable(sf::Vector2f(25, 25)));
 	_MenuItems.push_back(Table);
 
-	std::shared_ptr<MenuButton> StartButton(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 165), sf::Vector2f(200, 50), MenuResult::Nothing, "Start", TextAlignment::Center));
+	std::shared_ptr<MenuButton> StartButton(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 165), sf::Vector2f(200, 50), MenuResult::StartMultiplayer, "Start", TextAlignment::Center));
 	_MenuItems.push_back(StartButton);
 
 	std::vector<std::string> difficulties = { "Easy", "Normal", "Hard", "Insane" };
@@ -100,13 +100,16 @@ GameState MultiplayerLobby::handleMenuItemResult(MenuResult result)
 			_NetworkHandle->addPacket(NetworkCommunication::Ready, ReadyPacket);
 			break;
 		}
-		default:
 		case MenuResult::StartMultiplayer:
-			if (getClientReady()) {
-				sf::Packet packet;
-				_NetworkHandle->addPacket(NetworkCommunication::StartGame, packet);
-				return GameState::Countdown;
+			if (_NetworkHandle->getRelationship() == NetworkRelation::Host) {
+				if (getClientReady()) {
+					sf::Packet packet;
+					_NetworkHandle->addPacket(NetworkCommunication::StartGame, packet);
+					return GameState::Countdown;
+				}
 			}
+			break;
+		default:
 			break;
 	}
 

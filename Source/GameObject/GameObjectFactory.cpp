@@ -19,7 +19,7 @@ std::shared_ptr<PlayerCar> GameObjectFactory::getPlayerCar(int carSkin)
 	return player;
 }
 
-std::shared_ptr<BossCar> GameObjectFactory::getBossCar(int level, int diff, int hp, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer expSB, float volume)
+std::shared_ptr<BossCar> GameObjectFactory::getBossCar(int level, int diff, int hp, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer& expSB, float volume)
 {
 	switch (level)
 	{

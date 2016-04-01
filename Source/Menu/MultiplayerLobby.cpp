@@ -75,7 +75,20 @@ GameState MultiplayerLobby::handleMenuItemResult(MenuResult result)
 
 void MultiplayerLobby::update(float frametime)
 {
-
+	if (_NetworkHandle->getRelationship() == NetworkRelation::Host)
+	{
+		switch (_NetworkHandle->getLastResponse())
+		{
+			case NetworkCommunication::ConnectionSuccesfull:
+				addPlayer(_NetworkHandle->getMemberName(), false);
+				break;
+			case NetworkCommunication::Disconnect:
+				removePlayer(1);
+				break;
+			default:
+				break;
+		}
+	}
 }
 
 void MultiplayerLobby::EnableButtons(bool isAdmin)

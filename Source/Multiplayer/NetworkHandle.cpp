@@ -209,6 +209,7 @@ void NetworkHandle::authenticatePlayer(sf::Packet& packet)
 				_Socket.send(AuthPacket);
 				_Authenticated = true;
 				packet >> _MemberName;
+				_LastResponse = NetworkCommunication::ConnectionSuccesfull;
 				std::cout << "Connection with " << _MemberName << " accepted" << std::endl;
 			}
 			else
@@ -234,6 +235,11 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 		switch ((NetworkCommunication)Type)
 		{
 		case NetworkCommunication::Disconnect:
+			if (_Relationship == NetworkRelation::Host)
+			{
+				_LastResponse = NetworkCommunication::Disconnect;
+
+			}
 			disconnect(false);
 			break;
 		case NetworkCommunication::StartGame:

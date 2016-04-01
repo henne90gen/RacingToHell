@@ -42,6 +42,7 @@ public:
 
 	void resetTable() { _MenuItems[(int)MenuItemIndex::PlayerTable]->resetTable(); }
 	void addPlayer(std::string name, bool isadmin) { _MenuItems[(int)MenuItemIndex::PlayerTable]->addPlayer(name, isadmin); }
+	void removePlayer(int index) { _MenuItems[(int)MenuItemIndex::PlayerTable]->removePlayer(index); }
 private:
 	enum class MenuItemIndex {PlayerTable = 0, Start = 1, Difficulty = 2, Modes = 3, Ready = 4};
 

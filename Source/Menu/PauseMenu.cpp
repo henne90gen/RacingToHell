@@ -26,7 +26,7 @@ PauseMenu::PauseMenu() : Menu(GameState::Pause)
 void PauseMenu::render(sf::RenderWindow & window)
 {
 	Menu::render(window);
-
+	
 	window.draw(_Text);
 }
 

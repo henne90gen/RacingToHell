@@ -97,6 +97,7 @@ public:
 	virtual void addPlayer(std::string name, bool admin) {}
 	virtual void removePlayer(int index) {}
 	virtual void setAdmin(bool admin) {}
+	virtual void setMember(unsigned int index, bool ready, int score = -1, std::string name = "") {}
 	virtual bool getPlayerReady() {}
 
 	MenuItemType getType() { return _Type; }

@@ -235,8 +235,9 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 	{
 		sf::Packet tmp = packet;
 		sf::Uint8 Type;
+		sf::Uint32 Tick;
 
-		tmp >> Type;
+		tmp >> Type >> Tick;
 
 		switch ((NetworkCommunication)Type)
 		{
@@ -266,6 +267,9 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 		{
 			sf::Uint8 OnOff;
 			tmp >> OnOff;
+
+			std::cout << "Tick: " << Tick << " | " << "OnOff: " << (int)OnOff << std::endl;
+
 			_LastResponse = std::make_pair(NetworkCommunication::Ready, (int)OnOff);
 			break;
 		}

@@ -376,16 +376,31 @@ void Framework::update()
 	}
 	case GameState::Lobby:
 	{
-		NetworkCommunication LastResponse = _NetworkHandle.getLastResponse();
+		std::pair<NetworkCommunication, int> LastResponse = _NetworkHandle.getLastResponse();
 
-		if (LastResponse == NetworkCommunication::Kick)
+		if (LastResponse.first == NetworkCommunication::Kick)
 		{
 			_GameState = GameState::MultiplayerSelection;
+			_MultiplayerMenu.resetFeedback();
 			_MultiplayerMenu.setKickMessage();
 			_MultiplayerMenu.resetTextbox();
 		}
+		else if (LastResponse.first == NetworkCommunication::Disconnect && LastResponse.second == 0)
+		{
+			_GameState = GameState::MultiplayerSelection;
+			_MultiplayerMenu.resetFeedback();
+			_MultiplayerMenu.setLobbyClosedMessage();
+		}
+		else if (LastResponse.first == NetworkCommunication::Disconnect && LastResponse.second == 1)
+		{
+			_MultiplayerLobby.removePlayer(1);
+		}
+		else if (LastResponse.first == NetworkCommunication::ConnectionSuccesfull && _NetworkHandle.getRelationship() == NetworkRelation::Host)
+		{
+			_MultiplayerLobby.addPlayer(_NetworkHandle.getMemberName(), false);
 
-		_MultiplayerLobby.update(LastResponse);
+		}
+
 		_Level.update(_FrameTime, _GameState);
 		break;
 	}

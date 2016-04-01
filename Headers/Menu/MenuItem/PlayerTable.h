@@ -52,6 +52,7 @@ public:
 	void removePlayer(int index);
 	void resetTable();
 	void setAdmin(bool admin) { _isAdmin = admin; };
+	void setMember(unsigned int index, bool ready, int score = -1, std::string name = "");
 private:
 	struct LobbyMembers
 	{

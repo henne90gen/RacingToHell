@@ -81,22 +81,9 @@ GameState MultiplayerLobby::handleMenuItemResult(MenuResult result)
 	return _MenuGameState;
 }
 
-void MultiplayerLobby::update(NetworkCommunication lastresponse)
+void MultiplayerLobby::update(std::pair<NetworkCommunication, int> lastresponse)
 {
-	if (_NetworkHandle->getRelationship() == NetworkRelation::Host)
-	{
-		switch (lastresponse)
-		{
-			case NetworkCommunication::ConnectionSuccesfull:
-				addPlayer(_NetworkHandle->getMemberName(), false);
-				break;
-			case NetworkCommunication::Disconnect:
-				removePlayer(1);
-				break;
-			default:
-				break;
-		}
-	}
+
 }
 
 void MultiplayerLobby::EnableButtons(bool isAdmin)

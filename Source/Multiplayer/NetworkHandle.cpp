@@ -27,27 +27,27 @@ void NetworkHandle::connect(std::string ip, std::string password, std::string na
 		{
 			std::lock_guard<std::mutex> lock(_Mutex);
 			_Authenticated = true;
-			_LastResponse = NetworkCommunication::ConnectionSuccesfull;
+			_LastResponse = std::make_pair(NetworkCommunication::ConnectionSuccesfull, 0);
 			_MyName = name;
 			AuthPacket >> _MemberName;
 			std::cout << "Connected with " << _MemberName << std::endl;
 		}
 		else if (Response == (sf::Uint8)(NetworkCommunication::WrongPassword))
 		{
-			_LastResponse = NetworkCommunication::WrongPassword;
+			_LastResponse = std::make_pair(NetworkCommunication::WrongPassword, 0);
 			_Socket.disconnect();
 			std::cout << "Connection failed due to wrong password" << std::endl;
 		}
 		else
 		{
-			_LastResponse = NetworkCommunication::ConnectionFailed;
+			_LastResponse = std::make_pair(NetworkCommunication::ConnectionFailed, 0);
 			_Socket.disconnect();
 			std::cout << "Host giving back bad type: " << (int)Response << std::endl;
 		}
 	}
 	else
 	{
-		_LastResponse = NetworkCommunication::ConnectionFailed;
+		_LastResponse = std::make_pair(NetworkCommunication::ConnectionFailed, 0);
 		_Socket.disconnect();
 		std::cout << "Connection failed for some reason" << std::endl;
 	}
@@ -105,10 +105,9 @@ void NetworkHandle::disconnect(bool self)
 		_SendPackets.clear();
 		_ReceivedPackets.clear();
 		_Relationship = NetworkRelation::None;
-		if (_LastResponse != NetworkCommunication::Kick)
+		if (_LastResponse.first != NetworkCommunication::Kick)
 		{
-			_LastResponse = NetworkCommunication::Disconnect;
-			std::cout << "Lobby closed." << std::endl;
+			std::cout << "Lobby closed by the host." << std::endl;
 		}
 		else
 		{
@@ -170,11 +169,11 @@ void NetworkHandle::run()
 	_State = NetworkState::None;
 }
 
-NetworkCommunication NetworkHandle::getLastResponse()
+std::pair<NetworkCommunication, int> NetworkHandle::getLastResponse()
 {
 	std::lock_guard<std::mutex> lock(_Mutex);
-	NetworkCommunication tmp = _LastResponse;
-	_LastResponse = NetworkCommunication::None;
+	std::pair<NetworkCommunication, int> tmp = _LastResponse;
+	_LastResponse = std::make_pair(NetworkCommunication::None, 0);
 	return tmp;
 }
 
@@ -216,7 +215,7 @@ void NetworkHandle::authenticatePlayer(sf::Packet& packet)
 				_Socket.send(AuthPacket);
 				_Authenticated = true;
 				packet >> _MemberName;
-				_LastResponse = NetworkCommunication::ConnectionSuccesfull;
+				_LastResponse = std::make_pair(NetworkCommunication::ConnectionSuccesfull, 0);
 				std::cout << "Connection with " << _MemberName << " accepted" << std::endl;
 			}
 			else
@@ -242,31 +241,35 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 		switch ((NetworkCommunication)Type)
 		{
 		case NetworkCommunication::Disconnect:
-			if (_Relationship == NetworkRelation::Host)
-			{
-				_LastResponse = NetworkCommunication::Disconnect;
+			_LastResponse = std::make_pair(NetworkCommunication::Disconnect, (int)(_Relationship == NetworkRelation::Host));
 
-			}
 			disconnect(false);
 			break;
 		case NetworkCommunication::StartGame:
-			_LastResponse = NetworkCommunication::StartGame;
+			_LastResponse = std::make_pair(NetworkCommunication::StartGame, 0);
 			_State = NetworkState::Ingame;
 			break;
 		case NetworkCommunication::CreateGameObject:
 			_ReceivedPackets.push_back(packet);
 			break;
 		case NetworkCommunication::EndGame:
-			_LastResponse = NetworkCommunication::EndGame;
+			_LastResponse = std::make_pair(NetworkCommunication::EndGame, 0);
 			_State = NetworkState::Lobby;
 			break;
 		case NetworkCommunication::Kick:
 			if (_Relationship == NetworkRelation::Client)
 			{
-				_LastResponse = NetworkCommunication::Kick;
+				_LastResponse = std::make_pair(NetworkCommunication::Kick, 0);
 				disconnect(false);
 			}
 			break;
+		case NetworkCommunication::Ready:
+		{
+			sf::Uint8 OnOff;
+			tmp >> OnOff;
+			_LastResponse = std::make_pair(NetworkCommunication::Ready, (int)OnOff);
+			break;
+		}
 		default:
 			std::cout << "Unexpected communicationtype" << std::endl;
 			break;

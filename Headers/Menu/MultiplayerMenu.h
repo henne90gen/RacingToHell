@@ -44,6 +44,7 @@ public:
 	void resetFeedback();
 	void resetTextbox();
 	void setKickMessage();
+	void setLobbyClosedMessage();
 private:
 	sf::RectangleShape _BackgroundJoin, _BackgroundName, _BackgroundCreate;
 	sf::Text _NameText, _JoinText, _IPText, _PasswordText, _FeedbackText, _CreateText, _CreatePassword, _FeedbackTextCreate;

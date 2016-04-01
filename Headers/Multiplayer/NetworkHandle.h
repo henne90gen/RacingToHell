@@ -16,7 +16,7 @@ public:
 	void run();
 
 	NetworkRelation getRelationship() { return _Relationship; }
-	NetworkCommunication getLastResponse();
+	std::pair<NetworkCommunication, int> getLastResponse();
 	NetworkState getState() { return _State; }
 
 	void addPacket(NetworkCommunication Type, sf::Packet newPacket);
@@ -50,7 +50,7 @@ private:
 
 	NetworkRelation _Relationship;
 	NetworkState _State;
-	NetworkCommunication _LastResponse;
+	std::pair<NetworkCommunication, int> _LastResponse;
 
 	std::string _MyName, _MemberName;
 };

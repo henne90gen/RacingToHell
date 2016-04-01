@@ -135,7 +135,7 @@ void PlayerTable::addPlayer(std::string name, bool isAdmin)
 		newMember._Admin = true;
 	}
 
-	newMember._Score = std::rand() % 1000000;
+	newMember._Score = 0;
 
 	_MemberList.push_back(newMember);
 }
@@ -153,5 +153,23 @@ void PlayerTable::resetTable()
 	while (_MemberList.size() > 0)
 	{
 		removePlayer(0);
+	}
+}
+
+void PlayerTable::setMember(unsigned int index, bool ready, int score, std::string name)
+{
+	if (index < _MemberList.size())
+	{
+		_MemberList[index]._Ready = ready;
+
+		if (name != "")
+		{
+			_MemberList[index]._Name = name;
+		}
+
+		if (score >= 0)
+		{
+			_MemberList[index]._Score = score;
+		}
 	}
 }

@@ -3,7 +3,7 @@
 #include "Menu.h"
 #include "MenuItem\StatBox.h"
 #include "Multiplayer\NetworkHandle.h"
-#include "Communication.h"
+#include "Multiplayer\Communication.h"
 
 class MultiplayerLobby : public Menu
 {

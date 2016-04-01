@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Menu.h"
-#include "Communication.h"
+#include "Multiplayer\Communication.h"
 #include "Multiplayer\NetworkHandle.h"
 
 #include <thread>

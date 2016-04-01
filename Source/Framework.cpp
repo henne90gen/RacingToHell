@@ -251,6 +251,7 @@ void Framework::handleEvents()
 			_NetworkHandle.setState(NetworkState::Lobby);
 			_NetworkHandle.setRelation(NetworkRelation::Client);
 
+			_MultiplayerLobby.EnableButtons(false);
 			_MultiplayerLobby.resetTable();
 			_MultiplayerLobby.addPlayer(_NetworkHandle.getMemberName(), true);
 			_MultiplayerLobby.addPlayer(_NetworkHandle.getMyName(), false);

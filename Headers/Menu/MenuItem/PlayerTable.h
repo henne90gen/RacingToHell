@@ -47,6 +47,10 @@ public:
 	@return float 0.0f
 	*/
 	float getMaxValue() { return 0.0f; }
+
+	void addPlayer(std::string name, bool isAdmin);
+	void removePlayer(int index);
+	void resetTable();
 private:
 	struct LobbyMembers
 	{
@@ -64,7 +68,4 @@ private:
 	sf::Texture _AdminIcon, _ReadyIcon, _CrossIcon, _TrashIcon;
 
 	int _MyIndex;
-
-	void addPlayer(std::string name, bool isAdmin);
-	void removePlayer(int index);
 };

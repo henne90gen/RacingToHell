@@ -16,6 +16,7 @@
 #include "HeadsUpDisplay.h"
 #include "Multiplayer\NetworkHandle.h"
 #include "Level/Level.h" 
+#include "Menu\MenuItem\PlayerTable.h"
 
 #include <sstream>
 #include <fstream>

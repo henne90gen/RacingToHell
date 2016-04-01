@@ -39,10 +39,12 @@ public:
 
 	int getCarIndex() { return _SelectedCar; }
 	void setCarIndex(int x) { _SelectedCar = x; }
-private:
-	enum class MenuItemIndex {Start = 0, Difficulty = 1, Modes = 2, Ready = 3};
 
-	std::shared_ptr<PlayerTable> _LobbyMemberList;
+	void resetTable() { _MenuItems[(int)MenuItemIndex::PlayerTable]->resetTable(); }
+	void addPlayer(std::string name, bool isadmin) { _MenuItems[(int)MenuItemIndex::PlayerTable]->addPlayer(name, isadmin); }
+private:
+	enum class MenuItemIndex {PlayerTable = 0, Start = 1, Difficulty = 2, Modes = 3, Ready = 4};
+
 	std::shared_ptr<StatBox> _StatBox;
 
 	NetworkHandle *_NetworkHandle;

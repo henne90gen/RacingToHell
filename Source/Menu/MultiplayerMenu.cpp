@@ -34,7 +34,7 @@ MultiplayerMenu::MultiplayerMenu() : Menu(GameState::MultiplayerSelection), _Cre
 	_IPText.setPosition(_BackgroundJoin.getPosition() + sf::Vector2f(20, 80));
 	_IPText.setString("IP:");
 
-	std::shared_ptr<Textbox> IPTextBox(new Textbox(_BackgroundJoin.getPosition() + sf::Vector2f(200, 80), sf::Vector2f(200, 40), 30, "127.0.0.1", false));
+	std::shared_ptr<Textbox> IPTextBox(new Textbox(_BackgroundJoin.getPosition() + sf::Vector2f(180, 80), sf::Vector2f(220, 40), 30, "127.0.0.1", false));
 	_MenuItems.push_back(IPTextBox);
 
 	std::shared_ptr<Textbox> PortTextBox(new Textbox(_BackgroundJoin.getPosition() + sf::Vector2f(425, 80), sf::Vector2f(100, 40), 30, "12345", false));
@@ -45,10 +45,10 @@ MultiplayerMenu::MultiplayerMenu() : Menu(GameState::MultiplayerSelection), _Cre
 	_PasswordText.setPosition(_BackgroundJoin.getPosition() + sf::Vector2f(20, 150));
 	_PasswordText.setString("Password:");
 
-	std::shared_ptr<Textbox> PasswordTextBox(new Textbox(_BackgroundJoin.getPosition() + sf::Vector2f(200, 150), sf::Vector2f(200, 40), 30, "", false, true));
+	std::shared_ptr<Textbox> PasswordTextBox(new Textbox(_BackgroundJoin.getPosition() + sf::Vector2f(180, 150), sf::Vector2f(220, 40), 30, "", false, true));
 	_MenuItems.push_back(PasswordTextBox);
 
-	std::shared_ptr<MenuButton> JoinButton(new MenuButton(_BackgroundJoin.getPosition() + sf::Vector2f(120, 220), sf::Vector2f(200, 40), MenuResult::Join, "Join Lobby", TextAlignment::Center));
+	std::shared_ptr<MenuButton> JoinButton(new MenuButton(_BackgroundJoin.getPosition() + sf::Vector2f(120, 220), sf::Vector2f(220, 40), MenuResult::Join, "Join Lobby", TextAlignment::Center));
 	_MenuItems.push_back(JoinButton);
 
 	_FeedbackText.setFont(_Font);
@@ -59,7 +59,7 @@ MultiplayerMenu::MultiplayerMenu() : Menu(GameState::MultiplayerSelection), _Cre
 	_BackgroundCreate.setOutlineThickness(1);
 	_BackgroundCreate.setOutlineColor(sf::Color::Black);
 	_BackgroundCreate.setPosition(_BackgroundJoin.getPosition() + sf::Vector2f(0, _BackgroundJoin.getSize().y + 30));
-	_BackgroundCreate.setSize(sf::Vector2f(550, 200));
+	_BackgroundCreate.setSize(sf::Vector2f(550, 225));
 
 	_CreateText.setFont(_Font);
 	_CreateText.setCharacterSize(35);
@@ -72,13 +72,20 @@ MultiplayerMenu::MultiplayerMenu() : Menu(GameState::MultiplayerSelection), _Cre
 	_CreatePassword.setPosition(_BackgroundCreate.getPosition() + sf::Vector2f(20, 75));
 	_CreatePassword.setString("Password:");
 
-	std::shared_ptr<Textbox> PasswordTextBoxCreate(new Textbox(_BackgroundCreate.getPosition() + sf::Vector2f(200, 75), sf::Vector2f(200, 40), 30, "Password", false, true));
+	std::shared_ptr<Textbox> PasswordTextBoxCreate(new Textbox(_BackgroundCreate.getPosition() + sf::Vector2f(180, 75), sf::Vector2f(220, 40), 30, "Password", false, true));
 	_MenuItems.push_back(PasswordTextBoxCreate);
+
+	std::shared_ptr<Textbox> PortCreate(new Textbox(_BackgroundCreate.getPosition() + sf::Vector2f(425, 75), sf::Vector2f(100, 40), 30, "12345", false, false));
+	_MenuItems.push_back(PortCreate);
 
 	std::shared_ptr<MenuButton> CreateButton(new MenuButton(_BackgroundCreate.getPosition() + sf::Vector2f(120, 145), sf::Vector2f(200, 40), MenuResult::Create, "Create Lobby", TextAlignment::Center));
 	_MenuItems.push_back(CreateButton);
 
-	std::shared_ptr<MenuButton> BackButton(new MenuButton(sf::Vector2f(100, 700), sf::Vector2f(150, 50), MenuResult::Back, "Back", TextAlignment::Center));
+	_FeedbackTextCreate.setFont(_Font);
+	_FeedbackTextCreate.setCharacterSize(20);
+	_FeedbackTextCreate.setPosition(_BackgroundCreate.getPosition() + sf::Vector2f(20, 195));
+
+	std::shared_ptr<MenuButton> BackButton(new MenuButton(sf::Vector2f(100, 725), sf::Vector2f(150, 50), MenuResult::Back, "Back", TextAlignment::Center));
 	_MenuItems.push_back(BackButton);
 }
 
@@ -99,6 +106,7 @@ void MultiplayerMenu::render(sf::RenderWindow& Window)
 	Window.draw(_FeedbackText);
 	Window.draw(_CreateText);
 	Window.draw(_CreatePassword);
+	Window.draw(_FeedbackTextCreate);
 }
 
 GameState MultiplayerMenu::handleEvents(sf::RenderWindow& Window)
@@ -123,20 +131,48 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result)
 		break;
 	case MenuResult::Join:
 	{
-		_FeedbackText.setColor(sf::Color::White);
-		_FeedbackText.setString("Connecting to " + _MenuItems[(int)MenuItemIndex::IP]->getText() + ":" + _MenuItems[(int)MenuItemIndex::Port]->getText() + ". Please wait.");
+		if (_MenuItems[(int)MenuItemIndex::Name]->getText() != "")
+		{
+			_FeedbackText.setColor(sf::Color::White);
+			_FeedbackText.setString("Connecting to " + _MenuItems[(int)MenuItemIndex::IP]->getText() + ":" + _MenuItems[(int)MenuItemIndex::Port]->getText() + ". Please wait.");
 
-		_ConnectionThread = std::thread(&NetworkHandle::connect, _NetworkHandle, _MenuItems[(int)MenuItemIndex::IP]->getText(), _MenuItems[(int)MenuItemIndex::PasswordJoin]->getText(), std::stoi(_MenuItems[(int)MenuItemIndex::Port]->getText()), 2.0f);
-		_ConnectionThread.detach();
+			_ConnectionThread = std::thread(&NetworkHandle::connect, _NetworkHandle, _MenuItems[(int)MenuItemIndex::IP]->getText(), _MenuItems[(int)MenuItemIndex::PasswordJoin]->getText(), _MenuItems[(int)MenuItemIndex::Name]->getText(), std::stoi(_MenuItems[(int)MenuItemIndex::Port]->getText()), 2.0f);
+			_ConnectionThread.detach();
 
-		_CreatedLobby = 0;
-		_MenuGameState = GameState::Connecting;
+			_CreatedLobby = 0;
+			_MenuGameState = GameState::Connecting;
+		}
+		else
+		{
+			_FeedbackText.setColor(sf::Color(220, 0, 0));
+			_FeedbackText.setString("Please enter a name.");
+		}
+		
 		return _MenuGameState;
 	}	
 		break;
 	case MenuResult::Create:
 		_CreatedLobby = 1;
-		return GameState::Lobby;
+
+		if (_MenuItems[(int)MenuItemIndex::Name]->getText() != "")
+		{
+			if (_NetworkHandle->create(_MenuItems[(int)MenuItemIndex::Name]->getText(), _MenuItems[(int)MenuItemIndex::PasswordCreate]->getText(), std::stoi(_MenuItems[(int)MenuItemIndex::PortCreate]->getText())))
+			{
+				return GameState::Lobby;
+			}
+			else
+			{
+				_FeedbackTextCreate.setColor(sf::Color(220, 0, 0));
+				_FeedbackTextCreate.setString("Unable to bind to port " + _MenuItems[(int)MenuItemIndex::PortCreate]->getText() + ".");
+			}
+		}
+		else
+		{
+			_FeedbackTextCreate.setColor(sf::Color(220, 0, 0));
+			_FeedbackTextCreate.setString("Please enter a name.");
+		}
+	
+		return GameState::MultiplayerSelection;
 		break;
 	default:
 		break;
@@ -147,7 +183,7 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result)
 
 NetworkCommunication MultiplayerMenu::update(float frametime)
 {
-	std::lock_guard<std::mutex> lock(_Mutex);
+	//std::lock_guard<std::mutex> lock(_Mutex);
 	switch (_NetworkHandle->getLastResponse())
 	{
 	case NetworkCommunication::ConnectionSuccesfull:
@@ -183,4 +219,10 @@ void MultiplayerMenu::setPlayerName(std::string name)
 std::string MultiplayerMenu::getPlayerName()
 {
 	return _MenuItems[0]->getText();
+}
+
+void MultiplayerMenu::resetFeedback()
+{
+	_FeedbackText.setString("");
+	_FeedbackTextCreate.setString("");
 }

@@ -41,14 +41,15 @@ public:
 	
 	std::string getPlayerName();
 	void setPlayerName(std::string name);
+	void resetFeedback();
 private:
 	sf::RectangleShape _BackgroundJoin, _BackgroundName, _BackgroundCreate;
-	sf::Text _NameText, _JoinText, _IPText, _PasswordText, _FeedbackText, _CreateText, _CreatePassword;
+	sf::Text _NameText, _JoinText, _IPText, _PasswordText, _FeedbackText, _CreateText, _CreatePassword, _FeedbackTextCreate;
 
 	int _CreatedLobby;
 	NetworkHandle *_NetworkHandle;
 
-	enum class MenuItemIndex {Name = 0, IP = 1, Port = 2, PasswordJoin = 3, PasswordCreate = 5};
+	enum class MenuItemIndex {Name = 0, IP = 1, Port = 2, PasswordJoin = 3, PasswordCreate = 5, PortCreate = 6};
 
 	std::thread _ConnectionThread;
 	std::mutex _Mutex;

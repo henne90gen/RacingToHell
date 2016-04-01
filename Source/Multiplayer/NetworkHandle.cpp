@@ -291,24 +291,28 @@ void NetworkHandle::sendData()
 		_Socket.send(TmpPacket);
 
 		switch (_SendPackets[0].first) {
-		case NetworkCommunication::Disconnect:
-			disconnect(true);
-			break;
-		case NetworkCommunication::StartGame:
-			_State = NetworkState::Ingame;
-			break;
-		case NetworkCommunication::EndGame:
-			_State = NetworkState::Lobby;
-			break;
-		case NetworkCommunication::Kick:
-			if (_Relationship == NetworkRelation::Host)
-			{
-				disconnect(false);
-			}
-			break;
-		default:
-			_SendPackets.erase(_SendPackets.begin());
-			break;
+			case NetworkCommunication::Disconnect:
+				disconnect(true);
+				break;
+			case NetworkCommunication::StartGame:
+				_State = NetworkState::Ingame;
+				break;
+			case NetworkCommunication::EndGame:
+				_State = NetworkState::Lobby;
+				break;
+			case NetworkCommunication::Kick:
+				if (_Relationship == NetworkRelation::Host)
+				{
+					disconnect(false);
+				}
+				break;
+			case NetworkCommunication::Ready:
+				std::cout << "Sending data at tick " << _Tick << std::endl;
+				break;
+			default:
+				break;
 		}
+
+		_SendPackets.erase(_SendPackets.begin());
 	}
 }

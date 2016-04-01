@@ -38,6 +38,8 @@ GameOverScreen::GameOverScreen() : Menu(GameState::GameOver), _SoundPlayed(false
 
 void GameOverScreen::render(sf::RenderWindow& window)
 {
+	Menu::render(window);
+
 	_GOTLine2.setString("Your score was: " + std::to_string(_Highscore.getScore()));
 
 	window.draw(_GOTLine1);
@@ -45,14 +47,6 @@ void GameOverScreen::render(sf::RenderWindow& window)
 	window.draw(_GOTLine3);
 
 	_Highscore.render(window);
-
-	bool oneIsHovering = false;
-	for (int i = 0; i < _MenuItems.size(); i++) {
-		if (!oneIsHovering) {
-			oneIsHovering = checkMenuItemHovered(window, i);
-		}
-		_MenuItems[i]->render(window);
-	}
 }
 
 void GameOverScreen::update(int score, int level)

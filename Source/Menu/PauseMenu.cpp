@@ -25,15 +25,9 @@ PauseMenu::PauseMenu() : Menu(GameState::Pause)
 
 void PauseMenu::render(sf::RenderWindow & window)
 {
-	bool oneIsHovering = false;
-	for (int i = 0; i < _MenuItems.size(); i++) {
-		if (!oneIsHovering) {
-			oneIsHovering = checkMenuItemHovered(window, i);
-		}
-		_MenuItems[i]->render(window);
-	}
-	window.draw(_Text);
+	Menu::render(window);
 
+	window.draw(_Text);
 }
 
 GameState PauseMenu::handleEvents(sf::RenderWindow & window)

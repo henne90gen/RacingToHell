@@ -33,18 +33,12 @@ MultiplayerLobby::MultiplayerLobby() : Menu(GameState::Lobby), _SelectedCar(0)
 	_MenuItems.push_back(LeaveButton);
 }
 
-void MultiplayerLobby::render(sf::RenderWindow& Window)
+void MultiplayerLobby::render(sf::RenderWindow& window)
 {
-	_StatBox->render(Window, _SelectedCar);
-	//_LobbyMemberList->render(Window);
+	Menu::render(window);
 
-	bool oneIsHovering = false;
-	for (int i = 0; i < _MenuItems.size(); i++) {
-		if (!oneIsHovering) {
-			oneIsHovering = checkMenuItemHovered(Window, i);
-		}
-		_MenuItems[i]->render(Window);
-	}
+	_StatBox->render(window, _SelectedCar);
+	//_LobbyMemberList->render(Window);
 }
 
 GameState MultiplayerLobby::handleEvents(sf::RenderWindow& Window)

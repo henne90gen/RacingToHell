@@ -30,7 +30,8 @@ LevelUpScreen::LevelUpScreen() : _ShowTime(2.6f), _FadeTime(0.1f), _SoundPlayed(
 	_Timer.restart();
 }
 
-void LevelUpScreen::render(sf::RenderWindow& window) {
+void LevelUpScreen::render(sf::RenderWindow& window) 
+{	
 	float alpha = 0.0f;
 	if (_FadeTimer.getElapsedTime().asSeconds() <= _FadeTime) {
 		alpha = (_FadeTimer.getElapsedTime().asSeconds() * 255.0f) / _FadeTime;

@@ -89,28 +89,22 @@ MultiplayerMenu::MultiplayerMenu() : Menu(GameState::MultiplayerSelection), _Cre
 	_MenuItems.push_back(BackButton);
 }
 
-void MultiplayerMenu::render(sf::RenderWindow& Window)
+void MultiplayerMenu::render(sf::RenderWindow& window)
 {
-	Window.draw(_BackgroundName);
-	Window.draw(_BackgroundJoin);
-	Window.draw(_BackgroundCreate);
+	Menu::render(window);
 
-	bool oneIsHovering = false;
-	for (int i = 0; i < _MenuItems.size(); i++) {
-		if (!oneIsHovering) {
-			oneIsHovering = checkMenuItemHovered(Window, i);
-		}
-		_MenuItems[i]->render(Window);
-	}
+	window.draw(_BackgroundName);
+	window.draw(_BackgroundJoin);
+	window.draw(_BackgroundCreate);
 
-	Window.draw(_NameText);
-	Window.draw(_JoinText);
-	Window.draw(_IPText);
-	Window.draw(_PasswordText);
-	Window.draw(_FeedbackText);
-	Window.draw(_CreateText);
-	Window.draw(_CreatePassword);
-	Window.draw(_FeedbackTextCreate);
+	window.draw(_NameText);
+	window.draw(_JoinText);
+	window.draw(_IPText);
+	window.draw(_PasswordText);
+	window.draw(_FeedbackText);
+	window.draw(_CreateText);
+	window.draw(_CreatePassword);
+	window.draw(_FeedbackTextCreate);
 }
 
 GameState MultiplayerMenu::handleEvents(sf::RenderWindow& Window)

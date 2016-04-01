@@ -408,7 +408,7 @@ bool Framework::measureTime()
 	
 	if (_LastFPSCheck >= 1 / _FPS) {
 		if (_LastFPSPrint > 1) {
-			//std::cout << "FPS: " << 1 / _LastFPSCheck << std::endl;
+			std::cout << "FPS: " << 1 / _LastFPSCheck << std::endl;
 			_LastFPSPrint = 0;
 		}
 		_LastFPSCheck = 0;

@@ -31,7 +31,7 @@ public:
 	*/
 	GameState handleMenuItemResult(MenuResult result);
 
-	void update(float frametime);
+	void update(NetworkCommunication lastresponse);
 
 	void setNetworkHandle(NetworkHandle *Handle) { _NetworkHandle = Handle; }
 
@@ -43,6 +43,7 @@ public:
 	void resetTable() { _MenuItems[(int)MenuItemIndex::PlayerTable]->resetTable(); }
 	void addPlayer(std::string name, bool isadmin) { _MenuItems[(int)MenuItemIndex::PlayerTable]->addPlayer(name, isadmin); }
 	void removePlayer(int index) { _MenuItems[(int)MenuItemIndex::PlayerTable]->removePlayer(index); }
+	void SetAdminTable(bool admin) { _MenuItems[(int)MenuItemIndex::PlayerTable]->setAdmin(admin); }
 private:
 	enum class MenuItemIndex {PlayerTable = 0, Start = 1, Difficulty = 2, Modes = 3, Ready = 4};
 

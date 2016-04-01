@@ -105,8 +105,15 @@ void NetworkHandle::disconnect(bool self)
 		_SendPackets.clear();
 		_ReceivedPackets.clear();
 		_Relationship = NetworkRelation::None;
-		_LastResponse = NetworkCommunication::Disconnect;
-		std::cout << "Lobby closed." << std::endl;
+		if (_LastResponse != NetworkCommunication::Kick)
+		{
+			_LastResponse = NetworkCommunication::Disconnect;
+			std::cout << "Lobby closed." << std::endl;
+		}
+		else
+		{
+			std::cout << "You have been kicked by the host." << std::endl;
+		}
 	}
 
 	_MemberName = "";
@@ -250,6 +257,13 @@ void NetworkHandle::receiveData(sf::Packet packet)
 			_LastResponse = NetworkCommunication::EndGame;
 			_State = NetworkState::Lobby;
 			break;
+		case NetworkCommunication::Kick:
+			if (_Relationship == NetworkRelation::Client)
+			{
+				_LastResponse = NetworkCommunication::Kick;
+				disconnect(false);
+			}
+			break;
 		default:
 			std::cout << "Unexpected communicationtype" << std::endl;
 			break;
@@ -276,6 +290,12 @@ void NetworkHandle::sendData()
 			break;
 		case NetworkCommunication::EndGame:
 			_State = NetworkState::Lobby;
+			break;
+		case NetworkCommunication::Kick:
+			if (_Relationship == NetworkRelation::Host)
+			{
+				disconnect(false);
+			}
 			break;
 		default:
 			_SendPackets.erase(_SendPackets.begin());

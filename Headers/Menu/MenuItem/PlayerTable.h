@@ -51,6 +51,7 @@ public:
 	void addPlayer(std::string name, bool isAdmin);
 	void removePlayer(int index);
 	void resetTable();
+	void setAdmin(bool admin) { _isAdmin = admin; };
 private:
 	struct LobbyMembers
 	{
@@ -67,5 +68,5 @@ private:
 	sf::RectangleShape _Background;
 	sf::Texture _AdminIcon, _ReadyIcon, _CrossIcon, _TrashIcon;
 
-	int _MyIndex;
+	bool _isAdmin;
 };

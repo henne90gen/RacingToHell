@@ -233,6 +233,7 @@ void Framework::handleEvents()
 		if (_GameState == GameState::Lobby)
 		{
 			_MultiplayerLobby.EnableButtons(true);
+			_MultiplayerLobby.SetAdminTable(true);
 			_MultiplayerLobby.resetTable();
 			_MultiplayerLobby.addPlayer(_NetworkHandle.getMyName(), true);
 
@@ -252,6 +253,7 @@ void Framework::handleEvents()
 			_NetworkHandle.setRelation(NetworkRelation::Client);
 
 			_MultiplayerLobby.EnableButtons(false);
+			_MultiplayerLobby.SetAdminTable(false);
 			_MultiplayerLobby.resetTable();
 			_MultiplayerLobby.addPlayer(_NetworkHandle.getMemberName(), true);
 			_MultiplayerLobby.addPlayer(_NetworkHandle.getMyName(), false);
@@ -373,13 +375,20 @@ void Framework::update()
 		break;
 	}
 	case GameState::Lobby:
-		_MultiplayerLobby.update(_FrameTime);
-		_Level.update(_FrameTime, _GameState);
-		if (_NetworkHandle.getLastResponse() == NetworkCommunication::Disconnect) {
+	{
+		NetworkCommunication LastResponse = _NetworkHandle.getLastResponse();
+
+		if (LastResponse == NetworkCommunication::Kick)
+		{
 			_GameState = GameState::MultiplayerSelection;
-			_MultiplayerMenu.resetFeedback();
+			_MultiplayerMenu.setKickMessage();
+			_MultiplayerMenu.resetTextbox();
 		}
+
+		_MultiplayerLobby.update(LastResponse);
+		_Level.update(_FrameTime, _GameState);
 		break;
+	}
 	}
 }
 

@@ -159,7 +159,7 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result)
 			else
 			{
 				_FeedbackTextCreate.setColor(sf::Color(220, 0, 0));
-				_FeedbackTextCreate.setString("Unable to bind to port " + _MenuItems[(int)MenuItemIndex::PortCreate]->getText() + ".");
+				_FeedbackTextCreate.setString("Unable to bind listener socket to port " + _MenuItems[(int)MenuItemIndex::PortCreate]->getText() + ".");
 			}
 		}
 		else
@@ -221,4 +221,17 @@ void MultiplayerMenu::resetFeedback()
 {
 	_FeedbackText.setString("");
 	_FeedbackTextCreate.setString("");
+}
+
+void MultiplayerMenu::resetTextbox()
+{
+	_MenuItems[(int)MenuItemIndex::IP]->setText("");
+	_MenuItems[(int)MenuItemIndex::Port]->setText("");
+	_MenuItems[(int)MenuItemIndex::PasswordJoin]->setText("");
+}
+
+void MultiplayerMenu::setKickMessage()
+{
+	_FeedbackText.setColor(sf::Color(220, 0, 0));
+	_FeedbackText.setString("You have been kicked by the host.");
 }

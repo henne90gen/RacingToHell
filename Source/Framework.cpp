@@ -118,6 +118,9 @@ void Framework::handleEvents()
 			if (_Event.type == sf::Event::Closed) {
 				_GameState = GameState::Exiting;
 			}
+			else if (_Event.type == sf::Event::MouseLeft) {
+				_GameState = GameState::Pause;
+			}
 			else {
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, 7)) {
 					_GameState = GameState::Pause;

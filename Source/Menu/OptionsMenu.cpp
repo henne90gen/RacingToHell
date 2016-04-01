@@ -48,19 +48,13 @@ OptionsMenu::OptionsMenu() : Menu(GameState::Options)
 
 void OptionsMenu::render(sf::RenderWindow & window)
 {
+	Menu::render(window);
+
 	window.draw(_Text);
 	window.draw(_FPSBackground);
 	window.draw(_FPS);
 	window.draw(_VolumeBackground);
 	window.draw(_Volume);
-
-	bool oneIsHovering = false;
-	for (int i = 0; i < _MenuItems.size(); i++) {
-		if (!oneIsHovering) {
-			oneIsHovering = checkMenuItemHovered(window, i);
-		}
-		_MenuItems[i]->render(window);
-	}
 }
 
 GameState OptionsMenu::handleEvents(sf::RenderWindow & Window)

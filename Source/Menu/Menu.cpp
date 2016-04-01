@@ -7,6 +7,17 @@ Menu::Menu(GameState menuState) : _JoystickSelection(0), _JoystickDelay(0.15f), 
 	_Text.setFont(_Font);
 }
 
+void Menu::render(sf::RenderWindow & window)
+{
+	bool oneIsHovering = false;
+	for (int i = 0; i < _MenuItems.size(); i++) {
+		if (!oneIsHovering) {
+			oneIsHovering = checkMenuItemHovered(window, i);
+		}
+		_MenuItems[i]->render(window);
+	}
+}
+
 GameState Menu::handleMenuItems(sf::Event & Event)
 {
 	applyJoystickSelection(Event);

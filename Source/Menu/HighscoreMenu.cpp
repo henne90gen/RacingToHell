@@ -14,17 +14,11 @@ HighscoreMenu::HighscoreMenu() : Menu(GameState::Highscores), _List(sf::Vector2f
 	_Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 160));
 }
 
-void HighscoreMenu::render(sf::RenderWindow & Window)
+void HighscoreMenu::render(sf::RenderWindow & window)
 {
-	_List.render(Window);
+	Menu::render(window);
 
-	bool oneIsHovering = false;
-	for (int i = 0; i < _MenuItems.size(); i++) {
-		if (!oneIsHovering) {
-			oneIsHovering = checkMenuItemHovered(Window, i);
-		}
-		_MenuItems[i]->render(Window);
-	}
+	_List.render(window);
 }
 
 GameState HighscoreMenu::handleEvents(sf::RenderWindow & Window)

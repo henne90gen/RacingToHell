@@ -64,6 +64,8 @@ AboutScreen::AboutScreen() : Menu(GameState::About)
 
 void AboutScreen::render(sf::RenderWindow & window)
 {
+	Menu::render(window);
+
 	window.draw(_Frame);
 	window.draw(_Text);
 	window.draw(_Text2);
@@ -73,14 +75,6 @@ void AboutScreen::render(sf::RenderWindow & window)
 	window.draw(_Boss2);
 	window.draw(_LevelUp);
 	window.draw(_LevelUp2);
-
-	bool oneIsHovering = false;
-	for (int i = 0; i < _MenuItems.size(); i++) {
-		if (!oneIsHovering) {
-			oneIsHovering = checkMenuItemHovered(window, i);
-		}
-		_MenuItems[i]->render(window);
-	}
 }
 
 GameState AboutScreen::handleEvents(sf::RenderWindow & window)

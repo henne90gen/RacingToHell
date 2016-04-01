@@ -14,7 +14,7 @@ public:
 	Menu(GameState menuState);
 	~Menu() {}
 
-	virtual void render(sf::RenderWindow & window) = 0;
+	virtual void render(sf::RenderWindow & window);
 	virtual GameState handleEvents(sf::RenderWindow & window) = 0;
 
 	GameState handleMenuItems(sf::Event & Event);

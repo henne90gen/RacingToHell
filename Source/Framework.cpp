@@ -416,34 +416,36 @@ void Framework::update()
 	}
 	case GameState::Lobby:
 	{
-		std::pair<NetworkCommunication, int> LastResponse = _NetworkHandle.getLastResponse();
+		std::pair<NetworkCommunication, int> lastResponse = _NetworkHandle.getLastResponse();
 
-		if (LastResponse.first == NetworkCommunication::Kick)
+		if (lastResponse.first == NetworkCommunication::Kick)
 		{
 			_GameState = GameState::MultiplayerSelection;
 			_MultiplayerMenu.resetFeedback();
 			_MultiplayerMenu.setKickMessage();
 			//_MultiplayerMenu.resetTextbox();
 		}
-		else if (LastResponse.first == NetworkCommunication::Disconnect && LastResponse.second == 0)
+		else if (lastResponse.first == NetworkCommunication::Disconnect && lastResponse.second == 0)
 		{
 			_GameState = GameState::MultiplayerSelection;
 			_MultiplayerMenu.resetFeedback();
 			_MultiplayerMenu.setLobbyClosedMessage();
 		}
-		else if (LastResponse.first == NetworkCommunication::Disconnect && LastResponse.second == 1)
+		else if (lastResponse.first == NetworkCommunication::Disconnect && lastResponse.second == 1)
 		{
 			_MultiplayerLobby.removePlayer(1);
 		}
-		else if (LastResponse.first == NetworkCommunication::ConnectionSuccesfull && _NetworkHandle.getRelationship() == NetworkRelation::Host)
+		else if (lastResponse.first == NetworkCommunication::ConnectionSuccesfull && _NetworkHandle.getRelationship() == NetworkRelation::Host)
 		{
 			_MultiplayerLobby.addPlayer(_NetworkHandle.getMemberName(), false);
 		}
-		else if (LastResponse.first == NetworkCommunication::Ready && _NetworkHandle.getRelationship() == NetworkRelation::Host)
+		else if (lastResponse.first == NetworkCommunication::Ready && _NetworkHandle.getRelationship() == NetworkRelation::Host)
 		{
-			_MultiplayerLobby.setClientReady((bool)(LastResponse.second));
+			_MultiplayerLobby.setClientReady((bool)(lastResponse.second));
 		}
-
+		else if (lastResponse.first == NetworkCommunication::StartGame && _NetworkHandle.getRelationship() == NetworkRelation::Client) {
+			_GameState = GameState::Countdown;
+		}
 		_Level.update(_FrameTime, _GameState);
 		break;
 	}

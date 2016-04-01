@@ -1,8 +1,7 @@
 #pragma once
 
-#include <SFML\Network.hpp>
 #include <mutex>
-#include "Communication.h"
+#include "Multiplayer/Communication.h"
 
 class NetworkHandle
 {
@@ -32,6 +31,12 @@ public:
 	void setAuthenticated(bool Authenticated) { _Authenticated = Authenticated; }
 	void setRelation(NetworkRelation relation) { _Relationship = relation; }
 private:
+	void checkForConnection();
+	void authenticatePlayer(sf::Packet packet);
+
+	void receiveData(sf::Packet packet);
+	void sendData();
+
 	sf::TcpSocket _Socket;
 	sf::TcpListener _Listener;
 

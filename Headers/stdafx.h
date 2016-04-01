@@ -17,6 +17,7 @@
 #include <thread>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include <SFML/Network.hpp>
 
 #include "GameState.h"
 

@@ -91,8 +91,6 @@ MultiplayerMenu::MultiplayerMenu() : Menu(GameState::MultiplayerSelection), _Cre
 
 void MultiplayerMenu::render(sf::RenderWindow& window)
 {
-	Menu::render(window);
-
 	window.draw(_BackgroundName);
 	window.draw(_BackgroundJoin);
 	window.draw(_BackgroundCreate);
@@ -105,6 +103,8 @@ void MultiplayerMenu::render(sf::RenderWindow& window)
 	window.draw(_CreateText);
 	window.draw(_CreatePassword);
 	window.draw(_FeedbackTextCreate);
+
+	Menu::render(window);
 }
 
 GameState MultiplayerMenu::handleEvents(sf::RenderWindow& Window)

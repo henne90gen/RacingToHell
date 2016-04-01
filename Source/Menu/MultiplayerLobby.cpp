@@ -35,15 +35,14 @@ MultiplayerLobby::MultiplayerLobby() : Menu(GameState::Lobby), _SelectedCar(0)
 
 void MultiplayerLobby::render(sf::RenderWindow& window)
 {
-	Menu::render(window);
-
 	_StatBox->render(window, _SelectedCar);
+
+	Menu::render(window);
 	//_LobbyMemberList->render(Window);
 }
 
 GameState MultiplayerLobby::handleEvents(sf::RenderWindow& Window)
 {
-
 	if (Window.pollEvent(_Event))
 	{
 		return handleMenuItems(_Event);

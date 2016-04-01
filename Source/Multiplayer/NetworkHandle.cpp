@@ -238,7 +238,6 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 			if (_Relationship == NetworkRelation::Host)
 			{
 				_LastResponse = NetworkCommunication::Disconnect;
-
 			}
 			disconnect(false);
 			break;

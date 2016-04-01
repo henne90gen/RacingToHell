@@ -257,7 +257,7 @@ void Framework::handleEvents()
 		if (_GameState == GameState::Lobby)
 		{
 			_MultiplayerLobby.EnableButtons(true);
-			_MultiplayerLobby.SetAdminTable(true);
+			_MultiplayerLobby.setAdminTable(true);
 			_MultiplayerLobby.resetRdyButton();
 			_MultiplayerLobby.resetTable();
 			_MultiplayerLobby.addPlayer(_NetworkHandle.getMyName(), true);
@@ -278,7 +278,7 @@ void Framework::handleEvents()
 			_NetworkHandle.setRelation(NetworkRelation::Client);
 
 			_MultiplayerLobby.EnableButtons(false);
-			_MultiplayerLobby.SetAdminTable(false);
+			_MultiplayerLobby.setAdminTable(false);
 			_MultiplayerLobby.resetTable();
 			_MultiplayerLobby.addPlayer(_NetworkHandle.getMemberName(), true);
 			_MultiplayerLobby.addPlayer(_NetworkHandle.getMyName(), false);

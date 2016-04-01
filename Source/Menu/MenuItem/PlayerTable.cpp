@@ -126,7 +126,7 @@ MenuResult PlayerTable::handleEvent(sf::Event & newEvent, sf::Vector2f mousePos)
 
 void PlayerTable::addPlayer(std::string name, bool isAdmin)
 {
-	LobbyMembers newMember;
+	LobbyMember newMember;
 	newMember._Name = name;
 
 	if (isAdmin)

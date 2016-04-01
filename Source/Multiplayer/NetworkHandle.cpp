@@ -180,7 +180,6 @@ std::pair<NetworkCommunication, int> NetworkHandle::getLastResponse()
 void NetworkHandle::addPacket(NetworkCommunication Type, sf::Packet newPacket)
 {
 	std::lock_guard<std::mutex> lock(_Mutex);
-
 	_SendPackets.push_back(std::make_pair(Type, newPacket));
 }
 
@@ -268,8 +267,6 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 			sf::Uint8 OnOff;
 			tmp >> OnOff;
 
-			std::cout << "Tick: " << Tick << " | " << "OnOff: " << (int)OnOff << std::endl;
-
 			_LastResponse = std::make_pair(NetworkCommunication::Ready, (int)OnOff);
 			break;
 		}
@@ -286,33 +283,35 @@ void NetworkHandle::sendData()
 	{
 		std::lock_guard<std::mutex> lock(_Mutex);
 		sf::Packet TmpPacket;
-		TmpPacket << sf::Uint8(_SendPackets[0].first) << _Tick << _SendPackets[0].second;
+		TmpPacket << sf::Uint8(_SendPackets[0].first) << _Tick;
+
+		const void* data = _SendPackets[0].second.getData();
+		size_t len = _SendPackets[0].second.getDataSize();
+		TmpPacket.append(data, len);
 
 		_Socket.send(TmpPacket);
 
 		switch (_SendPackets[0].first) {
-			case NetworkCommunication::Disconnect:
-				disconnect(true);
-				break;
-			case NetworkCommunication::StartGame:
-				_State = NetworkState::Ingame;
-				break;
-			case NetworkCommunication::EndGame:
-				_State = NetworkState::Lobby;
-				break;
-			case NetworkCommunication::Kick:
-				if (_Relationship == NetworkRelation::Host)
-				{
-					disconnect(false);
-				}
-				break;
-			case NetworkCommunication::Ready:
-				std::cout << "Sending data at tick " << _Tick << std::endl;
-				break;
-			default:
-				break;
+		case NetworkCommunication::Disconnect:
+			disconnect(true);
+			break;
+		case NetworkCommunication::StartGame:
+			_State = NetworkState::Ingame;
+			break;
+		case NetworkCommunication::EndGame:
+			_State = NetworkState::Lobby;
+			break;
+		case NetworkCommunication::Kick:
+			if (_Relationship == NetworkRelation::Host) {
+				disconnect(false);
+			}
+			break;
+		default:
+			break;
 		}
 
-		_SendPackets.erase(_SendPackets.begin());
+		if (_SendPackets.size() > 0) {
+			_SendPackets.erase(_SendPackets.begin());
+		}
 	}
 }

@@ -81,22 +81,15 @@ GameState MultiplayerLobby::handleMenuItemResult(MenuResult result)
 			if (_MenuItems[(int)MenuItemIndex::Ready]->getText() == "Ready")
 			{
 				_MenuItems[(int)MenuItemIndex::Ready]->setText("Not ready");
-				ReadyPacket << (sf::Uint8)(10);
+				ReadyPacket << (sf::Uint8)(1);
 				_MenuItems[(int)MenuItemIndex::PlayerTable]->setMember(1, true);
 			}
 			else
 			{
 				_MenuItems[(int)MenuItemIndex::Ready]->setText("Ready");
-				ReadyPacket << (sf::Uint8)(255);
+				ReadyPacket << (sf::Uint8)(0);
 				_MenuItems[(int)MenuItemIndex::PlayerTable]->setMember(1, false);
 			}
-
-			sf::Packet TestPacket;
-			TestPacket = ReadyPacket;
-			sf::Uint8 param;
-			ReadyPacket >> param;
-			std::cout << "Sending " << (int)param << std::endl;
-
 			_NetworkHandle->addPacket(NetworkCommunication::Ready, ReadyPacket);
 			break;
 		}

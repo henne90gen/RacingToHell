@@ -13,41 +13,47 @@ void NetworkHandle::connect(std::string ip, std::string password, std::string na
 
 	if (_Socket.connect(ip, port, sf::seconds(timeout)) == sf::Socket::Status::Done)
 	{
-		sf::Packet AuthentificationPacket;
-		AuthentificationPacket << (sf::Uint8)(NetworkCommunication::Authentication) << password << name;
+		sf::Packet AuthPacket;
+		AuthPacket << (sf::Uint8)(NetworkCommunication::Authentication) << password << name;
 
-		_Socket.send(AuthentificationPacket);
+		_Socket.send(AuthPacket);
 
-		AuthentificationPacket.clear();
+		AuthPacket.clear();
 
-		_Socket.receive(AuthentificationPacket);
+		_Socket.receive(AuthPacket);
+
+		sf::Packet tmp = AuthPacket;
+		std::cout << "Received following packet: " << tmp << std::endl;
 
 		sf::Uint8 Response;
-		AuthentificationPacket >> Response;
-
+		AuthPacket >> Response;
+		std::cout << "Received following response: " << (int)Response << std::endl;
 		if (Response == (sf::Uint8)(NetworkCommunication::ConnectionSuccesfull))
 		{
 			std::lock_guard<std::mutex> lock(_Mutex);
 			_Authenticated = true;
 			_LastResponse = NetworkCommunication::ConnectionSuccesfull;
 			_MyName = name;
-			AuthentificationPacket >> _MemberName;
+			AuthPacket >> _MemberName;
 			std::cout << "Connected with " << _MemberName << std::endl;
 		}
 		else if (Response == (sf::Uint8)(NetworkCommunication::WrongPassword))
 		{
 			_LastResponse = NetworkCommunication::WrongPassword;
+			_Socket.disconnect();
 			std::cout << "Connection failed due to wrong password" << std::endl;
 		}
 		else
 		{
 			_LastResponse = NetworkCommunication::ConnectionFailed;
+			_Socket.disconnect();
 			std::cout << "Host giving back bad type: " << (int)Response << std::endl;
 		}
 	}
 	else
 	{
 		_LastResponse = NetworkCommunication::ConnectionFailed;
+		_Socket.disconnect();
 		std::cout << "Connection failed for some reason" << std::endl;
 	}
 }
@@ -78,6 +84,7 @@ void NetworkHandle::disconnect(bool self)
 		_ReceivedPackets.clear();
 		_Relationship = NetworkRelation::None;
 		_MyName = "";
+		_Password = "";
 		std::cout << "You closed the lobby." << std::endl;
 	}
 	else if (_Relationship == NetworkRelation::Host && !self) {
@@ -95,6 +102,7 @@ void NetworkHandle::disconnect(bool self)
 		_Relationship = NetworkRelation::None;
 		_MyName = "";
 		std::cout << "You left the lobby." << std::endl;
+		_Password = "";
 	}
 	else if (_Relationship == NetworkRelation::Client && !self) {
 		_Socket.disconnect();
@@ -106,7 +114,6 @@ void NetworkHandle::disconnect(bool self)
 		std::cout << "Lobby closed." << std::endl;
 	}
 
-	_Password = "";
 	_MemberName = "";
 }
 
@@ -158,11 +165,11 @@ void NetworkHandle::run()
 						else
 						{
 							AuthPacket << (sf::Uint8)(NetworkCommunication::WrongPassword);
+							std::cout << "Casting Uint to send WrongP: " << (int)((sf::Uint8)(NetworkCommunication::WrongPassword)) << " " << (int)((sf::Uint8)2) << std::endl;
+							sf::Packet tmp = AuthPacket;
+							std::cout << "Sending WrongPassword: " << tmp << std::endl;
 							_Socket.send(AuthPacket);
-							_Socket.disconnect();
-							_SendPackets.clear();
-							_ReceivedPackets.clear();
-							_Authenticated = false;
+							disconnect(false);
 							std::cout << "Connection dropped due to wrong password" << std::endl;
 						}
 					}

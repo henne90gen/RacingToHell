@@ -34,10 +34,10 @@ MainMenu::MainMenu() : Menu(GameState::Main)
 
 void MainMenu::render(sf::RenderWindow& window)
 {
-	Menu::render(window);
-
 	_StatBox->render(window, _SelectedCar);
 	window.draw(_Text);
+
+	Menu::render(window);
 }
 
 GameState MainMenu::handleEvents(sf::RenderWindow& window)

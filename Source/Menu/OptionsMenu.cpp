@@ -48,13 +48,13 @@ OptionsMenu::OptionsMenu() : Menu(GameState::Options)
 
 void OptionsMenu::render(sf::RenderWindow & window)
 {
-	Menu::render(window);
-
 	window.draw(_Text);
 	window.draw(_FPSBackground);
 	window.draw(_FPS);
 	window.draw(_VolumeBackground);
 	window.draw(_Volume);
+
+	Menu::render(window);
 }
 
 GameState OptionsMenu::handleEvents(sf::RenderWindow & Window)

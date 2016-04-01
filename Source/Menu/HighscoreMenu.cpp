@@ -16,9 +16,9 @@ HighscoreMenu::HighscoreMenu() : Menu(GameState::Highscores), _List(sf::Vector2f
 
 void HighscoreMenu::render(sf::RenderWindow & window)
 {
-	Menu::render(window);
-
 	_List.render(window);
+
+	Menu::render(window);
 }
 
 GameState HighscoreMenu::handleEvents(sf::RenderWindow & Window)

@@ -3,8 +3,6 @@
 
 MultiplayerLobby::MultiplayerLobby() : Menu(GameState::Lobby), _SelectedCar(0)
 {
-	//_LobbyMemberList = std::make_shared<PlayerTable>(sf::Vector2f(25, 25));
-
 	std::shared_ptr<PlayerTable> Table(new PlayerTable(sf::Vector2f(25, 25)));
 	_MenuItems.push_back(Table);
 
@@ -38,7 +36,6 @@ void MultiplayerLobby::render(sf::RenderWindow& window)
 	_StatBox->render(window, _SelectedCar);
 
 	Menu::render(window);
-	//_LobbyMemberList->render(Window);
 }
 
 GameState MultiplayerLobby::handleEvents(sf::RenderWindow& Window)
@@ -78,7 +75,20 @@ GameState MultiplayerLobby::handleMenuItemResult(MenuResult result)
 
 void MultiplayerLobby::update(float frametime)
 {
-
+	if (_NetworkHandle->getRelationship() == NetworkRelation::Host)
+	{
+		switch (_NetworkHandle->getLastResponse())
+		{
+			case NetworkCommunication::ConnectionSuccesfull:
+				addPlayer(_NetworkHandle->getMemberName(), false);
+				break;
+			case NetworkCommunication::Disconnect:
+				removePlayer(1);
+				break;
+			default:
+				break;
+		}
+	}
 }
 
 void MultiplayerLobby::EnableButtons(bool isAdmin)

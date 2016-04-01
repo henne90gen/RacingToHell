@@ -4,7 +4,7 @@
 Countdown::Countdown() : 
 	Menu(GameState::Countdown)
 {
-	_Text.setString("3");
+	_Text.setString("4");
 	_Text.setCharacterSize(75);
 	_Text.setOrigin(sf::Vector2f(_Text.getLocalBounds().width / 2.0f, _Text.getLocalBounds().height / 2.0f));
 	_Text.setPosition(SCREENWIDTH / 2, SCREENHEIGHT / 2);
@@ -44,7 +44,7 @@ bool Countdown::update(float frameTime)
 		_Timer.restart();
 		_Started = true;
 	}
-	_Text.setString(std::to_string((int)(3 - _Timer.getElapsedTime().asSeconds())));
+	_Text.setString(std::to_string((int)(4 - _Timer.getElapsedTime().asSeconds())));
 	
 	return (_Timer.getElapsedTime().asSeconds() > 3);
 }

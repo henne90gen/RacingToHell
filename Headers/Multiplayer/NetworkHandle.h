@@ -15,7 +15,10 @@ public:
 
 	void run();
 
-	NetworkRelation getRelationship() { return _Relationship; }
+	/*
+		@return NetworkRelation The part of the network relationship this handle is in
+	*/
+	NetworkRelation getRelation() { return _Relationship; }
 	std::pair<NetworkCommunication, int> getLastResponse();
 	NetworkState getState() { return _State; }
 

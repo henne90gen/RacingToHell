@@ -101,7 +101,7 @@ GameState MultiplayerLobby::handleMenuItemResult(MenuResult result)
 			break;
 		}
 		case MenuResult::StartMultiplayer:
-			if (_NetworkHandle->getRelationship() == NetworkRelation::Host) {
+			if (_NetworkHandle->getRelation() == NetworkRelation::Host) {
 				if (getClientReady()) {
 					sf::Packet packet;
 					_NetworkHandle->addPacket(NetworkCommunication::StartGame, packet);

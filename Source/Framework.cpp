@@ -435,27 +435,35 @@ void Framework::update()
 		{
 			_MultiplayerLobby.removePlayer(1);
 		}
-		else if (lastResponse.first == NetworkCommunication::ConnectionSuccesfull && _NetworkHandle.getRelationship() == NetworkRelation::Host)
+		else if (lastResponse.first == NetworkCommunication::ConnectionSuccesfull && _NetworkHandle.getRelation() == NetworkRelation::Host)
 		{
 			_MultiplayerLobby.addPlayer(_NetworkHandle.getMemberName(), false);
 		}
-		else if (lastResponse.first == NetworkCommunication::Ready && _NetworkHandle.getRelationship() == NetworkRelation::Host)
+		else if (lastResponse.first == NetworkCommunication::Ready && _NetworkHandle.getRelation() == NetworkRelation::Host)
 		{
 			_MultiplayerLobby.setClientReady((bool)(lastResponse.second));
 		}
-		else if (lastResponse.first == NetworkCommunication::StartGame && _NetworkHandle.getRelationship() == NetworkRelation::Client) {
+		else if (lastResponse.first == NetworkCommunication::StartGame && _NetworkHandle.getRelation() == NetworkRelation::Client) {
 			_GameState = GameState::Countdown;
 		}
 		_Level.update(_FrameTime, _GameState);
 		break;
 	}
 	case GameState::Countdown:
-		if (_Countdown.update(_FrameTime)) {
-			_GameState = GameState::RunningMuliplayer;
+		if (_NetworkHandle.getRelation() == NetworkRelation::Host) {
+			if (_Countdown.update(_FrameTime)) {
+				_GameState = GameState::RunningMuliplayer;
+			}
+		}
+		else if (_NetworkHandle.getRelation() == NetworkRelation::Client) {
+			// TODO: read the time from the host and set it here
+			if (_Countdown.update(_FrameTime)) {
+				_GameState = GameState::RunningMuliplayer;
+			}
 		}
 		break;
 	case GameState::RunningMuliplayer:
-		if (_NetworkHandle.getRelationship() == NetworkRelation::Host) {
+		if (_NetworkHandle.getRelation() == NetworkRelation::Host) {
 			if (_Level.update(_FrameTime, _GameState)) {
 				if (_GameObjectContainer.emptyScreen()) {
 					_GameObjectContainer.enterBossFight();

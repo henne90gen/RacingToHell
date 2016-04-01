@@ -240,7 +240,7 @@
     <ClInclude Include="Headers\GameObject\GameObjectFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Communication.h">
+    <ClInclude Include="Headers\Multiplayer\Communication.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

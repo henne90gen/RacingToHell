@@ -253,7 +253,7 @@ void Framework::handleEvents()
 			_NetworkThread.detach();
 		}
 		_GameState = _MultiplayerLobby.handleEvents(_RenderWindow);
-
+		
 		_CurrentCarSkinIndex = _MultiplayerLobby.getCarIndex();
 
 		if (_CurrentCarSkinIndex < 0) {

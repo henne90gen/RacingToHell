@@ -18,9 +18,6 @@ PlayerTable::PlayerTable(sf::Vector2f Position) : MenuItem(MenuItemType::MLobbyL
 	_AdminIcon.setSmooth(true);
 	_ReadyIcon.setSmooth(true);
 	_CrossIcon.setSmooth(true);
-
-	//addPlayer("TestSpieler", true);
-	//addPlayer("anderer Spieler", false);
 }
 
 void PlayerTable::render(sf::RenderWindow & window)

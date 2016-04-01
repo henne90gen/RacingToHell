@@ -3,8 +3,6 @@
 
 MultiplayerLobby::MultiplayerLobby() : Menu(GameState::Lobby), _SelectedCar(0)
 {
-	//_LobbyMemberList = std::make_shared<PlayerTable>(sf::Vector2f(25, 25));
-
 	std::shared_ptr<PlayerTable> Table(new PlayerTable(sf::Vector2f(25, 25)));
 	_MenuItems.push_back(Table);
 
@@ -38,7 +36,6 @@ void MultiplayerLobby::render(sf::RenderWindow& window)
 	_StatBox->render(window, _SelectedCar);
 
 	Menu::render(window);
-	//_LobbyMemberList->render(Window);
 }
 
 GameState MultiplayerLobby::handleEvents(sf::RenderWindow& Window)

@@ -21,12 +21,8 @@ void NetworkHandle::connect(std::string ip, std::string password, std::string na
 
 		_Socket.receive(AuthPacket);
 
-		sf::Packet tmp = AuthPacket;
-		std::cout << "Received following packet: " << tmp << std::endl;
-
 		sf::Uint8 Response;
 		AuthPacket >> Response;
-		std::cout << "Received following response: " << (int)Response << std::endl;
 		if (Response == (sf::Uint8)(NetworkCommunication::ConnectionSuccesfull))
 		{
 			std::lock_guard<std::mutex> lock(_Mutex);
@@ -218,9 +214,6 @@ void NetworkHandle::authenticatePlayer(sf::Packet packet)
 			else
 			{
 				AuthPacket << (sf::Uint8)(NetworkCommunication::WrongPassword);
-				std::cout << "Casting Uint to send WrongP: " << (int)((sf::Uint8)(NetworkCommunication::WrongPassword)) << " " << (int)((sf::Uint8)2) << std::endl;
-				sf::Packet tmp = AuthPacket;
-				std::cout << "Sending WrongPassword: " << tmp << std::endl;
 				_Socket.send(AuthPacket);
 				disconnect(false);
 				std::cout << "Connection dropped due to wrong password" << std::endl;

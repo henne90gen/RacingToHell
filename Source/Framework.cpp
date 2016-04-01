@@ -233,6 +233,8 @@ void Framework::handleEvents()
 		if (_GameState == GameState::Lobby)
 		{
 			_MultiplayerLobby.EnableButtons(true);
+			_MultiplayerLobby.resetTable();
+			_MultiplayerLobby.addPlayer(_NetworkHandle.getMyName(), true);
 
 			_NetworkHandle.setRelation(NetworkRelation::Host);
 			_NetworkHandle.setState(NetworkState::Lobby);
@@ -248,6 +250,10 @@ void Framework::handleEvents()
 		if (_MultiplayerMenu.getCreatedLobby() == 0 && _NetworkHandle.getState() == NetworkState::None) {
 			_NetworkHandle.setState(NetworkState::Lobby);
 			_NetworkHandle.setRelation(NetworkRelation::Client);
+
+			_MultiplayerLobby.resetTable();
+			_MultiplayerLobby.addPlayer(_NetworkHandle.getMemberName(), true);
+			_MultiplayerLobby.addPlayer(_NetworkHandle.getMyName(), false);
 
 			_NetworkThread = std::thread(&NetworkHandle::run, &_NetworkHandle);
 			_NetworkThread.detach();
@@ -411,7 +417,7 @@ bool Framework::measureTime()
 	
 	if (_LastFPSCheck >= 1 / _FPS) {
 		if (_LastFPSPrint > 1) {
-			std::cout << "FPS: " << 1 / _LastFPSCheck << std::endl;
+			//std::cout << "FPS: " << 1 / _LastFPSCheck << std::endl;
 			_LastFPSPrint = 0;
 		}
 		_LastFPSCheck = 0;

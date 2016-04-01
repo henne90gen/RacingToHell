@@ -92,6 +92,10 @@ public:
 	/*
 		@return MenuItemType
 	*/
+
+	virtual void resetTable() {}
+	virtual void addPlayer(std::string name, bool admin) {}
+
 	MenuItemType getType() { return _Type; }
 protected:
 	sf::Font _Font;

@@ -19,8 +19,8 @@ PlayerTable::PlayerTable(sf::Vector2f Position) : MenuItem(MenuItemType::MLobbyL
 	_ReadyIcon.setSmooth(true);
 	_CrossIcon.setSmooth(true);
 
-	addPlayer("TestSpieler", true);
-	addPlayer("anderer Spieler", false);
+	//addPlayer("TestSpieler", true);
+	//addPlayer("anderer Spieler", false);
 }
 
 void PlayerTable::render(sf::RenderWindow & window)
@@ -134,5 +134,13 @@ void PlayerTable::removePlayer(int index)
 	if (index >= 0 && index < _MemberList.size())
 	{
 		_MemberList.erase(_MemberList.begin() + index);
+	}
+}
+
+void PlayerTable::resetTable()
+{
+	while (_MemberList.size() > 0)
+	{
+		removePlayer(0);
 	}
 }

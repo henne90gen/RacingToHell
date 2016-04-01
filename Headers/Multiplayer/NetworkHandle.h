@@ -23,7 +23,7 @@ public:
 
 	bool getAuthenticated() { return _Authenticated; }
 	std::string getMyName() { return _MyName; }
-	std::string getMemeberName() { return _MemberName; }
+	std::string getMemberName() { return _MemberName; }
 
 	void setState(NetworkState state) { _State = state; }
 	void setPort(unsigned int port) { _Port = port; }

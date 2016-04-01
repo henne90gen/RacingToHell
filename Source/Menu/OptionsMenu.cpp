@@ -54,11 +54,13 @@ void OptionsMenu::render(sf::RenderWindow & window)
 	window.draw(_VolumeBackground);
 	window.draw(_Volume);
 
+	bool oneIsHovering = false;
 	for (int i = 0; i < _MenuItems.size(); i++) {
+		if (!oneIsHovering) {
+			oneIsHovering = checkMenuItemHovered(window, i);
+		}
 		_MenuItems[i]->render(window);
 	}
-
-	checkMenuItemHovered(window);
 }
 
 GameState OptionsMenu::handleEvents(sf::RenderWindow & Window)

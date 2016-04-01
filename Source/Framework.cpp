@@ -182,9 +182,11 @@ void Framework::handleEvents()
 		break;
 	case GameState::Options:
 		_GameState = _OptionsMenu.handleEvents(_RenderWindow);
-		_OptionsMenu.saveOptions(_MultiplayerMenu);
-		setVolume(_OptionsMenu.getVolume());
-		_FPS = _OptionsMenu.getFPS();
+		if (_GameState != GameState::Options) {
+			_OptionsMenu.saveOptions(_MultiplayerMenu);
+			setVolume(_OptionsMenu.getVolume());
+			_FPS = _OptionsMenu.getFPS();
+		}
 		break;
 	case GameState::About:
 		_GameState = _AboutScreen.handleEvents(_RenderWindow);
@@ -222,7 +224,9 @@ void Framework::handleEvents()
 		break;
 	case GameState::MultiplayerSelection:
 		_GameState = _MultiplayerMenu.handleEvents(_RenderWindow);
-		_OptionsMenu.saveOptions(_MultiplayerMenu);
+		if (_GameState != GameState::MultiplayerSelection) {
+			_OptionsMenu.saveOptions(_MultiplayerMenu);
+		}
 		if (_GameState == GameState::Lobby)
 		{
 			_MultiplayerLobby.EnableButtons(true);

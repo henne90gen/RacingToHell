@@ -17,11 +17,14 @@ HighscoreMenu::HighscoreMenu() : Menu(GameState::Highscores), _List(sf::Vector2f
 void HighscoreMenu::render(sf::RenderWindow & Window)
 {
 	_List.render(Window);
+
+	bool oneIsHovering = false;
 	for (int i = 0; i < _MenuItems.size(); i++) {
+		if (!oneIsHovering) {
+			oneIsHovering = checkMenuItemHovered(Window, i);
+		}
 		_MenuItems[i]->render(Window);
 	}
-
-	checkMenuItemHovered(Window);
 }
 
 GameState HighscoreMenu::handleEvents(sf::RenderWindow & Window)

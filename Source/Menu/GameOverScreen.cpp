@@ -46,12 +46,13 @@ void GameOverScreen::render(sf::RenderWindow& window)
 
 	_Highscore.render(window);
 
-	for (unsigned int i = 0; i < _MenuItems.size(); i++)
-	{
+	bool oneIsHovering = false;
+	for (int i = 0; i < _MenuItems.size(); i++) {
+		if (!oneIsHovering) {
+			oneIsHovering = checkMenuItemHovered(window, i);
+		}
 		_MenuItems[i]->render(window);
 	}
-
-	checkMenuItemHovered(window);
 }
 
 void GameOverScreen::update(int score, int level)

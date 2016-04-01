@@ -2,6 +2,6 @@
 
 enum class NetworkRelation {None, Host, Client};
 
-enum class NetworkCommunication { None, Authentication, WrongPassword, ConnectionFailed, ConnectionSuccesfull, Disconnect, Kick, StartGame, EndGame, Ready, SettingsChanged};
+enum class NetworkCommunication { None, Authentication, WrongPassword, ConnectionFailed, ConnectionSuccesfull, Disconnect, Kick, StartGame, EndGame, Ready, SettingsChanged, CreateGameObject};
 
 enum class NetworkState {None, Lobby, Ingame};

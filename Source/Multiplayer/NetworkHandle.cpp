@@ -196,7 +196,7 @@ void NetworkHandle::checkForConnection()
 	}
 }
 
-void NetworkHandle::authenticatePlayer(sf::Packet packet)
+void NetworkHandle::authenticatePlayer(sf::Packet& packet)
 {
 	if (_Relationship == NetworkRelation::Host)
 	{
@@ -230,14 +230,14 @@ void NetworkHandle::authenticatePlayer(sf::Packet packet)
 	}
 }
 
-void NetworkHandle::receiveData(sf::Packet packet)
+void NetworkHandle::receiveData(sf::Packet& packet)
 {
 	if (packet.getDataSize() > 0)
 	{
-		sf::Packet TmpPacket = packet;
+		sf::Packet tmp = packet;
 		sf::Uint8 Type;
 
-		TmpPacket >> Type;
+		tmp >> Type;
 
 		switch ((NetworkCommunication)Type)
 		{
@@ -252,6 +252,9 @@ void NetworkHandle::receiveData(sf::Packet packet)
 		case NetworkCommunication::StartGame:
 			_LastResponse = NetworkCommunication::StartGame;
 			_State = NetworkState::Ingame;
+			break;
+		case NetworkCommunication::CreateGameObject:
+			_ReceivedPackets.push_back(packet);
 			break;
 		case NetworkCommunication::EndGame:
 			_LastResponse = NetworkCommunication::EndGame;

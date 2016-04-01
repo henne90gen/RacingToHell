@@ -32,9 +32,9 @@ public:
 	void setRelation(NetworkRelation relation) { _Relationship = relation; }
 private:
 	void checkForConnection();
-	void authenticatePlayer(sf::Packet packet);
+	void authenticatePlayer(sf::Packet& packet);
 
-	void receiveData(sf::Packet packet);
+	void receiveData(sf::Packet& packet);
 	void sendData();
 
 	sf::TcpSocket _Socket;

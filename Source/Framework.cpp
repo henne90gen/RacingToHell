@@ -161,6 +161,10 @@ void Framework::handleEvents()
 		else if (_GameState == GameState::Options) {
 			_OptionsMenu.enableDifficultySelection(true);
 			_OptionsMenu.setReturnState(GameState::Main);
+		} 
+		else if (_GameState == GameState::MultiplayerSelection)
+		{
+			_MultiplayerMenu.resetFeedback();
 		}
 
 		if (_CurrentCarSkinIndex < 0) {
@@ -347,8 +351,7 @@ void Framework::update()
 		_Level.update(_FrameTime, _GameState);
 		NetworkCommunication netComm = _MultiplayerMenu.update(_FrameTime);
 		if (netComm == NetworkCommunication::ConnectionSuccesfull) {
-			_GameState = GameState::Lobby;
-			
+			_GameState = GameState::Lobby;		
 		}
 		else if (netComm == NetworkCommunication::ConnectionFailed || netComm == NetworkCommunication::WrongPassword) {
 			_GameState = GameState::MultiplayerSelection;
@@ -360,6 +363,7 @@ void Framework::update()
 		_Level.update(_FrameTime, _GameState);
 		if (_NetworkHandle.getLastResponse() == NetworkCommunication::Disconnect) {
 			_GameState = GameState::MultiplayerSelection;
+			_MultiplayerMenu.resetFeedback();
 		}
 		break;
 	}

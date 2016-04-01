@@ -350,7 +350,7 @@ void Framework::update()
 			_GameState = GameState::Lobby;
 			
 		}
-		else if (netComm == NetworkCommunication::ConnectionFailed && netComm == NetworkCommunication::WrongPassword) {
+		else if (netComm == NetworkCommunication::ConnectionFailed || netComm == NetworkCommunication::WrongPassword) {
 			_GameState = GameState::MultiplayerSelection;
 		}
 		break;

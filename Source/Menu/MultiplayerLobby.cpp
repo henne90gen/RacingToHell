@@ -52,43 +52,38 @@ GameState MultiplayerLobby::handleMenuItemResult(MenuResult result)
 {
 	switch (result)
 	{
-	case MenuResult::Back:
-	{
-		sf::Packet EmptyPacket;
-		_NetworkHandle->addPacket(NetworkCommunication::Disconnect, EmptyPacket);
-		std::cout << "Sending disconnect" << std::endl;
-		return GameState::Main;
-	}
-		break;
-	case MenuResult::PreviousSkin:
-		_SelectedCar--;
-		break;
-	case MenuResult::NextSkin:
-		_SelectedCar++;
-		break;
-	default:
-		break;
+		case MenuResult::Back:
+		{
+			sf::Packet EmptyPacket;
+			_NetworkHandle->addPacket(NetworkCommunication::Disconnect, EmptyPacket);
+			std::cout << "Sending disconnect" << std::endl;
+			return GameState::Main;
+		}
+			break;
+		case MenuResult::PreviousSkin:
+			_SelectedCar--;
+			break;
+		case MenuResult::NextSkin:
+			_SelectedCar++;
+			break;
+		case MenuResult::KickOtherPlayer:
+		{
+			sf::Packet EmptyPacket;
+			_NetworkHandle->addPacket(NetworkCommunication::Kick, EmptyPacket);
+			removePlayer(1);
+			std::cout << "Kicking player" << std::endl;
+			break;
+		}
+		default:
+			break;
 	}
 
 	return _MenuGameState;
 }
 
-void MultiplayerLobby::update(float frametime)
+void MultiplayerLobby::update(std::pair<NetworkCommunication, int> lastresponse)
 {
-	if (_NetworkHandle->getRelationship() == NetworkRelation::Host)
-	{
-		switch (_NetworkHandle->getLastResponse())
-		{
-			case NetworkCommunication::ConnectionSuccesfull:
-				addPlayer(_NetworkHandle->getMemberName(), false);
-				break;
-			case NetworkCommunication::Disconnect:
-				removePlayer(1);
-				break;
-			default:
-				break;
-		}
-	}
+
 }
 
 void MultiplayerLobby::EnableButtons(bool isAdmin)

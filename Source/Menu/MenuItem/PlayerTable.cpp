@@ -2,7 +2,7 @@
 #include "Menu\MenuItem\PlayerTable.h"
 
 PlayerTable::PlayerTable(sf::Vector2f Position) : MenuItem(MenuItemType::MLobbyList, MenuResult::Nothing),
-	_Position(Position), _Size(550, 80), _MyIndex(0)
+	_Position(Position), _Size(550, 80)
 {
 	_Background.setFillColor(sf::Color(0, 0, 0, 0));
 	_Background.setOutlineThickness(1);
@@ -77,29 +77,43 @@ void PlayerTable::render(sf::RenderWindow & window)
 		window.draw(Background);
 		window.draw(PlayerName);
 		window.draw(ScoreText);
-		window.draw(RightSprite);
 		window.draw(LeftSprite);
+
+		if (_isAdmin)
+		{
+			window.draw(RightSprite);
+		}
 	}
 }
 
 MenuResult PlayerTable::handleEvent(sf::Event & newEvent, sf::Vector2f mousePos)
 {
-	for (unsigned int i = 0; i < 2; i++)
+	if (_isAdmin)
 	{
-		if (i < _MemberList.size() && !_MemberList[i]._Admin)
+		for (unsigned int i = 0; i < 2; i++)
 		{
-			sf::FloatRect Rect(_Position + sf::Vector2f(_Size.x - 35, 40 * i), sf::Vector2f(30, 40));
+			if (i < _MemberList.size() && !_MemberList[i]._Admin)
+			{
+				sf::FloatRect Rect(_Position + sf::Vector2f(_Size.x - 35, 40 * i), sf::Vector2f(30, 40));
 
-			if (pointInRectangle(Rect, mousePos))
-			{
-				_Hovering = true;
-				break;
-			}
-			else
-			{
-				_Hovering = false;
+				if (pointInRectangle(Rect, mousePos))
+				{
+					_Hovering = true;
+
+					if (newEvent.type == sf::Event::MouseButtonPressed)
+					{
+						return MenuResult::KickOtherPlayer;
+					}
+
+					break;
+				}
+				else
+				{
+					_Hovering = false;
+				}
 			}
 		}
+
 	}
 
 	if (_MemberList.size() == 1)
@@ -121,7 +135,7 @@ void PlayerTable::addPlayer(std::string name, bool isAdmin)
 		newMember._Admin = true;
 	}
 
-	newMember._Score = std::rand() % 1000000;
+	newMember._Score = 0;
 
 	_MemberList.push_back(newMember);
 }
@@ -139,5 +153,23 @@ void PlayerTable::resetTable()
 	while (_MemberList.size() > 0)
 	{
 		removePlayer(0);
+	}
+}
+
+void PlayerTable::setMember(unsigned int index, bool ready, int score, std::string name)
+{
+	if (index < _MemberList.size())
+	{
+		_MemberList[index]._Ready = ready;
+
+		if (name != "")
+		{
+			_MemberList[index]._Name = name;
+		}
+
+		if (score >= 0)
+		{
+			_MemberList[index]._Score = score;
+		}
 	}
 }

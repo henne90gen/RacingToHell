@@ -127,7 +127,23 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result)
 		break;
 	case MenuResult::Join:
 	{
-		if (_MenuItems[(int)MenuItemIndex::Name]->getText() != "")
+
+		if (_MenuItems[(int)MenuItemIndex::Name]->getText() == "")
+		{
+			_FeedbackText.setColor(sf::Color(220, 0, 0));
+			_FeedbackText.setString("Please enter a name.");
+		}
+		else if (_MenuItems[(int)MenuItemIndex::IP]->getText() == "")
+		{
+			_FeedbackText.setColor(sf::Color(220, 0, 0));
+			_FeedbackText.setString("Please enter a ip address.");
+		}
+		else if (_MenuItems[(int)MenuItemIndex::Port]->getText() == "")
+		{
+			_FeedbackText.setColor(sf::Color(220, 0, 0));
+			_FeedbackText.setString("Please enter a port.");
+		}
+		else
 		{
 			_FeedbackText.setColor(sf::Color::White);
 			_FeedbackText.setString("Connecting to " + _MenuItems[(int)MenuItemIndex::IP]->getText() + ":" + _MenuItems[(int)MenuItemIndex::Port]->getText() + ". Please wait.");
@@ -138,19 +154,23 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result)
 			_CreatedLobby = 0;
 			_MenuGameState = GameState::Connecting;
 		}
-		else
-		{
-			_FeedbackText.setColor(sf::Color(220, 0, 0));
-			_FeedbackText.setString("Please enter a name.");
-		}
-		
 		return _MenuGameState;
 	}	
 		break;
 	case MenuResult::Create:
 		_CreatedLobby = 1;
 
-		if (_MenuItems[(int)MenuItemIndex::Name]->getText() != "")
+		if (_MenuItems[(int)MenuItemIndex::Name]->getText() == "")
+		{
+			_FeedbackTextCreate.setColor(sf::Color(220, 0, 0));
+			_FeedbackTextCreate.setString("Please enter a name.");
+		}
+		else if (_MenuItems[(int)MenuItemIndex::PortCreate]->getText() == "")
+		{
+			_FeedbackTextCreate.setColor(sf::Color(220, 0, 0));
+			_FeedbackTextCreate.setString("Please enter a port.");
+		}
+		else
 		{
 			if (_NetworkHandle->create(_MenuItems[(int)MenuItemIndex::Name]->getText(), _MenuItems[(int)MenuItemIndex::PasswordCreate]->getText(), std::stoi(_MenuItems[(int)MenuItemIndex::PortCreate]->getText())))
 			{
@@ -159,15 +179,10 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result)
 			else
 			{
 				_FeedbackTextCreate.setColor(sf::Color(220, 0, 0));
-				_FeedbackTextCreate.setString("Unable to bind to port " + _MenuItems[(int)MenuItemIndex::PortCreate]->getText() + ".");
+				_FeedbackTextCreate.setString("Unable to bind listener socket to port " + _MenuItems[(int)MenuItemIndex::PortCreate]->getText() + ".");
 			}
 		}
-		else
-		{
-			_FeedbackTextCreate.setColor(sf::Color(220, 0, 0));
-			_FeedbackTextCreate.setString("Please enter a name.");
-		}
-	
+
 		return GameState::MultiplayerSelection;
 		break;
 	default:
@@ -180,7 +195,7 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result)
 NetworkCommunication MultiplayerMenu::update(float frametime)
 {
 	//std::lock_guard<std::mutex> lock(_Mutex);
-	switch (_NetworkHandle->getLastResponse())
+	switch (_NetworkHandle->getLastResponse().first)
 	{
 	case NetworkCommunication::ConnectionSuccesfull:
 		_MenuGameState = GameState::MultiplayerSelection;
@@ -221,4 +236,23 @@ void MultiplayerMenu::resetFeedback()
 {
 	_FeedbackText.setString("");
 	_FeedbackTextCreate.setString("");
+}
+
+void MultiplayerMenu::resetTextbox()
+{
+	_MenuItems[(int)MenuItemIndex::IP]->setText("");
+	_MenuItems[(int)MenuItemIndex::Port]->setText("");
+	_MenuItems[(int)MenuItemIndex::PasswordJoin]->setText("");
+}
+
+void MultiplayerMenu::setKickMessage()
+{
+	_FeedbackText.setColor(sf::Color(220, 0, 0));
+	_FeedbackText.setString("You have been kicked by the host.");
+}
+
+void MultiplayerMenu::setLobbyClosedMessage()
+{
+	_FeedbackText.setColor(sf::Color(220, 0, 0));
+	_FeedbackText.setString("The lobby was closed by the host.");
 }

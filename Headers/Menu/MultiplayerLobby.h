@@ -44,7 +44,8 @@ public:
 	void addPlayer(std::string name, bool isadmin) { _MenuItems[(int)MenuItemIndex::PlayerTable]->addPlayer(name, isadmin); }
 	void removePlayer(int index) { _MenuItems[(int)MenuItemIndex::PlayerTable]->removePlayer(index); }
 	void SetAdminTable(bool admin) { _MenuItems[(int)MenuItemIndex::PlayerTable]->setAdmin(admin); }
-	void setClientReady(bool rdy) {}
+	void setClientReady(bool rdy) { _MenuItems[(int)MenuItemIndex::PlayerTable]->setMember(1, rdy); }
+	void resetRdyButton() { _MenuItems[(int)MenuItemIndex::Ready]->setText("Ready"); }
 private:
 	enum class MenuItemIndex {PlayerTable = 0, Start = 1, Difficulty = 2, Modes = 3, Ready = 4};
 

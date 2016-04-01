@@ -93,3 +93,9 @@ sf::FloatRect MenuButton::getRect()
 		return _Background.getGlobalBounds();
 	}
 }
+
+void MenuButton::setText(std::string text)
+{
+	_Text.setString(text);
+	_Text.setPosition(_Background.getPosition() + sf::Vector2f(_Background.getLocalBounds().width / 2 - _Text.getLocalBounds().width / 2, 0));
+}

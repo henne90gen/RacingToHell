@@ -41,11 +41,18 @@ void Framework::run()
 	}
 }
 
+/*
+
+
+
+
+*/
+
 void Framework::render()
 {
-	if (_GameState != GameState::Loading || _LoadingScreen.isFadingAway()) {
+	if ((_GameState != GameState::Loading || _LoadingScreen.isFadingAway()) && _GameState != GameState::Countdown) {
 		_Level.render(_RenderWindow);
-		_GameObjectContainer.render(_RenderWindow, _GameState == GameState::Running || _GameState == GameState::BossFight);
+		_GameObjectContainer.render(_RenderWindow, _GameState == GameState::Running || _GameState == GameState::BossFight || _GameState == GameState::RunningMuliplayer);
 	}
 
 	switch (_GameState) {
@@ -104,10 +111,27 @@ void Framework::render()
 		setMouseVisible(true);
 		_MultiplayerLobby.render(_RenderWindow);
 		break;
+	case GameState::Countdown:
+		setMouseVisible(false);
+		_Countdown.render(_RenderWindow);
+		break;
+	case GameState::RunningMuliplayer:
+		break;
 	}
-
 	_RenderWindow.display();
 }
+
+/*
+
+
+
+
+
+
+
+
+
+*/
 
 void Framework::handleEvents()
 {
@@ -275,8 +299,23 @@ void Framework::handleEvents()
 		_GameObjectContainer.getPlayerCar().setTexture((*_CarSkins.at(_CurrentCarSkinIndex)));
 		_GameObjectContainer.getPlayerCar().setStats(_CurrentCarSkinIndex);
 		break;
+	case GameState::Countdown:
+		_GameState = _Countdown.handleEvents(_RenderWindow);
+		break;
 	}
 }
+
+/*
+
+
+
+
+
+
+
+
+
+*/
 
 void Framework::update()
 {
@@ -383,7 +422,7 @@ void Framework::update()
 			_GameState = GameState::MultiplayerSelection;
 			_MultiplayerMenu.resetFeedback();
 			_MultiplayerMenu.setKickMessage();
-			_MultiplayerMenu.resetTextbox();
+			//_MultiplayerMenu.resetTextbox();
 		}
 		else if (LastResponse.first == NetworkCommunication::Disconnect && LastResponse.second == 0)
 		{
@@ -404,8 +443,36 @@ void Framework::update()
 		_Level.update(_FrameTime, _GameState);
 		break;
 	}
+	case GameState::Countdown:
+		if (_Countdown.update(_FrameTime)) {
+			_GameState = GameState::RunningMuliplayer;
+		}
+		break;
+	case GameState::RunningMuliplayer:
+		if (_NetworkHandle.getRelationship() == NetworkRelation::Host) {
+			if (_Level.update(_FrameTime, _GameState)) {
+				if (_GameObjectContainer.emptyScreen()) {
+					_GameObjectContainer.enterBossFight();
+					_GameState = GameState::BossFight;
+				}
+			}
+			_GameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
+			_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
+			if (!_GameObjectContainer.playerIsAlive()) {
+				_GameState = GameState::GameOver;
+			}
+			addScore();
+		}
+		break;
 	}
 }
+
+/*
+
+
+
+
+*/
 
 void Framework::playSounds() {
 	if (_GameState == GameState::Running || 

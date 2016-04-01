@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\Menu\Countdown.h" />
     <ClInclude Include="Headers\Multiplayer\Communication.h" />
     <ClInclude Include="Headers\GameObject\GameObjectFactory.h" />
     <ClInclude Include="Headers\Animation\Animation.h" />
@@ -213,6 +214,7 @@
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Menu\Countdown.cpp" />
     <ClCompile Include="Source\GameObject\GameObjectFactory.cpp" />
     <ClCompile Include="Source\Menu\AboutScreen.cpp" />
     <ClCompile Include="Source\Menu\HighscoreMenu.cpp" />

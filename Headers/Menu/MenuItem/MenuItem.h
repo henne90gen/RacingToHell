@@ -97,6 +97,7 @@ public:
 	virtual void addPlayer(std::string name, bool admin) {}
 	virtual void removePlayer(int index) {}
 	virtual void setAdmin(bool admin) {}
+	virtual bool getPlayerReady() {}
 
 	MenuItemType getType() { return _Type; }
 protected:

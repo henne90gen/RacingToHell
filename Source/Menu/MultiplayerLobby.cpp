@@ -74,7 +74,12 @@ GameState MultiplayerLobby::handleMenuItemResult(MenuResult result)
 			std::cout << "Kicking player" << std::endl;
 			break;
 		}
-		default:
+		case MenuResult::StartMultiplayer:
+			if (getClientReady()) {
+				sf::Packet packet;
+				_NetworkHandle->addPacket(NetworkCommunication::StartGame, packet);
+				return GameState::Countdown;
+			}
 			break;
 	}
 

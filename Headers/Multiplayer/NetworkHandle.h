@@ -30,6 +30,7 @@ public:
 	void setPassword(std::string pw) { _Password = pw; }
 	void setAuthenticated(bool Authenticated) { _Authenticated = Authenticated; }
 	void setRelation(NetworkRelation relation) { _Relationship = relation; }
+
 private:
 	void checkForConnection();
 	void authenticatePlayer(sf::Packet& packet);

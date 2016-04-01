@@ -13,10 +13,11 @@
 #include "Menu/LevelUpScreen.h"
 #include "Menu/MultiplayerMenu.h"
 #include "Menu/MultiplayerLobby.h"
+#include "Menu/Countdown.h"
 #include "HeadsUpDisplay.h"
-#include "Multiplayer\NetworkHandle.h"
+#include "Multiplayer/NetworkHandle.h"
 #include "Level/Level.h" 
-#include "Menu\MenuItem\PlayerTable.h"
+#include "Menu/MenuItem/PlayerTable.h"
 
 #include <sstream>
 #include <fstream>
@@ -72,6 +73,7 @@ private:
 	HeadsUpDisplay _HeadsUpDisplay;
 	MultiplayerMenu _MultiplayerMenu;
 	MultiplayerLobby _MultiplayerLobby;
+	Countdown _Countdown;
 
 	//Multiplayer
 	NetworkHandle _NetworkHandle;

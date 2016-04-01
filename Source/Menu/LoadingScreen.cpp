@@ -2,7 +2,7 @@
 #include "Menu/LoadingScreen.h"
 
 
-LoadingScreen::LoadingScreen() : Menu(GameState::Loading), _IsFadingAway(false), _FadeTime(1.0f)
+LoadingScreen::LoadingScreen() : Menu(GameState::Loading), _IsFadingAway(false), _FadeTime(0.5f)
 {
 	_Text.setString("Loading...");
 	_Text.setCharacterSize(75);

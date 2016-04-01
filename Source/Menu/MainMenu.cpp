@@ -42,7 +42,7 @@ void MainMenu::render(sf::RenderWindow& window)
 
 GameState MainMenu::handleEvents(sf::RenderWindow& window)
 {
-	while (window.pollEvent(_Event)) {
+	if (window.pollEvent(_Event)) {
 
 		float X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
 		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);

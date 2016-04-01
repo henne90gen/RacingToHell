@@ -53,8 +53,10 @@ public:
 	void resetTable();
 	void setAdmin(bool admin) { _isAdmin = admin; };
 	void setMember(unsigned int index, bool ready, int score = -1, std::string name = "");
+	bool getPlayerReady() { return _MemberList[1]._Ready; }
+
 private:
-	struct LobbyMembers
+	struct LobbyMember
 	{
 		std::string _Name = "";
 		bool _Ready = false;
@@ -62,7 +64,7 @@ private:
 		int _Score = 0;
 	};
 
-	std::vector<LobbyMembers> _MemberList;
+	std::vector<LobbyMember> _MemberList;
 
 	sf::Vector2f _Position, _Size;
 

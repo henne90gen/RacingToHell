@@ -8,17 +8,20 @@ Bullet::Bullet(sf::Vector2f pos, sf::Vector2f dir, int speed, GameObjectType typ
 	if (type == GameObjectType::BulletObjectPlayer)
 	{
 		setSpriteColor(sf::Color(225, 0, 0));
+		playShotSound(pos, soundEffects, soundBuffer, Volume * 4.f);
 	}
 	else if (type == GameObjectType::BulletObjectBoss)
 	{
 		setSpriteColor(sf::Color(0, 45, 255));
+		playShotSound(pos, soundEffects, soundBuffer, Volume * 4.f);
 	}
 	else
 	{
 		setSpriteColor(sf::Color(255, 255, 0));
+		playShotSound(pos, soundEffects, soundBuffer, Volume * 5.5f);
 	}
 
-	playShotSound(pos, soundEffects, soundBuffer, Volume);
+
 }
 
 Bullet::Bullet(std::istream& stream, GameObjectType type, sf::Texture& texture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume) : 
@@ -53,8 +56,8 @@ void Bullet::playShotSound(sf::Vector2f position, std::vector<std::pair<std::sha
 	ShotSound->setBuffer(soundBuffer);
 	ShotSound->setPosition(position.x, 0.f, position.y);
 	ShotSound->setMinDistance(500.f);
-	ShotSound->setAttenuation(4.f);
-	ShotSound->setVolume(Volume * 2);
+	ShotSound->setAttenuation(2.f);
+	ShotSound->setVolume(Volume);
 
 	if (soundEffects.size() <= 225)
 	{

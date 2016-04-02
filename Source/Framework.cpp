@@ -12,6 +12,9 @@ Framework::Framework() : _FrameTime(0), _FPS(60.0f), _IsRunning(true), _GameStat
 		_RenderWindow.setIcon(Icon.getSize().x, Icon.getSize().y, Icon.getPixelsPtr());
 	}
 
+	sf::View view(sf::FloatRect(0, 0, SCREENWIDTH, SCREENHEIGHT));
+	_RenderWindow.setView(view);
+
 	//Seed
 	srand(time(NULL));
 

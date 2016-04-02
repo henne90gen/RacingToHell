@@ -291,9 +291,9 @@ bool GameObjectContainer::bossIsDead()
 			deleteObject(1);
 			getPlayerCar().resetResources();
 
-			for (unsigned int i = 1; i < _GameObjects.size(); i++)
+			while (_GameObjects.size() > 1)
 			{
-				deleteObject(i);
+				deleteObject(1);
 			}
 
 			_CarScore = 5000 + 10000 * _Difficulty * _Difficulty;
@@ -554,10 +554,10 @@ int GameObjectContainer::getBossHP()
 		return 4500 + (int)((_Level - 1) / 4.0f) * 2500;
 		break;
 	case 1:
-		return 5500 + (int)((_Level - 1) / 4.0f) * 3000;
+		return 5500 + (int)((_Level - 1) / 4.0f) * 2500;
 		break;
 	case 2:
-		return 1000 + 500 * (int)((_Level - 1) / 4.0f);
+		return 1500 + 750 * (int)((_Level - 1) / 4.0f);
 		break;
 	case 3:
 		return 6500 + (int)((_Level - 1) / 4.0f) * 2500;

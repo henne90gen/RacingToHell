@@ -38,7 +38,7 @@ void Explosion::playExplosionSound(sf::Vector2f position, std::vector<std::pair<
 	explosionSound->setPosition(position.x, 0.f, position.y);
 	explosionSound->setMinDistance(500.f);
 	explosionSound->setAttenuation(4.f);
-	explosionSound->setVolume(Volume * 2);
+	explosionSound->setVolume(Volume * 5.f);
 
 	soundEffects.push_back({ explosionSound, 0 });
 }

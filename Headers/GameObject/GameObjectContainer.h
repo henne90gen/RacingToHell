@@ -135,6 +135,7 @@ private:
 
 	sf::Texture _ExplosionTexture;
 	sf::SoundBuffer _ExplosionSoundBuffer;
+	sf::SoundBuffer _ImpactSoundBuffer;
 
 	std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>> _SoundEffects;
 	float _Volume;
@@ -191,4 +192,6 @@ private:
 		@retun Boss HP at given level
 	*/
 	int getBossHP();
+
+	void playHitSound(sf::Vector2f position);
 };

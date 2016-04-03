@@ -26,7 +26,7 @@ GameOverScreen::GameOverScreen() : Menu(GameState::GameOver), _SoundPlayed(false
 		
 	sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
 
-	std::shared_ptr<Textbox> box(new Textbox(sf::Vector2f(_GOTLine3.getPosition().x + _GOTLine3.getLocalBounds().width + 20, _GOTLine3.getPosition().y + 10), sf::Vector2f(450 - _GOTLine3.getLocalBounds().width - 20, _GOTLine3.getLocalBounds().height), 25, "Test", true));
+	std::shared_ptr<Textbox> box(new Textbox(sf::Vector2f(_GOTLine3.getPosition().x + _GOTLine3.getLocalBounds().width + 20, _GOTLine3.getPosition().y + 10), sf::Vector2f(450 - _GOTLine3.getLocalBounds().width - 20, _GOTLine3.getLocalBounds().height), 25, "Name", true));
 	_MenuItems.push_back(box);
 	std::shared_ptr<MenuButton> button1(new MenuButton(sf::Vector2f(SCREENWIDTH / 2 + 200, 735), ButtonSize, MenuResult::SubmitScore, "Submit", TextAlignment::Center));
 	_MenuItems.push_back(button1);

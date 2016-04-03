@@ -99,22 +99,23 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 				_Event1Frequency = 1.0f + 0.25f * (float)(_Difficulty);
 
 				if (getBossEvent() == 1)
-				{
+				{			
 					bool Hand = (std::rand() % 100) > 50;
 					for (int i = 0; i < 8 + 2 * _Difficulty; i++)
 					{
-						float bulAngle = (getAngleFromVector(_GunOrientation) * PI / 180 - PI / 28.8) + PI / 14.4 * ((std::rand() % 100) / 100.0f);
+						float bulAngle = (getAngleFromVector(_GunOrientation) * PI / 180.f - PI / 28.8f) + PI / 14.4f * ((std::rand() % 100) / 100.0f);
 						sf::Vector2f bulOrientation = divideByLength(sf::Vector2f(std::cosf(bulAngle), std::sinf(bulAngle)));
 						if (Hand)
 						{
-							shootBullet(gameObjects, calcGunPositions().first, bulOrientation, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed));
+							shootBullet(gameObjects, calcGunPositions().first, bulOrientation, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed), (float)(i % 3 > 0) * _Volume);
 						}
 						else
 						{
-							shootBullet(gameObjects, calcGunPositions().second, bulOrientation, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed));
+							shootBullet(gameObjects, calcGunPositions().second, bulOrientation, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed), (float)(i % 3 > 0) * _Volume);
 						}
 					}
 
+					_Event1Counter = 0;
 					_Event1Switch = !_Event1Switch;
 				}
 				break;

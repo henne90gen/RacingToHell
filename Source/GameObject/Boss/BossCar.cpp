@@ -32,9 +32,9 @@ float BossCar::PlayerAngle(GameObject& Player)
 	return Angle;
 }
 
-void BossCar::shootBullet(std::vector<std::shared_ptr<GameObject>>& gameObjects, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed)
+void BossCar::shootBullet(std::vector<std::shared_ptr<GameObject>>& gameObjects, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed, float volume)
 {
-	std::shared_ptr<Bullet> newBullet(new Bullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss, _BulletTexture, _soundEffects, _soundBufferShot, _Volume));
+	std::shared_ptr<Bullet> newBullet(new Bullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss, _BulletTexture, _soundEffects, _soundBufferShot, volume));
 	gameObjects.push_back(newBullet);
 }
 

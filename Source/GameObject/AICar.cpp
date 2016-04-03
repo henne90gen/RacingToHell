@@ -7,6 +7,7 @@ AICar::AICar(int hp, int roadSpeed, sf::Texture& texture) :
 {
 	_Lane = std::rand() % 4;
 	init();
+	getSprite().setColor(sf::Color::White);
 }
 
 AICar::AICar(std::istream & stream, sf::Texture & texture) :
@@ -18,6 +19,7 @@ AICar::AICar(std::istream & stream, sf::Texture & texture) :
 
 void AICar::update(float frameTime, int roadSpeed)
 {
+	Car::update(frameTime, roadSpeed);
 	setPos(sf::Vector2f(getPos().x, getPos().y + (roadSpeed - _Speed) * frameTime));
 	_HealthBar.setPosition(sf::Vector2f(getPos().x - getWidth() / 2 - (_HealthBarFrame.getSize().x - getWidth()) / 2, getPos().y - getHeight() / 2 - _HealthBarFrame.getSize().y - 8));
 	_HealthBar.setSize(sf::Vector2f(_HealthBarFrame.getSize().x * getHealth() / getMaxHealth(), _HealthBarFrame.getSize().y));

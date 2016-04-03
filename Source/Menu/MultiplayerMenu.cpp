@@ -204,7 +204,7 @@ NetworkCommunication MultiplayerMenu::update(float frametime)
 		break;
 	case NetworkCommunication::ConnectionFailed:
 		_FeedbackText.setColor(sf::Color(220, 0, 0));
-		_FeedbackText.setString("Connecting to " + _MenuItems[(int)MenuItemIndex::IP]->getText() + ":" + _MenuItems[(int)MenuItemIndex::Port]->getText() + " failed. Please try again.");
+		_FeedbackText.setString("Connecting to " + _MenuItems[(int)MenuItemIndex::IP]->getText() + ":" + _MenuItems[(int)MenuItemIndex::Port]->getText() + " failed.");
 
 		_MenuGameState = GameState::MultiplayerSelection;
 		return NetworkCommunication::ConnectionFailed;

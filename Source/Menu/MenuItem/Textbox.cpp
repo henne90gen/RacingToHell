@@ -139,7 +139,7 @@ MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 					setCursor();
 				}
 
-				if (Event.key.code == 50 && !sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && !sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt))
+				if (Event.key.code == 50 && !sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
 				{
 					std::string newString = _String.substr(0, _CursorPosition) + "." + _String.substr(_CursorPosition, _String.length() - _CursorPosition);
 					if (!isStringTooLarge(newString)) {
@@ -148,6 +148,18 @@ MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 						_CursorPosition++;
 						setCursor();
 					}
+				}
+			}
+
+			if (Event.key.code == 21 && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+			{
+				std::string newString = _String.substr(0, _CursorPosition) + GetClipboardText() + _String.substr(_CursorPosition, _String.length() - _CursorPosition);
+
+				if (!isStringTooLarge(newString)) {
+					_String = newString;
+					setString();
+					_CursorPosition = newString.length();
+					setCursor();
 				}
 			}
 
@@ -171,7 +183,7 @@ void Textbox::setCursor()
 	sf::Text TmpText = _Text;
 	TmpText.setString(_Text.getString().substring(0, _CursorPosition));
 
-	_Cursor.setPosition(_Text.getPosition() + sf::Vector2f(TmpText.getLocalBounds().width + 1, 4));
+	_Cursor.setPosition(_Text.getPosition() + sf::Vector2f(TmpText.getLocalBounds().width + 3, 4));
 }
 
 sf::FloatRect Textbox::getRect()
@@ -217,4 +229,37 @@ void Textbox::setString()
 	{
 		_Text.setString(_String);
 	}
+}
+
+std::string Textbox::GetClipboardText()
+{
+	// Try opening the clipboard
+	if (!OpenClipboard(nullptr))
+	{
+		return "";
+	}
+		
+	// Get handle of clipboard object for ANSI text
+	HANDLE hData = GetClipboardData(CF_TEXT);
+	if (hData == nullptr)
+	{
+		return "";
+	}
+
+	// Lock the handle to get the actual text pointer
+	char * pszText = static_cast<char*>(GlobalLock(hData));
+	if (pszText == nullptr)
+	{
+
+	}
+	// Save text in a string class instance
+	std::string text(pszText);
+
+	// Release the lock
+	GlobalUnlock(hData);
+
+	// Release the clipboard
+	CloseClipboard(); 
+
+	return text;
 }

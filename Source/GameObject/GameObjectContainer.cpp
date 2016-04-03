@@ -38,6 +38,7 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 						break;
 					case GameObjectType::BulletObjectAI:
 						getPlayerCar().takeDamage(5);
+						playHitSound(getPlayerCar().getPos());
 						deleteObject(i);
 						i--;
 						break;
@@ -60,6 +61,7 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 						break;
 					case GameObjectType::BulletObjectBoss:
 						getPlayerCar().takeDamage(5);
+						playHitSound(getPlayerCar().getPos());
 						deleteObject(i);
 						i--;
 						break;
@@ -154,6 +156,7 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 						if (_GameObjects.at(i)->checkForCollision(*_GameObjects.at(j)))
 						{
 							_GameObjects.at(i)->takeDamage(getPlayerCar().getBulletdamage());
+							playHitSound(_GameObjects.at(j)->getPos());
 							deleteObject(j);
 							break;
 						}
@@ -180,6 +183,7 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 				if (_GameObjects.at(i)->getType() == GameObjectType::BulletObjectPlayer)
 				{
 					_GameObjects.at(1)->takeDamage(getPlayerCar().getBulletdamage());
+					playHitSound(getBossCar().getPos());
 					deleteObject(i);
 					i--;
 				}
@@ -351,6 +355,7 @@ void GameObjectContainer::load()
 
 	_ExplosionSoundBuffer.loadFromFile("Resources/Sound/explosion.wav");
 	_ExplosionTexture.loadFromFile("Resources/Texture/Animation/explosion.png");
+	_ImpactSoundBuffer.loadFromFile("Resources/Sound/impact.wav");
 }
 
 void GameObjectContainer::setCarSkins(std::vector<std::shared_ptr<sf::Texture>>& CarSkins)
@@ -564,5 +569,16 @@ int GameObjectContainer::getBossHP()
 		break;
 	}
 
+}
+
+void GameObjectContainer::playHitSound(sf::Vector2f position)
+{
+	std::shared_ptr<sf::Sound> ImpactSound = std::make_shared<sf::Sound>();
+	ImpactSound->setBuffer(_ImpactSoundBuffer);
+	ImpactSound->setVolume(_Volume * 5.5f);
+	ImpactSound->setPosition(sf::Vector3f(position.x, 0, position.y));
+	ImpactSound->setMinDistance(650.0f);
+	ImpactSound->setAttenuation(2.0f);
+	_SoundEffects.push_back(std::make_pair(ImpactSound, false));
 }
 

@@ -21,7 +21,7 @@ void NetworkHandle::connect(std::string ip, std::string password, std::string na
 		AuthPacket.clear();
 
 		_Socket.receive(AuthPacket);
-		float TimePassed = SyncClock.getElapsedTime().asSeconds / 2.0f;
+		float TimePassed = SyncClock.getElapsedTime().asSeconds() / 2.0f;
 
 		sf::Uint8 Response;
 		AuthPacket >> Response;
@@ -130,6 +130,7 @@ void NetworkHandle::run()
 
 	while (_Relationship != NetworkRelation::None)
 	{
+		sf::Clock beginningTime;
 		checkForConnection();
 
 		if (_Socket.getRemoteAddress() != sf::IpAddress::None)
@@ -165,10 +166,15 @@ void NetworkHandle::run()
 
 		//std::cout << _Authenticated << _Tick << std::endl;
 
-		++_Tick;
-		sf::sleep(sf::seconds(1.0f / (float)_TickRate)); 
-	}
+		if (_Relationship == NetworkRelation::Client && _Tick % (sf::Uint32)256 == 0) {
+			synchroniseTick();
+		}
 
+		++_Tick;
+		if (beginningTime.getElapsedTime().asSeconds() < 1.0f / (float)_TickRate) {
+			sf::sleep(sf::seconds((1.0f / (float)_TickRate) - beginningTime.getElapsedTime().asSeconds()));
+		}
+	}
 	_State = NetworkState::None;
 }
 
@@ -231,6 +237,14 @@ void NetworkHandle::authenticatePlayer(sf::Packet& packet)
 	}
 }
 
+void NetworkHandle::synchroniseTick()
+{
+	sf::Packet syncPacket;
+	syncPacket << (sf::Uint8)NetworkCommunication::SynchroniseTick << _Tick;
+	_SynchronisationTimer.restart();
+	_Socket.send(syncPacket);
+}
+
 void NetworkHandle::receiveData(sf::Packet& packet)
 {
 	if (packet.getDataSize() > 0)
@@ -273,6 +287,19 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 			_LastResponse = std::make_pair(NetworkCommunication::Ready, (int)OnOff);
 			break;
 		}
+		case NetworkCommunication::SynchroniseTick:
+			if (_Relationship == NetworkRelation::Host) {
+				sf::Packet responsePacket;
+				responsePacket << (sf::Uint8)NetworkCommunication::SynchroniseTick << _Tick;
+				_Socket.send(responsePacket);
+				std::cout << "Sending SyncPacket with tick = " << _Tick << std::endl;
+			}
+			else if (_Relationship == NetworkRelation::Client) {
+				std::cout << "Old Tick: " << _Tick << std::endl;
+				_Tick = Tick + (sf::Uint32)(_TickRate * _SynchronisationTimer.restart().asSeconds() / 2.0f);
+				std::cout << "Received SyncPacket. Tick is now: " << _Tick << " " << (float)(_Tick / 256.0f) << std::endl;
+			}
+			break;
 		default:
 			std::cout << "Unexpected communicationtype" << std::endl;
 			break;

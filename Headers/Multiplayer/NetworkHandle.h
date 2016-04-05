@@ -37,6 +37,7 @@ public:
 private:
 	void checkForConnection();
 	void authenticatePlayer(sf::Packet& packet);
+	void synchroniseTick();
 
 	void receiveData(sf::Packet& packet);
 	void sendData();
@@ -57,4 +58,6 @@ private:
 	std::pair<NetworkCommunication, int> _LastResponse;
 
 	std::string _MyName, _MemberName;
+
+	sf::Clock _SynchronisationTimer;
 };

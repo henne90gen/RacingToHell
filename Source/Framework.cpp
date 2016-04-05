@@ -515,16 +515,8 @@ void Framework::update()
 		break;
 	}
 	case GameState::Countdown:
-		if (_NetworkHandle.getRelation() == NetworkRelation::Host) {
-			if (_Countdown.update(_FrameTime)) {
-				_GameState = GameState::RunningMultiplayer;
-			}
-		}
-		else if (_NetworkHandle.getRelation() == NetworkRelation::Client) {
-			// TODO: read the time from the host and set it here
-			if (_Countdown.update(_FrameTime)) {
-				_GameState = GameState::RunningMultiplayer;
-			}
+		if (_Countdown.update(_FrameTime)) {
+			_GameState = GameState::RunningMultiplayer;
 		}
 		break;
 	case GameState::RunningMultiplayer:

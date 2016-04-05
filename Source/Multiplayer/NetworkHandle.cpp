@@ -264,7 +264,6 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 			break;
 		case NetworkCommunication::StartGame:
 			_LastResponse = std::make_pair(NetworkCommunication::StartGame, (int)(_Tick - Tick));
-			std::cout << "Starting game at tick " << _Tick << std::endl;
 			_State = NetworkState::Ingame;
 			break;
 		case NetworkCommunication::CreateGameObject:

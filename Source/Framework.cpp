@@ -509,7 +509,7 @@ void Framework::update()
 			_MultiplayerLobby.setClientReady((bool)(lastResponse.second));
 		}
 		else if (lastResponse.first == NetworkCommunication::StartGame && _NetworkHandle.getRelation() == NetworkRelation::Client) {
-			_Countdown.fastForward((float)((float)_NetworkHandle.getLastResponse().second / (float)_NetworkHandle.getTickRate()));
+			_Countdown.fastForward((float)((float)lastResponse.second / (float)_NetworkHandle.getTickRate()));
 			_GameState = GameState::Countdown;
 		}
 		_Level.update(_FrameTime, _GameState);

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Multiplayer\NetworkHandle.h"
 
-NetworkHandle::NetworkHandle() : _TickRate(128), _Relationship(NetworkRelation::None), _Tick(0), _Authenticated(false)
+NetworkHandle::NetworkHandle() : _TickRate(64), _Relationship(NetworkRelation::None), _Tick(0), _Authenticated(false)
 {}
 
 void NetworkHandle::connect(std::string ip, std::string password, std::string name,int port, float timeout)

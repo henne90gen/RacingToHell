@@ -8,7 +8,7 @@ AboutScreen::AboutScreen() : Menu(GameState::About)
 	_MenuItems.push_back(button);
 
 	_Frame.setPosition(sf::Vector2f(50, 75));
-	_Frame.setSize(sf::Vector2f(SCREENWIDTH - 100, 475));
+	_Frame.setSize(sf::Vector2f(SCREENWIDTH - 100, 645));
 	_Frame.setFillColor(sf::Color(0, 0, 0, 175));
 	_Frame.setOutlineThickness(1);
 	_Frame.setOutlineColor(sf::Color::Black);
@@ -60,6 +60,22 @@ AboutScreen::AboutScreen() : Menu(GameState::About)
 	_LevelUp2.setColor(sf::Color::White);
 	_LevelUp2.setString("by Bart Kelsey");
 	_LevelUp2.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _LevelUp2.getLocalBounds().width / 2, 470));
+
+	_AIShotSounds = _Music;
+	_AIShotSounds.setString("Sound of enemy cars");
+	_AIShotSounds.setPosition(sf::Vector2f(SCREENWIDTH / 2 -_AIShotSounds.getLocalBounds().width / 2, 520));
+
+	_AIShotSounds2 = _Music;
+	_AIShotSounds2.setString("www.youtube.com/blinkfarm");
+	_AIShotSounds2.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _AIShotSounds2.getLocalBounds().width / 2, 555));
+
+	_PlayerCarShotSounds = _Music;
+	_PlayerCarShotSounds.setString("Sound of player car");
+	_PlayerCarShotSounds.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _PlayerCarShotSounds.getLocalBounds().width / 2, 605));
+
+	_PlayerCarShotSounds2 = _Music;
+	_PlayerCarShotSounds2.setString("soundbible.com/1804-M4A1-Single.html");
+	_PlayerCarShotSounds2.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _PlayerCarShotSounds2.getLocalBounds().width / 2, 640));
 }
 
 void AboutScreen::render(sf::RenderWindow & window)
@@ -73,6 +89,10 @@ void AboutScreen::render(sf::RenderWindow & window)
 	window.draw(_Boss2);
 	window.draw(_LevelUp);
 	window.draw(_LevelUp2);
+	window.draw(_AIShotSounds);
+	window.draw(_AIShotSounds2);
+	window.draw(_PlayerCarShotSounds);
+	window.draw(_PlayerCarShotSounds2);
 
 	Menu::render(window);
 }

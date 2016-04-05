@@ -2,7 +2,8 @@
 #include "Menu/Countdown.h"
 
 Countdown::Countdown() : 
-	Menu(GameState::Countdown)
+	Menu(GameState::Countdown),
+	_AdditionalTime(0.0f)
 {
 	_Text.setString("4");
 	_Text.setCharacterSize(75);
@@ -44,7 +45,13 @@ bool Countdown::update(float frameTime)
 		_Timer.restart();
 		_Started = true;
 	}
-	_Text.setString(std::to_string((int)(4 - _Timer.getElapsedTime().asSeconds())));
+	_Text.setString(std::to_string((int)(4 - _Timer.getElapsedTime().asSeconds() - _AdditionalTime)));
 	
-	return (_Timer.getElapsedTime().asSeconds() > 3);
+	return (_Timer.getElapsedTime().asSeconds() - _AdditionalTime > 3);
+}
+
+void Countdown::fastForward(float time)
+{
+	_AdditionalTime = time;
+	std::cout << "Adding " << time << " seconds." << std::endl;
 }

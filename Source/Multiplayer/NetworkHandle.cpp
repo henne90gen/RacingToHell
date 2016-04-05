@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Multiplayer\NetworkHandle.h"
 
-NetworkHandle::NetworkHandle() : _TickRate(64), _Relationship(NetworkRelation::None), _Tick(0), _Authenticated(false)
+NetworkHandle::NetworkHandle() : _TickRate(64), _UpdateIntervall(2), _Relationship(NetworkRelation::None), _Tick(0), _Authenticated(false)
 {}
 
 void NetworkHandle::connect(std::string ip, std::string password, std::string name,int port, float timeout)
@@ -83,6 +83,7 @@ void NetworkHandle::disconnect(bool self)
 		_Relationship = NetworkRelation::None;
 		_MyName = "";
 		_Password = "";
+		_Tick = 0;
 		std::cout << "You closed the lobby." << std::endl;
 	}
 	else if (_Relationship == NetworkRelation::Host && !self) {
@@ -166,7 +167,7 @@ void NetworkHandle::run()
 
 		//std::cout << _Authenticated << _Tick << std::endl;
 
-		if (_Relationship == NetworkRelation::Client && _Tick % (sf::Uint32)256 == 0) {
+		if (_Relationship == NetworkRelation::Client && _Tick % (sf::Uint32)(_TickRate * _UpdateIntervall) == 0) {
 			synchroniseTick();
 		}
 
@@ -262,7 +263,8 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 			disconnect(false);
 			break;
 		case NetworkCommunication::StartGame:
-			_LastResponse = std::make_pair(NetworkCommunication::StartGame, 0);
+			_LastResponse = std::make_pair(NetworkCommunication::StartGame, (int)(_Tick - Tick));
+			std::cout << "Starting game at tick " << _Tick << std::endl;
 			_State = NetworkState::Ingame;
 			break;
 		case NetworkCommunication::CreateGameObject:
@@ -292,10 +294,8 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 				sf::Packet responsePacket;
 				responsePacket << (sf::Uint8)NetworkCommunication::SynchroniseTick << _Tick;
 				_Socket.send(responsePacket);
-				std::cout << "Sending SyncPacket with tick = " << _Tick << std::endl;
 			}
 			else if (_Relationship == NetworkRelation::Client) {
-				std::cout << "Old Tick: " << _Tick << std::endl;
 				_Tick = Tick + (sf::Uint32)(_TickRate * _SynchronisationTimer.restart().asSeconds() / 2.0f);
 				std::cout << "Received SyncPacket. Tick is now: " << _Tick << " " << (float)(_Tick / 128.0f) << std::endl;
 			}
@@ -326,6 +326,7 @@ void NetworkHandle::sendData()
 			disconnect(true);
 			break;
 		case NetworkCommunication::StartGame:
+			std::cout << "Starting game at tick " << _Tick << std::endl;
 			_State = NetworkState::Ingame;
 			break;
 		case NetworkCommunication::EndGame:

@@ -27,6 +27,8 @@ public:
 	bool getAuthenticated() { return _Authenticated; }
 	std::string getMyName() { return _MyName; }
 	std::string getMemberName() { return _MemberName; }
+	sf::Uint32 getTick() { return _Tick; }
+	int getTickRate() { return _TickRate; }
 
 	void setState(NetworkState state) { _State = state; }
 	void setPort(unsigned int port) { _Port = port; }
@@ -49,7 +51,7 @@ private:
 	std::vector < std::pair<NetworkCommunication, sf::Packet>> _SendPackets;
 	std::mutex _Mutex;
 
-	unsigned int _TickRate, _Port, _Authenticated;
+	unsigned int _TickRate, _UpdateIntervall, _Port, _Authenticated;
 	sf::Uint32 _Tick;
 	std::string _Password;
 

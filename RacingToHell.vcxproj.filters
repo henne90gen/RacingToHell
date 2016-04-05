@@ -246,6 +246,9 @@
     <ClInclude Include="Headers\GameObject\PlayerCar.h">
       <Filter>Header Files\GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="Headers\Menu\PauseMultiplayerMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Framework.cpp">
@@ -381,6 +384,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Menu\Countdown.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Menu\PauseMultiplayerMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -19,7 +19,7 @@ Framework::Framework() : _FrameTime(0), _FPS(60.0f), _IsRunning(true), _GameStat
 	srand(time(NULL));
 
 	//Multiplayer
-	_MultiplayerMenu.setNetWorkHandle(&_NetworkHandle);
+	_MultiplayerMenu.setNetworkHandle(&_NetworkHandle);
 	_MultiplayerLobby.setNetworkHandle(&_NetworkHandle);
 }
 

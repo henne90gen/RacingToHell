@@ -211,9 +211,11 @@
     <ClInclude Include="Headers\GameObject\Boss\Mech.h" />
     <ClInclude Include="Headers\Animation\MechTop.h" />
     <ClInclude Include="Headers\Menu\HighscoreMenu.h" />
+    <ClInclude Include="Headers\Menu\PauseMultiplayerMenu.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Menu\PauseMultiplayerMenu.cpp" />
     <ClCompile Include="Source\Menu\Countdown.cpp" />
     <ClCompile Include="Source\GameObject\GameObjectFactory.cpp" />
     <ClCompile Include="Source\Menu\AboutScreen.cpp" />

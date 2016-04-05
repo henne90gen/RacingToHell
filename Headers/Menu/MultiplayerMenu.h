@@ -37,7 +37,7 @@ public:
 
 	bool getCreatedLobby() { return _CreatedLobby; }
 
-	void setNetWorkHandle(NetworkHandle *Handle) { _NetworkHandle = Handle; }
+	void setNetworkHandle(NetworkHandle *Handle) { _NetworkHandle = Handle; }
 	
 	std::string getPlayerName();
 	void setPlayerName(std::string name);

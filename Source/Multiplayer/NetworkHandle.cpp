@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Multiplayer\NetworkHandle.h"
 
-NetworkHandle::NetworkHandle() : _TickRate(128), _Relationship(NetworkRelation::None), _Tick(0), _Authenticated(false)
+NetworkHandle::NetworkHandle() : _TickRate(64), _Relationship(NetworkRelation::None), _Tick(0), _Authenticated(false)
 {}
 
 void NetworkHandle::connect(std::string ip, std::string password, std::string name,int port, float timeout)
@@ -127,6 +127,7 @@ void NetworkHandle::run()
 
 	while (_Relationship != NetworkRelation::None)
 	{
+		sf::Clock beginningTime;
 		checkForConnection();
 
 		if (_Socket.getRemoteAddress() != sf::IpAddress::None)
@@ -163,9 +164,10 @@ void NetworkHandle::run()
 		//std::cout << _Authenticated << _Tick << std::endl;
 
 		++_Tick;
-		sf::sleep(sf::seconds(1.0f / (float)_TickRate)); 
+		if (beginningTime.getElapsedTime().asSeconds() < 1.0f / (float)_TickRate) {
+			sf::sleep(sf::seconds((1.0f / (float)_TickRate) - beginningTime.getElapsedTime().asSeconds()));
+		}
 	}
-
 	_State = NetworkState::None;
 }
 

@@ -29,10 +29,12 @@ public:
 
 	bool update(float frameTime);
 
+	void fastForward(float time);
+
 private:
 	sf::Clock _Timer;
 	bool _Started;
-
+	float _AdditionalTime;
 	sf::RectangleShape _Background;
 };
 

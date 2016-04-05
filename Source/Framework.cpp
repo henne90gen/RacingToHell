@@ -217,9 +217,9 @@ void Framework::handleEvents()
 		_GameState = _OptionsMenu.handleEvents(_RenderWindow);
 		if (_GameState != GameState::Options) {
 			_OptionsMenu.saveOptions(_MultiplayerMenu);
-			setVolume(_OptionsMenu.getVolume());
-			_FPS = _OptionsMenu.getFPS();
 		}
+		setVolume(_OptionsMenu.getVolume());
+		_FPS = _OptionsMenu.getFPS();
 		break;
 	case GameState::About:
 		_GameState = _AboutScreen.handleEvents(_RenderWindow);
@@ -419,6 +419,7 @@ void Framework::update()
 		break;
 	case GameState::Options:
 		_OptionsMenu.update(_FrameTime);
+		
 		if (_OptionsMenu.getReturnState() == GameState::Main) {
 			_Level.update(_FrameTime, _GameState);
 		}

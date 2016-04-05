@@ -6,6 +6,9 @@ Car::Car(sf::Vector2f pos, int maxhealth, float speed, GameObjectType Type, sf::
 	_Speed = speed;
 	_MaxHealth = maxhealth;
 	_Health = maxhealth;
+	_resetColorTime = -1.0f;
+
+	_ImpactSoundBuffer.loadFromFile("Resources/Sound/impact.wav");
 }
 
 int Car::getHealth()
@@ -29,4 +32,18 @@ void Car::operator<<(std::istream& stream)
 	read(stream, _Speed);
 	read(stream, _Health);
 	read(stream, _MaxHealth);
+}
+
+void Car::update(float frametime, int roadspeed)
+{
+	if (_resetColorTime >= 0)
+	{
+		_resetColorTime += frametime;
+
+		if (_resetColorTime > 0.055f)
+		{
+			getSprite().setColor(sf::Color::White);
+			_resetColorTime = -1.0f;
+		}
+	}
 }

@@ -147,10 +147,10 @@ void Jet::stopSounds()
 void Jet::init()
 {
 	_EngineSound.setBuffer(_EngineSoundBuffer);
-	_EngineSound.setVolume(_Volume * 4);
+	_EngineSound.setVolume(_Volume * 5.5f);
 	_EngineSound.setPosition(getPos().x, 0.f, getPos().y);
-	_EngineSound.setMinDistance(500.f);
-	_EngineSound.setAttenuation(10.f);
+	_EngineSound.setMinDistance(600.f);
+	_EngineSound.setAttenuation(8.f);
 
 	_Traffic = true;
 	_Pattern = { std::make_pair(Phase::SIDE, 6.0f) };

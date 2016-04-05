@@ -2,6 +2,8 @@
 #include "StandardCursor.h"
 #include "Menu/MenuItem/MenuItem.h"
 
+#include <Windows.h>
+
 class Textbox : public MenuItem
 {
 public:
@@ -85,4 +87,5 @@ private:
 	std::string passwordString(std::string& s);
 
 	void setString();
+	std::string GetClipboardText();
 };

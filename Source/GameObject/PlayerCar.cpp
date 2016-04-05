@@ -98,6 +98,8 @@ void PlayerCar::handleEvent(sf::Event& Event)
 
 void PlayerCar::update(float FrameTime, int RoadSpeed)
 {
+	Car::update(FrameTime, RoadSpeed);
+
 	//_Movement anwenden - Car bewegen
 	if (((getPos() + _Movement * FrameTime * (float)_Speed).x >= getWidth() / 2) && ((getPos() + _Movement * FrameTime * (float)_Speed).x <= SCREENWIDTH - getWidth() / 2)) {
 		setPos(sf::Vector2f(getPos().x + _Movement.x * _Speed * FrameTime, getPos().y));

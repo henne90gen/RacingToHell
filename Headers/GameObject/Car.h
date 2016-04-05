@@ -47,7 +47,7 @@ public:
 		@param frameTime Time that has passed since the last update
 		@param roadSpeed Velocity of the road
 	*/
-	virtual void update(float frameTime, int roadSpeed) {}
+	virtual void update(float frameTime, int roadSpeed);
 
 	/*
 		@return int Health of the Car
@@ -78,7 +78,7 @@ public:
 		Damage the car and subtract the damage from the health
 		@param damage Amount of health to subtract
 	*/
-	void takeDamage(int damage) { _Health -= damage; }
+	void takeDamage(int damage) { _Health -= damage; getSprite().setColor(sf::Color(220, 0, 0)); _resetColorTime = 0.0f; }
 
 	/*
 		Writes the necessary data for a car to a stream
@@ -92,5 +92,8 @@ public:
 protected:
 	sf::Int16 _Health, _Speed, _MaxHealth;
 	sf::Vector2f _Movement;
+
+	float _resetColorTime;
+	sf::SoundBuffer _ImpactSoundBuffer;
 };
 

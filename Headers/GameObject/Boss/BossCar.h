@@ -92,8 +92,9 @@ protected:
 	bool _Attack, _Traffic;
 
 	float PlayerAngle(GameObject& Player);
-	void shootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir) { shootBullet(GameObjects, pos, dir, _BulletSpeed); }
-	void shootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir, int BulletSpeed);
+	void shootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir) { shootBullet(GameObjects, pos, dir, _BulletSpeed, _Volume); }
+	void shootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir, float volume) { shootBullet(GameObjects, pos, dir, _BulletSpeed, volume); }
+	void shootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir, int BulletSpeed, float volume);
 	bool driveToNextPosition(float FrameTime);
 	int getBossEvent();
 	void updateHealthBar();

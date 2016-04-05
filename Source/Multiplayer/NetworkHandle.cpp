@@ -297,7 +297,7 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 			else if (_Relationship == NetworkRelation::Client) {
 				std::cout << "Old Tick: " << _Tick << std::endl;
 				_Tick = Tick + (sf::Uint32)(_TickRate * _SynchronisationTimer.restart().asSeconds() / 2.0f);
-				std::cout << "Received SyncPacket. Tick is now: " << _Tick << " " << (float)(_Tick / 256.0f) << std::endl;
+				std::cout << "Received SyncPacket. Tick is now: " << _Tick << " " << (float)(_Tick / 128.0f) << std::endl;
 			}
 			break;
 		default:

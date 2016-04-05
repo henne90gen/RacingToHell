@@ -11,6 +11,7 @@
 #include "Menu/GameOverScreen.h"
 #include "Menu/LoadingScreen.h"
 #include "Menu/LevelUpScreen.h"
+#include "Menu/PauseMultiplayerMenu.h"
 #include "Menu/MultiplayerMenu.h"
 #include "Menu/MultiplayerLobby.h"
 #include "Menu/Countdown.h"
@@ -73,6 +74,7 @@ private:
 	HeadsUpDisplay _HeadsUpDisplay;
 	MultiplayerMenu _MultiplayerMenu;
 	MultiplayerLobby _MultiplayerLobby;
+	PauseMultiplayerMenu _PauseMultiplayerMenu;
 	Countdown _Countdown;
 
 	//Multiplayer

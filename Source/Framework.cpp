@@ -122,6 +122,10 @@ void Framework::render()
 		setMouseVisible(false);
 		_HeadsUpDisplay.render(_RenderWindow);
 		break;
+	case GameState::PauseMultiplayer:
+		setMouseVisible(true);
+		_PauseMultiplayerMenu.render(_RenderWindow);
+		break;
 	}
 	_RenderWindow.display();
 }
@@ -317,12 +321,12 @@ void Framework::handleEvents()
 					_GameState = GameState::Exiting;
 				}
 				else if (_Event.type == sf::Event::MouseLeft) {
-					_PauseMenu.setReturnState(_GameState);
+					_PauseMultiplayerMenu.setReturnState(_GameState);
 					_GameState = GameState::PauseMultiplayer;
 				}
 				else {
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, 7)) {
-						_PauseMenu.setReturnState(_GameState);
+						_PauseMultiplayerMenu.setReturnState(_GameState);
 						_GameState = GameState::PauseMultiplayer;
 					}
 					else {
@@ -335,12 +339,12 @@ void Framework::handleEvents()
 					_GameState = GameState::Exiting;
 				}
 				else if (_Event.type == sf::Event::MouseLeft) {
-					_PauseMenu.setReturnState(_GameState);
+					_PauseMultiplayerMenu.setReturnState(_GameState);
 					_GameState = GameState::PauseMultiplayer;
 				}
 				else {
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, 7)) {
-						_PauseMenu.setReturnState(_GameState);
+						_PauseMultiplayerMenu.setReturnState(_GameState);
 						_GameState = GameState::PauseMultiplayer;
 					}
 					else {
@@ -348,6 +352,20 @@ void Framework::handleEvents()
 					}
 				}
 			}
+		}
+		break;
+	case GameState::PauseMultiplayer:
+		_GameObjectContainer.stopSounds();
+		_GameState = _PauseMultiplayerMenu.handleEvents(_RenderWindow);
+		if (_GameState == GameState::RunningMultiplayer) {
+			_Clock.restart();
+		}
+		else if (_GameState == GameState::Main) {
+			resetGame();
+		}
+		else if (_GameState == GameState::Options) {
+			_OptionsMenu.enableDifficultySelection(false);
+			_OptionsMenu.setReturnState(GameState::PauseMultiplayer);
 		}
 		break;
 	}
@@ -419,7 +437,6 @@ void Framework::update()
 		break;
 	case GameState::Options:
 		_OptionsMenu.update(_FrameTime);
-		
 		if (_OptionsMenu.getReturnState() == GameState::Main) {
 			_Level.update(_FrameTime, _GameState);
 		}
@@ -540,10 +557,44 @@ void Framework::update()
 			addScore();
 		}
 		break;
+	case GameState::PauseMultiplayer:
+		if (_NetworkHandle.getRelation() == NetworkRelation::Host) {
+			if (_Level.update(_FrameTime, _GameState)) {
+				if (_GameObjectContainer.emptyScreen()) {
+					_GameObjectContainer.enterBossFight();
+					_GameState = GameState::BossFight;
+				}
+			}
+			_GameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
+			_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
+			if (!_GameObjectContainer.playerIsAlive()) {
+				_GameState = GameState::GameOver;
+			}
+			addScore();
+		}
+		else if (_NetworkHandle.getRelation() == NetworkRelation::Client) {
+			if (_Level.update(_FrameTime, _GameState)) {
+				if (_GameObjectContainer.emptyScreen()) {
+					_GameObjectContainer.enterBossFight();
+					_GameState = GameState::BossFight;
+				}
+			}
+			_GameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
+			_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
+			if (!_GameObjectContainer.playerIsAlive()) {
+				_GameState = GameState::GameOver;
+			}
+			addScore();
+		}
+		break;
 	}
 }
 
 /*
+
+
+
+
 
 
 

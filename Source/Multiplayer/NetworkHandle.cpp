@@ -15,11 +15,13 @@ void NetworkHandle::connect(std::string ip, std::string password, std::string na
 		sf::Packet AuthPacket;
 		AuthPacket << (sf::Uint8)(NetworkCommunication::Authentication) << password << name;
 
+		sf::Clock SyncClock;
 		_Socket.send(AuthPacket);
 
 		AuthPacket.clear();
 
 		_Socket.receive(AuthPacket);
+		float TimePassed = SyncClock.getElapsedTime().asSeconds / 2.0f;
 
 		sf::Uint8 Response;
 		AuthPacket >> Response;
@@ -29,7 +31,8 @@ void NetworkHandle::connect(std::string ip, std::string password, std::string na
 			_Authenticated = true;
 			_LastResponse = std::make_pair(NetworkCommunication::ConnectionSuccesfull, 0);
 			_MyName = name;
-			AuthPacket >> _MemberName;
+			AuthPacket >> _MemberName >> _Tick;
+			_Tick += (sf::Uint32)(_TickRate * TimePassed);
 			std::cout << "Connected with " << _MemberName << std::endl;
 		}
 		else if (Response == (sf::Uint8)(NetworkCommunication::WrongPassword))
@@ -212,7 +215,7 @@ void NetworkHandle::authenticatePlayer(sf::Packet& packet)
 			sf::Packet AuthPacket;
 			if (_Password == password)
 			{
-				AuthPacket << (sf::Uint8)(NetworkCommunication::ConnectionSuccesfull) << _MyName;
+				AuthPacket << (sf::Uint8)(NetworkCommunication::ConnectionSuccesfull) << _MyName << _Tick;
 				_Socket.send(AuthPacket);
 				_Authenticated = true;
 				packet >> _MemberName;

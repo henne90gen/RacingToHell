@@ -52,7 +52,7 @@ void Framework::render()
 {
 	if ((_GameState != GameState::Loading || _LoadingScreen.isFadingAway()) && _GameState != GameState::Countdown) {
 		_Level.render(_RenderWindow);
-		_GameObjectContainer.render(_RenderWindow, _GameState == GameState::Running || _GameState == GameState::BossFight || _GameState == GameState::RunningMuliplayer);
+		_GameObjectContainer.render(_RenderWindow, _GameState == GameState::Running || _GameState == GameState::BossFight || _GameState == GameState::RunningMultiplayer);
 	}
 
 	switch (_GameState) {
@@ -115,7 +115,9 @@ void Framework::render()
 		setMouseVisible(false);
 		_Countdown.render(_RenderWindow);
 		break;
-	case GameState::RunningMuliplayer:
+	case GameState::RunningMultiplayer:
+		setMouseVisible(false);
+		_HeadsUpDisplay.render(_RenderWindow);
 		break;
 	}
 	_RenderWindow.display();
@@ -137,18 +139,19 @@ void Framework::handleEvents()
 {
 	switch (_GameState) {
 	case GameState::Running:
-		while (_RenderWindow.pollEvent(_Event))
+		if (_RenderWindow.pollEvent(_Event))
 		{
 			if (_Event.type == sf::Event::Closed) {
 				_GameState = GameState::Exiting;
 			}
 			else if (_Event.type == sf::Event::MouseLeft) {
+				_PauseMenu.setReturnState(_GameState);
 				_GameState = GameState::Pause;
 			}
 			else {
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, 7)) {
+					_PauseMenu.setReturnState(_GameState);
 					_GameState = GameState::Pause;
-					_PauseMenu.setReturnState(GameState::Running);
 				}
 				else {
 					_GameObjectContainer.handleEvent(_Event);
@@ -303,6 +306,47 @@ void Framework::handleEvents()
 	case GameState::Countdown:
 		_GameState = _Countdown.handleEvents(_RenderWindow);
 		break;
+	case GameState::RunningMultiplayer:
+		if (_RenderWindow.pollEvent(_Event))
+		{
+			if (_NetworkHandle.getRelation() == NetworkRelation::Host) {
+				if (_Event.type == sf::Event::Closed) {
+					_GameState = GameState::Exiting;
+				}
+				else if (_Event.type == sf::Event::MouseLeft) {
+					_PauseMenu.setReturnState(_GameState);
+					_GameState = GameState::PauseMultiplayer;
+				}
+				else {
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, 7)) {
+						_PauseMenu.setReturnState(_GameState);
+						_GameState = GameState::PauseMultiplayer;
+					}
+					else {
+						_GameObjectContainer.handleEvent(_Event);
+					}
+				}
+			}
+			else if (_NetworkHandle.getRelation() == NetworkRelation::Client) {
+				if (_Event.type == sf::Event::Closed) {
+					_GameState = GameState::Exiting;
+				}
+				else if (_Event.type == sf::Event::MouseLeft) {
+					_PauseMenu.setReturnState(_GameState);
+					_GameState = GameState::PauseMultiplayer;
+				}
+				else {
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, 7)) {
+						_PauseMenu.setReturnState(_GameState);
+						_GameState = GameState::PauseMultiplayer;
+					}
+					else {
+						_GameObjectContainer.handleEvent(_Event);
+					}
+				}
+			}
+		}
+		break;
 	}
 }
 
@@ -452,18 +496,32 @@ void Framework::update()
 	case GameState::Countdown:
 		if (_NetworkHandle.getRelation() == NetworkRelation::Host) {
 			if (_Countdown.update(_FrameTime)) {
-				_GameState = GameState::RunningMuliplayer;
+				_GameState = GameState::RunningMultiplayer;
 			}
 		}
 		else if (_NetworkHandle.getRelation() == NetworkRelation::Client) {
 			// TODO: read the time from the host and set it here
 			if (_Countdown.update(_FrameTime)) {
-				_GameState = GameState::RunningMuliplayer;
+				_GameState = GameState::RunningMultiplayer;
 			}
 		}
 		break;
-	case GameState::RunningMuliplayer:
+	case GameState::RunningMultiplayer:
 		if (_NetworkHandle.getRelation() == NetworkRelation::Host) {
+			if (_Level.update(_FrameTime, _GameState)) {
+				if (_GameObjectContainer.emptyScreen()) {
+					_GameObjectContainer.enterBossFight();
+					_GameState = GameState::BossFight;
+				}
+			}
+			_GameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
+			_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
+			if (!_GameObjectContainer.playerIsAlive()) {
+				_GameState = GameState::GameOver;
+			}
+			addScore();
+		}
+		else if (_NetworkHandle.getRelation() == NetworkRelation::Client) {
 			if (_Level.update(_FrameTime, _GameState)) {
 				if (_GameObjectContainer.emptyScreen()) {
 					_GameObjectContainer.enterBossFight();

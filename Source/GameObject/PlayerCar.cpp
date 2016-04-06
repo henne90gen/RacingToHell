@@ -2,7 +2,9 @@
 #include "GameObject\PlayerCar.h"
 
 
-PlayerCar::PlayerCar(int selectedCar, sf::Texture& texture) : Car(sf::Vector2f(0, 0), 100, 500, GameObjectType::Player, texture), _CrosshairSpeed(600.0f), _SelectedCar(selectedCar)
+PlayerCar::PlayerCar(unsigned int id, int selectedCar, sf::Texture& texture) : 
+	Car(id, sf::Vector2f(0, 0), 100, 500, GameObjectType::Player, texture), 
+	_CrosshairSpeed(600.0f), _SelectedCar(selectedCar)
 {
 	setStats(_SelectedCar);
 	resetShotBullet();

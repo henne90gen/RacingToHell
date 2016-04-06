@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "GameObject\Car.h"
 
-Car::Car(sf::Vector2f pos, int maxhealth, float speed, GameObjectType Type, sf::Texture& texture) : GameObject(pos, Type, texture)
+Car::Car(unsigned int id, sf::Vector2f pos, int maxhealth, float speed, GameObjectType Type, sf::Texture& texture) : 
+	GameObject(id, pos, Type, texture)
 {
 	_Speed = speed;
 	_MaxHealth = maxhealth;

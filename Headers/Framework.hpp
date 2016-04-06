@@ -17,6 +17,8 @@
 #include "Menu/Countdown.h"
 #include "HeadsUpDisplay.h"
 #include "Multiplayer/NetworkHandle.h"
+#include "Multiplayer/HostGameObjectContainer.h"
+#include "Multiplayer/ClientGameObjectContainer.h"
 #include "Level/Level.h" 
 #include "Menu/MenuItem/PlayerTable.h"
 
@@ -54,6 +56,9 @@ private:
 	GameState _GameState;
 	GameObjectContainer _GameObjectContainer;
 	std::vector<std::shared_ptr<sf::Texture>> _CarSkins;
+
+	HostGameObjectContainer _HostGameObjectContainer;
+	ClientGameObjectContainer _ClientGameObjectContainer;
 
 	// Level
 	Level _Level;

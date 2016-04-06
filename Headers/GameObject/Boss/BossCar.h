@@ -3,6 +3,7 @@
 #include "GameObject\Car.h"
 #include "GameObject\GameObjectType.h"
 #include "GameObject\Bullet.h"
+#include "GameObject\GameObjectFactory.h"
 #include "Animation\Explosion.h"
 
 class BossCar : public Car
@@ -16,7 +17,7 @@ public:
 		@param texture			Texture for the sprite that is going to be used for collision detection
 		@param bulletTexture	Texture for the bullets the boss will shoot
 	*/
-	BossCar(sf::Vector2f& pos, int difficulty, int health, float speed, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
+	BossCar(unsigned int id, sf::Vector2f& pos, int difficulty, int health, float speed, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
 	BossCar(std::istream& stream, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
 	~BossCar() {}
 

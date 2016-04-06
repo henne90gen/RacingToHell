@@ -198,7 +198,7 @@ void Framework::handleEvents()
 		else if (_GameState == GameState::Options) {
 			_OptionsMenu.enableDifficultySelection(true);
 			_OptionsMenu.setReturnState(GameState::Main);
-		} 
+		}
 		else if (_GameState == GameState::MultiplayerSelection)
 		{
 			_MultiplayerMenu.resetFeedback();
@@ -297,7 +297,7 @@ void Framework::handleEvents()
 			_NetworkThread.detach();
 		}
 		_GameState = _MultiplayerLobby.handleEvents(_RenderWindow);
-		
+
 		_CurrentCarSkinIndex = _MultiplayerLobby.getCarIndex();
 
 		if (_CurrentCarSkinIndex < 0) {
@@ -307,8 +307,14 @@ void Framework::handleEvents()
 			_CurrentCarSkinIndex = 0;
 		}
 		_MultiplayerLobby.setCarIndex(_CurrentCarSkinIndex);
-		_GameObjectContainer.getPlayerCar().setTexture((*_CarSkins.at(_CurrentCarSkinIndex)));
-		_GameObjectContainer.getPlayerCar().setStats(_CurrentCarSkinIndex);
+		if (_NetworkHandle.getRelation() == NetworkRelation::Host) {
+			_HostGameObjectContainer.getPlayerCar().setTexture((*_CarSkins.at(_CurrentCarSkinIndex)));
+			_HostGameObjectContainer.getPlayerCar().setStats(_CurrentCarSkinIndex);
+		}
+		else if (_NetworkHandle.getRelation() == NetworkRelation::Client) {
+			//_ClientGameObjectContainer.getPlayerCar().setTexture((*_CarSkins.at(_CurrentCarSkinIndex)));
+			//_ClientGameObjectContainer.getPlayerCar().setStats(_CurrentCarSkinIndex);
+		}
 		break;
 	case GameState::Countdown:
 		_GameState = _Countdown.handleEvents(_RenderWindow);
@@ -523,20 +529,20 @@ void Framework::update()
 	case GameState::RunningMultiplayer:
 		if (_NetworkHandle.getRelation() == NetworkRelation::Host) {
 			if (_Level.update(_FrameTime, _GameState)) {
-				if (_GameObjectContainer.emptyScreen()) {
-					_GameObjectContainer.enterBossFight();
-					_GameState = GameState::BossFight;
+				if (_HostGameObjectContainer.emptyScreen()) {
+					_HostGameObjectContainer.enterBossFight();
+					_GameState = GameState::BossFightMultiplayer;
 				}
 			}
-			_GameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
-			_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
-			if (!_GameObjectContainer.playerIsAlive()) {
-				_GameState = GameState::GameOver;
+			_HostGameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
+			_HeadsUpDisplay.update(_Score, _HostGameObjectContainer.getPlayerCar().getHealth(), _HostGameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
+			if (!_HostGameObjectContainer.playerIsAlive()) {
+				_GameState = GameState::GameOverMultiplayer;
 			}
 			addScore();
 		}
 		else if (_NetworkHandle.getRelation() == NetworkRelation::Client) {
-			if (_Level.update(_FrameTime, _GameState)) {
+			/*if (_Level.update(_FrameTime, _GameState)) {
 				if (_GameObjectContainer.emptyScreen()) {
 					_GameObjectContainer.enterBossFight();
 					_GameState = GameState::BossFight;
@@ -547,7 +553,7 @@ void Framework::update()
 			if (!_GameObjectContainer.playerIsAlive()) {
 				_GameState = GameState::GameOver;
 			}
-			addScore();
+			addScore();*/
 		}
 		break;
 	case GameState::PauseMultiplayer:

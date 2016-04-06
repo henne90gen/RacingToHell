@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\Multiplayer\ClientGameObjectContainer.h" />
     <ClInclude Include="Headers\Menu\Countdown.h" />
     <ClInclude Include="Headers\Multiplayer\Communication.h" />
     <ClInclude Include="Headers\GameObject\GameObjectFactory.h" />
@@ -212,9 +213,12 @@
     <ClInclude Include="Headers\Animation\MechTop.h" />
     <ClInclude Include="Headers\Menu\HighscoreMenu.h" />
     <ClInclude Include="Headers\Menu\PauseMultiplayerMenu.h" />
+    <ClInclude Include="Headers\Multiplayer\HostGameObjectContainer.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Multiplayer\ClientGameObjectContainer.cpp" />
+    <ClCompile Include="Source\Multiplayer\HostGameObjectContainer.cpp" />
     <ClCompile Include="Source\Menu\PauseMultiplayerMenu.cpp" />
     <ClCompile Include="Source\Menu\Countdown.cpp" />
     <ClCompile Include="Source\GameObject\GameObjectFactory.cpp" />

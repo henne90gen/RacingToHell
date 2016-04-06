@@ -16,7 +16,7 @@ public:
 		@param type Type of the Car
 		@param texture Texture that is going to be used for the sprite
 	*/
-	Car(sf::Vector2f pos, int maxHealth, float speed, GameObjectType type, sf::Texture& texture);
+	Car(unsigned int id, sf::Vector2f pos, int maxHealth, float speed, GameObjectType type, sf::Texture& texture);
 
 	/*
 		Car that can drive around on the road

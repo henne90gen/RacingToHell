@@ -2,7 +2,7 @@
 #include "GameObject\GameObject.h"
 
 
-GameObject::GameObject(sf::Vector2f pos, GameObjectType type, sf::Texture& texture) : _Type(type)
+GameObject::GameObject(unsigned int id, sf::Vector2f pos, GameObjectType type, sf::Texture& texture) : _ID(id), _Type(type)
 {
 	initTexture(texture);
 	_Sprite.setPosition(pos);
@@ -62,12 +62,14 @@ void GameObject::resetMovement() {
 void GameObject::operator>>(std::ostream& stream)
 {
 	write(stream, (sf::Uint8)getType());
+	write(stream, _ID);
 	write(stream, getPos().x);
 	write(stream, getPos().y);
 }
 
 void GameObject::operator<<(std::istream& stream)
 {
+	read(stream, _ID);
 	float x, y;
 	read(stream, x);
 	read(stream, y);

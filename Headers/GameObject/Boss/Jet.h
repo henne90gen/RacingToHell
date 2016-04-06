@@ -9,7 +9,7 @@ public:
 		@param texture Texture for the sprite
 		@param bulletTexture Texture for all bullets the Jet shoots
 	*/
-	Jet(int difficulty, int HP, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, sf::SoundBuffer &soundBufferEngine, float Volume);
+	Jet(unsigned int id, int difficulty, int HP, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, sf::SoundBuffer &soundBufferEngine, float Volume);
 	Jet(std::istream& stream, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, sf::SoundBuffer &soundBufferEngine, float Volume);
 	~Jet() {}
 

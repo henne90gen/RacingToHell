@@ -2,8 +2,8 @@
 #include "GameObject\AICar.h"
 
 
-AICar::AICar(int hp, int roadSpeed, sf::Texture& texture) : 
-	Car(sf::Vector2f(0, 0), hp, std::rand() % ((int)(roadSpeed / 3)) + ((int)(roadSpeed / 3)), GameObjectType::AI, texture)
+AICar::AICar(unsigned int id, int hp, int roadSpeed, sf::Texture& texture) :
+	Car(id, sf::Vector2f(0, 0), hp, std::rand() % ((int)(roadSpeed / 3)) + ((int)(roadSpeed / 3)), GameObjectType::AI, texture)
 {
 	_Lane = std::rand() % 4;
 	init();

@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "GameObject/Boss/Mech.h"
 
-Mech::Mech(int difficulty, int HP, sf::Texture& textureTop, sf::Texture& textureLegs, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume) : 
-	BossCar(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), difficulty, HP, 100, textureTop, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, volume),
+Mech::Mech(unsigned int id, int difficulty, int HP, sf::Texture& textureTop, sf::Texture& textureLegs, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume) :
+	BossCar(id, sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), difficulty, HP, 100, textureTop, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, volume),
 	_TopAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureTop), _LegsAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureLegs), _MovementSwitch(false)
 {
 	init();

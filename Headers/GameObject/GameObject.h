@@ -12,7 +12,7 @@ public:
 		@param type Type of the GameObject
 		@param texture Texture that is going to be used for the Sprite
 	*/
-	GameObject(sf::Vector2f pos, GameObjectType type, sf::Texture& texture);
+	GameObject(unsigned int id, sf::Vector2f pos, GameObjectType type, sf::Texture& texture);
 
 	/*
 		Any object that can be on the screen
@@ -254,10 +254,16 @@ public:
 		Initializes the texture for this GameObject
 	*/
 	void initTexture(sf::Texture& texture);
+
+	unsigned int getID() { return _ID; }
+
+	void setID(unsigned int id) { _ID = id; }
 private:
 	sf::Sprite _Sprite;
 	sf::Texture _Texture;
 	
+	unsigned int _ID;
+
 	GameObjectType _Type;
 };
 

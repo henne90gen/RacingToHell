@@ -3,7 +3,8 @@
 #include "GameObject\Car.h"
 #include "GameObject\GameObjectType.h"
 #include "GameObject\Bullet.h"
-#include "GameObject\GameObjectFactory.h"
+// TODO: Move GOFactory include to all the different bosses
+//#include "GameObject\GameObjectFactory.h"
 #include "Animation\Explosion.h"
 
 class BossCar : public Car
@@ -95,7 +96,7 @@ protected:
 	float PlayerAngle(GameObject& Player);
 	void shootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir) { shootBullet(GameObjects, pos, dir, _BulletSpeed, _Volume); }
 	void shootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir, float volume) { shootBullet(GameObjects, pos, dir, _BulletSpeed, volume); }
-	void shootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir, int BulletSpeed, float volume);
+	virtual void shootBullet(std::vector<std::shared_ptr<GameObject>>& gameObjects, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed, float volume) = 0;
 	bool driveToNextPosition(float FrameTime);
 	int getBossEvent();
 	void updateHealthBar();

@@ -88,8 +88,8 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 				{
 					std::pair<sf::Vector2f, sf::Vector2f> Positions = calcGunPositions();
 
-					shootBullet(gameObjects, Positions.first, _GunOrientation);
-					shootBullet(gameObjects, Positions.second, _GunOrientation);
+					BossCar::shootBullet(gameObjects, Positions.first, _GunOrientation);
+					BossCar::shootBullet(gameObjects, Positions.second, _GunOrientation);
 				}
 				break;
 			}
@@ -140,11 +140,11 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 
 						if (Hand)
 						{
-							shootBullet(gameObjects, calcGunPositions().first, bulOrientation);
+							BossCar::shootBullet(gameObjects, calcGunPositions().first, bulOrientation);
 						}
 						else
 						{
-							shootBullet(gameObjects, calcGunPositions().second, bulOrientation);
+							BossCar::shootBullet(gameObjects, calcGunPositions().second, bulOrientation);
 						}
 					}
 				}
@@ -170,11 +170,11 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 
 						if (Hand)
 						{
-							shootBullet(gameObjects, calcGunPositions().first, bulOrientation);
+							BossCar::shootBullet(gameObjects, calcGunPositions().first, bulOrientation);
 						}
 						else
 						{
-							shootBullet(gameObjects, calcGunPositions().second, bulOrientation);
+							BossCar::shootBullet(gameObjects, calcGunPositions().second, bulOrientation);
 						}
 					}
 				}
@@ -251,6 +251,11 @@ void Mech::init()
 		std::make_pair(Phase::SHOTGUN, 7.0f), std::make_pair(Phase::NOTHING, 1.5f),
 		std::make_pair(Phase::ZICKZACKPHASE, 0.25f), std::make_pair(Phase::SALVEZICKZACK, 3.0f), std::make_pair(Phase::NOTHING, 0.75f)
 	};
+}
+
+void Mech::shootBullet(std::vector<std::shared_ptr<GameObject>>& gameObjects, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed, float volume)
+{
+	gameObjects.push_back(GameObjectFactory::getBullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss, _soundEffects, volume));
 }
 
 std::pair<sf::Vector2f, sf::Vector2f>& Mech::calcGunPositions()

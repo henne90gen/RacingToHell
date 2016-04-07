@@ -102,8 +102,12 @@ public:
 	static void setPlayerCarTextures(std::vector<std::shared_ptr<sf::Texture>>& carSkins) { _PlayerCarTextures = carSkins; }
 private:
 	static std::vector<std::shared_ptr<sf::Texture>> _PlayerCarTextures, _AICarTextures, _BossCarTextures;
-	static sf::Texture _ToolboxTexture, _EnergyCanisterTexture, _BulletTexture;
-	static sf::SoundBuffer _AIShotSoundBuffer, _PlayerShotSoundBuffer, _JetSoundBuffer;
+	static sf::Texture& _ToolboxTexture();
+	static sf::Texture& _EnergyCanisterTexture();
+	static sf::Texture& _BulletTexture();
+	static sf::SoundBuffer& _AIShotSoundBuffer();
+	static sf::SoundBuffer& _PlayerShotSoundBuffer();
+	static sf::SoundBuffer&  _JetSoundBuffer();
 
 	static unsigned int _CurrentGameObjectID;
 };

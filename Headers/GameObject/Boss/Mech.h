@@ -1,4 +1,5 @@
 #pragma once
+#include "GameObject\GameObjectFactory.h"
 #include "GameObject/Boss/BossCar.h"
 #include "Animation/MechTop.h"
 #include "Animation/MechLegs.h"
@@ -60,6 +61,8 @@ public:
 private:
 	MechTop _TopAnim;
 	MechLegs _LegsAnim;
+
+	void shootBullet(std::vector<std::shared_ptr<GameObject>>& gameObjects, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed, float volume);
 
 	bool _MovementSwitch;
 

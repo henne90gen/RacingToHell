@@ -32,11 +32,6 @@ float BossCar::PlayerAngle(GameObject& Player)
 	return Angle;
 }
 
-void BossCar::shootBullet(std::vector<std::shared_ptr<GameObject>>& gameObjects, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed, float volume)
-{
-	gameObjects.push_back(GameObjectFactory::getBullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss, _soundEffects, volume));
-}
-
 int BossCar::getBossEvent()
 {
 	if (_Event1Frequency != 0 && _BossEventTimer1.getElapsedTime().asSeconds() > 1 / _Event1Frequency)

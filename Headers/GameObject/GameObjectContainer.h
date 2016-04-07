@@ -1,11 +1,12 @@
 #pragma once
 
-#include "GameObject/GameObjectFactory.h"
+
 #include "GameObject/GameObject.h"
 #include "GameObject/GameObjectType.h"
 #include "GameObject/AICar.h"
 #include "GameObject/PlayerCar.h"
 #include "GameObject/Bullet.h"
+#include "GameObject/GameObjectFactory.h"
 
 #include "GameObject/Boss/BossCar.h"
 #include "GameObject/Boss/Tank.h"

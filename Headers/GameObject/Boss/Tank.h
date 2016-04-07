@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject/Boss/BossCar.h"
+#include "GameObject\GameObjectFactory.h"
 
 class Tank : public BossCar
 {
@@ -27,6 +28,8 @@ public:
 private:
 	sf::Texture _GunTexture;
 	sf::Sprite _GunSprite;
+
+	virtual void shootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir, int BulletSpeed, float volume);
 
 	bool _MovementSwitch;
 };

@@ -64,7 +64,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 				_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
 
 				if (getBossEvent() == 1) {
-					shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
+					BossCar::shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
 				}
 				break;
 			case Phase::SALVE:
@@ -76,7 +76,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 
 				if (_Event1Switch) {
 					if (getBossEvent() == 2) {
-						shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
+						BossCar::shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
 						if (_Event1Counter + 1 < 3) {
 							_Event1Counter += 1;
 						}
@@ -113,7 +113,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 				_GunOrientation = divideByLength(sf::Vector2f(std::cosf(angle * PI / 180), std::sinf(angle * PI / 180)));
 
 				if (getBossEvent() == 1) {
-					shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
+					BossCar::shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
 				}
 				break;
 			case Phase::HARDCORESPAM:
@@ -122,7 +122,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 					_Event1Counter++;
 					_GunOrientation = divideByLength(sf::Vector2f(((float)(std::rand() - (float)(RAND_MAX) / 2) / (float)(RAND_MAX)), 
 						((float)(std::rand() - (float)(RAND_MAX) / 2) / (float)(RAND_MAX))));
-					shootBullet(gameObjects, calcBulletPosition(), _GunOrientation, (float)(_Event1Counter % 5 < 2) * _Volume);
+					BossCar::shootBullet(gameObjects, calcBulletPosition(), _GunOrientation, (float)(_Event1Counter % 5 < 2) * _Volume);
 				}
 				break;
 			}
@@ -137,6 +137,11 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 	else {
 		updateExplosions(frameTime);
 	}
+}
+
+void Tank::shootBullet(std::vector<std::shared_ptr<GameObject>>& gameObjects, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed, float volume)
+{
+	gameObjects.push_back(GameObjectFactory::getBullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss, _soundEffects, volume));
 }
 
 void Tank::init()

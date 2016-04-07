@@ -58,8 +58,8 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Gam
 				{
 					for (int i = -40; i <= SCREENHEIGHT; i += 200)
 					{
-						shootBullet(gameObjects, sf::Vector2f(0, i), sf::Vector2f(1, 0));
-						shootBullet(gameObjects, sf::Vector2f(SCREENWIDTH, i + 100), sf::Vector2f(-1, 0));
+						BossCar::shootBullet(gameObjects, sf::Vector2f(0, i), sf::Vector2f(1, 0));
+						BossCar::shootBullet(gameObjects, sf::Vector2f(SCREENWIDTH, i + 100), sf::Vector2f(-1, 0));
 					}
 				}
 				break;
@@ -79,11 +79,11 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Gam
 						{
 							for (int i = 0; i < 3; i++)
 							{
-									shootBullet(gameObjects, sf::Vector2f(i * 150 + 150, 0), sf::Vector2f(0, 1));
+									BossCar::shootBullet(gameObjects, sf::Vector2f(i * 150 + 150, 0), sf::Vector2f(0, 1));
 							}
 
-								shootBullet(gameObjects, sf::Vector2f(20, 0), sf::Vector2f(0, 1));
-								shootBullet(gameObjects, sf::Vector2f(SCREENWIDTH - 20, 0), sf::Vector2f(0, 1));
+								BossCar::shootBullet(gameObjects, sf::Vector2f(20, 0), sf::Vector2f(0, 1));
+								BossCar::shootBullet(gameObjects, sf::Vector2f(SCREENWIDTH - 20, 0), sf::Vector2f(0, 1));
 
 							++_Event2Counter;
 						}
@@ -111,6 +111,11 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Gam
 	else {
 		updateExplosions(frameTime);
 	}
+}
+
+void Jet::shootBullet(std::vector<std::shared_ptr<GameObject>>& gameObjects, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed, float volume)
+{
+	gameObjects.push_back(GameObjectFactory::getBullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss, _soundEffects, volume));
 }
 
 void Jet::randomPosition()

@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject\Boss\BossCar.h"
+#include "GameObject\GameObjectFactory.h"
 
 class Jet : public BossCar
 {
@@ -37,6 +38,8 @@ private:
 		Changes to the next phase
 	*/
 	void checkPhase();
+
+	virtual void shootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir, int BulletSpeed, float volume);
 
 	sf::SoundBuffer _EngineSoundBuffer;
 	sf::Sound _EngineSound;

@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject/Boss/BossCar.h"
+#include "GameObject\GameObjectFactory.h"
 
 class Carrier : public BossCar
 {
@@ -29,6 +30,8 @@ private:
 	sf::Sprite _GunSprite;
 
 	float _Radius;
+
+	virtual void shootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir, int BulletSpeed, float volume);
 
 	bool _MovementSwitchLeftRight, _MovementSwitchUpDown, _SwitchSides;
 	sf::Clock _SwitchSidesClock;

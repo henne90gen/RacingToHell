@@ -21,6 +21,8 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 		}
 	}
 
+	_GameObjects.at(0)->update(FrameTime, RoadSpeed);
+
 	/*
 	// Collision player
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)

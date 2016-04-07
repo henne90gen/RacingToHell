@@ -115,6 +115,6 @@ private:
 	float _AccelerationTime;
 
 	//Value between 0.0 and 1.0 the speed value is multiplied by
-	float _Acceleration;
+	sf::Vector2f _Acceleration;
 };
 

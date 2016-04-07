@@ -42,7 +42,9 @@ void PlayerCar::render(sf::RenderWindow& Window, bool renderCrosshair) {
 void PlayerCar::handleEvent(sf::Event& Event)
 {
 	// Apply key input to car
-	_Movement = sf::Vector2f(0, 0);
+	//_Movement = sf::Vector2f(0, 0);
+	_Acceleration = sf::Vector2f(0, 0);
+
 	float X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
 	float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
 	
@@ -50,13 +52,16 @@ void PlayerCar::handleEvent(sf::Event& Event)
 		_Movement += sf::Vector2f(X / 100.0f, 0);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-		_Movement += sf::Vector2f(-1, 0);
+		//_Movement += sf::Vector2f(-1, 0);
+		_Acceleration.x = -6.6f;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-		_Movement += sf::Vector2f(1, 0);
+		//_Movement += sf::Vector2f(1, 0);
+		_Acceleration.x = 6.6f;
 	}
 	else {
-		_Movement = sf::Vector2f(0, 0);
+		//_Movement = sf::Vector2f(0, 0);
+		_Acceleration.x = 0.0f;
 	}
 
 	if (Y > 50 || Y < -50) {
@@ -68,15 +73,18 @@ void PlayerCar::handleEvent(sf::Event& Event)
 		}
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-		_Movement += sf::Vector2f(0, -0.45);
+		//_Movement += sf::Vector2f(0, -0.45);
+		_Acceleration.y = -4.6f;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-		_Movement += sf::Vector2f(0, 1.2);
+		//_Movement += sf::Vector2f(0, 1.2);
+		_Acceleration.y = 8.0f;
 	}
 	else {
-		_Movement.y = 0;
+		//_Movement.y = 0;
+		_Acceleration.y = 0.0f;
 	}
-	
+
 	// Apply mouse and joystick movement
 	_CrosshairMovement = sf::Vector2f(0, 0);
 	if (Event.type == sf::Event::MouseMoved) {
@@ -102,29 +110,33 @@ void PlayerCar::update(float FrameTime, int RoadSpeed)
 {
 	Car::update(FrameTime, RoadSpeed);
 
-	if (_Movement != sf::Vector2f(0, 0))
+	if (_Movement.x + _Acceleration.x * FrameTime >= -1.0f && _Movement.x + _Acceleration.x * FrameTime <= 1.0f)
 	{
-		if (_Acceleration + FrameTime / _AccelerationTime <= 1.0f)
-		{
-			_Acceleration += FrameTime / _AccelerationTime;
-		}
-		else
-		{
-			_Acceleration = 1.0f;
-		}
+		_Movement.x += _Acceleration.x * FrameTime;
 	}
-	else
+
+	if (_Movement.y + _Acceleration.y * FrameTime >= -0.45f && _Movement.y + _Acceleration.y * FrameTime <= 1.2f)
 	{
-		_Acceleration = 0.0f;
+		_Movement.y += _Acceleration.y * FrameTime;
+	}
+
+	if (std::abs(_Movement.x) > 0)
+	{
+		_Movement.x += std::pow(-1.0f, (float)(_Movement.x > 0)) * 3.2f * FrameTime;
+	}
+
+	if (std::abs(_Movement.y) > 0)
+	{
+		_Movement.y += std::pow(-1.0f, (float)(_Movement.y > 0)) * 3.2f * FrameTime;
 	}
 
 	//_Movement anwenden - Car bewegen
-	if (((getPos() + _Movement * FrameTime * (float)_Speed * _Acceleration).x  >= getWidth() / 2) && ((getPos() + _Movement * FrameTime * (float)_Speed * _Acceleration).x  <= SCREENWIDTH - getWidth() / 2)) {
-		setPos(sf::Vector2f(getPos().x + _Movement.x * _Speed * _Acceleration * FrameTime, getPos().y));
+	if (((getPos() + _Movement * FrameTime * (float)_Speed).x  >= getWidth() / 2) && ((getPos() + _Movement * FrameTime * (float)_Speed).x  <= SCREENWIDTH - getWidth() / 2)) {
+		setPos(sf::Vector2f(getPos().x + _Movement.x * _Speed * FrameTime, getPos().y));
 	}
 
-	if (getPos().y + getHeight() / 2 + _Movement.y * FrameTime * _Speed * _Acceleration <= SCREENHEIGHT && getPos().y - getHeight() / 2 + _Movement.y * FrameTime * _Speed * _Acceleration >= 0) {
-		setPos(sf::Vector2f(getPos().x, getPos().y + _Movement.y * FrameTime * _Speed * _Acceleration));
+	if (getPos().y + getHeight() / 2 + _Movement.y * FrameTime * _Speed <= SCREENHEIGHT && getPos().y - getHeight() / 2 + _Movement.y * FrameTime * _Speed >= 0) {
+		setPos(sf::Vector2f(getPos().x, getPos().y + _Movement.y * FrameTime * _Speed));
 	}
 
 	//Update _AimLine

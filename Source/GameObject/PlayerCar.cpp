@@ -4,7 +4,7 @@
 
 PlayerCar::PlayerCar(unsigned int id, int selectedCar, sf::Texture& texture) : 
 	Car(id, sf::Vector2f(0, 0), 100, 500, GameObjectType::Player, texture), 
-	_CrosshairSpeed(600.0f), _SelectedCar(selectedCar)
+	_CrosshairSpeed(600.0f), _SelectedCar(selectedCar), _AccelerationTime(0.1f)
 {
 	setStats(_SelectedCar);
 	resetShotBullet();
@@ -102,13 +102,29 @@ void PlayerCar::update(float FrameTime, int RoadSpeed)
 {
 	Car::update(FrameTime, RoadSpeed);
 
-	//_Movement anwenden - Car bewegen
-	if (((getPos() + _Movement * FrameTime * (float)_Speed).x >= getWidth() / 2) && ((getPos() + _Movement * FrameTime * (float)_Speed).x <= SCREENWIDTH - getWidth() / 2)) {
-		setPos(sf::Vector2f(getPos().x + _Movement.x * _Speed * FrameTime, getPos().y));
+	if (_Movement != sf::Vector2f(0, 0))
+	{
+		if (_Acceleration + FrameTime / _AccelerationTime <= 1.0f)
+		{
+			_Acceleration += FrameTime / _AccelerationTime;
+		}
+		else
+		{
+			_Acceleration = 1.0f;
+		}
+	}
+	else
+	{
+		_Acceleration = 0.0f;
 	}
 
-	if (getPos().y + getHeight() / 2 + _Movement.y * FrameTime * _Speed <= SCREENHEIGHT && getPos().y - getHeight() / 2 + _Movement.y * FrameTime * _Speed >= 0) {
-		setPos(sf::Vector2f(getPos().x, getPos().y + _Movement.y * FrameTime * _Speed));
+	//_Movement anwenden - Car bewegen
+	if (((getPos() + _Movement * FrameTime * (float)_Speed).x * _Acceleration >= getWidth() / 2) && ((getPos() + _Movement * FrameTime * (float)_Speed).x * _Acceleration <= SCREENWIDTH - getWidth() / 2)) {
+		setPos(sf::Vector2f(getPos().x + _Movement.x * _Speed * _Acceleration * FrameTime, getPos().y));
+	}
+
+	if (getPos().y + getHeight() / 2 + _Movement.y * FrameTime * _Speed * _Acceleration <= SCREENHEIGHT && getPos().y - getHeight() / 2 + _Movement.y * FrameTime * _Speed * _Acceleration >= 0) {
+		setPos(sf::Vector2f(getPos().x, getPos().y + _Movement.y * FrameTime * _Speed * _Acceleration));
 	}
 
 	//Update _AimLine

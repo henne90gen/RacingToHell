@@ -106,8 +106,15 @@ private:
 
 	sf::RectangleShape _AimLine;
 	sf::Vector2f _CrosshairMovement;
-	float _CrosshairSpeed;
 	sf::Texture _CrosshairTexture;
 	sf::Sprite _Crosshair;
+
+	float _CrosshairSpeed;
+
+	//Time it takes to reach maximum speed
+	float _AccelerationTime;
+
+	//Value between 0.0 and 1.0 the speed value is multiplied by
+	float _Acceleration;
 };
 

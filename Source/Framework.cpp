@@ -307,14 +307,8 @@ void Framework::handleEvents()
 			_CurrentCarSkinIndex = 0;
 		}
 		_MultiplayerLobby.setCarIndex(_CurrentCarSkinIndex);
-		if (_NetworkHandle.getRelation() == NetworkRelation::Host) {
-			_HostGameObjectContainer.getPlayerCar().setTexture((*_CarSkins.at(_CurrentCarSkinIndex)));
-			_HostGameObjectContainer.getPlayerCar().setStats(_CurrentCarSkinIndex);
-		}
-		else if (_NetworkHandle.getRelation() == NetworkRelation::Client) {
-			//_ClientGameObjectContainer.getPlayerCar().setTexture((*_CarSkins.at(_CurrentCarSkinIndex)));
-			//_ClientGameObjectContainer.getPlayerCar().setStats(_CurrentCarSkinIndex);
-		}
+		_MPGameObjectContainer.getPlayerCar().setTexture((*_CarSkins.at(_CurrentCarSkinIndex)));
+		_MPGameObjectContainer.getPlayerCar().setStats(_CurrentCarSkinIndex);
 		break;
 	case GameState::Countdown:
 		_GameState = _Countdown.handleEvents(_RenderWindow);
@@ -322,46 +316,26 @@ void Framework::handleEvents()
 	case GameState::RunningMultiplayer:
 		if (_RenderWindow.pollEvent(_Event))
 		{
-			if (_NetworkHandle.getRelation() == NetworkRelation::Host) {
-				if (_Event.type == sf::Event::Closed) {
-					_GameState = GameState::Exiting;
-				}
-				else if (_Event.type == sf::Event::MouseLeft) {
-					_PauseMultiplayerMenu.setReturnState(_GameState);
-					_GameState = GameState::PauseMultiplayer;
-				}
-				else {
-					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, 7)) {
-						_PauseMultiplayerMenu.setReturnState(_GameState);
-						_GameState = GameState::PauseMultiplayer;
-					}
-					else {
-						_GameObjectContainer.handleEvent(_Event);
-					}
-				}
+			if (_Event.type == sf::Event::Closed) {
+				_GameState = GameState::Exiting;
 			}
-			else if (_NetworkHandle.getRelation() == NetworkRelation::Client) {
-				if (_Event.type == sf::Event::Closed) {
-					_GameState = GameState::Exiting;
-				}
-				else if (_Event.type == sf::Event::MouseLeft) {
+			else if (_Event.type == sf::Event::MouseLeft) {
+				_PauseMultiplayerMenu.setReturnState(_GameState);
+				_GameState = GameState::PauseMultiplayer;
+			}
+			else {
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, 7)) {
 					_PauseMultiplayerMenu.setReturnState(_GameState);
 					_GameState = GameState::PauseMultiplayer;
 				}
 				else {
-					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, 7)) {
-						_PauseMultiplayerMenu.setReturnState(_GameState);
-						_GameState = GameState::PauseMultiplayer;
-					}
-					else {
-						_GameObjectContainer.handleEvent(_Event);
-					}
+					_MPGameObjectContainer.handleEvent(_Event);
 				}
 			}
 		}
 		break;
 	case GameState::PauseMultiplayer:
-		_GameObjectContainer.stopSounds();
+		_MPGameObjectContainer.stopSounds();
 		_GameState = _PauseMultiplayerMenu.handleEvents(_RenderWindow);
 		if (_GameState == GameState::RunningMultiplayer) {
 			_Clock.restart();
@@ -529,14 +503,14 @@ void Framework::update()
 	case GameState::RunningMultiplayer:
 		if (_NetworkHandle.getRelation() == NetworkRelation::Host) {
 			if (_Level.update(_FrameTime, _GameState)) {
-				if (_HostGameObjectContainer.emptyScreen()) {
-					_HostGameObjectContainer.enterBossFight();
+				if (_MPGameObjectContainer.emptyScreen()) {
+					_MPGameObjectContainer.enterBossFight();
 					_GameState = GameState::BossFightMultiplayer;
 				}
 			}
-			_HostGameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
-			_HeadsUpDisplay.update(_Score, _HostGameObjectContainer.getPlayerCar().getHealth(), _HostGameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
-			if (!_HostGameObjectContainer.playerIsAlive()) {
+			_MPGameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
+			_HeadsUpDisplay.update(_Score, _MPGameObjectContainer.getPlayerCar().getHealth(), _MPGameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
+			if (!_MPGameObjectContainer.playerIsAlive()) {
 				_GameState = GameState::GameOverMultiplayer;
 			}
 			addScore();
@@ -664,6 +638,10 @@ void Framework::load()
 		_GameObjectContainer.load();
 		_GameObjectContainer.setCarSkins(_CarSkins);
 		_GameObjectContainer.resetGameObjects(0);
+
+		_MPGameObjectContainer.load();
+		_MPGameObjectContainer.setCarSkins(_CarSkins);
+		_MPGameObjectContainer.resetGameObjects(0);
 
 		_GameOverScreen.load();
 

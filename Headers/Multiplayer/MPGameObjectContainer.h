@@ -15,15 +15,15 @@
 
 #include "Animation/Explosion.h"
 
-class HostGameObjectContainer
+class MPGameObjectContainer
 {
 public:
 	/*
 	GameObjectContainer is the manager class for all GameObjects.
 	It handles their creation and deletion, as well as updating and rendering them
 	*/
-	HostGameObjectContainer();
-	~HostGameObjectContainer();
+	MPGameObjectContainer();
+	~MPGameObjectContainer();
 
 	/*
 	Renders all the GameObjects to the screen

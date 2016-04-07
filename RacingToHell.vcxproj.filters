@@ -249,10 +249,7 @@
     <ClInclude Include="Headers\Menu\PauseMultiplayerMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Multiplayer\ClientGameObjectContainer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\Multiplayer\HostGameObjectContainer.h">
+    <ClInclude Include="Headers\Multiplayer\MPGameObjectContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -395,10 +392,7 @@
     <ClCompile Include="Source\Menu\PauseMultiplayerMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Multiplayer\ClientGameObjectContainer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Multiplayer\HostGameObjectContainer.cpp">
+    <ClCompile Include="Source\Multiplayer\MPGameObjectContainer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -31,8 +31,7 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 					{
 					case GameObjectType::AI:
 						{
-							std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0), _SoundEffects, _ExplosionSoundBuffer, _Volume));
-							_Animations.push_back(newExplosion);
+							_Animations.push_back(std::shared_ptr<Explosion>(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0), _SoundEffects, _ExplosionSoundBuffer, _Volume)));
 							_PlayerAlive = false;
 						}
 						break;
@@ -54,8 +53,7 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 						break;
 					case GameObjectType::Boss:
 						{
-							std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0), _SoundEffects, _ExplosionSoundBuffer, _Volume));
-							_Animations.push_back(newExplosion);
+							_Animations.push_back(std::shared_ptr<Explosion>(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0), _SoundEffects, _ExplosionSoundBuffer, _Volume)));
 							_PlayerAlive = false;
 						}
 						break;
@@ -70,8 +68,7 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 			}
 			else {
 				if (getPlayerCar().getHealth() <= 0) {
-					std::shared_ptr<Explosion> newExplosion(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0), _SoundEffects, _ExplosionSoundBuffer, _Volume));
-					_Animations.push_back(newExplosion);
+					_Animations.push_back(std::shared_ptr<Explosion>(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0), _SoundEffects, _ExplosionSoundBuffer, _Volume)));
 					_PlayerAlive = false;
 				}
 			}

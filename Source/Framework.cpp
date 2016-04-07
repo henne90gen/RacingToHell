@@ -55,7 +55,12 @@ void Framework::render()
 {
 	if ((_GameState != GameState::Loading || _LoadingScreen.isFadingAway()) && _GameState != GameState::Countdown) {
 		_Level.render(_RenderWindow);
-		_GameObjectContainer.render(_RenderWindow, _GameState == GameState::Running || _GameState == GameState::BossFight || _GameState == GameState::RunningMultiplayer);
+		if (_NetworkHandle.getRelation() == NetworkRelation::None) {
+			_GameObjectContainer.render(_RenderWindow, _GameState == GameState::Running || _GameState == GameState::BossFight || _GameState == GameState::RunningMultiplayer);
+		}
+		else {
+			_MPGameObjectContainer.render(_RenderWindow, _GameState == GameState::Running || _GameState == GameState::BossFight || _GameState == GameState::RunningMultiplayer);
+		}
 	}
 
 	switch (_GameState) {
@@ -533,28 +538,28 @@ void Framework::update()
 	case GameState::PauseMultiplayer:
 		if (_NetworkHandle.getRelation() == NetworkRelation::Host) {
 			if (_Level.update(_FrameTime, _GameState)) {
-				if (_GameObjectContainer.emptyScreen()) {
-					_GameObjectContainer.enterBossFight();
+				if (_MPGameObjectContainer.emptyScreen()) {
+					_MPGameObjectContainer.enterBossFight();
 					_GameState = GameState::BossFight;
 				}
 			}
-			_GameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
-			_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
-			if (!_GameObjectContainer.playerIsAlive()) {
+			_MPGameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
+			_HeadsUpDisplay.update(_Score, _MPGameObjectContainer.getPlayerCar().getHealth(), _MPGameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
+			if (!_MPGameObjectContainer.playerIsAlive()) {
 				_GameState = GameState::GameOver;
 			}
 			addScore();
 		}
 		else if (_NetworkHandle.getRelation() == NetworkRelation::Client) {
 			if (_Level.update(_FrameTime, _GameState)) {
-				if (_GameObjectContainer.emptyScreen()) {
-					_GameObjectContainer.enterBossFight();
+				if (_MPGameObjectContainer.emptyScreen()) {
+					_MPGameObjectContainer.enterBossFight();
 					_GameState = GameState::BossFight;
 				}
 			}
-			_GameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
-			_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
-			if (!_GameObjectContainer.playerIsAlive()) {
+			_MPGameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
+			_HeadsUpDisplay.update(_Score, _MPGameObjectContainer.getPlayerCar().getHealth(), _MPGameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
+			if (!_MPGameObjectContainer.playerIsAlive()) {
 				_GameState = GameState::GameOver;
 			}
 			addScore();

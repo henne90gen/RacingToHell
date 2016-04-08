@@ -113,14 +113,32 @@ void PlayerCar::update(float FrameTime, int RoadSpeed)
 		_Movement.y += _Acceleration.y * FrameTime;
 	}
 
-	if (std::abs(_Movement.x) > 0)
+	if (_Movement.x > 0)
 	{
-		_Movement.x += std::pow(-1.0f, (float)(_Movement.x > 0)) * 9.2f * FrameTime;
+		_Movement.x -= 9.2f * FrameTime;
+		if (_Movement.x < 0) {
+			_Movement.x = 0;
+		}
+	}
+	else if (_Movement.x < 0) {
+		_Movement.x += 9.2f * FrameTime;
+		if (_Movement.x > 0) {
+			_Movement.x = 0;
+		}
 	}
 
-	if (std::abs(_Movement.y) > 0)
+	if (_Movement.y > 0)
 	{
-		_Movement.y += std::pow(-1.0f, (float)(_Movement.y > 0)) * 9.2f * FrameTime;
+		_Movement.y -= 9.2f * FrameTime;
+		if (_Movement.y < 0) {
+			_Movement.y = 0;
+		}
+	}
+	else if (_Movement.y < 0) {
+		_Movement.y += 9.2f * FrameTime;
+		if (_Movement.y > 0) {
+			_Movement.y = 0;
+		}
 	}
 
 	//_Movement anwenden - Car bewegen

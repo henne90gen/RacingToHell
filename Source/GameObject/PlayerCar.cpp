@@ -69,7 +69,6 @@ void PlayerCar::handleEvent(sf::Event& Event)
 		}
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-		//_Movement += sf::Vector2f(0, -0.45);
 		_Acceleration.y = -16.6f;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {

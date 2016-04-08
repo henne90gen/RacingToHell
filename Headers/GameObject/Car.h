@@ -34,6 +34,23 @@ public:
 		@param type Type of the Car
 	*/
 	Car(std::istream& stream, GameObjectType type) : GameObject(stream, type) {}
+
+	/*
+		Car that can drive around on the road
+		@param stream Input stream that contains all the other information needed to make a Car
+		@param type Type of the Car
+		@param texture Texture that is going to be used for the sprite
+	*/
+	Car(sf::Packet& packet, GameObjectType type, sf::Texture& texture) : GameObject(packet, type, texture) { Car::operator<<(packet); }
+
+	/*
+		Car that can drive around on the road
+		Use this constructor with extrem caution, no texture is being specified
+		To fully use the car one has to specifiy a texture!
+		@param stream Input stream that contains all the other information needed to make a Car
+		@param type Type of the Car
+	*/
+	Car(sf::Packet& packet, GameObjectType type) : GameObject(packet, type) {}
 	~Car() {}
 
 	/*
@@ -89,6 +106,16 @@ public:
 		Reads the necessary data for a car from a stream
 	*/
 	virtual void operator<<(std::istream& stream);
+
+	/*
+		Writes the necessary data for a gameobject to a packet
+	*/
+	virtual void operator>>(sf::Packet& packet);
+
+	/*
+		Reads the necessary data for a gameobject from a packet
+	*/
+	virtual void operator<<(sf::Packet& packet);
 protected:
 	sf::Int16 _Health, _Speed, _MaxHealth;
 	sf::Vector2f _Movement;

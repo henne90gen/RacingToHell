@@ -15,6 +15,12 @@ Carrier::Carrier(std::istream & stream, sf::Texture & texture, sf::Texture & bul
 	init();
 }
 
+Carrier::Carrier(sf::Packet & packet, sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer & soundBufferShot, sf::SoundBuffer & soundBufferExplosion, float volume) :
+	BossCar(packet, texture, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, volume) 
+{
+	init();
+}
+
 void Carrier::render(sf::RenderWindow & window)
 {
 	window.draw(getSprite());

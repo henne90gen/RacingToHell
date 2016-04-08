@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Multiplayer\NetworkHandle.h"
 
-NetworkHandle::NetworkHandle() : _TickRate(64), _UpdateIntervall(2), _Relationship(NetworkRelation::None), _Tick(0), _Authenticated(false)
+NetworkHandle::NetworkHandle() : _TickRate(64), _UpdateIntervall(2), _Delay(0.1 * _TickRate), _Relationship(NetworkRelation::None), _Tick(0), _Authenticated(false)
 {}
 
 void NetworkHandle::connect(std::string ip, std::string password, std::string name,int port, float timeout)
@@ -250,6 +250,7 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 {
 	if (packet.getDataSize() > 0)
 	{
+		std::lock_guard<std::mutex> lock(_Mutex);
 		sf::Packet tmp = packet;
 		sf::Uint8 Type;
 		sf::Uint32 Tick;
@@ -267,6 +268,7 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 			_State = NetworkState::Ingame;
 			break;
 		case NetworkCommunication::CreateGameObject:
+			std::cout << "Received a GO" << std::endl;
 			_ReceivedPackets.push_back(packet);
 			break;
 		case NetworkCommunication::EndGame:

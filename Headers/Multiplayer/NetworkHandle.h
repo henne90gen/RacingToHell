@@ -29,6 +29,8 @@ public:
 	std::string getMemberName() { return _MemberName; }
 	sf::Uint32 getTick() { return _Tick; }
 	int getTickRate() { return _TickRate; }
+	std::vector<sf::Packet>& getReceivedPackets() { return _ReceivedPackets; }
+	int getDelay() { return _Delay; }
 
 	void setState(NetworkState state) { _State = state; }
 	void setPort(unsigned int port) { _Port = port; }
@@ -52,6 +54,7 @@ private:
 	std::mutex _Mutex;
 
 	unsigned int _TickRate, _UpdateIntervall, _Port, _Authenticated;
+	int _Delay;
 	sf::Uint32 _Tick;
 	std::string _Password;
 

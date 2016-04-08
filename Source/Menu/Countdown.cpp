@@ -45,7 +45,8 @@ bool Countdown::update(float frameTime)
 		_Timer.restart();
 		_Started = true;
 	}
-	_Text.setString(std::to_string((int)(4 - _Timer.getElapsedTime().asSeconds() - _AdditionalTime)));
+
+	_Text.setString(std::to_string((int)(4 - (_Timer.getElapsedTime().asSeconds() + _AdditionalTime))));
 	
 	return (_Timer.getElapsedTime().asSeconds() + _AdditionalTime > 3);
 }

@@ -16,6 +16,13 @@ Tank::Tank(std::istream & stream, sf::Texture & texture, sf::Texture & bulletTex
 	init();
 }
 
+Tank::Tank(sf::Packet & packet, sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer & soundBufferShot, sf::SoundBuffer & soundBufferExplosion, float volume) :
+	BossCar(packet, texture, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, volume),
+	_MovementSwitch(false) 
+{
+	init();
+}
+
 void Tank::render(sf::RenderWindow& window)
 {
 	window.draw(getSprite());

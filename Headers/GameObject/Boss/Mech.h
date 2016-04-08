@@ -14,6 +14,7 @@ public:
 	*/
 	Mech(unsigned int id, int difficulty, int HP, sf::Texture& textureTop, sf::Texture& textureLegs, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
 	Mech(std::istream& stream, sf::Texture& textureTop, sf::Texture& textureLegs, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
+	Mech(sf::Packet& packet, sf::Texture& textureTop, sf::Texture& textureLegs, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
 	~Mech() {}
 
 	/*

@@ -14,6 +14,7 @@ public:
 	*/
 	AICar(unsigned int id, int hp, int roadSpeed, sf::Texture& texture);
 	AICar(std::istream& stream, sf::Texture& texture);
+	AICar(sf::Packet& packet, sf::Texture& texture);
 	~AICar() {}
 
 	/*
@@ -44,6 +45,16 @@ public:
 	void operator>>(std::ostream& stream);
 
 	void operator<<(std::istream& stream);
+
+	/*
+		Writes the necessary data for a gameobject to a packet
+	*/
+	void operator>>(sf::Packet& packet);
+
+	/*
+		Reads the necessary data for a gameobject from a packet
+	*/
+	void operator<<(sf::Packet& packet);
 private:
 	sf::RectangleShape _HealthBar;
 	sf::RectangleShape _HealthBarFrame;

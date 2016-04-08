@@ -590,3 +590,22 @@ void MPGameObjectContainer::playHitSound(sf::Vector2f position)
 	_SoundEffects.push_back(std::make_pair(ImpactSound, false));
 }
 
+void MPGameObjectContainer::handlePackets(std::vector<sf::Packet>& packets, sf::Uint32 tick, int delay) {
+	std::lock_guard<std::mutex> lock(_Mutex);
+	for (unsigned int i = 0; i < packets.size(); i++) {
+		sf::Packet tmp = packets[i];
+		sf::Uint8 recType;
+		sf::Uint32 recTick;
+		tmp >> recType >> recTick;
+		switch ((NetworkCommunication)recType) {
+		case NetworkCommunication::CreateGameObject:
+			std::cout << "Might create GO" << std::endl;
+			if (tick > recTick + delay) {
+				std::cout << "Spawning GO" << std::endl;
+				GameObjectFactory::scanPacketForGO(_Level, tmp, _GameObjects, _SoundEffects, _ExplosionSoundBuffer, _Volume);
+			}
+			break;
+		}
+	}
+}
+

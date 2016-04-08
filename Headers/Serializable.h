@@ -19,7 +19,38 @@ public:
 	*/
 	virtual void operator<<(std::istream& stream) = 0;
 
+	/*
+		Writes the necessary data for an object to a packet
+	*/
+	virtual void operator>>(sf::Packet& packet) = 0;
+
+	/*
+		Reads the necessary data for an object from a packet
+	*/
+	virtual void operator<<(sf::Packet& packet) = 0;
+
 protected:
+
+	/*
+		Writes any data (except std::string) to a stream
+		@param stream Output stream that is going to be written to
+		@param input Primitive type that will be written to a stream
+	*/
+	template <typename T> void write(sf::Packet& packet, T input)
+	{
+		packet << input;
+	}
+
+	/*
+		Reads any data (except std::string) from a stream
+		@param stream Input stream that is going to be read from
+		@param result Data that was read will be saved here
+	*/
+	template <typename T> void read(sf::Packet& packet, T &result)
+	{
+		packet >> result;
+	}
+
 	/*
 		Writes any data (except std::string) to a stream
 		@param stream Output stream that is going to be written to

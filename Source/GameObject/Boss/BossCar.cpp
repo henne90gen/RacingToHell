@@ -20,6 +20,16 @@ BossCar::BossCar(std::istream& stream, sf::Texture & texture, sf::Texture & bull
 	initBoss();
 }
 
+BossCar::BossCar(sf::Packet & packet, sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer & soundBufferShot, sf::SoundBuffer & soundBufferExplosion, float volume) :
+	Car(packet, GameObjectType::Boss, texture),
+	_soundEffects(soundEffects), _soundBufferShot(soundBufferShot), _soundBufferExplosion(soundBufferExplosion), _Volume(volume), _BulletSpeed(500),
+	_BulletTexture(bulletTexture), _Movement(Movement::STILL), _Attack(false), _Traffic(false), _IsExploding(false),
+	_Event1Counter(0), _Event2Counter(0), _Event1Frequency(0), _Event2Frequency(0), _Event1Switch(false), _Event2Switch(false), _CurrentPhase(0) 
+{
+	BossCar::operator<<(packet);
+	initBoss();
+}
+
 float BossCar::PlayerAngle(GameObject& Player)
 {
 	float Angle;
@@ -159,6 +169,17 @@ void BossCar::operator>>(std::ostream& stream)
 void BossCar::operator<<(std::istream& stream)
 {
 	read(stream, _Difficulty);
+}
+
+void BossCar::operator>>(sf::Packet & packet)
+{
+	Car::operator>>(packet);
+	write(packet, _Difficulty);
+}
+
+void BossCar::operator<<(sf::Packet & packet)
+{
+	read(packet, _Difficulty);
 }
 
 void BossCar::initBoss()

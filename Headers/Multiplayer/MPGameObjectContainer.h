@@ -15,6 +15,8 @@
 
 #include "Animation/Explosion.h"
 
+#include "Multiplayer\NetworkHandle.h"
+
 class MPGameObjectContainer
 {
 public:
@@ -127,8 +129,10 @@ public:
 	@param dif Difficulty
 	*/
 	void setDifficulty(int dif) { _Difficulty = dif; }
+
+	void handlePackets(std::vector<sf::Packet>& packets, sf::Uint32 tick, int delay);
 private:
-	GameObjectFactory _GOFactory;
+	std::mutex _Mutex;
 
 	std::vector<std::shared_ptr<GameObject>> _GameObjects;
 	std::vector<std::shared_ptr<Animation>> _Animations;

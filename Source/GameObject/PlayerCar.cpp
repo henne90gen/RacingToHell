@@ -31,6 +31,14 @@ PlayerCar::PlayerCar(std::istream& stream, std::vector<std::shared_ptr<sf::Textu
 	initTexture((*textures.at(_SelectedCar)));
 }
 
+PlayerCar::PlayerCar(sf::Packet& packet, std::vector<std::shared_ptr<sf::Texture>>& textures) : 
+	Car(packet, GameObjectType::Player)
+{
+	PlayerCar::operator<<(packet);
+	setStats(_SelectedCar);
+	initTexture((*textures.at(_SelectedCar)));
+}
+
 void PlayerCar::render(sf::RenderWindow& Window, bool renderCrosshair) {
 	Window.draw(getSprite());
 	if (renderCrosshair) {
@@ -207,4 +215,15 @@ void PlayerCar::operator>>(std::ostream& stream)
 void PlayerCar::operator<<(std::istream& stream)
 {
 	read(stream, _SelectedCar);
+}
+
+void PlayerCar::operator>>(sf::Packet& packet)
+{
+	Car::operator>>(packet);
+	write(packet, _SelectedCar);
+}
+
+void PlayerCar::operator<<(sf::Packet& packet)
+{
+	read(packet, _SelectedCar);
 }

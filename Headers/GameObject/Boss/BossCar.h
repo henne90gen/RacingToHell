@@ -20,6 +20,7 @@ public:
 	*/
 	BossCar(unsigned int id, sf::Vector2f& pos, int difficulty, int health, float speed, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
 	BossCar(std::istream& stream, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
+	BossCar(sf::Packet& packet, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
 	~BossCar() {}
 
 	/*
@@ -49,6 +50,16 @@ public:
 	void operator>>(std::ostream& stream);
 
 	void operator<<(std::istream& stream);
+
+	/*
+		Writes the necessary data for a gameobject to a packet
+	*/
+	void operator>>(sf::Packet& packet);
+
+	/*
+		Reads the necessary data for a gameobject from a packet
+	*/
+	void operator<<(sf::Packet& packet);
 
 	virtual void init() = 0;
 	void initBoss();

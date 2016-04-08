@@ -39,6 +39,22 @@ public:
 			read(stream, Level);
 			read(stream, Score);
 		}
+
+		void operator>>(sf::Packet& packet)
+		{
+			write(packet, Rank);
+			write(packet, Name);
+			write(packet, Level);
+			write(packet, Score);
+		}
+
+		void operator<<(sf::Packet& packet)
+		{
+			read(packet, Rank);
+			read(packet, Name);
+			read(packet, Level);
+			read(packet, Score);
+		}
 	};
 
 	/*

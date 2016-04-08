@@ -21,6 +21,19 @@ GameObject::GameObject(std::istream& stream, GameObjectType type) : _Type(type)
 	_Sprite.setPosition(getPos());
 }
 
+GameObject::GameObject(sf::Packet& packet, GameObjectType type, sf::Texture& texture) : _Type(type)
+{
+	GameObject::operator<<(packet);
+	initTexture(texture);
+	_Sprite.setPosition(getPos());
+}
+
+GameObject::GameObject(sf::Packet& packet, GameObjectType type) : _Type(type)
+{
+	GameObject::operator<<(packet);
+	_Sprite.setPosition(getPos());
+}
+
 void GameObject::render(sf::RenderWindow& window)
 {
 	window.draw(_Sprite);
@@ -73,6 +86,22 @@ void GameObject::operator<<(std::istream& stream)
 	float x, y;
 	read(stream, x);
 	read(stream, y);
+	setPos(sf::Vector2f(x, y));
+}
+
+void GameObject::operator>>(sf::Packet& packet) {
+	write(packet, (sf::Uint8)getType());
+	write(packet, _ID);
+	write(packet, getPos().x);
+	write(packet, getPos().y);
+}
+
+void GameObject::operator<<(sf::Packet& packet)
+{
+	read(packet, _ID);
+	float x, y;
+	read(packet, x);
+	read(packet, y);
 	setPos(sf::Vector2f(x, y));
 }
 

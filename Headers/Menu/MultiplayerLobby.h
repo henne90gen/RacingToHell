@@ -49,7 +49,7 @@ public:
 	void resetRdyButton() { _MenuItems[(int)MenuItemIndex::Ready]->setText("Ready"); }
 
 private:
-	enum class MenuItemIndex {PlayerTable = 0, Start = 1, Difficulty = 2, Modes = 3, Ready = 4};
+	enum class MenuItemIndex {PlayerTable = 0, Start = 1, Difficulty = 2, Modes = 3, Ready = 4, PrevCar = 5, NextCar = 6};
 
 	std::shared_ptr<StatBox> _StatBox;
 

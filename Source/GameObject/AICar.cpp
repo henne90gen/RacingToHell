@@ -17,6 +17,13 @@ AICar::AICar(std::istream & stream, sf::Texture & texture) :
 	init();
 }
 
+AICar::AICar(sf::Packet & packet, sf::Texture & texture) :
+	Car(packet, GameObjectType::AI, texture)
+{
+	AICar::operator<<(packet);
+	init();
+}
+
 void AICar::update(float frameTime, int roadSpeed)
 {
 	Car::update(frameTime, roadSpeed);
@@ -42,6 +49,17 @@ void AICar::operator>>(std::ostream& stream)
 void AICar::operator<<(std::istream& stream)
 {
 	read(stream, _Lane);
+}
+
+void AICar::operator>>(sf::Packet& packet)
+{
+	Car::operator>>(packet);
+	write(packet, _Lane);
+}
+
+void AICar::operator<<(sf::Packet& packet)
+{
+	read(packet, _Lane);
 }
 
 void AICar::init()

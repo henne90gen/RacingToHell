@@ -17,6 +17,7 @@ public:
 	*/
 	PlayerCar(unsigned int id, int selectedCar, sf::Texture& texture);
 	PlayerCar(std::istream& stream, std::vector<std::shared_ptr<sf::Texture>>& textures);
+	PlayerCar(sf::Packet& packet, std::vector<std::shared_ptr<sf::Texture>>& textures);
 	~PlayerCar() {}
 
 	/*
@@ -98,6 +99,16 @@ public:
 	void operator>>(std::ostream& stream);
 
 	void operator<<(std::istream& stream);
+
+	/*
+		Writes the necessary data for a gameobject to a packet
+	*/
+	void operator>>(sf::Packet& packet);
+
+	/*
+		Reads the necessary data for a gameobject from a packet
+	*/
+	void operator<<(sf::Packet& packet);
 private:
 	float _Energy;
 	sf::Uint16 _MaxEnergy, _Bulletdamage, _SelectedCar;

@@ -35,6 +35,21 @@ void Car::operator<<(std::istream& stream)
 	read(stream, _MaxHealth);
 }
 
+void Car::operator>>(sf::Packet& packet)
+{
+	GameObject::operator>>(packet);
+	write(packet, _Speed);
+	write(packet, _Health);
+	write(packet, _MaxHealth);
+}
+
+void Car::operator<<(sf::Packet& packet)
+{
+	read(packet, _Speed);
+	read(packet, _Health);
+	read(packet, _MaxHealth);
+}
+
 void Car::update(float frametime, int roadspeed)
 {
 	if (_resetColorTime >= 0)

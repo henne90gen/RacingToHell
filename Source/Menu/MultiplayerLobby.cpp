@@ -83,12 +83,16 @@ GameState MultiplayerLobby::handleMenuItemResult(MenuResult result)
 				_MenuItems[(int)MenuItemIndex::Ready]->setText("Not ready");
 				ReadyPacket << (sf::Uint8)(1);
 				_MenuItems[(int)MenuItemIndex::PlayerTable]->setMember(1, true);
+				_MenuItems[(int)MenuItemIndex::PrevCar]->setEnabled(false);
+				_MenuItems[(int)MenuItemIndex::NextCar]->setEnabled(false);
 			}
 			else
 			{
 				_MenuItems[(int)MenuItemIndex::Ready]->setText("Ready");
 				ReadyPacket << (sf::Uint8)(0);
 				_MenuItems[(int)MenuItemIndex::PlayerTable]->setMember(1, false);
+				_MenuItems[(int)MenuItemIndex::PrevCar]->setEnabled(true);
+				_MenuItems[(int)MenuItemIndex::NextCar]->setEnabled(true);
 			}
 			_NetworkHandle->addPacket(NetworkCommunication::Ready, ReadyPacket);
 			break;

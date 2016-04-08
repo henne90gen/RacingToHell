@@ -103,12 +103,12 @@ void PlayerCar::update(float FrameTime, int RoadSpeed)
 {
 	Car::update(FrameTime, RoadSpeed);
 
-	if (_Movement.x + _Acceleration.x * FrameTime >= -1.0f && _Movement.x + _Acceleration.x * FrameTime <= 1.0f)
+	if (_Movement.x + _Acceleration.x * FrameTime >= -1.1f && _Movement.x + _Acceleration.x * FrameTime <= 1.1f)
 	{
 		_Movement.x += _Acceleration.x * FrameTime;
 	}
 
-	if (_Movement.y + _Acceleration.y * FrameTime >= -0.45f && _Movement.y + _Acceleration.y * FrameTime <= 1.2f)
+	if (_Movement.y + _Acceleration.y * FrameTime >= -0.5f && _Movement.y + _Acceleration.y * FrameTime <= 1.4f)
 	{
 		_Movement.y += _Acceleration.y * FrameTime;
 	}

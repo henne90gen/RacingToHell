@@ -526,49 +526,33 @@ void Framework::update()
 		}
 		break;
 	case GameState::RunningMultiplayer:
-		
-			if (_Level.update(_FrameTime, _GameState)) {
-				if (_MPGameObjectContainer.emptyScreen()) {
-					_MPGameObjectContainer.enterBossFight();
-					_GameState = GameState::BossFightMultiplayer;
-				}
+		if (_Level.update(_FrameTime, _GameState)) {
+			if (_MPGameObjectContainer.emptyScreen()) {
+				_MPGameObjectContainer.enterBossFight();
+				_GameState = GameState::BossFightMultiplayer;
 			}
-			_MPGameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
-			_HeadsUpDisplay.update(_Score, _MPGameObjectContainer.getPlayerCar().getHealth(), _MPGameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
-			if (!_MPGameObjectContainer.playerIsAlive()) {
-				_GameState = GameState::GameOverMultiplayer;
-			}
-			addScore();
+		}
+		_MPGameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
+		_HeadsUpDisplay.update(_Score, _MPGameObjectContainer.getPlayerCar().getHealth(), _MPGameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
+		if (!_MPGameObjectContainer.playerIsAlive()) {
+			_GameState = GameState::GameOverMultiplayer;
+		}
+		addScore();
 		break;
 	case GameState::PauseMultiplayer:
-		if (_NetworkHandle.getRelation() == NetworkRelation::Host) {
-			if (_Level.update(_FrameTime, _GameState)) {
-				if (_MPGameObjectContainer.emptyScreen()) {
-					_MPGameObjectContainer.enterBossFight();
-					_GameState = GameState::BossFight;
-				}
+		if (_Level.update(_FrameTime, _GameState)) {
+			if (_MPGameObjectContainer.emptyScreen()) {
+				_MPGameObjectContainer.enterBossFight();
+				_GameState = GameState::BossFight;
 			}
-			_MPGameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
-			_HeadsUpDisplay.update(_Score, _MPGameObjectContainer.getPlayerCar().getHealth(), _MPGameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
-			if (!_MPGameObjectContainer.playerIsAlive()) {
-				_GameState = GameState::GameOver;
-			}
-			addScore();
 		}
-		else if (_NetworkHandle.getRelation() == NetworkRelation::Client) {
-			if (_Level.update(_FrameTime, _GameState)) {
-				if (_MPGameObjectContainer.emptyScreen()) {
-					_MPGameObjectContainer.enterBossFight();
-					_GameState = GameState::BossFight;
-				}
-			}
-			_MPGameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
-			_HeadsUpDisplay.update(_Score, _MPGameObjectContainer.getPlayerCar().getHealth(), _MPGameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
-			if (!_MPGameObjectContainer.playerIsAlive()) {
-				_GameState = GameState::GameOver;
-			}
-			addScore();
+		_MPGameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
+		_HeadsUpDisplay.update(_Score, _MPGameObjectContainer.getPlayerCar().getHealth(), _MPGameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
+		if (!_MPGameObjectContainer.playerIsAlive()) {
+			_GameState = GameState::GameOver;
 		}
+		addScore();
+		
 		break;
 	}
 }

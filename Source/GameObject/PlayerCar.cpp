@@ -42,7 +42,6 @@ void PlayerCar::render(sf::RenderWindow& Window, bool renderCrosshair) {
 void PlayerCar::handleEvent(sf::Event& Event)
 {
 	// Apply key input to car
-	//_Movement = sf::Vector2f(0, 0);
 	_Acceleration = sf::Vector2f(0, 0);
 
 	float X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
@@ -52,15 +51,12 @@ void PlayerCar::handleEvent(sf::Event& Event)
 		_Movement += sf::Vector2f(X / 100.0f, 0);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-		//_Movement += sf::Vector2f(-1, 0);
-		_Acceleration.x = -6.6f;
+		_Acceleration.x = -12.6f;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-		//_Movement += sf::Vector2f(1, 0);
-		_Acceleration.x = 6.6f;
+		_Acceleration.x = 12.6f;
 	}
 	else {
-		//_Movement = sf::Vector2f(0, 0);
 		_Acceleration.x = 0.0f;
 	}
 
@@ -74,14 +70,12 @@ void PlayerCar::handleEvent(sf::Event& Event)
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
 		//_Movement += sf::Vector2f(0, -0.45);
-		_Acceleration.y = -4.6f;
+		_Acceleration.y = -8.6f;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-		//_Movement += sf::Vector2f(0, 1.2);
-		_Acceleration.y = 8.0f;
+		_Acceleration.y = 16.0f;
 	}
 	else {
-		//_Movement.y = 0;
 		_Acceleration.y = 0.0f;
 	}
 
@@ -122,12 +116,12 @@ void PlayerCar::update(float FrameTime, int RoadSpeed)
 
 	if (std::abs(_Movement.x) > 0)
 	{
-		_Movement.x += std::pow(-1.0f, (float)(_Movement.x > 0)) * 3.2f * FrameTime;
+		_Movement.x += std::pow(-1.0f, (float)(_Movement.x > 0)) * 6.2f * FrameTime;
 	}
 
 	if (std::abs(_Movement.y) > 0)
 	{
-		_Movement.y += std::pow(-1.0f, (float)(_Movement.y > 0)) * 3.2f * FrameTime;
+		_Movement.y += std::pow(-1.0f, (float)(_Movement.y > 0)) * 6.2f * FrameTime;
 	}
 
 	//_Movement anwenden - Car bewegen

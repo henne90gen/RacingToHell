@@ -51,10 +51,10 @@ void PlayerCar::handleEvent(sf::Event& Event)
 		_Movement += sf::Vector2f(X / 100.0f, 0);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-		_Acceleration.x = -16.6f;
+		_Acceleration.x = -20.0f;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-		_Acceleration.x = 16.6f;
+		_Acceleration.x = 20.0f;
 	}
 	else {
 		_Acceleration.x = 0.0f;
@@ -69,11 +69,10 @@ void PlayerCar::handleEvent(sf::Event& Event)
 		}
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-		//_Movement += sf::Vector2f(0, -0.45);
-		_Acceleration.y = -12.6f;
+		_Acceleration.y = -16.6f;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-		_Acceleration.y = 20.0f;
+		_Acceleration.y = 24.0f;
 	}
 	else {
 		_Acceleration.y = 0.0f;

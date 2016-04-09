@@ -30,6 +30,7 @@ public:
 	sf::Uint32 getTick() { return _Tick; }
 	int getTickRate() { return _TickRate; }
 	std::vector<sf::Packet>& getReceivedPackets() { return _ReceivedPackets; }
+	std::vector<std::pair<NetworkCommunication, sf::Packet>>& getSendPackets() { return _SendPackets; }
 	int getDelay() { return _Delay; }
 
 	void setState(NetworkState state) { _State = state; }
@@ -50,7 +51,7 @@ private:
 	sf::TcpListener _Listener;
 
 	std::vector<sf::Packet> _ReceivedPackets;
-	std::vector < std::pair<NetworkCommunication, sf::Packet>> _SendPackets;
+	std::vector<std::pair<NetworkCommunication, sf::Packet>> _SendPackets;
 	std::mutex _Mutex;
 
 	unsigned int _TickRate, _UpdateIntervall, _Port, _Authenticated;

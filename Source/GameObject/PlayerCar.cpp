@@ -24,7 +24,8 @@ PlayerCar::PlayerCar(unsigned int id, int selectedCar, sf::Texture& texture) :
 	sf::Listener::setDirection(0.f, 0.f, -1.f);
 }
 
-PlayerCar::PlayerCar(std::istream& stream, std::vector<std::shared_ptr<sf::Texture>>& textures) : Car(stream, GameObjectType::Player)
+PlayerCar::PlayerCar(std::istream& stream, std::vector<std::shared_ptr<sf::Texture>>& textures) : 
+	Car(stream, GameObjectType::Player)
 {
 	PlayerCar::operator<<(stream);
 	setStats(_SelectedCar);
@@ -215,6 +216,7 @@ void PlayerCar::operator>>(std::ostream& stream)
 
 void PlayerCar::operator<<(std::istream& stream)
 {
+	Car::operator<<(stream);
 	read(stream, _SelectedCar);
 }
 
@@ -226,5 +228,6 @@ void PlayerCar::operator>>(sf::Packet& packet)
 
 void PlayerCar::operator<<(sf::Packet& packet)
 {
+	Car::operator<<(packet);
 	read(packet, _SelectedCar);
 }

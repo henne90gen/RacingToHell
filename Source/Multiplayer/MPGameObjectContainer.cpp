@@ -590,13 +590,14 @@ void MPGameObjectContainer::playHitSound(sf::Vector2f position)
 	_SoundEffects.push_back(std::make_pair(ImpactSound, false));
 }
 
-void MPGameObjectContainer::handlePackets(std::vector<sf::Packet>& packets, sf::Uint32 tick, int delay) {
+void MPGameObjectContainer::handleIncomingPackets(std::vector<sf::Packet>& packets, sf::Uint32 tick, int delay) {
 	std::lock_guard<std::mutex> lock(_Mutex);
 	for (unsigned int i = 0; i < packets.size(); i++) {
 		sf::Packet tmp = packets[i];
 		sf::Uint8 recType;
 		sf::Uint32 recTick;
 		tmp >> recType >> recTick;
+
 		switch ((NetworkCommunication)recType) {
 		case NetworkCommunication::CreateGameObject:
 			std::cout << "Might create GO" << std::endl;
@@ -607,7 +608,30 @@ void MPGameObjectContainer::handlePackets(std::vector<sf::Packet>& packets, sf::
 				i--;
 			}
 			break;
+		case NetworkCommunication::UpdateGameObject:
+			sf::Uint8 type;
+			tmp >> type;
+			if ((GameObjectType)type == GameObjectType::Player) {
+				/*
+				sf::Uint32 id;
+				float x, y;
+				tmp >> id >> x >> y;
+				std::cout << "Receiving ID: " << (unsigned int)id << " || X: " << x << " || Y: " << y << std::endl;
+				*/
+				*_GameObjects[1] << tmp;
+			}
+			packets.erase(packets.begin() + i);
+			i--;
+			break;
 		}
 	}
+}
+
+void MPGameObjectContainer::handleOutgoingPackets(std::vector<std::pair<NetworkCommunication, sf::Packet>>& packets)
+{
+	std::lock_guard<std::mutex> lock(_Mutex);
+	sf::Packet tmp;
+	getPlayerCar() >> tmp;
+	packets.push_back(std::make_pair(NetworkCommunication::UpdateGameObject, tmp));
 }
 

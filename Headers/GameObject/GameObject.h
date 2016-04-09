@@ -282,14 +282,14 @@ public:
 	*/
 	void initTexture(sf::Texture& texture);
 
-	unsigned int getID() { return _ID; }
+	sf::Uint32 getID() { return _ID; }
 
-	void setID(unsigned int id) { _ID = id; }
+	void setID(sf::Uint32 id) { _ID = id; }
 private:
 	sf::Sprite _Sprite;
 	sf::Texture _Texture;
 	
-	unsigned int _ID;
+	sf::Uint32 _ID;
 
 	GameObjectType _Type;
 };

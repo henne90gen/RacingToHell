@@ -168,6 +168,7 @@ void BossCar::operator>>(std::ostream& stream)
 
 void BossCar::operator<<(std::istream& stream)
 {
+	Car::operator<<(stream);
 	read(stream, _Difficulty);
 }
 
@@ -179,6 +180,7 @@ void BossCar::operator>>(sf::Packet & packet)
 
 void BossCar::operator<<(sf::Packet & packet)
 {
+	Car::operator<<(packet);
 	read(packet, _Difficulty);
 }
 

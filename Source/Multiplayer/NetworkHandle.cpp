@@ -271,7 +271,7 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 			_State = NetworkState::Ingame;
 			break;
 		case NetworkCommunication::CreateGameObject:
-			std::cout << "Received a GO" << std::endl;
+		case NetworkCommunication::UpdateGameObject:
 			_ReceivedPackets.push_back(packet);
 			break;
 		case NetworkCommunication::EndGame:

@@ -49,7 +49,7 @@ public:
 	void update(float frameTime, int roadSpeed);
 
 	/*
-	@return GameObject* Pointer to the PlayerCar
+	@return GameObject& Reference to the PlayerCar
 	*/
 	GameObject& getPlayerCar() { return *_GameObjects.at(0); }
 
@@ -130,7 +130,8 @@ public:
 	*/
 	void setDifficulty(int dif) { _Difficulty = dif; }
 
-	void handlePackets(std::vector<sf::Packet>& packets, sf::Uint32 tick, int delay);
+	void handleIncomingPackets(std::vector<sf::Packet>& packets, sf::Uint32 tick, int delay);
+	void handleOutgoingPackets(std::vector<std::pair<NetworkCommunication, sf::Packet>>& packets);
 private:
 	std::mutex _Mutex;
 

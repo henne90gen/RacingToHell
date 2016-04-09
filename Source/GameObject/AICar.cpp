@@ -48,6 +48,7 @@ void AICar::operator>>(std::ostream& stream)
 
 void AICar::operator<<(std::istream& stream)
 {
+	Car::operator<<(stream);
 	read(stream, _Lane);
 }
 
@@ -59,6 +60,7 @@ void AICar::operator>>(sf::Packet& packet)
 
 void AICar::operator<<(sf::Packet& packet)
 {
+	Car::operator<<(packet);
 	read(packet, _Lane);
 }
 

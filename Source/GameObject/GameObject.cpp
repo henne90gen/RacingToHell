@@ -10,27 +10,35 @@ GameObject::GameObject(unsigned int id, sf::Vector2f pos, GameObjectType type, s
 
 GameObject::GameObject(std::istream& stream, GameObjectType type, sf::Texture& texture) : _Type(type)
 {
-	GameObject::operator<<(stream);
+	if (_Type == GameObjectType::Canister || _Type == GameObjectType::Tools) {
+		GameObject::operator<<(stream);
+	}
 	initTexture(texture);
 	_Sprite.setPosition(getPos());
 }
 
 GameObject::GameObject(std::istream& stream, GameObjectType type) : _Type(type)
 {
-	GameObject::operator<<(stream);
+	if (_Type == GameObjectType::Canister || _Type == GameObjectType::Tools) {
+		GameObject::operator<<(stream);
+	}
 	_Sprite.setPosition(getPos());
 }
 
 GameObject::GameObject(sf::Packet& packet, GameObjectType type, sf::Texture& texture) : _Type(type)
 {
-	GameObject::operator<<(packet);
+	if (_Type == GameObjectType::Canister || _Type == GameObjectType::Tools) {
+		GameObject::operator<<(packet);
+	}
 	initTexture(texture);
 	_Sprite.setPosition(getPos());
 }
 
 GameObject::GameObject(sf::Packet& packet, GameObjectType type) : _Type(type)
 {
-	GameObject::operator<<(packet);
+	if (_Type == GameObjectType::Canister || _Type == GameObjectType::Tools) {
+		GameObject::operator<<(packet);
+	}
 	_Sprite.setPosition(getPos());
 }
 

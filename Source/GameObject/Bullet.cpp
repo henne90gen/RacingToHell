@@ -93,6 +93,7 @@ void Bullet::operator>>(std::ostream& stream)
 
 void Bullet::operator<<(std::istream& stream)
 {
+	GameObject::operator<<(stream);
 	float dx, dy;
 	read(stream, dx);
 	read(stream, dy);
@@ -110,6 +111,7 @@ void Bullet::operator>>(sf::Packet& packet)
 
 void Bullet::operator<<(sf::Packet& packet)
 {
+	GameObject::operator<<(packet);
 	float dx, dy;
 	read(packet, dx);
 	read(packet, dy);

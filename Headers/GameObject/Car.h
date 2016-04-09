@@ -24,7 +24,7 @@ public:
 		@param type Type of the Car
 		@param texture Texture that is going to be used for the sprite
 	*/
-	Car(std::istream& stream, GameObjectType type, sf::Texture& texture) : GameObject(stream, type, texture) { Car::operator<<(stream); }
+	Car(std::istream& stream, GameObjectType type, sf::Texture& texture) : GameObject(stream, type, texture) {}
 
 	/*
 		Car that can drive around on the road
@@ -33,7 +33,7 @@ public:
 		@param stream Input stream that contains all the other information needed to make a Car
 		@param type Type of the Car
 	*/
-	Car(std::istream& stream, GameObjectType type) : GameObject(stream, type) { Car::operator<<(stream); }
+	Car(std::istream& stream, GameObjectType type) : GameObject(stream, type) {}
 
 	/*
 		Car that can drive around on the road
@@ -41,7 +41,7 @@ public:
 		@param type Type of the Car
 		@param texture Texture that is going to be used for the sprite
 	*/
-	Car(sf::Packet& packet, GameObjectType type, sf::Texture& texture) : GameObject(packet, type, texture) { Car::operator<<(packet); }
+	Car(sf::Packet& packet, GameObjectType type, sf::Texture& texture) : GameObject(packet, type, texture) {}
 
 	/*
 		Car that can drive around on the road
@@ -50,8 +50,7 @@ public:
 		@param stream Input stream that contains all the other information needed to make a Car
 		@param type Type of the Car
 	*/
-	Car(sf::Packet& packet, GameObjectType type) : GameObject(packet, type) { Car::operator<<(packet); }
-	~Car() {}
+	Car(sf::Packet& packet, GameObjectType type) : GameObject(packet, type) {}
 
 	/*
 		Handles events for Car

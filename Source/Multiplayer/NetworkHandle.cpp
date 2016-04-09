@@ -165,7 +165,7 @@ void NetworkHandle::run()
 			}
 		}
 
-		//std::cout << _Authenticated << _Tick << std::endl;
+		//std::cout << _Tick << std::endl;
 
 		if (_Relationship == NetworkRelation::Client && _Tick % (sf::Uint32)(_TickRate * _UpdateIntervall) == 0) {
 			synchroniseTick();
@@ -299,6 +299,7 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 			else if (_Relationship == NetworkRelation::Client) {
 				_Tick = Tick + (sf::Uint32)(_TickRate * _SynchronisationTimer.restart().asSeconds() / 2.0f);
 			}
+			std::cout << _Tick << std::endl;
 			break;
 		default:
 			std::cout << "Unexpected communicationtype" << std::endl;

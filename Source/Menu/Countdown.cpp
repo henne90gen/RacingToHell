@@ -15,7 +15,6 @@ Countdown::Countdown() :
 	_Background.setFillColor(sf::Color(0, 0, 0));
 }
 
-
 Countdown::~Countdown()
 {
 }

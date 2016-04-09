@@ -151,7 +151,7 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result)
 			_ConnectionThread.detach();
 
 			_CreatedLobby = 0;
-			return GameState::Connecting;
+			_MenuGameState = GameState::Connecting;
 		}
 		return _MenuGameState;
 	}	

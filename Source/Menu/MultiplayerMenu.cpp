@@ -127,7 +127,6 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result)
 		break;
 	case MenuResult::Join:
 	{
-
 		if (_MenuItems[(int)MenuItemIndex::Name]->getText() == "")
 		{
 			_FeedbackText.setColor(sf::Color(220, 0, 0));
@@ -136,7 +135,7 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result)
 		else if (_MenuItems[(int)MenuItemIndex::IP]->getText() == "")
 		{
 			_FeedbackText.setColor(sf::Color(220, 0, 0));
-			_FeedbackText.setString("Please enter a ip address.");
+			_FeedbackText.setString("Please enter an ip address.");
 		}
 		else if (_MenuItems[(int)MenuItemIndex::Port]->getText() == "")
 		{
@@ -152,7 +151,7 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result)
 			_ConnectionThread.detach();
 
 			_CreatedLobby = 0;
-			_MenuGameState = GameState::Connecting;
+			return GameState::Connecting;
 		}
 		return _MenuGameState;
 	}	

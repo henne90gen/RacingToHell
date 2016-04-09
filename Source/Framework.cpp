@@ -271,14 +271,16 @@ void Framework::handleEvents()
 		}
 		if (_GameState == GameState::Lobby)
 		{
+			_NetworkHandle.setState(NetworkState::Lobby);
+			_NetworkHandle.setRelation(NetworkRelation::Host);
+
+			GameObjectFactory::setDeltaID(0);
+
 			_MultiplayerLobby.EnableButtons(true);
 			_MultiplayerLobby.setAdminTable(true);
 			_MultiplayerLobby.resetRdyButton();
 			_MultiplayerLobby.resetTable();
 			_MultiplayerLobby.addPlayer(_NetworkHandle.getMyName(), true);
-
-			_NetworkHandle.setRelation(NetworkRelation::Host);
-			_NetworkHandle.setState(NetworkState::Lobby);
 
 			_NetworkThread = std::thread(&NetworkHandle::run, &_NetworkHandle);
 			_NetworkThread.detach();
@@ -291,6 +293,8 @@ void Framework::handleEvents()
 		if (_MultiplayerMenu.getCreatedLobby() == 0 && _NetworkHandle.getState() == NetworkState::None) {
 			_NetworkHandle.setState(NetworkState::Lobby);
 			_NetworkHandle.setRelation(NetworkRelation::Client);
+
+			GameObjectFactory::setDeltaID(2 ^ 32 / 2);
 
 			_MultiplayerLobby.EnableButtons(false);
 			_MultiplayerLobby.setAdminTable(false);

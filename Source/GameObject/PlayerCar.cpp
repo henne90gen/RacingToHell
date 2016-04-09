@@ -28,7 +28,7 @@ PlayerCar::PlayerCar(std::istream& stream, std::vector<std::shared_ptr<sf::Textu
 {
 	PlayerCar::operator<<(stream);
 	setStats(_SelectedCar);
-	initTexture((*textures.at(_SelectedCar)));
+	initTexture(*textures.at(_SelectedCar));
 }
 
 PlayerCar::PlayerCar(sf::Packet& packet, std::vector<std::shared_ptr<sf::Texture>>& textures) : 
@@ -36,7 +36,7 @@ PlayerCar::PlayerCar(sf::Packet& packet, std::vector<std::shared_ptr<sf::Texture
 {
 	PlayerCar::operator<<(packet);
 	setStats(_SelectedCar);
-	initTexture((*textures.at(_SelectedCar)));
+	initTexture(*textures.at(_SelectedCar));
 }
 
 void PlayerCar::render(sf::RenderWindow& Window, bool renderCrosshair) {
@@ -197,6 +197,7 @@ void PlayerCar::addEnergy()
 
 void PlayerCar::setStats(int id)
 {
+	_SelectedCar = id;
 	std::vector<int> Stats = PlayerStats::getPlayerStats(id);
 	_MaxHealth = Stats[0];
 	_Health = _MaxHealth;

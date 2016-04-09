@@ -18,8 +18,6 @@
 class GameObjectFactory
 {
 public:
-	~GameObjectFactory();
-
 	static void load();
 
 	/*
@@ -35,7 +33,7 @@ public:
 		@param volume
 		@return BossCar Constructed BossCar
 	*/
-	static std::shared_ptr<BossCar> GameObjectFactory::getBossCar(int level, int diff, int hp, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer& expSB, float volume);
+	static std::shared_ptr<BossCar> getBossCar(int level, int diff, int hp, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer& expSB, float volume);
 	
 	/*
 		Bullet that can be shot by any Car
@@ -75,7 +73,7 @@ public:
 	/*
 		@param stream Stream to get the necessary data from
 	*/
-	static std::shared_ptr<BossCar> GameObjectFactory::getBossCar(int level, std::istream& stream, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer& expSB, float volume);
+	static std::shared_ptr<BossCar> getBossCar(int level, std::istream& stream, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer& expSB, float volume);
 
 	/*
 		@param stream Stream to get the necessary data from
@@ -105,7 +103,7 @@ public:
 	/*
 		@param packet packet to get the necessary data from
 	*/
-	static std::shared_ptr<BossCar> GameObjectFactory::getBossCar(int level, sf::Packet& packet, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer& expSB, float volume);
+	static std::shared_ptr<BossCar> getBossCar(int level, sf::Packet& packet, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer& expSB, float volume);
 
 	/*
 		@param packet packet to get the necessary data from
@@ -130,12 +128,14 @@ public:
 	static void scanStreamForGO(int level, std::istream& stream, std::vector<std::shared_ptr<GameObject>>& gos, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer& expSB, float volume);
 	static void scanPacketForGO(int level, sf::Packet& packet, std::vector<std::shared_ptr<GameObject>>& gos, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer& expSB, float volume);
 
-	static void setPlayerCarTextures(std::vector<std::shared_ptr<sf::Texture>>& carSkins) { _PlayerCarTextures = carSkins; }
+	static void setPlayerCarTextures(std::vector<std::shared_ptr<sf::Texture>>& carSkins) { _PlayerCarTextures() = carSkins; }
 
 	static void setDeltaID(int deltaID) { _DeltaID = deltaID; }
 
 private:
-	static std::vector<std::shared_ptr<sf::Texture>> _PlayerCarTextures, _AICarTextures, _BossCarTextures;
+	static std::vector<std::shared_ptr<sf::Texture>>& _PlayerCarTextures();
+	static std::vector<std::shared_ptr<sf::Texture>>& _AICarTextures();
+	static std::vector<std::shared_ptr<sf::Texture>>& _BossCarTextures();
 	static sf::Texture& _ToolboxTexture();
 	static sf::Texture& _EnergyCanisterTexture();
 	static sf::Texture& _BulletTexture();

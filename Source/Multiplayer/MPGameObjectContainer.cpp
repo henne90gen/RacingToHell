@@ -603,6 +603,8 @@ void MPGameObjectContainer::handlePackets(std::vector<sf::Packet>& packets, sf::
 			if (tick > recTick + delay) {
 				std::cout << "Spawning GO" << std::endl;
 				GameObjectFactory::scanPacketForGO(_Level, tmp, _GameObjects, _SoundEffects, _ExplosionSoundBuffer, _Volume);
+				packets.erase(packets.begin() + i);
+				i--;
 			}
 			break;
 		}

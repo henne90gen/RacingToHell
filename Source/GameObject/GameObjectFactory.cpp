@@ -1,9 +1,21 @@
 #include "stdafx.h"
 #include "GameObject/GameObjectFactory.h"
 
-std::vector<std::shared_ptr<sf::Texture>> GameObjectFactory::_PlayerCarTextures = std::vector<std::shared_ptr<sf::Texture>>();
-std::vector<std::shared_ptr<sf::Texture>> GameObjectFactory::_AICarTextures = std::vector<std::shared_ptr<sf::Texture>>();
-std::vector<std::shared_ptr<sf::Texture>> GameObjectFactory::_BossCarTextures = std::vector<std::shared_ptr<sf::Texture>>();
+std::vector<std::shared_ptr<sf::Texture>>& GameObjectFactory::_PlayerCarTextures() 
+{
+	static std::vector<std::shared_ptr<sf::Texture>>* result = new std::vector<std::shared_ptr<sf::Texture>>();
+	return *result;
+}
+std::vector<std::shared_ptr<sf::Texture>>& GameObjectFactory::_AICarTextures() 
+{
+	static std::vector<std::shared_ptr<sf::Texture>>* result = new std::vector<std::shared_ptr<sf::Texture>>();
+	return *result;
+}
+std::vector<std::shared_ptr<sf::Texture>>& GameObjectFactory::_BossCarTextures()
+{
+	static std::vector<std::shared_ptr<sf::Texture>>* result = new std::vector<std::shared_ptr<sf::Texture>>();
+	return *result;
+}
 
 sf::Texture& GameObjectFactory::_ToolboxTexture()
 {
@@ -39,16 +51,9 @@ sf::SoundBuffer& GameObjectFactory::_JetSoundBuffer()
 sf::Uint32 GameObjectFactory::_CurrentGameObjectID;
 sf::Uint32 GameObjectFactory::_DeltaID;
 
-GameObjectFactory::~GameObjectFactory()
-{
-	_PlayerCarTextures.clear();
-	_AICarTextures.clear();
-	_BossCarTextures.clear();
-}
-
 std::shared_ptr<PlayerCar> GameObjectFactory::getPlayerCar(int carSkin)
 {
-	std::shared_ptr<PlayerCar> player(new PlayerCar(_DeltaID + _CurrentGameObjectID++, carSkin, (*_PlayerCarTextures.at(carSkin))));
+	std::shared_ptr<PlayerCar> player(new PlayerCar(_DeltaID + _CurrentGameObjectID++, carSkin, (*_PlayerCarTextures().at(carSkin))));
 	return player;
 }
 
@@ -58,26 +63,26 @@ std::shared_ptr<BossCar> GameObjectFactory::getBossCar(int level, int diff, int 
 	{
 	case 0:
 	{
-		std::shared_ptr<Tank> boss(new Tank(_DeltaID + _CurrentGameObjectID++, diff, hp, (*_BossCarTextures[0]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, volume));
+		std::shared_ptr<Tank> boss(new Tank(_DeltaID + _CurrentGameObjectID++, diff, hp, (*_BossCarTextures()[0]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, volume));
 		return boss;
 		break;
 	}
 
 	case 1:
 	{
-		std::shared_ptr<Mech> boss(new Mech(_DeltaID + _CurrentGameObjectID++, diff, hp, (*_BossCarTextures[2]), (*_BossCarTextures[3]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, volume));
+		std::shared_ptr<Mech> boss(new Mech(_DeltaID + _CurrentGameObjectID++, diff, hp, (*_BossCarTextures()[2]), (*_BossCarTextures()[3]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, volume));
 		return boss;
 		break;
 	}
 	case 2:
 	{
-		std::shared_ptr<Jet> boss(new Jet(_DeltaID + _CurrentGameObjectID++, diff, hp, (*_BossCarTextures[4]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, _JetSoundBuffer(), volume));
+		std::shared_ptr<Jet> boss(new Jet(_DeltaID + _CurrentGameObjectID++, diff, hp, (*_BossCarTextures()[4]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, _JetSoundBuffer(), volume));
 		return boss;
 		break;
 	}
 	case 3:
 	{
-		std::shared_ptr<Carrier> boss(new Carrier(_DeltaID + _CurrentGameObjectID++, diff, hp, (*_BossCarTextures[1]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, volume));
+		std::shared_ptr<Carrier> boss(new Carrier(_DeltaID + _CurrentGameObjectID++, diff, hp, (*_BossCarTextures()[1]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, volume));
 		return boss;
 		break;
 	}
@@ -98,7 +103,7 @@ std::shared_ptr<Bullet> GameObjectFactory::getBullet(sf::Vector2f pos, sf::Vecto
 
 std::shared_ptr<AICar> GameObjectFactory::getAICar(int hp, int roadSpeed)
 {
-	std::shared_ptr<AICar> car(new AICar(_DeltaID + _CurrentGameObjectID++, hp, roadSpeed, (*_AICarTextures.at(std::rand() % 7))));
+	std::shared_ptr<AICar> car(new AICar(_DeltaID + _CurrentGameObjectID++, hp, roadSpeed, (*_AICarTextures().at(std::rand() % 7))));
 	return car;
 }
 
@@ -118,7 +123,7 @@ std::shared_ptr<GameObject> GameObjectFactory::getCanister(sf::Vector2f pos)
 
 std::shared_ptr<PlayerCar> GameObjectFactory::getPlayerCar(std::istream& stream)
 {
-	std::shared_ptr<PlayerCar> player(new PlayerCar(stream, _PlayerCarTextures));
+	std::shared_ptr<PlayerCar> player(new PlayerCar(stream, _PlayerCarTextures()));
 	return player;
 }
 
@@ -128,25 +133,25 @@ std::shared_ptr<BossCar> GameObjectFactory::getBossCar(int level, std::istream& 
 	{
 	case 0:
 	{
-		std::shared_ptr<Tank> boss(new Tank(stream, (*_BossCarTextures[0]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, volume));
+		std::shared_ptr<Tank> boss(new Tank(stream, (*_BossCarTextures()[0]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, volume));
 		return boss;
 		break;
 	}
 	case 1:
 	{
-		std::shared_ptr<Mech> boss(new Mech(stream, (*_BossCarTextures[2]), (*_BossCarTextures[3]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, volume));
+		std::shared_ptr<Mech> boss(new Mech(stream, (*_BossCarTextures()[2]), (*_BossCarTextures()[3]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, volume));
 		return boss;
 		break;
 	}
 	case 2:
 	{
-		std::shared_ptr<Jet> boss(new Jet(stream, (*_BossCarTextures[4]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, _JetSoundBuffer(), volume));
+		std::shared_ptr<Jet> boss(new Jet(stream, (*_BossCarTextures()[4]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, _JetSoundBuffer(), volume));
 		return boss;
 		break;
 	}
 	case 3:
 	{
-		std::shared_ptr<Carrier> boss(new Carrier(stream, (*_BossCarTextures[1]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, volume));
+		std::shared_ptr<Carrier> boss(new Carrier(stream, (*_BossCarTextures()[1]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, volume));
 		return boss;
 		break;
 	}
@@ -167,7 +172,7 @@ std::shared_ptr<Bullet> GameObjectFactory::getBullet(std::istream& stream, GameO
 
 std::shared_ptr<AICar> GameObjectFactory::getAICar(std::istream& stream)
 {
-	std::shared_ptr<AICar> car(new AICar(stream, (*_AICarTextures.at(std::rand() % 7))));
+	std::shared_ptr<AICar> car(new AICar(stream, (*_AICarTextures().at(std::rand() % 7))));
 	return car;
 }
 
@@ -185,7 +190,7 @@ std::shared_ptr<GameObject> GameObjectFactory::getCanister(std::istream& stream)
 
 std::shared_ptr<PlayerCar> GameObjectFactory::getPlayerCar(sf::Packet& packet)
 {
-	std::shared_ptr<PlayerCar> player(new PlayerCar(packet, _PlayerCarTextures));
+	std::shared_ptr<PlayerCar> player(new PlayerCar(packet, _PlayerCarTextures()));
 	return player;
 }
 
@@ -195,25 +200,25 @@ std::shared_ptr<BossCar> GameObjectFactory::getBossCar(int level, sf::Packet& pa
 	{
 	case 0:
 	{
-		std::shared_ptr<Tank> boss(new Tank(packet, (*_BossCarTextures[0]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, volume));
+		std::shared_ptr<Tank> boss(new Tank(packet, (*_BossCarTextures()[0]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, volume));
 		return boss;
 		break;
 	}
 	case 1:
 	{
-		std::shared_ptr<Mech> boss(new Mech(packet, (*_BossCarTextures[2]), (*_BossCarTextures[3]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, volume));
+		std::shared_ptr<Mech> boss(new Mech(packet, (*_BossCarTextures()[2]), (*_BossCarTextures()[3]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, volume));
 		return boss;
 		break;
 	}
 	case 2:
 	{
-		std::shared_ptr<Jet> boss(new Jet(packet, (*_BossCarTextures[4]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, _JetSoundBuffer(), volume));
+		std::shared_ptr<Jet> boss(new Jet(packet, (*_BossCarTextures()[4]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, _JetSoundBuffer(), volume));
 		return boss;
 		break;
 	}
 	case 3:
 	{
-		std::shared_ptr<Carrier> boss(new Carrier(packet, (*_BossCarTextures[1]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, volume));
+		std::shared_ptr<Carrier> boss(new Carrier(packet, (*_BossCarTextures()[1]), _BulletTexture(), soundEffects, _AIShotSoundBuffer(), expSB, volume));
 		return boss;
 		break;
 	}
@@ -234,7 +239,7 @@ std::shared_ptr<Bullet> GameObjectFactory::getBullet(sf::Packet& packet, GameObj
 
 std::shared_ptr<AICar> GameObjectFactory::getAICar(sf::Packet& packet)
 {
-	std::shared_ptr<AICar> car(new AICar(packet, (*_AICarTextures.at(std::rand() % 7))));
+	std::shared_ptr<AICar> car(new AICar(packet, (*_AICarTextures().at(std::rand() % 7))));
 	return car;
 }
 
@@ -320,7 +325,7 @@ void GameObjectFactory::load()
 	for (int i = 1; i <= 8; i++) {
 		std::shared_ptr<sf::Texture> texture(new sf::Texture());
 		(*texture).loadFromFile("Resources/Texture/TrafficCar/Traffic" + std::to_string(i) + ".png");
-		_AICarTextures.push_back(texture);
+		_AICarTextures().push_back(texture);
 	}
 
 	std::string bossTextures[] =
@@ -332,9 +337,9 @@ void GameObjectFactory::load()
 	};
 
 	for (int i = 0; i < sizeof(bossTextures) / sizeof(std::string); i++) {
-		std::shared_ptr<sf::Texture>texture(new sf::Texture());
+		std::shared_ptr<sf::Texture> texture(new sf::Texture());
 		texture->loadFromFile("Resources/Texture/BossCar/" + bossTextures[i] + ".png");
-		_BossCarTextures.push_back(texture);
+		_BossCarTextures().push_back(texture);
 	}
 
 	_BulletTexture().loadFromFile("Resources/Texture/Object/Bullet.png");

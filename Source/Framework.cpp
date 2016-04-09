@@ -327,6 +327,10 @@ void Framework::handleEvents()
 			_Level.resetTimer();
 			setDifficulty(_OptionsMenu.getDifficulty());
 			_MPGameObjectContainer.setLevel(_Level.getLevel());
+
+			sf::Packet packet;
+			_MPGameObjectContainer.getPlayerCar() >> packet;
+			_NetworkHandle.addPacket(NetworkCommunication::CreateGameObject, packet);
 		}
 		break;
 	case GameState::Countdown:

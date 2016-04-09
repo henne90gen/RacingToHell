@@ -111,7 +111,8 @@ public:
 	void operator<<(sf::Packet& packet);
 private:
 	float _Energy;
-	sf::Uint16 _MaxEnergy, _Bulletdamage, _SelectedCar;
+	sf::Uint16 _MaxEnergy, _Bulletdamage;
+	sf::Uint8 _SelectedCar;
 
 	sf::Vector2f _ShotBullet;
 

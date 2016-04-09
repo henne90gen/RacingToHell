@@ -33,7 +33,7 @@ public:
 		@param stream Input stream that contains all the other information needed to make a Car
 		@param type Type of the Car
 	*/
-	Car(std::istream& stream, GameObjectType type) : GameObject(stream, type) {}
+	Car(std::istream& stream, GameObjectType type) : GameObject(stream, type) { Car::operator<<(stream); }
 
 	/*
 		Car that can drive around on the road
@@ -50,7 +50,7 @@ public:
 		@param stream Input stream that contains all the other information needed to make a Car
 		@param type Type of the Car
 	*/
-	Car(sf::Packet& packet, GameObjectType type) : GameObject(packet, type) {}
+	Car(sf::Packet& packet, GameObjectType type) : GameObject(packet, type) { Car::operator<<(packet); }
 	~Car() {}
 
 	/*

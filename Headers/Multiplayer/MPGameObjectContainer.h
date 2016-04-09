@@ -135,6 +135,8 @@ public:
 private:
 	std::mutex _Mutex;
 
+	sf::Clock _SendTimer;
+
 	std::vector<std::shared_ptr<GameObject>> _GameObjects;
 	std::vector<std::shared_ptr<Animation>> _Animations;
 

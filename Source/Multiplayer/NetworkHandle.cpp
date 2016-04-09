@@ -129,6 +129,8 @@ void NetworkHandle::run()
 	_Socket.setBlocking(false);
 	_Listener.setBlocking(false);
 
+	_SyncTimer.restart();
+
 	while (_Relationship != NetworkRelation::None)
 	{
 		sf::Clock beginningTime;
@@ -167,8 +169,9 @@ void NetworkHandle::run()
 
 		//std::cout << _Tick << std::endl;
 
-		if (_Relationship == NetworkRelation::Client && _Tick % (sf::Uint32)(_TickRate * _UpdateIntervall) == 0) {
+		if (_Relationship == NetworkRelation::Client && _SyncTimer.getElapsedTime().asSeconds() > 2.0f) {
 			synchroniseTick();
+			_SyncTimer.restart();
 		}
 
 		++_Tick;
@@ -242,7 +245,7 @@ void NetworkHandle::synchroniseTick()
 {
 	sf::Packet syncPacket;
 	syncPacket << (sf::Uint8)NetworkCommunication::SynchroniseTick << _Tick;
-	_SynchronisationTimer.restart();
+	_PackageTravelTimer.restart();
 	_Socket.send(syncPacket);
 }
 
@@ -297,7 +300,7 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 				_Socket.send(responsePacket);
 			}
 			else if (_Relationship == NetworkRelation::Client) {
-				_Tick = Tick + (sf::Uint32)(_TickRate * _SynchronisationTimer.restart().asSeconds() / 2.0f);
+				_Tick = Tick + (sf::Uint32)(_TickRate * _PackageTravelTimer.restart().asSeconds() / 2.0f);
 			}
 			std::cout << _Tick << std::endl;
 			break;

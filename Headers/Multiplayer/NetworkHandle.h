@@ -64,5 +64,5 @@ private:
 
 	std::string _MyName, _MemberName;
 
-	sf::Clock _SynchronisationTimer;
+	sf::Clock _PackageTravelTimer, _SyncTimer;
 };

@@ -530,9 +530,12 @@ bool MPGameObjectContainer::playerIsAlive() {
 
 void MPGameObjectContainer::deleteObject(unsigned int id, bool sendDeletion)
 {
-	if (sendDeletion)
+	if (sendDeletion) {
 		_SendObjects.push_back(std::make_pair(NetworkCommunication::DeleteGameObject, _GameObjects.at(id)));
-	_GameObjects.erase(_GameObjects.begin() + id);
+	}
+	else {
+		_GameObjects.erase(_GameObjects.begin() + id);
+	}
 }
 
 void MPGameObjectContainer::setAllFrequencies()
@@ -704,8 +707,8 @@ void MPGameObjectContainer::handleIncomingPackets(std::vector<sf::Packet>& packe
 			tmp >> id;
 			if (tick > recTick + delay) {
 				for (unsigned int j = 0; j < _GameObjects.size(); j++) {
-					if (_GameObjects.at(i)->getID() == id) {
-						deleteObject(i, false);
+					if (_GameObjects.at(j)->getID() == id) {
+						deleteObject(j, false);
 					}
 				}
 				packets.erase(packets.begin() + i);
@@ -757,6 +760,11 @@ void MPGameObjectContainer::handleOutgoingPackets(std::vector<std::pair<NetworkC
 		sf::Packet tmp;
 		if (_SendObjects.at(0).first == NetworkCommunication::DeleteGameObject) {
 			tmp << _SendObjects.at(0).second->getID();
+			for (unsigned int i = 0; i < _GameObjects.size(); i++) {
+				if (_GameObjects.at(i)->getID() == _SendObjects.at(0).second->getID()) {
+					deleteObject(i, false);
+				}
+			}
 		}
 		else {
 			*_SendObjects.at(0).second >> tmp;

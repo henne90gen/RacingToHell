@@ -27,7 +27,61 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
-		_GameObjects.at(i)->update(FrameTime, RoadSpeed);
+		if (playerIsAlive()) {
+			if (i > 1) {
+				if (getPlayerCar().checkForCollision(*_GameObjects.at(i))) {
+					switch (_GameObjects[i]->getType())
+					{
+					case GameObjectType::AI:
+					{
+						_Animations.push_back(std::shared_ptr<Explosion>(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0), _SoundEffects, _ExplosionSoundBuffer, _Volume)));
+						_PlayerAlive = false;
+						// TODO: send destruction of player
+					}
+					break;
+					case GameObjectType::BulletObjectAI:
+						getPlayerCar().takeDamage(5);
+						playHitSound(getPlayerCar().getPos());
+						// TODO: send player health
+						deleteObject(i, false);
+						i--;
+						break;
+					case GameObjectType::Canister:
+						getPlayerCar().addEnergy();
+						deleteObject(i, true);
+						i--;
+						break;
+					case GameObjectType::Tools:
+						getPlayerCar().addHealth();
+						deleteObject(i, true);
+						i--;
+						break;
+					case GameObjectType::Boss:
+					{
+						_Animations.push_back(std::shared_ptr<Explosion>(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0), _SoundEffects, _ExplosionSoundBuffer, _Volume)));
+						_PlayerAlive = false;
+						// TODO: send destruction of player
+					}
+					break;
+					case GameObjectType::BulletObjectBoss:
+						getPlayerCar().takeDamage(5);
+						playHitSound(getPlayerCar().getPos());
+						// TODO: send player health
+						deleteObject(i, false);
+						i--;
+						break;
+					}
+				}
+			}
+			else {
+				if (getPlayerCar().getHealth() <= 0) {
+					_Animations.push_back(std::shared_ptr<Explosion>(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0), _SoundEffects, _ExplosionSoundBuffer, _Volume)));
+					_PlayerAlive = false;
+					// TODO: send destruction of player
+				}
+			}
+			_GameObjects.at(i)->update(FrameTime, RoadSpeed);
+		}
 	}
 
 	// Check whether player fired a shot
@@ -335,12 +389,12 @@ bool MPGameObjectContainer::bossIsDead()
 		if (_AboutToLevelUp && getBossCar().isDoneExploding(_ExplosionTexture)) {
 			_BossFight = false;
 			_AboutToLevelUp = false;
-			deleteObject(1);
+			deleteObject(1, false);
 			getPlayerCar().resetResources();
 
 			while (_GameObjects.size() > 1)
 			{
-				deleteObject(1);
+				deleteObject(1, false);
 			}
 
 			_CarScore = 5000 + 10000 * _Difficulty * _Difficulty;
@@ -474,8 +528,10 @@ bool MPGameObjectContainer::playerIsAlive() {
 	return true;
 }
 
-void MPGameObjectContainer::deleteObject(unsigned int id)
+void MPGameObjectContainer::deleteObject(unsigned int id, bool sendDeletion)
 {
+	if (sendDeletion)
+		_SendObjects.push_back(std::make_pair(NetworkCommunication::DeleteGameObject, _GameObjects.at(id)));
 	_GameObjects.erase(_GameObjects.begin() + id);
 }
 
@@ -643,6 +699,19 @@ void MPGameObjectContainer::handleIncomingPackets(std::vector<sf::Packet>& packe
 				i--;
 			}
 			break;
+		case NetworkCommunication::DeleteGameObject:
+			sf::Uint32 id;
+			tmp >> id;
+			if (tick > recTick + delay) {
+				for (unsigned int j = 0; j < _GameObjects.size(); j++) {
+					if (_GameObjects.at(i)->getID() == id) {
+						deleteObject(i, false);
+					}
+				}
+				packets.erase(packets.begin() + i);
+				i--;
+			}
+			break;
 		case NetworkCommunication::UpdateP2:
 			sf::Uint8 type;
 			tmp >> type;
@@ -668,7 +737,7 @@ void MPGameObjectContainer::handleIncomingPackets(std::vector<sf::Packet>& packe
 
 void MPGameObjectContainer::addGameObject(std::shared_ptr<GameObject> newGO) {
 	_GameObjects.push_back(newGO);
-	_SendObjects.push_back(newGO);
+	_SendObjects.push_back(std::make_pair(NetworkCommunication::CreateGameObject, newGO));
 }
 
 void MPGameObjectContainer::handleOutgoingPackets(std::vector<std::pair<NetworkCommunication, sf::Packet>>& packets)
@@ -686,8 +755,13 @@ void MPGameObjectContainer::handleOutgoingPackets(std::vector<std::pair<NetworkC
 	while (_SendObjects.size() > 0) {
 		std::lock_guard<std::mutex> lock(_Mutex);
 		sf::Packet tmp;
-		*_SendObjects.at(0) >> tmp;
-		packets.push_back(std::make_pair(NetworkCommunication::CreateGameObject, tmp));
+		if (_SendObjects.at(0).first == NetworkCommunication::DeleteGameObject) {
+			tmp << _SendObjects.at(0).second->getID();
+		}
+		else {
+			*_SendObjects.at(0).second >> tmp;
+		}
+		packets.push_back(std::make_pair(_SendObjects.at(0).first, tmp));
 		_SendObjects.erase(_SendObjects.begin());
 	}
 }

@@ -147,7 +147,7 @@ private:
 	sf::Clock _SendTimer;
 
 	std::vector<std::shared_ptr<GameObject>> _GameObjects;
-	std::vector<std::shared_ptr<GameObject>> _SendObjects;
+	std::vector<std::pair<NetworkCommunication, std::shared_ptr<GameObject>>> _SendObjects;
 	std::vector<std::shared_ptr<Animation>> _Animations;
 
 	sf::Texture _ExplosionTexture;
@@ -187,7 +187,7 @@ private:
 	Deletes a GameObject from the vector of GameObjects
 	@param id Index of the GameObject that will be deleted
 	*/
-	void deleteObject(unsigned int id);
+	void deleteObject(unsigned int id, bool sendDeletion);
 
 	/*
 	calculates the hp of a AIcar

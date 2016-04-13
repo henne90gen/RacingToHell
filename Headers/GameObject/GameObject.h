@@ -285,11 +285,16 @@ public:
 	sf::Uint32 getID() { return _ID; }
 
 	void setID(sf::Uint32 id) { _ID = id; }
+
+protected:
+
+	sf::Uint32 _ID;
+
 private:
 	sf::Sprite _Sprite;
 	sf::Texture _Texture;
 	
-	sf::Uint32 _ID;
+	
 
 	GameObjectType _Type;
 };

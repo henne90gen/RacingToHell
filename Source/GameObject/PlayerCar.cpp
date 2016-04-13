@@ -222,6 +222,7 @@ void PlayerCar::operator<<(std::istream& stream)
 {
 	Car::operator<<(stream);
 	read(stream, _SelectedCar);
+	setStats(_SelectedCar);
 	read(stream, _Acceleration.x);
 	read(stream, _Acceleration.y);
 	read(stream, _Movement.x);
@@ -240,8 +241,17 @@ void PlayerCar::operator>>(sf::Packet& packet)
 
 void PlayerCar::operator<<(sf::Packet& packet)
 {
-	Car::operator<<(packet);
+	read(packet, _ID);
+	float x, y;
+	read(packet, x);
+	read(packet, y);
+	if (std::abs(getPos().x - x) > 1 || std::abs(getPos().y - y) > 1)
+		setPos(sf::Vector2f(x, y));
+	read(packet, _Speed);
+	read(packet, _Health);
+	read(packet, _MaxHealth);
 	read(packet, _SelectedCar);
+	setStats(_SelectedCar);
 	read(packet, _Acceleration.x);
 	read(packet, _Acceleration.y);
 	read(packet, _Movement.x);

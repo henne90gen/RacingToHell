@@ -636,7 +636,7 @@ void MPGameObjectContainer::handleIncomingPackets(std::vector<sf::Packet>& packe
 
 void MPGameObjectContainer::handleOutgoingPackets(std::vector<std::pair<NetworkCommunication, sf::Packet>>& packets)
 {
-	if (_SendTimer.getElapsedTime().asSeconds() > 1.0f / 30.0f)
+	if (_SendTimer.getElapsedTime().asSeconds() > 1.0f / 60.0f)
 	{
 		std::lock_guard<std::mutex> lock(_Mutex);
 		sf::Packet tmp;

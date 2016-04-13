@@ -135,11 +135,15 @@ public:
 	*/
 	void setDifficulty(int dif) { _Difficulty = dif; }
 
+	void setNetworkRelation(NetworkRelation relation) { _Relation = relation; }
+
+	void addGameObject(std::shared_ptr<GameObject> newGO);
+
 	void handleIncomingPackets(std::vector<sf::Packet>& packets, sf::Uint32 tick, int delay);
 	void handleOutgoingPackets(std::vector<std::pair<NetworkCommunication, sf::Packet>>& packets);
 private:
 	std::mutex _Mutex;
-
+	NetworkRelation _Relation;
 	sf::Clock _SendTimer;
 
 	std::vector<std::shared_ptr<GameObject>> _GameObjects;

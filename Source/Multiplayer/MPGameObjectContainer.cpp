@@ -33,10 +33,32 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 	// Check whether player fired a shot
 	if (getPlayerCar().shotBullet().x != 0 && getPlayerCar().shotBullet().y != 0)
 	{
-		std::shared_ptr<Bullet> bullet = GameObjectFactory::getBullet(getPlayerCar().getPos(), getPlayerCar().shotBullet(), _PlayerBulletSpeed, GameObjectType::BulletObjectPlayer, _SoundEffects, _Volume);
-		_GameObjects.push_back(bullet);
-		_SendObjects.push_back(bullet);
+		addGameObject(GameObjectFactory::getBullet(getPlayerCar().getPos(), getPlayerCar().shotBullet(), _PlayerBulletSpeed, GameObjectType::BulletObjectPlayer, _SoundEffects, _Volume));
 		getPlayerCar().resetShotBullet();
+	}
+
+	getPlayerCar().drainEnergy(FrameTime);
+	if (_Relation == NetworkRelation::Host) {
+		// Spawn energy canister
+		if (_TimePassedCanister + FrameTime > 1 / _CanisterFrequency)
+		{
+			_TimePassedCanister += FrameTime - 1 / _CanisterFrequency;
+			addGameObject(GameObjectFactory::getCanister(sf::Vector2f(std::rand() % 3 * 150 + 150, -25)));
+		}
+		else {
+			_TimePassedCanister += FrameTime;
+		}
+
+		// Spawn toolbox
+		if (_TimePassedToolbox + FrameTime > 1.0f / _ToolboxFrequency)
+		{
+			_TimePassedToolbox += FrameTime - 1.0f / _ToolboxFrequency;
+			addGameObject(GameObjectFactory::getToolbox(sf::Vector2f(std::rand() % 3 * 150 + 150, -10)));
+			setToolboxFrequency();
+		}
+		else {
+			_TimePassedToolbox += FrameTime;
+		}
 	}
 
 	/*
@@ -642,6 +664,11 @@ void MPGameObjectContainer::handleIncomingPackets(std::vector<sf::Packet>& packe
 			break;
 		}
 	}
+}
+
+void MPGameObjectContainer::addGameObject(std::shared_ptr<GameObject> newGO) {
+	_GameObjects.push_back(newGO);
+	_SendObjects.push_back(newGO);
 }
 
 void MPGameObjectContainer::handleOutgoingPackets(std::vector<std::pair<NetworkCommunication, sf::Packet>>& packets)

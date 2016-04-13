@@ -273,6 +273,7 @@ void Framework::handleEvents()
 		{
 			_NetworkHandle.setState(NetworkState::Lobby);
 			_NetworkHandle.setRelation(NetworkRelation::Host);
+			_MPGameObjectContainer.setNetworkRelation(NetworkRelation::Host);
 
 			GameObjectFactory::setDeltaID(0);
 
@@ -293,6 +294,7 @@ void Framework::handleEvents()
 		if (_MultiplayerMenu.getCreatedLobby() == 0 && _NetworkHandle.getState() == NetworkState::None) {
 			_NetworkHandle.setState(NetworkState::Lobby);
 			_NetworkHandle.setRelation(NetworkRelation::Client);
+			_MPGameObjectContainer.setNetworkRelation(NetworkRelation::Client);
 
 			GameObjectFactory::setDeltaID(2 ^ 32 / 2);
 

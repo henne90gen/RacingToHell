@@ -534,6 +534,7 @@ void MPGameObjectContainer::deleteObject(unsigned int id, bool sendDeletion)
 		_SendObjects.push_back(std::make_pair(NetworkCommunication::DeleteGameObject, _GameObjects.at(id)));
 	}
 	else {
+		std::cout << "About to delete GO" << std::endl;
 		_GameObjects.erase(_GameObjects.begin() + id);
 	}
 }
@@ -709,6 +710,7 @@ void MPGameObjectContainer::handleIncomingPackets(std::vector<sf::Packet>& packe
 				for (unsigned int j = 0; j < _GameObjects.size(); j++) {
 					if (_GameObjects.at(j)->getID() == id) {
 						deleteObject(j, false);
+						break;
 					}
 				}
 				packets.erase(packets.begin() + i);
@@ -763,6 +765,7 @@ void MPGameObjectContainer::handleOutgoingPackets(std::vector<std::pair<NetworkC
 			for (unsigned int i = 0; i < _GameObjects.size(); i++) {
 				if (_GameObjects.at(i)->getID() == _SendObjects.at(0).second->getID()) {
 					deleteObject(i, false);
+					break;
 				}
 			}
 		}

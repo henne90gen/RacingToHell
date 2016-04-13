@@ -10,6 +10,10 @@ MPGameObjectContainer::~MPGameObjectContainer()
 
 void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 {
+	if (getPlayer2Car().getType() != GameObjectType::Player) {
+		// TODO: Add failsafe
+	}
+
 	// Update Animations
 	for (int i = 0; i < _Animations.size(); i++) {
 		if (_Animations[i]->getAnimationState() == Animation::Stop) {
@@ -262,11 +266,8 @@ void MPGameObjectContainer::render(sf::RenderWindow& Window, bool renderCrosshai
 
 void MPGameObjectContainer::handleEvent(sf::Event& newEvent)
 {
-	for (unsigned int i = 0; i < _GameObjects.size(); i++)
-	{
-		if (_PlayerAlive) {
-			_GameObjects.at(i)->handleEvent(newEvent);
-		}
+	if (_PlayerAlive) {
+		getPlayerCar().handleEvent(newEvent);
 	}
 }
 

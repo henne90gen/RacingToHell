@@ -249,11 +249,8 @@ void GameObjectContainer::render(sf::RenderWindow& Window, bool renderCrosshair)
 
 void GameObjectContainer::handleEvent(sf::Event& newEvent)
 {
-	for (unsigned int i = 0; i < _GameObjects.size(); i++)
-	{
-		if (_PlayerAlive) {
-			_GameObjects.at(i)->handleEvent(newEvent);
-		}
+	if (_PlayerAlive) {
+		getPlayerCar().handleEvent(newEvent);
 	}
 }
 

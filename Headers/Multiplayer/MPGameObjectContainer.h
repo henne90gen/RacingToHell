@@ -49,17 +49,22 @@ public:
 	void update(float frameTime, int roadSpeed);
 
 	/*
-	@return GameObject& Reference to the PlayerCar
+		@return GameObject& Reference to the PlayerCar
 	*/
 	GameObject& getPlayerCar() { return *_GameObjects.at(0); }
 
 	/*
-	@return GameObject* Pointer to the BossCar
+		@return GameObject& Reference to the PlayerCar
+	*/
+	GameObject& getPlayer2Car() { return *_GameObjects.at(1); }
+
+	/*
+		@return GameObject& Reference to the BossCar
 	*/
 	GameObject& getBossCar() { return *_GameObjects.at(1); }
 
 	/*
-	@return bool True if the player is still alive
+		@return bool True if the player is still alive
 	*/
 	bool playerIsAlive();
 

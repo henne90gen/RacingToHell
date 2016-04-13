@@ -49,12 +49,10 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 					case GameObjectType::Canister:
 						getPlayerCar().addEnergy();
 						deleteObject(i, true);
-						i--;
 						break;
 					case GameObjectType::Tools:
 						getPlayerCar().addHealth();
 						deleteObject(i, true);
-						i--;
 						break;
 					case GameObjectType::Boss:
 					{
@@ -528,17 +526,6 @@ bool MPGameObjectContainer::playerIsAlive() {
 	return true;
 }
 
-void MPGameObjectContainer::deleteObject(unsigned int id, bool sendDeletion)
-{
-	if (sendDeletion) {
-		_SendObjects.push_back(std::make_pair(NetworkCommunication::DeleteGameObject, _GameObjects.at(id)));
-	}
-	else {
-		std::cout << "About to delete GO" << std::endl;
-		_GameObjects.erase(_GameObjects.begin() + id);
-	}
-}
-
 void MPGameObjectContainer::setAllFrequencies()
 {
 	setAiCarFrequency();
@@ -685,6 +672,21 @@ void MPGameObjectContainer::playHitSound(sf::Vector2f position)
 	_SoundEffects.push_back(std::make_pair(ImpactSound, false));
 }
 
+void MPGameObjectContainer::addGameObject(std::shared_ptr<GameObject> newGO) {
+	_GameObjects.push_back(newGO);
+	_SendObjects.push_back(std::make_pair(NetworkCommunication::CreateGameObject, newGO));
+}
+
+void MPGameObjectContainer::deleteObject(unsigned int id, bool sendDeletion)
+{
+	if (sendDeletion) {
+		_SendObjects.push_back(std::make_pair(NetworkCommunication::DeleteGameObject, _GameObjects.at(id)));
+	}
+	else {
+		_GameObjects.erase(_GameObjects.begin() + id);
+	}
+}
+
 void MPGameObjectContainer::handleIncomingPackets(std::vector<sf::Packet>& packets, sf::Uint32 tick, int delay) {
 	std::lock_guard<std::mutex> lock(_Mutex);
 	for (unsigned int i = 0; i < packets.size(); i++) {
@@ -695,9 +697,7 @@ void MPGameObjectContainer::handleIncomingPackets(std::vector<sf::Packet>& packe
 
 		switch ((NetworkCommunication)recType) {
 		case NetworkCommunication::CreateGameObject:
-			std::cout << "Might create GO" << std::endl;
 			if (tick > recTick + delay) {
-				std::cout << "Spawning GO" << std::endl;
 				GameObjectFactory::scanPacketForGO(_Level, tmp, _GameObjects, _SoundEffects, _ExplosionSoundBuffer, _Volume);
 				packets.erase(packets.begin() + i);
 				i--;
@@ -738,11 +738,6 @@ void MPGameObjectContainer::handleIncomingPackets(std::vector<sf::Packet>& packe
 			break;
 		}
 	}
-}
-
-void MPGameObjectContainer::addGameObject(std::shared_ptr<GameObject> newGO) {
-	_GameObjects.push_back(newGO);
-	_SendObjects.push_back(std::make_pair(NetworkCommunication::CreateGameObject, newGO));
 }
 
 void MPGameObjectContainer::handleOutgoingPackets(std::vector<std::pair<NetworkCommunication, sf::Packet>>& packets)

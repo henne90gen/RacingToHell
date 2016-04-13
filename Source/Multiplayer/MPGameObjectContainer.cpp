@@ -661,6 +661,7 @@ void MPGameObjectContainer::handleOutgoingPackets(std::vector<std::pair<NetworkC
 		sf::Packet tmp;
 		*_SendObjects.at(0) >> tmp;
 		packets.push_back(std::make_pair(NetworkCommunication::CreateGameObject, tmp));
+		_SendObjects.erase(_SendObjects.begin());
 	}
 }
 

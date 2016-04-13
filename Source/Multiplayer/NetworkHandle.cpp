@@ -271,7 +271,7 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 			_State = NetworkState::Ingame;
 			break;
 		case NetworkCommunication::CreateGameObject:
-		case NetworkCommunication::UpdateGameObject:
+		case NetworkCommunication::UpdateP2:
 			_ReceivedPackets.push_back(packet);
 			break;
 		case NetworkCommunication::EndGame:

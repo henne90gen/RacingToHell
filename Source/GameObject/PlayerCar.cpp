@@ -212,22 +212,38 @@ void PlayerCar::operator>>(std::ostream& stream)
 {
 	Car::operator>>(stream);
 	write(stream, _SelectedCar);
+	write(stream, _Acceleration.x);
+	write(stream, _Acceleration.y);
+	write(stream, _Movement.x);
+	write(stream, _Movement.y);
 }
 
 void PlayerCar::operator<<(std::istream& stream)
 {
 	Car::operator<<(stream);
 	read(stream, _SelectedCar);
+	read(stream, _Acceleration.x);
+	read(stream, _Acceleration.y);
+	read(stream, _Movement.x);
+	read(stream, _Movement.y);
 }
 
 void PlayerCar::operator>>(sf::Packet& packet)
 {
 	Car::operator>>(packet);
 	write(packet, _SelectedCar);
+	write(packet, _Acceleration.x);
+	write(packet, _Acceleration.y);
+	write(packet, _Movement.x);
+	write(packet, _Movement.y);
 }
 
 void PlayerCar::operator<<(sf::Packet& packet)
 {
 	Car::operator<<(packet);
 	read(packet, _SelectedCar);
+	read(packet, _Acceleration.x);
+	read(packet, _Acceleration.y);
+	read(packet, _Movement.x);
+	read(packet, _Movement.y);
 }

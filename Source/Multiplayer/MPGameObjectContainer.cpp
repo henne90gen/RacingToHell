@@ -22,6 +22,8 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 	}
 
 	_GameObjects.at(0)->update(FrameTime, RoadSpeed);
+	if (_GameObjects.size() > 1)
+		_GameObjects.at(1)->update(FrameTime, RoadSpeed);
 
 	/*
 	// Collision player
@@ -608,7 +610,7 @@ void MPGameObjectContainer::handleIncomingPackets(std::vector<sf::Packet>& packe
 				i--;
 			}
 			break;
-		case NetworkCommunication::UpdateGameObject:
+		case NetworkCommunication::UpdateP2:
 			sf::Uint8 type;
 			tmp >> type;
 			if ((GameObjectType)type == GameObjectType::Player) {
@@ -638,7 +640,7 @@ void MPGameObjectContainer::handleOutgoingPackets(std::vector<std::pair<NetworkC
 		std::lock_guard<std::mutex> lock(_Mutex);
 		sf::Packet tmp;
 		getPlayerCar() >> tmp;
-		packets.push_back(std::make_pair(NetworkCommunication::UpdateGameObject, tmp));
+		packets.push_back(std::make_pair(NetworkCommunication::UpdateP2, tmp));
 
 		_SendTimer.restart();
 	}

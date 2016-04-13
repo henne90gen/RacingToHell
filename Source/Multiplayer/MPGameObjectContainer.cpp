@@ -25,9 +25,19 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 		}
 	}
 
-	_GameObjects.at(0)->update(FrameTime, RoadSpeed);
-	if (_GameObjects.size() > 1)
-		_GameObjects.at(1)->update(FrameTime, RoadSpeed);
+	for (unsigned int i = 0; i < _GameObjects.size(); i++)
+	{
+		_GameObjects.at(i)->update(FrameTime, RoadSpeed);
+	}
+
+	// Check whether player fired a shot
+	if (getPlayerCar().shotBullet().x != 0 && getPlayerCar().shotBullet().y != 0)
+	{
+		std::shared_ptr<Bullet> bullet = GameObjectFactory::getBullet(getPlayerCar().getPos(), getPlayerCar().shotBullet(), _PlayerBulletSpeed, GameObjectType::BulletObjectPlayer, _SoundEffects, _Volume);
+		_GameObjects.push_back(bullet);
+		_SendObjects.push_back(bullet);
+		getPlayerCar().resetShotBullet();
+	}
 
 	/*
 	// Collision player
@@ -644,6 +654,13 @@ void MPGameObjectContainer::handleOutgoingPackets(std::vector<std::pair<NetworkC
 		packets.push_back(std::make_pair(NetworkCommunication::UpdateP2, tmp));
 
 		_SendTimer.restart();
+	}
+
+	while (_SendObjects.size() > 0) {
+		std::lock_guard<std::mutex> lock(_Mutex);
+		sf::Packet tmp;
+		*_SendObjects.at(0) >> tmp;
+		packets.push_back(std::make_pair(NetworkCommunication::CreateGameObject, tmp));
 	}
 }
 

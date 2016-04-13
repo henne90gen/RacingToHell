@@ -143,6 +143,7 @@ private:
 	sf::Clock _SendTimer;
 
 	std::vector<std::shared_ptr<GameObject>> _GameObjects;
+	std::vector<std::shared_ptr<GameObject>> _SendObjects;
 	std::vector<std::shared_ptr<Animation>> _Animations;
 
 	sf::Texture _ExplosionTexture;

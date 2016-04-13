@@ -596,10 +596,9 @@ void Framework::playSounds() {
 
 bool Framework::measureTime()
 {
-	_FrameTime = _Clock.getElapsedTime().asMicroseconds() / 1000000.0f;
+	_FrameTime = _Clock.restart().asMicroseconds() / 1000000.0f;
 	_LastFPSCheck += _FrameTime;
 	_LastFPSPrint += _FrameTime;
-	_Clock.restart();
 	
 	if (_LastFPSCheck >= 1 / _FPS) {
 		if (_LastFPSPrint > 1) {

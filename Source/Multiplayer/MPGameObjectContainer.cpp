@@ -623,6 +623,10 @@ void MPGameObjectContainer::handleIncomingPackets(std::vector<sf::Packet>& packe
 			packets.erase(packets.begin() + i);
 			i--;
 			break;
+		default:
+			packets.erase(packets.begin() + i);
+			i--;
+			break;
 		}
 	}
 }

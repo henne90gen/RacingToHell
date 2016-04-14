@@ -187,7 +187,7 @@ private:
 	Deletes a GameObject from the vector of GameObjects
 	@param id Index of the GameObject that will be deleted
 	*/
-	void deleteObject(unsigned int id, bool sendDeletion);
+	void deleteGameObject(unsigned int id, bool sendDeletion);
 
 	/*
 	calculates the hp of a AIcar

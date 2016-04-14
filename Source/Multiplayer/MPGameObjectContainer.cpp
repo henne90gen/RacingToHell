@@ -123,6 +123,47 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 			_TimePassedCar += FrameTime;
 		}
 	}
+
+	for (unsigned int i = 2 + (int)(_BossFight); i < _GameObjects.size(); i++)
+	{
+		if (_GameObjects.at(i)->getType() == GameObjectType::AI)
+		{
+			for (unsigned int j = 2 + (int)(_BossFight); j < _GameObjects.size(); j++)
+			{
+				if (_GameObjects.at(j)->getType() == GameObjectType::AI && i != j &&
+					_GameObjects.at(i)->getLane() == _GameObjects.at(j)->getLane() &&
+					_GameObjects.at(i)->getSpeed() != _GameObjects.at(j)->getSpeed())
+				{
+					if (std::abs(_GameObjects.at(i)->getPos().y - _GameObjects.at(j)->getPos().y) < _GameObjects.at(i)->getHeight() + 20)
+					{
+						int minSpeed = std::min({ _GameObjects.at(i)->getSpeed(),_GameObjects.at(j)->getSpeed() });
+						_GameObjects.at(i)->setSpeed(minSpeed);
+						_GameObjects.at(j)->setSpeed(minSpeed);
+					}
+				}
+				else if (_GameObjects.at(j)->getType() == GameObjectType::BulletObjectPlayer && _Relation == NetworkRelation::Host)
+				{
+					if (_GameObjects.at(i)->checkForCollision(*_GameObjects.at(j)))
+					{
+						_GameObjects.at(i)->takeDamage(getPlayerCar().getBulletdamage());
+						playHitSound(_GameObjects.at(j)->getPos());
+						_SendObjects.push_back(std::make_pair(NetworkCommunication::UpdateAICar, _GameObjects.at(i)));
+						deleteGameObject(j, true);
+						break;
+					}
+				}
+				/*else if (_GameObjects.at(j)->getType() == GameObjectType::BulletObjectBoss)
+				{
+					if (_GameObjects.at(i)->checkForCollision(*_GameObjects.at(j)))
+					{
+						_GameObjects.at(i)->takeDamage(500);
+						deleteGameObject(j);
+						break;
+					}
+				}*/
+			}
+		}
+	}
 }
 
 void MPGameObjectContainer::render(sf::RenderWindow& Window, bool renderCrosshair)
@@ -511,20 +552,38 @@ void MPGameObjectContainer::handleIncomingPackets(std::vector<sf::Packet>& packe
 				i--;
 			}
 			break;
+		case NetworkCommunication::UpdateAICar:
+		{
+			GameObject go = GameObject(tmp, GameObjectType::AI);
+			if (tick > recTick + delay) {
+				packets.at(i) >> recType >> recTick;
+				for (unsigned int j = 0; j < _GameObjects.size(); j++) {
+					if (_GameObjects.at(j)->getID() == go.getID()) {
+						*_GameObjects.at(j) << packets.at(i);
+						break;
+					}
+				}
+				packets.erase(packets.begin() + i);
+				i--;
+			}
+			break;
+		}
 		case NetworkCommunication::UpdateP2:
 			sf::Uint8 type;
 			tmp >> type;
-			if ((GameObjectType)type == GameObjectType::Player) {
-				/*
-				sf::Uint32 id;
-				float x, y;
-				tmp >> id >> x >> y;
-				std::cout << "Receiving ID: " << (unsigned int)id << " || X: " << x << " || Y: " << y << std::endl;
-				*/
-				*_GameObjects[1] << tmp;
+			if (tick > recTick + delay) {
+				if ((GameObjectType)type == GameObjectType::Player) {
+					/*
+					sf::Uint32 id;
+					float x, y;
+					tmp >> id >> x >> y;
+					std::cout << "Receiving ID: " << (unsigned int)id << " || X: " << x << " || Y: " << y << std::endl;
+					*/
+					*_GameObjects[1] << tmp;
+				}
+				packets.erase(packets.begin() + i);
+				i--;
 			}
-			packets.erase(packets.begin() + i);
-			i--;
 			break;
 		default:
 			packets.erase(packets.begin() + i);

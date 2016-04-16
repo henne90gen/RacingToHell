@@ -150,7 +150,7 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 						if (_Relation == NetworkRelation::Host) {
 							_SendObjects.push_back(std::make_pair(NetworkCommunication::UpdateAICar, _GameObjects.at(i)));
 						}
-						deleteGameObject(j, true);
+						deleteGameObject(j, false);
 						break;
 					}
 				}
@@ -174,7 +174,7 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 		{
 			_CarScore += (int)(1.5 * _GameObjects.at(i)->getMaxHealth());
 			_Animations.push_back(std::shared_ptr<Explosion>(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _GameObjects[i]->getSpeed()), _SoundEffects, _ExplosionSoundBuffer, _Volume)));
-			deleteGameObject(i, true);
+			deleteGameObject(i, false);
 			i--;
 		}
 	}

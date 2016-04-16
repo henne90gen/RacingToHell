@@ -141,13 +141,15 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 						_GameObjects.at(j)->setSpeed(minSpeed);
 					}
 				}
-				else if (_GameObjects.at(j)->getType() == GameObjectType::BulletObjectPlayer && _Relation == NetworkRelation::Host)
+				else if (_GameObjects.at(j)->getType() == GameObjectType::BulletObjectPlayer)
 				{
 					if (_GameObjects.at(i)->checkForCollision(*_GameObjects.at(j)))
 					{
 						_GameObjects.at(i)->takeDamage(getPlayerCar().getBulletdamage());
 						playHitSound(_GameObjects.at(j)->getPos());
-						_SendObjects.push_back(std::make_pair(NetworkCommunication::UpdateAICar, _GameObjects.at(i)));
+						if (_Relation == NetworkRelation::Host) {
+							_SendObjects.push_back(std::make_pair(NetworkCommunication::UpdateAICar, _GameObjects.at(i)));
+						}
 						deleteGameObject(j, true);
 						break;
 					}

@@ -76,7 +76,7 @@ void Level::load()
 
 void Level::resetLevel()
 {
-	_Level = 1;
+	_Level = 5;
 	_TotalLevelTime = 60.0f;
 	_LevelTime = 0;
 	_Music.setBuffer((*_MusicBuffers.at(0)));

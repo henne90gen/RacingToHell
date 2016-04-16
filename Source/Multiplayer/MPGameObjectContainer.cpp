@@ -166,6 +166,18 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 			}
 		}
 	}
+
+	// Delete destroyed cars
+	for (unsigned int i = 0; i < _GameObjects.size(); i++)
+	{
+		if (_GameObjects.at(i)->getType() == GameObjectType::AI && _GameObjects.at(i)->getHealth() == 0)
+		{
+			_CarScore += (int)(1.5 * _GameObjects.at(i)->getMaxHealth());
+			_Animations.push_back(std::shared_ptr<Explosion>(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _GameObjects[i]->getSpeed()), _SoundEffects, _ExplosionSoundBuffer, _Volume)));
+			deleteGameObject(i, true);
+			i--;
+		}
+	}
 }
 
 void MPGameObjectContainer::render(sf::RenderWindow& Window, bool renderCrosshair)

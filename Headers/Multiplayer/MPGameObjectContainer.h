@@ -46,7 +46,7 @@ public:
 	@param level Level
 	@param roadSpeed Speed of the road
 	*/
-	void update(float frameTime, int roadSpeed);
+	void update(float frameTime, int roadSpeed, NetworkHandle& network);
 
 	/*
 		@return GameObject& Reference to the PlayerCar
@@ -137,7 +137,7 @@ public:
 
 	void setNetworkRelation(NetworkRelation relation) { _Relation = relation; }
 
-	void addGameObject(std::shared_ptr<GameObject> newGO);
+	void addGameObject(std::shared_ptr<GameObject> newGO, NetworkHandle& network);
 
 	void handleIncomingPackets(NetworkHandle& network);
 	void handleOutgoingPackets(std::vector<std::pair<NetworkCommunication, sf::Packet>>& packets);
@@ -176,7 +176,7 @@ private:
 	@param level Levelnumber
 	@param roadSpeed Speed of the road
 	*/
-	void spawnAICar(int roadSpeed);
+	void spawnAICar(int roadSpeed, NetworkHandle& network);
 
 	/*
 	Makes a random AICar shoot a bullet at the player

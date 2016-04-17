@@ -8,7 +8,7 @@ MPGameObjectContainer::~MPGameObjectContainer()
 	_GameObjects.clear();
 }
 
-void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
+void MPGameObjectContainer::update(float FrameTime, int RoadSpeed, NetworkHandle& network)
 {
 	if (getPlayer2Car().getType() != GameObjectType::Player) {
 		// TODO: Add failsafe
@@ -87,7 +87,7 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 	// Check whether player fired a shot
 	if (getPlayerCar().shotBullet().x != 0 && getPlayerCar().shotBullet().y != 0)
 	{
-		addGameObject(GameObjectFactory::getBullet(getPlayerCar().getPos(), getPlayerCar().shotBullet(), _PlayerBulletSpeed, GameObjectType::BulletObjectPlayer, _SoundEffects, _Volume));
+		addGameObject(GameObjectFactory::getBullet(getPlayerCar().getPos(), getPlayerCar().shotBullet(), _PlayerBulletSpeed, GameObjectType::BulletObjectPlayer, _SoundEffects, _Volume), network);
 		getPlayerCar().resetShotBullet();
 	}
 
@@ -97,7 +97,7 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 		if (_TimePassedCanister + FrameTime > 1 / _CanisterFrequency)
 		{
 			_TimePassedCanister += FrameTime - 1 / _CanisterFrequency;
-			addGameObject(GameObjectFactory::getCanister(sf::Vector2f(std::rand() % 3 * 150 + 150, -25)));
+			addGameObject(GameObjectFactory::getCanister(sf::Vector2f(std::rand() % 3 * 150 + 150, -25)), network);
 		}
 		else {
 			_TimePassedCanister += FrameTime;
@@ -107,7 +107,7 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 		if (_TimePassedToolbox + FrameTime > 1.0f / _ToolboxFrequency)
 		{
 			_TimePassedToolbox += FrameTime - 1.0f / _ToolboxFrequency;
-			addGameObject(GameObjectFactory::getToolbox(sf::Vector2f(std::rand() % 3 * 150 + 150, -10)));
+			addGameObject(GameObjectFactory::getToolbox(sf::Vector2f(std::rand() % 3 * 150 + 150, -10)), network);
 			setToolboxFrequency();
 		}
 		else {
@@ -118,7 +118,7 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 		if (_TimePassedCar + FrameTime > 1 / _CarFrequency)
 		{
 			_TimePassedCar += FrameTime - 1 / _CarFrequency;
-			spawnAICar(RoadSpeed);
+			spawnAICar(RoadSpeed, network);
 		}
 		else
 		{
@@ -325,7 +325,7 @@ _SoundEffects.push_back({ shotSound, 0 });
 }
 */
 
-void MPGameObjectContainer::spawnAICar(int roadSpeed)
+void MPGameObjectContainer::spawnAICar(int roadSpeed, NetworkHandle& network)
 {
 	std::shared_ptr<AICar> newAiCar = GameObjectFactory::getAICar(getAiHP(), roadSpeed);
 
@@ -340,7 +340,7 @@ void MPGameObjectContainer::spawnAICar(int roadSpeed)
 		}
 	}
 
-	addGameObject(newAiCar);
+	addGameObject(newAiCar, network);
 }
 
 void MPGameObjectContainer::spawnBullet()
@@ -523,8 +523,16 @@ void MPGameObjectContainer::playHitSound(sf::Vector2f position)
 	_SoundEffects.push_back(std::make_pair(ImpactSound, false));
 }
 
-void MPGameObjectContainer::addGameObject(std::shared_ptr<GameObject> newGO) {
-	_GameObjects.push_back(newGO);
+void MPGameObjectContainer::addGameObject(std::shared_ptr<GameObject> newGO, NetworkHandle& network) {
+	if (newGO->getType() == GameObjectType::AI) {
+		sf::Packet tmp;
+		tmp << sf::Uint8(NetworkCommunication::CreateGameObject) << network.getTick();
+		*newGO >> tmp;
+		network.getReceivedPackets().push_back(tmp);
+	}
+	else {
+		_GameObjects.push_back(newGO);
+	}
 	_SendObjects.push_back(std::make_pair(NetworkCommunication::CreateGameObject, newGO));
 }
 
@@ -548,27 +556,22 @@ void MPGameObjectContainer::handleIncomingPackets(NetworkHandle& network) {
 
 		switch ((NetworkCommunication)recType) {
 		case NetworkCommunication::CreateGameObject:
-			/*if (_Relation == NetworkRelation::Host) {
+			if (network.getTick() > recTick + network.getDelay()) {
 				GameObjectFactory::scanPacketForGO(_Level, tmp, _GameObjects, _SoundEffects, _ExplosionSoundBuffer, _Volume);
 				std::shared_ptr<GameObject> go = _GameObjects.at(_GameObjects.size() - 1);
-				if (go->getType() == GameObjectType::BulletObjectPlayer) {
+				/*if (go->getType() == GameObjectType::BulletObjectPlayer) {
 					int elapsedTicks = network.getTick() - recTick;
 					float elapsedTime = (float)elapsedTicks / (float)network.getTickRate();
 					go->setPos((float)go->getSpeed() * go->getDir() * elapsedTime);
-				}
+				}*/
 				network.getReceivedPackets().erase(network.getReceivedPackets().begin() + i);
 				i--;
 			}
-			else if (network.getTick() > recTick + network.getDelay()) {*/
-				GameObjectFactory::scanPacketForGO(_Level, tmp, _GameObjects, _SoundEffects, _ExplosionSoundBuffer, _Volume);
-				network.getReceivedPackets().erase(network.getReceivedPackets().begin() + i);
-				i--;
-			//}
 			break;
 		case NetworkCommunication::DeleteGameObject:
 			sf::Uint32 id;
 			tmp >> id;
-			//if (network.getTick() > recTick + network.getDelay()) {
+			if (network.getTick() > recTick + network.getDelay()) {
 				for (unsigned int j = 0; j < _GameObjects.size(); j++) {
 					if (_GameObjects.at(j)->getID() == id) {
 						deleteGameObject(j, false);
@@ -577,12 +580,12 @@ void MPGameObjectContainer::handleIncomingPackets(NetworkHandle& network) {
 				}
 				network.getReceivedPackets().erase(network.getReceivedPackets().begin() + i);
 				i--;
-			//}
+			}
 			break;
 		case NetworkCommunication::UpdateAICar:
 		{
 			GameObject go = GameObject(tmp, GameObjectType::AI);
-			//if (network.getTick() > recTick + network.getDelay()) {
+			if (network.getTick() > recTick + network.getDelay()) {
 				network.getReceivedPackets().at(i) >> recType >> recTick;
 				for (unsigned int j = 0; j < _GameObjects.size(); j++) {
 					if (_GameObjects.at(j)->getID() == go.getID()) {
@@ -592,13 +595,13 @@ void MPGameObjectContainer::handleIncomingPackets(NetworkHandle& network) {
 				}
 				network.getReceivedPackets().erase(network.getReceivedPackets().begin() + i);
 				i--;
-			//}
+			}
 			break;
 		}
 		case NetworkCommunication::UpdateP2:
 			sf::Uint8 type;
 			tmp >> type;
-			//if (network.getTick() > recTick + network.getDelay()) {
+			if (network.getTick() > recTick + network.getDelay()) {
 				if ((GameObjectType)type == GameObjectType::Player) {
 					/*
 					sf::Uint32 id;
@@ -610,7 +613,7 @@ void MPGameObjectContainer::handleIncomingPackets(NetworkHandle& network) {
 				}
 				network.getReceivedPackets().erase(network.getReceivedPackets().begin() + i);
 				i--;
-			//}
+			}
 			break;
 		default:
 			network.getReceivedPackets().erase(network.getReceivedPackets().begin() + i);

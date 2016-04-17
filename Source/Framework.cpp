@@ -549,7 +549,7 @@ void Framework::update()
 				_GameState = GameState::BossFightMultiplayer;
 			}
 		}
-		_MPGameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
+		_MPGameObjectContainer.update(_FrameTime, _Level.getRoadSpeed(), _NetworkHandle);
 		_HeadsUpDisplay.update(_Score, _MPGameObjectContainer.getPlayerCar().getHealth(), _MPGameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
 		if (!_MPGameObjectContainer.playerIsAlive()) {
 			_GameState = GameState::GameOverMultiplayer;

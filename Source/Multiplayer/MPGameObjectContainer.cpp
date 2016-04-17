@@ -548,7 +548,7 @@ void MPGameObjectContainer::handleIncomingPackets(NetworkHandle& network) {
 
 		switch ((NetworkCommunication)recType) {
 		case NetworkCommunication::CreateGameObject:
-			if (_Relation == NetworkRelation::Host) {
+			/*if (_Relation == NetworkRelation::Host) {
 				GameObjectFactory::scanPacketForGO(_Level, tmp, _GameObjects, _SoundEffects, _ExplosionSoundBuffer, _Volume);
 				std::shared_ptr<GameObject> go = _GameObjects.at(_GameObjects.size() - 1);
 				if (go->getType() == GameObjectType::BulletObjectPlayer) {
@@ -559,16 +559,16 @@ void MPGameObjectContainer::handleIncomingPackets(NetworkHandle& network) {
 				network.getReceivedPackets().erase(network.getReceivedPackets().begin() + i);
 				i--;
 			}
-			if (network.getTick() > recTick + network.getDelay()) {
+			else if (network.getTick() > recTick + network.getDelay()) {*/
 				GameObjectFactory::scanPacketForGO(_Level, tmp, _GameObjects, _SoundEffects, _ExplosionSoundBuffer, _Volume);
 				network.getReceivedPackets().erase(network.getReceivedPackets().begin() + i);
 				i--;
-			}
+			//}
 			break;
 		case NetworkCommunication::DeleteGameObject:
 			sf::Uint32 id;
 			tmp >> id;
-			if (network.getTick() > recTick + network.getDelay()) {
+			//if (network.getTick() > recTick + network.getDelay()) {
 				for (unsigned int j = 0; j < _GameObjects.size(); j++) {
 					if (_GameObjects.at(j)->getID() == id) {
 						deleteGameObject(j, false);
@@ -577,12 +577,12 @@ void MPGameObjectContainer::handleIncomingPackets(NetworkHandle& network) {
 				}
 				network.getReceivedPackets().erase(network.getReceivedPackets().begin() + i);
 				i--;
-			}
+			//}
 			break;
 		case NetworkCommunication::UpdateAICar:
 		{
 			GameObject go = GameObject(tmp, GameObjectType::AI);
-			if (network.getTick() > recTick + network.getDelay()) {
+			//if (network.getTick() > recTick + network.getDelay()) {
 				network.getReceivedPackets().at(i) >> recType >> recTick;
 				for (unsigned int j = 0; j < _GameObjects.size(); j++) {
 					if (_GameObjects.at(j)->getID() == go.getID()) {
@@ -592,13 +592,13 @@ void MPGameObjectContainer::handleIncomingPackets(NetworkHandle& network) {
 				}
 				network.getReceivedPackets().erase(network.getReceivedPackets().begin() + i);
 				i--;
-			}
+			//}
 			break;
 		}
 		case NetworkCommunication::UpdateP2:
 			sf::Uint8 type;
 			tmp >> type;
-			if (network.getTick() > recTick + network.getDelay()) {
+			//if (network.getTick() > recTick + network.getDelay()) {
 				if ((GameObjectType)type == GameObjectType::Player) {
 					/*
 					sf::Uint32 id;
@@ -610,7 +610,7 @@ void MPGameObjectContainer::handleIncomingPackets(NetworkHandle& network) {
 				}
 				network.getReceivedPackets().erase(network.getReceivedPackets().begin() + i);
 				i--;
-			}
+			//}
 			break;
 		default:
 			network.getReceivedPackets().erase(network.getReceivedPackets().begin() + i);

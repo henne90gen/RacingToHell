@@ -162,9 +162,9 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 						deleteGameObject(j);
 						break;
 					}
-				}
 			}
 		}
+	}
 	}*/
 
 	// Delete destroyed cars

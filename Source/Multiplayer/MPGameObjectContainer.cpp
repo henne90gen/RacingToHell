@@ -552,7 +552,7 @@ void MPGameObjectContainer::handleIncomingPackets(NetworkHandle& network) {
 				GameObjectFactory::scanPacketForGO(_Level, tmp, _GameObjects, _SoundEffects, _ExplosionSoundBuffer, _Volume);
 				std::shared_ptr<GameObject> go = _GameObjects.at(_GameObjects.size() - 1);
 				if (go->getType() == GameObjectType::BulletObjectPlayer) {
-					int elapsedTicks = network.getTick() - recTick + network.getDelay();
+					int elapsedTicks = network.getTick() - recTick;
 					float elapsedTime = (float)elapsedTicks / (float)network.getTickRate();
 					go->setPos((float)go->getSpeed() * go->getDir() * elapsedTime);
 				}

@@ -286,7 +286,7 @@ public:
 
 	void setID(sf::Uint32 id) { _ID = id; }
 
-	virtual sf::Vector2f getDir() {}
+	virtual sf::Vector2f getDir() { return sf::Vector2f(); }
 
 protected:
 

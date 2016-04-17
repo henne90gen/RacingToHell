@@ -25,7 +25,7 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 		}
 	}
 
-	for (unsigned int i = 0; i < _GameObjects.size(); i++)
+	/*for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
 		if (playerIsAlive()) {
 			if (i > 1) {
@@ -34,8 +34,8 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 					{
 					case GameObjectType::AI:
 					{
-						_Animations.push_back(std::shared_ptr<Explosion>(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0), _SoundEffects, _ExplosionSoundBuffer, _Volume)));
-						_PlayerAlive = false;
+						//_Animations.push_back(std::shared_ptr<Explosion>(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0), _SoundEffects, _ExplosionSoundBuffer, _Volume)));
+						//_PlayerAlive = false;
 						// TODO: send destruction of player
 					}
 					break;
@@ -80,29 +80,29 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 			}
 			_GameObjects.at(i)->update(FrameTime, RoadSpeed);
 		}
-	}
+	}*/
 
 	// Check whether player fired a shot
-	if (getPlayerCar().shotBullet().x != 0 && getPlayerCar().shotBullet().y != 0)
+	/*if (getPlayerCar().shotBullet().x != 0 && getPlayerCar().shotBullet().y != 0)
 	{
 		addGameObject(GameObjectFactory::getBullet(getPlayerCar().getPos(), getPlayerCar().shotBullet(), _PlayerBulletSpeed, GameObjectType::BulletObjectPlayer, _SoundEffects, _Volume));
 		getPlayerCar().resetShotBullet();
-	}
+	}*/
 
-	getPlayerCar().drainEnergy(FrameTime);
+	//getPlayerCar().drainEnergy(FrameTime);
 	if (_Relation == NetworkRelation::Host) {
 		// Spawn energy canister
-		if (_TimePassedCanister + FrameTime > 1 / _CanisterFrequency)
+		/*if (_TimePassedCanister + FrameTime > 1 / _CanisterFrequency)
 		{
 			_TimePassedCanister += FrameTime - 1 / _CanisterFrequency;
 			addGameObject(GameObjectFactory::getCanister(sf::Vector2f(std::rand() % 3 * 150 + 150, -25)));
 		}
 		else {
 			_TimePassedCanister += FrameTime;
-		}
+		}*/
 
 		// Spawn toolbox
-		if (_TimePassedToolbox + FrameTime > 1.0f / _ToolboxFrequency)
+		/*if (_TimePassedToolbox + FrameTime > 1.0f / _ToolboxFrequency)
 		{
 			_TimePassedToolbox += FrameTime - 1.0f / _ToolboxFrequency;
 			addGameObject(GameObjectFactory::getToolbox(sf::Vector2f(std::rand() % 3 * 150 + 150, -10)));
@@ -110,7 +110,7 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 		}
 		else {
 			_TimePassedToolbox += FrameTime;
-		}
+		}*/
 
 		// Spawn AICar
 		if (_TimePassedCar + FrameTime > 1 / _CarFrequency)
@@ -124,7 +124,7 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 		}
 	}
 
-	for (unsigned int i = 2 + (int)(_BossFight); i < _GameObjects.size(); i++)
+	/*for (unsigned int i = 2 + (int)(_BossFight); i < _GameObjects.size(); i++)
 	{
 		if (_GameObjects.at(i)->getType() == GameObjectType::AI)
 		{
@@ -154,7 +154,7 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 						break;
 					}
 				}
-				/*else if (_GameObjects.at(j)->getType() == GameObjectType::BulletObjectBoss)
+				else if (_GameObjects.at(j)->getType() == GameObjectType::BulletObjectBoss)
 				{
 					if (_GameObjects.at(i)->checkForCollision(*_GameObjects.at(j)))
 					{
@@ -162,13 +162,13 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 						deleteGameObject(j);
 						break;
 					}
-				}*/
+				}
 			}
 		}
-	}
+	}*/
 
 	// Delete destroyed cars
-	for (unsigned int i = 0; i < _GameObjects.size(); i++)
+	/*for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
 		if (_GameObjects.at(i)->getType() == GameObjectType::AI && _GameObjects.at(i)->getHealth() == 0)
 		{
@@ -177,7 +177,7 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 			deleteGameObject(i, false);
 			i--;
 		}
-	}
+	}*/
 }
 
 void MPGameObjectContainer::render(sf::RenderWindow& Window, bool renderCrosshair)

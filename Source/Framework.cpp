@@ -542,7 +542,7 @@ void Framework::update()
 	case GameState::RunningMultiplayer:
 	case GameState::PauseMultiplayer:
 		_MPGameObjectContainer.handleOutgoingPackets(_NetworkHandle.getSendPackets());
-		_MPGameObjectContainer.handleIncomingPackets(_NetworkHandle.getReceivedPackets(), _NetworkHandle.getTick(), _NetworkHandle.getDelay());
+		_MPGameObjectContainer.handleIncomingPackets(_NetworkHandle);
 		if (_Level.update(_FrameTime, _GameState)) {
 			if (_MPGameObjectContainer.emptyScreen()) {
 				_MPGameObjectContainer.enterBossFight();

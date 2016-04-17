@@ -139,7 +139,7 @@ public:
 
 	void addGameObject(std::shared_ptr<GameObject> newGO);
 
-	void handleIncomingPackets(std::vector<sf::Packet>& packets, sf::Uint32 tick, int delay);
+	void handleIncomingPackets(NetworkHandle& network);
 	void handleOutgoingPackets(std::vector<std::pair<NetworkCommunication, sf::Packet>>& packets);
 private:
 	std::mutex _Mutex;

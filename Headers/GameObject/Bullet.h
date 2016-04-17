@@ -47,6 +47,8 @@ public:
 		Reads the necessary data for a gameobject from a packet
 	*/
 	void operator<<(sf::Packet& packet);
+
+	sf::Vector2f getDir() { return _Direction; }
 private:
 	float _Speed;
 	sf::Vector2f _Direction;

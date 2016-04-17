@@ -525,6 +525,7 @@ void MPGameObjectContainer::playHitSound(sf::Vector2f position)
 
 void MPGameObjectContainer::addGameObject(std::shared_ptr<GameObject> newGO, NetworkHandle& network) {
 	if (newGO->getType() == GameObjectType::AI) {
+		std::lock_guard<std::mutex> lock(_Mutex);
 		sf::Packet tmp;
 		tmp << sf::Uint8(NetworkCommunication::CreateGameObject) << network.getTick();
 		*newGO >> tmp;

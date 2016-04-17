@@ -25,10 +25,12 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 		}
 	}
 
-	/*for (unsigned int i = 0; i < _GameObjects.size(); i++)
+
+
+	for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
 		if (playerIsAlive()) {
-			if (i > 1) {
+			/*if (i > 1) {
 				if (getPlayerCar().checkForCollision(*_GameObjects.at(i))) {
 					switch (_GameObjects[i]->getType())
 					{
@@ -77,10 +79,10 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 					_PlayerAlive = false;
 					// TODO: send destruction of player
 				}
-			}
+			}*/
 			_GameObjects.at(i)->update(FrameTime, RoadSpeed);
 		}
-	}*/
+	}
 
 	// Check whether player fired a shot
 	/*if (getPlayerCar().shotBullet().x != 0 && getPlayerCar().shotBullet().y != 0)

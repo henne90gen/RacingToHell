@@ -156,14 +156,12 @@ void Framework::handleEvents()
 			if (_Event.type == sf::Event::Closed) {
 				_GameState = GameState::Exiting;
 			}
+			else if (_Event.type == sf::Event::MouseLeft || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, 7)) {
+				_PauseMenu.setReturnState(GameState::Running);
+				_GameState = GameState::Pause;
+			}
 			else {
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, 7)) {
-					_GameState = GameState::Pause;
-					_PauseMenu.setReturnState(GameState::Running);
-				}
-				else {
-					_GameObjectContainer.handleEvent(_Event);
-				}
+				_GameObjectContainer.handleEvent(_Event);
 			}
 		}
 		break;

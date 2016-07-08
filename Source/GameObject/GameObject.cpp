@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "GameObject\GameObject.h"
+#include "GameObject/GameObject.h"
 
 
 GameObject::GameObject(sf::Vector2f pos, GameObjectType type, sf::Texture& texture) : _Type(type)
@@ -42,7 +42,7 @@ float GameObject::getAngleFromVector(sf::Vector2f vec)
 
 sf::Vector2f GameObject::divideByLength(sf::Vector2f vec) 
 {
-	return vec / std::sqrtf(std::powf(vec.x, 2) + std::powf(vec.y, 2));
+	return vec / float(std::sqrt(std::pow(vec.x, 2) + std::pow(vec.y, 2)));
 }
 void GameObject::resetMovement() {
 	

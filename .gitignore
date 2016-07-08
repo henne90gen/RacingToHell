@@ -215,3 +215,6 @@ ModelManifest.xml
 RacingToHell.VC.opendb
 Resources/Data/Settings.cfg
 Resources/Data/Highscore.sco
+.project
+.cproject
+.settings/

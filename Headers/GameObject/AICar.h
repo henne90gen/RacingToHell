@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Car.h"
-#include "GameObject\GameObjectType.h"
+#include "GameObject/GameObjectType.h"
 
 class AICar : public Car
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include "Menu\Menu.h"
+#include "Menu/Menu.h"
 
 class PauseMenu : public Menu
 {

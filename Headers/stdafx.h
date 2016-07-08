@@ -5,16 +5,19 @@
 
 #pragma once
 
-#include "targetver.h"
+
+//#include "targetver.h"
 
 #include <stdio.h>
-#include <tchar.h>
+//#include <tchar.h>
+#include <math.h>
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <memory>
 #include <thread>
+#include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "GameObject\GameObject.h"
-#include "GameObject\GameObjectType.h"
+#include "GameObject/GameObject.h"
+#include "GameObject/GameObjectType.h"
 
 class Bullet : public GameObject
 {
@@ -14,7 +14,7 @@ public:
 		@param type Specifies the type of the Bullet, thus who shot it
 		@param texture Texture that is going to be used for the sprite
 	*/
-	Bullet(sf::Vector2f& pos, sf::Vector2f& dir, int speed, GameObjectType type, sf::Texture& texture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume);
+	Bullet(sf::Vector2f pos, sf::Vector2f dir, int speed, GameObjectType type, sf::Texture& texture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume);
 	~Bullet() {}
 
 	/*

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "GameObject\PlayerCar.h"
+#include "GameObject/PlayerCar.h"
 
 
 PlayerCar::PlayerCar(int SelectedCar, sf::Texture& texture) : Car(sf::Vector2f(0, 0), 100, 500, GameObjectType::Player, texture), _CrosshairSpeed(600.0f)
@@ -84,7 +84,7 @@ void PlayerCar::handleEvent(sf::Event& Event)
 		if (_Energy - 5 >= 10) {
 			_Energy -= 5;
 			_ShotBullet = _Crosshair.getPosition() - getPos();
-			_ShotBullet = _ShotBullet / std::sqrtf(std::powf(_ShotBullet.x, 2) + std::powf(_ShotBullet.y, 2));
+			_ShotBullet = _ShotBullet / float(std::sqrt(std::pow(_ShotBullet.x, 2) + std::pow(_ShotBullet.y, 2)));
 		}
 	}
 }

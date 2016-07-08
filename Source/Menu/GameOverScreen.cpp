@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Menu\GameOverScreen.h"
+#include "Menu/GameOverScreen.h"
 
 GameOverScreen::GameOverScreen() : Menu(GameState::GameOver), _SoundPlayed(false), _ScoreSubmitted(false), _Highscore(sf::Vector2f(SCREENWIDTH / 2 - 225, 190))
 {

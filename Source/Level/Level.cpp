@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Level\Level.h"
+#include "Level/Level.h"
 
 bool Level::update(float FrameTime, GameState gameState)
 {
@@ -107,19 +107,24 @@ int Level::getRoadSpeed()
 void Level::loadSongByID(int id)
 {
 	try {
-		bool checked = false;
-		while (!checked) {
-			std::shared_ptr<sf::SoundBuffer> buffer(new sf::SoundBuffer());
-			if (_CrtIsValidHeapPointer((const void *)buffer.get())) {
-				(*buffer).loadFromFile("Resources/Sound/Music/level" + std::to_string(id) + ".ogg");
-				std::lock_guard<std::mutex>{ _ThreadGuard };
-				_MusicBuffers.push_back(buffer);
-				checked = true;
+		#ifdef SFML_SYSTEM_WINDOWS
+			bool checked = false;
+			while (!checked) {
+				std::shared_ptr<sf::SoundBuffer> buffer(new sf::SoundBuffer());
+
+				if (_CrtIsValidHeapPointer((const void *)buffer.get())) {
+					(*buffer).loadFromFile("Resources/Sound/Music/level" + std::to_string(id) + ".ogg");
+					std::lock_guard<std::mutex>{ _ThreadGuard };
+					_MusicBuffers.push_back(buffer);
+					checked = true;
+				}
+				else {
+					buffer.reset();
+				}
 			}
-			else {
-				buffer.reset();
-			}
-		}
+		#else
+
+		#endif
 		if (id == 1) {
 			_FirstLevelSoundLoaded = true;
 		}

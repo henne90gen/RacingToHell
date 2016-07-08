@@ -3,7 +3,6 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
-#include "Serializable.h"
 
 #include "Serializable.h"
 
@@ -21,7 +20,7 @@ public:
 		int Score;
 		int Level;
 
-		bool operator<(Player& const Player2) const
+		bool operator<(Player& Player2) const
 		{
 			return Score < Player2.Score;
 		}

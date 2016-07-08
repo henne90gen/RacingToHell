@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "Menu\MenuItem\ComboBox.h"
+#include "Menu/MenuItem/ComboBox.h"
 
 ComboBox::ComboBox(sf::Vector2f Position, std::vector<std::string> &Items, MenuResult Action) : MenuItem(MenuItemType::MCombobox, Action),
 	_Items(Items), _Position(Position),

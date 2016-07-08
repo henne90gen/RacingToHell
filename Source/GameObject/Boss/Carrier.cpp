@@ -110,7 +110,7 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr
 					{
 						for (float i = (2 * _Event1Counter) * PI / 180; i <= 2 * PI; i += PI / (7 + 2 *_Difficulty))
 						{
-							sf::Vector2f orientation = sf::Vector2f(std::cosf(i), std::sinf(i));
+							sf::Vector2f orientation = sf::Vector2f(std::cos(i), std::sin(i));
 							shootBullet(gameObjects, getPos(), orientation);
 						}
 
@@ -143,7 +143,7 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr
 					{
 						for (float i = 0.0f; i < 2 * PI; i += PI / (4 + _Difficulty))
 						{
-							_GunOrientation = sf::Vector2f(std::cosf(i), std::sinf(i));
+							_GunOrientation = sf::Vector2f(std::cos(i), std::sin(i));
 							shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
 							_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
 						}
@@ -162,7 +162,7 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr
 
 				if (getBossEvent() == 1) {
 					for (float i = PI * (float)_MovementSwitchUpDown; i < PI + PI * (float) _MovementSwitchUpDown; i += PI / (10 + 3 * _Difficulty)) {
-						_GunOrientation = sf::Vector2f(std::cosf(i), std::sinf(i));
+						_GunOrientation = sf::Vector2f(std::cos(i), std::sin(i));
 						sf::Vector2f orientation = divideByLength(sf::Vector2f(((float)(std::rand() - (float)(RAND_MAX) / 2) / (float)(RAND_MAX)), (float)(std::rand() / (float)(RAND_MAX)) * std::pow(-1, (int)(_MovementSwitchUpDown))));
 						shootBullet(gameObjects, calcBulletPosition(), orientation);
 					}

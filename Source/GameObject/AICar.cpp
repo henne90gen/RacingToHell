@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "GameObject\AICar.h"
+#include "GameObject/AICar.h"
 
 
 AICar::AICar(int hp, int roadSpeed, sf::Texture& texture) : Car(sf::Vector2f(0, 0), hp, std::rand() % ((int)(roadSpeed / 3)) + ((int)(roadSpeed / 3)), GameObjectType::AI, texture)

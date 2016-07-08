@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "GameObject\GameObjectContainer.h"
+#include "GameObject/GameObjectContainer.h"
 
 GameObjectContainer::GameObjectContainer() : _PlayerBulletSpeed(600), _AIBulletSpeed(400) {}
 
@@ -80,7 +80,7 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 		}
 	}
 
-	//Objekt löschen wenn es sich nicht mehr im Screen befindet
+	//Objekt lï¿½schen wenn es sich nicht mehr im Screen befindet
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
 		if (_GameObjects.at(i)->getType() != GameObjectType::Boss)
@@ -108,7 +108,7 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 			}
 		}
 
-		//Kaputte Autos löschen
+		//Kaputte Autos lï¿½schen
 		for (unsigned int i = 0; i < _GameObjects.size(); i++)
 		{
 			if (_GameObjects.at(i)->getType() == GameObjectType::AI && _GameObjects.at(i)->getHealth() <= 0)
@@ -133,7 +133,7 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 			_TimePassedBullet += FrameTime;
 		}
 
-		//AI-Autos auf Kollision prüfen
+		//AI-Autos auf Kollision prï¿½fen
 		for (unsigned int i = 1 + (int)(_BossFight); i < _GameObjects.size(); i++)
 		{
 			if (_GameObjects.at(i)->getType() == GameObjectType::AI)
@@ -225,7 +225,7 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 		getPlayerCar().drainEnergy(FrameTime);
 	}
 
-	//Prüfen ob Spieler geschossen hat
+	//Prï¿½fen ob Spieler geschossen hat
 	if (getPlayerCar().shotBullet().x != 0 && getPlayerCar().shotBullet().y != 0)
 	{
 		std::shared_ptr<Bullet> newBullet(new Bullet(getPlayerCar().getPos(), getPlayerCar().shotBullet(), _PlayerBulletSpeed, GameObjectType::BulletObjectPlayer, _BulletTexture, _SoundEffects, _PlayerShotSoundBuffer, _Volume));
@@ -515,13 +515,13 @@ void GameObjectContainer::setAiCarFrequency()
 		_CarFrequency = 1.5f + 0.1f * (float)_Level;
 		break;
 	case 1:
-		_CarFrequency = 1.75f + 0.11f * std::powf((float)_Level, 1.3f);
+		_CarFrequency = 1.75f + 0.11f * std::pow((float)_Level, 1.3f);
 		break;
 	case 2:
-		_CarFrequency = 2.0f + 0.15f * std::powf((float)_Level, 1.3f);
+		_CarFrequency = 2.0f + 0.15f * std::pow((float)_Level, 1.3f);
 		break;
 	case 3:
-		_CarFrequency = 2.15f + 0.17 * std::powf((float)_Level, 1.45f);
+		_CarFrequency = 2.15f + 0.17 * std::pow((float)_Level, 1.45f);
 		break;
 	default:
 		break;
@@ -536,13 +536,13 @@ void GameObjectContainer::setBulletFrequency()
 		_BulletFrequency = 0.8f + 0.065f * (float)_Level;
 		break;
 	case 1:
-		_BulletFrequency = 1.2f + 0.08f * std::powf((float)_Level, 1.1f);
+		_BulletFrequency = 1.2f + 0.08f * std::pow((float)_Level, 1.1f);
 		break;
 	case 2:
-		_BulletFrequency = 1.2f + 1.0f * std::powf((float)_Level, 1.2f);
+		_BulletFrequency = 1.2f + 1.0f * std::pow((float)_Level, 1.2f);
 		break;
 	case 3:
-		_BulletFrequency = 1.4f + 1.0f * std::powf((float)_Level, 1.33f);
+		_BulletFrequency = 1.4f + 1.0f * std::pow((float)_Level, 1.33f);
 		break;
 	default:
 		break;

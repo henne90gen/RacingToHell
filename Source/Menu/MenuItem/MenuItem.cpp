@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Menu\MenuItem\MenuItem.h"
+#include "Menu/MenuItem/MenuItem.h"
 
 MenuItem::MenuItem(MenuItemType type, MenuResult action) : _Enabled(true), _Type(type), _Action(action), _Focused(false)
 {

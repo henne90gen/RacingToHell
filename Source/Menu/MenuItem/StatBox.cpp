@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Menu\MenuItem\StatBox.h"
+#include "Menu/MenuItem/StatBox.h"
 #include "PlayerStats.h"
 
 StatBox::StatBox(sf::Vector2f pos)
@@ -30,7 +30,7 @@ void StatBox::render(sf::RenderWindow& window, int selectedCar)
 	//Background
 	window.draw(_Background);
 
-	//Überschrift
+	//ï¿½berschrift
 	window.draw(_Headline);
 
 	//Balken

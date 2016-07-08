@@ -116,7 +116,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 						angle -= frameTime * 100;
 					}
 				}
-				_GunOrientation = divideByLength(sf::Vector2f(std::cosf(angle * PI / 180), std::sinf(angle * PI / 180)));
+				_GunOrientation = divideByLength(sf::Vector2f(std::cos(angle * PI / 180), std::sin(angle * PI / 180)));
 
 				if (getBossEvent() == 1) {
 					shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Menu\MainMenu.h"
+#include "Menu/MainMenu.h"
 
 MainMenu::MainMenu() : Menu(GameState::Main)
 {

@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "GameObject\Bullet.h"
+#include "GameObject/Bullet.h"
 
-Bullet::Bullet(sf::Vector2f& pos, sf::Vector2f& dir, int speed, GameObjectType type, sf::Texture& texture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume) : GameObject(pos, type, texture), _Direction(dir), _Speed(speed)
+Bullet::Bullet(sf::Vector2f pos, sf::Vector2f dir, int speed, GameObjectType type, sf::Texture& texture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume) : GameObject(pos, type, texture), _Direction(dir), _Speed(speed)
 {
 
 	if (type == GameObjectType::BulletObjectPlayer)
@@ -22,7 +22,7 @@ Bullet::Bullet(sf::Vector2f& pos, sf::Vector2f& dir, int speed, GameObjectType t
 
 void Bullet::update(float FrameTime, int RoadSpeed)
 {
-	_Direction = _Direction  / std::sqrt(std::pow(_Direction.x, 2) + std::pow(_Direction.y, 2));
+	_Direction = _Direction  / float(std::sqrt(std::pow(_Direction.x, 2) + std::pow(_Direction.y, 2)));
 	sf::Vector2f move = _Direction * FrameTime * _Speed;
 	setPos(getPos() + move);
 }

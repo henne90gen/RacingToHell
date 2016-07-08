@@ -42,9 +42,9 @@ void Mech::render(sf::RenderWindow & window)
 
 void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<GameObject>>& gameObjects)
 {
-	float gunPosLength = std::sqrtf(std::pow(_GunPosition.x, 2) + std::pow(_GunPosition.y, 2));
-	_GunPosition = sf::Vector2f(cosf(std::atanf(_GunOrientation.y / _GunOrientation.x) + PI / 2), 
-								sinf(std::atanf(_GunOrientation.y / _GunOrientation.x) + PI / 2)) * gunPosLength;
+	float gunPosLength = std::sqrt(std::pow(_GunPosition.x, 2) + std::pow(_GunPosition.y, 2));
+	_GunPosition = sf::Vector2f(cosf(std::atan(_GunOrientation.y / _GunOrientation.x) + PI / 2),
+								sinf(std::atan(_GunOrientation.y / _GunOrientation.x) + PI / 2)) * gunPosLength;
 
 	if (!_IsExploding) {
 		if (driveToNextPosition(frameTime))
@@ -96,7 +96,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 				_Event1Frequency = 11.0f + 3.0f * (float)_Difficulty;
 
 				float gunAngle = getAngleFromVector(_GunOrientation) + (180 + 135 * _Difficulty) * frameTime;
-				_GunOrientation = sf::Vector2f(std::cosf(gunAngle * PI / 180), std::sinf(gunAngle * PI / 180));
+				_GunOrientation = sf::Vector2f(std::cos(gunAngle * PI / 180), std::sin(gunAngle * PI / 180));
 
 				if (getBossEvent() == 1)
 				{
@@ -118,7 +118,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 					for (int i = 0; i < 8 + 2 * _Difficulty; i++)
 					{
 						float bulAngle = (getAngleFromVector(_GunOrientation) * PI / 180 - PI / 28.8) + PI / 14.4 * ((std::rand() % 100) / 100.0f);
-						sf::Vector2f bulOrientation = divideByLength(sf::Vector2f(std::cosf(bulAngle), std::sinf(bulAngle)));
+						sf::Vector2f bulOrientation = divideByLength(sf::Vector2f(std::cos(bulAngle), std::sin(bulAngle)));
 						if (Hand)
 						{
 							shootBullet(gameObjects, calcGunPositions().first, bulOrientation, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed));
@@ -149,7 +149,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 
 					for (int i = 0; i < NumberofBullets; i++)
 					{
-						sf::Vector2f bulOrientation = sf::Vector2f(std::cosf((bulAngle + (i - (int)(NumberofBullets / 2)) * dAngle) / 180 * PI), std::sinf((bulAngle + (i - (int)(NumberofBullets / 2)) * dAngle) / 180 * PI));
+						sf::Vector2f bulOrientation = sf::Vector2f(std::cos((bulAngle + (i - (int)(NumberofBullets / 2)) * dAngle) / 180 * PI), std::sin((bulAngle + (i - (int)(NumberofBullets / 2)) * dAngle) / 180 * PI));
 
 						if (Hand)
 						{
@@ -179,7 +179,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 
 					for (int i = 0; i < NumberofBullets; i++)
 					{
-						sf::Vector2f bulOrientation = sf::Vector2f(std::cosf((bulAngle + (i - (int)(NumberofBullets / 2)) * dAngle) / 180 * PI), std::sinf((bulAngle + (i - (int)(NumberofBullets / 2)) * dAngle) / 180 * PI));
+						sf::Vector2f bulOrientation = sf::Vector2f(std::cos((bulAngle + (i - (int)(NumberofBullets / 2)) * dAngle) / 180 * PI), std::sin((bulAngle + (i - (int)(NumberofBullets / 2)) * dAngle) / 180 * PI));
 
 						if (Hand)
 						{
@@ -239,7 +239,7 @@ void Mech::setPos(sf::Vector2f pos) {
 	_LegsAnim.getSprite().setPosition(pos);
 }
 
-std::pair<sf::Vector2f, sf::Vector2f>& Mech::calcGunPositions()
+std::pair<sf::Vector2f, sf::Vector2f> Mech::calcGunPositions()
 {
 	sf::Vector2f pos1 = getPos() - _GunPosition + _GunOrientation * _GunLength;
 	sf::Vector2f pos2 = getPos() + _GunPosition + _GunOrientation * _GunLength;

@@ -384,6 +384,7 @@ void Framework::setVolume(float volume)
 
 void Framework::setMouseVisible(bool visible)
 {
+	#ifdef SFML_SYSTEM_WINDOWS
 	if (!visible) {
 		int cursor = ShowCursor(0);
 		while (cursor > 0) {
@@ -396,6 +397,7 @@ void Framework::setMouseVisible(bool visible)
 			cursor = ShowCursor(1);
 		}
 	}
+	#endif
 }
 
 void Framework::setDifficulty(int Difficulty)
@@ -414,13 +416,13 @@ void Framework::addScore()
 		_Score += 5 * _Level.getLevel() * _FrameTime;
 		break;
 	case 1:
-		_Score += 10 * (int)std::powf((float)_Level.getLevel(), 1.15f) * _FrameTime;
+		_Score += 10 * (int)std::pow((float)_Level.getLevel(), 1.15f) * _FrameTime;
 		break;
 	case 2:
-		_Score += 30 * (int)std::powf((float)_Level.getLevel(), 1.3f) * _FrameTime;
+		_Score += 30 * (int)std::pow((float)_Level.getLevel(), 1.3f) * _FrameTime;
 		break;
 	case 3:
-		_Score += 60 * (int)std::powf((float)_Level.getLevel(), 1.6f) * _FrameTime;
+		_Score += 60 * (int)std::pow((float)_Level.getLevel(), 1.6f) * _FrameTime;
 		break;
 	default:
 		break;

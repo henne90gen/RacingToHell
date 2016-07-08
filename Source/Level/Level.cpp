@@ -123,7 +123,11 @@ void Level::loadSongByID(int id)
 				}
 			}
 		#else
+			std::shared_ptr<sf::SoundBuffer> buffer(new sf::SoundBuffer());
 
+			(*buffer).loadFromFile("Resources/Sound/Music/level" + std::to_string(id) + ".ogg");
+			std::lock_guard<std::mutex>{ _ThreadGuard };
+			_MusicBuffers.push_back(buffer);
 		#endif
 		if (id == 1) {
 			_FirstLevelSoundLoaded = true;

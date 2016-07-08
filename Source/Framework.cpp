@@ -4,7 +4,11 @@
 Framework::Framework() : _FrameTime(0), _FPS(60.0f), _IsRunning(true), _GameState(GameState::Loading)
 {
 	_RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell", sf::Style::Close);
+	#ifdef SFML_SYSTEM_WINDOWS
 	_RenderWindow.setMouseCursorVisible(false);
+    #else
+	_RenderWindow.setMouseCursorVisible(true);
+    #endif
 
 	sf::Image Icon;
 	if (Icon.loadFromFile("Resources/Texture/Icon/Icon.png"))
@@ -47,42 +51,92 @@ void Framework::render()
 	switch (_GameState) {
 	case GameState::Running:
 		setMouseVisible(false);
+
+		#ifdef SFML_SYSTEM_LINUX
+			_RenderWindow.setMouseCursorVisible(false);
+        #endif
+
 		_HeadsUpDisplay.render(_RenderWindow);
 		break;
 	case GameState::Main:
 		setMouseVisible(true);
+
+		#ifdef SFML_SYSTEM_LINUX
+			_RenderWindow.setMouseCursorVisible(true);
+		#endif
+
 		_MainMenu.render(_RenderWindow);
 		break;
 	case GameState::Pause:
 		setMouseVisible(true);
+
+		#ifdef SFML_SYSTEM_LINUX
+			_RenderWindow.setMouseCursorVisible(true);
+		#endif
+
 		_PauseMenu.render(_RenderWindow);
 		break;
 	case GameState::Highscores:
 		setMouseVisible(true);
+
+		#ifdef SFML_SYSTEM_LINUX
+			_RenderWindow.setMouseCursorVisible(true);
+		#endif
+
 		_HighscoreMenu.render(_RenderWindow);
 		break;
 	case GameState::Options:
 		setMouseVisible(true);
+
+		#ifdef SFML_SYSTEM_LINUX
+			_RenderWindow.setMouseCursorVisible(true);
+		#endif
+
 		_OptionsMenu.render(_RenderWindow);
 		break;
 	case GameState::About:
 		setMouseVisible(true);
+
+		#ifdef SFML_SYSTEM_LINUX
+			_RenderWindow.setMouseCursorVisible(true);
+		#endif
+
 		_AboutScreen.render(_RenderWindow);
 		break;
 	case GameState::LevelUp:
 		setMouseVisible(false);
+
+		#ifdef SFML_SYSTEM_LINUX
+			_RenderWindow.setMouseCursorVisible(false);
+		#endif
+
 		_LevelUpScreen.render(_RenderWindow);
 		break;
 	case GameState::BossFight:
 		setMouseVisible(false);
+
+		#ifdef SFML_SYSTEM_LINUX
+			_RenderWindow.setMouseCursorVisible(false);
+		#endif
+
 		_HeadsUpDisplay.render(_RenderWindow);
 		break;
 	case GameState::GameOver:
 		setMouseVisible(true);
+
+		#ifdef SFML_SYSTEM_LINUX
+			_RenderWindow.setMouseCursorVisible(true);
+		#endif
+
 		_GameOverScreen.render(_RenderWindow);
 		break;
 	case GameState::Loading:
 		setMouseVisible(false);
+
+		#ifdef SFML_SYSTEM_LINUX
+			_RenderWindow.setMouseCursorVisible(false);
+		#endif
+
 		if (_LoadingScreen.isFadingAway()) {
 			_MainMenu.render(_RenderWindow);
 		}

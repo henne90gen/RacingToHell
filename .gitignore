@@ -218,3 +218,5 @@ Resources/Data/Highscore.sco
 .project
 .cproject
 .settings/
+.idea
+CMakeLists.txt

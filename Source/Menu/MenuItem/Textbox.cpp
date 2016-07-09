@@ -102,41 +102,44 @@ MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 		if (_Enabled && _Focused) {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
 				return MenuResult::SubmitScore;
-			} 
+			}
 			else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::RControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt) && !sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt)) {
-				if (Event.key.code < 26) {
-					std::string newString = _Text.getString().substring(0, _CursorPosition) + (char)(Event.key.code + 97 - 32 * (int)(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition);
-
-					if (!isStringTooLarge(newString)) {
-						_Text.setString(newString);
-						_CursorPosition++;
-						setCursor();
-					}
-				}
-				else if (Event.key.code < 36 && !sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
-					std::string newString = _Text.getString().substring(0, _CursorPosition) + (char)(Event.key.code + 22) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition);
-					if (!isStringTooLarge(newString)) {
-						_Text.setString(newString);
-						_CursorPosition++;
-						setCursor();
-					}
-				}
-
-				if (Event.key.code == 59 && _Text.getString().getSize() > 0 && _CursorPosition > 0) {
-					_Text.setString(_Text.getString().substring(0, _CursorPosition - 1) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition));
+				// Delete character with backspace
+				if (Event.key.code == 59 && _Text.getString().getSize() > 0 && _CursorPosition > 0) {				_Text.setString(_Text.getString().substring(0, _CursorPosition - 1) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition));
 					_CursorPosition--;
 					setCursor();
 				}
+				// Delete character with delete
+				else if (Event.key.code == 66 && _Text.getString().getSize() > 0 && _CursorPosition < _Text.getString().getSize()) {
+					_Text.setString(_Text.getString().substring(0, _CursorPosition) + _Text.getString().substring(_CursorPosition + 1, _Text.getString().getSize() - _CursorPosition));
+				}
 			}
 
+			// Moving cursor left with the left arrow
 			if (_CursorPosition > 0 && Event.key.code == 71) {
 				_CursorPosition--;
 				setCursor();
 			}
 
+			// Moving cursor right with the right arrow
 			if (_CursorPosition < _Text.getString().getSize() && Event.key.code == 72) {
 				_CursorPosition++;
 				setCursor();
+			}
+		}
+	}
+	else if (Event.type == sf::Event::TextEntered) {
+		if (_Enabled && _Focused) {
+			// Checking if typed character is valid: [0-9][A-Z][a-z]
+			sf::Uint32 c = Event.text.unicode;
+			if ((c > 47 && c < 58) || (c > 64 && c < 91) || (c > 96 && c < 123)) {
+				std::string newString = _Text.getString().substring(0, _CursorPosition) + static_cast<char>(c) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition);
+
+				if (!isStringTooLarge(newString)) {
+					_Text.setString(newString);
+					_CursorPosition++;
+					setCursor();
+				}
 			}
 		}
 	}

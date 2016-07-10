@@ -4,6 +4,8 @@
 #include <sstream>
 #include <algorithm>
 
+#include "Serializable.h"
+
 class HighscoreList
 {
 public:

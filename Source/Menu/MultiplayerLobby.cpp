@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "Menu\MultiplayerLobby.h"
+#include "Menu/MultiplayerLobby.h"
 
-MultiplayerLobby::MultiplayerLobby() : Menu(GameState::Lobby), _SelectedCar(0)
+MultiplayerLobby::MultiplayerLobby() : Menu(GameState::Lobby), _SelectedCar(0), _NetworkHandle()
 {
 	std::shared_ptr<PlayerTable> Table(new PlayerTable(sf::Vector2f(25, 25)));
 	_MenuItems.push_back(Table);

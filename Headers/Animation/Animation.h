@@ -17,7 +17,7 @@ public:
 	/*
 		State an animation may be in
 	 */
-	enum AnimationState {
+	enum class AnimationState {
 		Stop, Play, Pause
 	};
 
@@ -36,17 +36,17 @@ public:
 	/*
 		Starts playing the animation
 	*/
-	void play() { _AnimState = Animation::Play; }
+	void play() { _AnimState = AnimationState::Play; }
 
 	/*
 		Pauses the animation
 	*/
-	void pause() { _AnimState = Animation::Pause; }
+	void pause() { _AnimState = AnimationState::Pause; }
 
 	/*
 		Stops the animation
 	*/
-	void stop() { _AnimState = Animation::Stop; }
+	void stop() { _AnimState = AnimationState::Stop; }
 
 	/*
 		Resets the animation to the beginning

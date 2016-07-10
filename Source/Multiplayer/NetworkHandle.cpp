@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Multiplayer/NetworkHandle.h"
 
-NetworkHandle::NetworkHandle() : _TickRate(64), _UpdateIntervall(2), _Delay(0.1 * _TickRate), _Relationship(NetworkRelation::None), _Tick(0), _Authenticated(false)
+NetworkHandle::NetworkHandle() : _TickRate(64), _UpdateIntervall(2), _Delay(0.1 * _TickRate), _Relationship(NetworkRelation::NoRel), _Tick(0), _Authenticated(false)
 {}
 
 void NetworkHandle::connect(std::string ip, std::string password, std::string name,int port, float timeout)
@@ -80,7 +80,7 @@ void NetworkHandle::disconnect(bool self)
 		_Listener.close();
 		_SendPackets.clear();
 		_ReceivedPackets.clear();
-		_Relationship = NetworkRelation::None;
+		_Relationship = NetworkRelation::NoRel;
 		_MyName = "";
 		_Password = "";
 		_Tick = 0;
@@ -98,7 +98,7 @@ void NetworkHandle::disconnect(bool self)
 		_Authenticated = false;
 		_SendPackets.clear();
 		_ReceivedPackets.clear();
-		_Relationship = NetworkRelation::None;
+		_Relationship = NetworkRelation::NoRel;
 		_MyName = "";
 		std::cout << "You left the lobby." << std::endl;
 		_Password = "";
@@ -108,7 +108,7 @@ void NetworkHandle::disconnect(bool self)
 		_Authenticated = false;
 		_SendPackets.clear();
 		_ReceivedPackets.clear();
-		_Relationship = NetworkRelation::None;
+		_Relationship = NetworkRelation::NoRel;
 		if (_LastResponse.first != NetworkCommunication::Kick)
 		{
 			std::cout << "Lobby closed by the host." << std::endl;
@@ -131,7 +131,7 @@ void NetworkHandle::run()
 
 	_SyncTimer.restart();
 
-	while (_Relationship != NetworkRelation::None)
+	while (_Relationship != NetworkRelation::NoRel)
 	{
 		sf::Clock beginningTime;
 		checkForConnection();
@@ -179,14 +179,14 @@ void NetworkHandle::run()
 			sf::sleep(sf::seconds((1.0f / (float)_TickRate) - beginningTime.getElapsedTime().asSeconds()));
 		}
 	}
-	_State = NetworkState::None;
+	_State = NetworkState::NoNetState;
 }
 
 std::pair<NetworkCommunication, int> NetworkHandle::getLastResponse()
 {
 	std::lock_guard<std::mutex> lock(_Mutex);
 	std::pair<NetworkCommunication, int> tmp = _LastResponse;
-	_LastResponse = std::make_pair(NetworkCommunication::None, 0);
+	_LastResponse = std::make_pair(NetworkCommunication::NoNetComm, 0);
 	return tmp;
 }
 

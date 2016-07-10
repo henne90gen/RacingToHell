@@ -10,13 +10,13 @@ MechTop::~MechTop()
 }
 
 void MechTop::render(sf::RenderWindow & window) {
-	if (_AnimState == Animation::Play || _AnimState == Animation::Pause)
+	if (_AnimState == Animation::AnimationState::Play || _AnimState == Animation::AnimationState::Pause)
 		window.draw(_Sprite);
 }
 
 void MechTop::update(float frameTime)
 {
-	if (_AnimState == Animation::Play) {
+	if (_AnimState == Animation::AnimationState::Play) {
 		if (_Timer.getElapsedTime().asSeconds() > _TimePerFrame) {
 			_ElapsedTime += _Timer.getElapsedTime().asSeconds();
 			_Timer.restart();

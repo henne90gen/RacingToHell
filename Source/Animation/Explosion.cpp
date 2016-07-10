@@ -13,19 +13,19 @@ Explosion::Explosion(sf::Vector2f pos, sf::Texture & texture, sf::Vector2f movem
 
 void Explosion::render(sf::RenderWindow & window)
 {
-	if (_AnimState == Animation::Play || _AnimState == Animation::Pause)
+	if (_AnimState == Animation::AnimationState::Play || _AnimState == Animation::AnimationState::Pause)
 		window.draw(_Sprite);
 }
 
 void Explosion::update(float FrameTime)
 {
-	if (_AnimState == Animation::Play) {
+	if (_AnimState == Animation::AnimationState::Play) {
 		_Sprite.setPosition(_Sprite.getPosition() + _Movement * FrameTime);
 		if (_Timer.getElapsedTime().asSeconds() > _TimePerFrame) {
 			_ElapsedTime += _Timer.getElapsedTime().asSeconds();
 			_Timer.restart();
 			if (!nextFrame()) {
-				_AnimState = Animation::Stop;
+				_AnimState = Animation::AnimationState::Stop;
 			}
 		}
 	}

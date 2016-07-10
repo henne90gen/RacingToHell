@@ -73,7 +73,7 @@ void Menu::applyJoystickSelection(sf::Event & Event) {
 	}
 }
 
-bool Menu::checkMenuItemHovered(sf::RenderWindow& Window, int index)
+bool Menu::checkMenuItemHovered(sf::RenderWindow& Window, int index) {
 	#ifdef SFML_SYSTEM_WINDOWS
 		sf::StandardCursor Cursor;
 	if (_MenuItems[index]->getHoverState() && _MenuItems[index]->getEnabled())

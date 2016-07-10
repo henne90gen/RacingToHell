@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Menu.h"
-#include "MenuItem\StatBox.h"
-#include "Multiplayer\NetworkHandle.h"
-#include "Multiplayer\Communication.h"
+#include "MenuItem/StatBox.h"
+#include "Multiplayer/NetworkHandle.h"
+#include "Multiplayer/Communication.h"
 
 class MultiplayerLobby : public Menu
 {

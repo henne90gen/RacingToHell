@@ -19,7 +19,7 @@ Textbox::Textbox(sf::Vector2f Position, sf::Vector2f Size, int CharacterSize, st
 	_Text.setPosition(Position + sf::Vector2f(2, 0));
 	_Text.setColor(_TextColor);
 	
-	setString();
+	setText(_String);
 
 	_Cursor.setSize(sf::Vector2f(1, CharacterSize));
 	_Cursor.setFillColor(sf::Color::Black);
@@ -114,13 +114,13 @@ MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 			else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::RControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt) && !sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt)) {
 				// Delete character with backspace
 				if (Event.key.code == 59 && _Text.getString().getSize() > 0 && _CursorPosition > 0) {				
-					_Text.setString(_Text.getString().substring(0, _CursorPosition - 1) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition));
+					setText(_Text.getString().substring(0, _CursorPosition - 1) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition));
 					_CursorPosition--;
 					setCursor();
 				}
 				// Delete character with delete
 				else if (Event.key.code == 66 && _Text.getString().getSize() > 0 && _CursorPosition < _Text.getString().getSize()) {
-					_Text.setString(_Text.getString().substring(0, _CursorPosition) + _Text.getString().substring(_CursorPosition + 1, _Text.getString().getSize() - _CursorPosition));
+					setText(_Text.getString().substring(0, _CursorPosition) + _Text.getString().substring(_CursorPosition + 1, _Text.getString().getSize() - _CursorPosition));
 				}
 			}
 
@@ -145,7 +145,7 @@ MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 				std::string newString = _Text.getString().substring(0, _CursorPosition) + static_cast<char>(c) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition);
 
 				if (!isStringTooLarge(newString)) {
-					_Text.setString(newString);
+					setText(newString);
 					_CursorPosition++;
 					setCursor();
 				}
@@ -196,8 +196,9 @@ std::string Textbox::passwordString(std::string s)
 	return returnString;
 }
 
-void Textbox::setString()
+void Textbox::setText(std::string str)
 {
+	_String = str;
 	if (_isPassword)
 	{
 		_Text.setString(passwordString(_String));

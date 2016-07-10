@@ -7,7 +7,7 @@ public:
 		Enables the serialization of any object. 
 	*/
 	Serializable() {}
-	~Serializable() {}
+	virtual ~Serializable() {}
 
 	/*
 		Writes the necessary data for an object to a stream

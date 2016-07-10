@@ -122,7 +122,7 @@ void HighscoreList::loadScoreTable()
 {
 	std::ifstream fileStream;
 	fileStream.open(_Filename, std::ios::in | std::ifstream::binary);
-	int length;
+	int length = 0;
 	fileStream.read((char*)&length, sizeof(length));
 
 	_PlayerList.clear();
@@ -130,7 +130,7 @@ void HighscoreList::loadScoreTable()
 		Player newPlayer;
 		newPlayer << fileStream;
 		_PlayerList.push_back(newPlayer);
-	}
+	} 
 
 	fileStream.close();
 

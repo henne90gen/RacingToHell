@@ -11,16 +11,16 @@ void sf::StandardCursor::set(const sf::WindowHandle& aWindowHandle, const sf::St
 {
 	switch (t)
 	{
-	case sf::StandardCursor::WAIT:
+	case sf::StandardCursor::TYPE::WAIT:
 		Cursor = LoadCursor(NULL, IDC_WAIT);
 		break;
-	case sf::StandardCursor::HAND:
+	case sf::StandardCursor::TYPE::HAND:
 		Cursor = LoadCursor(NULL, IDC_HAND);
 		break;
-	case sf::StandardCursor::NORMAL:
+	case sf::StandardCursor::TYPE::NORMAL:
 		Cursor = LoadCursor(NULL, IDC_ARROW);
 		break;
-	case sf::StandardCursor::TEXT:
+	case sf::StandardCursor::TYPE::TEXT:
 		Cursor = LoadCursor(NULL, IDC_IBEAM);
 		break;
 		//For more cursor options on Windows go here:

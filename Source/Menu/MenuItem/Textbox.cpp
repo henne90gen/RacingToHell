@@ -115,45 +115,19 @@ MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 				// Delete character with backspace
 				if (Event.key.code == 59 && _Text.getString().getSize() > 0 && _CursorPosition > 0) {				_Text.setString(_Text.getString().substring(0, _CursorPosition - 1) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition));
 					_CursorPosition--;
-						setString();
 					setCursor();
 				}
 				// Delete character with delete
 				else if (Event.key.code == 66 && _Text.getString().getSize() > 0 && _CursorPosition < _Text.getString().getSize()) {
 					_Text.setString(_Text.getString().substring(0, _CursorPosition) + _Text.getString().substring(_CursorPosition + 1, _Text.getString().getSize() - _CursorPosition));
-						setString();
 				}
 			}
 
 			// Moving cursor left with the left arrow
 			if (_CursorPosition > 0 && Event.key.code == 71) {
-					setString();
 				_CursorPosition--;
 				setCursor();
 			}
-
-				if (Event.key.code == 50 && !sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-				{
-					std::string newString = _String.substr(0, _CursorPosition) + "." + _String.substr(_CursorPosition, _String.length() - _CursorPosition);
-					if (!isStringTooLarge(newString)) {
-						_String = newString;
-						setString();
-						_CursorPosition++;
-						setCursor();
-					}
-				}
-			}
-
-			if (Event.key.code == 21 && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
-			{
-				std::string newString = _String.substr(0, _CursorPosition) + GetClipboardText() + _String.substr(_CursorPosition, _String.length() - _CursorPosition);
-
-				if (!isStringTooLarge(newString)) {
-					_String = newString;
-					setString();
-					_CursorPosition = newString.length();
-					setCursor();
-				}
 
 			// Moving cursor right with the right arrow
 			if (_CursorPosition < _Text.getString().getSize() && Event.key.code == 72) {

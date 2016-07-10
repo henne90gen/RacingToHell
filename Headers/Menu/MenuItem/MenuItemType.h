@@ -1,5 +1,5 @@
 #pragma once
 
-enum MenuItemType {
-	MButton, MSlider, MTextbox, MCombobox
+enum class MenuItemType {
+	MButton, MSlider, MTextbox, MCombobox, MLobbyList
 };

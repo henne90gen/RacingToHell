@@ -8,11 +8,13 @@ class AICar : public Car
 public:
 	/*
 		Car that is controlled by the computer.
-		@param difficulty Difficulty of the level
+		@param hp Helath of the car
 		@param roadSpeed Speed of the road
 		@param texture Texture that is going to be used for the sprite
 	*/
-	AICar(int hp, int roadSpeed, sf::Texture& texture);
+	AICar(unsigned int id, int hp, int roadSpeed, sf::Texture& texture);
+	AICar(std::istream& stream, sf::Texture& texture);
+	AICar(sf::Packet& packet, sf::Texture& texture);
 	~AICar() {}
 
 	/*
@@ -39,10 +41,26 @@ public:
 		@return int Number of the lane
 	*/
 	int getLane() { return _Lane; }
+
+	void operator>>(std::ostream& stream);
+
+	void operator<<(std::istream& stream);
+
+	/*
+		Writes the necessary data for a gameobject to a packet
+	*/
+	void operator>>(sf::Packet& packet);
+
+	/*
+		Reads the necessary data for a gameobject from a packet
+	*/
+	void operator<<(sf::Packet& packet);
 private:
 	sf::RectangleShape _HealthBar;
 	sf::RectangleShape _HealthBarFrame;
 
-	int _Lane;
+	sf::Uint8 _Lane;
+
+	void init();
 };
 

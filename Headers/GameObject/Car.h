@@ -16,8 +16,41 @@ public:
 		@param type Type of the Car
 		@param texture Texture that is going to be used for the sprite
 	*/
-	Car(sf::Vector2f pos, int maxHealth, float speed, GameObjectType type, sf::Texture& texture);
-	~Car() {}
+	Car(unsigned int id, sf::Vector2f pos, int maxHealth, float speed, GameObjectType type, sf::Texture& texture);
+
+	/*
+		Car that can drive around on the road
+		@param stream Input stream that contains all the other information needed to make a Car
+		@param type Type of the Car
+		@param texture Texture that is going to be used for the sprite
+	*/
+	Car(std::istream& stream, GameObjectType type, sf::Texture& texture) : GameObject(stream, type, texture) {}
+
+	/*
+		Car that can drive around on the road
+		Use this constructor with extrem caution, no texture is being specified
+		To fully use the car one has to specifiy a texture!
+		@param stream Input stream that contains all the other information needed to make a Car
+		@param type Type of the Car
+	*/
+	Car(std::istream& stream, GameObjectType type) : GameObject(stream, type) {}
+
+	/*
+		Car that can drive around on the road
+		@param stream Input stream that contains all the other information needed to make a Car
+		@param type Type of the Car
+		@param texture Texture that is going to be used for the sprite
+	*/
+	Car(sf::Packet& packet, GameObjectType type, sf::Texture& texture) : GameObject(packet, type, texture) {}
+
+	/*
+		Car that can drive around on the road
+		Use this constructor with extrem caution, no texture is being specified
+		To fully use the car one has to specifiy a texture!
+		@param stream Input stream that contains all the other information needed to make a Car
+		@param type Type of the Car
+	*/
+	Car(sf::Packet& packet, GameObjectType type) : GameObject(packet, type) {}
 
 	/*
 		Handles events for Car
@@ -30,7 +63,7 @@ public:
 		@param frameTime Time that has passed since the last update
 		@param roadSpeed Velocity of the road
 	*/
-	virtual void update(float frameTime, int roadSpeed) {}
+	virtual void update(float frameTime, int roadSpeed);
 
 	/*
 		@return int Health of the Car
@@ -61,11 +94,32 @@ public:
 		Damage the car and subtract the damage from the health
 		@param damage Amount of health to subtract
 	*/
-	void takeDamage(int damage) { _Health -= damage; }
+	void takeDamage(int damage) { _Health -= damage; getSprite().setColor(sf::Color(220, 0, 0)); _resetColorTime = 0.0f; }
 
+	/*
+		Writes the necessary data for a car to a stream
+	*/
+	virtual void operator>>(std::ostream& stream);
+
+	/*
+		Reads the necessary data for a car from a stream
+	*/
+	virtual void operator<<(std::istream& stream);
+
+	/*
+		Writes the necessary data for a gameobject to a packet
+	*/
+	virtual void operator>>(sf::Packet& packet);
+
+	/*
+		Reads the necessary data for a gameobject from a packet
+	*/
+	virtual void operator<<(sf::Packet& packet);
 protected:
-	int _Health, _Speed, _MaxHealth;
-
+	sf::Int16 _Health, _Speed, _MaxHealth;
 	sf::Vector2f _Movement;
+
+	float _resetColorTime;
+	sf::SoundBuffer _ImpactSoundBuffer;
 };
 

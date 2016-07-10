@@ -1,10 +1,10 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "Menu/MenuItem/Textbox.h"
 
-Textbox::Textbox(sf::Vector2f Position, sf::Vector2f Size, int CharacterSize, std::string Text, bool isFocused)
+Textbox::Textbox(sf::Vector2f Position, sf::Vector2f Size, int CharacterSize, std::string Text, bool isFocused, bool isPassword)
 	: MenuItem(MenuItemType::MTextbox, MenuResult::Nothing),
 	_FillColor(sf::Color(255, 255, 255)), _FillColorDisabled(sf::Color(140, 140, 140)), _OutlineColor(sf::Color(0, 0, 0)), _OutlineColorFocused(sf::Color(0, 150, 205)), 
-	_TextColor(sf::Color(0, 0, 0)), _ShowCursor(true), _CursorPosition(0)
+	_TextColor(sf::Color(0, 0, 0)), _ShowCursor(true), _CursorPosition(0), _isPassword(isPassword), _String(Text), _PasswordChar('*')
 {
 	_CursorClock.restart();
 
@@ -18,12 +18,13 @@ Textbox::Textbox(sf::Vector2f Position, sf::Vector2f Size, int CharacterSize, st
 	_Text.setCharacterSize(CharacterSize);
 	_Text.setPosition(Position + sf::Vector2f(2, 0));
 	_Text.setColor(_TextColor);
-	_Text.setString(Text);
+	
+	setString();
 
 	_Cursor.setSize(sf::Vector2f(1, CharacterSize));
 	_Cursor.setFillColor(sf::Color::Black);
 	
-	_Focused = true;
+	_Focused = isFocused;
 
 	setCursor();
 }
@@ -39,7 +40,6 @@ void Textbox::render(sf::RenderWindow& RenderWindow)
 				_ShowCursor = !_ShowCursor;
 				_CursorClock.restart();
 			}
-			_ShowCursor = true;
 		}
 		else {
 			_Box.setOutlineColor(_OutlineColor);
@@ -75,13 +75,21 @@ MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 			_CursorClock.restart();
 			_CursorPosition = 0;
 
-			for (int i = _Text.getString().getSize(); i > 0; i--) {
+			for (int i = _String.length(); i > 0; i--) {
 				sf::Text TmpText = _Text;
 				sf::Text TmpChar = _Text;
 
-				TmpText.setString(_Text.getString().substring(0, i));
-				TmpChar.setString(_Text.getString().substring(i - 1, 1));
-
+				if (_isPassword)
+				{
+					TmpText.setString(passwordString(_String.substr(0, i)));
+					TmpChar.setString(passwordString(_String.substr(i - 1, 1)));
+				}
+				else
+				{
+					TmpText.setString(_String.substr(0, i));
+					TmpChar.setString(_String.substr(i - 1, 1));
+				}
+				
 				if (Event.mouseButton.x > TmpText.getPosition().x + TmpText.getLocalBounds().width - TmpChar.getLocalBounds().width / 2) {
 					_CursorPosition = i;
 					break;
@@ -107,19 +115,45 @@ MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 				// Delete character with backspace
 				if (Event.key.code == 59 && _Text.getString().getSize() > 0 && _CursorPosition > 0) {				_Text.setString(_Text.getString().substring(0, _CursorPosition - 1) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition));
 					_CursorPosition--;
+						setString();
 					setCursor();
 				}
 				// Delete character with delete
 				else if (Event.key.code == 66 && _Text.getString().getSize() > 0 && _CursorPosition < _Text.getString().getSize()) {
 					_Text.setString(_Text.getString().substring(0, _CursorPosition) + _Text.getString().substring(_CursorPosition + 1, _Text.getString().getSize() - _CursorPosition));
+						setString();
 				}
 			}
 
 			// Moving cursor left with the left arrow
 			if (_CursorPosition > 0 && Event.key.code == 71) {
+					setString();
 				_CursorPosition--;
 				setCursor();
 			}
+
+				if (Event.key.code == 50 && !sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+				{
+					std::string newString = _String.substr(0, _CursorPosition) + "." + _String.substr(_CursorPosition, _String.length() - _CursorPosition);
+					if (!isStringTooLarge(newString)) {
+						_String = newString;
+						setString();
+						_CursorPosition++;
+						setCursor();
+					}
+				}
+			}
+
+			if (Event.key.code == 21 && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+			{
+				std::string newString = _String.substr(0, _CursorPosition) + GetClipboardText() + _String.substr(_CursorPosition, _String.length() - _CursorPosition);
+
+				if (!isStringTooLarge(newString)) {
+					_String = newString;
+					setString();
+					_CursorPosition = newString.length();
+					setCursor();
+				}
 
 			// Moving cursor right with the right arrow
 			if (_CursorPosition < _Text.getString().getSize() && Event.key.code == 72) {
@@ -151,7 +185,7 @@ void Textbox::setCursor()
 	sf::Text TmpText = _Text;
 	TmpText.setString(_Text.getString().substring(0, _CursorPosition));
 
-	_Cursor.setPosition(_Text.getPosition() + sf::Vector2f(TmpText.getLocalBounds().width + 1, 4));
+	_Cursor.setPosition(_Text.getPosition() + sf::Vector2f(TmpText.getLocalBounds().width + 3, 4));
 }
 
 sf::FloatRect Textbox::getRect()
@@ -162,7 +196,72 @@ sf::FloatRect Textbox::getRect()
 bool Textbox::isStringTooLarge(std::string str)
 {
 	sf::Text TmpText = _Text;
-	TmpText.setString(str);
 
+	if (_isPassword)
+	{
+		TmpText.setString(passwordString(str));
+	}
+	else
+	{
+		TmpText.setString(str);
+	}
+	
 	return TmpText.getLocalBounds().width > _Box.getSize().x - 4;
+}
+
+std::string Textbox::passwordString(std::string& s)
+{
+	std::string returnString;
+
+	for (int i = 0; i < s.length(); i++)
+	{
+		returnString += _PasswordChar;
+	}
+
+	return returnString;
+}
+
+void Textbox::setString()
+{
+	if (_isPassword)
+	{
+		_Text.setString(passwordString(_String));
+	}
+	else
+	{
+		_Text.setString(_String);
+	}
+}
+
+std::string Textbox::GetClipboardText()
+{
+	// Try opening the clipboard
+	if (!OpenClipboard(nullptr))
+	{
+		return "";
+	}
+		
+	// Get handle of clipboard object for ANSI text
+	HANDLE hData = GetClipboardData(CF_TEXT);
+	if (hData == nullptr)
+	{
+		return "";
+	}
+
+	// Lock the handle to get the actual text pointer
+	char * pszText = static_cast<char*>(GlobalLock(hData));
+	if (pszText == nullptr)
+	{
+
+	}
+	// Save text in a string class instance
+	std::string text(pszText);
+
+	// Release the lock
+	GlobalUnlock(hData);
+
+	// Release the clipboard
+	CloseClipboard(); 
+
+	return text;
 }

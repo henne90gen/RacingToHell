@@ -11,11 +11,19 @@
 #include "Menu/GameOverScreen.h"
 #include "Menu/LoadingScreen.h"
 #include "Menu/LevelUpScreen.h"
+#include "Menu/PauseMultiplayerMenu.h"
+#include "Menu/MultiplayerMenu.h"
+#include "Menu/MultiplayerLobby.h"
+#include "Menu/Countdown.h"
 #include "HeadsUpDisplay.h"
-#include "Level/Level.h"
+#include "Multiplayer/NetworkHandle.h"
+#include "Multiplayer/MPGameObjectContainer.h"
+#include "Level/Level.h" 
+#include "Menu/MenuItem/PlayerTable.h"
 
 #include <sstream>
 #include <fstream>
+#include <thread>
 
 class Framework
 {
@@ -48,6 +56,8 @@ private:
 	GameObjectContainer _GameObjectContainer;
 	std::vector<std::shared_ptr<sf::Texture>> _CarSkins;
 
+	MPGameObjectContainer _MPGameObjectContainer;
+
 	// Level
 	Level _Level;
 
@@ -65,6 +75,14 @@ private:
 	LoadingScreen _LoadingScreen;
 	LevelUpScreen _LevelUpScreen;
 	HeadsUpDisplay _HeadsUpDisplay;
+	MultiplayerMenu _MultiplayerMenu;
+	MultiplayerLobby _MultiplayerLobby;
+	PauseMultiplayerMenu _PauseMultiplayerMenu;
+	Countdown _Countdown;
+
+	//Multiplayer
+	NetworkHandle _NetworkHandle;
+	std::thread _NetworkThread;
 
 	// Functions
 	void render();

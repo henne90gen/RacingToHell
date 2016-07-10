@@ -76,12 +76,9 @@ void Level::load()
 
 void Level::resetLevel()
 {
-	_Level = 1;
+	_Level = 5;
 	_TotalLevelTime = 60.0f;
 	_LevelTime = 0;
-	while (!_FirstLevelSoundLoaded) {
-		
-	}
 	_Music.setBuffer((*_MusicBuffers.at(0)));
 	_Sprite.setTexture((*_Textures.at((_Level - 1) % _Textures.size())));
 }
@@ -114,7 +111,7 @@ void Level::loadSongByID(int id)
 
 				if (_CrtIsValidHeapPointer((const void *)buffer.get())) {
 					(*buffer).loadFromFile("Resources/Sound/Music/level" + std::to_string(id) + ".ogg");
-					std::lock_guard<std::mutex>{ _ThreadGuard };
+				std::lock_guard<std::mutex> lock(_ThreadGuard);
 					_MusicBuffers.push_back(buffer);
 					checked = true;
 				}
@@ -129,9 +126,6 @@ void Level::loadSongByID(int id)
 			std::lock_guard<std::mutex>{ _ThreadGuard };
 			_MusicBuffers.push_back(buffer);
 		#endif
-		if (id == 1) {
-			_FirstLevelSoundLoaded = true;
-		}
 	}
 	catch (...) {
 		std::exit(1);

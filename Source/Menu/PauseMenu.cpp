@@ -25,17 +25,14 @@ PauseMenu::PauseMenu() : Menu(GameState::Pause)
 
 void PauseMenu::render(sf::RenderWindow & window)
 {
-	for (int i = 0; i < _MenuItems.size(); i++) {
-		_MenuItems[i]->render(window);
-	}
 	window.draw(_Text);
 
-	checkMenuItemHovered(window);
+	Menu::render(window);
 }
 
 GameState PauseMenu::handleEvents(sf::RenderWindow & window)
 {
-	while (window.pollEvent(_Event)) {
+	if (window.pollEvent(_Event)) {
 		
 		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
 

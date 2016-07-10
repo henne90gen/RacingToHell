@@ -3,6 +3,7 @@
 
 MenuItem::MenuItem(MenuItemType type, MenuResult action) : _Enabled(true), _Type(type), _Action(action), _Focused(false)
 {
+	sf::Uint32 MyCharset[] = { 0x25CF };
 	_Font.loadFromFile("Resources/Font/arial.ttf");
 }
 

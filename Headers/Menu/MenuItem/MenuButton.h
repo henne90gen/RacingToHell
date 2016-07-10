@@ -35,6 +35,11 @@ public:
 	std::string getText() { return _Text.getString(); }
 
 	/*
+		@param text new text
+	*/
+	void setText(std::string text);
+
+	/*
 		Button doesn't have a value that could be changed
 		@return bool False
 	*/

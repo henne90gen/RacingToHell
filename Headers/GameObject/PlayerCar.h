@@ -15,7 +15,9 @@ public:
 		@param selectedCar Index of the selected car to set the stats
 		@param texture Texture that is going to be used for the sprite
 	*/
-	PlayerCar(int selectedCar, sf::Texture& texture);
+	PlayerCar(unsigned int id, int selectedCar, sf::Texture& texture);
+	PlayerCar(std::istream& stream, std::vector<std::shared_ptr<sf::Texture>>& textures);
+	PlayerCar(sf::Packet& packet, std::vector<std::shared_ptr<sf::Texture>>& textures);
 	~PlayerCar() {}
 
 	/*
@@ -93,16 +95,38 @@ public:
 		Fills up resources to its maximum
 	*/
 	void resetResources() { _Health = _MaxHealth; _Energy = _MaxEnergy; }
+
+	void operator>>(std::ostream& stream);
+
+	void operator<<(std::istream& stream);
+
+	/*
+		Writes the necessary data for a gameobject to a packet
+	*/
+	void operator>>(sf::Packet& packet);
+
+	/*
+		Reads the necessary data for a gameobject from a packet
+	*/
+	void operator<<(sf::Packet& packet);
 private:
 	float _Energy;
-	int _MaxEnergy, _Bulletdamage;
+	sf::Uint16 _MaxEnergy, _Bulletdamage;
+	sf::Uint8 _SelectedCar;
 
 	sf::Vector2f _ShotBullet;
 
 	sf::RectangleShape _AimLine;
 	sf::Vector2f _CrosshairMovement;
-	float _CrosshairSpeed;
 	sf::Texture _CrosshairTexture;
 	sf::Sprite _Crosshair;
+
+	float _CrosshairSpeed;
+
+	//Time it takes to reach maximum speed
+	float _AccelerationTime;
+
+	//Value between 0.0 and 1.0 the speed value is multiplied by
+	sf::Vector2f _Acceleration;
 };
 

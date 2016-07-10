@@ -2,8 +2,37 @@
 #include "GameObject/Boss/Carrier.h"
 
 //TODO: Change health of Carrier back to 2000
-Carrier::Carrier(int difficulty, int HP, sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion,float Volume) : BossCar(sf::Vector2f(SCREENWIDTH / 2, -1 * (float)texture.getSize().y / 2.0f), difficulty, HP, 200, texture, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, Volume),
+Carrier::Carrier(unsigned int id, int difficulty, int HP, sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion,float volume) :
+	BossCar(id, sf::Vector2f(SCREENWIDTH / 2, -1 * (float)texture.getSize().y / 2.0f), difficulty, HP, 200, texture, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, volume),
 	_MovementSwitchLeftRight(false), _MovementSwitchUpDown(false), _Radius(50), _SwitchSideTime(8.0f), _SwitchSides(false)
+{
+	init();
+}
+
+Carrier::Carrier(std::istream & stream, sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer & soundBufferShot, sf::SoundBuffer & soundBufferExplosion, float volume) :
+	BossCar(stream, texture, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, volume)
+{
+	init();
+}
+
+Carrier::Carrier(sf::Packet & packet, sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer & soundBufferShot, sf::SoundBuffer & soundBufferExplosion, float volume) :
+	BossCar(packet, texture, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, volume) 
+{
+	init();
+}
+
+void Carrier::render(sf::RenderWindow & window)
+{
+	window.draw(getSprite());
+	window.draw(_GunSprite);
+
+	window.draw(_HealthBar);
+	window.draw(_HealthBarFrame);
+
+	renderExplosions(window);
+}
+
+void Carrier::init()
 {
 	_GunTexture.loadFromFile("Resources/Texture/BossCar/CannonCarrier.png");
 	_GunSprite.setTexture(_GunTexture);
@@ -18,17 +47,6 @@ Carrier::Carrier(int difficulty, int HP, sf::Texture & texture, sf::Texture & bu
 
 	_Pattern = { std::make_pair(Phase::BLASTSALVE, 5.0f), std::make_pair(Phase::NOTHING, 1.5f), std::make_pair(Phase::RANDOMSPRAY, 6.0f), std::make_pair(Phase::NOTHING, 1.5f),
 		std::make_pair(Phase::SPIRAL, 8.0f), std::make_pair(Phase::NOTHING, 2.0f), std::make_pair(Phase::HARDCORESPAM, 7.0f), std::make_pair(Phase::NOTHING, 1.5f) };
-}
-
-void Carrier::render(sf::RenderWindow & window)
-{
-	window.draw(getSprite());
-	window.draw(_GunSprite);
-
-	window.draw(_HealthBar);
-	window.draw(_HealthBarFrame);
-
-	renderExplosions(window);
 }
 
 void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<GameObject>>& gameObjects)
@@ -108,10 +126,12 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr
 				{
 					if (getBossEvent() == 2)
 					{
+						_Event2Counter = 0;
 						for (float i = (2 * _Event1Counter) * PI / 180; i <= 2 * PI; i += PI / (7 + 2 *_Difficulty))
 						{
-							sf::Vector2f orientation = sf::Vector2f(std::cos(i), std::sin(i));
-							shootBullet(gameObjects, getPos(), orientation);
+							_Event2Counter++;
+							sf::Vector2f orientation = sf::Vector2f(std::cosf(i), std::sinf(i));
+							BossCar::shootBullet(gameObjects, getPos(), orientation, (float)(_Event2Counter % 4 == 0) * _Volume);
 						}
 
 						if (_Event1Counter + 1 < 4 + _Difficulty)
@@ -141,10 +161,12 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr
 				{
 					if (getBossEvent() == 2)
 					{
+						_Event1Counter == 0;
 						for (float i = 0.0f; i < 2 * PI; i += PI / (4 + _Difficulty))
 						{
-							_GunOrientation = sf::Vector2f(std::cos(i), std::sin(i));
-							shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
+							_Event1Counter++;
+							_GunOrientation = sf::Vector2f(std::cosf(i), std::sinf(i));
+							BossCar::shootBullet(gameObjects, calcBulletPosition(), _GunOrientation, (float)(_Event1Counter % 4 == 0) * _Volume);
 							_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
 						}
 					}
@@ -164,7 +186,7 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr
 					for (float i = PI * (float)_MovementSwitchUpDown; i < PI + PI * (float) _MovementSwitchUpDown; i += PI / (10 + 3 * _Difficulty)) {
 						_GunOrientation = sf::Vector2f(std::cos(i), std::sin(i));
 						sf::Vector2f orientation = divideByLength(sf::Vector2f(((float)(std::rand() - (float)(RAND_MAX) / 2) / (float)(RAND_MAX)), (float)(std::rand() / (float)(RAND_MAX)) * std::pow(-1, (int)(_MovementSwitchUpDown))));
-						shootBullet(gameObjects, calcBulletPosition(), orientation);
+						BossCar::shootBullet(gameObjects, calcBulletPosition(), orientation);
 					}
 				}
 				break;
@@ -173,9 +195,10 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr
 				_Event1Frequency = 40.0f + 15.0f * (float)_Difficulty;
 
 				if (getBossEvent() == 1) {
+					_Event1Counter++;
 					_GunOrientation = divideByLength(sf::Vector2f(((float)(std::rand() - (float)(RAND_MAX) / 2) / (float)(RAND_MAX)),
 						((float)(std::rand() - (float)(RAND_MAX) / 2) / (float)(RAND_MAX))));
-					shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
+					BossCar::shootBullet(gameObjects, calcBulletPosition(), _GunOrientation, (float)(_Event1Counter % 5 < 2) * _Volume);
 				}
 				break;
 			}
@@ -190,6 +213,11 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr
 	else {
 		updateExplosions(frameTime);
 	}
+}
+
+void Carrier::shootBullet(std::vector<std::shared_ptr<GameObject>>& gameObjects, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed, float volume)
+{
+	gameObjects.push_back(GameObjectFactory::getBullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss, _soundEffects, volume));
 }
 
 void Carrier::checkPhase()
@@ -220,9 +248,3 @@ void Carrier::checkPhase()
 		_PhaseClock.restart();
 	}
 }
-
-/*sf::Vector2f Carrier::calcBulletPosition()
-{
-	//return getPos() + _GunPosition + sf::Vector2f(_Radius * std::cos(_GunOrientation / 180 * PI), _Radius * std::sin(_GunOrientation / 180 * PI));
-	return sf::Vector2f();
-}*/

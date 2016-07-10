@@ -1,10 +1,12 @@
 #pragma once
 
+
 #include "GameObject/GameObject.h"
 #include "GameObject/GameObjectType.h"
 #include "GameObject/AICar.h"
 #include "GameObject/PlayerCar.h"
 #include "GameObject/Bullet.h"
+#include "GameObject/GameObjectFactory.h"
 
 #include "GameObject/Boss/BossCar.h"
 #include "GameObject/Boss/Tank.h"
@@ -129,11 +131,11 @@ public:
 private:
 	std::vector<std::shared_ptr<GameObject>> _GameObjects;
 	std::vector<std::shared_ptr<Animation>> _Animations;
-	std::vector<std::shared_ptr<sf::Texture>> _PlayerCarTextures, _AICarTextures, _BossCarTextures;
 
-	sf::Texture _ToolboxTexture, _EnergyCanisterTexture, _BulletTexture, _ExplosionTexture;
+	sf::Texture _ExplosionTexture;
+	sf::SoundBuffer _ExplosionSoundBuffer;
+	sf::SoundBuffer _ImpactSoundBuffer;
 
-	sf::SoundBuffer _AIShotSoundBuffer, _PlayerShotSoundBuffer, _ExplosionSoundBuffer, _JetSoundBuffer;
 	std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>> _SoundEffects;
 	float _Volume;
 
@@ -189,4 +191,6 @@ private:
 		@retun Boss HP at given level
 	*/
 	int getBossHP();
+
+	void playHitSound(sf::Vector2f position);
 };

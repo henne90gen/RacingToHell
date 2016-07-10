@@ -7,7 +7,19 @@ Menu::Menu(GameState menuState) :
 	_Text.setFont(_Font);
 }
 
-GameState Menu::handleMenuItems(sf::Event & Event) {
+void Menu::render(sf::RenderWindow & window)
+{
+	bool oneIsHovering = false;
+	for (int i = 0; i < _MenuItems.size(); i++) {
+		if (!oneIsHovering) {
+			oneIsHovering = checkMenuItemHovered(window, i);
+		}
+		_MenuItems[i]->render(window);
+	}
+}
+
+GameState Menu::handleMenuItems(sf::Event & Event)
+{
 	applyJoystickSelection(Event);
 
 	if (Event.type == sf::Event::MouseButtonPressed) {
@@ -22,8 +34,7 @@ GameState Menu::handleMenuItems(sf::Event & Event) {
 		GameState result = _MenuGameState;
 		for (int i = 0; i < _MenuItems.size(); i++) {
 			if (result == _MenuGameState) {
-				result = handleMenuItemResult(
-						_MenuItems[i]->handleEvent(_Event, _MousePos));
+				result = handleMenuItemResult(_MenuItems[i]->handleEvent(_Event, _MousePos));
 			}
 		}
 		return result;
@@ -62,30 +73,27 @@ void Menu::applyJoystickSelection(sf::Event & Event) {
 	}
 }
 
-void Menu::checkMenuItemHovered(sf::RenderWindow& Window) {
+bool Menu::checkMenuItemHovered(sf::RenderWindow& Window, int index)
 	#ifdef SFML_SYSTEM_WINDOWS
 		sf::StandardCursor Cursor;
-		for (unsigned int i = 0; i < _MenuItems.size(); i++)
+	if (_MenuItems[index]->getHoverState() && _MenuItems[index]->getEnabled())
 		{
-			if (_MenuItems[i]->getHoverState() && _MenuItems[i]->getEnabled())
-			{
-				switch (_MenuItems[i]->getType()) {
-					case MenuItemType::MButton:
-					Cursor.set(Window.getSystemHandle(), sf::StandardCursor::HAND);
-					break;
-					case MenuItemType::MTextbox:
-					Cursor.set(Window.getSystemHandle(), sf::StandardCursor::TEXT);
-					break;
-					case MenuItemType::MSlider:
-					Cursor.set(Window.getSystemHandle(), sf::StandardCursor::HAND);
-					break;
-					case MenuItemType::MCombobox:
-					Cursor.set(Window.getSystemHandle(), sf::StandardCursor::HAND);
-					break;
-				}
-				return;
+		if (_MenuItems[index]->getType() == MenuItemType::MButton || _MenuItems[index]->getType() == MenuItemType::MSlider || _MenuItems[index]->getType() == MenuItemType::MCombobox || _MenuItems[index]->getType() == MenuItemType::MLobbyList) {
+			Cursor.set(Window.getSystemHandle(), sf::StandardCursor::HAND);
+			return true;
+		}
+		else if (_MenuItems[index]->getType() == MenuItemType::MTextbox) {
+			Cursor.set(Window.getSystemHandle(), sf::StandardCursor::TEXT);
+			return true;
+		}
+		else {
+			Cursor.set(Window.getSystemHandle(), sf::StandardCursor::NORMAL);
+			return false;
 			}
 		}
+	else {
 		Cursor.set(Window.getSystemHandle(), sf::StandardCursor::NORMAL);
+		return false;
+	}
 	#endif
 }

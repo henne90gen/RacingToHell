@@ -2,6 +2,8 @@
 #include "StandardCursor.h"
 #include "Menu/MenuItem/MenuItem.h"
 
+#include <Windows.h>
+
 class Textbox : public MenuItem
 {
 public:
@@ -13,7 +15,7 @@ public:
 		@param text Text that will be displayed in the Textbox by default
 		@param isFocused Whether the Textbox is focused right after initialization
 	*/
-	Textbox(sf::Vector2f pos, sf::Vector2f size, int charSize, std::string text, bool isFocused);
+	Textbox(sf::Vector2f pos, sf::Vector2f size, int charSize, std::string text, bool isFocused, bool isPassword = false);
 	~Textbox() {}
 
 	/*
@@ -34,7 +36,13 @@ public:
 	/*
 		@return std::string Text of the Textbox
 	*/
-	std::string getText() { return _Text.getString(); }
+	std::string getText() { return _String; }
+
+	void setText(std::string str) 
+	{ 
+		_String = str; 
+		setString(); 
+	}
 
 	/*
 		Textbox doesn't have a value that could be changed
@@ -54,12 +62,15 @@ public:
 	*/
 	float getMaxValue() { return 0.0f; }
 private:
+	std::string _String;
+
 	sf::RectangleShape _Box, _Cursor;
 	sf::Color _FillColor, _FillColorDisabled, _OutlineColor, _OutlineColorFocused, _TextColor;
 	sf::Text _Text;
 	sf::Clock _CursorClock;
 
-	bool _ShowCursor;
+	char _PasswordChar;
+	bool _ShowCursor, _isPassword;
 	int _CursorPosition;
 
 	/*
@@ -72,4 +83,9 @@ private:
 		@return bool True if str is too long for the Textbox
 	*/
 	bool isStringTooLarge(std::string str);
+
+	std::string passwordString(std::string& s);
+
+	void setString();
+	std::string GetClipboardText();
 };

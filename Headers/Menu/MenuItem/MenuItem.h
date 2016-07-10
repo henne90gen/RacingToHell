@@ -36,6 +36,8 @@ public:
 	*/
 	virtual std::string getText() = 0;
 
+	virtual void setText(std::string str) {}
+
 	/*
 		@param vlaue New value for the MenuItem
 		@return bool True if value was set successfully
@@ -83,14 +85,27 @@ public:
 	void setFocused(bool focused) { _Focused = focused; }
 
 	/*
+		@param visible or not
+	*/
+	void setVisible(bool visible) { _Visible = visible; }
+
+	/*
 		@return MenuItemType
 	*/
+
+	virtual void resetTable() {}
+	virtual void addPlayer(std::string name, bool admin) {}
+	virtual void removePlayer(int index) {}
+	virtual void setAdmin(bool admin) {}
+	virtual void setMember(unsigned int index, bool ready, int score = -1, std::string name = "") {}
+	virtual bool getPlayerReady() { return false; }
+
 	MenuItemType getType() { return _Type; }
 protected:
 	sf::Font _Font;
 	MenuItemType _Type;
 	MenuResult _Action;
-	bool _Hovering, _Enabled, _Focused;
+	bool _Hovering, _Enabled, _Focused, _Visible;
 
 	bool pointInRectangle(sf::FloatRect Rect, sf::Vector2f Position);
 };

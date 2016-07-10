@@ -5,6 +5,7 @@
 #include "Menu/MenuItem/MenuResults.h"
 #include "Menu/MenuItem/ComboBox.h"
 #include "Menu/MenuItem/HighscoreList.h"
+#include "Menu/MenuItem/PlayerTable.h"
 #include "StandardCursor.h"
 
 class Menu
@@ -13,7 +14,7 @@ public:
 	Menu(GameState menuState);
 	~Menu() {}
 
-	virtual void render(sf::RenderWindow & window) = 0;
+	virtual void render(sf::RenderWindow & window);
 	virtual GameState handleEvents(sf::RenderWindow & window) = 0;
 
 	GameState handleMenuItems(sf::Event & Event);
@@ -29,7 +30,7 @@ protected:
 	sf::Vector2f _MousePos;
 
 	virtual GameState handleMenuItemResult(MenuResult result) = 0;
-	void checkMenuItemHovered(sf::RenderWindow& Window);
+	bool checkMenuItemHovered(sf::RenderWindow& Window, int index);
 
 	int _JoystickSelection;
 	sf::Clock _JoystickTimer;

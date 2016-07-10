@@ -4,6 +4,7 @@
 #include "GameObject/GameObjectType.h"
 #include "GameObject/Bullet.h"
 #include "Animation/Explosion.h"
+//#include "GameObject\GameObjectFactory.h"
 
 class BossCar : public Car
 {
@@ -16,7 +17,9 @@ public:
 		@param texture			Texture for the sprite that is going to be used for collision detection
 		@param bulletTexture	Texture for the bullets the boss will shoot
 	*/
-	BossCar(sf::Vector2f pos, int difficulty, int health, float speed, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float Volume);
+	BossCar(unsigned int id, sf::Vector2f& pos, int difficulty, int health, float speed, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
+	BossCar(std::istream& stream, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
+	BossCar(sf::Packet& packet, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
 	~BossCar() {}
 
 	/*
@@ -42,6 +45,23 @@ public:
 		Returns true if the boss is dead and all explosion animations are done playing
 	*/
 	bool isDoneExploding(sf::Texture& ExplosionTexture);
+
+	void operator>>(std::ostream& stream);
+
+	void operator<<(std::istream& stream);
+
+	/*
+		Writes the necessary data for a gameobject to a packet
+	*/
+	void operator>>(sf::Packet& packet);
+
+	/*
+		Reads the necessary data for a gameobject from a packet
+	*/
+	void operator<<(sf::Packet& packet);
+
+	virtual void init() = 0;
+	void initBoss();
 protected:
 	enum Phase { NOTHING, SIMPLESHOOT, SALVE, SPIN, HARDCORESPAM, BLASTSALVE, SPIRAL, RANDOMSPRAY, SHOTGUN, SIDE, SAVELANES, RUNATPLAYERPHASE, ZICKZACKPHASE, SALVEZICKZACK };
 	int _CurrentPhase;
@@ -52,7 +72,7 @@ protected:
 	sf::SoundBuffer &_soundBufferShot, &_soundBufferExplosion;
 	float _Volume;
 
-	int _Difficulty;
+	sf::Uint16 _Difficulty;
 
 	enum Movement { STILL, DRIVETODEFAULT, LEFTRIGHT, SWITCHSIDES, STRAIGHT, PARABOLA, RUNATPLAYER, ZICKZACK};
 	Movement _Movement;
@@ -84,8 +104,9 @@ protected:
 	bool _Attack, _Traffic;
 
 	float PlayerAngle(GameObject& Player);
-	void shootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir) { shootBullet(GameObjects, pos, dir, _BulletSpeed); }
-	void shootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir, int BulletSpeed);
+	void shootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir) { shootBullet(GameObjects, pos, dir, _BulletSpeed, _Volume); }
+	void shootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir, float volume) { shootBullet(GameObjects, pos, dir, _BulletSpeed, volume); }
+	virtual void shootBullet(std::vector<std::shared_ptr<GameObject>>& gameObjects, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed, float volume) = 0;
 	bool driveToNextPosition(float FrameTime);
 	int getBossEvent();
 	void updateHealthBar();

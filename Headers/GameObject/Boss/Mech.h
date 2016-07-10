@@ -1,4 +1,5 @@
 #pragma once
+#include "GameObject\GameObjectFactory.h"
 #include "GameObject/Boss/BossCar.h"
 #include "Animation/MechTop.h"
 #include "Animation/MechLegs.h"
@@ -11,7 +12,9 @@ public:
 		@param texture Texture for the sprite
 		@param bulletTexture Texture for all bullets the Mech shoots
 	*/
-	Mech(int difficulty, int HP, sf::Texture& TextureTop, sf::Texture& TextureLegs, sf::Texture& BulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float Volume);
+	Mech(unsigned int id, int difficulty, int HP, sf::Texture& textureTop, sf::Texture& textureLegs, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
+	Mech(std::istream& stream, sf::Texture& textureTop, sf::Texture& textureLegs, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
+	Mech(sf::Packet& packet, sf::Texture& textureTop, sf::Texture& textureLegs, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
 	~Mech() {}
 
 	/*
@@ -54,13 +57,15 @@ public:
 		@return sf::Sprite Sprite of the Mech
 	*/
 	sf::Sprite& getSprite() { return _TopAnim.getSprite(); }
+
+	void init();
 private:
 	MechTop _TopAnim;
 	MechLegs _LegsAnim;
 
+	void shootBullet(std::vector<std::shared_ptr<GameObject>>& gameObjects, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed, float volume);
+
 	bool _MovementSwitch;
-	
-	float _GunRadius;
 
 	int _BaseSpeed;
 	/*

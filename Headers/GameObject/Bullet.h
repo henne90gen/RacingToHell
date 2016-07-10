@@ -13,8 +13,12 @@ public:
 		@param speed Speed of the Bullet
 		@param type Specifies the type of the Bullet, thus who shot it
 		@param texture Texture that is going to be used for the sprite
+		@param soundEffects Vector to register the sound of the shot in
+		@param volume Volume of the shot sound
 	*/
-	Bullet(sf::Vector2f pos, sf::Vector2f dir, int speed, GameObjectType type, sf::Texture& texture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume);
+	Bullet(unsigned int id, sf::Vector2f pos, sf::Vector2f dir, int speed, GameObjectType type, sf::Texture& texture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float volume);
+	Bullet(std::istream& stream, GameObjectType type, sf::Texture& texture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume);
+	Bullet(sf::Packet& packet, GameObjectType type, sf::Texture& texture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume);
 	~Bullet() {}
 
 	/*
@@ -30,7 +34,21 @@ public:
 	*/
 	void update(float frameTime, int roadSpeed);
 	
+	void operator>>(std::ostream& stream);
 
+	void operator<<(std::istream& stream);
+
+	/*
+		Writes the necessary data for a gameobject to a packet
+	*/
+	void operator>>(sf::Packet& packet);
+
+	/*
+		Reads the necessary data for a gameobject from a packet
+	*/
+	void operator<<(sf::Packet& packet);
+
+	sf::Vector2f getDir() { return _Direction; }
 private:
 	float _Speed;
 	sf::Vector2f _Direction;

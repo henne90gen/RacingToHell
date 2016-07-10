@@ -1,9 +1,9 @@
 #pragma once
-
 #include "GameObject/GameObjectType.h"
 #include "Collision.h"
+#include "Serializable.h"
 
-class GameObject
+class GameObject : public Serializable
 {
 public:
 	/*
@@ -12,7 +12,41 @@ public:
 		@param type Type of the GameObject
 		@param texture Texture that is going to be used for the Sprite
 	*/
-	GameObject(sf::Vector2f pos, GameObjectType type, sf::Texture& texture);
+	GameObject(unsigned int id, sf::Vector2f pos, GameObjectType type, sf::Texture& texture);
+
+	/*
+		Any object that can be on the screen
+		@param stream Input stream that contains all the other information needed to make a GameObject
+		@param type Type of the GameObject
+		@param texture Texture that is going to be used for the Sprite
+	*/
+	GameObject(std::istream& stream, GameObjectType type, sf::Texture& texture);
+
+	/*
+		Any object that can be on the screen
+		Use this constructor with extrem caution, no texture is being specified
+		To fully use the GameObject one has to specifiy a texture!
+		@param stream Input stream that contains all the other information needed to make a GameObject
+		@param type Type of the GameObject
+	*/
+	GameObject(std::istream& stream, GameObjectType type);
+
+	/*
+		Any object that can be on the screen
+		@param stream Input stream that contains all the other information needed to make a GameObject
+		@param type Type of the GameObject
+		@param texture Texture that is going to be used for the Sprite
+	*/
+	GameObject(sf::Packet& packet, GameObjectType type, sf::Texture& texture);
+
+	/*
+		Any object that can be on the screen
+		Use this constructor with extrem caution, no texture is being specified
+		To fully use the GameObject one has to specifiy a texture!
+		@param stream Input stream that contains all the other information needed to make a GameObject
+		@param type Type of the GameObject
+	*/
+	GameObject(sf::Packet& packet, GameObjectType type);
 	~GameObject() {}
 
 	/*
@@ -117,18 +151,18 @@ public:
 	virtual int getSpeed() { return -1; }
 
 	/*
-		Sets the speed of the car
-		@param int New speed of the car
+		Sets the speed of the GameObject
+		@param int New speed of the GameObject
 	*/
 	virtual void setSpeed(int Speed) {};
 
 	/*
-		@return int Health of the Car
+		@return int Health of the GameObject
 	*/
 	virtual int getHealth() { return -1; }
 
 	/*
-		@return int Maximum-Health of the Car
+		@return int Maximum-Health of the GameObject
 	*/
 	virtual int getMaxHealth() { return -1; }
 
@@ -179,8 +213,8 @@ public:
 	virtual void resetShotBullet() {};
 
 	/*
-		Gives back the angle of the shot bullet or 360.0f if no bullet was fired
-		@return float Angle of the shot bullet
+		Gives back the direction of the shot bullet, if x or y are 0 then no bullet was fired
+		@return sf::Vector2f Direction of the shot bullet
 	*/
 	virtual sf::Vector2f shotBullet() { return sf::Vector2f(0, 0); }
 
@@ -211,16 +245,59 @@ public:
 	*/
 	float getAngleFromVector(sf::Vector2f vec);
 
+	/*
+		Divides a vector by it's length, basically providing the normalized vector
+		@param vec Vector that is going to be normalized
+		@return sf::Vector2f Resulting normalized vector
+	*/
 	sf::Vector2f divideByLength(sf::Vector2f vec);
+
+	/*
+		Writes the necessary data for a gameobject to a stream
+	*/
+	virtual void operator>>(std::ostream& stream);
+
+	/*
+		Reads the necessary data for a gameobject from a stream
+	*/
+	virtual void operator<<(std::istream& stream);
+
+	/*
+		Writes the necessary data for a gameobject to a packet
+	*/
+	virtual void operator>>(sf::Packet& packet);
+
+	/*
+		Reads the necessary data for a gameobject from a packet
+	*/
+	virtual void operator<<(sf::Packet& packet);
 
 	/*
 		Stops all sounds of the GameObject
 	*/
 	virtual void stopSounds() {}
+
+	/*
+		Initializes the texture for this GameObject
+	*/
+	void initTexture(sf::Texture& texture);
+
+	sf::Uint32 getID() { return _ID; }
+
+	void setID(sf::Uint32 id) { _ID = id; }
+
+	virtual sf::Vector2f getDir() { return sf::Vector2f(); }
+
+protected:
+
+	sf::Uint32 _ID;
+
 private:
 	sf::Sprite _Sprite;
 	sf::Texture _Texture;
 	
+	
+
 	GameObjectType _Type;
 };
 

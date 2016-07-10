@@ -53,16 +53,13 @@ void OptionsMenu::render(sf::RenderWindow & window)
 	window.draw(_FPS);
 	window.draw(_VolumeBackground);
 	window.draw(_Volume);
-	for (int i = 0; i < _MenuItems.size(); i++) {
-		_MenuItems[i]->render(window);
-	}
 
-	checkMenuItemHovered(window);
+	Menu::render(window);
 }
 
 GameState OptionsMenu::handleEvents(sf::RenderWindow & Window)
 {
-	while (Window.pollEvent(_Event)) {
+	if (Window.pollEvent(_Event)) {
 
 		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
 
@@ -83,7 +80,6 @@ GameState OptionsMenu::handleMenuItemResult(MenuResult result)
 {
 	switch (result) {
 	case MenuResult::Back:
-		saveOptions();
 		return _ReturnState;
 		break;
 	case MenuResult::Credits:
@@ -115,7 +111,7 @@ void OptionsMenu::update(float FrameTime)
 										_VolumeBackground.getPosition().y + _VolumeBackground.getLocalBounds().height / 2.0f - _Volume.getLocalBounds().height + 2));
 }
 
-void OptionsMenu::loadOptions() {
+void OptionsMenu::loadOptions(MultiplayerMenu& mpMenu) {
 	std::vector<std::string> Settings;
 	std::string Option;
 	std::ifstream FileStream;
@@ -127,21 +123,22 @@ void OptionsMenu::loadOptions() {
 	}
 	FileStream.close();
 
-	if (Settings.size() >= 3)
+	if (Settings.size() >= 4)
 	{
 		setFPS(std::stoi(Settings[0]));
 		setVolume(std::stof(Settings[1]));
 		setDifficulty(std::stoi(Settings[2]));
+		mpMenu.setPlayerName(Settings[3]);
 	}
 }
 
-void OptionsMenu::saveOptions()
+void OptionsMenu::saveOptions(MultiplayerMenu& mpMenu)
 {
 	std::string Path = "Resources/Data/Settings.cfg";
 	std::ofstream FileStream;
 	FileStream.open(Path);
 
-	FileStream << getFPS() << std::endl << getVolume() << std::endl << getDifficulty();
+	FileStream << getFPS() << std::endl << getVolume() << std::endl << getDifficulty() << std::endl << mpMenu.getPlayerName();
 
 	FileStream.close();
 }

@@ -1,27 +1,23 @@
 #include "stdafx.h"
 #include "GameObject/Boss/Jet.h"
 
-Jet::Jet(int difficulty, int HP, sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, sf::SoundBuffer &soundBufferEngine, float Volume) : 
-	BossCar(sf::Vector2f(-1 * texture.getSize().x, SCREENHEIGHT / 2), difficulty, HP, 500, texture, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, Volume),
+Jet::Jet(unsigned int id, int difficulty, int HP, sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, sf::SoundBuffer &soundBufferEngine, float Volume) :
+	BossCar(id, sf::Vector2f(-1 * texture.getSize().x, SCREENHEIGHT / 2), difficulty, HP, 500, texture, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, Volume),
 	_EngineSoundBuffer(soundBufferEngine)
 {
-	_EngineSound.setBuffer(_EngineSoundBuffer);
-	_EngineSound.setVolume(Volume * 4);
-	_EngineSound.setPosition(getPos().x, 0.f, getPos().y);
-	_EngineSound.setMinDistance(500.f);
-	_EngineSound.setAttenuation(10.f);
+	init();
+}
 
-	_Traffic = true;
-	_Pattern = { std::make_pair(Phase::SIDE, 6.0f) };
-	_CurrentPhase = 0;
+Jet::Jet(std::istream & stream, sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer & soundBufferShot, sf::SoundBuffer & soundBufferExplosion, sf::SoundBuffer & soundBufferEngine, float volume) :
+	BossCar(stream, texture, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, volume)
+{
+	init();
+}
 
-	randomPosition();
-
-	_Speed = (0.8f + 0.2f * (float)_Difficulty) * _Speed;
-
-	_Movement = Movement::STRAIGHT;
-
-	_Pattern = {std::make_pair(Phase::SIDE, 10.5f), std::make_pair(Phase::SAVELANES, 9.f)};
+Jet::Jet(sf::Packet & packet, sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer & soundBufferShot, sf::SoundBuffer & soundBufferExplosion, sf::SoundBuffer & soundBufferEngine, float volume) :
+	BossCar(packet, texture, bulletTexture, soundEffects, soundBufferShot, soundBufferExplosion, volume)
+{
+	init();
 }
 
 void Jet::render(sf::RenderWindow & window)
@@ -68,8 +64,8 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Gam
 				{
 					for (int i = -40; i <= SCREENHEIGHT; i += 200)
 					{
-						shootBullet(gameObjects, sf::Vector2f(0, i), sf::Vector2f(1, 0));
-						shootBullet(gameObjects, sf::Vector2f(SCREENWIDTH, i + 100), sf::Vector2f(-1, 0));
+						BossCar::shootBullet(gameObjects, sf::Vector2f(0, i), sf::Vector2f(1, 0));
+						BossCar::shootBullet(gameObjects, sf::Vector2f(SCREENWIDTH, i + 100), sf::Vector2f(-1, 0));
 					}
 				}
 				break;
@@ -89,11 +85,11 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Gam
 						{
 							for (int i = 0; i < 3; i++)
 							{
-									shootBullet(gameObjects, sf::Vector2f(i * 150 + 150, 0), sf::Vector2f(0, 1));
+									BossCar::shootBullet(gameObjects, sf::Vector2f(i * 150 + 150, 0), sf::Vector2f(0, 1));
 							}
 
-								shootBullet(gameObjects, sf::Vector2f(20, 0), sf::Vector2f(0, 1));
-								shootBullet(gameObjects, sf::Vector2f(SCREENWIDTH - 20, 0), sf::Vector2f(0, 1));
+								BossCar::shootBullet(gameObjects, sf::Vector2f(20, 0), sf::Vector2f(0, 1));
+								BossCar::shootBullet(gameObjects, sf::Vector2f(SCREENWIDTH - 20, 0), sf::Vector2f(0, 1));
 
 							++_Event2Counter;
 						}
@@ -121,6 +117,11 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Gam
 	else {
 		updateExplosions(frameTime);
 	}
+}
+
+void Jet::shootBullet(std::vector<std::shared_ptr<GameObject>>& gameObjects, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed, float volume)
+{
+	gameObjects.push_back(GameObjectFactory::getBullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss, _soundEffects, volume));
 }
 
 void Jet::randomPosition()
@@ -152,4 +153,25 @@ void Jet::checkPhase()
 void Jet::stopSounds()
 {
 	_EngineSound.stop();
+}
+
+void Jet::init()
+{
+	_EngineSound.setBuffer(_EngineSoundBuffer);
+	_EngineSound.setVolume(_Volume * 5.5f);
+	_EngineSound.setPosition(getPos().x, 0.f, getPos().y);
+	_EngineSound.setMinDistance(600.f);
+	_EngineSound.setAttenuation(8.f);
+
+	_Traffic = true;
+	_Pattern = { std::make_pair(Phase::SIDE, 6.0f) };
+	_CurrentPhase = 0;
+
+	randomPosition();
+
+	_Speed = (0.8f + 0.2f * (float)_Difficulty) * _Speed;
+
+	_Movement = Movement::STRAIGHT;
+
+	_Pattern = { std::make_pair(Phase::SIDE, 10.5f), std::make_pair(Phase::SAVELANES, 9.f) };
 }

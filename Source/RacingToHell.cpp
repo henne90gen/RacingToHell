@@ -19,5 +19,7 @@ int main()
 	Framework _Framework;
 	_Framework.run();
 
+	// Some test comment
+
 	return 0;
 }

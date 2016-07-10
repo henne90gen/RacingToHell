@@ -209,7 +209,7 @@ bool Textbox::isStringTooLarge(std::string str)
 	return TmpText.getLocalBounds().width > _Box.getSize().x - 4;
 }
 
-std::string Textbox::passwordString(std::string& s)
+std::string Textbox::passwordString(std::string s)
 {
 	std::string returnString;
 
@@ -235,6 +235,7 @@ void Textbox::setString()
 
 std::string Textbox::GetClipboardText()
 {
+#ifdef SFML_SYSTEM_WINDOWS
 	// Try opening the clipboard
 	if (!OpenClipboard(nullptr))
 	{
@@ -264,4 +265,7 @@ std::string Textbox::GetClipboardText()
 	CloseClipboard(); 
 
 	return text;
+#else
+	return "";
+#endif
 }

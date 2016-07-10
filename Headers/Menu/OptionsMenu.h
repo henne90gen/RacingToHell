@@ -9,7 +9,7 @@ public:
 		In this menu one can change the fps limit and the volume
 	*/
 	OptionsMenu();
-	~OptionsMenu() {}
+	virtual ~OptionsMenu() {}
 
 	/*
 		Renders the OptionsMenu to the specified RenderWindow

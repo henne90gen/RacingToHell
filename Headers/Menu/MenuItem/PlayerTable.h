@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Menu\MenuItem\MenuItem.h"
+#include "Menu/MenuItem/MenuItem.h"
 
 class PlayerTable : public MenuItem
 {

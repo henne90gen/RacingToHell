@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Menu\MenuItem\PlayerTable.h"
+#include "Menu/MenuItem/PlayerTable.h"
 
 PlayerTable::PlayerTable(sf::Vector2f Position) : MenuItem(MenuItemType::MLobbyList, MenuResult::Nothing),
 	_Position(Position), _Size(550, 80)

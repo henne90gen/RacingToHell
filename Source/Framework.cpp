@@ -31,7 +31,7 @@ Framework::~Framework()
 
 void Framework::run()
 {
-	while (_IsRunning || _NetworkHandle.getState() != NetworkState::None)
+	while (_IsRunning || _NetworkHandle.getState() != NetworkState::NoNetState)
 	{
 		if (measureTime()) {
 			render();
@@ -58,7 +58,7 @@ void Framework::render()
 {
 	if ((_GameState != GameState::Loading || _LoadingScreen.isFadingAway()) && _GameState != GameState::Countdown) {
 		_Level.render(_RenderWindow);
-		if (_NetworkHandle.getRelation() == NetworkRelation::None) {
+		if (_NetworkHandle.getRelation() == NetworkRelation::NoRel) {
 			_GameObjectContainer.render(_RenderWindow, _GameState == GameState::Running || _GameState == GameState::BossFight);
 		}
 		else {
@@ -342,7 +342,7 @@ void Framework::handleEvents()
 		_GameState = _MultiplayerMenu.handleEvents(_RenderWindow);
 		break;
 	case GameState::Lobby:
-		if (_MultiplayerMenu.getCreatedLobby() == 0 && _NetworkHandle.getState() == NetworkState::None) {
+		if (_MultiplayerMenu.getCreatedLobby() == 0 && _NetworkHandle.getState() == NetworkState::NoNetState) {
 			_NetworkHandle.setState(NetworkState::Lobby);
 			_NetworkHandle.setRelation(NetworkRelation::Client);
 			_MPGameObjectContainer.setNetworkRelation(NetworkRelation::Client);
@@ -517,7 +517,7 @@ void Framework::update()
 		break;
 	case GameState::Exiting:
 		_IsRunning = false;
-		_NetworkHandle.setRelation(NetworkRelation::None);
+		_NetworkHandle.setRelation(NetworkRelation::NoRel);
 		_RenderWindow.close();
 		break;
 	case GameState::MultiplayerSelection:

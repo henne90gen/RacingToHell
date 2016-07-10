@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Menu.h"
-#include "Multiplayer\Communication.h"
-#include "Multiplayer\NetworkHandle.h"
+#include "Multiplayer/Communication.h"
+#include "Multiplayer/NetworkHandle.h"
 
-#include "GameObject\GameObjectFactory.h"
+#include "GameObject/GameObjectFactory.h"
 
 #include <thread>
 #include <future>

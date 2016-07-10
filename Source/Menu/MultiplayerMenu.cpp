@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Menu\MultiplayerMenu.h"
+#include "Menu/MultiplayerMenu.h"
 
 MultiplayerMenu::MultiplayerMenu() : Menu(GameState::MultiplayerSelection), _CreatedLobby(-1)
 {			  
@@ -216,7 +216,7 @@ NetworkCommunication MultiplayerMenu::update(float frametime)
 		return NetworkCommunication::WrongPassword;
 		break;
 	default:
-		return NetworkCommunication::None;
+		return NetworkCommunication::NoNetComm;
 		break;
 	}
 }

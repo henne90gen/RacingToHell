@@ -12,7 +12,7 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 {
 	// Update Animations
 	for (int i = 0; i < _Animations.size(); i++) {
-		if (_Animations[i]->getAnimationState() == Animation::Stop) {
+		if (_Animations[i]->getAnimationState() == Animation::AnimationState::Stop) {
 			_Animations.erase(_Animations.begin() + i);
 			i--;
 		}

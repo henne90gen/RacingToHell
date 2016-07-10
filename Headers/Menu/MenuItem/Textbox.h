@@ -2,7 +2,7 @@
 #include "StandardCursor.h"
 #include "Menu/MenuItem/MenuItem.h"
 
-#include <Windows.h>
+//#include <Windows.h>
 
 class Textbox : public MenuItem
 {
@@ -16,7 +16,7 @@ public:
 		@param isFocused Whether the Textbox is focused right after initialization
 	*/
 	Textbox(sf::Vector2f pos, sf::Vector2f size, int charSize, std::string text, bool isFocused, bool isPassword = false);
-	~Textbox() {}
+	virtual ~Textbox() {}
 
 	/*
 		See MenuItem for details
@@ -84,7 +84,7 @@ private:
 	*/
 	bool isStringTooLarge(std::string str);
 
-	std::string passwordString(std::string& s);
+	std::string passwordString(std::string s);
 
 	void setString();
 	std::string GetClipboardText();

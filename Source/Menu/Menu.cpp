@@ -79,20 +79,20 @@ bool Menu::checkMenuItemHovered(sf::RenderWindow& Window, int index) {
 	if (_MenuItems[index]->getHoverState() && _MenuItems[index]->getEnabled())
 	{
 		if (_MenuItems[index]->getType() == MenuItemType::MButton || _MenuItems[index]->getType() == MenuItemType::MSlider || _MenuItems[index]->getType() == MenuItemType::MCombobox || _MenuItems[index]->getType() == MenuItemType::MLobbyList) {
-			Cursor.set(Window.getSystemHandle(), sf::StandardCursor::HAND);
+			Cursor.set(Window.getSystemHandle(), sf::StandardCursor::TYPE::HAND);
 			return true;
 		}
 		else if (_MenuItems[index]->getType() == MenuItemType::MTextbox) {
-			Cursor.set(Window.getSystemHandle(), sf::StandardCursor::TEXT);
+			Cursor.set(Window.getSystemHandle(), sf::StandardCursor::TYPE::TEXT);
 			return true;
 		}
 		else {
-			Cursor.set(Window.getSystemHandle(), sf::StandardCursor::NORMAL);
+			Cursor.set(Window.getSystemHandle(), sf::StandardCursor::TYPE::NORMAL);
 			return false;
 			}
 	}
 	else {
-		Cursor.set(Window.getSystemHandle(), sf::StandardCursor::NORMAL);
+		Cursor.set(Window.getSystemHandle(), sf::StandardCursor::TYPE::NORMAL);
 		return false;
 	}
 	#endif

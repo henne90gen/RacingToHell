@@ -71,7 +71,7 @@ protected:
 		stream.read((char*)&result, sizeof(result));
 	}
 
-	#ifndef SFML_SYSTEM_WINDOWS
+	#ifdef SFML_SYSTEM_WINDOWS
 
 	/*
 	Writes std::string to a stream

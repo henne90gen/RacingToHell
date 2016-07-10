@@ -220,3 +220,8 @@ Resources/Data/Highscore.sco
 .settings/
 .idea
 CMakeLists.txt
+/Game
+/SFML-x86
+/RacingToHell.VC.db
+/RacingToHell_V1.01.rar
+/RacingToHell.VC.VC.opendb

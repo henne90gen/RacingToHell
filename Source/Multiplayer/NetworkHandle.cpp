@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Multiplayer\NetworkHandle.h"
+#include "Multiplayer/NetworkHandle.h"
 
 NetworkHandle::NetworkHandle() : _TickRate(64), _UpdateIntervall(2), _Delay(0.1 * _TickRate), _Relationship(NetworkRelation::None), _Tick(0), _Authenticated(false)
 {}

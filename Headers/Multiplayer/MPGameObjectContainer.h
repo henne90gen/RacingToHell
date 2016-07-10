@@ -15,7 +15,7 @@
 
 #include "Animation/Explosion.h"
 
-#include "Multiplayer\NetworkHandle.h"
+#include "Multiplayer/NetworkHandle.h"
 
 class MPGameObjectContainer
 {

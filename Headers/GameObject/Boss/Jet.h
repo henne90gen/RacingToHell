@@ -1,6 +1,6 @@
 #pragma once
 #include "GameObject/Boss/BossCar.h"
-#include "GameObject\GameObjectFactory.h"
+#include "GameObject/GameObjectFactory.h"
 
 class Jet : public BossCar
 {

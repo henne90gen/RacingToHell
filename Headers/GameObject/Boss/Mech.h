@@ -1,5 +1,5 @@
 #pragma once
-#include "GameObject\GameObjectFactory.h"
+#include "GameObject/GameObjectFactory.h"
 #include "GameObject/Boss/BossCar.h"
 #include "Animation/MechTop.h"
 #include "Animation/MechLegs.h"

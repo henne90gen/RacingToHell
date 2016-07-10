@@ -71,7 +71,7 @@ protected:
 		stream.read((char*)&result, sizeof(result));
 	}
 
-	//#ifndef SFML_SYSTEM_WINDOWS
+	#ifndef SFML_SYSTEM_WINDOWS
 
 	/*
 	Writes std::string to a stream
@@ -102,6 +102,6 @@ protected:
 		}
 		delete[] buffer;
 	}
-	//#endif
+	#endif
 };
 

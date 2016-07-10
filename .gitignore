@@ -215,13 +215,11 @@ ModelManifest.xml
 RacingToHell.VC.opendb
 Resources/Data/Settings.cfg
 Resources/Data/Highscore.sco
-.project
-.cproject
-.settings/
-.idea
-CMakeLists.txt
+/Racing To Hell/Resources/Data/Settings.cfg
+/Racing To Hell/Resources/Data/Highscore.sco
+/Racing To Hell/RacingToHell.exe
+/RacingToHell.VC.VC.opendb
 /Game
 /SFML-x86
-/RacingToHell.VC.db
 /RacingToHell_V1.01.rar
-/RacingToHell.VC.VC.opendb
+/RacingToHell.VC.db

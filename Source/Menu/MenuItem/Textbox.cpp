@@ -113,7 +113,8 @@ MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 			}
 			else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::RControl) && !sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt) && !sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt)) {
 				// Delete character with backspace
-				if (Event.key.code == 59 && _Text.getString().getSize() > 0 && _CursorPosition > 0) {				_Text.setString(_Text.getString().substring(0, _CursorPosition - 1) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition));
+				if (Event.key.code == 59 && _Text.getString().getSize() > 0 && _CursorPosition > 0) {				
+					_Text.setString(_Text.getString().substring(0, _CursorPosition - 1) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition));
 					_CursorPosition--;
 					setCursor();
 				}

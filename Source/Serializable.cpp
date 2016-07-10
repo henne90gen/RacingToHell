@@ -2,10 +2,12 @@
 #include "Serializable.h"
 
 /*
+#ifdef SFML_SYSTEM_LINUX
+
 	Writes std::string to a stream
 	@param stream Output stream that is going to be written to
 	@param input String that will be written to the stream
-*/
+
 template <> void Serializable::write(std::ostream& stream, std::string input)
 {
 	int length = input.size();
@@ -13,11 +15,11 @@ template <> void Serializable::write(std::ostream& stream, std::string input)
 	stream << input;
 }
 
-/*
+
 	Reads std::string from a stream
 	@param stream Input stream that is going to be read from
 	@param result String that was read will be saved here
-*/
+
 template <> void Serializable::read(std::istream& stream, std::string& result)
 {
 	int length;
@@ -28,4 +30,4 @@ template <> void Serializable::read(std::istream& stream, std::string& result)
 		result += buffer[i];
 	}
 	delete[] buffer;
-}
+} */

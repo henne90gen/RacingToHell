@@ -130,7 +130,7 @@ void HighscoreList::loadScoreTable()
 		Player newPlayer;
 		newPlayer << fileStream;
 		_PlayerList.push_back(newPlayer);
-	}
+	} //FAIL!!!!
 
 	fileStream.close();
 

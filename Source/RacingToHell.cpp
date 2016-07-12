@@ -7,10 +7,7 @@
 #ifdef SFML_SYSTEM_WINDOWS
 int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpszArgument, int nCmdShow)
 {
-	Framework _Framework;
-	_Framework.run();
-
-	return 0;
+	main();
 }
 #endif
 
@@ -18,8 +15,6 @@ int main()
 {
 	Framework _Framework;
 	_Framework.run();
-
-	// Some test comment
 
 	return 0;
 }

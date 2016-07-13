@@ -115,6 +115,10 @@ void HeadsUpDisplay::update(int score, int health, int energy, int level, float 
 		_HealthText.setString(L"∞");
 		_HealthText.setCharacterSize(40);
 	}
+	else
+	{
+		_HealthText.setCharacterSize(20);
+	}
 
 	_HealthText.setPosition(sf::Vector2f(	_HealthBarOutline.getGlobalBounds().left + _HealthBarOutline.getLocalBounds().width - _HealthText.getLocalBounds().width - 7, 
 											_HealthBarOutline.getGlobalBounds().top + 3));

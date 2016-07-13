@@ -208,15 +208,10 @@ public:
 	virtual int getBulletdamage() { return -1; }
 
 	/*
-		Resets angle for new bullets so that no new bullets are fired
-	*/
-	virtual void resetShotBullet() {};
-
-	/*
 		Gives back the direction of the shot bullet, if x or y are 0 then no bullet was fired
 		@return sf::Vector2f Direction of the shot bullet
 	*/
-	virtual sf::Vector2f shotBullet() { return sf::Vector2f(0, 0); }
+	virtual sf::Vector2f getShotBullet() { return sf::Vector2f(0, 0); }
 
 	/*
 		Changes the players stats according to the id of the car he chose.

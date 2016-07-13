@@ -761,7 +761,7 @@ void Framework::setDifficulty(int Difficulty)
 
 void Framework::setGameMode(GameMode gameMode)
 {
-	//changing even more things
+
 }
 
 void Framework::addScore()

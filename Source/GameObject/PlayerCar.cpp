@@ -7,7 +7,7 @@ PlayerCar::PlayerCar(unsigned int id, int selectedCar, sf::Texture& texture) :
 	_CrosshairSpeed(600.0f), _SelectedCar(selectedCar), _AccelerationTime(0.1f)
 {
 	setStats(_SelectedCar);
-	resetShotBullet();
+	_ShotBullet = sf::Vector2f(0, 0);
 	setPos(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT - 300));
 	
 	_AimLine.setFillColor(sf::Color::Black);
@@ -101,11 +101,10 @@ void PlayerCar::handleEvent(sf::Event& Event)
 		}
 	}
 	else if (Event.type == sf::Event::MouseButtonPressed || (Event.type == sf::Event::JoystickButtonPressed && sf::Joystick::isButtonPressed(0, 5))) {
-		if (_Energy - 5 >= 10) {
-			_Energy -= 5;
-			_ShotBullet = _Crosshair.getPosition() - getPos();
-			_ShotBullet = _ShotBullet / float(std::sqrt(std::pow(_ShotBullet.x, 2) + std::pow(_ShotBullet.y, 2)));
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			_AutoFireTimer.restart();
 		}
+		shoot();
 	}
 }
 
@@ -173,8 +172,29 @@ void PlayerCar::update(float FrameTime, int RoadSpeed)
 
 	_Crosshair.setPosition(_Crosshair.getPosition() + _CrosshairMovement * FrameTime * _CrosshairSpeed);
 
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+		if (_AutoFireTimer.getElapsedTime().asSeconds() >= 0.175f) {
+			shoot();
+			_AutoFireTimer.restart();
+		}
+	}
+
 	// Sound listener
 	sf::Listener::setPosition(getPos().x, 0.f, getPos().y);
+}
+
+void PlayerCar::shoot() {
+	if (_Energy - 5 >= 10) {
+		//_Energy -= 5;
+		_ShotBullet = _Crosshair.getPosition() - getPos();
+		_ShotBullet = _ShotBullet / float(std::sqrt(std::pow(_ShotBullet.x, 2) + std::pow(_ShotBullet.y, 2)));
+	}
+}
+
+sf::Vector2f PlayerCar::getShotBullet() {
+	sf::Vector2f tmp = _ShotBullet;
+	_ShotBullet = sf::Vector2f(0,0);
+	return tmp;
 }
 
 void PlayerCar::addHealth()

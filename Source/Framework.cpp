@@ -20,9 +20,9 @@ Framework::Framework() : _FrameTime(0), _FPS(60.0f), _IsRunning(true), _GameStat
 	srand(time(NULL));
 
 	//Multiplayer
-	//_MultiplayerMenu.setNetworkHandle(&_NetworkHandle);
-	//_MultiplayerMenu.setPlayerName("Name");
-	//_MultiplayerLobby.setNetworkHandle(&_NetworkHandle);
+	_MultiplayerMenu.setNetworkHandle(&_NetworkHandle);
+	_MultiplayerMenu.setPlayerName("Name");
+	_MultiplayerLobby.setNetworkHandle(&_NetworkHandle);
 }
 
 Framework::~Framework()
@@ -39,7 +39,7 @@ void Framework::run()
 		}
 
 		handleEvents();
-		
+
 		update();
 
 		playSounds();
@@ -519,6 +519,7 @@ void Framework::update()
 	case GameState::Exiting:
 		_IsRunning = false;
 		_NetworkHandle.setRelation(NetworkRelation::NoRel);
+		_NetworkHandle.setState(NetworkState::NoNetState);
 		_RenderWindow.close();
 		_MenuMusic.stop();
 		_Level.stopMusic();

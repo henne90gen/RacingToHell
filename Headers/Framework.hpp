@@ -62,8 +62,7 @@ private:
 	Level _Level;
 
 	// Music
-	sf::SoundBuffer _MenuMusicBuffer;
-	sf::Sound _MenuMusic;
+	sf::Music _MenuMusic;
 
 	// Menus and Screens
 	MainMenu _MainMenu;

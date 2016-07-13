@@ -645,6 +645,9 @@ void Framework::playSounds() {
 	else if (_GameState == GameState::GameOver) {
 		_Level.stopMusic();
 		_GameOverScreen.playSounds();
+	} else if (_GameState == GameState::Exiting) {
+		_Level.stopMusic();
+		_MenuMusic.stop();
 	}
 }
 
@@ -668,8 +671,8 @@ bool Framework::measureTime()
 void Framework::load()
 {
 	try {
-		if (_MenuMusicBuffer.loadFromFile("Resources/Sound/Music/menu1.ogg")) {
-			_MenuMusic.setBuffer(_MenuMusicBuffer);
+		if (!_MenuMusic.openFromFile("Resources/Sound/Music/menu1.ogg")) {
+			std::cout << "Couldn't load music" << std::endl;
 		}
 	
 		for (unsigned int i = 1; i < 7; i++) 

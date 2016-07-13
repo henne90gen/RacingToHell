@@ -94,8 +94,7 @@ private:
 	std::vector<std::shared_ptr<sf::Texture>> _Textures;
 	sf::Sprite _Sprite;
 
-	std::vector<std::shared_ptr<sf::SoundBuffer>> _MusicBuffers;
-	sf::Sound _Music;
+	sf::Music _Music;
 
 	float _LevelTime;
 	float _TotalLevelTime;
@@ -103,6 +102,4 @@ private:
 	int _Level, _Difficulty;
 	
 	std::mutex _ThreadGuard;
-
-	void loadSongByID(int id);
 };

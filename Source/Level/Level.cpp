@@ -56,7 +56,7 @@ void Level::levelUp()
 	_LevelTime = 0;
 	_Level++;
 	_Sprite.setTexture((*_Textures.at((_Level - 1) % _Textures.size())));
-	_Music.setBuffer((*_MusicBuffers.at((_Level - 1) % _Textures.size())));
+	_Music.openFromFile("Resources/Sound/Music/level" + std::to_string((_Level - 1) % _Textures.size() + 1) + ".ogg");
 }
 
 void Level::load()
@@ -68,10 +68,6 @@ void Level::load()
 	}
 	_Sprite.setTexture((*_Textures.at(0)));
 	_Sprite.setPosition(sf::Vector2f(0, -1600));
-
-	std::thread loadingThreads[5];
-	for (int i = 1; i <= 5; i++) loadingThreads[i - 1] = (std::thread(&Level::loadSongByID, this, i));
-	for (auto& t: loadingThreads) t.join();
 }
 
 void Level::resetLevel()
@@ -80,8 +76,7 @@ void Level::resetLevel()
 	_Level = 1;
 	_TotalLevelTime = 5.0f;
 	_LevelTime = 0;
-	_Music.setBuffer((*_MusicBuffers.at(0)));
-	_Sprite.setTexture((*_Textures.at((_Level - 1) % _Textures.size())));
+	_Music.openFromFile("Resources/Sound/Music/level" + std::to_string((_Level - 1) % _Textures.size() + 1) + ".ogg");
 }
 
 int Level::getRoadSpeed()
@@ -99,36 +94,5 @@ int Level::getRoadSpeed()
 	default:
 		return -100;
 		break;
-	}
-}
-
-void Level::loadSongByID(int id)
-{
-	try {
-		#ifdef SFML_SYSTEM_WINDOWS
-			bool checked = false;
-			while (!checked) {
-				std::shared_ptr<sf::SoundBuffer> buffer(new sf::SoundBuffer());
-
-				if (_CrtIsValidHeapPointer((const void *)buffer.get())) {
-					(*buffer).loadFromFile("Resources/Sound/Music/level" + std::to_string(id) + ".ogg");
-				std::lock_guard<std::mutex> lock(_ThreadGuard);
-					_MusicBuffers.push_back(buffer);
-					checked = true;
-				}
-				else {
-					buffer.reset();
-				}
-			}
-		#else
-			std::shared_ptr<sf::SoundBuffer> buffer(new sf::SoundBuffer());
-
-			(*buffer).loadFromFile("Resources/Sound/Music/level" + std::to_string(id) + ".ogg");
-			std::lock_guard<std::mutex>{ _ThreadGuard };
-			_MusicBuffers.push_back(buffer);
-		#endif
-	}
-	catch (...) {
-		std::exit(1);
 	}
 }

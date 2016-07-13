@@ -774,3 +774,5 @@ void Framework::addScore()
 		break;
 	}
 }
+
+// Test comment

@@ -294,6 +294,13 @@ void Framework::handleEvents()
 	case GameState::About:
 		_GameState = _AboutScreen.handleEvents(_RenderWindow);
 		break;
+	case GameState::Loading:
+		while (_RenderWindow.pollEvent(_Event)) {
+			if (_Event.type == sf::Event::Closed) {
+				_GameState = GameState::Exiting;
+			}
+		}
+		break;
 	case GameState::LevelUp:
 		while (_RenderWindow.pollEvent(_Event)) {
 			if (_Event.type == sf::Event::Closed) {

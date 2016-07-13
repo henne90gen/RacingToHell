@@ -76,6 +76,7 @@ void Level::resetLevel()
 	_Level = 1;
 	_TotalLevelTime = 5.0f;
 	_LevelTime = 0;
+	_Sprite.setTexture((*_Textures.at(0)));
 	_Music.openFromFile("Resources/Sound/Music/level" + std::to_string((_Level - 1) % _Textures.size() + 1) + ".ogg");
 }
 

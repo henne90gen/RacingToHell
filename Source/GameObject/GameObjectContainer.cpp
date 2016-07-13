@@ -215,24 +215,20 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 
 	if (!_AboutToLevelUp) {
 		// Spawn energy canister
-		if (_TimePassedCanister + FrameTime > 1 / _CanisterFrequency)
+		_TimePassedCanister += FrameTime;
+		if (_TimePassedCanister > 1.0f / _CanisterFrequency)
 		{
-			_TimePassedCanister += FrameTime - 1 / _CanisterFrequency;
+			_TimePassedCanister -= 1.0f / _CanisterFrequency;
 			_GameObjects.push_back(GameObjectFactory::getCanister(sf::Vector2f(std::rand() % 3 * 150 + 150, -25)));
-		}
-		else {
-			_TimePassedCanister += FrameTime;
 		}
 
 		// Spawn toolbox
-		if (_TimePassedToolbox + FrameTime > 1.0f / _ToolboxFrequency)
+		_TimePassedToolbox += FrameTime;
+		if (_TimePassedToolbox > 1.0f / _ToolboxFrequency && _GameMode != GameMode::Invincible)
 		{
-			_TimePassedToolbox += FrameTime - 1.0f / _ToolboxFrequency;
+			_TimePassedToolbox -= 1.0f / _ToolboxFrequency;
 			_GameObjects.push_back(GameObjectFactory::getToolbox(sf::Vector2f(std::rand() % 3 * 150 + 150, -10)));
 			setToolboxFrequency();
-		}
-		else {
-			_TimePassedToolbox += FrameTime;
 		}
 
 		getPlayerCar().drainEnergy(FrameTime);

@@ -243,7 +243,9 @@ std::string Textbox::GetClipboardText()
 	return text;
 #elif defined(SFML_SYSTEM_LINUX)
 	// TODO add paste support for Linux
-		return "";
+	// Seems to be very difficult, Xlib is complicated
+
+	return "";
 #else
 	return "";
 #endif

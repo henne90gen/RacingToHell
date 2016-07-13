@@ -128,6 +128,12 @@ public:
 		@param dif Difficulty
 	*/
 	void setDifficulty(int dif) { _Difficulty = dif; }
+
+	/*
+		Sets selected gamemode
+		@param mode gamemode
+	*/
+	void setGameMode(GameMode mode) { _GameMode = mode; }
 private:
 	std::vector<std::shared_ptr<GameObject>> _GameObjects;
 	std::vector<std::shared_ptr<Animation>> _Animations;
@@ -140,6 +146,8 @@ private:
 	float _Volume;
 
 	float _CarFrequency, _BulletFrequency, _CanisterFrequency, _ToolboxFrequency, _TimePassedCar, _TimePassedBullet, _TimePassedCanister, _TimePassedToolbox;
+
+	GameMode _GameMode;
 
 	// Score the player accumulates for shooting other cars
 	int _CarScore, _Level, _Difficulty;

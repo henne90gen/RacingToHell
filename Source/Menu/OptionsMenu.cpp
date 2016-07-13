@@ -3,7 +3,7 @@
 
 OptionsMenu::OptionsMenu() : Menu(GameState::Options), _ReturnState(), _ChangeSliderValue()
 {
-	_ScoreMultiplierList = { 1.0f, 0.0f, 2.5f };
+	_ScoreMultiplierList = { 1.0f, 0.0f };
 
 	std::shared_ptr<Slider> fps(new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 250)), MenuResult::Nothing, "FPS", 0.0f, 210.0f));
 	_MenuItems.push_back(fps);
@@ -15,7 +15,7 @@ OptionsMenu::OptionsMenu() : Menu(GameState::Options), _ReturnState(), _ChangeSl
 	std::shared_ptr<ComboBox> difficulty(new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 100, 350), difficulties, MenuResult::Nothing));
 	_MenuItems.push_back(difficulty);
 
-	std::vector<std::string> gamemodes = { "Standard", "InfiniteEnergy", "Onehit" };
+	std::vector<std::string> gamemodes = { "Standard", "Invincibility" };
 	std::shared_ptr<ComboBox> combobox2(new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 150, 420), gamemodes, MenuResult::Nothing, 300));
 	_MenuItems.push_back(combobox2);
 

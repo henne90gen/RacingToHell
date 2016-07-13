@@ -258,6 +258,7 @@ void Framework::handleEvents()
 			_Level.resetTimer();
 			setDifficulty(_OptionsMenu.getDifficulty());
 			_GameMode = _OptionsMenu.getGameMode();
+			_GameObjectContainer.setGameMode(_GameMode);
 			_GameObjectContainer.setLevel(_Level.getLevel());
 		}
 		else if (_GameState == GameState::Highscores) {
@@ -382,6 +383,7 @@ void Framework::handleEvents()
 			_Level.resetTimer();
 			setDifficulty(_OptionsMenu.getDifficulty());
 			_GameMode = _OptionsMenu.getGameMode();
+			_GameObjectContainer.setGameMode(_GameMode);
 			_MPGameObjectContainer.setLevel(_Level.getLevel());
 
 			sf::Packet packet;
@@ -580,6 +582,7 @@ void Framework::update()
 			_Level.resetTimer();
 			setDifficulty(_OptionsMenu.getDifficulty());
 			_GameMode = _OptionsMenu.getGameMode();
+			_GameObjectContainer.setGameMode(_GameMode);
 			_MPGameObjectContainer.setLevel(_Level.getLevel());
 			_GameState = GameState::Countdown;
 		}

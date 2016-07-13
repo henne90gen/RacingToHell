@@ -47,6 +47,7 @@ private:
 	sf::Clock _Clock;
 
 	// Variables
+	GameMode _GameMode;
 	float _FrameTime, _LastFPSPrint, _LastFPSCheck, _Score, _FPS;
 	bool _IsRunning;
 	int _CurrentCarSkinIndex;

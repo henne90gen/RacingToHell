@@ -51,6 +51,7 @@ public:
 
 	GameMode getGameMode() { return (GameMode)(int)_MenuItems[Mode]->getValue(); }
 	void setGameMode(GameMode gm) { _MenuItems[Mode]->setValue((float)gm); }
+	void enableGameModeSelection(bool enabled) { _MenuItems[Mode]->setEnabled(enabled); }
 
 	std::vector<float> getMultiplierList() { return _ScoreMultiplierList; }
 private:

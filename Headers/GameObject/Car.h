@@ -115,6 +115,9 @@ public:
 		Reads the necessary data for a gameobject from a packet
 	*/
 	virtual void operator<<(sf::Packet& packet);
+
+	virtual void setMaxHealth(sf::Int16 health) { }
+	virtual void setHealth(sf::Int16 health) {}
 protected:
 	sf::Int16 _Health, _Speed, _MaxHealth;
 	sf::Vector2f _Movement;

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "HeadsUpDisplay.h"
 
 HeadsUpDisplay::HeadsUpDisplay()
@@ -101,7 +101,7 @@ void HeadsUpDisplay::render(sf::RenderWindow & window)
 	window.draw(_ScoreText);
 }
 
-void HeadsUpDisplay::update(int score, int health, int energy, int level, float levelTime)
+void HeadsUpDisplay::update(int score, int health, int energy, int level, float levelTime, GameMode mode)
 {
 	_LevelText.setString("Level: " + std::to_string(level));
 
@@ -109,8 +109,20 @@ void HeadsUpDisplay::update(int score, int health, int energy, int level, float 
 
 	_HealthBar.setSize(sf::Vector2f((float)health / (float)_MaxHealth * 150, 30));
 	_HealthText.setString(std::to_string(health) + "/" + std::to_string(_MaxHealth));
+	
+	if (mode == GameMode::Invincible)
+	{
+		_HealthText.setString(L"∞");
+		_HealthText.setCharacterSize(40);
+	}
+
 	_HealthText.setPosition(sf::Vector2f(	_HealthBarOutline.getGlobalBounds().left + _HealthBarOutline.getLocalBounds().width - _HealthText.getLocalBounds().width - 7, 
 											_HealthBarOutline.getGlobalBounds().top + 3));
+
+	if (mode == GameMode::Invincible)
+	{
+		_HealthText.setPosition(_HealthText.getPosition() - sf::Vector2f(5, 12));
+	}
 
 	if (health <= 10)
 	{

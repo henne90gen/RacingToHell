@@ -129,8 +129,7 @@ void OptionsMenu::update(float FrameTime)
 	_Volume.setPosition(sf::Vector2f(	_VolumeBackground.getPosition().x + _VolumeBackground.getLocalBounds().width / 2.0f - _Volume.getLocalBounds().width / 2.0f,
 										_VolumeBackground.getPosition().y + _VolumeBackground.getLocalBounds().height / 2.0f - _Volume.getLocalBounds().height + 2));
 
-	std::vector<std::string> MultiplierValues = { "1.0", "0.4", "2.0" };
-	_ScoreMultiplierText.setString("Score: x" + MultiplierValues[getMultiplier()]);
+	//_ScoreMultiplierText.setString("Score: x" + MultiplierValues[getMultiplier()]);
 }
 
 void OptionsMenu::loadOptions(MultiplayerMenu& mpMenu) {

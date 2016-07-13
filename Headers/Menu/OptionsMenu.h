@@ -45,12 +45,11 @@ public:
 	float getVolume() { return _MenuItems[Volume]->getValue(); }
 	void setVolume(float volume) { _MenuItems[Volume]->setValue(volume); }
 
-	int getDifficulty() { return (int)_MenuItems[Difficulty]->getValue(); }
-	int getMultiplier() { return (int)_MenuItems[Multiplier]->getValue(); }
+	int getDifficulty() { return (int)_MenuItems[Difficulty]->getValue(); } 
 	void setDifficulty(int Dif) { _MenuItems[Difficulty]->setValue(Dif); }
 	void enableDifficultySelection(bool enabled) { _MenuItems[Difficulty]->setEnabled(enabled); }
 
-	GameMode getGameMode() { return (GameMode) _MenuItems[Mode]->getValue(); }
+	GameMode getGameMode() { return (GameMode)(int)_MenuItems[Mode]->getValue(); }
 	void setGameMode(GameMode gm) { _MenuItems[Mode]->setValue((float)gm); }
 private:
 	int _ChangeSliderValue;

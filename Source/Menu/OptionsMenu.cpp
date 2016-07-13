@@ -3,15 +3,16 @@
 
 OptionsMenu::OptionsMenu() : Menu(GameState::Options), _ReturnState(), _ChangeSliderValue()
 {
-	std::shared_ptr<Slider> slider1(new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 250)), MenuResult::Nothing, "FPS", 0.0f, 210.0f));
-	_MenuItems.push_back(slider1);
 
-	std::shared_ptr<Slider> slider2(new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 300)), MenuResult::Nothing, "Volume", 0.0f, 5.0f));
-	_MenuItems.push_back(slider2);
+	std::shared_ptr<Slider> fps(new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 250)), MenuResult::Nothing, "FPS", 0.0f, 210.0f));
+	_MenuItems.push_back(fps);
+
+	std::shared_ptr<Slider> volume(new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 300)), MenuResult::Nothing, "Volume", 0.0f, 5.0f));
+	_MenuItems.push_back(volume);
 
 	std::vector<std::string> difficulties = { "Easy", "Normal", "Hard", "Insane" };
-	std::shared_ptr<ComboBox> combobox(new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 100, 350), difficulties, MenuResult::Nothing));
-	_MenuItems.push_back(combobox);
+	std::shared_ptr<ComboBox> difficulty(new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 100, 350), difficulties, MenuResult::Nothing));
+	_MenuItems.push_back(difficulty);
 
 	std::vector<std::string> gamemodes = { "Standard", "InfiniteEnergy", "Onehit" };
 	std::shared_ptr<ComboBox> combobox2(new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 150, 420), gamemodes, MenuResult::Nothing, 300));

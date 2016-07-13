@@ -755,21 +755,21 @@ void Framework::setDifficulty(int Difficulty)
 
 void Framework::addScore()
 {
-	_Score += _GameObjectContainer.getCarScore();
+	_Score += _GameObjectContainer.getCarScore() * _ScoreMultiplier;
 	
 	switch (_OptionsMenu.getDifficulty())
 	{
 	case 0:
-		_Score += 5 * _Level.getLevel() * _FrameTime;
+		_Score += 5 * _Level.getLevel() * _ScoreMultiplier * _FrameTime;
 		break;
 	case 1:
-		_Score += 10 * (int)std::pow((float)_Level.getLevel(), 1.15f) * _FrameTime;
+		_Score += 10 * (int)std::pow((float)_Level.getLevel(), 1.15f) * _ScoreMultiplier * _FrameTime;
 		break;
 	case 2:
-		_Score += 30 * (int)std::pow((float)_Level.getLevel(), 1.3f) * _FrameTime;
+		_Score += 30 * (int)std::pow((float)_Level.getLevel(), 1.3f) * _ScoreMultiplier * _FrameTime;
 		break;
 	case 3:
-		_Score += 60 * (int)std::pow((float)_Level.getLevel(), 1.6f) * _FrameTime;
+		_Score += 60 * (int)std::pow((float)_Level.getLevel(), 1.6f) * _ScoreMultiplier * _FrameTime;
 		break;
 	default:
 		break;

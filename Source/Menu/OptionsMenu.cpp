@@ -13,10 +13,26 @@ OptionsMenu::OptionsMenu() : Menu(GameState::Options), _ReturnState(), _ChangeSl
 	std::shared_ptr<ComboBox> combobox(new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 100, 350), difficulties, MenuResult::Nothing));
 	_MenuItems.push_back(combobox);
 
-	std::shared_ptr<MenuButton> button1(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 420), sf::Vector2f(150, 50), MenuResult::Credits, "Credits", TextAlignment::Center));
+	std::vector<std::string> gamemodes = { "Standard", "InfiniteEnergy", "Onehit" };
+	std::shared_ptr<ComboBox> combobox2(new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 150, 420), gamemodes, MenuResult::Nothing, 300));
+	_MenuItems.push_back(combobox2);
+
+	_ScoreMultiplierBackground.setPosition(sf::Vector2f(SCREENWIDTH / 2 - 150, 480));
+	_ScoreMultiplierBackground.setSize(sf::Vector2f(300, 25));
+	_ScoreMultiplierBackground.setFillColor(sf::Color(0, 0, 0, 175));
+	_ScoreMultiplierBackground.setOutlineThickness(1);
+	_ScoreMultiplierBackground.setOutlineColor(sf::Color::Black);
+
+	_ScoreMultiplierText.setFont(_Font);
+	_ScoreMultiplierText.setString("Score: x1.0");
+	_ScoreMultiplierText.setCharacterSize(15);
+	_ScoreMultiplierText.setColor(sf::Color::White);
+	_ScoreMultiplierText.setPosition(sf::Vector2f(SCREENWIDTH / 2 - 150 + 10, 480 + 2.5));
+
+	std::shared_ptr<MenuButton> button1(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 520), sf::Vector2f(150, 50), MenuResult::Credits, "Credits", TextAlignment::Center));
 	_MenuItems.push_back(button1);
 
-	std::shared_ptr<MenuButton> button2(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 490), sf::Vector2f(150, 50), MenuResult::Back, "Back", TextAlignment::Center));
+	std::shared_ptr<MenuButton> button2(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 590), sf::Vector2f(150, 50), MenuResult::Back, "Back", TextAlignment::Center));
 	_MenuItems.push_back(button2);
 
 	_Text.setString("Options");
@@ -53,6 +69,8 @@ void OptionsMenu::render(sf::RenderWindow & window)
 	window.draw(_FPS);
 	window.draw(_VolumeBackground);
 	window.draw(_Volume);
+	window.draw(_ScoreMultiplierBackground);
+	window.draw(_ScoreMultiplierText);
 
 	Menu::render(window);
 }
@@ -109,6 +127,9 @@ void OptionsMenu::update(float FrameTime)
 	_Volume.setString(std::to_string((int)(_MenuItems[Volume]->getValue() * 100 / _MenuItems[Volume]->getMaxValue())));
 	_Volume.setPosition(sf::Vector2f(	_VolumeBackground.getPosition().x + _VolumeBackground.getLocalBounds().width / 2.0f - _Volume.getLocalBounds().width / 2.0f,
 										_VolumeBackground.getPosition().y + _VolumeBackground.getLocalBounds().height / 2.0f - _Volume.getLocalBounds().height + 2));
+
+	std::vector<std::string> MultiplierValues = { "1.0", "0.4", "2.0" };
+	_ScoreMultiplierText.setString("Score: x" + MultiplierValues[getMultiplier()]);
 }
 
 void OptionsMenu::loadOptions(MultiplayerMenu& mpMenu) {

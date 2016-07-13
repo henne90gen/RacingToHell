@@ -42,19 +42,21 @@ public:
 	void setFPS(float fps) { _MenuItems[FPS]->setValue(fps - 30.0f); }
 	float getVolume() { return _MenuItems[Volume]->getValue(); }
 	void setVolume(float volume) { _MenuItems[Volume]->setValue(volume); }
-	
+
 	int getDifficulty() { return (int)_MenuItems[Difficulty]->getValue(); }
+	int getMultiplier() { return (int)_MenuItems[Multiplier]->getValue(); }
 	void setDifficulty(int Dif) { _MenuItems[Difficulty]->setValue(Dif); }
 	void enableDifficultySelection(bool enabled) { _MenuItems[Difficulty]->setEnabled(enabled); }
+	void enableMultiplierSelection(bool enabled) { _MenuItems[Multiplier]->setEnabled(enabled); }
 private:
 	int _ChangeSliderValue;
 
 	enum Items {
-		FPS, Volume, Difficulty
+		FPS, Volume, Difficulty, Multiplier
 	};
 
-	sf::Text _FPS, _Volume;
-	sf::RectangleShape _FPSBackground, _VolumeBackground;
+	sf::Text _FPS, _Volume, _ScoreMultiplierText;
+	sf::RectangleShape _FPSBackground, _VolumeBackground, _ScoreMultiplierBackground ;
 
 	GameState _ReturnState;
 };

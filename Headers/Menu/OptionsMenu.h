@@ -51,7 +51,11 @@ public:
 
 	GameMode getGameMode() { return (GameMode)(int)_MenuItems[Mode]->getValue(); }
 	void setGameMode(GameMode gm) { _MenuItems[Mode]->setValue((float)gm); }
+
+	std::vector<float> getMultiplierList() { return _ScoreMultiplierList; }
 private:
+	std::vector<float> _ScoreMultiplierList;
+
 	int _ChangeSliderValue;
 
 	enum Items {
@@ -62,5 +66,7 @@ private:
 	sf::RectangleShape _FPSBackground, _VolumeBackground, _ScoreMultiplierBackground ;
 
 	GameState _ReturnState;
+
+	std::string floatToString(float value, unsigned int precision);
 };
 

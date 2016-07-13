@@ -3,6 +3,7 @@
 
 OptionsMenu::OptionsMenu() : Menu(GameState::Options), _ReturnState(), _ChangeSliderValue()
 {
+	_ScoreMultiplierList = { 1.0f, 0.0f, 2.5f };
 
 	std::shared_ptr<Slider> fps(new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 250)), MenuResult::Nothing, "FPS", 0.0f, 210.0f));
 	_MenuItems.push_back(fps);
@@ -129,7 +130,9 @@ void OptionsMenu::update(float FrameTime)
 	_Volume.setPosition(sf::Vector2f(	_VolumeBackground.getPosition().x + _VolumeBackground.getLocalBounds().width / 2.0f - _Volume.getLocalBounds().width / 2.0f,
 										_VolumeBackground.getPosition().y + _VolumeBackground.getLocalBounds().height / 2.0f - _Volume.getLocalBounds().height + 2));
 
-	//_ScoreMultiplierText.setString("Score: x" + MultiplierValues[getMultiplier()]);
+
+
+	_ScoreMultiplierText.setString("Score: x" + floatToString(_ScoreMultiplierList[(int)getGameMode()], 1));
 }
 
 void OptionsMenu::loadOptions(MultiplayerMenu& mpMenu) {
@@ -166,4 +169,11 @@ void OptionsMenu::saveOptions(MultiplayerMenu& mpMenu)
 	FileStream << getFPS() << std::endl << getVolume() << std::endl << getDifficulty() << std::endl << mpMenu.getPlayerName();
 
 	FileStream.close();
+}
+
+std::string OptionsMenu::floatToString(float value, unsigned int precision)
+{
+	std::stringstream ss;
+	ss << std::fixed << std::setprecision(precision) << value;
+	return ss.str();
 }

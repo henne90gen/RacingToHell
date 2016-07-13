@@ -13,6 +13,9 @@
 #include <vector>
 #include <memory>
 #include <thread>
+#include <iomanip>
+#include <cmath>
+#include <limits>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>

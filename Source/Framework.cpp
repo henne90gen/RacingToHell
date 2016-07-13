@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Framework.hpp"
 
-Framework::Framework() : _FrameTime(0), _FPS(60.0f), _IsRunning(true), _GameState(GameState::Loading), _LastFPSCheck(), _LastFPSPrint(), _CurrentCarSkinIndex(), _Score()
+Framework::Framework() : _FrameTime(0), _FPS(60.0f), _IsRunning(true), _GameState(GameState::Loading), _GameMode(GameMode::Standard), _LastFPSCheck(), _LastFPSPrint(), _CurrentCarSkinIndex(), _Score()
 {
 	_RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell", sf::Style::Close);
 	#ifdef SFML_SYSTEM_WINDOWS
@@ -257,6 +257,7 @@ void Framework::handleEvents()
 			_Clock.restart();
 			_Level.resetTimer();
 			setDifficulty(_OptionsMenu.getDifficulty());
+			_GameMode = _OptionsMenu.getGameMode();
 			_GameObjectContainer.setLevel(_Level.getLevel());
 		}
 		else if (_GameState == GameState::Highscores) {
@@ -380,6 +381,7 @@ void Framework::handleEvents()
 			_Clock.restart();
 			_Level.resetTimer();
 			setDifficulty(_OptionsMenu.getDifficulty());
+			_GameMode = _OptionsMenu.getGameMode();
 			_MPGameObjectContainer.setLevel(_Level.getLevel());
 
 			sf::Packet packet;
@@ -577,6 +579,7 @@ void Framework::update()
 			_Clock.restart();
 			_Level.resetTimer();
 			setDifficulty(_OptionsMenu.getDifficulty());
+			_GameMode = _OptionsMenu.getGameMode();
 			_MPGameObjectContainer.setLevel(_Level.getLevel());
 			_GameState = GameState::Countdown;
 		}
@@ -760,21 +763,23 @@ void Framework::setGameMode(GameMode gameMode)
 
 void Framework::addScore()
 {
-	_Score += _GameObjectContainer.getCarScore();
+	float Multiplier = _OptionsMenu.getMultiplierList()[(int)_GameMode];
+
+	_Score += _GameObjectContainer.getCarScore() * Multiplier;
 	
 	switch (_OptionsMenu.getDifficulty())
 	{
 	case 0:
-		_Score += 5 * _Level.getLevel() * _FrameTime;
+		_Score += 5 * _Level.getLevel() * Multiplier * _FrameTime;
 		break;
 	case 1:
-		_Score += 10 * (int)std::pow((float)_Level.getLevel(), 1.15f)  * _FrameTime;
+		_Score += 10 * (int)std::pow((float)_Level.getLevel(), 1.15f) * Multiplier * _FrameTime;
 		break;
 	case 2:
-		_Score += 30 * (int)std::pow((float)_Level.getLevel(), 1.3f) * _FrameTime;
+		_Score += 30 * (int)std::pow((float)_Level.getLevel(), 1.3f) * Multiplier * _FrameTime;
 		break;
 	case 3:
-		_Score += 60 * (int)std::pow((float)_Level.getLevel(), 1.6f)  * _FrameTime;
+		_Score += 60 * (int)std::pow((float)_Level.getLevel(), 1.6f) * Multiplier * _FrameTime;
 		break;
 	default:
 		break;

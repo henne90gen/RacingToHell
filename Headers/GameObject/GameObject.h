@@ -283,6 +283,9 @@ public:
 
 	virtual sf::Vector2f getDir() { return sf::Vector2f(); }
 
+	virtual void setMaxHealth(sf::Int16 health) {}
+	virtual void setHealth(sf::Int16 health) {}
+
 protected:
 
 	sf::Uint32 _ID;

@@ -104,6 +104,9 @@ public:
 		Reads the necessary data for a gameobject from a packet
 	*/
 	void operator<<(sf::Packet& packet);
+
+	void setMaxHealth(sf::Int16 health) { _MaxHealth = health; }
+	virtual void setHealth(sf::Int16 health) { _Health = health; }
 private:
 	void shoot();
 

@@ -214,9 +214,6 @@ void Framework::handleEvents()
 				_PauseMenu.setReturnState(_GameState);
 				_GameState = GameState::Pause;
 			}
-
-
-
 			else {
 				_GameObjectContainer.handleEvent(_Event);
 			}
@@ -233,6 +230,7 @@ void Framework::handleEvents()
 		}
 		else if (_GameState == GameState::Options) {
 			_OptionsMenu.enableDifficultySelection(false);
+			_OptionsMenu.enableGameModeSelection(false);
 			_OptionsMenu.setReturnState(GameState::Pause);
 		}
 		break;
@@ -249,6 +247,14 @@ void Framework::handleEvents()
 		_MainMenu.setCarIndex(_CurrentCarSkinIndex);
 		_GameObjectContainer.getPlayerCar().setTexture((*_CarSkins.at(_CurrentCarSkinIndex)));
 		_GameObjectContainer.getPlayerCar().setStats(_CurrentCarSkinIndex);
+		
+		_GameMode = _OptionsMenu.getGameMode();
+
+		if (_GameMode == GameMode::Hardcore)
+		{
+			_GameObjectContainer.getPlayerCar().setMaxHealth(5);
+			_GameObjectContainer.getPlayerCar().setHealth(5);
+		}
 
 		if (_GameState == GameState::Running) {
 			_HeadsUpDisplay.setMaxHealth(_GameObjectContainer.getPlayerCar().getMaxHealth());
@@ -257,7 +263,8 @@ void Framework::handleEvents()
 			_Clock.restart();
 			_Level.resetTimer();
 			setDifficulty(_OptionsMenu.getDifficulty());
-			_GameMode = _OptionsMenu.getGameMode();
+			
+			_GameObjectContainer.setGameMode(_GameMode);
 			_GameObjectContainer.setLevel(_Level.getLevel());
 		}
 		else if (_GameState == GameState::Highscores) {
@@ -265,6 +272,7 @@ void Framework::handleEvents()
 		}
 		else if (_GameState == GameState::Options) {
 			_OptionsMenu.enableDifficultySelection(true);
+			_OptionsMenu.enableGameModeSelection(true);
 			_OptionsMenu.setReturnState(GameState::Main);
 		}
 		else if (_GameState == GameState::MultiplayerSelection)
@@ -382,6 +390,7 @@ void Framework::handleEvents()
 			_Level.resetTimer();
 			setDifficulty(_OptionsMenu.getDifficulty());
 			_GameMode = _OptionsMenu.getGameMode();
+			_GameObjectContainer.setGameMode(_GameMode);
 			_MPGameObjectContainer.setLevel(_Level.getLevel());
 
 			sf::Packet packet;
@@ -424,6 +433,7 @@ void Framework::handleEvents()
 		}
 		else if (_GameState == GameState::Options) {
 			_OptionsMenu.enableDifficultySelection(false);
+			_OptionsMenu.enableGameModeSelection(false);
 			_OptionsMenu.setReturnState(GameState::PauseMultiplayer);
 		}
 		break;
@@ -453,7 +463,7 @@ void Framework::update()
 			}
 		}
 		_GameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
-		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
+		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime(), _GameMode);
 		if (!_GameObjectContainer.playerIsAlive()) {
 			_GameState = GameState::GameOver;
 		}
@@ -467,7 +477,7 @@ void Framework::update()
 			_GameState = GameState::LevelUp;
 		}
 		_GameObjectContainer.update(_FrameTime, _Level.getRoadSpeed());
-		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
+		_HeadsUpDisplay.update(_Score, _GameObjectContainer.getPlayerCar().getHealth(), _GameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime(), _GameMode);
 		if (!_GameObjectContainer.playerIsAlive()) {
 			_GameState = GameState::GameOver;
 		}
@@ -580,6 +590,7 @@ void Framework::update()
 			_Level.resetTimer();
 			setDifficulty(_OptionsMenu.getDifficulty());
 			_GameMode = _OptionsMenu.getGameMode();
+			_GameObjectContainer.setGameMode(_GameMode);
 			_MPGameObjectContainer.setLevel(_Level.getLevel());
 			_GameState = GameState::Countdown;
 		}
@@ -609,7 +620,7 @@ void Framework::update()
 			}
 		}
 		_MPGameObjectContainer.update(_FrameTime, _Level.getRoadSpeed(), _NetworkHandle);
-		_HeadsUpDisplay.update(_Score, _MPGameObjectContainer.getPlayerCar().getHealth(), _MPGameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime());
+		_HeadsUpDisplay.update(_Score, _MPGameObjectContainer.getPlayerCar().getHealth(), _MPGameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime(), _GameMode);
 		if (!_MPGameObjectContainer.playerIsAlive()) {
 			_GameState = GameState::GameOverMultiplayer;
 		}

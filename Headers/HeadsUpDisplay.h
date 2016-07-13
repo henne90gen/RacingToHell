@@ -22,8 +22,9 @@ public:
 		@param energy Current energy of the player
 		@param level Current level
 		@param levelTime Current time within the level
+		@param mode Current game mode
 	*/
-	void update(int score, int health, int energy, int level, float levelTime);
+	void update(int score, int health, int energy, int level, float levelTime, GameMode mode);
 
 	/*
 		@param maxHealth Maximum health the player can have

@@ -87,6 +87,7 @@ void PlayerCar::handleEvent(sf::Event& Event)
 		_Acceleration.y = 0.0f;
 	}
 
+
 	// Apply mouse and joystick movement
 	_CrosshairMovement = sf::Vector2f(0, 0);
 	if (Event.type == sf::Event::MouseMoved) {

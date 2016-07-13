@@ -31,12 +31,25 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 					{
 					case GameObjectType::AI:
 						{
-							_Animations.push_back(std::shared_ptr<Explosion>(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0), _SoundEffects, _ExplosionSoundBuffer, _Volume)));
-							_PlayerAlive = false;
+							if (_GameMode == GameMode::Invincible)
+							{
+								std::shared_ptr<Explosion> newExplosion(new Explosion(_GameObjects.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _GameObjects[i]->getSpeed()), _SoundEffects, _ExplosionSoundBuffer, _Volume));
+								_Animations.push_back(newExplosion);
+								deleteObject(i);
+								i--;
+							}
+							else
+							{
+								_Animations.push_back(std::shared_ptr<Explosion>(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0), _SoundEffects, _ExplosionSoundBuffer, _Volume)));
+								_PlayerAlive = false;
+							}		
 						}
 						break;
 					case GameObjectType::BulletObjectAI:
-						getPlayerCar().takeDamage(5);
+						if (_GameMode != GameMode::Invincible)
+						{
+							getPlayerCar().takeDamage(5);
+						}		
 						playHitSound(getPlayerCar().getPos());
 						deleteObject(i);
 						i--;
@@ -58,7 +71,10 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 						}
 						break;
 					case GameObjectType::BulletObjectBoss:
-						getPlayerCar().takeDamage(5);
+						if (_GameMode != GameMode::Invincible)
+						{
+							getPlayerCar().takeDamage(5);
+						}	
 						playHitSound(getPlayerCar().getPos());
 						deleteObject(i);
 						i--;

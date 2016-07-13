@@ -2,23 +2,23 @@
 
 #include "Menu/MenuItem/ComboBox.h"
 
-ComboBox::ComboBox(sf::Vector2f Position, std::vector<std::string> &Items, MenuResult Action) : MenuItem(MenuItemType::MCombobox, Action),
-	_Items(Items), _Position(Position),
-	_CurrentItem(0), _Height(50), _BodyWidth(160), _ButtonWidth(20), _TextSize(40),
+ComboBox::ComboBox(sf::Vector2f pos, std::vector<std::string> &Items, MenuResult Action, int width, int height) : MenuItem(MenuItemType::MCombobox, Action),
+	_Items(Items), _Position(pos),
+	_CurrentItem(0), _Height(height), _BodyWidth(width - 40), _ButtonWidth(20), _TextSize(40),
 	_BgColorEnabled(sf::Color(0, 0, 0, 175)), _BgColorHovering(sf::Color(50, 50, 50, 100)), _BgColorDisabled(sf::Color(0, 0, 0, 175)), 
 	_FgColorEnabled(sf::Color(255, 255, 255, 255)), _FgColorDisabled(sf::Color(150, 150, 150, 255))
 {
-	_Body.setPosition(Position + sf::Vector2f(_ButtonWidth, 0));
+	_Body.setPosition(pos + sf::Vector2f(_ButtonWidth, 0));
 	_Body.setSize(sf::Vector2f(_BodyWidth, _Height));
 	_Body.setOutlineThickness(1);
 	_Body.setOutlineColor(sf::Color::Black);
 
-	_ButtonLeft.setPosition(Position);
+	_ButtonLeft.setPosition(pos);
 	_ButtonLeft.setSize(sf::Vector2f(_ButtonWidth, _Height));
 	_ButtonLeft.setOutlineThickness(1);
 	_ButtonLeft.setOutlineColor(sf::Color::Black);
 
-	_ButtonRight.setPosition(Position + sf::Vector2f(_ButtonWidth + _BodyWidth, 0));
+	_ButtonRight.setPosition(pos + sf::Vector2f(_ButtonWidth + _BodyWidth, 0));
 	_ButtonRight.setSize(sf::Vector2f(_ButtonWidth, _Height));
 	_ButtonRight.setOutlineThickness(1);
 	_ButtonRight.setOutlineColor(sf::Color::Black);
@@ -30,8 +30,8 @@ ComboBox::ComboBox(sf::Vector2f Position, std::vector<std::string> &Items, MenuR
 
 		_LeftArrowSprite.setTextureRect(sf::IntRect(_ArrowTexture.getSize().x, 0, -1 * _ArrowTexture.getSize().x, _ArrowTexture.getSize().y));
 
-		_LeftArrowSprite.setPosition(Position + sf::Vector2f(0.5f * _ButtonWidth - 0.5f * _ArrowTexture.getSize().x, 0.5f * _Height - 0.5f * _ArrowTexture.getSize().y));
-		_RightArrowSprite.setPosition(Position + sf::Vector2f(_BodyWidth + _ButtonWidth + 0.5f * _ButtonWidth - 0.5f * _ArrowTexture.getSize().x, 0.5f * _Height - 0.5f * _ArrowTexture.getSize().y));
+		_LeftArrowSprite.setPosition(pos + sf::Vector2f(0.5f * _ButtonWidth - 0.5f * _ArrowTexture.getSize().x, 0.5f * _Height - 0.5f * _ArrowTexture.getSize().y));
+		_RightArrowSprite.setPosition(pos + sf::Vector2f(_BodyWidth + _ButtonWidth + 0.5f * _ButtonWidth - 0.5f * _ArrowTexture.getSize().x, 0.5f * _Height - 0.5f * _ArrowTexture.getSize().y));
 	}
 	
 	_Text.setFont(_Font);

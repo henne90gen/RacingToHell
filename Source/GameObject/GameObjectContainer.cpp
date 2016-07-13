@@ -223,10 +223,10 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 	}
 
 	// Check whether player fired a shot
-	if (getPlayerCar().shotBullet().x != 0 && getPlayerCar().shotBullet().y != 0)
+	sf::Vector2f bulletDir = getPlayerCar().getShotBullet();
+	if (bulletDir.x != 0 || bulletDir.y != 0)
 	{
-		_GameObjects.push_back(GameObjectFactory::getBullet(getPlayerCar().getPos(), getPlayerCar().shotBullet(), _PlayerBulletSpeed, GameObjectType::BulletObjectPlayer, _SoundEffects, _Volume));
-		getPlayerCar().resetShotBullet();
+		_GameObjects.push_back(GameObjectFactory::getBullet(getPlayerCar().getPos(), bulletDir, _PlayerBulletSpeed, GameObjectType::BulletObjectPlayer, _SoundEffects, _Volume));
 	}
 }
 

@@ -41,15 +41,10 @@ public:
 	void update(float frameTime, int roadSpeed);
 
 	/*
-		Gives back the angle of the shot bullet or 360.0f if no bullet was fired
-		@return float Angle of the shot bullet
+		Gives back the direction of the shot bullet
+		@return sf::Vector2f Direction of bullet
 	*/
-	sf::Vector2f shotBullet() { return _ShotBullet; }
-
-	/*
-		Resets angle for new bullets so that no new bullets are fired
-	*/
-	void resetShotBullet() { _ShotBullet = sf::Vector2f(0, 0); }
+	sf::Vector2f getShotBullet();
 
 	/*
 		Adds 20 to the players health if possible
@@ -110,6 +105,8 @@ public:
 	*/
 	void operator<<(sf::Packet& packet);
 private:
+	void shoot();
+
 	float _Energy;
 	sf::Uint16 _MaxEnergy, _Bulletdamage;
 	sf::Uint8 _SelectedCar;
@@ -122,6 +119,8 @@ private:
 	sf::Sprite _Crosshair;
 
 	float _CrosshairSpeed;
+
+	sf::Clock _AutoFireTimer;
 
 	//Time it takes to reach maximum speed
 	float _AccelerationTime;

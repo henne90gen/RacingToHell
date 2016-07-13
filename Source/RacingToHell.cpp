@@ -11,7 +11,7 @@ int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpszA
 }
 #endif
 
-int main() 
+int main()
 {
 	Framework _Framework;
 	_Framework.run();

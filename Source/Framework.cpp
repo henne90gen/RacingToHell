@@ -21,6 +21,7 @@ Framework::Framework() : _FrameTime(0), _FPS(60.0f), _IsRunning(true), _GameStat
 
 	//Multiplayer
 	_MultiplayerMenu.setNetworkHandle(&_NetworkHandle);
+	_MultiplayerMenu.setPlayerName("Name");
 	_MultiplayerLobby.setNetworkHandle(&_NetworkHandle);
 }
 

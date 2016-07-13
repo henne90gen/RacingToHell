@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Menu/OptionsMenu.h"
 
-OptionsMenu::OptionsMenu() : Menu(GameState::Options)
+OptionsMenu::OptionsMenu() : Menu(GameState::Options), _ReturnState(), _ChangeSliderValue()
 {
 	std::shared_ptr<Slider> slider1(new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 250)), MenuResult::Nothing, "FPS", 0.0f, 210.0f));
 	_MenuItems.push_back(slider1);

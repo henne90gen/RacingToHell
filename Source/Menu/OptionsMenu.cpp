@@ -123,13 +123,17 @@ void OptionsMenu::loadOptions(MultiplayerMenu& mpMenu) {
 	}
 	FileStream.close();
 
-	if (Settings.size() >= 4)
+	if (Settings.size() >= 3)
 	{
 		setFPS(std::stoi(Settings[0]));
 		setVolume(std::stof(Settings[1]));
 		setDifficulty(std::stoi(Settings[2]));
-		mpMenu.setPlayerName(Settings[3]);
-	}
+
+		if (Settings.size() >= 4)
+		{
+			mpMenu.setPlayerName(Settings[3]);
+		}
+	} 
 }
 
 void OptionsMenu::saveOptions(MultiplayerMenu& mpMenu)

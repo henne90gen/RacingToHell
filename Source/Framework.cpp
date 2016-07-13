@@ -519,6 +519,9 @@ void Framework::update()
 		_IsRunning = false;
 		_NetworkHandle.setRelation(NetworkRelation::NoRel);
 		_RenderWindow.close();
+		_MenuMusic.stop();
+		_Level.stopMusic();
+
 		break;
 	case GameState::MultiplayerSelection:
 		_Level.update(_FrameTime, _GameState);

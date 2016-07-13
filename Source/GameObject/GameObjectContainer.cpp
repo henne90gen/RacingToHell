@@ -67,6 +67,7 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 					case GameObjectType::Boss:
 						{
 							_Animations.push_back(std::shared_ptr<Explosion>(new Explosion(getPlayerCar().getPos(), _ExplosionTexture, sf::Vector2f(0, 0), _SoundEffects, _ExplosionSoundBuffer, _Volume)));
+							_PlayerAlive = false;
 						}
 						break;
 					case GameObjectType::BulletObjectBoss:

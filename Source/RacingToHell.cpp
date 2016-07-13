@@ -4,6 +4,14 @@
 #include "stdafx.h"
 #include "Framework.hpp"
 
+int main()
+{
+	Framework _Framework;
+	_Framework.run();
+
+	return 0;
+}
+
 #ifdef SFML_SYSTEM_WINDOWS
 int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpszArgument, int nCmdShow)
 {
@@ -11,10 +19,3 @@ int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpszA
 }
 #endif
 
-int main() 
-{
-	Framework _Framework;
-	_Framework.run();
-
-	return 0;
-}

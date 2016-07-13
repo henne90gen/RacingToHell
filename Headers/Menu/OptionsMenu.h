@@ -36,21 +36,26 @@ public:
 	void loadOptions(MultiplayerMenu& mpMenu);
 	void saveOptions(MultiplayerMenu& mpMenu);
 
-	void setReturnState(GameState returnState) { _ReturnState = returnState; }
 	GameState getReturnState() { return _ReturnState; }
+	void setReturnState(GameState returnState) { _ReturnState = returnState; }
+
 	float getFPS() { return _MenuItems[FPS]->getValue() + 30.0f; }
 	void setFPS(float fps) { _MenuItems[FPS]->setValue(fps - 30.0f); }
+
 	float getVolume() { return _MenuItems[Volume]->getValue(); }
 	void setVolume(float volume) { _MenuItems[Volume]->setValue(volume); }
 	
 	int getDifficulty() { return (int)_MenuItems[Difficulty]->getValue(); }
 	void setDifficulty(int Dif) { _MenuItems[Difficulty]->setValue(Dif); }
 	void enableDifficultySelection(bool enabled) { _MenuItems[Difficulty]->setEnabled(enabled); }
+
+	GameMode getGameMode() { return (GameMode) _MenuItems[Mode]->getValue(); }
+	void setGameMode(GameMode gm) { _MenuItems[Mode]->setValue((float)gm); }
 private:
 	int _ChangeSliderValue;
 
 	enum Items {
-		FPS, Volume, Difficulty
+		FPS, Volume, Difficulty, Mode
 	};
 
 	sf::Text _FPS, _Volume;

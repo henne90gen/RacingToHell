@@ -3,21 +3,22 @@
 
 OptionsMenu::OptionsMenu() : Menu(GameState::Options), _ReturnState(), _ChangeSliderValue()
 {
-	std::shared_ptr<Slider> slider1(new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 250)), MenuResult::Nothing, "FPS", 0.0f, 210.0f));
-	_MenuItems.push_back(slider1);
 
-	std::shared_ptr<Slider> slider2(new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 300)), MenuResult::Nothing, "Volume", 0.0f, 5.0f));
-	_MenuItems.push_back(slider2);
+	std::shared_ptr<Slider> fps(new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 250)), MenuResult::Nothing, "FPS", 0.0f, 210.0f));
+	_MenuItems.push_back(fps);
+
+	std::shared_ptr<Slider> volume(new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 300)), MenuResult::Nothing, "Volume", 0.0f, 5.0f));
+	_MenuItems.push_back(volume);
 
 	std::vector<std::string> difficulties = { "Easy", "Normal", "Hard", "Insane" };
-	std::shared_ptr<ComboBox> combobox(new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 100, 350), difficulties, MenuResult::Nothing));
-	_MenuItems.push_back(combobox);
+	std::shared_ptr<ComboBox> difficulty(new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 100, 350), difficulties, MenuResult::Nothing));
+	_MenuItems.push_back(difficulty);
 
-	std::shared_ptr<MenuButton> button1(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 420), sf::Vector2f(150, 50), MenuResult::Credits, "Credits", TextAlignment::Center));
-	_MenuItems.push_back(button1);
+	std::shared_ptr<MenuButton> credits(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 420), sf::Vector2f(150, 50), MenuResult::Credits, "Credits", TextAlignment::Center));
+	_MenuItems.push_back(credits);
 
-	std::shared_ptr<MenuButton> button2(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 490), sf::Vector2f(150, 50), MenuResult::Back, "Back", TextAlignment::Center));
-	_MenuItems.push_back(button2);
+	std::shared_ptr<MenuButton> back(new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 490), sf::Vector2f(150, 50), MenuResult::Back, "Back", TextAlignment::Center));
+	_MenuItems.push_back(back);
 
 	_Text.setString("Options");
 	_Text.setCharacterSize(53);

@@ -94,5 +94,6 @@ private:
 	void setVolume(float Volume);
 	void setMouseVisible(bool visible);
 	void setDifficulty(int Difficulty);
+	void setGameMode(GameMode gameMode);
 	void addScore();
 };

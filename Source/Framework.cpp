@@ -753,6 +753,11 @@ void Framework::setDifficulty(int Difficulty)
 	_GameObjectContainer.setDifficulty(Difficulty);
 }
 
+void Framework::setGameMode(GameMode gameMode)
+{
+	//changing even more things
+}
+
 void Framework::addScore()
 {
 	_Score += _GameObjectContainer.getCarScore();

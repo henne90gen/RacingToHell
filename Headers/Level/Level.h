@@ -76,7 +76,7 @@ public:
 	void resetTimer() { _LevelTime = 0; }
 
 	/*
-		Sets the selected difficulty
+		Sets the difficulty of the level to the selected difficulty
 		@param dif Difficulty
 	*/
 	void setDifficulty(int dif) { _Difficulty = dif; }

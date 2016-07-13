@@ -133,6 +133,19 @@ void OptionsMenu::update(float FrameTime)
 
 
 	_ScoreMultiplierText.setString("Score: x" + floatToString(_ScoreMultiplierList[(int)getGameMode()], 1));
+
+	if (_ScoreMultiplierList[(int)getGameMode()] == 1.0f)
+	{
+		_ScoreMultiplierText.setColor(sf::Color::White);
+	}
+	else if (_ScoreMultiplierList[(int)getGameMode()] < 1.0f)
+	{
+		_ScoreMultiplierText.setColor(sf::Color::Red);
+	}
+	else
+	{
+		_ScoreMultiplierText.setColor(sf::Color::Green);
+	}
 }
 
 void OptionsMenu::loadOptions(MultiplayerMenu& mpMenu) {

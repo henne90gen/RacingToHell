@@ -48,9 +48,50 @@ void PlayerCar::render(sf::RenderWindow& Window, bool renderCrosshair) {
 	}
 }
 
+
+void PlayerCar::setKeyPress(sf::Uint8 Keys)
+{
+	bool Up, Right, Down, Left;
+	Up = Keys & (sf::Uint8)KeyDown::Up;
+	Right = Keys & (sf::Uint8)KeyDown::Right;
+	Down = Keys & (sf::Uint8)KeyDown::Down;
+	Left = Keys & (sf::Uint8)KeyDown::Left;
+
+	_Acceleration = sf::Vector2f(0, 0);
+
+	if (Left) {
+		_Acceleration.x = -20.0f;
+	}
+	else if (Right) {
+		_Acceleration.x = 20.0f;
+	}
+	else {
+		_Acceleration.x = 0.0f;
+	}
+
+	if (Up) {
+		_Acceleration.y = -16.6f;
+	}
+	else if (Down) {
+		_Acceleration.y = 24.0f;
+	}
+	else {
+		_Acceleration.y = 0.0f;
+	}
+}
+
 void PlayerCar::handleEvent(sf::Event& Event)
 {
 	// Apply key input to car
+	sf::Uint8 Keys = 0;
+	Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) * (sf::Uint8)KeyDown::Up;
+	Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) * (sf::Uint8)KeyDown::Right;
+	Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) * (sf::Uint8)KeyDown::Down;
+	Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) * (sf::Uint8)KeyDown::Left;
+
+	setKeyPress(Keys);
+
+	/*
 	_Acceleration = sf::Vector2f(0, 0);
 
 	float X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
@@ -86,7 +127,7 @@ void PlayerCar::handleEvent(sf::Event& Event)
 	else {
 		_Acceleration.y = 0.0f;
 	}
-
+	*/
 
 	// Apply mouse and joystick movement
 	_CrosshairMovement = sf::Vector2f(0, 0);

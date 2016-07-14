@@ -8,3 +8,10 @@ enum class GameState {
 enum class GameMode {
 	Standard, Invincible, InfEnergy, Hardcore
 };
+
+enum class KeyDown {
+	Up = 1 << 1,
+	Right = 1 << 2,
+	Down = 1 << 3,
+	Left = 1 << 4
+};

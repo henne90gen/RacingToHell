@@ -252,8 +252,8 @@ void Framework::handleEvents()
 
 		if (_GameMode == GameMode::Hardcore)
 		{
-			_GameObjectContainer.getPlayerCar().setMaxHealth(5);
-			_GameObjectContainer.getPlayerCar().setHealth(5);
+			_GameObjectContainer.getPlayerCar().setMaxHealth(15);
+			_GameObjectContainer.getPlayerCar().setHealth(15);
 		}
 
 		if (_GameState == GameState::Running) {

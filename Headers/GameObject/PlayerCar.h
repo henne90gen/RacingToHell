@@ -106,7 +106,12 @@ public:
 	void operator<<(sf::Packet& packet);
 
 	void setMaxHealth(sf::Int16 health) { _MaxHealth = health; }
-	virtual void setHealth(sf::Int16 health) { _Health = health; }
+	void setHealth(sf::Int16 health) { _Health = health; }
+
+	/*
+	
+	*/
+	void setKeyPress(sf::Uint8 keys);
 private:
 	void shoot();
 

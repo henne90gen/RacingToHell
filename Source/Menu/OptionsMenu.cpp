@@ -3,7 +3,7 @@
 
 OptionsMenu::OptionsMenu() : Menu(GameState::Options), _ReturnState(), _ChangeSliderValue()
 {
-	_ScoreMultiplierList = { 1.0f, 0.0f, 3.f };
+	_ScoreMultiplierList = { 1.0f, 0.0f, 0.5f, 3.f };
 
 	std::shared_ptr<Slider> fps(new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 250)), MenuResult::Nothing, "FPS", 0.0f, 210.0f));
 	_MenuItems.push_back(fps);
@@ -15,9 +15,9 @@ OptionsMenu::OptionsMenu() : Menu(GameState::Options), _ReturnState(), _ChangeSl
 	std::shared_ptr<ComboBox> difficulty(new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 100, 350), difficulties, MenuResult::Nothing));
 	_MenuItems.push_back(difficulty);
 
-	std::vector<std::string> gamemodes = { "Standard", "Invincibility", "Hardcore" };
-	std::shared_ptr<ComboBox> combobox2(new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 150, 420), gamemodes, MenuResult::Nothing, 300));
-	_MenuItems.push_back(combobox2);
+	std::vector<std::string> gamemodes = { "Standard", "Invincibility", "Infinite Energy", "Hardcore" };
+	std::shared_ptr<ComboBox> gamemode(new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 160, 420), gamemodes, MenuResult::Nothing, 320));
+	_MenuItems.push_back(gamemode);
 
 	_ScoreMultiplierBackground.setPosition(sf::Vector2f(SCREENWIDTH / 2 - 150, 480));
 	_ScoreMultiplierBackground.setSize(sf::Vector2f(300, 25));
@@ -131,19 +131,13 @@ void OptionsMenu::update(float FrameTime)
 										_VolumeBackground.getPosition().y + _VolumeBackground.getLocalBounds().height / 2.0f - _Volume.getLocalBounds().height + 2));
 
 
-
 	_ScoreMultiplierText.setString("Score: x" + floatToString(_ScoreMultiplierList[(int)getGameMode()], 1));
 
-	if (_ScoreMultiplierList[(int)getGameMode()] == 1.0f)
-	{
+	if (_ScoreMultiplierList[(int)getGameMode()] == 1.0f) {
 		_ScoreMultiplierText.setColor(sf::Color::White);
-	}
-	else if (_ScoreMultiplierList[(int)getGameMode()] < 1.0f)
-	{
+	} else if (_ScoreMultiplierList[(int)getGameMode()] < 1.0f) {
 		_ScoreMultiplierText.setColor(sf::Color::Red);
-	}
-	else
-	{
+	} else {
 		_ScoreMultiplierText.setColor(sf::Color::Green);
 	}
 }

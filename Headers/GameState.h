@@ -6,5 +6,5 @@ enum class GameState {
 };
 
 enum class GameMode {
-	Standard, Invincible, Hardcore
+	Standard, Invincible, InfEnergy, Hardcore
 };

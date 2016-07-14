@@ -108,39 +108,30 @@ void HeadsUpDisplay::update(int score, int health, int energy, int level, float 
 	_ProgressBar.setSize(sf::Vector2f(levelTime * SCREENWIDTH / _TotalLevelTime, 10));
 
 	_HealthBar.setSize(sf::Vector2f((float)health / (float)_MaxHealth * 150, 30));
-	_HealthText.setString(std::to_string(health) + "/" + std::to_string(_MaxHealth));
 	
-	if (mode == GameMode::Invincible)
-	{
+	if (mode == GameMode::Invincible) {
 		_HealthText.setString(L"∞");
 		_HealthText.setCharacterSize(40);
-	}
-	else
-	{
-		_HealthText.setCharacterSize(20);
-	}
-
-	_HealthText.setPosition(sf::Vector2f(	_HealthBarOutline.getGlobalBounds().left + _HealthBarOutline.getLocalBounds().width - _HealthText.getLocalBounds().width - 7, 
-											_HealthBarOutline.getGlobalBounds().top + 3));
-
-	if (mode == GameMode::Invincible)
-	{
 		_HealthText.setPosition(_HealthText.getPosition() - sf::Vector2f(5, 12));
+	} else {
+		_HealthText.setString(std::to_string(health) + "/" + std::to_string(_MaxHealth));
+		_HealthText.setCharacterSize(20);_HealthText.setPosition(sf::Vector2f(_HealthBarOutline.getGlobalBounds().left + _HealthBarOutline.getLocalBounds().width - _HealthText.getLocalBounds().width - 7, _HealthBarOutline.getGlobalBounds().top + 3));
 	}
 
-	if (health <= 10)
-	{
+	if (health <= 10) {
 		_HealthText.setColor(sf::Color(255, 75, 75));
-	}
-	else
-	{
+	} else {
 		_HealthText.setColor(sf::Color::White);
 	}
 
 	_EnergyBar.setSize(sf::Vector2f((float)energy / (float)_MaxEnergy * 150, 30));
-	_EnergyText.setString(std::to_string(energy) + "/" + std::to_string(_MaxEnergy));
-	_EnergyText.setPosition(sf::Vector2f(_EnergyBarOutline.getGlobalBounds().left + _EnergyBarOutline.getLocalBounds().width - _EnergyText.getLocalBounds().width - 7,
-		_EnergyBarOutline.getGlobalBounds().top + 3));
+
+	if (mode == GameMode::InfEnergy) {
+		_EnergyText.setString(L"∞");
+	} else {
+		_EnergyText.setString(std::to_string(energy) + "/" + std::to_string(_MaxEnergy));
+		_EnergyText.setPosition(sf::Vector2f(_EnergyBarOutline.getGlobalBounds().left + _EnergyBarOutline.getLocalBounds().width - _EnergyText.getLocalBounds().width - 7, _EnergyBarOutline.getGlobalBounds().top + 3));
+	}
 
 	if (energy <= 10)
 	{

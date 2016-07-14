@@ -357,7 +357,7 @@ void Framework::handleEvents()
 			_NetworkHandle.setRelation(NetworkRelation::Client);
 			_MPGameObjectContainer.setNetworkRelation(NetworkRelation::Client);
 
-			GameObjectFactory::setDeltaID(2 ^ 32 / 2);
+			GameObjectFactory::setDeltaID((sf::Uint64)std::pow(2, 16) * (sf::Uint64)std::pow(2, 16) / 2);
 
 			_MultiplayerLobby.EnableButtons(false);
 			_MultiplayerLobby.setAdminTable(false);

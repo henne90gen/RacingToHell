@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameObject/Car.h"
+#include "GameObject/PlayerCar.h"
 #include "GameObject/GameObjectType.h"
 #include "GameObject/Bullet.h"
 #include "Animation/Explosion.h"
@@ -34,7 +35,7 @@ public:
 		@param roadSpeed Velocity of the road
 		@param gameObjects Reference to the vector with all the game objects, so that the boss can add the bullets it shoots
 	*/
-	virtual void update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<GameObject>>& gameObjects) = 0;
+	virtual void update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bullet>>& bullets, PlayerCar& player) = 0;
 
 	/*
 		Returns true if the boss allows traffic
@@ -104,9 +105,9 @@ protected:
 	bool _Attack, _Traffic;
 
 	float PlayerAngle(GameObject& Player);
-	void shootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir) { shootBullet(GameObjects, pos, dir, _BulletSpeed, _Volume); }
-	void shootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir, float volume) { shootBullet(GameObjects, pos, dir, _BulletSpeed, volume); }
-	virtual void shootBullet(std::vector<std::shared_ptr<GameObject>>& gameObjects, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed, float volume) = 0;
+	void shootBullet(std::vector<std::shared_ptr<Bullet>>& bullets, sf::Vector2f pos, sf::Vector2f dir) { shootBullet(bullets, pos, dir, _BulletSpeed, _Volume); }
+	void shootBullet(std::vector<std::shared_ptr<Bullet>>& bullets, sf::Vector2f pos, sf::Vector2f dir, float volume) { shootBullet(bullets, pos, dir, _BulletSpeed, volume); }
+	virtual void shootBullet(std::vector<std::shared_ptr<Bullet>>& bullets, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed, float volume) = 0;
 	bool driveToNextPosition(float FrameTime);
 	int getBossEvent();
 	void updateHealthBar();

@@ -25,7 +25,7 @@ public:
 	/*
 		See BossCar for details
 	*/
-	void update(float FrameTime, int RoadSpeed, std::vector<std::shared_ptr<GameObject>> & GameObjects);
+	void update(float FrameTime, int RoadSpeed, std::vector<std::shared_ptr<Bullet>>& bullets, PlayerCar& player);
 
 	/*
 		Overriding setPos() of GameObject
@@ -63,7 +63,7 @@ private:
 	MechTop _TopAnim;
 	MechLegs _LegsAnim;
 
-	void shootBullet(std::vector<std::shared_ptr<GameObject>>& gameObjects, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed, float volume);
+	void shootBullet(std::vector<std::shared_ptr<Bullet>>& bullets, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed, float volume);
 
 	bool _MovementSwitch;
 

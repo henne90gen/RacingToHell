@@ -6,6 +6,8 @@
 class GameObject : public Serializable
 {
 public:
+	GameObject() {}
+
 	/*
 		Any object that can be on the screen
 		@param pos Position of the GameObject
@@ -25,7 +27,7 @@ public:
 	/*
 		Any object that can be on the screen
 		Use this constructor with extrem caution, no texture is being specified
-		To fully use the GameObject one has to specifiy a texture!
+		To fully use a GameObject you have to specifiy a texture!
 		@param stream Input stream that contains all the other information needed to make a GameObject
 		@param type Type of the GameObject
 	*/
@@ -56,13 +58,6 @@ public:
 	virtual void render(sf::RenderWindow& window);
 
 	/*
-		Renders the GameObject to the specified RenderWindow (PlayerCar)
-		@param window Window to draw to
-		@param renderCrosshair States whether or not the crosshair should be drawn
-	*/
-	virtual void render(sf::RenderWindow& window, bool renderCrosshair) {};
-
-	/*
 		Handles events for GameObject
 		@param newEvent Event to be handled
 	*/
@@ -74,14 +69,6 @@ public:
 		@param roadSpeed Velocity of the road
 	*/
 	virtual void update(float frameTime, int roadSpeed);
-
-	/*
-		Updates the GameObject with the given frame time (Boss)
-		@param frameTime Time that has passed since the last update
-		@param roadSpeed Velocity of the road
-		@param GameObjects GameObject-Vector
-	*/
-	virtual void update(float FrameTime, int roadSpeed, std::vector<std::shared_ptr<GameObject>>& GameObjects) {};
 
 	/*
 		@return GameObjectTyoe The type of the GameObject
@@ -140,105 +127,6 @@ public:
 	bool checkForCollision(GameObject& go);
 
 	/*
-		Current lane the car is on
-		@return int Number of the lane
-	*/
-	virtual int getLane() { return -1; }
-
-	/*
-		@return int Speed of the Car
-	*/
-	virtual int getSpeed() { return -1; }
-
-	/*
-		Sets the speed of the GameObject
-		@param int New speed of the GameObject
-	*/
-	virtual void setSpeed(int Speed) {};
-
-	/*
-		@return int Health of the GameObject
-	*/
-	virtual int getHealth() { return -1; }
-
-	/*
-		@return int Maximum-Health of the GameObject
-	*/
-	virtual int getMaxHealth() { return -1; }
-
-	/*
-		Damage the car and subtract the damage from the health
-		@param damage Amount of health to subtract
-	*/
-	virtual void takeDamage(int Damage) {}
-
-	/*
-		Adds 50 to the players energy if possible
-	*/
-	virtual void addEnergy() {}
-
-	/*
-		@return float Energy of the player
-	*/
-	virtual float getEnergy() { return -1; }
-
-	/*
-		@return float Maximum amount of energy the player can have
-	*/
-	virtual int getMaxEnergy() { return -1; }
-
-	/*
-		Adds 20 to the players health if possible
-	*/
-	virtual void addHealth() {}
-
-	/*
-		(Player) drains energy
-	*/
-	virtual void drainEnergy(float FrameTime) {}
-
-	/*
-		(Player) drains shot energy
-	 */
-	virtual bool drainShotEnergy() {}
-
-	/*
-		(Player) reset HP and Energy
-	*/
-	virtual void resetResources() {}
-
-	/*
-		@return int Damage of a bullet fired by the player
-	*/
-	virtual int getBulletdamage() { return -1; }
-
-	/*
-		Gives back the direction of the shot bullet, if x or y are 0 then no bullet was fired
-		@return sf::Vector2f Direction of the shot bullet
-	*/
-	virtual sf::Vector2f getShotBullet() { return sf::Vector2f(0, 0); }
-
-	/*
-		Changes the players stats according to the id of the car he chose.
-	*/
-	virtual void setStats(int CurrentIndex) {}
-
-	/*
-		Returns true if the boss allows traffic
-	*/
-	virtual bool getTraffic() { return false; }
-
-	/*
-		Returns true if the boss is dead and all explosion animations are done playing
-	*/
-	virtual bool isDoneExploding(sf::Texture& ExplosionTexture) { return false; }
-
-	/*
-		Resets Movement Vector
-	*/
-	virtual void resetMovement();
-
-	/*
 		Calculates the angle a vector is at
 		@param vec Vector whoms angle is going to be calculated
 		@return float Angle in degrees
@@ -288,9 +176,6 @@ public:
 
 	virtual sf::Vector2f getDir() { return sf::Vector2f(); }
 
-	virtual void setMaxHealth(sf::Int16 health) {}
-	virtual void setHealth(sf::Int16 health) {}
-
 protected:
 
 	sf::Uint32 _ID;
@@ -299,8 +184,6 @@ private:
 	sf::Sprite _Sprite;
 	sf::Texture _Texture;
 	
-	
-
 	GameObjectType _Type;
 };
 

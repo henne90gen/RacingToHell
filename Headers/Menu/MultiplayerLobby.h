@@ -9,7 +9,7 @@ class MultiplayerLobby : public Menu
 {
 public:
 	MultiplayerLobby();
-	~MultiplayerLobby() {}
+	virtual ~MultiplayerLobby() {}
 
 	/*
 		Renders the OptionsMenu to the specified RenderWindow

@@ -34,8 +34,10 @@ void Tank::render(sf::RenderWindow& window)
 	renderExplosions(window);
 }
 
-void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<GameObject>>& gameObjects)
+void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bullet>>& bullets, PlayerCar& player)
 {
+	Car::update(frameTime, roadSpeed);
+
 	if (!_IsExploding) {
 		if (driveToNextPosition(frameTime))
 		{
@@ -68,10 +70,10 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 			case Phase::SIMPLESHOOT:
 				_Event1Frequency = 4.25f + 1.25f * (float)_Difficulty;
 
-				_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
+				_GunOrientation = divideByLength(player.getPos() - getPos());
 
 				if (getBossEvent() == 1) {
-					BossCar::shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
+					BossCar::shootBullet(bullets, calcBulletPosition(), _GunOrientation);
 				}
 				break;
 			case Phase::SALVE:
@@ -79,11 +81,11 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 				_Event1Frequency = 1.0f + 0.75f * (float)_Difficulty;
 				_Event2Frequency = 10.0f + 1.0f * (float)_Difficulty;
 
-				_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
+				_GunOrientation = divideByLength(player.getPos() - getPos());
 
 				if (_Event1Switch) {
 					if (getBossEvent() == 2) {
-						BossCar::shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
+						BossCar::shootBullet(bullets, calcBulletPosition(), _GunOrientation);
 						if (_Event1Counter + 1 < 3) {
 							_Event1Counter += 1;
 						}
@@ -120,7 +122,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 				_GunOrientation = divideByLength(sf::Vector2f(std::cos(angle * PI / 180), std::sin(angle * PI / 180)));
 
 				if (getBossEvent() == 1) {
-					BossCar::shootBullet(gameObjects, calcBulletPosition(), _GunOrientation);
+					BossCar::shootBullet(bullets, calcBulletPosition(), _GunOrientation);
 				}
 				break;
 			case Phase::HARDCORESPAM:
@@ -129,7 +131,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 					_Event1Counter++;
 					_GunOrientation = divideByLength(sf::Vector2f(((float)(std::rand() - (float)(RAND_MAX) / 2) / (float)(RAND_MAX)), 
 						((float)(std::rand() - (float)(RAND_MAX) / 2) / (float)(RAND_MAX))));
-					BossCar::shootBullet(gameObjects, calcBulletPosition(), _GunOrientation, (float)(_Event1Counter % 5 < 2) * _Volume);
+					BossCar::shootBullet(bullets, calcBulletPosition(), _GunOrientation, (float)(_Event1Counter % 5 < 2) * _Volume);
 				}
 				break;
 			}
@@ -146,9 +148,9 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 	}
 }
 
-void Tank::shootBullet(std::vector<std::shared_ptr<GameObject>>& gameObjects, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed, float volume)
+void Tank::shootBullet(std::vector<std::shared_ptr<Bullet>>& bullets, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed, float volume)
 {
-	gameObjects.push_back(GameObjectFactory::getBullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss, _soundEffects, volume));
+	bullets.push_back(GameObjectFactory::getBullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss, _soundEffects, volume));
 }
 
 void Tank::init()

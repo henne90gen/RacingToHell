@@ -50,12 +50,12 @@ public:
 	/*
 		@return GameObject* Pointer to the PlayerCar
 	*/
-	GameObject& getPlayerCar() { return *_GameObjects.at(0); }
+	std::shared_ptr<PlayerCar> getPlayerCar() { return _Player; }
 
 	/*
 		@return GameObject* Pointer to the BossCar
 	*/
-	GameObject& getBossCar() { return *_GameObjects.at(1); }
+	std::shared_ptr<BossCar> getBossCar() { return _Boss; }
 
 	/*
 		@return bool True if the player is still alive
@@ -136,6 +136,11 @@ public:
 	void setGameMode(GameMode mode) { _GameMode = mode; }
 private:
 	std::vector<std::shared_ptr<GameObject>> _GameObjects;
+	std::vector<std::shared_ptr<AICar>> _Cars;
+	std::vector<std::shared_ptr<Bullet>> _Bullets;
+	std::shared_ptr<PlayerCar> _Player;
+	std::shared_ptr<BossCar> _Boss;
+
 	std::vector<std::shared_ptr<Animation>> _Animations;
 
 	sf::Texture _ExplosionTexture;
@@ -177,7 +182,9 @@ private:
 		Deletes a GameObject from the vector of GameObjects
 		@param id Index of the GameObject that will be deleted
 	*/
-	void deleteObject(unsigned int id);
+	template <typename T> void deleteObject(T &arr, unsigned int id) {
+		arr.erase(arr.begin() + id);
+	}
 
 	/*
 		calculates the hp of a AIcar

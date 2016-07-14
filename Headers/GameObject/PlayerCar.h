@@ -15,6 +15,7 @@ public:
 		@param selectedCar Index of the selected car to set the stats
 		@param texture Texture that is going to be used for the sprite
 	*/
+	PlayerCar() {}
 	PlayerCar(unsigned int id, int selectedCar, sf::Texture& texture);
 	PlayerCar(std::istream& stream, std::vector<std::shared_ptr<sf::Texture>>& textures);
 	PlayerCar(sf::Packet& packet, std::vector<std::shared_ptr<sf::Texture>>& textures);

@@ -142,7 +142,7 @@ void OptionsMenu::update(float FrameTime)
 	}
 }
 
-void OptionsMenu::loadOptions(MultiplayerMenu& mpMenu) {
+void OptionsMenu::loadOptions(/*MultiplayerMenu& mpMenu*/) {
 	std::vector<std::string> Settings;
 	std::string Option;
 	std::ifstream FileStream;
@@ -160,20 +160,21 @@ void OptionsMenu::loadOptions(MultiplayerMenu& mpMenu) {
 		setVolume(std::stof(Settings[1]));
 		setDifficulty(std::stoi(Settings[2]));
 
-		if (Settings.size() >= 4)
-		{
+		/*if (Settings.size() >= 4)
+		{ // TODO: Multi
 			mpMenu.setPlayerName(Settings[3]);
-		}
+		}*/
 	} 
 }
 
-void OptionsMenu::saveOptions(MultiplayerMenu& mpMenu)
+void OptionsMenu::saveOptions(/*MultiplayerMenu& mpMenu*/)
 {
 	std::string Path = "Resources/Data/Settings.cfg";
 	std::ofstream FileStream;
 	FileStream.open(Path);
 
-	FileStream << getFPS() << std::endl << getVolume() << std::endl << getDifficulty() << std::endl << mpMenu.getPlayerName();
+	// TODO: Multi
+	FileStream << getFPS() << std::endl << getVolume() << std::endl << getDifficulty() << std::endl/* << mpMenu.getPlayerName()*/;
 
 	FileStream.close();
 }

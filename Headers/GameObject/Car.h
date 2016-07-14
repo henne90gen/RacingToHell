@@ -8,6 +8,8 @@
 class Car : public GameObject
 {
 public:
+
+	Car() {}
 	/*
 		Car that can drive around on the road
 		@param pos Initial position of the car

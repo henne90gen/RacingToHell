@@ -33,7 +33,7 @@ void Mech::render(sf::RenderWindow & window)
 	renderExplosions(window);
 }
 
-void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<GameObject>>& gameObjects)
+void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bullet>>& bullets, PlayerCar& player)
 {
 	float gunPosLength = std::sqrt(std::pow(_GunPosition.x, 2) + std::pow(_GunPosition.y, 2));
 	_GunPosition = sf::Vector2f(cosf(std::atan(_GunOrientation.y / _GunOrientation.x) + PI / 2),
@@ -95,13 +95,13 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 				{
 					std::pair<sf::Vector2f, sf::Vector2f> Positions = calcGunPositions();
 
-					BossCar::shootBullet(gameObjects, Positions.first, _GunOrientation);
-					BossCar::shootBullet(gameObjects, Positions.second, _GunOrientation);
+					BossCar::shootBullet(bullets, Positions.first, _GunOrientation);
+					BossCar::shootBullet(bullets, Positions.second, _GunOrientation);
 				}
 				break;
 			}
 			case Phase::SHOTGUN:
-				_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
+				_GunOrientation = divideByLength(bullets[0]->getPos() - getPos());
 
 				_Event1Frequency = 1.0f + 0.25f * (float)(_Difficulty);
 
@@ -114,11 +114,11 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 						sf::Vector2f bulOrientation = divideByLength(sf::Vector2f(std::cos(bulAngle), std::sin(bulAngle)));
 						if (Hand)
 						{
-							shootBullet(gameObjects, calcGunPositions().first, bulOrientation, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed), (float)(i % 3 > 0) * _Volume);
+							shootBullet(bullets, calcGunPositions().first, bulOrientation, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed), (float)(i % 3 > 0) * _Volume);
 						}
 						else
 						{
-							shootBullet(gameObjects, calcGunPositions().second, bulOrientation, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed), (float)(i % 3 > 0) * _Volume);
+							shootBullet(bullets, calcGunPositions().second, bulOrientation, 0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed), (float)(i % 3 > 0) * _Volume);
 						}
 					}
 
@@ -127,7 +127,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 				}
 				break;
 			case Phase::SALVE:
-				_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
+				_GunOrientation = divideByLength(bullets[0]->getPos() - getPos());
 
 				_Event1Frequency = 1.25f + 0.25f * (float)_Difficulty;
 
@@ -147,17 +147,17 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 
 						if (Hand)
 						{
-							BossCar::shootBullet(gameObjects, calcGunPositions().first, bulOrientation);
+							BossCar::shootBullet(bullets, calcGunPositions().first, bulOrientation);
 						}
 						else
 						{
-							BossCar::shootBullet(gameObjects, calcGunPositions().second, bulOrientation);
+							BossCar::shootBullet(bullets, calcGunPositions().second, bulOrientation);
 						}
 					}
 				}
 				break;
 			case Phase::SALVEZICKZACK:
-				_GunOrientation = divideByLength(gameObjects[0]->getPos() - getPos());
+				_GunOrientation = divideByLength(player.getPos() - getPos());
 
 				_Event1Frequency = 1.25f + 0.25f * (float)_Difficulty;
 
@@ -177,11 +177,11 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 
 						if (Hand)
 						{
-							BossCar::shootBullet(gameObjects, calcGunPositions().first, bulOrientation);
+							BossCar::shootBullet(bullets, calcGunPositions().first, bulOrientation);
 						}
 						else
 						{
-							BossCar::shootBullet(gameObjects, calcGunPositions().second, bulOrientation);
+							BossCar::shootBullet(bullets, calcGunPositions().second, bulOrientation);
 						}
 					}
 				}
@@ -189,7 +189,8 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Ga
 			case Phase::RUNATPLAYERPHASE:
 				if (!_Event1Switch)
 				{
-					_NextPosition = gameObjects[0]->getPos();
+					// TODO this should be the player position
+					_NextPosition = player.getPos();
 					_Movement = Movement::RUNATPLAYER;
 					_Speed = (3.5 + 2 * _Difficulty) * _BaseSpeed;
 					_Attack = false;
@@ -260,9 +261,9 @@ void Mech::init()
 	};
 }
 
-void Mech::shootBullet(std::vector<std::shared_ptr<GameObject>>& gameObjects, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed, float volume)
+void Mech::shootBullet(std::vector<std::shared_ptr<Bullet>>& bullets, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed, float volume)
 {
-	gameObjects.push_back(GameObjectFactory::getBullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss, _soundEffects, volume));
+	bullets.push_back(GameObjectFactory::getBullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss, _soundEffects, volume));
 }
 
 std::pair<sf::Vector2f, sf::Vector2f> Mech::calcGunPositions()

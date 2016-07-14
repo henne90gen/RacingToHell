@@ -13,7 +13,7 @@ class MultiplayerMenu : Menu
 {
 public:
 	MultiplayerMenu();
-	~MultiplayerMenu() {}
+	virtual ~MultiplayerMenu() {}
 
 	/*
 	Renders the OptionsMenu to the specified RenderWindow

@@ -23,14 +23,14 @@ public:
 	/*
 		See BossCar for details
 	*/
-	void update(float FrameTime, int RoadSpeed, std::vector<std::shared_ptr<GameObject>>& gameObjects);
+	void update(float FrameTime, int RoadSpeed, std::vector<std::shared_ptr<Bullet>>& bullets, PlayerCar& player);
 	
 	void init();
 private:
 	sf::Texture _GunTexture;
 	sf::Sprite _GunSprite;
 
-	virtual void shootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir, int BulletSpeed, float volume);
+	virtual void shootBullet(std::vector<std::shared_ptr<Bullet>>& bullets, sf::Vector2f pos, sf::Vector2f dir, int BulletSpeed, float volume);
 
 	bool _MovementSwitch;
 };

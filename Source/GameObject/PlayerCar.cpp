@@ -101,10 +101,8 @@ void PlayerCar::handleEvent(sf::Event& Event)
 		}
 	}
 	else if (Event.type == sf::Event::MouseButtonPressed || (Event.type == sf::Event::JoystickButtonPressed && sf::Joystick::isButtonPressed(0, 5))) {
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-			_AutoFireTimer.restart();
-		}
 		shoot();
+		_AutoFireTimer.restart();
 	}
 }
 
@@ -172,12 +170,14 @@ void PlayerCar::update(float FrameTime, int RoadSpeed)
 
 	_Crosshair.setPosition(_Crosshair.getPosition() + _CrosshairMovement * FrameTime * _CrosshairSpeed);
 
+	// TODO re-enable auto fire
+	/*std::cout << "Time: " << _AutoFireTimer.getElapsedTime().asSeconds() << std::endl;
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 		if (_AutoFireTimer.getElapsedTime().asSeconds() >= 0.175f) {
 			shoot();
 			_AutoFireTimer.restart();
 		}
-	}
+	}*/
 
 	// Sound listener
 	sf::Listener::setPosition(getPos().x, 0.f, getPos().y);

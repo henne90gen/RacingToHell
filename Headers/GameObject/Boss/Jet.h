@@ -18,7 +18,7 @@ public:
 	/*
 		See BossCar for details
 	*/
-	void update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<GameObject>>& GameObjects);
+	void update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bullet>>& bullets, PlayerCar& player);
 
 	/*
 		See BossCar for details
@@ -40,7 +40,7 @@ private:
 	*/
 	void checkPhase();
 
-	virtual void shootBullet(std::vector<std::shared_ptr<GameObject>>& GameObjects, sf::Vector2f pos, sf::Vector2f dir, int BulletSpeed, float volume);
+	virtual void shootBullet(std::vector<std::shared_ptr<Bullet>>& bullets, sf::Vector2f pos, sf::Vector2f dir, int BulletSpeed, float volume);
 
 	sf::SoundBuffer _EngineSoundBuffer;
 	sf::Sound _EngineSound;

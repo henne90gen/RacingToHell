@@ -51,7 +51,7 @@ public:
 	/*
 		@return GameObject& Reference to the PlayerCar
 	*/
-	GameObject& getPlayerCar() { return *_GameObjects.at(0); }
+	PlayerCar& getPlayerCar() { PlayerCar car; return car; }
 
 	/*
 		@return GameObject& Reference to the PlayerCar

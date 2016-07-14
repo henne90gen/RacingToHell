@@ -76,10 +76,6 @@ sf::Vector2f GameObject::divideByLength(sf::Vector2f vec)
 	return vec / float(std::sqrt(std::pow(vec.x, 2) + std::pow(vec.y, 2)));
 }
 
-void GameObject::resetMovement() {
-	
-}
-
 void GameObject::operator>>(std::ostream& stream)
 {
 	write(stream, (sf::Uint8)getType());

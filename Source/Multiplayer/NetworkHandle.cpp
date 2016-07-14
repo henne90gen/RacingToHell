@@ -175,6 +175,7 @@ void NetworkHandle::run()
 		}
 
 		++_Tick;
+
 		if (beginningTime.getElapsedTime().asSeconds() < 1.0f / (float)_TickRate) {
 			sf::sleep(sf::seconds((1.0f / (float)_TickRate) - beginningTime.getElapsedTime().asSeconds()));
 		}

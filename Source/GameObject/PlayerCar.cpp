@@ -224,12 +224,17 @@ void PlayerCar::update(float FrameTime, int RoadSpeed)
 	sf::Listener::setPosition(getPos().x, 0.f, getPos().y);
 }
 
-void PlayerCar::shoot() {
+bool PlayerCar::drainShotEnergy() {
 	if (_Energy - 5 >= 10) {
 		_Energy -= 5;
-		_ShotBullet = _Crosshair.getPosition() - getPos();
-		_ShotBullet = _ShotBullet / float(std::sqrt(std::pow(_ShotBullet.x, 2) + std::pow(_ShotBullet.y, 2)));
+		return true;
 	}
+	return false;
+}
+
+void PlayerCar::shoot() {
+	_ShotBullet = _Crosshair.getPosition() - getPos();
+	_ShotBullet = _ShotBullet / float(std::sqrt(std::pow(_ShotBullet.x, 2) + std::pow(_ShotBullet.y, 2)));
 }
 
 sf::Vector2f PlayerCar::getShotBullet() {

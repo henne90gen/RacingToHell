@@ -198,9 +198,14 @@ public:
 	virtual void drainEnergy(float FrameTime) {}
 
 	/*
+		(Player) drains shot energy
+	 */
+	virtual bool drainShotEnergy() {}
+
+	/*
 		(Player) reset HP and Energy
 	*/
-	virtual void resetResources() {};
+	virtual void resetResources() {}
 
 	/*
 		@return int Damage of a bullet fired by the player

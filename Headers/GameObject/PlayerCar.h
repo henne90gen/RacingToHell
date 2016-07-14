@@ -87,6 +87,11 @@ public:
 	void drainEnergy(float FrameTime) { _Energy -= 2 * FrameTime; }
 
 	/*
+		Must be called after player shot
+	 */
+	bool drainShotEnergy();
+
+	/*
 		Fills up resources to its maximum
 	*/
 	void resetResources() { _Health = _MaxHealth; _Energy = _MaxEnergy; }

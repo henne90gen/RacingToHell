@@ -50,7 +50,13 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 						{
 							getPlayerCar().takeDamage(5);
 						}		
-						playHitSound(getPlayerCar().getPos());
+						playHitSound(getPlayerCar()if (_Animations[i]->getAnimationState() == Animation::AnimationState::Stop) {
+							_Animations.erase(_Animations.begin() + i);
+							i--;
+						}
+						else {
+							_Animations[i]->update(FrameTime);
+						}.getPos());
 						deleteObject(i);
 						i--;
 						break;
@@ -231,13 +237,14 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 			setToolboxFrequency();
 		}
 
-		getPlayerCar().drainEnergy(FrameTime);
+		if (_GameMode != GameMode::InfEnergy) {
+			getPlayerCar().drainEnergy(FrameTime);
+		}
 	}
 
 	// Check whether player fired a shot
 	sf::Vector2f bulletDir = getPlayerCar().getShotBullet();
-	if (bulletDir.x != 0 || bulletDir.y != 0)
-	{
+	if ((bulletDir.x != 0 || bulletDir.y != 0) && (_GameMode == GameMode::InfEnergy || getPlayerCar().drainShotEnergy())) {
 		_GameObjects.push_back(GameObjectFactory::getBullet(getPlayerCar().getPos(), bulletDir, _PlayerBulletSpeed, GameObjectType::BulletObjectPlayer, _SoundEffects, _Volume));
 	}
 }

@@ -141,7 +141,7 @@ MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 		if (_Enabled && _Focused) {
 			// Checking if typed character is valid: [0-9][A-Z][a-z]
 			sf::Uint32 c = Event.text.unicode;
-			if ((c > 45 && c < 58) || (c > 64 && c < 91) || (c > 96 && c < 123)) {
+			if ((c > 44 && c < 58) || (c > 64 && c < 91) || (c > 96 && c < 123)) {
 				std::string newString = _Text.getString().substring(0, _CursorPosition) + static_cast<char>(c) + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition);
 
 				if (!isStringTooLarge(newString)) {

@@ -6,6 +6,8 @@ MPGameObjectContainer::MPGameObjectContainer() : _PlayerBulletSpeed(600), _AIBul
 MPGameObjectContainer::~MPGameObjectContainer()
 {
 	_GameObjects.clear();
+	_Cars.clear();
+	_Bullets.clear();
 }
 
 void MPGameObjectContainer::update(float FrameTime, int RoadSpeed, NetworkHandle& network)
@@ -291,7 +293,8 @@ void MPGameObjectContainer::resetGameObjects(int SelectedCar)
 	_Level = 1;
 
 	//Spielerauto
-	_GameObjects.push_back(GameObjectFactory::getPlayerCar(SelectedCar));
+	_Player1 = GameObjectFactory::getPlayerCar(SelectedCar);
+	_Player2 = GameObjectFactory::getPlayerCar(SelectedCar);
 
 	//Frequenz
 	setAllFrequencies();

@@ -455,6 +455,7 @@ void Framework::handleEvents()
 
 void Framework::update()
 {
+
 	switch (_GameState) {
 	case GameState::Running:
 		if (_Level.update(_FrameTime, _GameState)) {
@@ -543,7 +544,6 @@ void Framework::update()
 		break;
 	case GameState::Connecting:
 	{
-
 		_Level.update(_FrameTime, _GameState);
 		NetworkCommunication netComm = _MultiplayerMenu.update(_FrameTime);
 		if (netComm == NetworkCommunication::ConnectionSuccesfull) {

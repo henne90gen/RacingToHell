@@ -597,11 +597,11 @@ void Framework::update()
 			_GameState = GameState::Countdown;
 		}
 		
-		if (lastResponse.first == NetworkCommunication::StartGame) {
+		/*if (lastResponse.first == NetworkCommunication::StartGame) {
 			sf::Packet packet;
 			_MPGameObjectContainer.getPlayerCar() >> packet;
 			_NetworkHandle.addPacket(NetworkCommunication::CreateGameObject, packet);
-		}
+		}*/
 
 		_Level.update(_FrameTime, _GameState);
 		break;
@@ -613,8 +613,8 @@ void Framework::update()
 		break;
 	case GameState::RunningMultiplayer:
 	case GameState::PauseMultiplayer:
-		_MPGameObjectContainer.handleOutgoingPackets(_NetworkHandle.getSendPackets());
-		_MPGameObjectContainer.handleIncomingPackets(_NetworkHandle);
+		//_MPGameObjectContainer.handleOutgoingPackets(_NetworkHandle.getSendPackets());
+		//_MPGameObjectContainer.handleIncomingPackets(_NetworkHandle);
 		if (_Level.update(_FrameTime, _GameState)) {
 			if (_MPGameObjectContainer.emptyScreen()) {
 				_MPGameObjectContainer.enterBossFight();
@@ -630,17 +630,6 @@ void Framework::update()
 		break;
 	}
 }
-
-/*
-
-
-
-
-
-
-
-
-*/
 
 void Framework::playSounds() {
 	if (_GameState == GameState::Running || 

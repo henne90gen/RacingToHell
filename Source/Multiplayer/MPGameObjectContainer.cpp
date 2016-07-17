@@ -206,15 +206,13 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed, NetworkHandle
 
 void MPGameObjectContainer::render(sf::RenderWindow& Window, bool renderCrosshair)
 {
-	for (unsigned int i = _GameObjects.size(); i > 0; i--)
+	for (unsigned int i = 0; i <_GameObjects.size(); i++)
 	{
-		if (_GameObjects.at(i - 1)->getType() == GameObjectType::Player && _PlayerAlive) {
-		//	_GameObjects.at(i - 1)->render(Window, renderCrosshair);
-		}
-		else {
-			_GameObjects.at(i - 1)->render(Window);
-		}
+		_GameObjects.at(i)->render(Window);
 	}
+
+	_Player1->render(Window, renderCrosshair);
+	_Player1->render(Window, renderCrosshair);
 
 	for (int i = 0; i < _Animations.size(); i++) {
 		_Animations[i]->render(Window);

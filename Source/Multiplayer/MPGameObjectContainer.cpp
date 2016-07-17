@@ -10,6 +10,7 @@ MPGameObjectContainer::~MPGameObjectContainer()
 
 void MPGameObjectContainer::update(float FrameTime, int RoadSpeed, NetworkHandle& network)
 {
+	/*
 	if (getPlayer2Car().getType() != GameObjectType::Player) {
 		// TODO: Add failsafe
 	}
@@ -164,11 +165,11 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed, NetworkHandle
 						deleteGameObject(j);
 						break;
 					}
-				}*/
+				}
 			}
 		}
 	}
-
+	
 	// Delete destroyed cars
 	for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
@@ -180,6 +181,8 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed, NetworkHandle
 			i--;
 		}
 	}
+
+	*/
 }
 
 void MPGameObjectContainer::render(sf::RenderWindow& Window, bool renderCrosshair)
@@ -187,7 +190,7 @@ void MPGameObjectContainer::render(sf::RenderWindow& Window, bool renderCrosshai
 	for (unsigned int i = _GameObjects.size(); i > 0; i--)
 	{
 		if (_GameObjects.at(i - 1)->getType() == GameObjectType::Player && _PlayerAlive) {
-			_GameObjects.at(i - 1)->render(Window, renderCrosshair);
+		//	_GameObjects.at(i - 1)->render(Window, renderCrosshair);
 		}
 		else {
 			_GameObjects.at(i - 1)->render(Window);
@@ -231,6 +234,7 @@ void MPGameObjectContainer::stopSounds()
 
 bool MPGameObjectContainer::bossIsDead()
 {
+	/*
 	if (_BossFight) {
 		if (getBossCar().getHealth() <= 0) {
 			_AboutToLevelUp = true;
@@ -250,7 +254,7 @@ bool MPGameObjectContainer::bossIsDead()
 
 			return true;
 		}
-	}
+	} */
 	return false;
 }
 
@@ -333,10 +337,10 @@ void MPGameObjectContainer::spawnAICar(int roadSpeed, NetworkHandle& network)
 	{
 		if (_GameObjects.at(i)->getType() == GameObjectType::AI)
 		{
-			if (_GameObjects.at(i)->getLane() == newAiCar->getLane() && _GameObjects.at(i)->getPos().y < _GameObjects.at(i)->getHeight() / 2 + 20)
-			{
-				return;
-			}
+			//if (_GameObjects.at(i)->getLane() == newAiCar->getLane() && _GameObjects.at(i)->getPos().y < _GameObjects.at(i)->getHeight() / 2 + 20)
+			//{
+			//	return;
+			//}
 		}
 	}
 

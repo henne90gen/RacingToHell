@@ -147,6 +147,12 @@ private:
 	sf::Clock _SendTimer;
 
 	std::vector<std::shared_ptr<GameObject>> _GameObjects;
+	std::vector<std::shared_ptr<AICar>> _Cars;
+	std::vector<std::shared_ptr<Bullet>> _Bullets;
+	std::shared_ptr<PlayerCar> _Player1;
+	std::shared_ptr<PlayerCar> _Player2;
+	std::shared_ptr<BossCar> _Boss;
+
 	std::vector<std::pair<NetworkCommunication, std::shared_ptr<GameObject>>> _SendObjects;
 	std::vector<std::shared_ptr<Animation>> _Animations;
 

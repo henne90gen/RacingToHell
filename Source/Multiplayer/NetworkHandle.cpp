@@ -112,7 +112,7 @@ void NetworkHandle::disconnect(bool self)
 		if (_LastResponse.first != NetworkCommunication::Kick)
 		{
 			std::cout << "Lobby closed by the host." << std::endl;
-	}
+		}
 		else
 		{
 			std::cout << "You have been kicked by the host." << std::endl;
@@ -271,15 +271,15 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 			_LastResponse = std::make_pair(NetworkCommunication::StartGame, (int)(_Tick - Tick));
 			_State = NetworkState::Ingame;
 			break;
-		case NetworkCommunication::CreateGameObject:
-		case NetworkCommunication::DeleteGameObject:
-		case NetworkCommunication::UpdateP2:
+		//case NetworkCommunication::CreateGameObject:
+		//case NetworkCommunication::DeleteGameObject:
+		/*case NetworkCommunication::UpdateP2:
 			_ReceivedPackets.push_back(packet);
 			break;
 		case NetworkCommunication::EndGame:
 			_LastResponse = std::make_pair(NetworkCommunication::EndGame, 0);
 			_State = NetworkState::Lobby;
-			break;
+			break;*/
 		case NetworkCommunication::Kick:
 			if (_Relationship == NetworkRelation::Client)
 			{

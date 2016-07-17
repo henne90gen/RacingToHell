@@ -57,8 +57,7 @@ private:
 	GameObjectContainer _GameObjectContainer;
 	std::vector<std::shared_ptr<sf::Texture>> _CarSkins;
 
-	// TODO: Multi
-	//MPGameObjectContainer _MPGameObjectContainer;
+	MPGameObjectContainer _MPGameObjectContainer;
 
 	// Level
 	Level _Level;
@@ -76,10 +75,9 @@ private:
 	LoadingScreen _LoadingScreen;
 	LevelUpScreen _LevelUpScreen;
 	HeadsUpDisplay _HeadsUpDisplay;
-	// TODO: Multi
-	//MultiplayerMenu _MultiplayerMenu;
-	//MultiplayerLobby _MultiplayerLobby;
-	//PauseMultiplayerMenu _PauseMultiplayerMenu;
+	MultiplayerMenu _MultiplayerMenu;
+	MultiplayerLobby _MultiplayerLobby;
+	PauseMultiplayerMenu _PauseMultiplayerMenu;
 	Countdown _Countdown;
 
 	//Multiplayer

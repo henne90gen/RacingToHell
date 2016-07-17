@@ -20,10 +20,9 @@ Framework::Framework() : _FrameTime(0), _FPS(60.0f), _IsRunning(true), _GameStat
 	srand(time(NULL));
 
 	//Multiplayer
-	// TODO: Multi
-	/*_MultiplayerMenu.setNetworkHandle(&_NetworkHandle);
+	_MultiplayerMenu.setNetworkHandle(&_NetworkHandle);
 	_MultiplayerMenu.setPlayerName("Name");
-	_MultiplayerLobby.setNetworkHandle(&_NetworkHandle);*/
+	_MultiplayerLobby.setNetworkHandle(&_NetworkHandle);
 }
 
 Framework::~Framework()
@@ -55,8 +54,8 @@ void Framework::render()
 			_GameObjectContainer.render(_RenderWindow, _GameState == GameState::Running || _GameState == GameState::BossFight);
 		}
 		else {
-			// TODO: Multi
-			//_MPGameObjectContainer.render(_RenderWindow, _GameState == GameState::RunningMultiplayer || _GameState == GameState::BossFight);
+
+			_MPGameObjectContainer.render(_RenderWindow, _GameState == GameState::RunningMultiplayer || _GameState == GameState::BossFight);
 		}
 	}
 
@@ -156,18 +155,15 @@ void Framework::render()
 		break;
 	case GameState::MultiplayerSelection:
 		setMouseVisible(true);
-		// TODO: Multi
-		//_MultiplayerMenu.render(_RenderWindow);
+		_MultiplayerMenu.render(_RenderWindow);
 		break;
 	case GameState::Connecting:
 		setMouseVisible(true);
-		// TODO: Multi
-		//_MultiplayerMenu.render(_RenderWindow);
+		_MultiplayerMenu.render(_RenderWindow);
 		break;
 	case GameState::Lobby:
 		setMouseVisible(true);
-		// TODO: Multi
-		//_MultiplayerLobby.render(_RenderWindow);
+		_MultiplayerLobby.render(_RenderWindow);
 		break;
 	case GameState::Countdown:
 		setMouseVisible(false);
@@ -179,8 +175,7 @@ void Framework::render()
 		break;
 	case GameState::PauseMultiplayer:
 		setMouseVisible(true);
-		// TODO: Multi
-		//_PauseMultiplayerMenu.render(_RenderWindow);
+		_PauseMultiplayerMenu.render(_RenderWindow);
 		break;
 	}
 	_RenderWindow.display();
@@ -274,8 +269,7 @@ void Framework::handleEvents()
 		}
 		else if (_GameState == GameState::MultiplayerSelection)
 		{
-			// TODO: Multi
-			//_MultiplayerMenu.resetFeedback();
+			_MultiplayerMenu.resetFeedback();
 		}
 		break;
 	case GameState::Highscores:
@@ -284,8 +278,7 @@ void Framework::handleEvents()
 	case GameState::Options:
 		_GameState = _OptionsMenu.handleEvents(_RenderWindow);
 		if (_GameState != GameState::Options) {
-			// TODO: Multi
-			//_OptionsMenu.saveOptions(_MultiplayerMenu);
+			_OptionsMenu.saveOptions(_MultiplayerMenu);
 		}
 		setVolume(_OptionsMenu.getVolume());
 		_FPS = _OptionsMenu.getFPS();
@@ -332,8 +325,7 @@ void Framework::handleEvents()
 		}
 		break;
 	case GameState::MultiplayerSelection:
-		// TODO: Multi
-		/*_GameState = _MultiplayerMenu.handleEvents(_RenderWindow);
+		_GameState = _MultiplayerMenu.handleEvents(_RenderWindow);
 		if (_GameState != GameState::MultiplayerSelection) {
 			_OptionsMenu.saveOptions(_MultiplayerMenu);
 		}
@@ -444,7 +436,7 @@ void Framework::handleEvents()
 			_OptionsMenu.enableGameModeSelection(false);
 			_OptionsMenu.setReturnState(GameState::PauseMultiplayer);
 		}
-		*/
+
 		break;
 	}
 }
@@ -550,9 +542,8 @@ void Framework::update()
 		_Level.update(_FrameTime, _GameState);
 		break;
 	case GameState::Connecting:
-	//{
-		// TODO: Multi
-		/*
+	{
+
 		_Level.update(_FrameTime, _GameState);
 		NetworkCommunication netComm = _MultiplayerMenu.update(_FrameTime);
 		if (netComm == NetworkCommunication::ConnectionSuccesfull) {
@@ -636,7 +627,6 @@ void Framework::update()
 			_GameState = GameState::GameOverMultiplayer;
 		}
 		addScore();
-		*/
 		break;
 	}
 }
@@ -719,15 +709,14 @@ void Framework::load()
 		_GameObjectContainer.setCarSkins(_CarSkins);
 		_GameObjectContainer.resetGameObjects(0);
 
-		// TODO: Multi
-		/*_MPGameObjectContainer.load();
+
+		_MPGameObjectContainer.load();
 		_MPGameObjectContainer.setCarSkins(_CarSkins);
-		_MPGameObjectContainer.resetGameObjects(0);*/
+		_MPGameObjectContainer.resetGameObjects(0);
 
 		_GameOverScreen.load();
 
-		// TODO: Multi
-		_OptionsMenu.loadOptions(/*_MultiplayerMenu*/);
+		_OptionsMenu.loadOptions(_MultiplayerMenu);
 		_FPS = _OptionsMenu.getFPS();
 		setVolume(_OptionsMenu.getVolume());
 	

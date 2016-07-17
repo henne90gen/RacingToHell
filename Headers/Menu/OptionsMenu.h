@@ -33,9 +33,8 @@ public:
 
 	void update(float FrameTime);
 
-	// TODO: Multi
-	void loadOptions(/*MultiplayerMenu& mpMenu*/);
-	void saveOptions(/*MultiplayerMenu& mpMenu*/);
+	void loadOptions(MultiplayerMenu& mpMenu);
+	void saveOptions(MultiplayerMenu& mpMenu);
 
 	GameState getReturnState() { return _ReturnState; }
 	void setReturnState(GameState returnState) { _ReturnState = returnState; }

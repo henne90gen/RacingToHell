@@ -10,6 +10,23 @@ MPGameObjectContainer::~MPGameObjectContainer()
 
 void MPGameObjectContainer::update(float FrameTime, int RoadSpeed, NetworkHandle& network)
 {
+	// Update Animations
+	for (int i = 0; i < _Animations.size(); i++) {
+		if (_Animations[i]->getAnimationState() == Animation::AnimationState::Stop) {
+			_Animations.erase(_Animations.begin() + i);
+			i--;
+		}
+		else {
+			_Animations[i]->update(FrameTime);
+		}
+	}
+
+	if (_PlayerAlive) {
+		_Player1->update(FrameTime, RoadSpeed);
+		_Player2->update(FrameTime, RoadSpeed);
+	}
+
+
 	/*
 	if (getPlayer2Car().getType() != GameObjectType::Player) {
 		// TODO: Add failsafe

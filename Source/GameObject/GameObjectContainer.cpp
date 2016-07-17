@@ -258,17 +258,18 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 
 void GameObjectContainer::render(sf::RenderWindow& window, bool renderCrosshair)
 {
-	for (unsigned int i = _Cars.size(); i > 0; i--)
+	for (unsigned int i = 0; i < _Cars.size(); i++)
 	{
-		_Cars.at(i-1)->render(window);
+		_Cars.at(i)->render(window);
 	}
-	for (unsigned int i = _Bullets.size(); i > 0; i--)
+
+	for (unsigned int i = 0; i < _GameObjects.size(); i++)
 	{
-		_Bullets.at(i-1)->render(window);
+		_GameObjects.at(i)->render(window);
 	}
-	for (unsigned int i = _GameObjects.size(); i > 0; i--)
+	for (unsigned int i = 0; i <_Bullets.size(); i++)
 	{
-		_GameObjects.at(i-1)->render(window);
+		_Bullets.at(i)->render(window);
 	}
 
 	if (_BossFight) {

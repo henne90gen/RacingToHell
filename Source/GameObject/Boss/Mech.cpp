@@ -189,7 +189,6 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
 			case Phase::RUNATPLAYERPHASE:
 				if (!_Event1Switch)
 				{
-					// TODO this should be the player position
 					_NextPosition = player.getPos();
 					_Movement = Movement::RUNATPLAYER;
 					_Speed = (3.5 + 2 * _Difficulty) * _BaseSpeed;

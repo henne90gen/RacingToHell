@@ -307,7 +307,7 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 			std::cout << "Tick: " << _Tick << std::endl;
 			break;
 		default:
-			std::cout << "Unexpected communicationtype" << std::endl;
+			std::cout << "Unexpected communication type: " << (int)Type << std::endl;
 			break;
 		}
 	}

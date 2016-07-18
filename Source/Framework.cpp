@@ -23,6 +23,7 @@ Framework::Framework() : _FrameTime(0), _FPS(60.0f), _IsRunning(true), _GameStat
 	_MultiplayerMenu.setNetworkHandle(&_NetworkHandle);
 	_MultiplayerMenu.setPlayerName("Name");
 	_MultiplayerLobby.setNetworkHandle(&_NetworkHandle);
+	_MPGameObjectContainer.setNetworkHandle(&_NetworkHandle);
 }
 
 Framework::~Framework()
@@ -333,7 +334,6 @@ void Framework::handleEvents()
 		{
 			_NetworkHandle.setState(NetworkState::Lobby);
 			_NetworkHandle.setRelation(NetworkRelation::Host);
-			_MPGameObjectContainer.setNetworkRelation(NetworkRelation::Host);
 
 			GameObjectFactory::setDeltaID(0);
 
@@ -355,7 +355,6 @@ void Framework::handleEvents()
 		if (_MultiplayerMenu.getCreatedLobby() == 0 && _NetworkHandle.getState() == NetworkState::NoNetState) {
 			_NetworkHandle.setState(NetworkState::Lobby);
 			_NetworkHandle.setRelation(NetworkRelation::Client);
-			_MPGameObjectContainer.setNetworkRelation(NetworkRelation::Client);
 
 			GameObjectFactory::setDeltaID((sf::Uint64)std::pow(2, 16) * (sf::Uint64)std::pow(2, 16) / 2);
 
@@ -597,11 +596,11 @@ void Framework::update()
 			_GameState = GameState::Countdown;
 		}
 		
-		if (lastResponse.first == NetworkCommunication::StartGame) {
+		/*if (lastResponse.first == NetworkCommunication::StartGame) {
 			sf::Packet packet;
 			_MPGameObjectContainer.getPlayerCar() >> packet;
 			_NetworkHandle.addPacket(NetworkCommunication::CreateGameObject, packet);
-		}
+		}*/
 
 		_Level.update(_FrameTime, _GameState);
 		break;
@@ -613,8 +612,8 @@ void Framework::update()
 		break;
 	case GameState::RunningMultiplayer:
 	case GameState::PauseMultiplayer:
-		_MPGameObjectContainer.handleOutgoingPackets(_NetworkHandle.getSendPackets());
-		_MPGameObjectContainer.handleIncomingPackets(_NetworkHandle);
+		//_MPGameObjectContainer.handleOutgoingPackets(_NetworkHandle.getSendPackets());
+		//_MPGameObjectContainer.handleIncomingPackets(_NetworkHandle);
 		if (_Level.update(_FrameTime, _GameState)) {
 			if (_MPGameObjectContainer.emptyScreen()) {
 				_MPGameObjectContainer.enterBossFight();
@@ -630,17 +629,6 @@ void Framework::update()
 		break;
 	}
 }
-
-/*
-
-
-
-
-
-
-
-
-*/
 
 void Framework::playSounds() {
 	if (_GameState == GameState::Running || 

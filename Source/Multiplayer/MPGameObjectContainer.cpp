@@ -222,8 +222,14 @@ void MPGameObjectContainer::render(sf::RenderWindow& Window, bool renderCrosshai
 void MPGameObjectContainer::handleEvent(sf::Event& newEvent)
 {
 	if (_PlayerAlive) {
-		getPlayerCar().handleEvent(newEvent);
+		_Player1->handleEvent(newEvent);
 	}
+	/*sf::Event e;
+	e.type = sf::Event::MouseButtonPressed;
+	e.mouseButton = sf::Event::MouseButtonEvent;
+	e.mouseButton.button = sf::Mouse::Left;
+	e.mouseButton.x = 100;
+	e.mouseButton.y = 100;*/
 }
 
 void MPGameObjectContainer::playSounds()
@@ -330,22 +336,6 @@ void MPGameObjectContainer::setCarSkins(std::vector<std::shared_ptr<sf::Texture>
 {
 	GameObjectFactory::setPlayerCarTextures(CarSkins);
 }
-
-/*
-void GameObjectContainer::playShotSound(GameObjectType go, sf::Vector2f position)
-{
-std::shared_ptr<sf::Sound> shotSound(new sf::Sound());
-if (go == GameObjectType::AI) {
-shotSound = _GOFactory.getAIShotSound(position, _Volume);
-}
-else if (go == GameObjectType::Player) {
-shotSound->setBuffer(_PlayerShotSoundBuffer);
-shotSound->setVolume(_Volume * 2);
-}
-
-_SoundEffects.push_back({ shotSound, 0 });
-}
-*/
 
 void MPGameObjectContainer::spawnAICar(int roadSpeed, NetworkHandle& network)
 {
@@ -569,7 +559,7 @@ void MPGameObjectContainer::deleteGameObject(unsigned int id, bool sendDeletion)
 	}
 }
 
-void MPGameObjectContainer::handleIncomingPackets(NetworkHandle& network) {
+/*void MPGameObjectContainer::handleIncomingPackets(NetworkHandle& network) {
 	std::lock_guard<std::mutex> lock(_Mutex);
 	for (unsigned int i = 0; i < network.getReceivedPackets().size(); i++) {
 		sf::Packet tmp = network.getReceivedPackets().at(i);
@@ -587,7 +577,7 @@ void MPGameObjectContainer::handleIncomingPackets(NetworkHandle& network) {
 					float elapsedTime = (float)elapsedTicks / (float)network.getTickRate();
 					go->setPos((float)go->getSpeed() * go->getDir() * elapsedTime);
 				}*/
-				network.getReceivedPackets().erase(network.getReceivedPackets().begin() + i);
+				/*network.getReceivedPackets().erase(network.getReceivedPackets().begin() + i);
 				i--;
 			}
 			break;
@@ -631,7 +621,7 @@ void MPGameObjectContainer::handleIncomingPackets(NetworkHandle& network) {
 					float x, y;
 					tmp >> id >> x >> y;
 					std::cout << "Receiving ID: " << (unsigned int)id << " || X: " << x << " || Y: " << y << std::endl;
-					*/
+					*//*
 					*_GameObjects[1] << tmp;
 				}
 				network.getReceivedPackets().erase(network.getReceivedPackets().begin() + i);
@@ -644,9 +634,9 @@ void MPGameObjectContainer::handleIncomingPackets(NetworkHandle& network) {
 			break;
 		}
 	}
-}
+}*/
 
-void MPGameObjectContainer::handleOutgoingPackets(std::vector<std::pair<NetworkCommunication, sf::Packet>>& packets)
+/*void MPGameObjectContainer::handleOutgoingPackets(std::vector<std::pair<NetworkCommunication, sf::Packet>>& packets)
 {
 	if (_SendTimer.getElapsedTime().asSeconds() > 1.0f / 15.0f)
 	{
@@ -676,5 +666,5 @@ void MPGameObjectContainer::handleOutgoingPackets(std::vector<std::pair<NetworkC
 		packets.push_back(std::make_pair(_SendObjects.at(0).first, tmp));
 		_SendObjects.erase(_SendObjects.begin());
 	}
-}
+}*/
 

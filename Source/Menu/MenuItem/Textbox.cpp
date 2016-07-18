@@ -135,6 +135,17 @@ MenuResult Textbox::handleEvent(sf::Event & Event, sf::Vector2f MousePos)
 				_CursorPosition++;
 				setCursor();
 			}
+
+			//Paste text from clipboard
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && sf::Keyboard::isKeyPressed(sf::Keyboard::V)) {
+				std::string newString = _Text.getString().substring(0, _CursorPosition) + GetClipboardText() + _Text.getString().substring(_CursorPosition, _Text.getString().getSize() - _CursorPosition);
+
+				if (!isStringTooLarge(newString)) {
+					setText(newString);
+					_CursorPosition += GetClipboardText().length();
+					setCursor();
+				}
+			}
 		}
 	}
 	else if (Event.type == sf::Event::TextEntered) {

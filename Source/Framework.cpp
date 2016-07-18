@@ -23,7 +23,8 @@ Framework::Framework() : _FrameTime(0), _FPS(60.0f), _IsRunning(true), _GameStat
 	_MultiplayerMenu.setNetworkHandle(&_NetworkHandle);
 	_MultiplayerMenu.setPlayerName("Name");
 	_MultiplayerLobby.setNetworkHandle(&_NetworkHandle);
-	_MPGameObjectContainer.setNetworkHandle(&_NetworkHandle);
+	_MPGOCClient.setNetworkHandle(&_NetworkHandle, false);
+	_MPGOCServer.setNetworkHandle(&_NetworkHandle, true);
 }
 
 Framework::~Framework()
@@ -56,7 +57,7 @@ void Framework::render()
 		}
 		else {
 
-			_MPGameObjectContainer.render(_RenderWindow, _GameState == GameState::RunningMultiplayer || _GameState == GameState::BossFight);
+			_MPGOCClient.render(_RenderWindow, _GameState == GameState::RunningMultiplayer || _GameState == GameState::BossFight);
 		}
 	}
 
@@ -378,22 +379,22 @@ void Framework::handleEvents()
 			_CurrentCarSkinIndex = 0;
 		}
 		_MultiplayerLobby.setCarIndex(_CurrentCarSkinIndex);
-		_MPGameObjectContainer.getPlayerCar().setTexture((*_CarSkins.at(_CurrentCarSkinIndex)));
-		_MPGameObjectContainer.getPlayerCar().setStats(_CurrentCarSkinIndex);
+		_MPGOCClient.getPlayerCar().setTexture((*_CarSkins.at(_CurrentCarSkinIndex)));
+		_MPGOCClient.getPlayerCar().setStats(_CurrentCarSkinIndex);
 
 		if (_GameState == GameState::Countdown) {
-			_HeadsUpDisplay.setMaxHealth(_MPGameObjectContainer.getPlayerCar().getMaxHealth());
-			_HeadsUpDisplay.setMaxEnergy(_MPGameObjectContainer.getPlayerCar().getMaxEnergy());
+			_HeadsUpDisplay.setMaxHealth(_MPGOCClient.getPlayerCar().getMaxHealth());
+			_HeadsUpDisplay.setMaxEnergy(_MPGOCClient.getPlayerCar().getMaxEnergy());
 			_HeadsUpDisplay.setTotalLevelTime(_Level.getTotalLevelTime());
 			_Clock.restart();
 			_Level.resetTimer();
 			setDifficulty(_OptionsMenu.getDifficulty());
 			_GameMode = _OptionsMenu.getGameMode();
 			_GameObjectContainer.setGameMode(_GameMode);
-			_MPGameObjectContainer.setLevel(_Level.getLevel());
+			_MPGOCClient.setLevel(_Level.getLevel());
 
 			sf::Packet packet;
-			_MPGameObjectContainer.getPlayerCar() >> packet;
+			_MPGOCClient.getPlayerCar() >> packet;
 			_NetworkHandle.addPacket(NetworkCommunication::CreateGameObject, packet);
 		}
 		break;
@@ -416,13 +417,13 @@ void Framework::handleEvents()
 					_GameState = GameState::PauseMultiplayer;
 				}
 				else {
-					_MPGameObjectContainer.handleEvent(_Event);
+					_MPGOCClient.handleEvent(_Event);
 				}
 			}
 		}
 		break;
 	case GameState::PauseMultiplayer:
-		_MPGameObjectContainer.stopSounds();
+		_MPGOCClient.stopSounds();
 		_GameState = _PauseMultiplayerMenu.handleEvents(_RenderWindow);
 		if (_GameState == GameState::RunningMultiplayer) {
 			_Clock.restart();
@@ -584,21 +585,21 @@ void Framework::update()
 		}
 		else if (lastResponse.first == NetworkCommunication::StartGame && _NetworkHandle.getRelation() == NetworkRelation::Client) {
 			_Countdown.fastForward((float)lastResponse.second / (float)_NetworkHandle.getTickRate());
-			_HeadsUpDisplay.setMaxHealth(_MPGameObjectContainer.getPlayerCar().getMaxHealth());
-			_HeadsUpDisplay.setMaxEnergy(_MPGameObjectContainer.getPlayerCar().getMaxEnergy());
+			_HeadsUpDisplay.setMaxHealth(_MPGOCClient.getPlayerCar().getMaxHealth());
+			_HeadsUpDisplay.setMaxEnergy(_MPGOCClient.getPlayerCar().getMaxEnergy());
 			_HeadsUpDisplay.setTotalLevelTime(_Level.getTotalLevelTime());
 			_Clock.restart();
 			_Level.resetTimer();
 			setDifficulty(_OptionsMenu.getDifficulty());
 			_GameMode = _OptionsMenu.getGameMode();
 			_GameObjectContainer.setGameMode(_GameMode);
-			_MPGameObjectContainer.setLevel(_Level.getLevel());
+			_MPGOCClient.setLevel(_Level.getLevel());
 			_GameState = GameState::Countdown;
 		}
 		
 		/*if (lastResponse.first == NetworkCommunication::StartGame) {
 			sf::Packet packet;
-			_MPGameObjectContainer.getPlayerCar() >> packet;
+			_MPGOCClient.getPlayerCar() >> packet;
 			_NetworkHandle.addPacket(NetworkCommunication::CreateGameObject, packet);
 		}*/
 
@@ -612,17 +613,22 @@ void Framework::update()
 		break;
 	case GameState::RunningMultiplayer:
 	case GameState::PauseMultiplayer:
-		//_MPGameObjectContainer.handleOutgoingPackets(_NetworkHandle.getSendPackets());
-		//_MPGameObjectContainer.handleIncomingPackets(_NetworkHandle);
+		//_MPGOCClient.handleOutgoingPackets(_NetworkHandle.getSendPackets());
+		//_MPGOCClient.handleIncomingPackets(_NetworkHandle);
 		if (_Level.update(_FrameTime, _GameState)) {
-			if (_MPGameObjectContainer.emptyScreen()) {
-				_MPGameObjectContainer.enterBossFight();
+			if (_MPGOCClient.emptyScreen()) {
+				_MPGOCClient.enterBossFight();
 				_GameState = GameState::BossFightMultiplayer;
 			}
 		}
-		_MPGameObjectContainer.update(_FrameTime, _Level.getRoadSpeed(), _NetworkHandle);
-		_HeadsUpDisplay.update(_Score, _MPGameObjectContainer.getPlayerCar().getHealth(), _MPGameObjectContainer.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime(), _GameMode);
-		if (!_MPGameObjectContainer.playerIsAlive()) {
+
+		if (_NetworkHandle.getRelation() == NetworkRelation::Host) {
+			_MPGOCServer.update(_FrameTime, _Level.getRoadSpeed());
+		}
+
+		_MPGOCClient.update(_FrameTime, _Level.getRoadSpeed());
+		_HeadsUpDisplay.update(_Score, _MPGOCClient.getPlayerCar().getHealth(), _MPGOCClient.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime(), _GameMode);
+		if (!_MPGOCClient.playerIsAlive()) {
 			_GameState = GameState::GameOverMultiplayer;
 		}
 		addScore();
@@ -698,9 +704,9 @@ void Framework::load()
 		_GameObjectContainer.resetGameObjects(0);
 
 
-		_MPGameObjectContainer.load();
-		_MPGameObjectContainer.setCarSkins(_CarSkins);
-		_MPGameObjectContainer.resetGameObjects(0);
+		_MPGOCClient.load();
+		_MPGOCClient.setCarSkins(_CarSkins);
+		_MPGOCClient.resetGameObjects(0);
 
 		_GameOverScreen.load();
 

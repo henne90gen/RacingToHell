@@ -46,7 +46,7 @@ public:
 	@param level Level
 	@param roadSpeed Speed of the road
 	*/
-	void update(float frameTime, int roadSpeed, NetworkHandle& network);
+	void update(float frameTime, int roadSpeed);
 
 	/*
 		@return GameObject& Reference to the PlayerCar
@@ -135,7 +135,7 @@ public:
 	*/
 	void setDifficulty(int dif) { _Difficulty = dif; }
 
-	void setNetworkHandle(NetworkHandle *n) { _NetworkHandle = n; }
+	void setNetworkHandle(NetworkHandle *n, bool isServer) { _NetworkHandle = n; _IsServer = isServer; }
 
 	void addGameObject(std::shared_ptr<GameObject> newGO, NetworkHandle& network);
 
@@ -156,6 +156,7 @@ private:
 	std::vector<std::pair<NetworkCommunication, std::shared_ptr<GameObject>>> _SendObjects;
 
 	NetworkHandle *_NetworkHandle;
+	bool _IsServer;
 
 	std::vector<std::shared_ptr<Animation>> _Animations;
 

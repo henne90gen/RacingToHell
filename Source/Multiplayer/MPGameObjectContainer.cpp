@@ -10,10 +10,10 @@ MPGameObjectContainer::~MPGameObjectContainer()
 	_Bullets.clear();
 }
 
-void MPGameObjectContainer::update(float FrameTime, int RoadSpeed, NetworkHandle& network)
+void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 {
 	// Update Animations
-	for (int i = 0; i < _Animations.size(); i++) {
+	for (unsigned int i = 0; i < _Animations.size(); i++) {
 		if (_Animations[i]->getAnimationState() == Animation::AnimationState::Stop) {
 			_Animations.erase(_Animations.begin() + i);
 			i--;
@@ -27,7 +27,6 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed, NetworkHandle
 		_Player1->update(FrameTime, RoadSpeed);
 		_Player2->update(FrameTime, RoadSpeed);
 	}
-
 
 	/*
 	if (getPlayer2Car().getType() != GameObjectType::Player) {

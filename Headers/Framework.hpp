@@ -57,7 +57,8 @@ private:
 	GameObjectContainer _GameObjectContainer;
 	std::vector<std::shared_ptr<sf::Texture>> _CarSkins;
 
-	MPGameObjectContainer _MPGameObjectContainer;
+	MPGameObjectContainer _MPGOCServer;
+	MPGameObjectContainer _MPGOCClient;
 
 	// Level
 	Level _Level;

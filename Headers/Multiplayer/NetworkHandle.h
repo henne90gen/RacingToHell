@@ -29,8 +29,11 @@ public:
 	std::string getMemberName() { return _MemberName; }
 	sf::Uint32 getTick() { return _Tick; }
 	int getTickRate() { return _TickRate; }
+
 	std::vector<sf::Packet>& getReceivedPackets() { return _ReceivedPackets; }
+	sf::Packet getNextPacket() { sf::Packet p = _ReceivedPackets.back(); _ReceivedPackets.pop_back(); return p; }
 	std::vector<std::pair<NetworkCommunication, sf::Packet>>& getSendPackets() { return _SendPackets; }
+
 	int getDelay() { return _Delay; }
 
 	void setState(NetworkState state) { _State = state; }

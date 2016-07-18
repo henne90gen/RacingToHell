@@ -135,12 +135,12 @@ public:
 	*/
 	void setDifficulty(int dif) { _Difficulty = dif; }
 
-	void setNetworkRelation(NetworkRelation relation) { _Relation = relation; }
+	void setNetworkHandle(NetworkHandle *n) { _NetworkHandle = n; }
 
 	void addGameObject(std::shared_ptr<GameObject> newGO, NetworkHandle& network);
 
-	void handleIncomingPackets(NetworkHandle& network);
-	void handleOutgoingPackets(std::vector<std::pair<NetworkCommunication, sf::Packet>>& packets);
+	//void handleIncomingPackets(NetworkHandle& network);
+	//void handleOutgoingPackets(std::vector<std::pair<NetworkCommunication, sf::Packet>>& packets);
 private:
 	std::mutex _Mutex;
 	NetworkRelation _Relation;
@@ -154,6 +154,9 @@ private:
 	std::shared_ptr<BossCar> _Boss;
 
 	std::vector<std::pair<NetworkCommunication, std::shared_ptr<GameObject>>> _SendObjects;
+
+	NetworkHandle *_NetworkHandle;
+
 	std::vector<std::shared_ptr<Animation>> _Animations;
 
 	sf::Texture _ExplosionTexture;

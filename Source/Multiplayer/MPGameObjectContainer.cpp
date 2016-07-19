@@ -12,21 +12,7 @@ MPGameObjectContainer::~MPGameObjectContainer()
 
 void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 {
-	//Multiplayer
-	if (_IsServer)
-	{
-		return;
-	}
-
-	{
-		std::lock_guard<std::mutex> lock(_Mutex);
-		for (unsigned int i = 0; _NetworkHandle->getReceivedPackets().size(); i++) {
-			if (handleIncomingPacket(_NetworkHandle->getReceivedPackets()[i])) {
-				_NetworkHandle->getReceivedPackets().erase(_NetworkHandle->getReceivedPackets().begin() + i);
-				i--;
-			}
-		}
-	}
+	handleIncomingPackets();
 
 	_Player1->update(FrameTime, RoadSpeed);
 	_Player2->update(FrameTime, RoadSpeed);
@@ -653,54 +639,63 @@ void MPGameObjectContainer::deleteGameObject(unsigned int id, bool sendDeletion)
 	}
 }
 
-bool MPGameObjectContainer::handleIncomingPacket(sf::Packet p) {
+void MPGameObjectContainer::handleIncomingPackets() {
 	std::lock_guard<std::mutex> lock(_Mutex);
-	sf::Uint8 recType;
-	sf::Uint32 recTick;
-	p >> recType >> recTick;
+	
+	for (unsigned int i = 0; i < _NetworkHandle->getReceivedPackets().size(); i++) {
+		sf::Packet p = _NetworkHandle->getReceivedPackets().at(i);
+		sf::Uint8 recType;
+		sf::Uint32 recTick;
+		p >> recType >> recTick;
 
-	if (_IsServer) {
-		switch ((NetworkCommunication)recType) {
-			case NetworkCommunication::PlayerKeyPress:
-			{
-				sf::Uint8 Car, Keys;
-				p >> Car >> Keys;
-
-				if (Car == 1) {
-					_Player1->applyKeyPress(Keys);
-				} else {
-					_Player2->applyKeyPress(Keys);
-				}
-				return true;
-			} break;
-			default:
-			{
-			} break;
-		}
-	} else {
-		switch ((NetworkCommunication)recType)
-		{
-			case NetworkCommunication::PlayerInformation:
-			{
-				if (_NetworkHandle->getTick() > recTick + _NetworkHandle->getDelay())
+		if (_IsServer) {
+			switch ((NetworkCommunication)recType) {
+				case NetworkCommunication::PlayerKeyPress:
 				{
-					sf::Uint8 CarID;
-					p >> CarID;
+					sf::Uint8 Car, Keys;
+					p >> Car >> Keys;
 
-					if (CarID == 1) {
-						*_Player1 << p;
+					if (Car == 1) {
+						_Player1->applyKeyPress(Keys);
 					} else {
-						*_Player2 << p;
+						_Player2->applyKeyPress(Keys);
 					}
-					return true;
-				}
-			} break;
-			default:
+					_NetworkHandle->getReceivedPackets().erase(_NetworkHandle->getReceivedPackets().begin() + i);
+					i--;
+				} break;
+
+				default:
+				{
+
+				} break;
+			}
+		}
+		else {
+			switch ((NetworkCommunication)recType)
 			{
-			} break;
+				case NetworkCommunication::PlayerInformation:
+				{
+					if (_NetworkHandle->getTick() > recTick + _NetworkHandle->getDelay())
+					{
+						sf::Uint8 CarID;
+						p >> CarID;
+
+						if (CarID == 1) {
+							*_Player1 << p;
+						}
+						else {
+							*_Player2 << p;
+						}
+						_NetworkHandle->getReceivedPackets().erase(_NetworkHandle->getReceivedPackets().begin() + i);
+						i--;
+					}
+				} break;
+				default:
+				{
+				} break;
+			}
 		}
 	}
-	return false;
 }
 
 /*void MPGameObjectContainer::handleOutgoingPackets(std::vector<std::pair<NetworkCommunication, sf::Packet>>& packets)

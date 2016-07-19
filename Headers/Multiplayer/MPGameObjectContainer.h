@@ -226,5 +226,5 @@ private:
 
 	void playHitSound(sf::Vector2f position);
 
-	bool handleIncomingPacket(sf::Packet p);
+	void handleIncomingPackets();
 };

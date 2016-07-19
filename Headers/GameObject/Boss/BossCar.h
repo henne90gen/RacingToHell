@@ -19,7 +19,6 @@ public:
 		@param bulletTexture	Texture for the bullets the boss will shoot
 	*/
 	BossCar(unsigned int id, sf::Vector2f pos, int difficulty, int health, float speed, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
-	BossCar(std::istream& stream, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
 	BossCar(sf::Packet& packet, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
 	virtual ~BossCar() {}
 
@@ -46,10 +45,6 @@ public:
 		Returns true if the boss is dead and all explosion animations are done playing
 	*/
 	bool isDoneExploding(sf::Texture& ExplosionTexture);
-
-	void operator>>(std::ostream& stream);
-
-	void operator<<(std::istream& stream);
 
 	/*
 		Writes the necessary data for a gameobject to a packet

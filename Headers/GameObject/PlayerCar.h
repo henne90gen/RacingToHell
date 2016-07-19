@@ -17,7 +17,6 @@ public:
 	*/
 	PlayerCar() {}
 	PlayerCar(unsigned int id, int selectedCar, sf::Texture& texture);
-	PlayerCar(std::istream& stream, std::vector<std::shared_ptr<sf::Texture>>& textures);
 	PlayerCar(sf::Packet& packet, std::vector<std::shared_ptr<sf::Texture>>& textures);
 	~PlayerCar() {}
 
@@ -97,17 +96,13 @@ public:
 	*/
 	void resetResources() { _Health = _MaxHealth; _Energy = _MaxEnergy; }
 
-	void operator>>(std::ostream& stream);
-
-	void operator<<(std::istream& stream);
-
 	/*
-		Writes the necessary data for a gameobject to a packet
+		Writes the necessary data for the playercar to a packet
 	*/
 	void operator>>(sf::Packet& packet);
 
 	/*
-		Reads the necessary data for a gameobject from a packet
+		Reads the necessary data for the playercar from a packet
 	*/
 	void operator<<(sf::Packet& packet);
 

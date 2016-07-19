@@ -708,7 +708,6 @@ void Framework::load()
 		_MPGOCClient.setCarSkins(_CarSkins);
 		_MPGOCClient.resetGameObjects(0);
 
-		//_MPGOCServer.resetGameObjects(0);
 
 		_GameOverScreen.load();
 

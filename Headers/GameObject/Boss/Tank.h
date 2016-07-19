@@ -11,7 +11,6 @@ public:
 		@param bulletTexture Texture for all bullets the tank shoots
 	*/
 	Tank(unsigned int id, int difficulty, int HP, sf::Texture& Texture, sf::Texture& BulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
-	Tank(std::istream& stream, sf::Texture& Texture, sf::Texture& BulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
 	Tank(sf::Packet& packet, sf::Texture& Texture, sf::Texture& BulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume);
 	~Tank() {}
 

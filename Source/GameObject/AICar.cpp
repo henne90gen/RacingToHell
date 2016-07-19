@@ -10,13 +10,6 @@ AICar::AICar(unsigned int id, int hp, int roadSpeed, sf::Texture& texture) :
 	getSprite().setColor(sf::Color::White);
 }
 
-AICar::AICar(std::istream & stream, sf::Texture & texture) :
-	Car(stream, GameObjectType::AI, texture)
-{
-	AICar::operator<<(stream);
-	init();
-}
-
 AICar::AICar(sf::Packet & packet, sf::Texture & texture) :
 	Car(packet, GameObjectType::AI, texture)
 {
@@ -38,18 +31,6 @@ void AICar::render(sf::RenderWindow& window)
 	window.draw(getSprite());
 	window.draw(_HealthBar);
 	window.draw(_HealthBarFrame);
-}
-
-void AICar::operator>>(std::ostream& stream)
-{
-	Car::operator>>(stream);
-	write(stream, _Lane);
-}
-
-void AICar::operator<<(std::istream& stream)
-{
-	Car::operator<<(stream);
-	read(stream, _Lane);
 }
 
 void AICar::operator>>(sf::Packet& packet)

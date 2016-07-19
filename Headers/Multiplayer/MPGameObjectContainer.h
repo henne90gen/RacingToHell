@@ -141,7 +141,6 @@ public:
 
 	void addGameObject(std::shared_ptr<GameObject> newGO, NetworkHandle& network);
 
-	//void handleIncomingPackets(NetworkHandle& network);
 	//void handleOutgoingPackets(std::vector<std::pair<NetworkCommunication, sf::Packet>>& packets);
 private:
 	std::mutex _Mutex;
@@ -231,4 +230,6 @@ private:
 	int getBossHP();
 
 	void playHitSound(sf::Vector2f position);
+
+	bool handleIncomingPacket(sf::Packet& p);
 };

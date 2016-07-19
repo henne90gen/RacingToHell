@@ -26,7 +26,6 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 	{
 		sendPlayerKeyPress();
 	}
-	return;
 }
 
 void comment()
@@ -235,25 +234,7 @@ void MPGameObjectContainer::render(sf::RenderWindow& Window, bool renderCrosshai
 
 void MPGameObjectContainer::handleEvent(sf::Event& newEvent)
 {
-	if (_PlayerAlive && !_IsServer) {
-		sf::Uint8 Keys = 0;
-		Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) * (sf::Uint8)Key::Up;
-		Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) * (sf::Uint8)Key::Right;
-		Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) * (sf::Uint8)Key::Down;
-		Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) * (sf::Uint8)Key::Left;
-
-		sf::Packet p;
-		p << Keys;
-		_NetworkHandle->addPacket(NetworkCommunication::UpdatePlayers, p);
-
-		_Player1->handleEvent(newEvent);
-	}
-	/*sf::Event e;
-	e.type = sf::Event::MouseButtonPressed;
-	e.mouseButton = sf::Event::MouseButtonEvent;
-	e.mouseButton.button = sf::Mouse::Left;
-	e.mouseButton.x = 100;
-	e.mouseButton.y = 100;*/
+	_Player1->handleEvent(newEvent);
 }
 
 void MPGameObjectContainer::sendPlayerInformation() 

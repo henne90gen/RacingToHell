@@ -154,10 +154,10 @@ void NetworkHandle::run()
 			{
 				receiveData(incommingPacket);
 				
-				/*if (_Relationship == NetworkRelation::Host)
+				if (_Relationship == NetworkRelation::Host)
 				{
 					_MPGOCServer->update(1 / (float)_TickRate, 160);
-				}*/
+				}
 
 				sendData();
 			}
@@ -179,10 +179,10 @@ void NetworkHandle::run()
 
 //		std::cout << _Tick << std::endl;
 
-		if (_Relationship == NetworkRelation::Client && _SyncTimer.getElapsedTime().asSeconds() > 2.0f) {
-			synchroniseTick();
-			_SyncTimer.restart();
-		}
+//		if (_Relationship == NetworkRelation::Client && _SyncTimer.getElapsedTime().asSeconds() > 2.0f) {
+//			synchroniseTick();
+//			_SyncTimer.restart();
+//		}
 
 		++_Tick;
 
@@ -204,15 +204,15 @@ std::pair<NetworkCommunication, int> NetworkHandle::getLastResponse()
 void NetworkHandle::addPacket(NetworkCommunication Type, sf::Packet newPacket)
 {
 	std::lock_guard<std::mutex> lock(_Mutex);
-	/*std::pair<NetworkCommunication, sf::Packet> p;
-	p = std::make_pair(Type, newPacket);
-	std::cout << "Packet is being added" << std::endl;*/
+//	std::pair<NetworkCommunication, sf::Packet> p;
+//	p = std::make_pair(Type, newPacket);
+//	std::cout << "Packet is being added" << std::endl;
 	_SendPackets.push_back(std::make_pair(Type, newPacket));
 }
 
 void NetworkHandle::addReceivedPacket(NetworkCommunication Type, sf::Packet newPacket)
 {
-	//std::lock_guard<std::mutex> lock(_Mutex);
+	std::lock_guard<std::mutex> lock(_Mutex);
 	sf::Packet TmpPacket;
 	TmpPacket << sf::Uint8(Type) << _Tick;
 
@@ -287,6 +287,8 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 
 		tmp >> Type >> Tick;
 
+		std::cout << "NetComm: " << (int)Type << std::endl;
+
 		switch ((NetworkCommunication)Type)
 		{
 		case NetworkCommunication::Disconnect:
@@ -298,8 +300,9 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 			_State = NetworkState::Ingame;
 			break;
 		case NetworkCommunication::PlayerInformation:
-		case NetworkCommunication::PlayerKeyPress:
-			//_ReceivedPackets.push_back(packet);
+		//case NetworkCommunication::PlayerKeyPress:
+			_ReceivedPackets.push_back(packet);
+			std::cout << "RecSize: " << _ReceivedPackets.size() << std::endl;
 			break;
 		case NetworkCommunication::EndGame:
 			_LastResponse = std::make_pair(NetworkCommunication::EndGame, 0);
@@ -320,17 +323,17 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 			_LastResponse = std::make_pair(NetworkCommunication::Ready, (int)OnOff);
 			break;
 		}
-		case NetworkCommunication::SynchroniseTick:
-			if (_Relationship == NetworkRelation::Host) {
-				sf::Packet responsePacket;
-				responsePacket << (sf::Uint8)NetworkCommunication::SynchroniseTick << _Tick;
-				_Socket.send(responsePacket);
-			}
-			else if (_Relationship == NetworkRelation::Client) {
-				_Tick = Tick + (sf::Uint32)(_TickRate * _PackageTravelTimer.restart().asSeconds() / 2.0f);
-			}
-			std::cout << "Tick: " << _Tick << std::endl;
-			break;
+//		case NetworkCommunication::SynchroniseTick:
+//			if (_Relationship == NetworkRelation::Host) {
+//				sf::Packet responsePacket;
+//				responsePacket << (sf::Uint8)NetworkCommunication::SynchroniseTick << _Tick;
+//				_Socket.send(responsePacket);
+//			}
+//			else if (_Relationship == NetworkRelation::Client) {
+//				_Tick = Tick + (sf::Uint32)(_TickRate * _PackageTravelTimer.restart().asSeconds() / 2.0f);
+//			}
+//			std::cout << "Tick: " << _Tick << std::endl;
+//			break;
 		default:
 			std::cout << "Unexpected communication type: " << (int)Type << std::endl;
 			break;

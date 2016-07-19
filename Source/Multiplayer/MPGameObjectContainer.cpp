@@ -243,38 +243,44 @@ void MPGameObjectContainer::handleEvent(sf::Event& newEvent)
 
 void MPGameObjectContainer::sendPlayerInformation() 
 {
-	//std::lock_guard<std::mutex> lock(_Mutex);
+	if (_PlayerInformationTimer.getElapsedTime().asSeconds() > 1/60) {
+		_PlayerInformationTimer.restart();
+		std::lock_guard<std::mutex> lock(_Mutex);
 
-	sf::Packet Player1Packet;
-	Player1Packet << (sf::Uint8)1;
-	*_Player1 >> Player1Packet;
+		sf::Packet Player1Packet;
+		Player1Packet << (sf::Uint8)1;
+		*_Player1 >> Player1Packet;
 
-	_NetworkHandle->addReceivedPacket(NetworkCommunication::PlayerInformation, Player1Packet);
+		_NetworkHandle->addReceivedPacket(NetworkCommunication::PlayerInformation, Player1Packet);
 
-	sf::Packet Player2Packet;
-	Player2Packet << (sf::Uint8)1;
-	*_Player2 >> Player2Packet;
+		sf::Packet Player2Packet;
+		Player2Packet << (sf::Uint8)1;
+		*_Player2 >> Player2Packet;
 
-	_NetworkHandle->addPacket(NetworkCommunication::PlayerInformation, Player2Packet);
+		_NetworkHandle->addPacket(NetworkCommunication::PlayerInformation, Player2Packet);
+	}
 }
 
 void MPGameObjectContainer::sendPlayerKeyPress() 
 {
-	std::lock_guard<std::mutex> lock(_Mutex);
+	if (_KeyPressTimer.getElapsedTime().asSeconds() > 1/60) {
+		_KeyPressTimer.restart();
+		std::lock_guard<std::mutex> lock(_Mutex);
 
-	if (_NetworkHandle->getRelation() == NetworkRelation::Host) 
-	{
-		sf::Packet Player1Packet;
-		Player1Packet << (sf::Uint8)1 << _Player1->getPressedKeys();
+		if (_NetworkHandle->getRelation() == NetworkRelation::Host)
+		{
+			sf::Packet Player1Packet;
+			Player1Packet << (sf::Uint8)1 << _Player1->getPressedKeys();
 
-		_NetworkHandle->addReceivedPacket(NetworkCommunication::PlayerKeyPress, Player1Packet);
-	}
-	else if (_NetworkHandle->getRelation() == NetworkRelation::Client)
-	{
-		sf::Packet Player2Packet;
-		Player2Packet << (sf::Uint8)2 << _Player2->getPressedKeys();
+			_NetworkHandle->addReceivedPacket(NetworkCommunication::PlayerKeyPress, Player1Packet);
+		}
+		else if (_NetworkHandle->getRelation() == NetworkRelation::Client)
+		{
+			sf::Packet Player1Packet;
+			Player1Packet << (sf::Uint8)2 << _Player1->getPressedKeys();
 
-		_NetworkHandle->addPacket(NetworkCommunication::PlayerKeyPress, Player2Packet);
+			_NetworkHandle->addPacket(NetworkCommunication::PlayerKeyPress, Player1Packet);
+		}
 	}
 }
 
@@ -649,26 +655,27 @@ void MPGameObjectContainer::handleIncomingPackets() {
 		p >> recType >> recTick;
 
 		if (_IsServer) {
-			switch ((NetworkCommunication)recType) {
-				case NetworkCommunication::PlayerKeyPress:
-				{
-					sf::Uint8 Car, Keys;
-					p >> Car >> Keys;
-
-					if (Car == 1) {
-						_Player1->applyKeyPress(Keys);
-					} else {
-						_Player2->applyKeyPress(Keys);
-					}
-					_NetworkHandle->getReceivedPackets().erase(_NetworkHandle->getReceivedPackets().begin() + i);
-					i--;
-				} break;
-
-				default:
-				{
-
-				} break;
-			}
+//			switch ((NetworkCommunication)recType) {
+//				case NetworkCommunication::PlayerKeyPress:
+//				{
+//					sf::Uint8 Car, Keys;
+//					p >> Car >> Keys;
+//
+//					if (Car == 1) {
+//						_Player1->applyKeyPress(Keys);
+//					} else {
+//						_Player2->applyKeyPress(Keys);
+//					}
+//					std::cout << "SizeBeforeErase: " << _NetworkHandle->getReceivedPackets().size() << std::endl;
+//					_NetworkHandle->getReceivedPackets().erase(_NetworkHandle->getReceivedPackets().begin() + i);
+//					i--;
+//				} break;
+//
+//				default:
+//				{
+//
+//				} break;
+//			}
 		}
 		else {
 			switch ((NetworkCommunication)recType)

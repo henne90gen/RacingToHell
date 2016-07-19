@@ -145,7 +145,7 @@ public:
 private:
 	std::mutex _Mutex;
 	NetworkRelation _Relation;
-	sf::Clock _SendTimer;
+	sf::Clock _SendTimer, _KeyPressTimer, _PlayerInformationTimer;
 
 	std::vector<std::shared_ptr<GameObject>> _GameObjects;
 	std::vector<std::shared_ptr<AICar>> _Cars;

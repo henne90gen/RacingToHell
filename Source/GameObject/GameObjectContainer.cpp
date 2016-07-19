@@ -289,6 +289,7 @@ void GameObjectContainer::handleEvent(sf::Event& newEvent)
 {
 	if (_PlayerAlive) {
 		_Player->handleEvent(newEvent);
+		_Player->applyKeyPress(_Player->getPressedKeys());
 	}
 }
 

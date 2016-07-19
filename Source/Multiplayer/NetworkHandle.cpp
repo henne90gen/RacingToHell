@@ -2,7 +2,10 @@
 #include "Multiplayer/NetworkHandle.h"
 
 NetworkHandle::NetworkHandle() : _TickRate(64), _UpdateIntervall(2), _Delay(0.1 * _TickRate), _Relationship(NetworkRelation::NoRel), _Tick(0), _Authenticated(false)
-{}
+{
+	_MPGOCServer = std::make_shared<MPGameObjectContainer>();
+	_MPGOCServer->setNetworkHandle(this, true);
+}
 
 void NetworkHandle::connect(std::string ip, std::string password, std::string name,int port, float timeout)
 {
@@ -58,6 +61,8 @@ void NetworkHandle::connect(std::string ip, std::string password, std::string na
 
 bool NetworkHandle::create(std::string name, std::string password, int port)
 {
+	_MPGOCServer->resetGameObjects(0);
+
 	_Listener.setBlocking(true);
 
 	if (_Listener.listen(port) == sf::Socket::Status::Done)
@@ -149,6 +154,11 @@ void NetworkHandle::run()
 			{
 				receiveData(incommingPacket);
 				
+				if (_Relationship == NetworkRelation::Host) 
+				{
+					_MPGOCServer->update(1 / (float)_TickRate, 160);
+				}
+
 				sendData();
 			}
 		}
@@ -195,6 +205,19 @@ void NetworkHandle::addPacket(NetworkCommunication Type, sf::Packet newPacket)
 {
 	std::lock_guard<std::mutex> lock(_Mutex);
 	_SendPackets.push_back(std::make_pair(Type, newPacket));
+}
+
+void NetworkHandle::addReceivedPacket(NetworkCommunication Type, sf::Packet newPacket)
+{
+	//std::lock_guard<std::mutex> lock(_Mutex);
+	sf::Packet TmpPacket;
+	TmpPacket << sf::Uint8(Type) << _Tick;
+
+	const void* data = newPacket.getData();
+	size_t len = newPacket.getDataSize();
+	TmpPacket.append(data, len);
+
+	_ReceivedPackets.push_back(TmpPacket);
 }
 
 void NetworkHandle::checkForConnection()
@@ -271,15 +294,14 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 			_LastResponse = std::make_pair(NetworkCommunication::StartGame, (int)(_Tick - Tick));
 			_State = NetworkState::Ingame;
 			break;
-		//case NetworkCommunication::CreateGameObject:
-		//case NetworkCommunication::DeleteGameObject:
-		/*case NetworkCommunication::UpdateP2:
-			_ReceivedPackets.push_back(packet);
+		case NetworkCommunication::PlayerInformation:
+		case NetworkCommunication::PlayerKeyPress:
+			//_ReceivedPackets.push_back(packet);
 			break;
 		case NetworkCommunication::EndGame:
 			_LastResponse = std::make_pair(NetworkCommunication::EndGame, 0);
 			_State = NetworkState::Lobby;
-			break;*/
+			break;
 		case NetworkCommunication::Kick:
 			if (_Relationship == NetworkRelation::Client)
 			{
@@ -328,23 +350,23 @@ void NetworkHandle::sendData()
 		_Socket.send(TmpPacket);
 
 		switch (_SendPackets[0].first) {
-		case NetworkCommunication::Disconnect:
-			disconnect(true);
-			break;
-		case NetworkCommunication::StartGame:
-			std::cout << "Starting game at tick " << _Tick << std::endl;
-			_State = NetworkState::Ingame;
-			break;
-		case NetworkCommunication::EndGame:
-			_State = NetworkState::Lobby;
-			break;
-		case NetworkCommunication::Kick:
-			if (_Relationship == NetworkRelation::Host) {
-				disconnect(false);
-			}
-			break;
-		default:
-			break;
+			case NetworkCommunication::Disconnect:
+				disconnect(true);
+				break;
+			case NetworkCommunication::StartGame:
+				std::cout << "Starting game at tick " << _Tick << std::endl;
+				_State = NetworkState::Ingame;
+				break;
+			case NetworkCommunication::EndGame:
+				_State = NetworkState::Lobby;
+				break;
+			case NetworkCommunication::Kick:
+				if (_Relationship == NetworkRelation::Host) {
+					disconnect(false);
+				}
+				break;
+			default:
+				break;
 		}
 
 		if (_SendPackets.size() > 0) {

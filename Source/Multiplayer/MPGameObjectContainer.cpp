@@ -12,6 +12,27 @@ MPGameObjectContainer::~MPGameObjectContainer()
 
 void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 {
+	//Multiplayer
+	handleIncommingPackets();
+
+	_Player1->update(FrameTime, RoadSpeed);
+	_Player2->update(FrameTime, RoadSpeed);
+
+	if (_IsServer) 
+	{
+		sendPlayerInformation();
+	} 
+	else
+	{
+		sendPlayerKeyPress();
+	}
+	return;
+}
+
+void comment()
+{
+	
+	/*
 	// Update Animations
 	for (unsigned int i = 0; i < _Animations.size(); i++) {
 		if (_Animations[i]->getAnimationState() == Animation::AnimationState::Stop) {
@@ -23,12 +44,6 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 		}
 	}
 
-	if (_PlayerAlive) {
-		_Player1->update(FrameTime, RoadSpeed);
-		_Player2->update(FrameTime, RoadSpeed);
-	}
-
-	/*
 	if (getPlayer2Car().getType() != GameObjectType::Player) {
 		// TODO: Add failsafe
 	}
@@ -210,7 +225,7 @@ void MPGameObjectContainer::render(sf::RenderWindow& Window, bool renderCrosshai
 		_GameObjects.at(i)->render(Window);
 	}
 
-	_Player1->render(Window, renderCrosshair);
+	_Player2->render(Window, false);
 	_Player1->render(Window, renderCrosshair);
 
 	for (int i = 0; i < _Animations.size(); i++) {
@@ -230,6 +245,150 @@ void MPGameObjectContainer::handleEvent(sf::Event& newEvent)
 	e.mouseButton.x = 100;
 	e.mouseButton.y = 100;*/
 }
+
+void MPGameObjectContainer::sendPlayerInformation() 
+{
+	//std::lock_guard<std::mutex> lock(_Mutex);
+
+	sf::Packet Player1Packet;
+	Player1Packet << (sf::Uint8)1;
+	*_Player1 >> Player1Packet;
+
+	_NetworkHandle->addReceivedPacket(NetworkCommunication::PlayerInformation, Player1Packet);
+
+	sf::Packet Player2Packet;
+	Player2Packet << (sf::Uint8)1;
+	*_Player2 >> Player2Packet;
+
+	_NetworkHandle->addPacket(NetworkCommunication::PlayerInformation, Player2Packet);
+}
+
+void MPGameObjectContainer::sendPlayerKeyPress() 
+{
+	std::lock_guard<std::mutex> lock(_Mutex);
+
+	if (_NetworkHandle->getRelation() == NetworkRelation::Host) 
+	{
+		sf::Packet Player1Packet;
+		Player1Packet << (sf::Uint8)1 << _Player1->getPressedKeys();
+
+		_NetworkHandle->addReceivedPacket(NetworkCommunication::PlayerKeyPress, Player1Packet);
+	}
+	else if (_NetworkHandle->getRelation() == NetworkRelation::Client)
+	{
+		sf::Packet Player2Packet;
+		Player2Packet << (sf::Uint8)2 << _Player2->getPressedKeys();
+
+		_NetworkHandle->addPacket(NetworkCommunication::PlayerKeyPress, Player2Packet);
+	}
+}
+
+void MPGameObjectContainer::handleIncommingPackets() 
+{
+	std::lock_guard<std::mutex> lock(_Mutex);
+
+	for (unsigned int i = 0; i < _NetworkHandle->getReceivedPackets().size(); i++) 
+	{
+		sf::Packet tmp = _NetworkHandle->getReceivedPackets().at(i);
+		sf::Uint8 recType;
+		sf::Uint32 recTick;
+		tmp >> recType >> recTick;
+
+		if (_IsServer)
+		{
+			switch ((NetworkCommunication)recType)
+			{
+				case NetworkCommunication::PlayerKeyPress:
+				{
+					sf::Uint8 Car, Keys;
+					tmp >> Car >> Keys;
+
+					if (Car == 1)
+					{
+						_Player1->applyKeyPress(Keys);
+					}
+					else
+					{
+						_Player2->applyKeyPress(Keys);
+					}
+
+					_NetworkHandle->getReceivedPackets().erase(_NetworkHandle->getReceivedPackets().begin() + i);
+					i--;
+				} break;
+
+				default:
+				{
+					//_NetworkHandle->getReceivedPackets().erase(_NetworkHandle->getReceivedPackets().begin() + i);
+					//i--;
+				} break;
+			}
+		}
+		else
+		{
+			switch ((NetworkCommunication)recType)
+			{
+				case NetworkCommunication::PlayerInformation:
+				{
+					if (_NetworkHandle->getTick() > recTick + _NetworkHandle->getDelay()) 
+					{
+						sf::Uint8 CarID;
+						tmp >> CarID;
+
+						if (CarID == 1)
+						{
+							*_Player1 << tmp;
+						}
+						else
+						{
+							*_Player2 << tmp;
+						}
+
+						_NetworkHandle->getReceivedPackets().erase(_NetworkHandle->getReceivedPackets().begin() + i);
+						i--;
+					}
+				} break;
+
+				default:
+				{
+					//?
+				} break;
+			}
+		}
+			
+	}
+}
+
+/*void MPGameObjectContainer::handleOutgoingPackets(std::vector<std::pair<NetworkCommunication, sf::Packet>>& packets)
+{
+	if (_SendTimer.getElapsedTime().asSeconds() > 1.0f / 15.0f)
+	{
+		std::lock_guard<std::mutex> lock(_Mutex);
+		sf::Packet tmp;
+		getPlayerCar() >> tmp;
+		packets.push_back(std::make_pair(NetworkCommunication::UpdateP2, tmp));
+
+		_SendTimer.restart();
+	}
+
+	while (_SendObjects.size() > 0) {
+		std::lock_guard<std::mutex> lock(_Mutex);
+		sf::Packet tmp;
+		if (_SendObjects.at(0).first == NetworkCommunication::DeleteGameObject) {
+			tmp << _SendObjects.at(0).second->getID();
+			for (unsigned int i = 0; i < _GameObjects.size(); i++) {
+				if (_GameObjects.at(i)->getID() == _SendObjects.at(0).second->getID()) {
+					deleteGameObject(i, false);
+					break;
+				}
+			}
+		}
+		else {
+			*_SendObjects.at(0).second >> tmp;
+		}
+		packets.push_back(std::make_pair(_SendObjects.at(0).first, tmp));
+		_SendObjects.erase(_SendObjects.begin());
+	}
+} */
 
 void MPGameObjectContainer::playSounds()
 {
@@ -288,6 +447,8 @@ void MPGameObjectContainer::enterBossFight()
 
 void MPGameObjectContainer::resetGameObjects(int SelectedCar)
 {
+	std::lock_guard<std::mutex> lock(_Mutex);
+
 	_GameObjects.clear();
 	_Animations.clear();
 	_SoundEffects.clear();

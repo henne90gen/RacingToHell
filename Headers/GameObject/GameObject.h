@@ -177,13 +177,11 @@ public:
 	virtual sf::Vector2f getDir() { return sf::Vector2f(); }
 
 protected:
-
 	sf::Uint32 _ID;
-
+	GameObjectType _Type;
 private:
 	sf::Sprite _Sprite;
 	sf::Texture _Texture;
 	
-	GameObjectType _Type;
 };
 

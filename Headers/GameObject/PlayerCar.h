@@ -117,7 +117,8 @@ public:
 	/*
 	
 	*/
-	void setKeyPress(sf::Uint8 keys);
+	void applyKeyPress(sf::Uint8 keys);
+	sf::Uint8 getPressedKeys() { return _PressedKeys; }
 private:
 	void shoot();
 
@@ -141,5 +142,7 @@ private:
 
 	//Value between 0.0 and 1.0 the speed value is multiplied by
 	sf::Vector2f _Acceleration;
+
+	sf::Uint8 _PressedKeys;
 };
 

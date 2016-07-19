@@ -49,13 +49,13 @@ void PlayerCar::render(sf::RenderWindow& Window, bool renderCrosshair) {
 }
 
 
-void PlayerCar::setKeyPress(sf::Uint8 Keys)
+void PlayerCar::applyKeyPress(sf::Uint8 keys)
 {
 	bool Up, Right, Down, Left;
-	Up = Keys & (sf::Uint8)Key::Up;
-	Right = Keys & (sf::Uint8)Key::Right;
-	Down = Keys & (sf::Uint8)Key::Down;
-	Left = Keys & (sf::Uint8)Key::Left;
+	Up = keys & (sf::Uint8)Key::Up;
+	Right = keys & (sf::Uint8)Key::Right;
+	Down = keys & (sf::Uint8)Key::Down;
+	Left = keys & (sf::Uint8)Key::Left;
 
 	_Acceleration = sf::Vector2f(0, 0);
 
@@ -83,13 +83,11 @@ void PlayerCar::setKeyPress(sf::Uint8 Keys)
 void PlayerCar::handleEvent(sf::Event& Event)
 {
 	// Apply key input to car
-	sf::Uint8 Keys = 0;
-	Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) * (sf::Uint8)Key::Up;
-	Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) * (sf::Uint8)Key::Right;
-	Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) * (sf::Uint8)Key::Down;
-	Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) * (sf::Uint8)Key::Left;
-
-	setKeyPress(Keys);
+	_PressedKeys = 0;
+	_PressedKeys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) * (sf::Uint8)Key::Up;
+	_PressedKeys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) * (sf::Uint8)Key::Right;
+	_PressedKeys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) * (sf::Uint8)Key::Down;
+	_PressedKeys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) * (sf::Uint8)Key::Left;
 
 	/*
 	_Acceleration = sf::Vector2f(0, 0);
@@ -308,12 +306,15 @@ void PlayerCar::operator>>(sf::Packet& packet)
 
 void PlayerCar::operator<<(sf::Packet& packet)
 {
+	sf::Uint8 Type;
+	packet >> Type;
+	_Type = (GameObjectType)Type;
 	read(packet, _ID);
 	float x, y;
 	read(packet, x);
 	read(packet, y);
-	if (std::abs(getPos().x - x) > 1 || std::abs(getPos().y - y) > 1)
-		setPos(sf::Vector2f(x, y));
+	//if (std::abs(getPos().x - x) > 1 || std::abs(getPos().y - y) > 1)
+	setPos(sf::Vector2f(x, y));
 	read(packet, _Speed);
 	read(packet, _Health);
 	read(packet, _MaxHealth);

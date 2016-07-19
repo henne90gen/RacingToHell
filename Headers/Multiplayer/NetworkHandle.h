@@ -2,6 +2,9 @@
 
 #include <mutex>
 #include "Multiplayer/Communication.h"
+#include "Multiplayer/MPGameObjectContainer.h"
+
+class MPGameObjectContainer;
 
 class NetworkHandle
 {
@@ -23,6 +26,7 @@ public:
 	NetworkState getState() { return _State; }
 
 	void addPacket(NetworkCommunication Type, sf::Packet newPacket);
+	void addReceivedPacket(NetworkCommunication Type, sf::Packet newPacket);
 
 	bool getAuthenticated() { return _Authenticated; }
 	std::string getMyName() { return _MyName; }
@@ -52,6 +56,8 @@ private:
 
 	sf::TcpSocket _Socket;
 	sf::TcpListener _Listener;
+
+	std::shared_ptr<MPGameObjectContainer>  _MPGOCServer;
 
 	std::vector<sf::Packet> _ReceivedPackets;
 	std::vector<std::pair<NetworkCommunication, sf::Packet>> _SendPackets;

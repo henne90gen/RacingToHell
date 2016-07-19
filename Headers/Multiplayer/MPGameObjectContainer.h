@@ -17,6 +17,8 @@
 
 #include "Multiplayer/NetworkHandle.h"
 
+class NetworkHandle;
+
 class MPGameObjectContainer
 {
 public:
@@ -175,11 +177,19 @@ private:
 	bool _PlayerAlive, _AboutToLevelUp, _BossFight;
 
 	/*
+	Handles incomming packets
+	*/
+	void handleIncommingPackets();
+
+	void sendPlayerInformation();
+	void sendPlayerKeyPress();
+
+	/*
 	Plays a shot sound depending on the type of the firing entity
 	@param go Type of the GameObject that is emitting the shot sound
 	@param position Position of the Soundobject
 	*/
-	void playShotSound(GameObjectType go, sf::Vector2f position = sf::Vector2f(0.f, 0.f));
+	//void playShotSound(GameObjectType go, sf::Vector2f position = sf::Vector2f(0.f, 0.f));
 
 	/*
 	Spawns a new AICar on a random lane

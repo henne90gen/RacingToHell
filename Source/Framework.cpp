@@ -24,7 +24,7 @@ Framework::Framework() : _FrameTime(0), _FPS(60.0f), _IsRunning(true), _GameStat
 	_MultiplayerMenu.setPlayerName("Name");
 	_MultiplayerLobby.setNetworkHandle(&_NetworkHandle);
 	_MPGOCClient.setNetworkHandle(&_NetworkHandle, false);
-	_MPGOCServer.setNetworkHandle(&_NetworkHandle, true);
+	//_MPGOCServer.setNetworkHandle(&_NetworkHandle, true);
 }
 
 Framework::~Framework()
@@ -393,9 +393,9 @@ void Framework::handleEvents()
 			_GameObjectContainer.setGameMode(_GameMode);
 			_MPGOCClient.setLevel(_Level.getLevel());
 
-			sf::Packet packet;
+			/*sf::Packet packet;
 			_MPGOCClient.getPlayerCar() >> packet;
-			_NetworkHandle.addPacket(NetworkCommunication::CreateGameObject, packet);
+			_NetworkHandle.addPacket(NetworkCommunication::CreateGameObject, packet); */
 		}
 		break;
 	case GameState::Countdown:
@@ -622,9 +622,9 @@ void Framework::update()
 			}
 		}
 
-		if (_NetworkHandle.getRelation() == NetworkRelation::Host) {
-			_MPGOCServer.update(_FrameTime, _Level.getRoadSpeed());
-		}
+		//if (_NetworkHandle.getRelation() == NetworkRelation::Host) {
+		//	_MPGOCServer.update(1 / (float)_NetworkHandle.getTickRate(), _Level.getRoadSpeed());
+		//}
 
 		_MPGOCClient.update(_FrameTime, _Level.getRoadSpeed());
 		_HeadsUpDisplay.update(_Score, _MPGOCClient.getPlayerCar().getHealth(), _MPGOCClient.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime(), _GameMode);
@@ -707,6 +707,8 @@ void Framework::load()
 		_MPGOCClient.load();
 		_MPGOCClient.setCarSkins(_CarSkins);
 		_MPGOCClient.resetGameObjects(0);
+
+		//_MPGOCServer.resetGameObjects(0);
 
 		_GameOverScreen.load();
 

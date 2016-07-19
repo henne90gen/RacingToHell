@@ -643,12 +643,9 @@ void MPGameObjectContainer::deleteGameObject(unsigned int id, bool sendDeletion)
 	}
 }
 
-void MPGameObjectContainer::handleIncomingPackets() {
-
-	//std::lock_guard<std::mutex> lock(_Mutex);
+void MPGameObjectContainer::handleIncomingPackets() 
+{
 	std::vector<sf::Packet> Packets  = _NetworkHandle->getReceivedPackets();
-	//sf::Packet Test;
-	//Packets.push_back(Test);
 
 	for (unsigned int i = 0; i < Packets.size(); i++) {
 		sf::Packet p = Packets.at(i);
@@ -669,7 +666,6 @@ void MPGameObjectContainer::handleIncomingPackets() {
 						_Player2->applyKeyPress(Keys);
 					}
 					Packets.erase(Packets.begin() + i);
-					_NetworkHandle->getReceivedPackets().erase(_NetworkHandle->getReceivedPackets().begin() + i);
 					i--;
 				} break;
 

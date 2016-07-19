@@ -204,8 +204,8 @@ std::pair<NetworkCommunication, int> NetworkHandle::getLastResponse()
 void NetworkHandle::addPacket(NetworkCommunication Type, sf::Packet newPacket)
 {
 	std::lock_guard<std::mutex> lock(_Mutex);
-//	std::pair<NetworkCommunication, sf::Packet> p;
-//	p = std::make_pair(Type, newPacket);
+	std::pair<NetworkCommunication, sf::Packet> p;
+	p = std::make_pair(Type, newPacket);
 //	std::cout << "Packet is being added" << std::endl;
 	_SendPackets.push_back(std::make_pair(Type, newPacket));
 }

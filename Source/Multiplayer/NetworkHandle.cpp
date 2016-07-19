@@ -154,10 +154,10 @@ void NetworkHandle::run()
 			{
 				receiveData(incommingPacket);
 				
-				/*if (_Relationship == NetworkRelation::Host)
+				if (_Relationship == NetworkRelation::Host)
 				{
 					_MPGOCServer->update(1 / (float)_TickRate, 160);
-				}*/
+				}
 
 				sendData();
 			}
@@ -204,15 +204,14 @@ std::pair<NetworkCommunication, int> NetworkHandle::getLastResponse()
 void NetworkHandle::addPacket(NetworkCommunication Type, sf::Packet newPacket)
 {
 	std::lock_guard<std::mutex> lock(_Mutex);
-	/*std::pair<NetworkCommunication, sf::Packet> p;
+	std::pair<NetworkCommunication, sf::Packet> p;
 	p = std::make_pair(Type, newPacket);
-	std::cout << "Packet is being added" << std::endl;*/
 	_SendPackets.push_back(std::make_pair(Type, newPacket));
 }
 
 void NetworkHandle::addReceivedPacket(NetworkCommunication Type, sf::Packet newPacket)
 {
-	//std::lock_guard<std::mutex> lock(_Mutex);
+	std::lock_guard<std::mutex> lock(_Mutex);
 	sf::Packet TmpPacket;
 	TmpPacket << sf::Uint8(Type) << _Tick;
 
@@ -221,6 +220,12 @@ void NetworkHandle::addReceivedPacket(NetworkCommunication Type, sf::Packet newP
 	TmpPacket.append(data, len);
 
 	_ReceivedPackets.push_back(TmpPacket);
+}
+
+void NetworkHandle::setReceivedPackets(std::vector<sf::Packet> packets)
+{
+	std::lock_guard<std::mutex> lock(_Mutex);
+	_ReceivedPackets = packets;
 }
 
 void NetworkHandle::checkForConnection()
@@ -299,7 +304,8 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 			break;
 		case NetworkCommunication::PlayerInformation:
 		case NetworkCommunication::PlayerKeyPress:
-			//_ReceivedPackets.push_back(packet);
+			//std::cout << _ReceivedPackets.size() << std::endl;
+			_ReceivedPackets.push_back(packet);
 			break;
 		case NetworkCommunication::EndGame:
 			_LastResponse = std::make_pair(NetworkCommunication::EndGame, 0);

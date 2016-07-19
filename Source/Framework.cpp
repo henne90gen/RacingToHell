@@ -613,8 +613,6 @@ void Framework::update()
 		break;
 	case GameState::RunningMultiplayer:
 	case GameState::PauseMultiplayer:
-		//_MPGOCClient.handleOutgoingPackets(_NetworkHandle.getSendPackets());
-		//_MPGOCClient.handleIncomingPackets(_NetworkHandle);
 		if (_Level.update(_FrameTime, _GameState)) {
 			if (_MPGOCClient.emptyScreen()) {
 				_MPGOCClient.enterBossFight();

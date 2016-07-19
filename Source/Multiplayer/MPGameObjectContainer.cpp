@@ -13,7 +13,7 @@ MPGameObjectContainer::~MPGameObjectContainer()
 void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 {
 	//Multiplayer
-	{
+	/*{
 		std::lock_guard<std::mutex> lock(_Mutex);
 		for (unsigned int i = 0; _NetworkHandle->getReceivedPackets().size(); i++) {
 			if (handleIncomingPacket(_NetworkHandle->getReceivedPackets()[i])) {
@@ -21,16 +21,16 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 				i--;
 			}
 		}
-	}
+	}*/
 
-	_Player1->update(FrameTime, RoadSpeed);
-	_Player2->update(FrameTime, RoadSpeed);
+//	_Player1->update(FrameTime, RoadSpeed);
+//	_Player2->update(FrameTime, RoadSpeed);
 
-	if (_IsServer) {
+	/*if (_IsServer) {
 		sendPlayerInformation();
 	} else {
 		sendPlayerKeyPress();
-	}
+	}*/
 }
 
 void comment()

@@ -154,10 +154,10 @@ void NetworkHandle::run()
 			{
 				receiveData(incommingPacket);
 				
-				if (_Relationship == NetworkRelation::Host) 
+				/*if (_Relationship == NetworkRelation::Host)
 				{
 					_MPGOCServer->update(1 / (float)_TickRate, 160);
-				}
+				}*/
 
 				sendData();
 			}

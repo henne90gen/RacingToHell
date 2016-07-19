@@ -23,15 +23,11 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 	_Player1->update(FrameTime, RoadSpeed);
 	_Player2->update(FrameTime, RoadSpeed);
 
-	if (_IsServer) 
-	{
+	if (_IsServer) {
 		sendPlayerInformation();
-	} 
-	else
-	{
+	} else {
 		sendPlayerKeyPress();
 	}
-	return;
 }
 
 void comment()
@@ -285,81 +281,6 @@ void MPGameObjectContainer::sendPlayerKeyPress()
 		Player2Packet << (sf::Uint8)2 << _Player2->getPressedKeys();
 
 		_NetworkHandle->addPacket(NetworkCommunication::PlayerKeyPress, Player2Packet);
-	}
-}
-
-void MPGameObjectContainer::handleIncommingPackets() 
-{
-	std::lock_guard<std::mutex> lock(_Mutex);
-
-	for (unsigned int i = 0; i < _NetworkHandle->getReceivedPackets().size(); i++) 
-	{
-		sf::Packet tmp = _NetworkHandle->getReceivedPackets().at(i);
-		sf::Uint8 recType;
-		sf::Uint32 recTick;
-		tmp >> recType >> recTick;
-
-		if (_IsServer)
-		{
-			switch ((NetworkCommunication)recType)
-			{
-				case NetworkCommunication::PlayerKeyPress:
-				{
-					sf::Uint8 Car, Keys;
-					tmp >> Car >> Keys;
-
-					if (Car == 1)
-					{
-						_Player1->applyKeyPress(Keys);
-					}
-					else
-					{
-						_Player2->applyKeyPress(Keys);
-					}
-
-					_NetworkHandle->getReceivedPackets().erase(_NetworkHandle->getReceivedPackets().begin() + i);
-					i--;
-				} break;
-
-				default:
-				{
-					//_NetworkHandle->getReceivedPackets().erase(_NetworkHandle->getReceivedPackets().begin() + i);
-					//i--;
-				} break;
-			}
-		}
-		else
-		{
-			switch ((NetworkCommunication)recType)
-			{
-				case NetworkCommunication::PlayerInformation:
-				{
-					if (_NetworkHandle->getTick() > recTick + _NetworkHandle->getDelay()) 
-					{
-						sf::Uint8 CarID;
-						tmp >> CarID;
-
-						if (CarID == 1)
-						{
-							*_Player1 << tmp;
-						}
-						else
-						{
-							*_Player2 << tmp;
-						}
-
-						_NetworkHandle->getReceivedPackets().erase(_NetworkHandle->getReceivedPackets().begin() + i);
-						i--;
-					}
-				} break;
-
-				default:
-				{
-					//?
-				} break;
-			}
-		}
-			
 	}
 }
 
@@ -724,110 +645,54 @@ void MPGameObjectContainer::deleteGameObject(unsigned int id, bool sendDeletion)
 	}
 }
 
-bool MPGameObjectContainer::handleIncomingPacket(sf::Packet& p) {
+bool MPGameObjectContainer::handleIncomingPacket(sf::Packet p) {
 	std::lock_guard<std::mutex> lock(_Mutex);
 
 	sf::Uint8 recType;
 	sf::Uint32 recTick;
 	p >> recType >> recTick;
 
-	switch((NetworkCommunication)recType) {
-	case NetworkCommunication::PlayerInformation:
-		sf::Uint8 type;
-		p >> type;
-		if (_NetworkHandle->getTick() > recTick + _NetworkHandle->getDelay()) {
-			/*
-			sf::Uint32 id;
-			float x, y;
-			tmp >> id >> x >> y;
-			std::cout << "Receiving ID: " << (unsigned int)id << " || X: " << x << " || Y: " << y << std::endl;
-			*/
-			if (_NetworkHandle->getRelation() == NetworkRelation::Host) {
-				*_Player1 << p;
-				*_Player2 << p;
-			} else {
-				*_Player2 << p;
-				*_Player1 << p;
-			}
-			return true;
-		}
-		break;
-	}
-
-	/*for (unsigned int i = 0; i < network.getReceivedPackets().size(); i++) {
-		sf::Packet tmp = network.getReceivedPackets().at(i);
-		sf::Uint8 recType;
-		sf::Uint32 recTick;
-		tmp >> recType >> recTick;
-
+	if (_IsServer) {
 		switch ((NetworkCommunication)recType) {
-		case NetworkCommunication::CreateGameObject:
-			if (network.getTick() > recTick + network.getDelay()) {
-				GameObjectFactory::scanPacketForGO(_Level, tmp, _GameObjects, _SoundEffects, _ExplosionSoundBuffer, _Volume);
-				std::shared_ptr<GameObject> go = _GameObjects.at(_GameObjects.size() - 1);
-				/*if (go->getType() == GameObjectType::BulletObjectPlayer) {
-					int elapsedTicks = network.getTick() - recTick;
-					float elapsedTime = (float)elapsedTicks / (float)network.getTickRate();
-					go->setPos((float)go->getSpeed() * go->getDir() * elapsedTime);
-				}*/
-				/*network.getReceivedPackets().erase(network.getReceivedPackets().begin() + i);
-				i--;
-			}
-			break;
-		case NetworkCommunication::DeleteGameObject:
-			sf::Uint32 id;
-			tmp >> id;
-			if (network.getTick() > recTick + network.getDelay()) {
-				for (unsigned int j = 0; j < _GameObjects.size(); j++) {
-					if (_GameObjects.at(j)->getID() == id) {
-						deleteGameObject(j, false);
-						break;
-					}
-				}
-				network.getReceivedPackets().erase(network.getReceivedPackets().begin() + i);
-				i--;
-			}
-			break;
-		case NetworkCommunication::UpdateAICar:
-		{
-			GameObject go = GameObject(tmp, GameObjectType::AI);
-			if (network.getTick() > recTick + network.getDelay()) {
-				network.getReceivedPackets().at(i) >> recType >> recTick;
-				for (unsigned int j = 0; j < _GameObjects.size(); j++) {
-					if (_GameObjects.at(j)->getID() == go.getID()) {
-						*_GameObjects.at(j) << network.getReceivedPackets().at(i);
-						break;
-					}
-				}
-				network.getReceivedPackets().erase(network.getReceivedPackets().begin() + i);
-				i--;
-			}
-			break;
-		}
-		case NetworkCommunication::UpdateP2:
-			sf::Uint8 type;
-			tmp >> type;
-			if (network.getTick() > recTick + network.getDelay()) {
-				if ((GameObjectType)type == GameObjectType::Player) {
-					/*
-					sf::Uint32 id;
-					float x, y;
-					tmp >> id >> x >> y;
-					std::cout << "Receiving ID: " << (unsigned int)id << " || X: " << x << " || Y: " << y << std::endl;
-					*//*
-					*_GameObjects[1] << tmp;
-				}
-				network.getReceivedPackets().erase(network.getReceivedPackets().begin() + i);
-				i--;
-			}
-			break;
-		default:
-			network.getReceivedPackets().erase(network.getReceivedPackets().begin() + i);
-			i--;
-			break;
-		}
-	}*/
+			case NetworkCommunication::PlayerKeyPress:
+			{
+				sf::Uint8 Car, Keys;
+				p >> Car >> Keys;
 
+				if (Car == 1) {
+					_Player1->applyKeyPress(Keys);
+				} else {
+					_Player2->applyKeyPress(Keys);
+				}
+				return true;
+			} break;
+			default:
+			{
+			} break;
+		}
+	} else {
+		switch ((NetworkCommunication)recType)
+		{
+			case NetworkCommunication::PlayerInformation:
+			{
+				if (_NetworkHandle->getTick() > recTick + _NetworkHandle->getDelay())
+				{
+					sf::Uint8 CarID;
+					p >> CarID;
+
+					if (CarID == 1) {
+						*_Player1 << p;
+					} else {
+						*_Player2 << p;
+					}
+					return true;
+				}
+			} break;
+			default:
+			{
+			} break;
+		}
+	}
 	return false;
 }
 

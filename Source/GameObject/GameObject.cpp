@@ -67,6 +67,9 @@ void GameObject::operator>>(sf::Packet& packet) {
 
 void GameObject::operator<<(sf::Packet& packet)
 {
+	sf::Uint8 type;
+	read(packet, type);
+	_Type = (GameObjectType) type;
 	read(packet, _ID);
 	float x, y;
 	read(packet, x);

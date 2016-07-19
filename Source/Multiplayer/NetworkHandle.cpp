@@ -223,6 +223,12 @@ void NetworkHandle::addReceivedPacket(NetworkCommunication Type, sf::Packet newP
 	_ReceivedPackets.push_back(TmpPacket);
 }
 
+void NetworkHandle::setReceivedPackets(std::vector<sf::Packet> packets)
+{
+	std::lock_guard<std::mutex> lock(_Mutex);
+	_ReceivedPackets = packets;
+}
+
 void NetworkHandle::checkForConnection()
 {
 	if (_State == NetworkState::Lobby && _Socket.getRemoteAddress() == sf::IpAddress::None && _Relationship == NetworkRelation::Host)

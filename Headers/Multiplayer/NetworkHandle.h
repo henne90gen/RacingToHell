@@ -27,6 +27,7 @@ public:
 
 	void addPacket(NetworkCommunication Type, sf::Packet newPacket);
 	void addReceivedPacket(NetworkCommunication Type, sf::Packet newPacket);
+	void setReceivedPackets(std::vector<sf::Packet> packets);
 
 	bool getAuthenticated() { return _Authenticated; }
 	std::string getMyName() { return _MyName; }
@@ -34,7 +35,7 @@ public:
 	sf::Uint32 getTick() { return _Tick; }
 	int getTickRate() { return _TickRate; }
 
-	std::vector<sf::Packet>& getReceivedPackets() { return _ReceivedPackets; }
+	std::vector<sf::Packet> getReceivedPackets() { std::lock_guard<std::mutex> lock(_Mutex);  return _ReceivedPackets; }
 	sf::Packet getNextPacket() { sf::Packet p = _ReceivedPackets.back(); _ReceivedPackets.pop_back(); return p; }
 	std::vector<std::pair<NetworkCommunication, sf::Packet>>& getSendPackets() { return _SendPackets; }
 

@@ -246,7 +246,6 @@ void MPGameObjectContainer::sendPlayerInformation()
 	if (_PlayerInformationTimer.getElapsedTime().asSeconds() > 1/60) {
 		_PlayerInformationTimer.restart();
 		std::lock_guard<std::mutex> lock(_Mutex);
-
 		sf::Packet Player1Packet;
 		Player1Packet << (sf::Uint8)1;
 		*_Player1 >> Player1Packet;
@@ -265,19 +264,17 @@ void MPGameObjectContainer::sendPlayerKeyPress()
 {
 	if (_KeyPressTimer.getElapsedTime().asSeconds() > 1/60) {
 		_KeyPressTimer.restart();
-		std::lock_guard<std::mutex> lock(_Mutex);
-
 		if (_NetworkHandle->getRelation() == NetworkRelation::Host)
 		{
 			sf::Packet Player1Packet;
 			Player1Packet << (sf::Uint8)1 << _Player1->getPressedKeys();
 
-			_NetworkHandle->addReceivedPacket(NetworkCommunication::PlayerKeyPress, Player1Packet);
-		}
-		else if (_NetworkHandle->getRelation() == NetworkRelation::Client)
-		{
-			sf::Packet Player1Packet;
-			Player1Packet << (sf::Uint8)2 << _Player1->getPressedKeys();
+		_NetworkHandle->addReceivedPacket(NetworkCommunication::PlayerKeyPress, Player1Packet);
+	}
+	else if (_NetworkHandle->getRelation() == NetworkRelation::Client)
+	{
+		sf::Packet Player2Packet;
+		Player2Packet << (sf::Uint8)2 << _Player1->getPressedKeys();
 
 			_NetworkHandle->addPacket(NetworkCommunication::PlayerKeyPress, Player1Packet);
 		}
@@ -646,10 +643,14 @@ void MPGameObjectContainer::deleteGameObject(unsigned int id, bool sendDeletion)
 }
 
 void MPGameObjectContainer::handleIncomingPackets() {
-	std::lock_guard<std::mutex> lock(_Mutex);
-	
-	for (unsigned int i = 0; i < _NetworkHandle->getReceivedPackets().size(); i++) {
-		sf::Packet p = _NetworkHandle->getReceivedPackets().at(i);
+
+	//std::lock_guard<std::mutex> lock(_Mutex);
+	std::vector<sf::Packet> Packets  = _NetworkHandle->getReceivedPackets();
+	//sf::Packet Test;
+	//Packets.push_back(Test);
+
+	for (unsigned int i = 0; i < Packets.size(); i++) {
+		sf::Packet p = Packets.at(i);
 		sf::Uint8 recType;
 		sf::Uint32 recTick;
 		p >> recType >> recTick;
@@ -666,7 +667,7 @@ void MPGameObjectContainer::handleIncomingPackets() {
 //					} else {
 //						_Player2->applyKeyPress(Keys);
 //					}
-//					std::cout << "SizeBeforeErase: " << _NetworkHandle->getReceivedPackets().size() << std::endl;
+//					Packets.erase(Packets.begin() + i);
 //					_NetworkHandle->getReceivedPackets().erase(_NetworkHandle->getReceivedPackets().begin() + i);
 //					i--;
 //				} break;
@@ -693,7 +694,7 @@ void MPGameObjectContainer::handleIncomingPackets() {
 						else {
 							*_Player2 << p;
 						}
-						_NetworkHandle->getReceivedPackets().erase(_NetworkHandle->getReceivedPackets().begin() + i);
+						Packets.erase(Packets.begin() + i);
 						i--;
 					}
 				} break;
@@ -703,6 +704,8 @@ void MPGameObjectContainer::handleIncomingPackets() {
 			}
 		}
 	}
+
+	_NetworkHandle->setReceivedPackets(Packets);
 }
 
 /*void MPGameObjectContainer::handleOutgoingPackets(std::vector<std::pair<NetworkCommunication, sf::Packet>>& packets)

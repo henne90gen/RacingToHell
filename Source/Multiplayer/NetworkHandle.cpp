@@ -306,7 +306,7 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 			_State = NetworkState::Ingame;
 			break;
 		case NetworkCommunication::PlayerInformation:
-		//case NetworkCommunication::PlayerKeyPress:
+		case NetworkCommunication::PlayerKeyPress:
 			_ReceivedPackets.push_back(packet);
 			std::cout << "RecSize: " << _ReceivedPackets.size() << std::endl;
 			break;

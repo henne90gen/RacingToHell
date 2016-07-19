@@ -276,7 +276,7 @@ void MPGameObjectContainer::sendPlayerKeyPress()
 		sf::Packet Player2Packet;
 		Player2Packet << (sf::Uint8)2 << _Player1->getPressedKeys();
 
-			_NetworkHandle->addPacket(NetworkCommunication::PlayerKeyPress, Player1Packet);
+			_NetworkHandle->addPacket(NetworkCommunication::PlayerKeyPress, Player2Packet);
 		}
 	}
 }
@@ -656,27 +656,27 @@ void MPGameObjectContainer::handleIncomingPackets() {
 		p >> recType >> recTick;
 
 		if (_IsServer) {
-//			switch ((NetworkCommunication)recType) {
-//				case NetworkCommunication::PlayerKeyPress:
-//				{
-//					sf::Uint8 Car, Keys;
-//					p >> Car >> Keys;
-//
-//					if (Car == 1) {
-//						_Player1->applyKeyPress(Keys);
-//					} else {
-//						_Player2->applyKeyPress(Keys);
-//					}
-//					Packets.erase(Packets.begin() + i);
-//					_NetworkHandle->getReceivedPackets().erase(_NetworkHandle->getReceivedPackets().begin() + i);
-//					i--;
-//				} break;
-//
-//				default:
-//				{
-//
-//				} break;
-//			}
+			switch ((NetworkCommunication)recType) {
+				case NetworkCommunication::PlayerKeyPress:
+				{
+					sf::Uint8 Car, Keys;
+					p >> Car >> Keys;
+
+					if (Car == 1) {
+						_Player1->applyKeyPress(Keys);
+					} else {
+						_Player2->applyKeyPress(Keys);
+					}
+					Packets.erase(Packets.begin() + i);
+					_NetworkHandle->getReceivedPackets().erase(_NetworkHandle->getReceivedPackets().begin() + i);
+					i--;
+				} break;
+
+				default:
+				{
+
+				} break;
+			}
 		}
 		else {
 			switch ((NetworkCommunication)recType)

@@ -245,6 +245,7 @@ void MPGameObjectContainer::sendPlayerInformation()
 {
 	if (_PlayerInformationTimer.getElapsedTime().asSeconds() > 1/60) {
 		_PlayerInformationTimer.restart();
+
 		std::lock_guard<std::mutex> lock(_Mutex);
 		sf::Packet Player1Packet;
 		Player1Packet << (sf::Uint8)1;

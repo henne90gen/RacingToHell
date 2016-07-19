@@ -15,7 +15,7 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 	handleIncomingPackets();
 
 	_Player1->update(FrameTime, RoadSpeed);
-	_Player2->update(FrameTime, RoadSpeed);
+	//_Player2->update(FrameTime, RoadSpeed);
 
 	if (_IsServer) {
 		sendPlayerInformation();
@@ -243,7 +243,7 @@ void MPGameObjectContainer::handleEvent(sf::Event& newEvent)
 
 void MPGameObjectContainer::sendPlayerInformation() 
 {
-	if (_PlayerInformationTimer.getElapsedTime().asSeconds() > 1/60) {
+	if (_PlayerInformationTimer.getElapsedTime().asSeconds() > 1.0f/30.0f) {
 		_PlayerInformationTimer.restart();
 
 		std::lock_guard<std::mutex> lock(_Mutex);
@@ -251,19 +251,29 @@ void MPGameObjectContainer::sendPlayerInformation()
 		Player1Packet << (sf::Uint8)1;
 		*_Player1 >> Player1Packet;
 
-		_NetworkHandle->addReceivedPacket(NetworkCommunication::PlayerInformation, Player1Packet);
-
 		sf::Packet Player2Packet;
-		Player2Packet << (sf::Uint8)1;
+		Player2Packet << (sf::Uint8)2;
 		*_Player2 >> Player2Packet;
 
-		_NetworkHandle->addPacket(NetworkCommunication::PlayerInformation, Player2Packet);
+
+		_NetworkHandle->addReceivedPacket(NetworkCommunication::PlayerInformation, Player1Packet);
+		_NetworkHandle->addReceivedPacket(NetworkCommunication::PlayerInformation, Player2Packet);
+
+		sf::Packet Player1P;
+		Player1P << (sf::Uint8)2;
+		*_Player1 >> Player1P;
+
+		sf::Packet Player2P;
+		Player2P << (sf::Uint8)1;
+		*_Player2 >> Player2P;
+		_NetworkHandle->addPacket(NetworkCommunication::PlayerInformation, Player1P);
+		_NetworkHandle->addPacket(NetworkCommunication::PlayerInformation, Player2P);
 	}
 }
 
 void MPGameObjectContainer::sendPlayerKeyPress() 
 {
-	if (_KeyPressTimer.getElapsedTime().asSeconds() > 1/60) {
+	if (_KeyPressTimer.getElapsedTime().asSeconds() > 1.0f/30.0f) {
 		_KeyPressTimer.restart();
 
 		if (_NetworkHandle->getRelation() == NetworkRelation::Host)
@@ -685,6 +695,8 @@ void MPGameObjectContainer::handleIncomingPackets()
 					{
 						sf::Uint8 CarID;
 						p >> CarID;
+
+						//std::cout << "Applying player info" << std::endl;
 
 						if (CarID == 1) {
 							*_Player1 << p;

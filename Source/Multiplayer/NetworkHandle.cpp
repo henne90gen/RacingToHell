@@ -293,8 +293,6 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 
 		tmp >> Type >> Tick;
 
-		std::cout << "NetComm: " << (int)Type << std::endl;
-
 		switch ((NetworkCommunication)Type)
 		{
 		case NetworkCommunication::Disconnect:
@@ -308,7 +306,7 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 		case NetworkCommunication::PlayerInformation:
 		case NetworkCommunication::PlayerKeyPress:
 			_ReceivedPackets.push_back(packet);
-			std::cout << "RecSize: " << _ReceivedPackets.size() << std::endl;
+//			std::cout << "RecSize: " << _ReceivedPackets.size() << std::endl;
 			break;
 		case NetworkCommunication::EndGame:
 			_LastResponse = std::make_pair(NetworkCommunication::EndGame, 0);

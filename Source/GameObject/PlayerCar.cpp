@@ -300,6 +300,7 @@ void PlayerCar::operator<<(sf::Packet& packet)
 //	read(packet, _MaxHealth);
 	read(packet, _SelectedCar);
 	setStats(_SelectedCar);
+//	std::cout << "Updated position" << _ID << ": " << getPos().x << " " << getPos().y << std::endl;
 //	read(packet, _Acceleration.x);
 //	read(packet, _Acceleration.y);
 //	read(packet, _Movement.x);

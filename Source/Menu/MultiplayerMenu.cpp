@@ -147,6 +147,8 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result)
 			_FeedbackText.setColor(sf::Color::White);
 			_FeedbackText.setString("Connecting to " + _MenuItems[(int)MenuItemIndex::IP]->getText() + ":" + _MenuItems[(int)MenuItemIndex::Port]->getText() + ". Please wait.");
 
+			_NetworkHandle->setState(NetworkState::NoNetState);
+
 			_ConnectionThread = std::thread(&NetworkHandle::connect, _NetworkHandle, _MenuItems[(int)MenuItemIndex::IP]->getText(), _MenuItems[(int)MenuItemIndex::PasswordJoin]->getText(), _MenuItems[(int)MenuItemIndex::Name]->getText(), std::stoi(_MenuItems[(int)MenuItemIndex::Port]->getText()), 2.0f);
 			_ConnectionThread.detach();
 
@@ -193,7 +195,7 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result)
 
 NetworkCommunication MultiplayerMenu::update(float frametime)
 {
-	//std::lock_guard<std::mutex> lock(_Mutex);
+	std::lock_guard<std::mutex> lock(_Mutex);
 	switch (_NetworkHandle->getLastResponse().first)
 	{
 	case NetworkCommunication::ConnectionSuccesfull:

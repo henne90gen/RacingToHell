@@ -177,7 +177,7 @@ void NetworkHandle::run()
 			}
 		}
 
-		//std::cout << _Tick << std::endl;
+//		std::cout << _Tick << std::endl;
 
 		if (_Relationship == NetworkRelation::Client && _SyncTimer.getElapsedTime().asSeconds() > 2.0f) {
 			synchroniseTick();

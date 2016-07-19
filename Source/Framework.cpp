@@ -441,18 +441,6 @@ void Framework::handleEvents()
 	}
 }
 
-/*
-
-
-
-
-
-
-
-
-
-*/
-
 void Framework::update()
 {
 
@@ -547,7 +535,7 @@ void Framework::update()
 		_Level.update(_FrameTime, _GameState);
 		NetworkCommunication netComm = _MultiplayerMenu.update(_FrameTime);
 		if (netComm == NetworkCommunication::ConnectionSuccesfull) {
-			_GameState = GameState::Lobby;		
+			_GameState = GameState::Lobby;
 		}
 		else if (netComm == NetworkCommunication::ConnectionFailed || netComm == NetworkCommunication::WrongPassword) {
 			_GameState = GameState::MultiplayerSelection;

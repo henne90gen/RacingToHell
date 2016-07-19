@@ -175,11 +175,6 @@ private:
 	int _PlayerBulletSpeed, _AIBulletSpeed;
 	bool _PlayerAlive, _AboutToLevelUp, _BossFight;
 
-	/*
-	Handles incomming packets
-	*/
-	void handleIncommingPackets();
-
 	void sendPlayerInformation();
 	void sendPlayerKeyPress();
 
@@ -231,5 +226,5 @@ private:
 
 	void playHitSound(sf::Vector2f position);
 
-	bool handleIncomingPacket(sf::Packet& p);
+	bool handleIncomingPacket(sf::Packet p);
 };

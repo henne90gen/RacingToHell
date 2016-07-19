@@ -154,10 +154,10 @@ void NetworkHandle::run()
 			{
 				receiveData(incommingPacket);
 				
-				if (_Relationship == NetworkRelation::Host) 
+				/*if (_Relationship == NetworkRelation::Host)
 				{
 					_MPGOCServer->update(1 / (float)_TickRate, 160);
-				}
+				}*/
 
 				sendData();
 			}
@@ -177,7 +177,7 @@ void NetworkHandle::run()
 			}
 		}
 
-		//std::cout << _Tick << std::endl;
+//		std::cout << _Tick << std::endl;
 
 		if (_Relationship == NetworkRelation::Client && _SyncTimer.getElapsedTime().asSeconds() > 2.0f) {
 			synchroniseTick();

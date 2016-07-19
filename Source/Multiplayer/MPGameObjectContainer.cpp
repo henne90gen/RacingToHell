@@ -13,7 +13,12 @@ MPGameObjectContainer::~MPGameObjectContainer()
 void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 {
 	//Multiplayer
-	handleIncommingPackets();
+	for (unsigned int i = 0; _NetworkHandle->getReceivedPackets().size(); i++) {
+		if (handleIncomingPacket(_NetworkHandle->getReceivedPackets()[i])) {
+			_NetworkHandle->getReceivedPackets().erase(_NetworkHandle->getReceivedPackets().begin() + i);
+			i--;
+		}
+	}
 
 	_Player1->update(FrameTime, RoadSpeed);
 	_Player2->update(FrameTime, RoadSpeed);
@@ -235,17 +240,7 @@ void MPGameObjectContainer::render(sf::RenderWindow& Window, bool renderCrosshai
 
 void MPGameObjectContainer::handleEvent(sf::Event& newEvent)
 {
-	if (_PlayerAlive && !_IsServer) {
-		sf::Uint8 Keys = 0;
-		Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) * (sf::Uint8)Key::Up;
-		Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) * (sf::Uint8)Key::Right;
-		Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) * (sf::Uint8)Key::Down;
-		Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) * (sf::Uint8)Key::Left;
-
-		sf::Packet p;
-		p << Keys;
-		_NetworkHandle->addPacket(NetworkCommunication::UpdatePlayers, p);
-
+	if (_PlayerAlive) {
 		_Player1->handleEvent(newEvent);
 	}
 	/*sf::Event e;
@@ -737,7 +732,7 @@ bool MPGameObjectContainer::handleIncomingPacket(sf::Packet& p) {
 	p >> recType >> recTick;
 
 	switch((NetworkCommunication)recType) {
-	case NetworkCommunication::UpdatePlayers:
+	case NetworkCommunication::PlayerInformation:
 		sf::Uint8 type;
 		p >> type;
 		if (_NetworkHandle->getTick() > recTick + _NetworkHandle->getDelay()) {

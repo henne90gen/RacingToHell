@@ -10,16 +10,6 @@ public:
 	virtual ~Serializable() {}
 
 	/*
-		Writes the necessary data for an object to a stream
-	*/
-	virtual void operator>>(std::ostream& stream) = 0;
-
-	/*
-		Reads the necessary data for an object from a stream
-	*/
-	virtual void operator<<(std::istream& stream) = 0;
-
-	/*
 		Writes the necessary data for an object to a packet
 	*/
 	virtual void operator>>(sf::Packet& packet) = 0;

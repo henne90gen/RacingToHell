@@ -288,6 +288,13 @@ void GameObjectContainer::render(sf::RenderWindow& window, bool renderCrosshair)
 void GameObjectContainer::handleEvent(sf::Event& newEvent)
 {
 	if (_PlayerAlive) {
+		sf::Uint8 Keys = 0;
+		Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) * (sf::Uint8)Key::Up;
+		Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) * (sf::Uint8)Key::Right;
+		Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) * (sf::Uint8)Key::Down;
+		Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) * (sf::Uint8)Key::Left;
+
+		_Player->setKeyPress(Keys);
 		_Player->handleEvent(newEvent);
 	}
 }

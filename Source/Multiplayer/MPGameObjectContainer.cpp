@@ -28,6 +28,29 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 		_Player2->update(FrameTime, RoadSpeed);
 	}
 
+	if (_IsServer) {
+		sf::Packet p;
+		*_Player1 >> p;
+		*_Player2 >> p;
+		/*std::shared_ptr<PlayerCar> pc1;
+		sf::Uint8 type;
+		p >> type;
+		pc1 = GameObjectFactory::getPlayerCar(p);
+		std::shared_ptr<PlayerCar> pc2;
+		p >> type;
+		pc2 = GameObjectFactory::getPlayerCar(p);
+		std::cout << "Car1: " << pc1->getPos().x << " " << pc1->getPos().y << std::endl;
+		std::cout << "Car2: " << pc2->getPos().x << " " << pc2->getPos().y << std::endl;*/
+		_NetworkHandle->addPacket(NetworkCommunication::UpdatePlayers, p);
+	}
+
+	for (unsigned int i = 0; i < _NetworkHandle->getReceivedPackets().size(); i++) {
+		if (handleIncomingPacket(_NetworkHandle->getReceivedPackets()[i])) {
+			_NetworkHandle->getReceivedPackets().erase(_NetworkHandle->getReceivedPackets().begin() + i);
+			i--;
+		}
+	}
+
 	/*
 	if (getPlayer2Car().getType() != GameObjectType::Player) {
 		// TODO: Add failsafe
@@ -220,7 +243,17 @@ void MPGameObjectContainer::render(sf::RenderWindow& Window, bool renderCrosshai
 
 void MPGameObjectContainer::handleEvent(sf::Event& newEvent)
 {
-	if (_PlayerAlive) {
+	if (_PlayerAlive && !_IsServer) {
+		sf::Uint8 Keys = 0;
+		Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) * (sf::Uint8)Key::Up;
+		Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) * (sf::Uint8)Key::Right;
+		Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) * (sf::Uint8)Key::Down;
+		Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) * (sf::Uint8)Key::Left;
+
+		sf::Packet p;
+		p << Keys;
+		_NetworkHandle->addPacket(NetworkCommunication::UpdatePlayers, p);
+
 		_Player1->handleEvent(newEvent);
 	}
 	/*sf::Event e;
@@ -558,9 +591,37 @@ void MPGameObjectContainer::deleteGameObject(unsigned int id, bool sendDeletion)
 	}
 }
 
-/*void MPGameObjectContainer::handleIncomingPackets(NetworkHandle& network) {
+bool MPGameObjectContainer::handleIncomingPacket(sf::Packet& p) {
 	std::lock_guard<std::mutex> lock(_Mutex);
-	for (unsigned int i = 0; i < network.getReceivedPackets().size(); i++) {
+
+	sf::Uint8 recType;
+	sf::Uint32 recTick;
+	p >> recType >> recTick;
+
+	switch((NetworkCommunication)recType) {
+	case NetworkCommunication::UpdatePlayers:
+		sf::Uint8 type;
+		p >> type;
+		if (_NetworkHandle->getTick() > recTick + _NetworkHandle->getDelay()) {
+			/*
+			sf::Uint32 id;
+			float x, y;
+			tmp >> id >> x >> y;
+			std::cout << "Receiving ID: " << (unsigned int)id << " || X: " << x << " || Y: " << y << std::endl;
+			*/
+			if (_NetworkHandle->getRelation() == NetworkRelation::Host) {
+				*_Player1 << p;
+				*_Player2 << p;
+			} else {
+				*_Player2 << p;
+				*_Player1 << p;
+			}
+			return true;
+		}
+		break;
+	}
+
+	/*for (unsigned int i = 0; i < network.getReceivedPackets().size(); i++) {
 		sf::Packet tmp = network.getReceivedPackets().at(i);
 		sf::Uint8 recType;
 		sf::Uint32 recTick;
@@ -632,8 +693,10 @@ void MPGameObjectContainer::deleteGameObject(unsigned int id, bool sendDeletion)
 			i--;
 			break;
 		}
-	}
-}*/
+	}*/
+
+	return false;
+}
 
 /*void MPGameObjectContainer::handleOutgoingPackets(std::vector<std::pair<NetworkCommunication, sf::Packet>>& packets)
 {

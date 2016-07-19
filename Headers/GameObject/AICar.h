@@ -13,7 +13,6 @@ public:
 		@param texture Texture that is going to be used for the sprite
 	*/
 	AICar(unsigned int id, int hp, int roadSpeed, sf::Texture& texture);
-	AICar(std::istream& stream, sf::Texture& texture);
 	AICar(sf::Packet& packet, sf::Texture& texture);
 	~AICar() {}
 
@@ -41,10 +40,6 @@ public:
 		@return int Number of the lane
 	*/
 	int getLane() { return _Lane; }
-
-	void operator>>(std::ostream& stream);
-
-	void operator<<(std::istream& stream);
 
 	/*
 		Writes the necessary data for a gameobject to a packet

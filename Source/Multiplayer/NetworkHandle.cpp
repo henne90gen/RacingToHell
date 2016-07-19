@@ -194,6 +194,9 @@ std::pair<NetworkCommunication, int> NetworkHandle::getLastResponse()
 void NetworkHandle::addPacket(NetworkCommunication Type, sf::Packet newPacket)
 {
 	std::lock_guard<std::mutex> lock(_Mutex);
+	/*std::pair<NetworkCommunication, sf::Packet> p;
+	p = std::make_pair(Type, newPacket);
+	std::cout << "Packet is being added" << std::endl;*/
 	_SendPackets.push_back(std::make_pair(Type, newPacket));
 }
 
@@ -271,15 +274,15 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 			_LastResponse = std::make_pair(NetworkCommunication::StartGame, (int)(_Tick - Tick));
 			_State = NetworkState::Ingame;
 			break;
-		//case NetworkCommunication::CreateGameObject:
-		//case NetworkCommunication::DeleteGameObject:
-		/*case NetworkCommunication::UpdateP2:
+		case NetworkCommunication::CreateGameObject:
+		case NetworkCommunication::DeleteGameObject:
+		case NetworkCommunication::UpdatePlayers:
 			_ReceivedPackets.push_back(packet);
 			break;
 		case NetworkCommunication::EndGame:
 			_LastResponse = std::make_pair(NetworkCommunication::EndGame, 0);
 			_State = NetworkState::Lobby;
-			break;*/
+			break;
 		case NetworkCommunication::Kick:
 			if (_Relationship == NetworkRelation::Client)
 			{

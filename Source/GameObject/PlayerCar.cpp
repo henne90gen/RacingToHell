@@ -24,14 +24,6 @@ PlayerCar::PlayerCar(unsigned int id, int selectedCar, sf::Texture& texture) :
 	sf::Listener::setDirection(0.f, 0.f, -1.f);
 }
 
-PlayerCar::PlayerCar(std::istream& stream, std::vector<std::shared_ptr<sf::Texture>>& textures) : 
-	Car(stream, GameObjectType::Player)
-{
-	PlayerCar::operator<<(stream);
-	setStats(_SelectedCar);
-	initTexture(*textures.at(_SelectedCar));
-}
-
 PlayerCar::PlayerCar(sf::Packet& packet, std::vector<std::shared_ptr<sf::Texture>>& textures) : 
 	Car(packet, GameObjectType::Player)
 {
@@ -83,14 +75,13 @@ void PlayerCar::setKeyPress(sf::Uint8 Keys)
 void PlayerCar::handleEvent(sf::Event& Event)
 {
 	// Apply key input to car
-	sf::Uint8 Keys = 0;
-	Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) * (sf::Uint8)Key::Up;
-	Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) * (sf::Uint8)Key::Right;
-	Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) * (sf::Uint8)Key::Down;
-	Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) * (sf::Uint8)Key::Left;
-
-	setKeyPress(Keys);
-
+	/* Can be found in GOC
+	 * sf::Uint8 Keys = 0;
+	 * Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) * (sf::Uint8)Key::Up;
+	 * Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) * (sf::Uint8)Key::Right;
+	 * Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) * (sf::Uint8)Key::Down;
+	 * Keys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) * (sf::Uint8)Key::Left;
+	 * setKeyPress(Keys);*/
 	/*
 	_Acceleration = sf::Vector2f(0, 0);
 
@@ -275,52 +266,43 @@ void PlayerCar::setStats(int id)
 	_Bulletdamage = Stats[3];
 }
 
-void PlayerCar::operator>>(std::ostream& stream)
-{
-	Car::operator>>(stream);
-	write(stream, _SelectedCar);
-	write(stream, _Acceleration.x);
-	write(stream, _Acceleration.y);
-	write(stream, _Movement.x);
-	write(stream, _Movement.y);
-}
-
-void PlayerCar::operator<<(std::istream& stream)
-{
-	Car::operator<<(stream);
-	read(stream, _SelectedCar);
-	setStats(_SelectedCar);
-	read(stream, _Acceleration.x);
-	read(stream, _Acceleration.y);
-	read(stream, _Movement.x);
-	read(stream, _Movement.y);
-}
-
 void PlayerCar::operator>>(sf::Packet& packet)
 {
+	/*
+	 * _Type
+	 * _ID
+	 * _Pos.x
+	 * _Pos.y
+	 * _Speed
+	 * _Health
+	 * _MaxHealth
+	 * _SelectedCar
+	 */
+
 	Car::operator>>(packet);
 	write(packet, _SelectedCar);
-	write(packet, _Acceleration.x);
+	/*write(packet, _Acceleration.x);
 	write(packet, _Acceleration.y);
 	write(packet, _Movement.x);
-	write(packet, _Movement.y);
+	write(packet, _Movement.y);*/
 }
 
 void PlayerCar::operator<<(sf::Packet& packet)
 {
-	read(packet, _ID);
-	float x, y;
-	read(packet, x);
-	read(packet, y);
-	if (std::abs(getPos().x - x) > 1 || std::abs(getPos().y - y) > 1)
-		setPos(sf::Vector2f(x, y));
-	read(packet, _Speed);
-	read(packet, _Health);
-	read(packet, _MaxHealth);
+	Car::operator<<(packet);
+//	read(packet, _ID);
+//	float x, y;
+//	read(packet, x);
+//	read(packet, y);
+//	if (std::abs(getPos().x - x) > 1 || std::abs(getPos().y - y) > 1)
+//		setPos(sf::Vector2f(x, y));
+//	read(packet, _Speed);
+//	read(packet, _Health);
+//	read(packet, _MaxHealth);
 	read(packet, _SelectedCar);
 	setStats(_SelectedCar);
-	read(packet, _Acceleration.x);
-	read(packet, _Acceleration.y);
-	read(packet, _Movement.x);
-	read(packet, _Movement.y);
+//	read(packet, _Acceleration.x);
+//	read(packet, _Acceleration.y);
+//	read(packet, _Movement.x);
+//	read(packet, _Movement.y);
 }

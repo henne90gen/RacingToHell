@@ -66,36 +66,6 @@ public:
 	static std::shared_ptr<GameObject> getCanister(sf::Vector2f pos);
 
 	/*
-		@param stream Stream to get the necessary data from
-	*/
-	static std::shared_ptr<PlayerCar> getPlayerCar(std::istream& stream);
-
-	/*
-		@param stream Stream to get the necessary data from
-	*/
-	static std::shared_ptr<BossCar> getBossCar(int level, std::istream& stream, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer& expSB, float volume);
-
-	/*
-		@param stream Stream to get the necessary data from
-	*/
-	static std::shared_ptr<Bullet> getBullet(std::istream& stream, GameObjectType type, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, float volume);
-
-	/*
-		@param stream Stream to get the necessary data from
-	*/
-	static std::shared_ptr<AICar> getAICar(std::istream& stream);
-
-	/*
-		@param stream Stream to get the necessary data from
-	*/
-	static std::shared_ptr<GameObject> getCanister(std::istream& stream);
-
-	/*
-		@param stream Stream to get the necessary data from
-	*/
-	static std::shared_ptr<GameObject> getToolbox(std::istream& stream);
-
-	/*
 		@param packet packet to get the necessary data from
 	*/
 	static std::shared_ptr<PlayerCar> getPlayerCar(sf::Packet& packet);
@@ -125,7 +95,6 @@ public:
 	*/
 	static std::shared_ptr<GameObject> getToolbox(sf::Packet& packet);
 
-	static void scanStreamForGO(int level, std::istream& stream, std::vector<std::shared_ptr<GameObject>>& gos, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer& expSB, float volume);
 	static void scanPacketForGO(int level, sf::Packet& packet, std::vector<std::shared_ptr<GameObject>>& gos, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer& expSB, float volume);
 
 	static void setPlayerCarTextures(std::vector<std::shared_ptr<sf::Texture>>& carSkins) { _PlayerCarTextures() = carSkins; }

@@ -22,23 +22,6 @@ public:
 		@param type Type of the GameObject
 		@param texture Texture that is going to be used for the Sprite
 	*/
-	GameObject(std::istream& stream, GameObjectType type, sf::Texture& texture);
-
-	/*
-		Any object that can be on the screen
-		Use this constructor with extrem caution, no texture is being specified
-		To fully use a GameObject you have to specifiy a texture!
-		@param stream Input stream that contains all the other information needed to make a GameObject
-		@param type Type of the GameObject
-	*/
-	GameObject(std::istream& stream, GameObjectType type);
-
-	/*
-		Any object that can be on the screen
-		@param stream Input stream that contains all the other information needed to make a GameObject
-		@param type Type of the GameObject
-		@param texture Texture that is going to be used for the Sprite
-	*/
 	GameObject(sf::Packet& packet, GameObjectType type, sf::Texture& texture);
 
 	/*
@@ -139,16 +122,6 @@ public:
 		@return sf::Vector2f Resulting normalized vector
 	*/
 	sf::Vector2f divideByLength(sf::Vector2f vec);
-
-	/*
-		Writes the necessary data for a gameobject to a stream
-	*/
-	virtual void operator>>(std::ostream& stream);
-
-	/*
-		Reads the necessary data for a gameobject from a stream
-	*/
-	virtual void operator<<(std::istream& stream);
 
 	/*
 		Writes the necessary data for a gameobject to a packet

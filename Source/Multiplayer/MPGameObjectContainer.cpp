@@ -264,17 +264,18 @@ void MPGameObjectContainer::sendPlayerKeyPress()
 {
 	if (_KeyPressTimer.getElapsedTime().asSeconds() > 1/60) {
 		_KeyPressTimer.restart();
+
 		if (_NetworkHandle->getRelation() == NetworkRelation::Host)
 		{
 			sf::Packet Player1Packet;
 			Player1Packet << (sf::Uint8)1 << _Player1->getPressedKeys();
 
-		_NetworkHandle->addReceivedPacket(NetworkCommunication::PlayerKeyPress, Player1Packet);
-	}
-	else if (_NetworkHandle->getRelation() == NetworkRelation::Client)
-	{
-		sf::Packet Player2Packet;
-		Player2Packet << (sf::Uint8)2 << _Player1->getPressedKeys();
+			_NetworkHandle->addReceivedPacket(NetworkCommunication::PlayerKeyPress, Player1Packet);
+		}
+		else if (_NetworkHandle->getRelation() == NetworkRelation::Client)
+		{
+			sf::Packet Player2Packet;
+			Player2Packet << (sf::Uint8)2 << _Player1->getPressedKeys();
 
 			_NetworkHandle->addPacket(NetworkCommunication::PlayerKeyPress, Player2Packet);
 		}

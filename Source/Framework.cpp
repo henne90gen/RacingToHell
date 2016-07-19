@@ -612,10 +612,6 @@ void Framework::update()
 			}
 		}
 
-		//if (_NetworkHandle.getRelation() == NetworkRelation::Host) {
-		//	_MPGOCServer.update(1 / (float)_NetworkHandle.getTickRate(), _Level.getRoadSpeed());
-		//}
-
 		_MPGOCClient.update(_FrameTime, _Level.getRoadSpeed());
 		_HeadsUpDisplay.update(_Score, _MPGOCClient.getPlayerCar().getHealth(), _MPGOCClient.getPlayerCar().getEnergy(), _Level.getLevel(), _Level.getLevelTime(), _GameMode);
 		if (!_MPGOCClient.playerIsAlive()) {

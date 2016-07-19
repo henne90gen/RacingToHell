@@ -13,10 +13,13 @@ MPGameObjectContainer::~MPGameObjectContainer()
 void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 {
 	//Multiplayer
-	for (unsigned int i = 0; _NetworkHandle->getReceivedPackets().size(); i++) {
-		if (handleIncomingPacket(_NetworkHandle->getReceivedPackets()[i])) {
-			_NetworkHandle->getReceivedPackets().erase(_NetworkHandle->getReceivedPackets().begin() + i);
-			i--;
+	{
+		std::lock_guard<std::mutex> lock(_Mutex);
+		for (unsigned int i = 0; _NetworkHandle->getReceivedPackets().size(); i++) {
+			if (handleIncomingPacket(_NetworkHandle->getReceivedPackets()[i])) {
+				_NetworkHandle->getReceivedPackets().erase(_NetworkHandle->getReceivedPackets().begin() + i);
+				i--;
+			}
 		}
 	}
 

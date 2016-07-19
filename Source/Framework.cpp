@@ -591,9 +591,12 @@ void Framework::update()
 			_NetworkHandle.addPacket(NetworkCommunication::CreateGameObject, packet);
 		}*/
 
-		for (unsigned int i = _NetworkHandle.getReceivedPackets().size(); i > 0; i--) {
+		std::vector<sf::Packet> empty;
+		_NetworkHandle.setReceivedPackets(empty);
+
+		/*for (unsigned int i = _NetworkHandle.getReceivedPackets().size(); i > 0; i--) {
 			_NetworkHandle.getReceivedPackets().pop_back();
-		}
+		}*/
 
 		_Level.update(_FrameTime, _GameState);
 		break;

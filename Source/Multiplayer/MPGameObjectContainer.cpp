@@ -13,7 +13,12 @@ MPGameObjectContainer::~MPGameObjectContainer()
 void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 {
 	//Multiplayer
-	/*{
+	if (_IsServer)
+	{
+		return;
+	}
+
+	{
 		std::lock_guard<std::mutex> lock(_Mutex);
 		for (unsigned int i = 0; _NetworkHandle->getReceivedPackets().size(); i++) {
 			if (handleIncomingPacket(_NetworkHandle->getReceivedPackets()[i])) {
@@ -21,16 +26,16 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 				i--;
 			}
 		}
-	}*/
+	}
 
-//	_Player1->update(FrameTime, RoadSpeed);
-//	_Player2->update(FrameTime, RoadSpeed);
+	_Player1->update(FrameTime, RoadSpeed);
+	_Player2->update(FrameTime, RoadSpeed);
 
-	/*if (_IsServer) {
+	if (_IsServer) {
 		sendPlayerInformation();
 	} else {
 		sendPlayerKeyPress();
-	}*/
+	}
 }
 
 void comment()
@@ -650,7 +655,6 @@ void MPGameObjectContainer::deleteGameObject(unsigned int id, bool sendDeletion)
 
 bool MPGameObjectContainer::handleIncomingPacket(sf::Packet p) {
 	std::lock_guard<std::mutex> lock(_Mutex);
-
 	sf::Uint8 recType;
 	sf::Uint32 recTick;
 	p >> recType >> recTick;

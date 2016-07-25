@@ -14,8 +14,9 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 {
 	handleIncomingPackets();
 
+
 	_Player1->update(FrameTime, RoadSpeed);
-	//_Player2->update(FrameTime, RoadSpeed);
+	_Player2->update(FrameTime, RoadSpeed);
 
 	if (_IsServer) {
 		sendPlayerInformation();
@@ -220,8 +221,13 @@ void MPGameObjectContainer::render(sf::RenderWindow& Window, bool renderCrosshai
 		_GameObjects.at(i)->render(Window);
 	}
 
-	_Player2->render(Window, false);
-	_Player1->render(Window, renderCrosshair);
+	if (_NetworkHandle->getRelation() == NetworkRelation::Host) {
+		_Player2->render(Window, false);
+		_Player1->render(Window, renderCrosshair);
+	} else {
+		_Player1->render(Window, false);
+		_Player2->render(Window, renderCrosshair);
+	}
 
 	for (int i = 0; i < _Animations.size(); i++) {
 		_Animations[i]->render(Window);
@@ -231,7 +237,11 @@ void MPGameObjectContainer::render(sf::RenderWindow& Window, bool renderCrosshai
 void MPGameObjectContainer::handleEvent(sf::Event& newEvent)
 {
 	if (_PlayerAlive) {
-		_Player1->handleEvent(newEvent);
+		if (_NetworkHandle->getRelation() == NetworkRelation::Host) {
+			_Player1->handleEvent(newEvent);
+		} else {
+			_Player2->handleEvent(newEvent);
+		}
 	}
 	/*sf::Event e;
 	e.type = sf::Event::MouseButtonPressed;
@@ -260,14 +270,14 @@ void MPGameObjectContainer::sendPlayerInformation()
 		_NetworkHandle->addReceivedPacket(NetworkCommunication::PlayerInformation, Player2Packet);
 
 		sf::Packet Player1P;
-		Player1P << (sf::Uint8)2;
+		Player1P << (sf::Uint8)1;
 		*_Player1 >> Player1P;
 
 		sf::Packet Player2P;
-		Player2P << (sf::Uint8)1;
+		Player2P << (sf::Uint8)2;
 		*_Player2 >> Player2P;
-		_NetworkHandle->addPacket(NetworkCommunication::PlayerInformation, Player1P);
 		_NetworkHandle->addPacket(NetworkCommunication::PlayerInformation, Player2P);
+		_NetworkHandle->addPacket(NetworkCommunication::PlayerInformation, Player1P);
 	}
 }
 
@@ -287,6 +297,8 @@ void MPGameObjectContainer::sendPlayerKeyPress()
 		{
 			sf::Packet Player2Packet;
 			Player2Packet << (sf::Uint8)2 << _Player1->getPressedKeys();
+
+			//std::cout <<
 
 			_NetworkHandle->addPacket(NetworkCommunication::PlayerKeyPress, Player2Packet);
 		}

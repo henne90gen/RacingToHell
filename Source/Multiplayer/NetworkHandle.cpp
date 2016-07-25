@@ -179,10 +179,10 @@ void NetworkHandle::run()
 
 //		std::cout << _Tick << std::endl;
 
-//		if (_Relationship == NetworkRelation::Client && _SyncTimer.getElapsedTime().asSeconds() > 2.0f) {
-//			synchroniseTick();
-//			_SyncTimer.restart();
-//		}
+		if (_Relationship == NetworkRelation::Client && _SyncTimer.getElapsedTime().asSeconds() > 2.0f) {
+			synchroniseTick();
+			_SyncTimer.restart();
+		}
 
 		++_Tick;
 
@@ -306,7 +306,6 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 		case NetworkCommunication::PlayerInformation:
 		case NetworkCommunication::PlayerKeyPress:
 			_ReceivedPackets.push_back(packet);
-//			std::cout << "RecSize: " << _ReceivedPackets.size() << std::endl;
 			break;
 		case NetworkCommunication::EndGame:
 			_LastResponse = std::make_pair(NetworkCommunication::EndGame, 0);
@@ -327,17 +326,17 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 			_LastResponse = std::make_pair(NetworkCommunication::Ready, (int)OnOff);
 			break;
 		}
-//		case NetworkCommunication::SynchroniseTick:
-//			if (_Relationship == NetworkRelation::Host) {
-//				sf::Packet responsePacket;
-//				responsePacket << (sf::Uint8)NetworkCommunication::SynchroniseTick << _Tick;
-//				_Socket.send(responsePacket);
-//			}
-//			else if (_Relationship == NetworkRelation::Client) {
-//				_Tick = Tick + (sf::Uint32)(_TickRate * _PackageTravelTimer.restart().asSeconds() / 2.0f);
-//			}
+		case NetworkCommunication::SynchroniseTick:
+			if (_Relationship == NetworkRelation::Host) {
+				sf::Packet responsePacket;
+				responsePacket << (sf::Uint8)NetworkCommunication::SynchroniseTick << _Tick;
+				_Socket.send(responsePacket);
+			}
+			else if (_Relationship == NetworkRelation::Client) {
+				_Tick = Tick + (sf::Uint32)(_TickRate * _PackageTravelTimer.restart().asSeconds() / 2.0f);
+			}
 //			std::cout << "Tick: " << _Tick << std::endl;
-//			break;
+			break;
 		default:
 			std::cout << "Unexpected communication type: " << (int)Type << std::endl;
 			break;

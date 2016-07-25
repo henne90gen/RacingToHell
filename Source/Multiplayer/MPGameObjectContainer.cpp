@@ -15,7 +15,7 @@ void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 	handleIncomingPackets();
 
 	_Player1->update(FrameTime, RoadSpeed);
-	//_Player2->update(FrameTime, RoadSpeed);
+	_Player2->update(FrameTime, RoadSpeed);
 
 	if (_IsServer) {
 		sendPlayerInformation();
@@ -254,7 +254,6 @@ void MPGameObjectContainer::sendPlayerInformation()
 		sf::Packet Player2Packet;
 		Player2Packet << (sf::Uint8)2;
 		*_Player2 >> Player2Packet;
-
 
 		_NetworkHandle->addReceivedPacket(NetworkCommunication::PlayerInformation, Player1Packet);
 		_NetworkHandle->addReceivedPacket(NetworkCommunication::PlayerInformation, Player2Packet);

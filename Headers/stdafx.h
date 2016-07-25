@@ -16,6 +16,7 @@
 #include <iomanip>
 #include <cmath>
 #include <limits>
+#include <bitset>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>

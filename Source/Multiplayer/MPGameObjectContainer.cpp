@@ -243,7 +243,7 @@ void MPGameObjectContainer::handleEvent(sf::Event& newEvent)
 
 void MPGameObjectContainer::sendPlayerInformation() 
 {
-	if (_PlayerInformationTimer.getElapsedTime().asSeconds() > 1.0f/30.0f) {
+	if (_PlayerInformationTimer.getElapsedTime().asSeconds() > 1.0f/40.0f) {
 		_PlayerInformationTimer.restart();
 
 		std::lock_guard<std::mutex> lock(_Mutex);
@@ -258,6 +258,7 @@ void MPGameObjectContainer::sendPlayerInformation()
 		_NetworkHandle->addReceivedPacket(NetworkCommunication::PlayerInformation, Player1Packet);
 		_NetworkHandle->addReceivedPacket(NetworkCommunication::PlayerInformation, Player2Packet);
 
+
 		sf::Packet Player1P;
 		Player1P << (sf::Uint8)2;
 		*_Player1 >> Player1P;
@@ -267,6 +268,7 @@ void MPGameObjectContainer::sendPlayerInformation()
 		*_Player2 >> Player2P;
 		_NetworkHandle->addPacket(NetworkCommunication::PlayerInformation, Player1P);
 		_NetworkHandle->addPacket(NetworkCommunication::PlayerInformation, Player2P);
+		//std::cout << _NetworkHandle->getSendPackets().size() << std::endl;
 	}
 }
 
@@ -690,8 +692,8 @@ void MPGameObjectContainer::handleIncomingPackets()
 			{
 				case NetworkCommunication::PlayerInformation:
 				{
-					if (_NetworkHandle->getTick() > recTick + _NetworkHandle->getDelay())
-					{
+					//if (_NetworkHandle->getTick() > recTick + _NetworkHandle->getDelay())
+					//{
 						sf::Uint8 CarID;
 						p >> CarID;
 
@@ -705,7 +707,7 @@ void MPGameObjectContainer::handleIncomingPackets()
 						}
 						Packets.erase(Packets.begin() + i);
 						i--;
-					}
+					//}
 				} break;
 				default:
 				{

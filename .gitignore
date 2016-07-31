@@ -226,3 +226,5 @@ Resources/Data/Highscore.sco
 /.cproject
 /.project
 /network-schematic.xcf
+/.idea
+/CMakeLists.txt

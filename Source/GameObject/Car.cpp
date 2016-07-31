@@ -20,6 +20,12 @@ int Car::getHealth()
 	return _Health;
 }
 
+void Car::takeDamage(int damage) {
+	_Health -= damage;
+	getSprite().setColor(sf::Color(220, 0, 0));
+	_resetColorTime = 0.0f;
+}
+
 void Car::operator>>(sf::Packet& packet)
 {
 	GameObject::operator>>(packet);

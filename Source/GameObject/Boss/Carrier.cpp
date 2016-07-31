@@ -44,6 +44,8 @@ void Carrier::init()
 
 void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bullet>>& bullets, PlayerCar& player)
 {
+	Car::update(frameTime, roadSpeed);
+
 	if (!_IsExploding) {
 		if (driveToNextPosition(frameTime))
 		{

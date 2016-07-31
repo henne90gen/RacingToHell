@@ -59,18 +59,10 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 			switch (_Bullets[i]->getType())
 			{
 			case GameObjectType::BulletObjectAI:
-				if (_GameMode != GameMode::Invincible)
-				{
-					_Player->takeDamage(5);
-				}
-				playHitSound(_Player->getPos());
-				deleteObject(_Bullets, i);
-				i--;
-				break;
 			case GameObjectType::BulletObjectBoss:
 				if (_GameMode != GameMode::Invincible)
 				{
-					_Player->takeDamage(5);
+					//_Player->takeDamage(5);
 				}
 				playHitSound(_Player->getPos());
 				deleteObject(_Bullets, i);
@@ -144,7 +136,7 @@ void GameObjectContainer::update(float FrameTime, int RoadSpeed)
 		if (_TimePassedBullet + FrameTime > 1 / _BulletFrequency)
 		{
 			_TimePassedBullet += FrameTime - 1 / _BulletFrequency;
-			//spawnBullet();
+			spawnBullet();
 
 			setBulletFrequency();
 		}

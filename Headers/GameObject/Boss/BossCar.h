@@ -5,7 +5,6 @@
 #include "GameObject/GameObjectType.h"
 #include "GameObject/Bullet.h"
 #include "Animation/Explosion.h"
-//#include "GameObject\GameObjectFactory.h"
 
 class BossCar : public Car
 {

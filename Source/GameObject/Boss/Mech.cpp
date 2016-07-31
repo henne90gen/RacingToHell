@@ -96,7 +96,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
 				break;
 			}
 			case Phase::SHOTGUN:
-				//_GunOrientation = divideByLength(bullets[0]->getPos() - getPos());
+				_GunOrientation = divideByLength(player.getPos() - getPos());
 
 				_Event1Frequency = 1.0f + 0.25f * (float)(_Difficulty);
 
@@ -122,7 +122,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
 				}
 				break;
 			case Phase::SALVE:
-				//_GunOrientation = divideByLength(bullets[0]->getPos() - getPos());
+				_GunOrientation = divideByLength(player.getPos() - getPos());
 
 				_Event1Frequency = 1.25f + 0.25f * (float)_Difficulty;
 
@@ -152,7 +152,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
 				}
 				break;
 			case Phase::SALVEZICKZACK:
-				//_GunOrientation = divideByLength(player.getPos() - getPos());
+				_GunOrientation = divideByLength(player.getPos() - getPos());
 
 				_Event1Frequency = 1.25f + 0.25f * (float)_Difficulty;
 

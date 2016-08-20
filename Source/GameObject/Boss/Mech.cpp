@@ -28,6 +28,8 @@ void Mech::render(sf::RenderWindow & window)
 
 void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bullet>>& bullets, PlayerCar& player)
 {
+	Car::update(frameTime, roadSpeed);
+
 	float gunPosLength = std::sqrt(std::pow(_GunPosition.x, 2) + std::pow(_GunPosition.y, 2));
 	_GunPosition = sf::Vector2f(cosf(std::atan(_GunOrientation.y / _GunOrientation.x) + PI / 2),
 								sinf(std::atan(_GunOrientation.y / _GunOrientation.x) + PI / 2)) * gunPosLength;
@@ -94,7 +96,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
 				break;
 			}
 			case Phase::SHOTGUN:
-				_GunOrientation = divideByLength(bullets[0]->getPos() - getPos());
+				_GunOrientation = divideByLength(player.getPos() - getPos());
 
 				_Event1Frequency = 1.0f + 0.25f * (float)(_Difficulty);
 
@@ -120,7 +122,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
 				}
 				break;
 			case Phase::SALVE:
-				_GunOrientation = divideByLength(bullets[0]->getPos() - getPos());
+				_GunOrientation = divideByLength(player.getPos() - getPos());
 
 				_Event1Frequency = 1.25f + 0.25f * (float)_Difficulty;
 

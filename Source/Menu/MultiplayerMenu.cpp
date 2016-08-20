@@ -175,6 +175,7 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result)
 		{
 			if (_NetworkHandle->create(_MenuItems[(int)MenuItemIndex::Name]->getText(), _MenuItems[(int)MenuItemIndex::PasswordCreate]->getText(), std::stoi(_MenuItems[(int)MenuItemIndex::PortCreate]->getText())))
 			{
+				std::cout << "Lobby opened with password '" << _MenuItems[(int)MenuItemIndex::PasswordCreate]->getText() << "', listening on port: " << _MenuItems[(int)MenuItemIndex::PortCreate]->getText() << std::endl;
 				return GameState::Lobby;
 			}
 			else

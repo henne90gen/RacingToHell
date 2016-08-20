@@ -339,7 +339,7 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 			else if (_Relationship == NetworkRelation::Client) {
 				_Tick = Tick + (sf::Uint32)(_TickRate * _PackageTravelTimer.restart().asSeconds() / 2.0f);
 			}
-//			std::cout << "Tick: " << _Tick << std::endl;
+			std::cout << "Tick: " << _Tick << std::endl;
 			break;
 		default:
 			std::cout << "Unexpected communication type: " << (int)Type << std::endl;

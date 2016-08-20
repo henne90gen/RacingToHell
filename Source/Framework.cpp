@@ -183,18 +183,6 @@ void Framework::render()
 	_RenderWindow.display();
 }
 
-/*
-
-
-
-
-
-
-
-
-
-*/
-
 void Framework::handleEvents()
 {
 	switch (_GameState) {
@@ -309,7 +297,7 @@ void Framework::handleEvents()
 				_GameState = GameState::Exiting;
 			}
 			else {
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, 7)) {
+				if (_Event.type == sf::Event::MouseLeft || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Joystick::isButtonPressed(0, 7)) {
 					_GameState = GameState::Pause;
 					_PauseMenu.setReturnState(GameState::BossFight);
 				}

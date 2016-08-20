@@ -79,7 +79,7 @@ public:
 		Damage the car and subtract the damage from the health
 		@param damage Amount of health to subtract
 	*/
-	void takeDamage(int damage) { _Health -= damage; getSprite().setColor(sf::Color(220, 0, 0)); _resetColorTime = 0.0f; }
+	void takeDamage(int damage);
 
 	/*
 		Writes the necessary data for a gameobject to a packet

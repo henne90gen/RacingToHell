@@ -280,10 +280,11 @@ void PlayerCar::operator>>(sf::Packet& packet)
 
 	Car::operator>>(packet);
 	write(packet, _SelectedCar);
-	write(packet, _Acceleration.x);
-	write(packet, _Acceleration.y);
-	write(packet, _Movement.x);
-	write(packet, _Movement.y);
+
+//	write(packet, _Acceleration.x);
+//	write(packet, _Acceleration.y);
+//	write(packet, _Movement.x);
+//	write(packet, _Movement.y);
 }
 
 void PlayerCar::operator<<(sf::Packet& packet)
@@ -301,8 +302,9 @@ void PlayerCar::operator<<(sf::Packet& packet)
 	read(packet, _SelectedCar);
 	setStats(_SelectedCar);
 	//std::cout << "Updated position" << _ID << ": " << getPos().x << " " << getPos().y << std::endl;
-	read(packet, _Acceleration.x);
-	read(packet, _Acceleration.y);
-	read(packet, _Movement.x);
-	read(packet, _Movement.y);
+
+//	read(packet, _Acceleration.x);
+//	read(packet, _Acceleration.y);
+//	read(packet, _Movement.x);
+//	read(packet, _Movement.y);
 }

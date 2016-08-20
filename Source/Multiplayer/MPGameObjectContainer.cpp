@@ -243,7 +243,7 @@ void MPGameObjectContainer::handleEvent(sf::Event& newEvent)
 
 void MPGameObjectContainer::sendPlayerInformation() 
 {
-	if (_PlayerInformationTimer.getElapsedTime().asSeconds() > 1.0f/10.0f) {
+	if (_PlayerInformationTimer.getElapsedTime().asSeconds() > 1.0f/30.0f) {
 		_PlayerInformationTimer.restart();
 
 		std::lock_guard<std::mutex> lock(_Mutex);

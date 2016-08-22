@@ -135,9 +135,28 @@ private:
 	//Time it takes to reach maximum speed
 	float _AccelerationTime;
 
-	//Value between 0.0 and 1.0 the speed value is multiplied by
+	sf::Vector2f _Force;
 	sf::Vector2f _Acceleration;
 
 	sf::Uint8 _PressedKeys;
+
+	float calcNewPosition(float dt, float a, float v, float s0);
+
+	template<typename T>
+	float sgn(T x)
+	{
+		if (x < 0.0f)
+		{
+			return -1.0f;
+		}
+		else if (x > 0.0f)
+		{
+			return 1.0f;
+		}
+		else
+		{
+			return 0.0f;
+		}
+	}
 };
 

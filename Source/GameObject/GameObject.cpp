@@ -59,7 +59,7 @@ sf::Vector2f GameObject::divideByLength(sf::Vector2f vec) {
 }
 
 void GameObject::operator>>(sf::Packet& packet) {
-	write(packet, (sf::Uint8)getType());
+	//write(packet, (sf::Uint8)getType());
 	write(packet, _ID);
 	write(packet, getPos().x);
 	write(packet, getPos().y);

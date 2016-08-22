@@ -136,6 +136,8 @@ void NetworkHandle::run()
 
 	_SyncTimer.restart();
 
+	float Difference = 0;
+
 	while (_Relationship != NetworkRelation::NoRel)
 	{
 		sf::Clock beginningTime;
@@ -143,6 +145,11 @@ void NetworkHandle::run()
 
 		if (_Socket.getRemoteAddress() != sf::IpAddress::None)
 		{
+			if (_Authenticated && _Relationship == NetworkRelation::Host)
+			{
+				_MPGOCServer->update(1 / (float)_TickRate + Difference, 0);
+			}
+
 			sf::Packet incommingPacket;
 			_Socket.receive(incommingPacket);
 
@@ -153,11 +160,6 @@ void NetworkHandle::run()
 			else
 			{
 				receiveData(incommingPacket);
-				
-				if (_Relationship == NetworkRelation::Host)
-				{
-					_MPGOCServer->update(1 / (float)_TickRate, 160);
-				}
 
 				sendData();
 			}
@@ -187,11 +189,13 @@ void NetworkHandle::run()
 		++_Tick;
 
 		if (beginningTime.getElapsedTime().asSeconds() < 1.0f / (float)_TickRate) {
+			//std::cout << beginningTime.getElapsedTime().asSeconds() << std::endl;
+			Difference = 0;
 			sf::sleep(sf::seconds((1.0f / (float)_TickRate) - beginningTime.getElapsedTime().asSeconds()));
 		}
 		else
 		{
-			std::cout << "LAHM" << std::endl;
+			Difference = beginningTime.getElapsedTime().asSeconds() - (1.0f / (float)_TickRate);
 		}
 	}
 	_State = NetworkState::NoNetState;

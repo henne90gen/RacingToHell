@@ -70,6 +70,8 @@ void PlayerCar::applyKeyPress(sf::Uint8 keys)
 	else {
 		_Force.y = 0.0f;
 	}
+
+	//_Acceleration = _Force;
 }
 
 void PlayerCar::handleEvent(sf::Event& Event)
@@ -140,8 +142,113 @@ void PlayerCar::handleEvent(sf::Event& Event)
 void PlayerCar::update(float FrameTime, int RoadSpeed)
 {
 	Car::update(FrameTime, RoadSpeed);
+	
+	/*
+	std::cout << 1 / FrameTime << ": " << calcNewPosition(FrameTime, 0.5, 0.7, 200) << std::endl;
 
-	//std::cout << "FT: " << FrameTime << " P(" << getPos().x << "|" << getPos().y << ") V(" << _Movement.x << "|" << _Movement.y << ") A(" << _Acceleration.x << "|" << _Acceleration.y << ")" << std::endl;
+	if (_Movement.x + _Acceleration.x * FrameTime >= -1.0f && _Movement.x + _Acceleration.x * FrameTime <= 1.0f)
+	{
+		_Movement.x += _Acceleration.x * FrameTime;
+	}
+	else
+	{
+		_Movement.x = sgn(_Acceleration.x);
+	}
+
+	if (_Movement.y + _Acceleration.y * FrameTime >= -0.45f && _Movement.y + _Acceleration.y * FrameTime <= 1.2f)
+	{
+		_Movement.y += _Acceleration.y * FrameTime;
+	}
+	else
+	{
+		if (sgn(_Acceleration.y) == 1.0f)
+		{
+			_Movement.y = 1.2f;
+		}
+		else
+		{
+			_Movement.y = -0.45f;
+		}
+	}
+
+	if (_Movement.x > 0)
+	{
+		_Movement.x -= 9.2f * FrameTime;
+		if (_Movement.x < 0) {
+			_Movement.x = 0;
+		}
+	}
+	else if (_Movement.x < 0) {
+		_Movement.x += 9.2f * FrameTime;
+		if (_Movement.x > 0) {
+			_Movement.x = 0;
+		}
+	}
+
+	if (_Movement.y > 0)
+	{
+		_Movement.y -= 9.2f * FrameTime;
+		if (_Movement.y < 0) {
+			_Movement.y = 0;
+		}
+	}
+	else if (_Movement.y < 0) {
+		_Movement.y += 9.2f * FrameTime;
+		if (_Movement.y > 0) {
+			_Movement.y = 0;
+		}
+	}*/
+
+	//_Movement anwenden - Car bewegen
+	/*if (((getPos() + _Movement * FrameTime * (float)_Speed).x >= getWidth() / 2) && ((getPos() + _Movement * FrameTime * (float)_Speed).x <= SCREENWIDTH - getWidth() / 2)) {
+		setPos(sf::Vector2f(getPos().x + _Movement.x * _Speed * FrameTime, getPos().y));
+	}
+
+	if (getPos().y + getHeight() / 2 + _Movement.y * FrameTime * _Speed <= SCREENHEIGHT && getPos().y - getHeight() / 2 + _Movement.y * FrameTime * _Speed >= 0) {
+		setPos(sf::Vector2f(getPos().x, getPos().y + _Movement.y * FrameTime * _Speed));
+	}*/
+
+	_Movement = _Force / 20.0f;
+
+	setPos(sf::Vector2f(calcNewPosition(FrameTime, _Acceleration.x, _Movement.x, getPos().x), getPos().y));
+	
+	if (getPos().x < getWidth() / 2.0f)
+	{
+		setPos(sf::Vector2f(getWidth() / 2.0f, getPos().y));
+	}
+	else if (getPos().x > SCREENWIDTH - getWidth() / 2.0f)
+	{
+		setPos(sf::Vector2f(SCREENWIDTH - getWidth() / 2.0f, getPos().y));
+	}
+
+	setPos(sf::Vector2f(getPos().x, getPos().y + 0.5f * _Speed * _Acceleration.y * FrameTime * FrameTime + _Movement.y * _Speed * FrameTime));
+
+	if (getPos().y < getHeight() / 2.0f)
+	{
+		setPos(sf::Vector2f(getPos().x, getHeight() / 2.0f));
+	}
+	else if (getPos().y > SCREENHEIGHT - getHeight() / 2.0f)
+	{
+		setPos(sf::Vector2f(getPos().x, SCREENHEIGHT - getHeight() / 2.0f));
+	}
+
+	_Acceleration = sf::Vector2f(0, 0);
+
+
+	/*
+	if (RoadSpeed == 0)
+	{
+		std::cout << "FT: " << FrameTime << " P(" << getPos().x << "|" << getPos().y << ") V(" << _Movement.x << "|" << _Movement.y << ") A(" << _Acceleration.x << "|" << _Acceleration.y << ")" << std::endl;
+	}
+	
+	sf::Vector2f const Friction = sf::Vector2f(9.2f, 9.2f);
+	sf::Vector2f const MinVelocity = sf::Vector2f(-1.0f, -0.45f);
+	sf::Vector2f const MaxVelocity = sf::Vector2f(1.0f, 1.2f);
+
+	sf::Vector2f Velocity = _Movement;
+	sf::Vector2f SignVelocity = sf::Vector2f(sgn(_Movement.x), sgn(_Movement.y));
+
+	_Movement = _Force / 20.0f;
 
 	if (calcNewPosition(FrameTime, _Acceleration.x, _Movement.x, getPos().x) >= getWidth() / 2.0f && calcNewPosition(FrameTime, _Acceleration.x, _Movement.x, getPos().x) <= SCREENWIDTH - getWidth() / 2.0f)
 	{
@@ -153,62 +260,62 @@ void PlayerCar::update(float FrameTime, int RoadSpeed)
 		setPos(sf::Vector2f(getPos().x, calcNewPosition(FrameTime, _Acceleration.y, _Movement.y, getPos().y)));
 	}
 
-	sf::Vector2f const Friction = sf::Vector2f(9.2f, 9.2f);
-	sf::Vector2f const MinVelocity = sf::Vector2f(-1.0f, -0.45f);
-	sf::Vector2f const MaxVelocity = sf::Vector2f(1.0f, 1.2f);
+	//_Movement += _Acceleration * FrameTime;
+	
+	_Acceleration = 0.0f * _Force;// - sf::Vector2f(SignVelocity.x * Friction.x, SignVelocity.y * Friction.y);
+	*/
 
-	sf::Vector2f Velocity = _Movement;
-	sf::Vector2f SignVelocity = sf::Vector2f(sgn(Velocity.x), sgn(Velocity.y));
-
-	_Acceleration = _Force - sf::Vector2f(SignVelocity.x * Friction.x, SignVelocity.y * Friction.y);
-
-	if (_Movement.x + _Acceleration.x * FrameTime >= MinVelocity.x && _Movement.x + _Acceleration.x * FrameTime <= MaxVelocity.x)
+	/*if (SignVelocity.x == 0)
 	{
-		_Movement.x += _Acceleration.x * FrameTime;
-	}
-	else
-	{
-		if (sgn(_Acceleration.x) == 1.0f)
-		{
-			_Movement.x = MaxVelocity.x;
-		}
-		else
-		{
-			_Movement.x = MinVelocity.x;		
-		}
-
-		_Acceleration.x = 0;
+		SignVelocity.x = sgn(_Force.x);
 	}
 
+	if (SignVelocity.y == 0)
+	{
+		SignVelocity.y = sgn(_Force.y);
+	}*/
+
+	
+
+	/*
+	if (_Movement.x > MaxVelocity.x)
+	{
+		_Movement.x = MaxVelocity.x;
+		_Acceleration.x = (MaxVelocity.x - Velocity.x) / FrameTime;
+		std::cout << _Acceleration.x << std::endl;
+	}
+	else if (_Movement.x < MinVelocity.x)
+	{
+		_Movement.x = MinVelocity.x;
+		_Acceleration.x = (MinVelocity.x - Velocity.x) / FrameTime;
+	}
+
+	if (_Movement.y > MaxVelocity.y)
+	{
+		_Movement.y = MaxVelocity.y;
+		_Acceleration.y = (MaxVelocity.y - Velocity.y) / FrameTime;
+	}
+	else if (_Movement.y < MinVelocity.y)
+	{
+		_Movement.y = MinVelocity.y;
+		_Acceleration.y = (MinVelocity.y - Velocity.y) / FrameTime;
+	} */
+	/*
 	if (SignVelocity.x != sgn(_Movement.x) && SignVelocity.x != 0 && _Force.x == 0)
 	{
 		_Movement.x = 0;
 		_Acceleration.x = 0;
 	}
 
-	if (_Movement.y + _Acceleration.x * FrameTime >= MinVelocity.y && _Movement.y + _Acceleration.y * FrameTime <= MaxVelocity.y)
-	{
-		_Movement.y += _Acceleration.y * FrameTime;
-	}
-	else
-	{
-		if (sgn(_Acceleration.y) == 1.0f)
-		{
-			_Movement.y = MaxVelocity.y;
-		}
-		else
-		{
-			_Movement.y = MinVelocity.y;
-		}
-
-		_Acceleration.y = 0;
-	}
-
 	if (SignVelocity.y != sgn(_Movement.y) && SignVelocity.y != 0 && _Force.y == 0)
 	{
 		_Movement.y = 0;
 		_Acceleration.y = 0;
-	}
+	} */
+
+
+
+
 
 	//Update _AimLine
 	_AimLine.setPosition(getPos());
@@ -238,7 +345,7 @@ void PlayerCar::update(float FrameTime, int RoadSpeed)
 
 float PlayerCar::calcNewPosition(float dt, float a, float v, float s0)
 {
-	return 0.5f * (a * _Speed) * dt * dt + (v * _Speed) * dt + s0;
+	return 0.5f * (a * (float)_Speed) * dt * dt + (v * (float)_Speed) * dt + s0;
 }
 
 bool PlayerCar::drainShotEnergy() {
@@ -320,8 +427,8 @@ void PlayerCar::operator<<(sf::Packet& packet)
 	float x, y;
 	read(packet, x);
 	read(packet, y);
-	if (std::abs(getPos().x - x) > 1 || std::abs(getPos().y - y) > 1)
-		setPos(sf::Vector2f(x, y));
+	
+	
 	read(packet, _Speed);
 	read(packet, _Health);
 	read(packet, _MaxHealth);
@@ -330,6 +437,15 @@ void PlayerCar::operator<<(sf::Packet& packet)
 	//std::cout << "Updated position" << _ID << ": " << getPos().x << " " << getPos().y << std::endl;
 	read(packet, _Force.x);
 	read(packet, _Force.y);
-	read(packet, _Movement.x);
-	read(packet, _Movement.y);
+	float vx, vy;
+	read(packet, vx);
+	read(packet, vy);
+
+	//std::cout << "dX = " << std::abs(getPos().x - x) << " dY = " << std::abs(getPos().y - y) << " dVx = " << std::abs(_Movement.x - vx) << std::endl;
+	if (std::abs(getPos().x - x) > 1 || std::abs(getPos().y - y) > 1)
+	{
+		setPos(sf::Vector2f(x, y));
+	}
+	
+	_Movement = sf::Vector2f(vx, vy);
 }

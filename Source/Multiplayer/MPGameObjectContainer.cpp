@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Multiplayer/MPGameObjectContainer.h"
 
-MPGameObjectContainer::MPGameObjectContainer() : _PlayerBulletSpeed(600), _AIBulletSpeed(400) {}
+MPGameObjectContainer::MPGameObjectContainer() : _PlayerBulletSpeed(600), _AIBulletSpeed(400), _CurrentID(0) {}
 
 MPGameObjectContainer::~MPGameObjectContainer()
 {
@@ -12,10 +12,16 @@ MPGameObjectContainer::~MPGameObjectContainer()
 
 void MPGameObjectContainer::update(float FrameTime, int RoadSpeed)
 {
+	return;
 	handleIncomingPackets();
 
 	_Player1->update(FrameTime, RoadSpeed);
 	_Player2->update(FrameTime, RoadSpeed);
+
+	for (unsigned int i = 0; i < _Bullets.size(); i++)
+	{
+		_Bullets[i]->update(FrameTime, RoadSpeed);
+	}
 
 	if (_IsServer) {
 		sendPlayerInformation();
@@ -226,12 +232,24 @@ void MPGameObjectContainer::render(sf::RenderWindow& Window, bool renderCrosshai
 	for (int i = 0; i < _Animations.size(); i++) {
 		_Animations[i]->render(Window);
 	}
+
+	for (unsigned int i = 0; i < _Bullets.size(); i++)
+	{
+		_Bullets[i]->render(Window);
+	}
 }
 
 void MPGameObjectContainer::handleEvent(sf::Event& newEvent)
 {
 	if (_PlayerAlive) {
-		_Player1->handleEvent(newEvent);
+		if (newEvent.type == sf::Event::MouseButtonPressed)
+		{
+			sendShotFired(sf::Vector2f(newEvent.mouseButton.x, newEvent.mouseButton.y));
+		}
+		else
+		{
+			_Player1->handleEvent(newEvent);
+		}
 	}
 	/*sf::Event e;
 	e.type = sf::Event::MouseButtonPressed;
@@ -241,9 +259,29 @@ void MPGameObjectContainer::handleEvent(sf::Event& newEvent)
 	e.mouseButton.y = 100;*/
 }
 
+void MPGameObjectContainer::sendPacketClient(NetworkCommunication Type, sf::Packet Packet)
+{
+	if (_NetworkHandle->getRelation() == NetworkRelation::Host)
+	{
+		_NetworkHandle->addReceivedPacket(Type, Packet);
+	}
+	else if (_NetworkHandle->getRelation() == NetworkRelation::Client)
+	{
+		_NetworkHandle->addPacket(Type, Packet);
+	}
+}
+
+
+void MPGameObjectContainer::sendPacketServer(NetworkCommunication Type, sf::Packet Packet)
+{
+	std::lock_guard<std::mutex> lock(_Mutex);
+	_NetworkHandle->addReceivedPacket(Type, Packet);
+	_NetworkHandle->addPacket(Type, Packet);
+}
+
 void MPGameObjectContainer::sendPlayerInformation() 
 {
-	if (_PlayerInformationTimer.getElapsedTime().asSeconds() > 1.0f/40.0f) {
+	//if (_PlayerInformationTimer.getElapsedTime().asSeconds() > 1.0f/16.0f) {
 		_PlayerInformationTimer.restart();
 
 		std::lock_guard<std::mutex> lock(_Mutex);
@@ -258,7 +296,6 @@ void MPGameObjectContainer::sendPlayerInformation()
 		_NetworkHandle->addReceivedPacket(NetworkCommunication::PlayerInformation, Player1Packet);
 		_NetworkHandle->addReceivedPacket(NetworkCommunication::PlayerInformation, Player2Packet);
 
-
 		sf::Packet Player1P;
 		Player1P << (sf::Uint8)2;
 		*_Player1 >> Player1P;
@@ -269,29 +306,143 @@ void MPGameObjectContainer::sendPlayerInformation()
 		_NetworkHandle->addPacket(NetworkCommunication::PlayerInformation, Player1P);
 		_NetworkHandle->addPacket(NetworkCommunication::PlayerInformation, Player2P);
 		//std::cout << _NetworkHandle->getSendPackets().size() << std::endl;
-	}
+	//}
 }
 
 void MPGameObjectContainer::sendPlayerKeyPress() 
 {
-	if (_KeyPressTimer.getElapsedTime().asSeconds() > 1.0f/30.0f) {
+	if (_KeyPressTimer.getElapsedTime().asSeconds() > 1.0f/16.0f) {
 		_KeyPressTimer.restart();
 
-		if (_NetworkHandle->getRelation() == NetworkRelation::Host)
-		{
-			sf::Packet Player1Packet;
-			Player1Packet << (sf::Uint8)1 << _Player1->getPressedKeys();
+		sf::Packet Packet;
+		Packet << (sf::Uint8)((_NetworkHandle->getRelation() == NetworkRelation::Client) + 1) << _Player1->getPressedKeys();
 
-			_NetworkHandle->addReceivedPacket(NetworkCommunication::PlayerKeyPress, Player1Packet);
+		sendPacketClient(NetworkCommunication::PlayerKeyPress, Packet);
+	}
+}
+
+void MPGameObjectContainer::sendShotFired(sf::Vector2f Position)
+{
+	sf::Packet Packet;
+
+	Packet << (sf::Uint8)((_NetworkHandle->getRelation() == NetworkRelation::Client) + 1) << Position.x << Position.y;
+
+	sendPacketClient(NetworkCommunication::ShotFired, Packet);
+}
+
+void MPGameObjectContainer::handleIncomingPackets()
+{
+	std::vector<sf::Packet> Packets = _NetworkHandle->getReceivedPackets();
+
+	for (unsigned int i = 0; i < Packets.size(); i++) 
+	{
+		sf::Packet p = Packets.at(i);
+		sf::Uint8 recType;
+		sf::Uint32 recTick;
+		p >> recType >> recTick;
+
+		if (_IsServer) 
+		{
+			switch ((NetworkCommunication)recType) 
+			{
+				case NetworkCommunication::PlayerKeyPress:
+				{
+					sf::Uint8 Car, Keys;
+					p >> Car >> Keys;
+
+					if (Car == 1) {
+						_Player1->applyKeyPress(Keys);
+					}
+					else {
+						_Player2->applyKeyPress(Keys);
+					}
+					Packets.erase(Packets.begin() + i);
+					i--;
+				} break;
+
+				case NetworkCommunication::ShotFired:
+				{
+					sf::Uint8 PlayerNumber;
+					p >> PlayerNumber;
+
+					if (PlayerNumber == 1)
+					{
+						_Bullets.push_back(GameObjectFactory::getBullet(p, _Player1->getPos(), GameObjectType::BulletObjectPlayer, _CurrentID++, _PlayerBulletSpeed));
+					}
+					else
+					{
+						_Bullets.push_back(GameObjectFactory::getBullet(p, _Player2->getPos(), GameObjectType::BulletObjectPlayer, _CurrentID++, _PlayerBulletSpeed));
+					}
+
+					Packets.erase(Packets.begin() + i);
+					i--;
+					
+					sf::Packet BulletPacket;
+					*_Bullets.back() >> BulletPacket;
+
+					_NetworkHandle->addPacket(NetworkCommunication::SpawnPlayerBullet, BulletPacket);
+
+					sf::Packet TmpPacket;
+					TmpPacket << sf::Uint8(NetworkCommunication::SpawnPlayerBullet) << _NetworkHandle->getTick();
+
+					const void* data = BulletPacket.getData();
+					size_t len = BulletPacket.getDataSize();
+					TmpPacket.append(data, len);
+
+					Packets.push_back(TmpPacket); 
+				} break;
+
+				default:
+				{
+
+				} break;
+			}
 		}
-		else if (_NetworkHandle->getRelation() == NetworkRelation::Client)
-		{
-			sf::Packet Player2Packet;
-			Player2Packet << (sf::Uint8)2 << _Player1->getPressedKeys();
+		else {
+			switch ((NetworkCommunication)recType)
+			{
+				case NetworkCommunication::PlayerInformation:
+				{
+					if (_NetworkHandle->getTick() > recTick + _NetworkHandle->getDelay())
+					{
+						sf::Uint8 CarID;
+						p >> CarID;
 
-			_NetworkHandle->addPacket(NetworkCommunication::PlayerKeyPress, Player2Packet);
+						//std::cout << "Applying player info" << std::endl;
+
+						if (CarID == 1) {
+							*_Player1 << p;
+						}
+						else {
+							*_Player2 << p;
+						}
+						Packets.erase(Packets.begin() + i);
+						i--;
+					}
+				} break;
+				
+				case NetworkCommunication::SpawnPlayerBullet:
+				{
+					if (_NetworkHandle->getTick() > recTick + _NetworkHandle->getDelay())
+					{
+						_Bullets.push_back(GameObjectFactory::getBullet(GameObjectType::BulletObjectPlayer, _PlayerBulletSpeed));
+						*_Bullets.back() << p;
+
+						//std::cout << _Bullets.back()->getPos().x << "|" << _Bullets.back()->getPos().y << std::endl; 
+
+						Packets.erase(Packets.begin() + i);
+						i--;
+					}
+				} break;
+
+				default:
+				{
+				} break;
+			}
 		}
 	}
+
+	_NetworkHandle->setReceivedPackets(Packets);
 }
 
 /*void MPGameObjectContainer::handleOutgoingPackets(std::vector<std::pair<NetworkCommunication, sf::Packet>>& packets)
@@ -655,69 +806,6 @@ void MPGameObjectContainer::deleteGameObject(unsigned int id, bool sendDeletion)
 	}
 }
 
-void MPGameObjectContainer::handleIncomingPackets() 
-{
-	std::vector<sf::Packet> Packets  = _NetworkHandle->getReceivedPackets();
-
-	for (unsigned int i = 0; i < Packets.size(); i++) {
-		sf::Packet p = Packets.at(i);
-		sf::Uint8 recType;
-		sf::Uint32 recTick;
-		p >> recType >> recTick;
-
-		if (_IsServer) {
-			switch ((NetworkCommunication)recType) {
-				case NetworkCommunication::PlayerKeyPress:
-				{
-					sf::Uint8 Car, Keys;
-					p >> Car >> Keys;
-
-					if (Car == 1) {
-						_Player1->applyKeyPress(Keys);
-					} else {
-						_Player2->applyKeyPress(Keys);
-					}
-					Packets.erase(Packets.begin() + i);
-					i--;
-				} break;
-
-				default:
-				{
-
-				} break;
-			}
-		}
-		else {
-			switch ((NetworkCommunication)recType)
-			{
-				case NetworkCommunication::PlayerInformation:
-				{
-					if (_NetworkHandle->getTick() > recTick + _NetworkHandle->getDelay())
-					{
-						sf::Uint8 CarID;
-						p >> CarID;
-
-						//std::cout << "Applying player info" << std::endl;
-
-						if (CarID == 1) {
-							*_Player1 << p;
-						}
-						else {
-							*_Player2 << p;
-						}
-						Packets.erase(Packets.begin() + i);
-						i--;
-					}
-				} break;
-				default:
-				{
-				} break;
-			}
-		}
-	}
-
-	_NetworkHandle->setReceivedPackets(Packets);
-}
 
 /*void MPGameObjectContainer::handleOutgoingPackets(std::vector<std::pair<NetworkCommunication, sf::Packet>>& packets)
 {

@@ -60,16 +60,16 @@ sf::Vector2f GameObject::divideByLength(sf::Vector2f vec) {
 
 void GameObject::operator>>(sf::Packet& packet) {
 	//write(packet, (sf::Uint8)getType());
-	write(packet, _ID);
+	write(packet, (sf::Uint32)getID());
 	write(packet, getPos().x);
 	write(packet, getPos().y);
 }
 
 void GameObject::operator<<(sf::Packet& packet)
 {
-	sf::Uint8 type;
-	read(packet, type);
-	_Type = (GameObjectType) type;
+	//sf::Uint8 type;
+	//read(packet, type);
+	//_Type = (GameObjectType) type;
 	read(packet, _ID);
 	float x, y;
 	read(packet, x);

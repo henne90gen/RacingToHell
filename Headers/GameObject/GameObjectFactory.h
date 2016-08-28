@@ -83,6 +83,13 @@ public:
 	/*
 		@param packet packet to get the necessary data from
 	*/
+	static std::shared_ptr<Bullet> getBullet(sf::Packet& packet, sf::Vector2f playerPosition, GameObjectType type, sf::Uint32 ID, float Speed);
+
+	static std::shared_ptr<Bullet> getBullet(GameObjectType type, float speed);
+
+	/*
+		@param packet packet to get the necessary data from
+	*/
 	static std::shared_ptr<AICar> getAICar(sf::Packet& packet);
 
 	/*

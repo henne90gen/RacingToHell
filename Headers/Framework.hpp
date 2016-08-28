@@ -51,6 +51,7 @@ private:
 	float _FrameTime, _LastFPSPrint, _LastFPSCheck, _Score, _FPS;
 	bool _IsRunning;
 	int _CurrentCarSkinIndex;
+	sf::Time _TimeSinceLastUpdate;
 
 	// GameObjects
 	GameState _GameState;

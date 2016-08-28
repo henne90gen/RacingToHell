@@ -143,7 +143,7 @@ public:
 	*/
 	void initTexture(sf::Texture& texture);
 
-	sf::Uint32 getID() { return _ID; }
+	sf::Uint32 getID() { return (sf::Uint32)_ID; }
 
 	void setID(sf::Uint32 id) { _ID = id; }
 

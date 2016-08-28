@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Multiplayer/NetworkHandle.h"
 
-NetworkHandle::NetworkHandle() : _TickRate(64), _UpdateIntervall(2), _Delay(0.1 * _TickRate), _Relationship(NetworkRelation::NoRel), _Tick(0), _Authenticated(false)
+NetworkHandle::NetworkHandle() : _TickRate(32), _UpdateIntervall(2), _Delay(0.1f * _TickRate), _Relationship(NetworkRelation::NoRel), _Tick(0), _Authenticated(false)
 {
 	_MPGOCServer = std::make_shared<MPGameObjectContainer>();
 	_MPGOCServer->setNetworkHandle(this, true);
@@ -147,21 +147,25 @@ void NetworkHandle::run()
 		{
 			if (_Authenticated && _Relationship == NetworkRelation::Host)
 			{
-				_MPGOCServer->update(1 / (float)_TickRate + Difference, 0);
+				//_MPGOCServer->update(1 / (float)_TickRate + Difference, 0);
 			}
 
 			sf::Packet incommingPacket;
-			_Socket.receive(incommingPacket);
-
-			if (!_Authenticated)
+			while (_Socket.receive(incommingPacket) == sf::Socket::Status::Done)
 			{
-				authenticatePlayer(incommingPacket);
-			}
-			else
-			{
-				receiveData(incommingPacket);
+				if (!_Authenticated)
+				{
+					authenticatePlayer(incommingPacket);
+				}
+				else
+				{
+					//receiveData(incommingPacket);
+				}
+			} 
 
-				sendData();
+			if (_Authenticated)
+			{
+				//sendData();
 			}
 		}
 		else {
@@ -179,7 +183,7 @@ void NetworkHandle::run()
 			}
 		}
 
-//		std::cout << _Tick << std::endl;
+		std::cout << _Tick << std::endl;
 
 		if (_Relationship == NetworkRelation::Client && _SyncTimer.getElapsedTime().asSeconds() > 2.0f) {
 			synchroniseTick();
@@ -196,6 +200,7 @@ void NetworkHandle::run()
 		else
 		{
 			Difference = beginningTime.getElapsedTime().asSeconds() - (1.0f / (float)_TickRate);
+			std::cout << Difference << std::endl;
 		}
 	}
 	_State = NetworkState::NoNetState;
@@ -311,6 +316,8 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 			_LastResponse = std::make_pair(NetworkCommunication::StartGame, (int)(_Tick - Tick));
 			_State = NetworkState::Ingame;
 			break;
+		case NetworkCommunication::ShotFired:
+		case NetworkCommunication::SpawnPlayerBullet:
 		case NetworkCommunication::PlayerInformation:
 		case NetworkCommunication::PlayerKeyPress:
 			_ReceivedPackets.push_back(packet);
@@ -341,9 +348,14 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 				_Socket.send(responsePacket);
 			}
 			else if (_Relationship == NetworkRelation::Client) {
-				_Tick = Tick + (sf::Uint32)(_TickRate * _PackageTravelTimer.restart().asSeconds() / 2.0f);
+				sf::Uint32 newTick = Tick + (sf::Uint32)(_TickRate * _PackageTravelTimer.restart().asSeconds() / 2.0f);
+
+				std::cout << (int)(newTick - _Tick) << std::endl;
+
+				_Tick = newTick;
 			}
-			std::cout << "Tick: " << _Tick << std::endl;
+			//std::cout << "Tick: " << _Tick << std::endl;
+			//std::cout << "Packetsize: " << _ReceivedPackets.size() << std::endl;
 			break;
 		default:
 			std::cout << "Unexpected communication type: " << (int)Type << std::endl;

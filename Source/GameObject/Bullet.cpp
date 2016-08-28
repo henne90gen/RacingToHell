@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GameObject/Bullet.h"
 
-Bullet::Bullet(unsigned int id, sf::Vector2f pos, sf::Vector2f dir, int speed, GameObjectType type, sf::Texture& texture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume) :
+Bullet::Bullet(unsigned int id, sf::Vector2f pos, sf::Vector2f dir, float speed, GameObjectType type, sf::Texture& texture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume) :
 	GameObject(id, pos, type, texture), 
 	_Direction(dir), _Speed(speed)
 {
@@ -42,6 +42,52 @@ Bullet::Bullet(sf::Packet& packet, GameObjectType type, sf::Texture& texture, st
 	playShotSound(getPos(), soundEffects, soundBuffer, Volume);
 }
 
+Bullet::Bullet(sf::Packet& packet, sf::Vector2f PlayerPosition, GameObjectType type, sf::Texture& texture, sf::Uint32 ID, float Speed) 
+{
+	_Speed = Speed;
+	_ID = ID;
+	_Type = type;
+	initTexture(texture);
+	setPos(PlayerPosition);
+
+	float dx, dy;
+	packet >> dx >> dy;
+
+	_Direction = sf::Vector2f(dx, dy) - getPos();
+	_Direction /= float(std::sqrt(std::pow(_Direction.x, 2) + std::pow(_Direction.y, 2)));
+
+	if (type == GameObjectType::BulletObjectPlayer)
+	{
+		setSpriteColor(sf::Color(225, 0, 0));
+	}
+	else if (type == GameObjectType::BulletObjectBoss)
+	{
+		setSpriteColor(sf::Color(0, 45, 255));
+	}
+	else
+	{
+		setSpriteColor(sf::Color(255, 255, 0));
+	}
+}
+
+Bullet::Bullet(GameObjectType type, sf::Texture &texture, float speed) : GameObject(0, sf::Vector2f(0, 0), type, texture)
+{
+	_Speed = speed;
+
+	if (type == GameObjectType::BulletObjectPlayer)
+	{
+		setSpriteColor(sf::Color(225, 0, 0));
+	}
+	else if (type == GameObjectType::BulletObjectBoss)
+	{
+		setSpriteColor(sf::Color(0, 45, 255));
+	}
+	else
+	{
+		setSpriteColor(sf::Color(255, 255, 0));
+	}
+}
+
 void Bullet::update(float FrameTime, int RoadSpeed)
 {
 	_Direction = _Direction  / float(std::sqrt(std::pow(_Direction.x, 2) + std::pow(_Direction.y, 2)));
@@ -69,7 +115,7 @@ void Bullet::operator>>(sf::Packet& packet)
 	GameObject::operator>>(packet);
 	write(packet, _Direction.x);
 	write(packet, _Direction.y);
-	write(packet, _Speed);
+	//write(packet, _Speed);
 }
 
 void Bullet::operator<<(sf::Packet& packet)
@@ -79,5 +125,5 @@ void Bullet::operator<<(sf::Packet& packet)
 	read(packet, dx);
 	read(packet, dy);
 	_Direction = sf::Vector2f(dx, dy);
-	read(packet, _Speed);
+	//read(packet, _Speed);
 }

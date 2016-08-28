@@ -158,6 +158,7 @@ private:
 
 	NetworkHandle *_NetworkHandle;
 	bool _IsServer;
+	sf::Uint32 _CurrentID;
 
 	std::vector<std::shared_ptr<Animation>> _Animations;
 
@@ -175,8 +176,13 @@ private:
 	int _PlayerBulletSpeed, _AIBulletSpeed;
 	bool _PlayerAlive, _AboutToLevelUp, _BossFight;
 
+	void sendPacketServer(NetworkCommunication Type, sf::Packet Packet);
+	void sendPacketClient(NetworkCommunication Type, sf::Packet Packet);
+
 	void sendPlayerInformation();
 	void sendPlayerKeyPress();
+
+	void sendShotFired(sf::Vector2f Position);
 
 	/*
 	Plays a shot sound depending on the type of the firing entity

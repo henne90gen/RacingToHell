@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Framework.hpp"
 
-Framework::Framework() : _FrameTime(0), _FPS(60.0f), _IsRunning(true), _GameState(GameState::Loading), _GameMode(GameMode::Standard), _LastFPSCheck(), _LastFPSPrint(), _CurrentCarSkinIndex(), _Score()
+Framework::Framework() : _TimeSinceLastUpdate(sf::Time::Zero), _FrameTime(0), _FPS(60.0f), _IsRunning(true), _GameState(GameState::Loading), _GameMode(GameMode::Standard), _LastFPSCheck(), _LastFPSPrint(), _CurrentCarSkinIndex(), _Score()
 {
 	_RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell", sf::Style::Close);
 	#ifdef SFML_SYSTEM_WINDOWS
@@ -34,9 +34,52 @@ Framework::~Framework()
 
 void Framework::run()
 {
+	_FrameTime = 1 / _FPS;
+
 	while (_IsRunning || _NetworkHandle.getState() != NetworkState::NoNetState)
 	{
-		if (measureTime()) {
+		sf::Time elapsedTime = _Clock.restart();
+
+		_TimeSinceLastUpdate += elapsedTime;
+
+		while (_TimeSinceLastUpdate > sf::seconds(1 / _FPS))
+		{
+			_TimeSinceLastUpdate -= sf::seconds(1 / _FPS);
+			_FrameTime = 1 / _FPS;
+
+			handleEvents();
+
+			update();
+		}
+
+		playSounds();
+		render(); 
+
+		/*handleEvents();
+
+		update();
+
+		playSounds();
+		
+		render();
+
+		sf::Time elapsedTime = _Clock.restart();
+
+		if (elapsedTime < sf::seconds(1 / _FPS))
+		{
+			_FrameTime = 1 / _FPS;
+			sf::sleep(sf::seconds(1.0f / _FPS) - elapsedTime);
+		}
+		else
+		{
+			_FrameTime = elapsedTime.asSeconds();
+		} */
+		
+
+
+		
+		/*if (measureTime()) {
+			
 			render();
 		}
 
@@ -44,7 +87,10 @@ void Framework::run()
 
 		update();
 
-		playSounds();
+		playSounds(); 
+
+		
+		sf::sleep(sf::seconds(1.0f / 32.f)); */
 	}
 }
 

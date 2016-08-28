@@ -101,6 +101,20 @@ std::shared_ptr<Bullet> GameObjectFactory::getBullet(sf::Vector2f pos, sf::Vecto
 	}
 }
 
+
+std::shared_ptr<Bullet> GameObjectFactory::getBullet(GameObjectType type, float speed)
+{
+	std::shared_ptr<Bullet> bullet(new Bullet(type, _BulletTexture(), speed));
+	return bullet;
+}
+
+std::shared_ptr<Bullet> GameObjectFactory::getBullet(sf::Packet& packet, sf::Vector2f PlayerPosition, GameObjectType type, sf::Uint32 ID, float Speed)
+{
+	std::shared_ptr<Bullet> bullet(new Bullet(packet, PlayerPosition, type, _BulletTexture(), ID, Speed));
+	return bullet;
+
+} 
+
 std::shared_ptr<AICar> GameObjectFactory::getAICar(int hp, int roadSpeed)
 {
 	std::shared_ptr<AICar> car(new AICar(_DeltaID + _CurrentGameObjectID++, hp, roadSpeed, (*_AICarTextures().at(std::rand() % 7))));

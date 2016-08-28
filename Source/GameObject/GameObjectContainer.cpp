@@ -417,7 +417,7 @@ void GameObjectContainer::spawnAICar(int roadSpeed)
 
 	for (unsigned int i = 1; i < _Cars.size(); i++)
 	{
-		if (_Cars.at(i)->getLane() == newAiCar->getLane() && _Cars.at(i)->getPos().y < _Cars.at(i)->getHeight() / 2 + 20)
+		if (_Cars.at(i)->getLane() == newAiCar->getLane() && _Cars.at(i)->getPos().y < _Cars.at(i)->getHeight() / 2.0f + 20)
 		{
 			return;
 		}
@@ -443,7 +443,7 @@ bool GameObjectContainer::playerIsAlive() {
 		return false;
 	}
 	if (!_PlayerAlive && _Animations.size() > 0) {
-		if (_Animations[_Animations.size() - 1]->getCurrentFrameNum() >= 18) {
+		if (_Animations[_Animations.size() - 1]->getCurrentFrameNum() >= 18) { //?
 			return false;
 		}
 	}

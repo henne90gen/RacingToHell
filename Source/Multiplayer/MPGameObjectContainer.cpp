@@ -311,14 +311,14 @@ void MPGameObjectContainer::sendPlayerInformation()
 
 void MPGameObjectContainer::sendPlayerKeyPress() 
 {
-	if (_KeyPressTimer.getElapsedTime().asSeconds() > 1.0f/16.0f) {
+	//if (_KeyPressTimer.getElapsedTime().asSeconds() > 1.0f/16.0f) {
 		_KeyPressTimer.restart();
 
 		sf::Packet Packet;
 		Packet << (sf::Uint8)((_NetworkHandle->getRelation() == NetworkRelation::Client) + 1) << _Player1->getPressedKeys();
 
 		sendPacketClient(NetworkCommunication::PlayerKeyPress, Packet);
-	}
+	//}
 }
 
 void MPGameObjectContainer::sendShotFired(sf::Vector2f Position)

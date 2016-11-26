@@ -228,3 +228,7 @@ Resources/Data/Highscore.sco
 /network-schematic.xcf
 /.idea
 /CMakeLists.txt
+*.vcxproj
+*.vcxproj.filters
+*.sln
+

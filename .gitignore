@@ -223,8 +223,6 @@ Resources/Data/Highscore.sco
 /SFML-x86
 /RacingToHell_V1.01.rar
 /RacingToHell.VC.db
-/.cproject
-/.project
 /network-schematic.xcf
 /.idea
 /CMakeLists.txt
@@ -232,3 +230,6 @@ Resources/Data/Highscore.sco
 *.vcxproj.filters
 *.sln
 
+Source/CMakeLists.txt
+cmake-build-debug/
+cmake-modules/

@@ -31,7 +31,7 @@ private:
     Framework &_FW;
     sf::RenderWindow _RenderWindow;
 
-    void setMouseVisible(bool visible);
+    void setMouseVisibility();
 };
 
 #endif //RACINGTOHELL_RENDERER_H

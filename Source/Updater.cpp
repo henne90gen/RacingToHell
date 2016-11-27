@@ -165,8 +165,8 @@ void Updater::update(float frameTime) {
             }
 
             _FW.getMPGOC().update(frameTime, _FW.getLevel().getRoadSpeed());
-            _FW.getHUD().update(_FW.getScore(), _FW.getMPGOC().getPlayerCar().getHealth(),
-                                _FW.getMPGOC().getPlayerCar().getEnergy(), _FW.getLevel().getLevel(),
+            _FW.getHUD().update((int) _FW.getScore(), _FW.getMPGOC().getPlayerCar().getHealth(),
+                                (int) _FW.getMPGOC().getPlayerCar().getEnergy(), _FW.getLevel().getLevel(),
                                 _FW.getLevel().getLevelTime(),
                                 _FW.getGameMode());
             if (!_FW.getMPGOC().playerIsAlive()) {
@@ -174,5 +174,8 @@ void Updater::update(float frameTime) {
             }
             _FW.addScore();
             break;
+        case GameState::Pause:break;
+        case GameState::GameOverMultiplayer:break;
+        case GameState::BossFightMultiplayer:break;
     }
 }

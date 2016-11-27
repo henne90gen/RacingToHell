@@ -7,7 +7,7 @@ Framework::Framework() :
         _CurrentCarSkinIndex(), _Score(), _Renderer(*this), _Updater(*this), _EventHandler(*this) {
 
     //Seed
-    srand(time(NULL));
+    srand((unsigned int) time(NULL));
 
     //Multiplayer
     _MultiplayerMenu.setNetworkHandle(&_NetworkHandle);
@@ -236,11 +236,11 @@ void Framework::initializeNetworkThread() {
 }
 
 void Framework::updateMPCarSelection() {
-    _MPGOCClient.getPlayerCar().setTexture((*_CarSkins.at(_CurrentCarSkinIndex)));
+    _MPGOCClient.getPlayerCar().setTexture((*_CarSkins.at((unsigned long) _CurrentCarSkinIndex)));
     _MPGOCClient.getPlayerCar().setStats(_CurrentCarSkinIndex);
 }
 
 void Framework::updateCarSelection() {
-    _GameObjectContainer.getPlayerCar()->setTexture((*_CarSkins.at(_CurrentCarSkinIndex)));
+    _GameObjectContainer.getPlayerCar()->setTexture((*_CarSkins.at((unsigned long) _CurrentCarSkinIndex)));
     _GameObjectContainer.getPlayerCar()->setStats(_CurrentCarSkinIndex);
 }

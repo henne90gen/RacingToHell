@@ -3,7 +3,6 @@
 //
 
 #include "Framework.hpp"
-#include "EventHandler.h"
 
 EventHandler::EventHandler(Framework &framework) : _FW(framework) {
 
@@ -43,7 +42,7 @@ void EventHandler::handleEvents(sf::RenderWindow &renderWindow) {
 
             _FW.setCurrentCarSkinIndex(_FW.getMainMenu().getCarIndex());
             if (_FW.getCurrentCarSkinIndex() < 0) {
-                _FW.setCurrentCarSkinIndex((int) (_FW.getNumberOfCarsAvailable() - 1));
+                _FW.setCurrentCarSkinIndex(_FW.getNumberOfCarsAvailable() - 1);
             } else if (_FW.getCurrentCarSkinIndex() >= _FW.getNumberOfCarsAvailable()) {
                 _FW.setCurrentCarSkinIndex(0);
             }
@@ -147,18 +146,18 @@ void EventHandler::handleEvents(sf::RenderWindow &renderWindow) {
 
                 _FW.initializeNetworkThread();
             }
-
             break;
         case GameState::Connecting:
             _FW.getGameState() = _FW.getMultiplayerMenu().handleEvents(renderWindow);
             break;
         case GameState::Lobby:
-            if (_FW.getMultiplayerMenu().getCreatedLobby() == 0 && _FW.getNetworkHandle().getState() == NetworkState::NoNetState) {
+            if (_FW.getMultiplayerMenu().getCreatedLobby() == 0 &&
+                _FW.getNetworkHandle().getState() == NetworkState::NoNetState) {
                 _FW.getNetworkHandle().setState(NetworkState::Lobby);
                 _FW.getNetworkHandle().setRelation(NetworkRelation::Client);
 
                 GameObjectFactory::setDeltaID(
-                        (sf::Uint64) std::pow(2.0f, 16.0f) * (sf::Uint64) std::pow(2.0f, 16.0f) / 2);
+                        (int) ((sf::Uint64) std::pow(2.0f, 16.0f) * (sf::Uint64) std::pow(2.0f, 16.0f) / 2));
 
                 _FW.getMultiplayerLobby().EnableButtons(false);
                 _FW.getMultiplayerLobby().setAdminTable(false);
@@ -230,6 +229,12 @@ void EventHandler::handleEvents(sf::RenderWindow &renderWindow) {
                 _FW.getOptionsMenu().setReturnState(GameState::PauseMultiplayer);
             }
 
+            break;
+        case GameState::Exiting:
+            break;
+        case GameState::GameOverMultiplayer:
+            break;
+        case GameState::BossFightMultiplayer:
             break;
     }
 }

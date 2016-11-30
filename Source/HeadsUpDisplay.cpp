@@ -103,7 +103,7 @@ void HeadsUpDisplay::render(sf::RenderWindow & window)
 
 void HeadsUpDisplay::update(int score, int health, int energy, int level, float levelTime, GameMode mode)
 {
-	_LevelText.setString("Level: " + std::to_string(level));
+	_LevelText.setString("LevelManager: " + std::to_string(level));
 
 	_ProgressBar.setSize(sf::Vector2f(levelTime * SCREENWIDTH / _TotalLevelTime, 10));
 

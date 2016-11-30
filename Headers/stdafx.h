@@ -27,3 +27,5 @@
 #define SCREENWIDTH 600
 #define SCREENHEIGHT 800
 #define PI 3.141592654f
+#define MIN_FPS 30.0f
+#define MAX_FPS 210.0f

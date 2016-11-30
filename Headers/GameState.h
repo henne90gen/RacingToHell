@@ -1,7 +1,7 @@
 #pragma once
 
 enum class GameState {
-	Running, Main, Pause, Highscores, Options, About, BossFight, LevelUp, GameOver, Loading, Exiting, 
+	Loading, LoadingToMain, Main, Running, Pause, Highscores, Options, About, BossFight, LevelUp, GameOver, Exiting,
 	RunningMultiplayer, PauseMultiplayer, GameOverMultiplayer, BossFightMultiplayer, MultiplayerSelection, Lobby, Connecting, Countdown
 };
 

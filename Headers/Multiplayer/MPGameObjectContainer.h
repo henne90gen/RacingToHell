@@ -23,7 +23,7 @@ class MPGameObjectContainer
 {
 public:
 	/*
-	GameObjectContainer is the manager class for all GameObjects.
+	GameObjectScreen is the manager class for all GameObjects.
 	It handles their creation and deletion, as well as updating and rendering them
 	*/
 	MPGameObjectContainer();

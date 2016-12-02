@@ -78,7 +78,6 @@ void MainMenu::handleEvent(sf::Event &event) {
 //			}
 //		}
 
-    // FIXME set GameState in Framework instead
     _FW.setGameState(handleMenuItems(event));
 }
 

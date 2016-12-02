@@ -126,10 +126,6 @@ void Framework::update(float frameTime) {
     for (int i = 0; i < _DisplayedGameScreens.size(); i++) {
         _DisplayedGameScreens.at(i)->update(frameTime);
     }
-
-    if (_GameState == GameState::Exiting) {
-        exit(0);
-    }
 }
 
 void Framework::playSounds() {

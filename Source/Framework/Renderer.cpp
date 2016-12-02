@@ -50,7 +50,7 @@ void Renderer::render() {
             _FW.getOptionsMenu().render(_RenderWindow);
             break;
         case GameState::About:
-            _FW.getAboutScreen().render(_RenderWindow);
+            _FW.getAboutMenu().render(_RenderWindow);
             break;
         case GameState::LevelUp:
             _FW.getLevelUpScreen().render(_RenderWindow);

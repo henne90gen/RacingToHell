@@ -41,7 +41,7 @@ std::vector<GameScreen *> GameScreenFactory::getGameScreens(Framework &framework
             screens.push_back(getOptionsMenu(framework));
             break;
         case GameState::About:
-//            screen = new AboutMenu(framework);
+            screens.push_back(getAboutMenu(framework));
             break;
         case GameState::BossFight:
             break;
@@ -116,4 +116,11 @@ HighscoreMenu *GameScreenFactory::getHighscoreMenu(Framework &framework) {
         _HighscoreMenu = new HighscoreMenu(framework);
     }
     return _HighscoreMenu;
+}
+
+AboutMenu *GameScreenFactory::getAboutMenu(Framework &framework) {
+    if (_AboutMenu == nullptr) {
+        _AboutMenu = new AboutMenu(framework);
+    }
+    return _AboutMenu;
 }

@@ -24,7 +24,7 @@ AboutMenu::AboutMenu(Framework &framework) : Menu(framework, GameState::About) {
     _Text2.setFont(_Font);
     _Text2.setStyle(sf::Text::Bold);
     _Text2.setColor(sf::Color::White);
-    _Text2.setString("Alex Ivliev and Hendrik M�ller");
+    _Text2.setString("Alex Ivliev and Hendrik Müller");
     _Text2.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text2.getLocalBounds().width / 2, 145));
 
     _Music.setFont(_Font);
@@ -54,7 +54,7 @@ AboutMenu::AboutMenu(Framework &framework) : Menu(framework, GameState::About) {
     _LevelUp.setFont(_Font);
     _LevelUp.setCharacterSize(25);
     _LevelUp.setColor(sf::Color::White);
-    _LevelUp.setString("'LevelManager up sound effect'");
+    _LevelUp.setString("'LevelUp sound effect'");
     _LevelUp.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _LevelUp.getLocalBounds().width / 2, 435));
 
     _LevelUp2.setFont(_Font);

@@ -66,4 +66,8 @@ private:
     HighscoreMenu *_HighscoreMenu;
 
     HighscoreMenu *getHighscoreMenu(Framework &framework);
+
+    AboutMenu *_AboutMenu;
+
+    AboutMenu *getAboutMenu(Framework &framework);
 };

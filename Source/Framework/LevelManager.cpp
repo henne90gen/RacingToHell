@@ -4,10 +4,10 @@
 bool LevelManager::update(float frameTime, GameState gameState) {
     _LevelTime += frameTime;
 
-    if (_SpritePosition.y + frameTime * getRoadSpeed() >= 0) {
-        _SpritePosition = sf::Vector2f(0, -1600);
+    if (_Sprite.getPosition().y + frameTime * getRoadSpeed() >= 0) {
+        _Sprite.setPosition(sf::Vector2f(0, -1600));
     } else {
-        _SpritePosition = sf::Vector2f(_SpritePosition.x, _SpritePosition.y + frameTime * getRoadSpeed());
+        _Sprite.setPosition(sf::Vector2f(_Sprite.getPosition().x, _Sprite.getPosition().y + frameTime * getRoadSpeed()));
     }
 
     if (gameState == GameState::Running) {
@@ -62,4 +62,16 @@ int LevelManager::getRoadSpeed() {
 //        default:
 //            return 100;
 //    }
+}
+
+void LevelManager::load() {
+    for (int i = 1; i <= 4; i++) {
+        std::shared_ptr<sf::Texture> texture(new sf::Texture());
+        (*texture).loadFromFile("Resources/Texture/Road/Road" + std::to_string(i) + ".jpg");
+        _Textures.push_back(texture);
+    }
+    _Sprite.setTexture((*_Textures.at(0)));
+    _Sprite.setPosition(sf::Vector2f(0, -1600));
+
+    // TODO load level music here
 }

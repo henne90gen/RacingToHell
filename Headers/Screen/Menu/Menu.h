@@ -33,7 +33,6 @@ public:
 
 protected:
     std::vector<std::shared_ptr<MenuItem>> _MenuItems;
-    sf::Font _Font;
     sf::Text _Text;
     GameState _MenuGameState;
     sf::Vector2f _MousePos;

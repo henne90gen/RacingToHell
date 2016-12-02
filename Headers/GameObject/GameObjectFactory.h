@@ -104,8 +104,6 @@ public:
 
 	static void scanPacketForGO(int level, sf::Packet& packet, std::vector<std::shared_ptr<GameObject>>& gos, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer& expSB, float volume);
 
-	static void setPlayerCarTextures(std::vector<std::shared_ptr<sf::Texture>>& carSkins) { _PlayerCarTextures() = carSkins; }
-
 	static void setDeltaID(int deltaID) { _DeltaID = deltaID; }
 
 private:

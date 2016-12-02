@@ -6,18 +6,10 @@
 #include "Screen/LevelScreen.h"
 #include "Framework/Framework.h"
 
-LevelScreen::LevelScreen(Framework &framework) : GameScreen(framework) {
-    for (int i = 1; i <= 4; i++) {
-        std::shared_ptr<sf::Texture> texture(new sf::Texture());
-        (*texture).loadFromFile("Resources/Texture/Road/Road" + std::to_string(i) + ".jpg");
-        _Textures.push_back(texture);
-    }
-    _Sprite.setTexture((*_Textures.at(0)));
-    _Sprite.setPosition(sf::Vector2f(0, -1600));
-}
+LevelScreen::LevelScreen(Framework &framework) : GameScreen(framework) {}
 
 void LevelScreen::render(sf::RenderWindow &renderWindow) {
-    renderWindow.draw(_Sprite);
+    renderWindow.draw(_FW.getLevelManager().getSprite());
 }
 
 void LevelScreen::handleEvent(sf::Event &event) {
@@ -27,8 +19,6 @@ void LevelScreen::handleEvent(sf::Event &event) {
 void LevelScreen::update(float frameTime) {
 
     int newLevel = _FW.getLevelManager().getLevel();
-
-    _Sprite.setPosition(_FW.getLevelManager().getSpritePosition());
 
 //    if (_Sprite.getPosition().y + frameTime * newLevel >= 0) {
 //        _Sprite.setPosition(sf::Vector2f(0, -1600));

@@ -235,6 +235,14 @@ void GameObjectFactory::scanPacketForGO(int level, sf::Packet& packet, std::vect
 void GameObjectFactory::load()
 {
 	// Loading Textures
+	for (unsigned int i = 1; i < 7; i++) {
+		sf::Texture texture;
+		if (texture.loadFromFile("Resources/Texture/PlayerCar/playercar" + std::to_string(i) + ".png")) {
+			texture.setSmooth(true);
+			_PlayerCarTextures().push_back(std::make_shared<sf::Texture>(texture));
+		}
+	}
+
 	for (int i = 1; i <= 8; i++) {
 		std::shared_ptr<sf::Texture> texture(new sf::Texture());
 		(*texture).loadFromFile("Resources/Texture/TrafficCar/Traffic" + std::to_string(i) + ".png");

@@ -27,9 +27,10 @@ std::vector<GameScreen *> GameScreenFactory::getGameScreens(Framework &framework
         case GameState::LoadingToMain:
         case GameState::Main:
             screens.push_back(getMainMenu(framework));
+            screens.push_back(getGameObjectScreen(framework));
             break;
         case GameState::Running:
-
+            screens.push_back(getGameObjectScreen(framework));
             break;
         case GameState::Pause:
 
@@ -123,4 +124,18 @@ AboutMenu *GameScreenFactory::getAboutMenu(Framework &framework) {
         _AboutMenu = new AboutMenu(framework);
     }
     return _AboutMenu;
+}
+
+GameObjectScreen * GameScreenFactory::getGameObjectScreen(Framework &framework) {
+    if (_GameObjectScreen == nullptr) {
+        _GameObjectScreen = new GameObjectScreen(framework);
+    }
+    return _GameObjectScreen;
+}
+
+HeadsUpDisplay *GameScreenFactory::getHeadsUpDisplay(Framework &framework) {
+    if (_HeadsUpDisplay == nullptr) {
+        _HeadsUpDisplay = new HeadsUpDisplay(framework);
+    }
+    return _HeadsUpDisplay;
 }

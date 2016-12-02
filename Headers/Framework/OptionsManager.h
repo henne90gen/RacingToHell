@@ -38,6 +38,10 @@ public:
 
     std::vector<float> getScoreMultiplierList();
 
+    sf::Font &getFont();
+
+    void setFont(sf::Font font);
+
     void loadOptions();
 
     void saveOptions();
@@ -51,6 +55,7 @@ private:
     float _FPS;
     float _Volume;
     std::string _MPName;
+    sf::Font _Font;
 };
 
 

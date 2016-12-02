@@ -34,7 +34,9 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
     _ScoreMultiplierBackground.setOutlineThickness(1);
     _ScoreMultiplierBackground.setOutlineColor(sf::Color::Black);
 
-    _ScoreMultiplierText.setFont(_Font);
+    sf::Font &font = _FW.getOptionsManager().getFont();
+
+    _ScoreMultiplierText.setFont(font);
     _ScoreMultiplierText.setString("Score: x1.0");
     _ScoreMultiplierText.setCharacterSize(15);
     _ScoreMultiplierText.setColor(sf::Color::White);
@@ -56,7 +58,7 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
     _Text.setStyle(sf::Text::Style::Bold);
     _Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 160));
 
-    _FPS.setFont(_Font);
+    _FPS.setFont(font);
     _FPS.setString("000");
     _FPS.setPosition(sf::Vector2f(_MenuItems[FPS]->getRect().left + _MenuItems[FPS]->getRect().width + 20,
                                   _MenuItems[FPS]->getRect().top - 5));
@@ -67,7 +69,7 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
     _FPSBackground.setOutlineThickness(1);
     _FPSBackground.setOutlineColor(sf::Color::Black);
 
-    _Volume.setFont(_Font);
+    _Volume.setFont(font);
     _Volume.setString("000");
     _Volume.setPosition(sf::Vector2f(_MenuItems[Volume]->getRect().left + _MenuItems[Volume]->getRect().width + 20,
                                      _MenuItems[Volume]->getRect().top - 5));

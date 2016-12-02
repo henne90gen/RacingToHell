@@ -2,7 +2,7 @@
 
 #include "GameObject/Car.h"
 #include "GameObject/PlayerCar.h"
-#include "Screen/GameObjectScreen.h"
+#include "GameObjectManager.h"
 #include "Screen/Menu/MainMenu.h"
 #include "Screen/Menu/PauseMenu.h"
 #include "Screen/Menu/HighscoreMenu.h"
@@ -67,9 +67,17 @@ public:
      * The GameObjectContainer (GOC) is the central entity for all GameObjects
      * @return Reference to the GameObjectContainer
      */
-//    GameObjectScreen &getGOC() {
-//        return _GameObjectContainer;
-//    }
+    GameObjectManager &getGameObjectManager() {
+        return _GameObjectManager;
+    }
+
+    /**
+     * Shortcut for getGameObjectManager()
+     * @return
+     */
+    GameObjectManager &getGOM() {
+        return getGameObjectManager();
+    }
 
     OptionsManager &getOptionsManager() {
         return _OptionsManager;
@@ -111,10 +119,14 @@ public:
 
     void updateMPCarSelection();
 
+    bool isMouseVisible();
+
 private:
     OptionsManager _OptionsManager;
 
     LevelManager _LevelManager;
+
+    GameObjectManager _GameObjectManager;
 
     sf::RenderWindow _RenderWindow;
 
@@ -135,7 +147,7 @@ private:
     // GameObjects
     GameState _GameState;
 
-//    GameObjectScreen _GameObjectContainer;
+//    GameObjectManager _GameObjectContainer;
     // FIXME move to optionsmanager maybe?
     std::vector<std::shared_ptr<sf::Texture>> _CarSkins;
 

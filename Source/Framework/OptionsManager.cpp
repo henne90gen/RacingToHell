@@ -13,26 +13,28 @@ OptionsManager::OptionsManager() {
 }
 
 void OptionsManager::loadOptions() {
-    std::vector<std::string> Settings;
-    std::string Option;
-    std::ifstream FileStream;
+    _Font.loadFromFile("Resources/Font/arial.ttf");
 
-    FileStream.open("Resources/Data/Settings.cfg");
-    while (std::getline(FileStream, Option))
+    std::vector<std::string> settings;
+    std::string option;
+    std::ifstream fileStream;
+
+    fileStream.open("Resources/Data/settings.cfg");
+    while (std::getline(fileStream, option))
     {
-        Settings.push_back(Option);
+        settings.push_back(option);
     }
-    FileStream.close();
+    fileStream.close();
 
-    if (Settings.size() >= 3)
+    if (settings.size() >= 3)
     {
-        _FPS = std::stoi(Settings[0]);
-        _Volume = std::stof(Settings[1]);
-        _Difficulty = std::stoi(Settings[2]);
+        _FPS = std::stoi(settings[0]);
+        _Volume = std::stof(settings[1]);
+        _Difficulty = std::stoi(settings[2]);
 
-        if (Settings.size() >= 4)
+        if (settings.size() >= 4)
         {
-            _MPName = Settings[3];
+            _MPName = settings[3];
         }
     }
 }
@@ -96,3 +98,11 @@ void OptionsManager::setVolume(float volume) {
 }
 
 std::vector<float> OptionsManager::getScoreMultiplierList() { return _ScoreMultiplierList; }
+
+sf::Font &OptionsManager::getFont() {
+    return _Font;
+}
+
+void OptionsManager::setFont(sf::Font font) {
+    _Font = font;
+}

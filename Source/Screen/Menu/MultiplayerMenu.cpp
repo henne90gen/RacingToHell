@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Screen/Menu/MultiplayerMenu.h"
+#include "Framework/Framework.h"
 
 MultiplayerMenu::MultiplayerMenu(Framework &framework) : Menu(framework, GameState::MultiplayerSelection),
                                                          _CreatedLobby(-1) {
@@ -9,7 +10,9 @@ MultiplayerMenu::MultiplayerMenu(Framework &framework) : Menu(framework, GameSta
     _BackgroundName.setPosition(25, 25);
     _BackgroundName.setSize(sf::Vector2f(550, 65));
 
-    _NameText.setFont(_Font);
+    sf::Font &font = _FW.getOptionsManager().getFont();
+
+    _NameText.setFont(font);
     _NameText.setCharacterSize(30);
     _NameText.setPosition(_BackgroundName.getPosition() + sf::Vector2f(20, 12));
     _NameText.setString("Name:");
@@ -25,13 +28,13 @@ MultiplayerMenu::MultiplayerMenu(Framework &framework) : Menu(framework, GameSta
     _BackgroundJoin.setPosition(_BackgroundName.getPosition() + sf::Vector2f(0, _BackgroundName.getSize().y + 30));
     _BackgroundJoin.setSize(sf::Vector2f(550, 310));
 
-    _JoinText.setFont(_Font);
+    _JoinText.setFont(font);
     _JoinText.setCharacterSize(35);
     _JoinText.setPosition(_BackgroundJoin.getPosition() + sf::Vector2f(20, 10));
     _JoinText.setStyle(sf::Text::Bold);
     _JoinText.setString("Join existing lobby");
 
-    _IPText.setFont(_Font);
+    _IPText.setFont(font);
     _IPText.setCharacterSize(30);
     _IPText.setPosition(_BackgroundJoin.getPosition() + sf::Vector2f(20, 80));
     _IPText.setString("IP:");
@@ -46,7 +49,7 @@ MultiplayerMenu::MultiplayerMenu(Framework &framework) : Menu(framework, GameSta
                         false));
     _MenuItems.push_back(PortTextBox);
 
-    _PasswordText.setFont(_Font);
+    _PasswordText.setFont(font);
     _PasswordText.setCharacterSize(30);
     _PasswordText.setPosition(_BackgroundJoin.getPosition() + sf::Vector2f(20, 150));
     _PasswordText.setString("Password:");
@@ -61,7 +64,7 @@ MultiplayerMenu::MultiplayerMenu(Framework &framework) : Menu(framework, GameSta
                            MenuResult::Join, "Join Lobby", TextAlignment::Center));
     _MenuItems.push_back(JoinButton);
 
-    _FeedbackText.setFont(_Font);
+    _FeedbackText.setFont(font);
     _FeedbackText.setCharacterSize(20);
     _FeedbackText.setPosition(_BackgroundJoin.getPosition() + sf::Vector2f(20, 275));
 
@@ -71,13 +74,13 @@ MultiplayerMenu::MultiplayerMenu(Framework &framework) : Menu(framework, GameSta
     _BackgroundCreate.setPosition(_BackgroundJoin.getPosition() + sf::Vector2f(0, _BackgroundJoin.getSize().y + 30));
     _BackgroundCreate.setSize(sf::Vector2f(550, 225));
 
-    _CreateText.setFont(_Font);
+    _CreateText.setFont(font);
     _CreateText.setCharacterSize(35);
     _CreateText.setPosition(_BackgroundCreate.getPosition() + sf::Vector2f(20, 10));
     _CreateText.setStyle(sf::Text::Bold);
     _CreateText.setString("Create lobby");
 
-    _CreatePassword.setFont(_Font);
+    _CreatePassword.setFont(font);
     _CreatePassword.setCharacterSize(30);
     _CreatePassword.setPosition(_BackgroundCreate.getPosition() + sf::Vector2f(20, 75));
     _CreatePassword.setString("Password:");
@@ -97,7 +100,7 @@ MultiplayerMenu::MultiplayerMenu(Framework &framework) : Menu(framework, GameSta
                            MenuResult::Create, "Create Lobby", TextAlignment::Center));
     _MenuItems.push_back(CreateButton);
 
-    _FeedbackTextCreate.setFont(_Font);
+    _FeedbackTextCreate.setFont(font);
     _FeedbackTextCreate.setCharacterSize(20);
     _FeedbackTextCreate.setPosition(_BackgroundCreate.getPosition() + sf::Vector2f(20, 195));
 

@@ -10,6 +10,7 @@
 #include "Screen/Menu/MainMenu.h"
 #include "LevelScreen.h"
 #include "ExitScreen.h"
+#include "Screen/GameObjectScreen.h"
 #include <Screen/Menu/PauseMenu.h>
 #include <Screen/Menu/HighscoreMenu.h>
 #include <Screen/Menu/OptionsMenu.h>
@@ -18,6 +19,7 @@
 #include <Screen/LevelUpScreen.h>
 #include <Screen/LoadingScreen.h>
 #include <Framework/LevelManager.h>
+#include <HeadsUpDisplay.h>
 
 class GameScreenFactory {
 public:
@@ -50,11 +52,6 @@ private:
 
     LevelScreen *getLevelScreen(Framework &framework);
 
-//    HeadsUpDisplay *_HeadsUpDisplay;
-
-
-//    GameObjectScreen *_GameObjectScreen;
-
     OptionsMenu *_OptionsMenu;
 
     OptionsMenu *getOptionsMenu(Framework &framework);
@@ -70,4 +67,12 @@ private:
     AboutMenu *_AboutMenu;
 
     AboutMenu *getAboutMenu(Framework &framework);
+
+    GameObjectScreen *_GameObjectScreen;
+
+    GameObjectScreen *getGameObjectScreen(Framework &framework);
+
+    HeadsUpDisplay *_HeadsUpDisplay;
+
+    HeadsUpDisplay *getHeadsUpDisplay(Framework &framework);
 };

@@ -3,7 +3,7 @@
 
 Framework::Framework() :
         _TimeSinceLastUpdate(sf::Time::Zero), _FrameTime(0), _IsRunning(true),
-        _GameState(GameState::Loading), _LastFPSCheck(), _LastFPSPrint() {
+        _GameState(GameState::Loading), _LastFPSCheck(), _LastFPSPrint(), _GameObjectManager(*this) {
 
     _RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell", sf::Style::Close);
 
@@ -181,18 +181,8 @@ void Framework::load() {
 //            std::cout << "Couldn't load music" << std::endl;
 //        }
 
-//        for (unsigned int i = 1; i < 7; i++) {
-//            sf::Texture texture;
-//            if (texture.loadFromFile("Resources/Texture/PlayerCar/playercar" + std::to_string(i) + ".png")) {
-//                texture.setSmooth(true);
-//                _CarSkins.push_back(std::make_shared<sf::Texture>(texture));
-//            }
-//        }
-
-        // FIXME what should we do with this? updater maybe?
-//        _GameObjectContainer.load();
-//        _GameObjectContainer.setCarSkins(_CarSkins);
-//        _GameObjectContainer.resetGameObjects(0);
+        _GameObjectManager.load();
+        _GameObjectManager.resetGameObjects(0);
 
 
         // FIXME ignoring this for now
@@ -204,14 +194,10 @@ void Framework::load() {
         // FIXME write game over helper
 //        _GameOverScreen.load();
 
-//        _OptionsMenu.loadOptions(_MultiplayerMenu);
-//        _OptionsManager.getFPS() = _OptionsMenu.getFPS();
-//        setVolume(_OptionsMenu.getVolume());
         _OptionsManager.loadOptions();
 
-        // FIXME reenable or move this
-//        _LevelManager.load();
-//        _LevelManager.resetToLevelOne();
+        _LevelManager.load();
+        _LevelManager.resetToLevelOne();
 
         setGameState(GameState::LoadingToMain);
     }
@@ -360,4 +346,31 @@ void Framework::setMouseVisibility() {
 #else
     _RenderWindow.setMouseCursorVisible(visible);
 #endif
+}
+
+bool Framework::isMouseVisible() {
+    switch (getGameState()) {
+        case GameState::PauseMultiplayer:
+        case GameState::Lobby:
+        case GameState::Connecting:
+        case GameState::MultiplayerSelection:
+        case GameState::GameOverMultiplayer:
+        case GameState::GameOver:
+        case GameState::About:
+        case GameState::Options:
+        case GameState::Highscores:
+        case GameState::Pause:
+        case GameState::Main:
+            return true;
+        case GameState::Running:
+        case GameState::RunningMultiplayer:
+        case GameState::Countdown:
+        case GameState::Loading:
+        case GameState::LoadingToMain:
+        case GameState::BossFight:
+        case GameState::LevelUp:
+        case GameState::Exiting:
+        case GameState::BossFightMultiplayer:
+            return false;
+    }
 }

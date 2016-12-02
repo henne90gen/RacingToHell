@@ -16,11 +16,6 @@ public:
     virtual void handleEvent(sf::Event &event);
 
     virtual void update(float frameTime);
-
-private:
-    std::vector<std::shared_ptr<sf::Texture>> _Textures;
-    sf::Sprite _Sprite;
-    int _CurrentLevel;
 };
 
 

@@ -81,6 +81,8 @@ public:
 	*/
 	void resetMovement() { _Movement = sf::Vector2f(0, 0); }
 
+    bool isAlive() { return _Energy <= 0; }
+
 	/*
 		Player loses Energy
 	*/

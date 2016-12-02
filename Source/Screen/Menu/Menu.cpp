@@ -4,8 +4,7 @@
 
 Menu::Menu(Framework &framework, GameState menuState) : GameScreen(framework),
 /*_JoystickSelection(0), _JoystickDelay(0.15f), */_MenuGameState(menuState) {
-    _Font.loadFromFile("Resources/Font/arial.ttf");
-    _Text.setFont(_Font);
+    _Text.setFont(_FW.getOptionsManager().getFont());
 }
 
 void Menu::render(sf::RenderWindow &renderWindow) {

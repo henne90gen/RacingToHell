@@ -170,7 +170,7 @@ void Updater::update(float frameTime) {
                                 (int) _FW.getMPGOC().getPlayerCar().getEnergy(), _FW.getLevel().getLevel(),
                                 _FW.getLevel().getLevelTime(),
                                 _FW.getGameMode());
-            if (!_FW.getMPGOC().playerIsAlive()) {
+            if (!_FW.getMPGOC().isPlayerAlive()) {
                 _FW.setGameState(GameState::GameOverMultiplayer);
             }
             _FW.addScore();

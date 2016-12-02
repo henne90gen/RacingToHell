@@ -19,6 +19,8 @@ public:
     */
     bool update(float frameTime, GameState gameState);
 
+    void load();
+
     /*
         Plays the level background music
     */
@@ -89,8 +91,8 @@ public:
     */
     float getTotalLevelTime() { return _TotalLevelTime; }
 
-    sf::Vector2f getSpritePosition() {
-        return _SpritePosition;
+    sf::Sprite &getSprite() {
+        return _Sprite;
     }
 
 private:
@@ -104,5 +106,6 @@ private:
     std::mutex _ThreadGuard;
     bool _IsResettingLevel;
 
-    sf::Vector2f _SpritePosition;
+    std::vector<std::shared_ptr<sf::Texture>> _Textures;
+    sf::Sprite _Sprite;
 };

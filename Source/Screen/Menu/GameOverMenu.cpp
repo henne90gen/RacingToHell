@@ -1,32 +1,34 @@
 #include "stdafx.h"
 #include "Screen/Menu/GameOverMenu.h"
 #include "Framework/Framework.h"
+
 GameOverMenu::GameOverMenu(Framework &framework) : Menu(framework, GameState::GameOver), _SoundPlayed(false),
                                                    _ScoreSubmitted(false),
                                                    _Highscore(sf::Vector2f(SCREENWIDTH / 2 - 225, 190)) {
-    if (_Font.loadFromFile("Resources/Font/arial.ttf")) {
-        _GOTLine1.setFont(_Font);
-        _GOTLine1.setColor(sf::Color(200, 0, 0));
-        _GOTLine1.setCharacterSize(60);
-        _GOTLine1.setString("Game Over!");
-        _GOTLine1.setOrigin(_GOTLine1.getLocalBounds().left + _GOTLine1.getLocalBounds().width / 2.0f,
-                            _GOTLine1.getLocalBounds().top + _GOTLine1.getLocalBounds().height / 2.0f);
-        _GOTLine1.setPosition(SCREENWIDTH / 2.0f, 50);
+    sf::Font &font = _FW.getOptionsManager().getFont();
 
-        _GOTLine2.setFont(_Font);
-        _GOTLine2.setColor(sf::Color(200, 0, 0));
-        _GOTLine2.setCharacterSize(40);
-        _GOTLine2.setString("Your score was: ");
-        _GOTLine2.setPosition(SCREENWIDTH / 2 - 225,
-                              _GOTLine1.getGlobalBounds().top + _GOTLine1.getLocalBounds().height * 1.2f);
+    _GOTLine1.setFont(font);
+    _GOTLine1.setColor(sf::Color(200, 0, 0));
+    _GOTLine1.setCharacterSize(60);
+    _GOTLine1.setString("Game Over!");
+    _GOTLine1.setOrigin(_GOTLine1.getLocalBounds().left + _GOTLine1.getLocalBounds().width / 2.0f,
+                        _GOTLine1.getLocalBounds().top + _GOTLine1.getLocalBounds().height / 2.0f);
+    _GOTLine1.setPosition(SCREENWIDTH / 2.0f, 50);
 
-        _GOTLine3.setFont(_Font);
-        _GOTLine3.setColor(sf::Color(200, 0, 0));
-        _GOTLine3.setCharacterSize(40);
-        _GOTLine3.setString("Enter your name:");
-        _GOTLine3.setPosition(_GOTLine2.getPosition().x,
-                              _GOTLine2.getGlobalBounds().top + _GOTLine2.getLocalBounds().height + 10);
-    }
+    _GOTLine2.setFont(font);
+    _GOTLine2.setColor(sf::Color(200, 0, 0));
+    _GOTLine2.setCharacterSize(40);
+    _GOTLine2.setString("Your score was: ");
+    _GOTLine2.setPosition(SCREENWIDTH / 2 - 225,
+                          _GOTLine1.getGlobalBounds().top + _GOTLine1.getLocalBounds().height * 1.2f);
+
+    _GOTLine3.setFont(font);
+    _GOTLine3.setColor(sf::Color(200, 0, 0));
+    _GOTLine3.setCharacterSize(40);
+    _GOTLine3.setString("Enter your name:");
+    _GOTLine3.setPosition(_GOTLine2.getPosition().x,
+                          _GOTLine2.getGlobalBounds().top + _GOTLine2.getLocalBounds().height + 10);
+
 
     sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
 
@@ -89,7 +91,7 @@ void GameOverMenu::handleEvents(sf::Event &event) {
 
 //		handleJoystick(X);
 
-        // FIXME handle gamestate change
+    // FIXME handle gamestate change
     _FW.setGameState(handleMenuItems(event));
 }
 

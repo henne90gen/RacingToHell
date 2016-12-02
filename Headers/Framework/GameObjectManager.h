@@ -1,0 +1,212 @@
+#pragma once
+
+
+#include <Screen/GameScreen.h>
+#include "GameObject/GameObject.h"
+#include "GameObject/GameObjectType.h"
+#include "GameObject/AICar.h"
+#include "GameObject/PlayerCar.h"
+#include "GameObject/Bullet.h"
+#include "GameObject/GameObjectFactory.h"
+
+#include "GameObject/Boss/BossCar.h"
+#include "GameObject/Boss/Tank.h"
+#include "GameObject/Boss/Carrier.h"
+#include "GameObject/Boss/Mech.h"
+#include "GameObject/Boss/Jet.h"
+
+#include "Animation/Explosion.h"
+
+class GameObjectManager {
+public:
+    /*
+        GameObjectManager is the manager class for all GameObjects.
+        It handles their creation and deletion, as well as updating and rendering them
+    */
+    GameObjectManager(Framework &framework);
+
+    ~GameObjectManager();
+
+    /*
+        Updates all the GameObjects with the given frame time
+        @param frameTime Time that has passed since the last update
+        @param level Level
+        @param roadSpeed Speed of the road
+    */
+
+    void update(float frameTime);
+
+    /*
+        @return GameObject* Pointer to the PlayerCar
+    */
+    std::shared_ptr<PlayerCar> getPlayerCar() { return _Player; }
+
+    /*
+        @return GameObject* Pointer to the BossCar
+    */
+    std::shared_ptr<BossCar> getBossCar() { return _Boss; }
+
+    /*
+        @return bool True if the player is still alive
+    */
+    bool isPlayerAlive();
+
+    /*
+        @return bool True if the boss is still alive
+    */
+    bool bossIsDead();
+
+    /*
+        Sets all the necessary variables for a boss fight
+    */
+    void enterBossFight();
+
+    /*
+        Resets the GameObjectManager to a state where a new game can begin
+        @param selectedCar Index of the car that was selected by the player
+    */
+    void resetGameObjects(int selectedCar);
+
+    /*
+        Empties the screen
+        @return bool True as soon as there are no GamObjects other than the player on the screen
+    */
+    bool emptyScreen();
+
+    /*
+        Loads textures and sounds for all GameObjects
+    */
+    void load();
+
+    /*
+        Plays sounds for every GameObject
+    */
+    void playSounds();
+
+    /*
+        Stops all sounds from playing
+    */
+    void stopSounds();
+
+    /*
+        Returns and resets the car score
+        @return int Score the player has accumulated since the last call to this method
+    */
+    int getCarScore() {
+        int result = _CarScore;
+        _CarScore = 0;
+        return result;
+    }
+
+    /*
+        Passes in the car skin texture so that the right one can be applied to the player car
+        @param carSkins Vector with all car skin textures
+    */
+    void setCarSkins(std::vector<std::shared_ptr<sf::Texture>> &carSkins);
+
+    /*
+        Sets the current level
+        @param lvl Level
+    */
+    void setLevel(int lvl) { _Level = lvl; }
+
+    /*
+        Sets selected diffculty
+        @param dif Difficulty
+    */
+    void setDifficulty(int dif) { _Difficulty = dif; }
+
+    /*
+        Sets selected gamemode
+        @param mode gamemode
+    */
+    void setGameMode(GameMode mode) { _GameMode = mode; }
+
+    std::vector<std::shared_ptr<GameObject>> &getPickupItems() { return _PickupItems; }
+
+    std::vector<std::shared_ptr<AICar>> &getCars() { return _Cars; }
+
+    std::vector<std::shared_ptr<Bullet>> &getBullets() { return _Bullets; }
+
+    std::vector<std::shared_ptr<Animation>> &getAnimations() { return _Animations; }
+
+private:
+    Framework &_FW;
+
+    std::vector<std::shared_ptr<GameObject>> _PickupItems;
+    std::vector<std::shared_ptr<AICar>> _Cars;
+    std::vector<std::shared_ptr<Bullet>> _Bullets;
+    std::shared_ptr<PlayerCar> _Player;
+    std::shared_ptr<BossCar> _Boss;
+
+    std::vector<std::shared_ptr<Animation>> _Animations;
+
+    sf::Texture _ExplosionTexture;
+    sf::SoundBuffer _ExplosionSoundBuffer;
+    sf::SoundBuffer _ImpactSoundBuffer;
+
+    std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>> _SoundEffects;
+
+    float _CarFrequency, _BulletFrequency, _CanisterFrequency, _ToolboxFrequency, _TimePassedCar, _TimePassedBullet, _TimePassedCanister, _TimePassedToolbox;
+
+    GameMode _GameMode;
+
+    // CarScore: Score the player accumulates for shooting other cars
+    int _CarScore, _Level, _Difficulty;
+    int _PlayerBulletSpeed, _AIBulletSpeed;
+    bool _PlayerAlive, _AboutToLevelUp, _BossFight;
+
+    /*
+        Plays a shot sound depending on the type of the firing entity
+        @param go Type of the GameObject that is emitting the shot sound
+        @param position Position of the Soundobject
+    */
+    void playShotSound(GameObjectType go, sf::Vector2f position = sf::Vector2f(0.f, 0.f));
+
+    /*
+        Spawns a new AICar on a random lane
+        @param level Levelnumber
+        @param roadSpeed Speed of the road
+    */
+    void spawnAICar(int roadSpeed);
+
+    /*
+        Makes a random AICar shoot a bullet at the player
+    */
+    void spawnBullet();
+
+    /*
+        Deletes a GameObject from the vector of GameObjects
+        @param id Index of the GameObject that will be deleted
+    */
+    template<typename T>
+    void deleteObject(T &arr, unsigned int id) {
+        arr.erase(arr.begin() + id);
+    }
+
+    /*
+        calculates the hp of a AIcar
+        @return HP of the AICar
+    */
+    int getAiHP();
+
+    /*
+        Sets all frequencies dependig on the selected difficulty
+    */
+    void setAllFrequencies();
+
+    void setAiCarFrequency();
+
+    void setBulletFrequency();
+
+    void setCanisterFrequency();
+
+    void setToolboxFrequency();
+
+    /*
+        @retun Boss HP at given level
+    */
+    int getBossHP();
+
+    void playHitSound(sf::Vector2f position);
+};

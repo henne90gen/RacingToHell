@@ -38,7 +38,7 @@ public:
 	/*
 		Returns true if the boss allows traffic
 	*/
-	bool getTraffic() { return _Traffic; }
+	bool hasTraffic() { return _HasTraffic; }
 
 	/*
 		Returns true if the boss is dead and all explosion animations are done playing
@@ -96,7 +96,7 @@ protected:
 	int _Event1Counter, _Event2Counter;
 
 	sf::Vector2f _NextPosition;
-	bool _Attack, _Traffic;
+	bool _Attack, _HasTraffic;
 
 	float PlayerAngle(GameObject& Player);
 	void shootBullet(std::vector<std::shared_ptr<Bullet>>& bullets, sf::Vector2f pos, sf::Vector2f dir) { shootBullet(bullets, pos, dir, _BulletSpeed, _Volume); }

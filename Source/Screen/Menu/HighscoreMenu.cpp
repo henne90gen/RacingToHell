@@ -2,7 +2,7 @@
 #include "Screen/Menu/HighscoreMenu.h"
 #include "Framework/Framework.h"
 
-HighscoreMenu::HighscoreMenu(Framework &framework) : Menu(framework, GameState::Highscores),
+HighscoreMenu::HighscoreMenu(Framework &framework) : Menu(framework, GameState::Highscores, GameState::MainMenu),
                                                      _List(sf::Vector2f(75, 100)) {
     sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
     std::shared_ptr<MenuButton> button(
@@ -29,8 +29,8 @@ void HighscoreMenu::handleEvent(sf::Event &event) {
 
 //    if (event.type == sf::Event::JoystickButtonPressed) {
 //        if (sf::Joystick::isButtonPressed(0, 1)) {
-            // FIXME handle gamestate change
-//                return GameState::Main;
+    // FIXME handle gamestate change
+//                return GameState::MainMenu;
 //        }
 //    }
 
@@ -41,7 +41,7 @@ void HighscoreMenu::handleEvent(sf::Event &event) {
 GameState HighscoreMenu::handleMenuItemResult(MenuResult result) {
     switch (result) {
         case MenuResult::Back:
-            return GameState::Main;
+            return GameState::MainMenu;
             break;
     }
     return _MenuGameState;

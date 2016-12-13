@@ -8,8 +8,7 @@
 
 ExitScreen::ExitScreen(Framework &framework) : GameScreen(framework), _TotalFadeTime(2.0f), _FadeSpeed(15.0f), _InitialScale(10.0f) {
 
-    _Font.loadFromFile("Resources/Font/arial.ttf");
-    _GoodByeText.setFont(_Font);
+    _GoodByeText.setFont(_FW.getOptionsManager().getFont());
     _GoodByeText.setString("Good bye, see you soon.");
     _GoodByeText.setCharacterSize(40);
     _GoodByeText.setColor(sf::Color::White);

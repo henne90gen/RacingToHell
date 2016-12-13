@@ -159,7 +159,7 @@ void Jet::init()
 	_EngineSound.setMinDistance(600.f);
 	_EngineSound.setAttenuation(8.f);
 
-	_Traffic = true;
+	_HasTraffic = true;
 	_Pattern = { std::make_pair(Phase::SIDE, 6.0f) };
 	_CurrentPhase = 0;
 

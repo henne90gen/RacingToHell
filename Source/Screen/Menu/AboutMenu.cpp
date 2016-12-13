@@ -2,7 +2,7 @@
 #include "Screen/Menu/AboutMenu.h"
 #include "Framework/Framework.h"
 
-AboutMenu::AboutMenu(Framework &framework) : Menu(framework, GameState::About) {
+AboutMenu::AboutMenu(Framework &framework) : Menu(framework, GameState::About, GameState::Options) {
     sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
     std::shared_ptr<MenuButton> button(
             new MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 200, 735), ButtonSize, MenuResult::Back, "Back",
@@ -103,21 +103,13 @@ void AboutMenu::render(sf::RenderWindow &window) {
 }
 
 void AboutMenu::handleEvent(sf::Event &event) {
-    if (_FW.getRenderWindow().pollEvent(event)) {
-//		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
-
-//		handleJoystick(Y);
-// FIXME handle gamestate change
-//		return handleMenuItems(_Event);
-    }
-//	return _MenuGameState;
+    _FW.setGameState(handleMenuItems(event));
 }
 
 GameState AboutMenu::handleMenuItemResult(MenuResult result) {
     switch (result) {
         case MenuResult::Back:
-            return GameState::Options;
-            break;
+            return _ReturnGameState;
     }
     return _MenuGameState;
 }

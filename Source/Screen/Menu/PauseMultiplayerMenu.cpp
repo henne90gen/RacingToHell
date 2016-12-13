@@ -2,7 +2,9 @@
 #include "Screen/Menu/PauseMultiplayerMenu.h"
 #include "Framework/Framework.h"
 
-PauseMultiplayerMenu::PauseMultiplayerMenu(Framework &framework) : Menu(framework, GameState::PauseMultiplayer) {
+PauseMultiplayerMenu::PauseMultiplayerMenu(Framework &framework, GameState returnState) : Menu(framework,
+                                                                                               GameState::PauseMultiplayer,
+                                                                                               returnState) {
     _Background.setFillColor(sf::Color(0, 0, 0, 100));
     _Background.setSize(sf::Vector2f(SCREENWIDTH, SCREENHEIGHT));
     _Background.setPosition(sf::Vector2f(0, 0));
@@ -58,7 +60,7 @@ void PauseMultiplayerMenu::handleEvent(sf::Event &event) {
 //
 //		handleJoystick(Y);
 
-        _FW.setGameState(handleMenuItems(event));
+    _FW.setGameState(handleMenuItems(event));
 
 }
 
@@ -71,7 +73,7 @@ GameState PauseMultiplayerMenu::handleMenuItemResult(MenuResult result) {
             return GameState::Options;
             break;
         case MenuResult::Back:
-            return GameState::Main;
+            return GameState::MainMenu;
             break;
         case MenuResult::Exit:
             return GameState::Exiting;

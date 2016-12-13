@@ -47,11 +47,6 @@ public:
     std::shared_ptr<BossCar> getBossCar() { return _Boss; }
 
     /*
-        @return bool True if the player is still alive
-    */
-    bool isPlayerAlive();
-
-    /*
         @return bool True if the boss is still alive
     */
     bool bossIsDead();
@@ -65,7 +60,7 @@ public:
         Resets the GameObjectManager to a state where a new game can begin
         @param selectedCar Index of the car that was selected by the player
     */
-    void resetGameObjects(int selectedCar);
+    void resetGameObjects(PlayerCarIndex selectedCar);
 
     /*
         Empties the screen
@@ -88,39 +83,9 @@ public:
     */
     void stopSounds();
 
-    /*
-        Returns and resets the car score
-        @return int Score the player has accumulated since the last call to this method
-    */
-    int getCarScore() {
-        int result = _CarScore;
-        _CarScore = 0;
-        return result;
-    }
+    void nextPlayerCar();
 
-    /*
-        Passes in the car skin texture so that the right one can be applied to the player car
-        @param carSkins Vector with all car skin textures
-    */
-    void setCarSkins(std::vector<std::shared_ptr<sf::Texture>> &carSkins);
-
-    /*
-        Sets the current level
-        @param lvl Level
-    */
-    void setLevel(int lvl) { _Level = lvl; }
-
-    /*
-        Sets selected diffculty
-        @param dif Difficulty
-    */
-    void setDifficulty(int dif) { _Difficulty = dif; }
-
-    /*
-        Sets selected gamemode
-        @param mode gamemode
-    */
-    void setGameMode(GameMode mode) { _GameMode = mode; }
+    void previousPlayerCar();
 
     std::vector<std::shared_ptr<GameObject>> &getPickupItems() { return _PickupItems; }
 
@@ -149,12 +114,8 @@ private:
 
     float _CarFrequency, _BulletFrequency, _CanisterFrequency, _ToolboxFrequency, _TimePassedCar, _TimePassedBullet, _TimePassedCanister, _TimePassedToolbox;
 
-    GameMode _GameMode;
-
-    // CarScore: Score the player accumulates for shooting other cars
-    int _CarScore, _Level, _Difficulty;
     int _PlayerBulletSpeed, _AIBulletSpeed;
-    bool _PlayerAlive, _AboutToLevelUp, _BossFight;
+    bool _AboutToLevelUp, _BossFight;
 
     /*
         Plays a shot sound depending on the type of the firing entity
@@ -168,12 +129,19 @@ private:
         @param level Levelnumber
         @param roadSpeed Speed of the road
     */
-    void spawnAICar(int roadSpeed);
+    void spawnAICar(float frameTime);
 
     /*
         Makes a random AICar shoot a bullet at the player
     */
-    void spawnBullet();
+    void spawnBullet(float frameTime);
+
+    void spawnToolbox(float frameTime);
+
+    void spawnCanister(float frameTime);
+
+    template <typename T>
+    void deleteOffScreenObjects(T &goList);
 
     /*
         Deletes a GameObject from the vector of GameObjects
@@ -193,15 +161,15 @@ private:
     /*
         Sets all frequencies dependig on the selected difficulty
     */
-    void setAllFrequencies();
+    void calculateAllFrequencies();
 
-    void setAiCarFrequency();
+    void calculateAiCarFrequency();
 
-    void setBulletFrequency();
+    void calculateBulletFrequency();
 
-    void setCanisterFrequency();
+    void calculateCanisterFrequency();
 
-    void setToolboxFrequency();
+    void calculateToolboxFrequency();
 
     /*
         @retun Boss HP at given level
@@ -209,4 +177,14 @@ private:
     int getBossHP();
 
     void playHitSound(sf::Vector2f position);
+
+    void spawnObjects(float frameTime);
+
+    void checkForCollisions(float frameTime);
+
+    void deleteAllOffScreenObjects();
+
+    void checkPlayerForCollisions(float frameTime);
+
+    void deleteDestroyedCars();
 };

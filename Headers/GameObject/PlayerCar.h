@@ -6,6 +6,7 @@
 #include "GameObject.h"
 #include "GameObject/GameObjectType.h"
 #include "PlayerStats.h"
+#include "Animation/Explosion.h"
 
 class PlayerCar : public Car
 {
@@ -15,8 +16,7 @@ public:
 		@param selectedCar Index of the selected car to set the stats
 		@param texture Texture that is going to be used for the sprite
 	*/
-	PlayerCar() {}
-	PlayerCar(unsigned int id, int selectedCar, sf::Texture& texture);
+	PlayerCar(unsigned int id, PlayerCarIndex selectedCar, sf::Texture& texture);
 	PlayerCar(sf::Packet& packet, std::vector<std::shared_ptr<sf::Texture>>& textures);
 	~PlayerCar() {}
 
@@ -74,14 +74,14 @@ public:
 	/*
 		Changes the players stats according to the id of the car he chose.
 	*/
-	void setStats(int id);
+	void setStats(PlayerCarIndex id);
 
 	/*
 		Resets the movemnt vector that is applied to the PlayerCar
 	*/
 	void resetMovement() { _Movement = sf::Vector2f(0, 0); }
 
-    bool isAlive() { return _Energy <= 0; }
+    bool isAlive();
 
 	/*
 		Player loses Energy
@@ -112,16 +112,29 @@ public:
 	void setHealth(sf::Int16 health) { _Health = health; }
 
 	/*
-	
+	    TODO add documentation
 	*/
 	void applyKeyPress(sf::Uint8 keys);
 	sf::Uint8 getPressedKeys() { return _PressedKeys; }
+
+    void kill(sf::Texture &explosionTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>> &soundEffects,
+              sf::SoundBuffer &explosionSoundBuffer, float volume);
+
+    bool isDying();
+
+    PlayerCarIndex getPlayerCarIndex() {
+        return _PlayerCarIndex;
+    }
+
+    void takeDamage(int damage);
 private:
 	void shoot();
 
+    std::shared_ptr<Animation> _Animation;
+
 	float _Energy;
 	sf::Uint16 _MaxEnergy, _Bulletdamage;
-	sf::Uint8 _SelectedCar;
+	PlayerCarIndex _PlayerCarIndex;
 
 	sf::Vector2f _ShotBullet;
 

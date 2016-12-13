@@ -51,7 +51,6 @@ private:
     float _Score;
     GameMode _GameMode;
     int _Difficulty;
-    int _CurrentCarSkinIndex;
     float _FPS;
     float _Volume;
     std::string _MPName;

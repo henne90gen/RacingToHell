@@ -2,7 +2,7 @@
 #include "Screen/Menu/MainMenu.h"
 #include "Framework/Framework.h"
 
-MainMenu::MainMenu(Framework &framework) : Menu(framework, GameState::Main) {
+MainMenu::MainMenu(Framework &framework) : Menu(framework, GameState::MainMenu, GameState::MainMenu) {
     //Menu-Items
     sf::Vector2f ButtonSize = sf::Vector2f(250, 50);
 
@@ -42,8 +42,8 @@ MainMenu::MainMenu(Framework &framework) : Menu(framework, GameState::Main) {
                            MenuResult::NextSkin, ">>", TextAlignment::Left));
     _MenuItems.push_back(button7);
 
-    //Main-Menu Text
-    _Text.setString("Main Menu");
+    //MainMenu-Menu Text
+    _Text.setString("MainMenu Menu");
     _Text.setCharacterSize(53);
     _Text.setColor(sf::Color::White);
     _Text.setStyle(sf::Text::Style::Bold);
@@ -54,7 +54,8 @@ MainMenu::MainMenu(Framework &framework) : Menu(framework, GameState::Main) {
 }
 
 void MainMenu::render(sf::RenderWindow &window) {
-    _StatBox->render(window, _SelectedCar);
+    _StatBox->setCarStats(_FW.getGOM().getPlayerCar()->getPlayerCarIndex());
+    _StatBox->render(window);
     window.draw(_Text);
 
     Menu::render(window);
@@ -69,16 +70,17 @@ void MainMenu::handleEvent(sf::Event &event) {
 
 //		if (_JoystickTimer.getElapsedTime().asSeconds() >= _JoystickDelay - 0.05f) {
 //			if (X < -50) {
-//				_SelectedCar--;
+//				_PlayerCarIndex--;
 //				_JoystickTimer.restart();
 //			}
 //			else if (X > 50) {
-//				_SelectedCar++;
+//				_PlayerCarIndex++;
 //				_JoystickTimer.restart();
 //			}
 //		}
-
-    _FW.setGameState(handleMenuItems(event));
+    if (_FW.getGameState() == GameState::MainMenu) {
+        _FW.setGameState(handleMenuItems(event));
+    }
 }
 
 GameState MainMenu::handleMenuItemResult(MenuResult result) {
@@ -90,10 +92,10 @@ GameState MainMenu::handleMenuItemResult(MenuResult result) {
         case MenuResult::Option:
             return GameState::Options;
         case MenuResult::PreviousSkin:
-            _SelectedCar--;
+            _FW.getGOM().previousPlayerCar();
             break;
         case MenuResult::NextSkin:
-            _SelectedCar++;
+            _FW.getGOM().nextPlayerCar();
             break;
         case MenuResult::Exit:
             return GameState::Exiting;

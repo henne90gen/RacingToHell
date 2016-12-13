@@ -23,30 +23,13 @@ public:
     virtual void handleEvent(sf::Event &event);
 
 
-    virtual void update(float frameTime) {}
-
-    // FIXME think of solution for fading with screen implementation
-    /*
-        @return bool True if the LoadingScreen is fading away
-    */
-//    bool isFadingAway() { return _IsFadingAway; }
-
-    /*
-        Starts the fading of the LoadingScreen
-    */
-//    void fadeAway();
-
-    /*
-        @return bool True when the LoadingScreen has faded away
-    */
-//    bool isDoneFading();
+    virtual void update(float frameTime);
 
 private:
-//    bool _IsFadingAway;
-//    sf::Clock _FadeTimer;
-//    float _FadeTime;
+    float _FadeTime; // Time it takes the loading screen to fade away after the framework is done with loading
 
     sf::RectangleShape _Background;
     sf::Text _Text;
+    int _Alpha; // sf::Uint8 is unsigned, no negatives
 };
 

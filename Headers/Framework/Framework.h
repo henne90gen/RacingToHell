@@ -15,7 +15,7 @@
 #include "Screen/Menu/MultiplayerMenu.h"
 #include "Screen/Menu/MultiplayerLobby.h"
 #include "Screen/Menu/Countdown.h"
-#include "HeadsUpDisplay.h"
+#include "Screen/HUDScreen.h"
 #include "Multiplayer/NetworkHandle.h"
 #include "Multiplayer/MPGameObjectContainer.h"
 #include "LevelManager.h"
@@ -89,9 +89,9 @@ public:
 
     void setGameState(GameState gameState);
 
-    NetworkHandle &getNetworkHandle() {
-        return _NetworkHandle;
-    }
+//    NetworkHandle &getNetworkHandle() {
+//        return _NetworkHandle;
+//    }
 
     /*MPGameObjectContainer &getMPGOC() {
         return _MPGOCClient;
@@ -101,8 +101,6 @@ public:
 
     void setVolume(float Volume);
 
-    void setDifficulty(int Difficulty);
-
     void restartClock();
 
     void load();
@@ -111,9 +109,9 @@ public:
 
     void initializeNetworkThread();
 
-    int getNumberOfCarsAvailable() {
-        return (int) _CarSkins.size();
-    }
+//    int getNumberOfCarsAvailable() {
+//        return (int) _CarSkins.size();
+//    }
 
     void updateCarSelection();
 
@@ -137,19 +135,17 @@ private:
 
     std::vector<GameScreen *> initGameScreens();
 
+    std::thread _LoadingThread;
+
     sf::Clock _Clock;
+    sf::Time _TimeSinceLastUpdate;
+
     // Variables
     float _FrameTime, _LastFPSPrint, _LastFPSCheck;
 
     bool _IsRunning;
 
-    sf::Time _TimeSinceLastUpdate;
-    // GameObjects
     GameState _GameState;
-
-//    GameObjectManager _GameObjectContainer;
-    // FIXME move to optionsmanager maybe?
-    std::vector<std::shared_ptr<sf::Texture>> _CarSkins;
 
 //    MPGameObjectContainer _MPGOCClient;
 //    MPGameObjectContainer _MPGOCServer;
@@ -158,8 +154,8 @@ private:
     sf::Music _MenuMusic;
 
     //Multiplayer
-    NetworkHandle _NetworkHandle;
-    std::thread _NetworkThread;
+//    NetworkHandle _NetworkHandle;
+//    std::thread _NetworkThread;
 
     // Functions
     void render();

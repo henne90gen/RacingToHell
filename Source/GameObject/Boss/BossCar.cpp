@@ -4,7 +4,7 @@
 BossCar::BossCar(unsigned int id, sf::Vector2f pos, int difficulty, int Health, float Speed, sf::Texture& Texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float volume) :
 	Car(id, pos, Health, Speed, GameObjectType::Boss, Texture),
 	_soundEffects(soundEffects), _soundBufferShot(soundBufferShot), _soundBufferExplosion(soundBufferExplosion), _Volume(volume), _Difficulty(difficulty),
-	_BulletSpeed(500), _BulletTexture(bulletTexture), _Movement(Movement::STILL), _Attack(false), _Traffic(false), _IsExploding(false),
+	_BulletSpeed(500), _BulletTexture(bulletTexture), _Movement(Movement::STILL), _Attack(false), _HasTraffic(false), _IsExploding(false),
 	_Event1Counter(0), _Event2Counter(0), _Event1Frequency(0), _Event2Frequency(0), _Event1Switch(false), _Event2Switch(false), _CurrentPhase(0)
 {
 	initBoss();
@@ -13,7 +13,7 @@ BossCar::BossCar(unsigned int id, sf::Vector2f pos, int difficulty, int Health, 
 BossCar::BossCar(sf::Packet & packet, sf::Texture & texture, sf::Texture & bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer & soundBufferShot, sf::SoundBuffer & soundBufferExplosion, float volume) :
 	Car(packet, GameObjectType::Boss, texture),
 	_soundEffects(soundEffects), _soundBufferShot(soundBufferShot), _soundBufferExplosion(soundBufferExplosion), _Volume(volume), _BulletSpeed(500),
-	_BulletTexture(bulletTexture), _Movement(Movement::STILL), _Attack(false), _Traffic(false), _IsExploding(false),
+	_BulletTexture(bulletTexture), _Movement(Movement::STILL), _Attack(false), _HasTraffic(false), _IsExploding(false),
 	_Event1Counter(0), _Event2Counter(0), _Event1Frequency(0), _Event2Frequency(0), _Event1Switch(false), _Event2Switch(false), _CurrentPhase(0) 
 {
 	BossCar::operator<<(packet);

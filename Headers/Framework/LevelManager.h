@@ -76,12 +76,6 @@ public:
     void resetTimer() { _LevelTime = 0; }
 
     /*
-        Sets the difficulty of the level to the selected difficulty
-        @param dif Difficulty
-    */
-    void setDifficulty(int dif) { _Difficulty = dif; }
-
-    /*
         @return float Time in seconds that has passed since the start of the level
     */
     float getLevelTime() { return _LevelTime; }
@@ -91,6 +85,10 @@ public:
     */
     float getTotalLevelTime() { return _TotalLevelTime; }
 
+    float getScore() { return _Score; }
+
+    void addScore(ScoreEvent event, float modifier);
+
     sf::Sprite &getSprite() {
         return _Sprite;
     }
@@ -98,12 +96,14 @@ public:
 private:
     sf::Music _Music;
 
+    float _Score;
+
     float _LevelTime;
     float _TotalLevelTime;
 
     int _Level, _Difficulty;
 
-    std::mutex _ThreadGuard;
+//    std::mutex _ThreadGuard;
     bool _IsResettingLevel;
 
     std::vector<std::shared_ptr<sf::Texture>> _Textures;

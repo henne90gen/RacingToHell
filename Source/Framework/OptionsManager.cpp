@@ -9,11 +9,11 @@ OptionsManager::OptionsManager() {
     _FPS = 60;
     _Volume = 20;
     _GameMode = GameMode::Standard;
-    _CurrentCarSkinIndex = 0;
+
+    _Font.loadFromFile("Resources/Font/arial.ttf");
 }
 
 void OptionsManager::loadOptions() {
-    _Font.loadFromFile("Resources/Font/arial.ttf");
 
     std::vector<std::string> settings;
     std::string option;
@@ -79,14 +79,6 @@ void OptionsManager::setGameMode(GameMode gm) {
 
 int OptionsManager::getDifficulty() {
     return _Difficulty;
-}
-
-int OptionsManager::getCurrentCarSkinIndex() {
-    return _CurrentCarSkinIndex;
-}
-
-void OptionsManager::setCurrentCarSkinIndex(int newIndex) {
-    _CurrentCarSkinIndex = newIndex;
 }
 
 float OptionsManager::getVolume() {

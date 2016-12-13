@@ -30,19 +30,7 @@ public:
     */
     GameState handleMenuItemResult(MenuResult result);
 
-    /*
-        @param carIndex Index of the selected car
-    */
-    void setCarIndex(int carIndex) { _SelectedCar = carIndex; }
-
-    /*
-        @return int Index of the selected car
-    */
-    int getCarIndex() { return _SelectedCar; }
-
 private:
     std::shared_ptr<StatBox> _StatBox;
-
-    int _SelectedCar;
 };
 

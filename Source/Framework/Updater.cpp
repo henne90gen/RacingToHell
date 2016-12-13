@@ -2,7 +2,7 @@
 // Created by henne on 27.11.16.
 //
 
-#include <GameState.h>
+#include <Enums.h>
 #include "Framework/Framework.h"
 
 Updater::Updater(Framework &framework) : _FW(framework) {
@@ -56,7 +56,7 @@ void Updater::update(float frameTime) {
                 _FW.getHUD().setTotalLevelTime(_FW.getLevel().getTotalLevelTime());
             }
             break;
-        case GameState::Main:
+        case GameState::MainMenu:
             _FW.getLevel().update(frameTime, _FW.getGameState());
             break;
         case GameState::GameOver:
@@ -67,12 +67,12 @@ void Updater::update(float frameTime) {
             break;
         case GameState::Options:
             _FW.getOptionsMenu().update(frameTime);
-            if (_FW.getOptionsMenu().getReturnState() == GameState::Main) {
+            if (_FW.getOptionsMenu().getReturnState() == GameState::MainMenu) {
                 _FW.getLevel().update(frameTime, _FW.getGameState());
             }
             break;
         case GameState::About:
-            if (_FW.getOptionsMenu().getReturnState() == GameState::Main) {
+            if (_FW.getOptionsMenu().getReturnState() == GameState::MainMenu) {
                 _FW.getLevel().update(frameTime, _FW.getGameState());
             }
             break;
@@ -82,7 +82,7 @@ void Updater::update(float frameTime) {
                 _FW.getOptionsMenu().setFPS(_FW.getFPS());
                 _FW.getLoadingScreen().fadeAway();
             } else if (_FW.getLoadingScreen().isDoneFading()) {
-                _FW.setGameState(GameState::Main);
+                _FW.setGameState(GameState::MainMenu);
             } else if (_FW.getLoadingScreen().isFadingAway()) {
                 _FW.getLevel().update(frameTime, _FW.getGameState());
             }

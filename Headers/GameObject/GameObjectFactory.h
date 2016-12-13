@@ -23,7 +23,7 @@ public:
 	/*
 		@param carSkin Index of the car texture
 	*/
-	static std::shared_ptr<PlayerCar> getPlayerCar(int carSkin);
+	static std::shared_ptr<PlayerCar> getPlayerCar(PlayerCarIndex carSkin);
 
 	/*
 		@param level

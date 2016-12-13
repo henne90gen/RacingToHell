@@ -29,7 +29,7 @@ void EventHandler::handleEvents(sf::RenderWindow &renderWindow) {
 //            _FW.getCurrentGameScreen().handleEvent();
             if (_FW.getGameState() == GameState::Running) {
                 _FW.restartClock();
-            } else if (_FW.getGameState() == GameState::Main) {
+            } else if (_FW.getGameState() == GameState::MainMenu) {
                 _FW.resetGame();
             } else if (_FW.getGameState() == GameState::Options) {
                 // FIXME find a solution for this
@@ -38,7 +38,7 @@ void EventHandler::handleEvents(sf::RenderWindow &renderWindow) {
 //                _FW.getOptionsMenu().setReturnState(GameState::Pause);
             }
             break;
-        case GameState::Main:
+        case GameState::MainMenu:
 //            _FW.getCurrentGameScreen().handleEvent();
 
             // FIXME find solution for this (move to framework maybe?)
@@ -76,7 +76,7 @@ void EventHandler::handleEvents(sf::RenderWindow &renderWindow) {
             } else if (_FW.getGameState() == GameState::Options) {
 //                _FW.getOptionsMenu().enableDifficultySelection(true);
 //                _FW.getOptionsMenu().enableGameModeSelection(true);
-//                _FW.getOptionsMenu().setReturnState(GameState::Main);
+//                _FW.getOptionsMenu().setReturnState(GameState::MainMenu);
             } else if (_FW.getGameState() == GameState::MultiplayerSelection) {
 //                _FW.getMultiplayerMenu().resetFeedback();
             }
@@ -128,7 +128,7 @@ void EventHandler::handleEvents(sf::RenderWindow &renderWindow) {
         case GameState::GameOver:
 //            _FW.setVolume(_FW.getOptionsMenu().getVolume());
 //            _FW.getRenderer().getCurrentGameScreen().handleEvent();
-            if (_FW.getGameState() == GameState::Main) {
+            if (_FW.getGameState() == GameState::MainMenu) {
                 _FW.resetGame();
             }
             break;
@@ -227,7 +227,7 @@ void EventHandler::handleEvents(sf::RenderWindow &renderWindow) {
             _FW.getGameState() = _FW.getPauseMultiplayerMenu().handleEvent(_FW, renderWindow);
             if (_FW.getGameState() == GameState::RunningMultiplayer) {
                 _FW.restartClock();
-            } else if (_FW.getGameState() == GameState::Main) {
+            } else if (_FW.getGameState() == GameState::MainMenu) {
                 _FW.resetGame();
             } else if (_FW.getGameState() == GameState::Options) {
                 _FW.getOptionsMenu().enableDifficultySelection(false);

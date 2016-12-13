@@ -2,7 +2,7 @@
 #include "Animation/Animation.h"
 
 Animation::Animation(sf::Vector2f pos, sf::Texture & spriteSheet, float timePerFrame, int frames, int rows, int cols) : 
-	_AnimState(AnimationState::Play), _TimePerFrame(timePerFrame), _NumFrames(frames), _NumRows(rows), _NumCols(cols)
+	_AnimationState(AnimationState::Play), _TimePerFrame(timePerFrame), _NumFrames(frames), _NumRows(rows), _NumCols(cols)
 {
 	_SpriteSheet = spriteSheet;
 	_Sprite.setTexture(_SpriteSheet);

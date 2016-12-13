@@ -73,5 +73,17 @@ void LevelManager::load() {
     _Sprite.setTexture((*_Textures.at(0)));
     _Sprite.setPosition(sf::Vector2f(0, -1600));
 
+    _Difficulty = 1;
+
     // TODO load level music here
+}
+
+void LevelManager::addScore(ScoreEvent event, float modifier) {
+    switch (event) {
+        case ScoreEvent::Tick:break;
+        case ScoreEvent::DestroyedCar:
+            _Score += (int) (1.5 * modifier);
+            break;
+        case ScoreEvent::DefeatedBoss:break;
+    }
 }

@@ -5,7 +5,7 @@
 #pragma once
 
 #include "Screen/GameScreenFactory.h"
-#include "GameState.h"
+#include "Enums.h"
 
 class Framework;
 

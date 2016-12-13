@@ -20,12 +20,9 @@ StatBox::StatBox(sf::Vector2f pos)
 	_StatBarTexture.loadFromFile("Resources/Texture/MainMenu/StatBar.png");
 }
 
-StatBox::~StatBox()
-{
+StatBox::~StatBox() {}
 
-}
-
-void StatBox::render(sf::RenderWindow& window, int selectedCar)
+void StatBox::render(sf::RenderWindow& window)
 {
 	//Background
 	window.draw(_Background);
@@ -35,10 +32,9 @@ void StatBox::render(sf::RenderWindow& window, int selectedCar)
 
 	//Balken
 	std::vector<std::string> StatNames = { "Max. Health:", "Max. Energy:", "Speed:", "Damage:" };
-	std::vector<int> Stats = PlayerStats::getPlayerStats(selectedCar);
 	std::vector<int> MaxStats = PlayerStats::getMaxStats();
 
-	for (unsigned int i = 0; i < Stats.size() && i < StatNames.size(); i++)
+	for (unsigned int i = 0; i < _PlayerStats.size() && i < StatNames.size(); i++)
 	{
 		sf::Text StatName;
 		StatName.setFont(_Font);
@@ -49,9 +45,13 @@ void StatBox::render(sf::RenderWindow& window, int selectedCar)
 		sf::Sprite StatBar;
 		StatBar.setTexture(_StatBarTexture);
 		StatBar.setPosition(_Background.getPosition() + sf::Vector2f(140, 53 + 35 * i));
-		StatBar.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(((int)(float)Stats[i] / (float)MaxStats[i] * (float)StatBar.getLocalBounds().width), 20)));
+		StatBar.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(((int)(float)_PlayerStats[i] / (float)MaxStats[i] * (float)StatBar.getLocalBounds().width), 20)));
 
 		window.draw(StatName);
 		window.draw(StatBar);
 	}
+}
+
+void StatBox::setCarStats(PlayerCarIndex index) {
+	_PlayerStats = PlayerStats::getPlayerStats(index);
 }

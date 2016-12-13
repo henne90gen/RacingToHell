@@ -52,7 +52,7 @@ void LevelUpScreen::render(sf::RenderWindow& window)
 void LevelUpScreen::update() {
 	if (_Timer.getElapsedTime().asSeconds() > _ShowTime) {
 		_Timer.restart();
-		_FW.setGameState(GameState::Main);
+		_FW.setGameState(GameState::MainMenu);
 	}
 }
 

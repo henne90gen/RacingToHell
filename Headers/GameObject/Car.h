@@ -79,7 +79,7 @@ public:
 		Damage the car and subtract the damage from the health
 		@param damage Amount of health to subtract
 	*/
-	void takeDamage(int damage);
+	virtual void takeDamage(int damage);
 
 	/*
 		Writes the necessary data for a gameobject to a packet

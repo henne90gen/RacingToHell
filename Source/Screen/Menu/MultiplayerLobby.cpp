@@ -2,7 +2,8 @@
 #include "Screen/Menu/MultiplayerLobby.h"
 #include "Framework/Framework.h"
 
-MultiplayerLobby::MultiplayerLobby(Framework &framework) : Menu(framework, GameState::Lobby), _SelectedCar(0),
+MultiplayerLobby::MultiplayerLobby(Framework &framework) : Menu(framework, GameState::Lobby,
+                                                                GameState::MultiplayerSelection), _SelectedCar(0),
                                                            _NetworkHandle() {
     std::shared_ptr<PlayerTable> Table(new PlayerTable(sf::Vector2f(25, 25)));
     _MenuItems.push_back(Table);
@@ -45,7 +46,7 @@ MultiplayerLobby::MultiplayerLobby(Framework &framework) : Menu(framework, GameS
 }
 
 void MultiplayerLobby::render(sf::RenderWindow &window) {
-    _StatBox->render(window, _SelectedCar);
+//    _StatBox->render(window, _SelectedCar);
 
     Menu::render(window);
 }
@@ -60,7 +61,7 @@ GameState MultiplayerLobby::handleMenuItemResult(MenuResult result) {
             sf::Packet EmptyPacket;
             _NetworkHandle->addPacket(NetworkCommunication::Disconnect, EmptyPacket);
             std::cout << "Sending disconnect" << std::endl;
-            return GameState::Main;
+            return GameState::MainMenu;
         }
             break;
         case MenuResult::PreviousSkin:

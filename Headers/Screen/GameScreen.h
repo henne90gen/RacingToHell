@@ -4,7 +4,7 @@
 #pragma once
 
 #include <SFML/Graphics/RenderWindow.hpp>
-#include <GameState.h>
+#include <Enums.h>
 
 class Framework;
 

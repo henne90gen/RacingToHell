@@ -36,17 +36,17 @@ public:
 	/*
 		Starts playing the animation
 	*/
-	void play() { _AnimState = Animation::Play; }
+	void play() { _AnimationState = Animation::Play; }
 
 	/*
 		Pauses the animation
 	*/
-	void pause() { _AnimState = Animation::Pause; }
+	void pause() { _AnimationState = Animation::Pause; }
 
 	/*
 		Stops the animation
 	*/
-	void stop() { _AnimState = Animation::Stop; }
+	void stop() { _AnimationState = Animation::Stop; }
 
 	/*
 		Resets the animation to the beginning
@@ -57,7 +57,7 @@ public:
 		Returns the state the animation is currently in
 		@return AnimationState of the animation
 	*/
-	AnimationState getAnimationState() { return _AnimState; }
+	AnimationState getAnimationState() { return _AnimationState; }
 
 	/*
 		Returns the number of the frame that is currently being displayed
@@ -99,6 +99,6 @@ protected:
 
 	sf::Clock _Timer;
 	float _ElapsedTime, _TimePerFrame;
-	AnimationState _AnimState;
+	AnimationState _AnimationState;
 };
 

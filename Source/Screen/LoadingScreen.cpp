@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "Screen/LoadingScreen.h"
+#include "Framework/Framework.h"
 
-
-LoadingScreen::LoadingScreen(Framework &framework) : GameScreen(framework)/*, _IsFadingAway(false), _FadeTime(0.5f)*/ {
+LoadingScreen::LoadingScreen(Framework &framework) : GameScreen(framework), _Alpha(255), _FadeTime(0.5f) {
     _Text.setString("Loading...");
+    _Text.setFont(_FW.getOptionsManager().getFont());
     _Text.setCharacterSize(75);
+    _Text.setColor(sf::Color::White);
     _Text.setOrigin(sf::Vector2f(_Text.getLocalBounds().width / 2.0f, _Text.getLocalBounds().height / 2.0f));
     _Text.setPosition(SCREENWIDTH / 2, SCREENHEIGHT / 2);
 
@@ -14,32 +16,28 @@ LoadingScreen::LoadingScreen(Framework &framework) : GameScreen(framework)/*, _I
 }
 
 void LoadingScreen::render(sf::RenderWindow &window) {
-    // FIXME rework this, reenable fading
-//	float alpha = 255.0f;
-//	if (_IsFadingAway) {
-//		alpha = (_FadeTime - _FadeTimer.getElapsedTime().asSeconds()) * 255.0f / _FadeTime;
-//		_Background.setFillColor(sf::Color(_Background.getFillColor().r, _Background.getFillColor().g, _Background.getFillColor().b, alpha));
-//		_Text.setColor(sf::Color(_Text.getColor().r, _Text.getColor().g, _Text.getColor().b, alpha));
-//	}
+    sf::Uint8 br = _Background.getFillColor().r;
+    sf::Uint8 bg = _Background.getFillColor().g;
+    sf::Uint8 bb = _Background.getFillColor().b;
+    const sf::Color &backgroundColor = sf::Color(br, bg, bb, _Alpha);
+    _Background.setFillColor(backgroundColor);
     window.draw(_Background);
+
+    sf::Uint8 tr = _Text.getColor().r;
+    sf::Uint8 tg = _Text.getColor().g;
+    sf::Uint8 tb = _Text.getColor().b;
+    const sf::Color &textColor = sf::Color(tr, tg, tb, _Alpha);
+    _Text.setColor(textColor);
     window.draw(_Text);
 }
 
-void LoadingScreen::handleEvent(sf::Event &event) {
+void LoadingScreen::handleEvent(sf::Event &event) {}
+
+void LoadingScreen::update(float frameTime) {
+    if (_FW.getGameState() == GameState::LoadingToMain) {
+        _Alpha -= 255.0f / _FadeTime * frameTime;
+        if (_Alpha <= 0) {
+            _FW.setGameState(GameState::MainMenu);
+        }
+    }
 }
-
-
-// FIXME think of solution for fading with screen implementation
-//void LoadingScreen::fadeAway()
-//{
-//	_FadeTimer.restart();
-//	_IsFadingAway = true;
-//}
-//
-//bool LoadingScreen::isDoneFading()
-//{
-//	if (_FadeTimer.getElapsedTime().asSeconds() > _FadeTime) {
-//		return true;
-//	}
-//	return false;
-//}

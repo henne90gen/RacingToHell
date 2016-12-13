@@ -14,7 +14,7 @@ class Framework;
 
 class Menu : public GameScreen {
 public:
-    Menu(Framework &framework, GameState menuState);
+    Menu(Framework &framework, GameState menuState, GameState returnState);
 
     ~Menu() {}
 
@@ -35,6 +35,7 @@ protected:
     std::vector<std::shared_ptr<MenuItem>> _MenuItems;
     sf::Text _Text;
     GameState _MenuGameState;
+    GameState _ReturnGameState;
     sf::Vector2f _MousePos;
 
     virtual GameState handleMenuItemResult(MenuResult result) = 0;

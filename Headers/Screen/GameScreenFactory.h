@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "GameState.h"
+#include "Enums.h"
 #include "GameScreen.h"
 #include "Screen/EmptyScreen.h"
 #include "Screen/Menu/MainMenu.h"
@@ -19,7 +19,7 @@
 #include <Screen/LevelUpScreen.h>
 #include <Screen/LoadingScreen.h>
 #include <Framework/LevelManager.h>
-#include <HeadsUpDisplay.h>
+#include <Screen/HUDScreen.h>
 
 class GameScreenFactory {
 public:
@@ -32,7 +32,7 @@ public:
 
     void operator=(GameScreenFactory const &)  = delete;
 
-    std::vector<GameScreen *> getGameScreens(Framework &framework);
+    std::vector<GameScreen *> getGameScreens(Framework &framework, GameState returnState);
 
 private:
     GameScreenFactory() {}
@@ -54,7 +54,7 @@ private:
 
     OptionsMenu *_OptionsMenu;
 
-    OptionsMenu *getOptionsMenu(Framework &framework);
+    OptionsMenu *getOptionsMenu(Framework &framework, GameState returnState);
 
     ExitScreen *_ExitScreen;
 
@@ -72,7 +72,11 @@ private:
 
     GameObjectScreen *getGameObjectScreen(Framework &framework);
 
-    HeadsUpDisplay *_HeadsUpDisplay;
+    HUDScreen *_HeadsUpDisplay;
 
-    HeadsUpDisplay *getHeadsUpDisplay(Framework &framework);
+    HUDScreen *getHeadsUpDisplayScreen(Framework &framework);
+
+    PauseMenu *_PauseMenu;
+
+    PauseMenu *getPauseMenu(Framework &framework, GameState returnState);
 };

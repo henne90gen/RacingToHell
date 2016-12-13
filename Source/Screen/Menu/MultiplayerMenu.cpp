@@ -2,7 +2,7 @@
 #include "Screen/Menu/MultiplayerMenu.h"
 #include "Framework/Framework.h"
 
-MultiplayerMenu::MultiplayerMenu(Framework &framework) : Menu(framework, GameState::MultiplayerSelection),
+MultiplayerMenu::MultiplayerMenu(Framework &framework) : Menu(framework, GameState::MultiplayerSelection, GameState::MainMenu),
                                                          _CreatedLobby(-1) {
     _BackgroundName.setFillColor(sf::Color(0, 0, 0, 100));
     _BackgroundName.setOutlineThickness(1);
@@ -135,7 +135,7 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result) {
     switch (result) {
         case MenuResult::Back:
             _CreatedLobby = -1;
-            return GameState::Main;
+            return GameState::MainMenu;
             break;
         case MenuResult::Join: {
             if (_MenuItems[(int) MenuItemIndex::Name]->getText() == "") {

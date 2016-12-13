@@ -139,7 +139,7 @@ void comment() {
         {
             _TimePassedToolbox += FrameTime - 1.0f / _ToolboxFrequency;
             addGameObject(GameObjectFactory::getToolbox(sf::Vector2f(std::rand() % 3 * 150 + 150, -10)), network);
-            setToolboxFrequency();
+            calculateToolboxFrequency();
         }
         else {
             _TimePassedToolbox += FrameTime;
@@ -514,8 +514,8 @@ void MPGameObjectContainer::resetGameObjects(int SelectedCar) {
     _Level = 1;
 
     //Spielerauto
-    _Player1 = GameObjectFactory::getPlayerCar(SelectedCar);
-    _Player2 = GameObjectFactory::getPlayerCar(SelectedCar);
+//    _Player1 = GameObjectFactory::getPlayerCar(SelectedCar);
+//    _Player2 = GameObjectFactory::getPlayerCar(SelectedCar);
 
     //Frequenz
     setAllFrequencies();

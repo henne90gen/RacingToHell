@@ -1,8 +1,8 @@
 ﻿#include "stdafx.h"
-#include "HeadsUpDisplay.h"
+#include "Screen/HUDScreen.h"
 #include "Framework/Framework.h"
 
-HeadsUpDisplay::HeadsUpDisplay(Framework &framework) : GameScreen(framework) {
+HUDScreen::HUDScreen(Framework &framework) : GameScreen(framework) {
 
     //Displays the current level
     _LevelText.setFont(_FW.getOptionsManager().getFont());
@@ -39,7 +39,7 @@ HeadsUpDisplay::HeadsUpDisplay(Framework &framework) : GameScreen(framework) {
     _HealthBarOutline.setOutlineThickness(2);
 
     //Health Text
-    _HealthText.setFont(_Font);
+    _HealthText.setFont(_FW.getOptionsManager().getFont());
     _HealthText.setCharacterSize(20);
     _HealthText.setColor(sf::Color::White);
 
@@ -64,7 +64,7 @@ HeadsUpDisplay::HeadsUpDisplay(Framework &framework) : GameScreen(framework) {
     _EnergyBarOutline.setOutlineThickness(2);
 
     //Enrgy Text
-    _EnergyText.setFont(_Font);
+    _EnergyText.setFont(_FW.getOptionsManager().getFont());
     _EnergyText.setCharacterSize(20);
     _EnergyText.setColor(sf::Color::White);
 
@@ -75,14 +75,14 @@ HeadsUpDisplay::HeadsUpDisplay(Framework &framework) : GameScreen(framework) {
             sf::Vector2f(_EnergyBarOutline.getGlobalBounds().left + 6, _EnergyBarOutline.getGlobalBounds().top + 6));
 
     //Score
-    _ScoreText.setFont(_Font);
+    _ScoreText.setFont(_FW.getOptionsManager().getFont());
     _ScoreText.setCharacterSize(30);
     _ScoreText.setColor(sf::Color::White);
     _ScoreText.setPosition(sf::Vector2f(350, SCREENHEIGHT - _Background.getLocalBounds().height));
     _ScoreText.setString("Score: 00000000");
 }
 
-void HeadsUpDisplay::render(sf::RenderWindow &window) {
+void HUDScreen::render(sf::RenderWindow &window) {
     window.draw(_LevelText);
 
     window.draw(_ProgressBar);
@@ -103,58 +103,68 @@ void HeadsUpDisplay::render(sf::RenderWindow &window) {
     window.draw(_ScoreText);
 }
 
-void HeadsUpDisplay::update(float frameTime) {
-    // TODO fix all on screen things
+void HUDScreen::update(float frameTime) {
 
-//    _LevelText.setString("LevelManager: " + std::to_string(level));
+    _LevelText.setString("Level: " + std::to_string(_FW.getLevelManager().getLevel()));
 
-//    _ProgressBar.setSize(sf::Vector2f(levelTime * SCREENWIDTH / _TotalLevelTime, 10));
+    _ProgressBar.setSize(
+            sf::Vector2f(_FW.getLevelManager().getLevelTime() * SCREENWIDTH / _FW.getLevelManager().getTotalLevelTime(),
+                         10));
 
-//    _HealthBar.setSize(sf::Vector2f((float) health / (float) _MaxHealth * 150, 30));
+    int health = _FW.getGOM().getPlayerCar()->getHealth();
+    int maxHealth = _FW.getGOM().getPlayerCar()->getMaxHealth();
+
+    _HealthBar.setSize(sf::Vector2f((float) health / (float) maxHealth * 150, 30));
     _HealthText.setPosition(sf::Vector2f(
             _HealthBarOutline.getGlobalBounds().left + _HealthBarOutline.getLocalBounds().width -
             _HealthText.getLocalBounds().width - 7, _HealthBarOutline.getGlobalBounds().top + 3));
 
+    // TODO reenable invincibility mode
 //    if (mode == GameMode::Invincible) {
 //        _HealthText.setString(L"∞");
 //        _HealthText.setCharacterSize(40);
 //        _HealthText.setPosition(_HealthText.getPosition() - sf::Vector2f(5, 12));
 //    } else {
-//        _HealthText.setString(std::to_string(health) + "/" + std::to_string(_MaxHealth));
-//        _HealthText.setCharacterSize(20);
+    _HealthText.setString(std::to_string(health) + "/" + std::to_string(maxHealth));
+    _HealthText.setCharacterSize(20);
 //    }
 
-//    if (health <= 10) {
-//        _HealthText.setColor(sf::Color(255, 75, 75));
-//    } else {
-//        _HealthText.setColor(sf::Color::White);
-//    }
+    if (health <= 10) {
+        _HealthText.setColor(sf::Color(255, 75, 75));
+    } else {
+        _HealthText.setColor(sf::Color::White);
+    }
 
-//    _EnergyBar.setSize(sf::Vector2f((float) energy / (float) _MaxEnergy * 150, 30));
+    int energy = (int) _FW.getGOM().getPlayerCar()->getEnergy();
+    int maxEnergy = _FW.getGOM().getPlayerCar()->getMaxEnergy();
+
+    _EnergyBar.setSize(sf::Vector2f((float) energy / (float) maxEnergy * 150, 30));
     _EnergyText.setPosition(sf::Vector2f(
             _EnergyBarOutline.getGlobalBounds().left + _EnergyBarOutline.getLocalBounds().width -
             _EnergyText.getLocalBounds().width - 7, _EnergyBarOutline.getGlobalBounds().top + 3));
 
+    // TODO reenable infinite energy mode
 //    if (mode == GameMode::InfEnergy) {
 //        _EnergyText.setString(L"∞");
 //        _EnergyText.setCharacterSize(40);
 //        _EnergyText.setPosition(sf::Vector2f(_EnergyText.getPosition() - sf::Vector2f(5, 12)));
 //    } else {
-//        _EnergyText.setString(std::to_string(energy) + "/" + std::to_string(_MaxEnergy));
+    _EnergyText.setString(std::to_string(energy) + "/" + std::to_string(maxEnergy));
 //    }
 
-//    if (energy <= 10) {
-//        _EnergyText.setColor(sf::Color(255, 75, 75));
-//    } else {
-//        _EnergyText.setColor(sf::Color::White);
-//    }
+    if (energy <= 10) {
+        _EnergyText.setColor(sf::Color(255, 75, 75));
+    } else {
+        _EnergyText.setColor(sf::Color::White);
+    }
 
-//    _ScoreText.setString("Score: " + ConvertScore(score));
+    // FIXME implement score
+//    _ScoreText.setString("Score: " + ConvertScore(_FW.getLevelManager().getScore()));
 }
 
-std::string HeadsUpDisplay::ConvertScore(int score) {
+std::string HUDScreen::ConvertScore(int score) {
     std::string ScoreString;
-    int ScoreLength = std::to_string(score).length();
+    int ScoreLength = (int) std::to_string(score).length();
 
     if (ScoreLength < 7) {
         for (unsigned int i = 0; i < 8 - ScoreLength; i++) {
@@ -169,6 +179,6 @@ std::string HeadsUpDisplay::ConvertScore(int score) {
     return ScoreString;
 }
 
-void HeadsUpDisplay::handleEvent(sf::Event &event) {
+void HUDScreen::handleEvent(sf::Event &event) {
 
 }

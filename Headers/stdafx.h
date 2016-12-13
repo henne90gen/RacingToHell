@@ -22,7 +22,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
 
-#include "GameState.h"
+#include "Enums.h"
 
 #define SCREENWIDTH 600
 #define SCREENHEIGHT 800

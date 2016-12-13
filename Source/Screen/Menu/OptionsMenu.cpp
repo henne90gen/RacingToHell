@@ -2,8 +2,8 @@
 #include "Screen/Menu/OptionsMenu.h"
 #include "Framework/Framework.h"
 
-OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Options), _ReturnState(),
-                                                 _ChangeSliderValue() {
+OptionsMenu::OptionsMenu(Framework &framework, GameState returnState) : Menu(framework, GameState::Options,
+                                                                             returnState), _ChangeSliderValue() {
     _ScoreMultiplierList = {1.0f, 0.0f, 0.5f, 3.f};
 
     // FIXME create constants for maximum and minimum fps
@@ -115,7 +115,7 @@ GameState OptionsMenu::handleMenuItemResult(MenuResult result) {
             _FW.getOptionsManager().setVolume(_MenuItems[Volume]->getValue());
             break;
         case MenuResult::Back:
-            return _ReturnState;
+            return _ReturnGameState;
         case MenuResult::Credits:
             return GameState::About;
     }

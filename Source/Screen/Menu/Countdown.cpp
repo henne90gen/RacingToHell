@@ -2,7 +2,7 @@
 #include "Screen/Menu/Countdown.h"
 #include "Framework/Framework.h"
 
-Countdown::Countdown(Framework &framework) : Menu(framework, GameState::Countdown),
+Countdown::Countdown(Framework &framework) : Menu(framework, GameState::Countdown, GameState::RunningMultiplayer),
                                              _AdditionalTime(0.0f) {
     _Text.setString("4");
     _Text.setCharacterSize(75);

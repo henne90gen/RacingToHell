@@ -37,7 +37,7 @@ void Renderer::render() {
         case GameState::Running:
             _FW.getHUD().render(_RenderWindow);
             break;
-        case GameState::Main:
+        case GameState::MainMenu:
             _FW.getMainMenu().render(_RenderWindow);
             break;
         case GameState::Pause:

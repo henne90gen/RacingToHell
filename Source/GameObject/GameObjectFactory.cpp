@@ -51,9 +51,9 @@ sf::SoundBuffer& GameObjectFactory::_JetSoundBuffer()
 sf::Uint32 GameObjectFactory::_CurrentGameObjectID;
 sf::Uint32 GameObjectFactory::_DeltaID;
 
-std::shared_ptr<PlayerCar> GameObjectFactory::getPlayerCar(int carSkin)
+std::shared_ptr<PlayerCar> GameObjectFactory::getPlayerCar(PlayerCarIndex carSkin)
 {
-	std::shared_ptr<PlayerCar> player(new PlayerCar(_DeltaID + _CurrentGameObjectID++, carSkin, (*_PlayerCarTextures().at(carSkin))));
+	std::shared_ptr<PlayerCar> player(new PlayerCar(_DeltaID + _CurrentGameObjectID++, carSkin, (*_PlayerCarTextures().at((int) carSkin))));
 	return player;
 }
 

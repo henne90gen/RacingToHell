@@ -225,11 +225,9 @@ Resources/Data/Highscore.sco
 /RacingToHell.VC.db
 /network-schematic.xcf
 /.idea
-/CMakeLists.txt
 *.vcxproj
 *.vcxproj.filters
 *.sln
 
-Source/CMakeLists.txt
 cmake-build-debug/
 cmake-modules/

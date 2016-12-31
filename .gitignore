@@ -230,4 +230,3 @@ Resources/Data/Highscore.sco
 *.sln
 
 cmake-build-debug/
-cmake-modules/

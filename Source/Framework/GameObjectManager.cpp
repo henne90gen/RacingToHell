@@ -268,16 +268,18 @@ void GameObjectManager::enterBossFight() {
     _BossFight = true;
 }
 
-void GameObjectManager::resetGameObjects(PlayerCarIndex selectedCar) {
+void GameObjectManager::resetGameObjects() {
     _PickupItems.clear();
     _Cars.clear();
     _Bullets.clear();
     _Animations.clear();
     _SoundEffects.clear();
 
-    // Playercar
-    // TODO use enum to name the different cars
-    _Player = GameObjectFactory::getPlayerCar(selectedCar);
+    PlayerCarIndex playerCarIndex = PlayerCarIndex::Car1;
+    if (_Player != NULL) {
+        playerCarIndex = _Player->getPlayerCarIndex();
+    }
+    _Player = GameObjectFactory::getPlayerCar(playerCarIndex);
 
     // Frequencies
     calculateAllFrequencies();

@@ -34,7 +34,7 @@ void LoadingScreen::render(sf::RenderWindow &window) {
 void LoadingScreen::handleEvent(sf::Event &event) {}
 
 void LoadingScreen::update(float frameTime) {
-    if (_FW.getGameState() == GameState::LoadingToMain) {
+    if (_FW.getCurrentGameState() == GameState::LoadingToMain) {
         _Alpha -= 255.0f / _FadeTime * frameTime;
         if (_Alpha <= 0) {
             _FW.setGameState(GameState::MainMenu);

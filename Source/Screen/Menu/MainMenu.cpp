@@ -2,7 +2,7 @@
 #include "Screen/Menu/MainMenu.h"
 #include "Framework/Framework.h"
 
-MainMenu::MainMenu(Framework &framework) : Menu(framework, GameState::MainMenu, GameState::MainMenu) {
+MainMenu::MainMenu(Framework &framework) : Menu(framework, GameState::MainMenu) {
     //Menu-Items
     sf::Vector2f ButtonSize = sf::Vector2f(250, 50);
 
@@ -78,7 +78,7 @@ void MainMenu::handleEvent(sf::Event &event) {
 //				_JoystickTimer.restart();
 //			}
 //		}
-    if (_FW.getGameState() == GameState::MainMenu) {
+    if (_FW.getCurrentGameState() == GameState::MainMenu) {
         _FW.setGameState(handleMenuItems(event));
     }
 }

@@ -14,12 +14,12 @@ GameScreenFactory::~GameScreenFactory() {
     free(_OptionsMenu);
 }
 
-std::vector<GameScreen *> GameScreenFactory::getGameScreens(Framework &framework, GameState returnState) {
+std::vector<GameScreen *> GameScreenFactory::getGameScreens(Framework &framework) {
     std::vector<GameScreen *> screens = std::vector<GameScreen *>();
 
     screens.push_back(getLevelScreen(framework));
 
-    switch (framework.getGameState()) {
+    switch (framework.getCurrentGameState()) {
         case GameState::Loading:
             screens.push_back(getLoadingScreen(framework));
             break;
@@ -39,17 +39,17 @@ std::vector<GameScreen *> GameScreenFactory::getGameScreens(Framework &framework
         case GameState::Pause:
             screens.push_back(getGameObjectScreen(framework));
             screens.push_back(getHeadsUpDisplayScreen(framework));
-            screens.push_back(getPauseMenu(framework, returnState));
+            screens.push_back(getPauseMenu(framework));
             break;
         case GameState::Highscores:
             screens.push_back(getHighscoreMenu(framework));
             break;
         case GameState::Options:
-            if (returnState == GameState::Pause) {
+            if (framework.getCurrentGameState() == GameState::Pause) {
                 screens.push_back(getGameObjectScreen(framework));
                 screens.push_back(getHeadsUpDisplayScreen(framework));
             }
-            screens.push_back(getOptionsMenu(framework, returnState));
+            screens.push_back(getOptionsMenu(framework));
             break;
         case GameState::About:
             screens.push_back(getAboutMenu(framework));
@@ -101,9 +101,9 @@ MainMenu *GameScreenFactory::getMainMenu(Framework &framework) {
     return _MainMenu;
 }
 
-OptionsMenu *GameScreenFactory::getOptionsMenu(Framework &framework, GameState returnState) {
+OptionsMenu *GameScreenFactory::getOptionsMenu(Framework &framework) {
     if (_OptionsMenu == nullptr) {
-        _OptionsMenu = new OptionsMenu(framework, returnState);
+        _OptionsMenu = new OptionsMenu(framework);
     }
     return _OptionsMenu;
 }
@@ -150,9 +150,9 @@ HUDScreen *GameScreenFactory::getHeadsUpDisplayScreen(Framework &framework) {
     return _HeadsUpDisplay;
 }
 
-PauseMenu *GameScreenFactory::getPauseMenu(Framework &framework, GameState returnState) {
+PauseMenu *GameScreenFactory::getPauseMenu(Framework &framework) {
     if (_PauseMenu == nullptr) {
-        _PauseMenu = new PauseMenu(framework, returnState);
+        _PauseMenu = new PauseMenu(framework);
     }
     return _PauseMenu;
 }

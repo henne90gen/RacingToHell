@@ -2,8 +2,10 @@
 #include "Framework/Framework.h"
 
 Framework::Framework() :
-        _TimeSinceLastUpdate(sf::Time::Zero), _FrameTime(0), _IsRunning(true), _GameState(GameState::Loading),
+        _TimeSinceLastUpdate(sf::Time::Zero), _FrameTime(0), _IsRunning(true),
         _LastFPSCheck(), _LastFPSPrint(), _GameObjectManager(*this) {
+
+    _GameStates.push_back(GameState::Loading);
 
     _RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell", sf::Style::Close);
 
@@ -104,7 +106,7 @@ void Framework::render() {
 
     setMouseVisibility();
 
-    for (int i = 0; i < _DisplayedGameScreens.size(); i++) {
+    for (unsigned int i = 0; i < _DisplayedGameScreens.size(); i++) {
         _DisplayedGameScreens.at(i)->render(_RenderWindow);
     }
 
@@ -122,11 +124,9 @@ void Framework::handleEvents() {
 
 void Framework::update(float frameTime) {
 
-    if (getGameState() != GameState::Pause && _DisplayedGameScreens.size() < 4) {
-        _LevelManager.update(frameTime, _GameState);
-    }
+    _LevelManager.update(frameTime, getCurrentGameState());
 
-    if (getGameState() == GameState::Running) {
+    if (getCurrentGameState() == GameState::Running) {
         _GameObjectManager.update(frameTime);
     }
 
@@ -193,17 +193,13 @@ void Framework::load() {
 //        _MPGOCClient.setCarSkins(_CarSkins);
 //        _MPGOCClient.resetGameObjects(0);
 
-
-        // FIXME write game over helper
-//        _GameOverScreen.load();
-
         _OptionsManager.loadOptions();
 
         _LevelManager.load();
         _LevelManager.resetToLevelOne();
 
         _GameObjectManager.load();
-        _GameObjectManager.resetGameObjects((PlayerCarIndex) 0);
+        _GameObjectManager.resetGameObjects();
 
         setGameState(GameState::LoadingToMain);
     }
@@ -212,10 +208,10 @@ void Framework::load() {
     }
 }
 
-void Framework::resetGame() {
+void Framework::reset() {
     _Clock.restart();
     _OptionsManager.setScore(0);
-//    _GameObjectContainer.resetGameObjects(_OptionsManager.getCurrentCarSkinIndex());
+    _GameObjectManager.resetGameObjects();
     _LevelManager.resetToLevelOne();
 }
 
@@ -241,7 +237,7 @@ void Framework::setVolume(float volume) {
 }
 
 void Framework::addScore() {
-    // FIXME write optionshelper
+    // FIXME move into levelmanager
     /*
     float Multiplier = _OptionsMenu.getMultiplierList()[(int) _GameMode];
 
@@ -280,28 +276,21 @@ void Framework::updateMPCarSelection() {
 //    _MPGOCClient.getPlayerCar().setStats(_OptionsManager.getCurrentCarSkinIndex());
 }
 
-// FIXME reenable goc
-void Framework::updateCarSelection() {
-//    _GameObjectContainer.getPlayerCar()->setTexture((*_CarSkins.at((unsigned long) _OptionsManager.getCurrentCarSkinIndex())));
-//    _GameObjectContainer.getPlayerCar()->setStats(_OptionsManager.getCurrentCarSkinIndex());
-}
-
 void Framework::setGameState(GameState gameState) {
-    if (_GameState != gameState) {
+    if (_GameStates.at(_GameStates.size() - 1) != gameState) {
+        _GameStates.push_back(gameState);
+        _DisplayedGameScreens = GameScreenFactory::getInstance().getGameScreens(*this);
         std::cout << "Changed gamestate " << (int) gameState << std::endl;
-        GameState returnState = _GameState;
-        _GameState = gameState;
-        _DisplayedGameScreens = GameScreenFactory::getInstance().getGameScreens(*this, returnState);
     }
 }
 
 std::vector<GameScreen *> Framework::initGameScreens() {
-    return GameScreenFactory::getInstance().getGameScreens(*this, GameState::Loading);
+    return GameScreenFactory::getInstance().getGameScreens(*this);
 }
 
 void Framework::setMouseVisibility() {
     bool visible = false;
-    switch (getGameState()) {
+    switch (getCurrentGameState()) {
         case GameState::PauseMultiplayer:
         case GameState::Lobby:
         case GameState::Connecting:
@@ -350,7 +339,7 @@ void Framework::setMouseVisibility() {
 }
 
 bool Framework::isMouseVisible() {
-    switch (getGameState()) {
+    switch (getCurrentGameState()) {
         case GameState::PauseMultiplayer:
         case GameState::Lobby:
         case GameState::Connecting:
@@ -374,4 +363,8 @@ bool Framework::isMouseVisible() {
         case GameState::BossFightMultiplayer:
             return false;
     }
+}
+
+void Framework::goBackOneGameState() {
+    _GameStates.erase(_GameStates.begin());
 }

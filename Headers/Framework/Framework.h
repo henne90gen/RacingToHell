@@ -55,9 +55,21 @@ public:
 
     void stop();
 
-    GameState &getGameState() {
-        return _GameState;
+    GameState getCurrentGameState() {
+        if (_GameStates.size() < 1) {
+            return GameState::Empty;
+        }
+        return _GameStates.at(_GameStates.size() - 1);
     }
+
+    GameState getLastGameState() {
+        if (_GameStates.size() < 2) {
+            return GameState::Empty;
+        }
+        return _GameStates.at(_GameStates.size() - 2);
+    }
+
+    void goBackOneGameState();
 
     LevelManager &getLevelManager() {
         return _LevelManager;
@@ -105,15 +117,13 @@ public:
 
     void load();
 
-    void resetGame();
+    void reset();
 
     void initializeNetworkThread();
 
 //    int getNumberOfCarsAvailable() {
 //        return (int) _CarSkins.size();
 //    }
-
-    void updateCarSelection();
 
     void updateMPCarSelection();
 
@@ -130,22 +140,19 @@ private:
 
     std::vector<GameScreen *> _DisplayedGameScreens;
 
-    void setMouseVisibility();
-
+    std::vector<GameState> _GameStates;
 
     std::vector<GameScreen *> initGameScreens();
 
     std::thread _LoadingThread;
-
     sf::Clock _Clock;
+
     sf::Time _TimeSinceLastUpdate;
 
     // Variables
     float _FrameTime, _LastFPSPrint, _LastFPSCheck;
 
     bool _IsRunning;
-
-    GameState _GameState;
 
 //    MPGameObjectContainer _MPGOCClient;
 //    MPGameObjectContainer _MPGOCServer;
@@ -165,6 +172,8 @@ private:
     void update(float frameTime);
 
     void playSounds();
+
+    void setMouseVisibility();
 
     bool measureTime();
 

@@ -2,7 +2,7 @@
 #include "Screen/Menu/HighscoreMenu.h"
 #include "Framework/Framework.h"
 
-HighscoreMenu::HighscoreMenu(Framework &framework) : Menu(framework, GameState::Highscores, GameState::MainMenu),
+HighscoreMenu::HighscoreMenu(Framework &framework) : Menu(framework, GameState::Highscores),
                                                      _List(sf::Vector2f(75, 100)) {
     sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
     std::shared_ptr<MenuButton> button(
@@ -42,7 +42,6 @@ GameState HighscoreMenu::handleMenuItemResult(MenuResult result) {
     switch (result) {
         case MenuResult::Back:
             return GameState::MainMenu;
-            break;
     }
     return _MenuGameState;
 }

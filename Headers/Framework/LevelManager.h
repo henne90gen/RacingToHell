@@ -7,7 +7,7 @@ public:
     /*
         Manager class for the level, draws background and plays music
     */
-    LevelManager() {}
+    LevelManager() : _ShouldMove(true) {}
 
     ~LevelManager() {}
 
@@ -17,7 +17,7 @@ public:
         @param gameState State of the game
         @return bool True if 'level up' has happened
     */
-    bool update(float frameTime, GameState gameState);
+    void update(float frameTime, GameState gameState);
 
     void load();
 
@@ -93,6 +93,14 @@ public:
         return _Sprite;
     }
 
+    void stopMoving() {
+        _ShouldMove = false;
+    }
+
+    void startMoving() {
+        _ShouldMove = true;
+    }
+
 private:
     sf::Music _Music;
 
@@ -108,4 +116,5 @@ private:
 
     std::vector<std::shared_ptr<sf::Texture>> _Textures;
     sf::Sprite _Sprite;
+    bool _ShouldMove;
 };

@@ -60,7 +60,7 @@ public:
         Resets the GameObjectManager to a state where a new game can begin
         @param selectedCar Index of the car that was selected by the player
     */
-    void resetGameObjects(PlayerCarIndex selectedCar);
+    void resetGameObjects();
 
     /*
         Empties the screen

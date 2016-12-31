@@ -2,7 +2,7 @@
 #include "Screen/Menu/GameOverMenu.h"
 #include "Framework/Framework.h"
 
-GameOverMenu::GameOverMenu(Framework &framework) : Menu(framework, GameState::GameOver, GameState::MainMenu),
+GameOverMenu::GameOverMenu(Framework &framework) : Menu(framework, GameState::GameOver),
                                                    _SoundPlayed(false),
                                                    _ScoreSubmitted(false),
                                                    _Highscore(sf::Vector2f(SCREENWIDTH / 2 - 225, 190)) {
@@ -105,7 +105,6 @@ GameState GameOverMenu::handleMenuItemResult(MenuResult result) {
             _MenuItems[0]->setEnabled(true);
             _MenuItems[1]->setEnabled(true);
             return GameState::MainMenu;
-            break;
         case MenuResult::SubmitScore:
             if (!_ScoreSubmitted && name != "") {
                 _Highscore.placePlayer(name, _Level);

@@ -10,7 +10,7 @@ EventHandler::EventHandler(Framework &framework) : _FW(framework) {
 
 void EventHandler::handleEvents(sf::RenderWindow &renderWindow) {
     sf::Event event;
-    switch (_FW.getGameState()) {
+    switch (_FW.getCurrentGameState()) {
         case GameState::Running:
             if (renderWindow.pollEvent(event)) {
                 if (event.type == sf::Event::Closed) {
@@ -18,7 +18,7 @@ void EventHandler::handleEvents(sf::RenderWindow &renderWindow) {
                 } else if (event.type == sf::Event::MouseLeft || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) ||
                            sf::Joystick::isButtonPressed(0, 7)) {
                     _FW.setGameState(GameState::Pause);
-//                  FIXME _FW.getRenderer().getCurrentGameScreen().setReturnState(_FW.getGameState());
+//                  FIXME _FW.getRenderer().getCurrentGameScreen().setReturnState(_FW.getCurrentGameState());
                 } else {
 //                    _FW.getGOC().handleEvent(event);
                 }
@@ -27,11 +27,11 @@ void EventHandler::handleEvents(sf::RenderWindow &renderWindow) {
         case GameState::Pause:
 //            _FW.getGOC().stopSounds();
 //            _FW.getCurrentGameScreen().handleEvent();
-            if (_FW.getGameState() == GameState::Running) {
+            if (_FW.getCurrentGameState() == GameState::Running) {
                 _FW.restartClock();
-            } else if (_FW.getGameState() == GameState::MainMenu) {
-                _FW.resetGame();
-            } else if (_FW.getGameState() == GameState::Options) {
+            } else if (_FW.getCurrentGameState() == GameState::MainMenu) {
+                _FW.reset();
+            } else if (_FW.getCurrentGameState() == GameState::Options) {
                 // FIXME find a solution for this
 //                _FW.getOptionsMenu().enableDifficultySelection(false);
 //                _FW.getOptionsMenu().enableGameModeSelection(false);
@@ -50,7 +50,7 @@ void EventHandler::handleEvents(sf::RenderWindow &renderWindow) {
 //            }
 //            _FW.getMainMenu().setCarIndex(_FW.getCurrentCarSkinIndex());
 
-            _FW.updateCarSelection();
+//            _FW.updateCarSelection();
 
             // FIXME find solution for this
 //            _FW.setGameMode(_FW.getOptionsMenu().getGameMode());
@@ -61,7 +61,7 @@ void EventHandler::handleEvents(sf::RenderWindow &renderWindow) {
             }
 
             // FIXME find a solution for this (move to framework maybe?)
-            if (_FW.getGameState() == GameState::Running) {
+            if (_FW.getCurrentGameState() == GameState::Running) {
 //                _FW.getHUD().setMaxHealth(_FW.getGOC().getPlayerCar()->getMaxHealth());
 //                _FW.getHUD().setMaxEnergy(_FW.getGOC().getPlayerCar()->getMaxEnergy());
 //                _FW.getHUD().setTotalLevelTime(_FW.getLevel().getTotalLevelTime());
@@ -71,13 +71,13 @@ void EventHandler::handleEvents(sf::RenderWindow &renderWindow) {
 //
 //                _FW.getGOC().setGameMode(_FW.getGameMode());
 //                _FW.getGOC().setLevel(_FW.getLevel().getLevel());
-            } else if (_FW.getGameState() == GameState::Highscores) {
+            } else if (_FW.getCurrentGameState() == GameState::Highscores) {
 //                _FW.getHighscoreMenu().loadScoreTable();
-            } else if (_FW.getGameState() == GameState::Options) {
+            } else if (_FW.getCurrentGameState() == GameState::Options) {
 //                _FW.getOptionsMenu().enableDifficultySelection(true);
 //                _FW.getOptionsMenu().enableGameModeSelection(true);
 //                _FW.getOptionsMenu().setReturnState(GameState::MainMenu);
-            } else if (_FW.getGameState() == GameState::MultiplayerSelection) {
+            } else if (_FW.getCurrentGameState() == GameState::MultiplayerSelection) {
 //                _FW.getMultiplayerMenu().resetFeedback();
             }
             break;
@@ -87,7 +87,7 @@ void EventHandler::handleEvents(sf::RenderWindow &renderWindow) {
         case GameState::Options:
 //            _FW.getRenderer().getCurrentGameScreen().handleEvent();
             // FIXME find solution for this (move to framework maybe?)
-            if (_FW.getGameState() != GameState::Options) {
+            if (_FW.getCurrentGameState() != GameState::Options) {
 //                _FW.getOptionsMenu().saveOptions(_FW.getMultiplayerMenu());
             }
 //            _FW.setVolume(_FW.getOptionsMenu().getVolume());
@@ -99,25 +99,25 @@ void EventHandler::handleEvents(sf::RenderWindow &renderWindow) {
         case GameState::Loading:
             while (renderWindow.pollEvent(event)) {
                 if (event.type == sf::Event::Closed) {
-                    _FW.getGameState() = GameState::Exiting;
+                    _FW.getCurrentGameState() = GameState::Exiting;
                 }
             }
             break;
         case GameState::LevelUp:
             while (renderWindow.pollEvent(event)) {
                 if (event.type == sf::Event::Closed) {
-                    _FW.getGameState() = GameState::Exiting;
+                    _FW.getCurrentGameState() = GameState::Exiting;
                 }
             }
             break;
         case GameState::BossFight:
             while (renderWindow.pollEvent(event)) {
                 if (event.type == sf::Event::Closed) {
-                    _FW.getGameState() = GameState::Exiting;
+                    _FW.getCurrentGameState() = GameState::Exiting;
                 } else {
                     if (event.type == sf::Event::MouseLeft || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) ||
                         sf::Joystick::isButtonPressed(0, 7)) {
-                        _FW.getGameState() = GameState::Pause;
+                        _FW.getCurrentGameState() = GameState::Pause;
                         // FIXME _FW.getPauseMenu().setReturnState(GameState::BossFight);
                     } else {
 //                        _FW.getGOC().handleEvent(event);
@@ -128,8 +128,8 @@ void EventHandler::handleEvents(sf::RenderWindow &renderWindow) {
         case GameState::GameOver:
 //            _FW.setVolume(_FW.getOptionsMenu().getVolume());
 //            _FW.getRenderer().getCurrentGameScreen().handleEvent();
-            if (_FW.getGameState() == GameState::MainMenu) {
-                _FW.resetGame();
+            if (_FW.getCurrentGameState() == GameState::MainMenu) {
+                _FW.reset();
             }
             break;
             /*
@@ -227,8 +227,8 @@ void EventHandler::handleEvents(sf::RenderWindow &renderWindow) {
             _FW.getGameState() = _FW.getPauseMultiplayerMenu().handleEvent(_FW, renderWindow);
             if (_FW.getGameState() == GameState::RunningMultiplayer) {
                 _FW.restartClock();
-            } else if (_FW.getGameState() == GameState::MainMenu) {
-                _FW.resetGame();
+            } else if (_FW.getCurrentGameState() == GameState::MainMenu) {
+                _FW.reset();
             } else if (_FW.getGameState() == GameState::Options) {
                 _FW.getOptionsMenu().enableDifficultySelection(false);
                 _FW.getOptionsMenu().enableGameModeSelection(false);

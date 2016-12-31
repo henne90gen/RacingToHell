@@ -4,7 +4,7 @@
 class PauseMultiplayerMenu : public Menu
 {
 public:
-	PauseMultiplayerMenu(Framework &framework, GameState returnState);
+	PauseMultiplayerMenu(Framework &framework);
 	~PauseMultiplayerMenu();
 
 	/*

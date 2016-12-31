@@ -100,7 +100,7 @@ void Updater::update(float frameTime) {
                 _FW.getGameState() = GameState::Lobby;
             } else if (netComm == NetworkCommunication::ConnectionFailed ||
                        netComm == NetworkCommunication::WrongPassword) {
-                _FW.getGameState() = GameState::MultiplayerSelection;
+                _FW.getCurrentGameState() = GameState::MultiplayerSelection;
             }
             break;
         }

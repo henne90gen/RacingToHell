@@ -1,7 +1,12 @@
 #include "stdafx.h"
 #include "Framework/LevelManager.h"
 
-bool LevelManager::update(float frameTime, GameState gameState) {
+void LevelManager::update(float frameTime, GameState gameState) {
+
+    if (!_ShouldMove) {
+        return;
+    }
+
     _LevelTime += frameTime;
 
     if (_Sprite.getPosition().y + frameTime * getRoadSpeed() >= 0) {
@@ -15,7 +20,6 @@ bool LevelManager::update(float frameTime, GameState gameState) {
             levelUp();
         }
     }
-    return false;
 }
 
 void LevelManager::playMusic() {

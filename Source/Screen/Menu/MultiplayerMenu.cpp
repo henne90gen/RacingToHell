@@ -2,7 +2,7 @@
 #include "Screen/Menu/MultiplayerMenu.h"
 #include "Framework/Framework.h"
 
-MultiplayerMenu::MultiplayerMenu(Framework &framework) : Menu(framework, GameState::MultiplayerSelection, GameState::MainMenu),
+MultiplayerMenu::MultiplayerMenu(Framework &framework) : Menu(framework, GameState::MultiplayerSelection),
                                                          _CreatedLobby(-1) {
     _BackgroundName.setFillColor(sf::Color(0, 0, 0, 100));
     _BackgroundName.setOutlineThickness(1);

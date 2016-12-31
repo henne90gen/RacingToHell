@@ -2,7 +2,7 @@
 #include "Screen/Menu/AboutMenu.h"
 #include "Framework/Framework.h"
 
-AboutMenu::AboutMenu(Framework &framework) : Menu(framework, GameState::About, GameState::Options) {
+AboutMenu::AboutMenu(Framework &framework) : Menu(framework, GameState::About) {
     sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
     std::shared_ptr<MenuButton> button(
             new MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 200, 735), ButtonSize, MenuResult::Back, "Back",
@@ -109,7 +109,7 @@ void AboutMenu::handleEvent(sf::Event &event) {
 GameState AboutMenu::handleMenuItemResult(MenuResult result) {
     switch (result) {
         case MenuResult::Back:
-            return _ReturnGameState;
+            return _FW.getLastGameState();
     }
     return _MenuGameState;
 }

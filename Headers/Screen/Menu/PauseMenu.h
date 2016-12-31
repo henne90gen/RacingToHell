@@ -7,7 +7,7 @@ public:
 	/*
 		Whenever one pauses the game this menu appears. One can resume playing, go to options or exit.
 	*/
-	PauseMenu(Framework &framework, GameState returnState);
+	PauseMenu(Framework &framework);
 	~PauseMenu() {}
 
 	/*
@@ -30,10 +30,5 @@ public:
 	*/
 	GameState handleMenuItemResult(MenuResult result);
 
-	void setReturnState(GameState returnState) { _ReturnState = returnState; }
-	GameState getReturnState() { return _ReturnState; }
-
-private:
-	GameState _ReturnState;
 };
 

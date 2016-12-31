@@ -28,10 +28,6 @@ public:
 
     void setDifficulty(int newDiff);
 
-    int getCurrentCarSkinIndex();
-
-    void setCurrentCarSkinIndex(int newIndex);
-
     float getVolume();
 
     void setVolume(float volume);

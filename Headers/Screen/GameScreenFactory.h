@@ -32,7 +32,7 @@ public:
 
     void operator=(GameScreenFactory const &)  = delete;
 
-    std::vector<GameScreen *> getGameScreens(Framework &framework, GameState returnState);
+    std::vector<GameScreen *> getGameScreens(Framework &framework);
 
 private:
     GameScreenFactory() {}
@@ -54,7 +54,7 @@ private:
 
     OptionsMenu *_OptionsMenu;
 
-    OptionsMenu *getOptionsMenu(Framework &framework, GameState returnState);
+    OptionsMenu *getOptionsMenu(Framework &framework);
 
     ExitScreen *_ExitScreen;
 
@@ -78,5 +78,5 @@ private:
 
     PauseMenu *_PauseMenu;
 
-    PauseMenu *getPauseMenu(Framework &framework, GameState returnState);
+    PauseMenu *getPauseMenu(Framework &framework);
 };

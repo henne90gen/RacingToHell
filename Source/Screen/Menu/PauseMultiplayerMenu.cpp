@@ -2,9 +2,8 @@
 #include "Screen/Menu/PauseMultiplayerMenu.h"
 #include "Framework/Framework.h"
 
-PauseMultiplayerMenu::PauseMultiplayerMenu(Framework &framework, GameState returnState) : Menu(framework,
-                                                                                               GameState::PauseMultiplayer,
-                                                                                               returnState) {
+PauseMultiplayerMenu::PauseMultiplayerMenu(Framework &framework) : Menu(framework,
+                                                                                               GameState::PauseMultiplayer) {
     _Background.setFillColor(sf::Color(0, 0, 0, 100));
     _Background.setSize(sf::Vector2f(SCREENWIDTH, SCREENHEIGHT));
     _Background.setPosition(sf::Vector2f(0, 0));

@@ -11,19 +11,19 @@ Renderer::Renderer(Framework &framework) : _FW(framework) {
 }
 
 void Renderer::render() {
-    if ((_FW.getGameState() != GameState::Loading /*|| _CurrentGameScreen.isFadingAway()*/) &&
-        _FW.getGameState() != GameState::Countdown) {
+    if ((_FW.getCurrentGameState() != GameState::Loading /*|| _CurrentGameScreen.isFadingAway()*/) &&
+            _FW.getCurrentGameState() != GameState::Countdown) {
 
 //        _FW.getLevel().render(_RenderWindow);
 
         if (_FW.getNetworkHandle().getRelation() == NetworkRelation::NoRel) {
             // FIXME reenable goc
 //            _FW.getGOC().render(_RenderWindow,
-//                                _FW.getGameState() == GameState::Running || _FW.getGameState() == GameState::BossFight);
+//                                _FW.getGameState() == GameState::Running || _FW.getCurrentGameState() == GameState::BossFight);
         } else {
 //            _FW.getMPGOC().render(_RenderWindow,
-//                                  _FW.getGameState() == GameState::RunningMultiplayer ||
-//                                  _FW.getGameState() == GameState::BossFight);
+//                                  _FW.getCurrentGameState() == GameState::RunningMultiplayer ||
+//                                  _FW.getCurrentGameState() == GameState::BossFight);
         }
     }
 
@@ -33,7 +33,7 @@ void Renderer::render() {
 //        _DisplayedGameScreens.at(i)->render(_RenderWindow);
 //    }
 
-    /*switch (_FW.getGameState()) {
+    /*switch (_FW.getCurrentGameState()) {
         case GameState::Running:
             _FW.getHUD().render(_RenderWindow);
             break;

@@ -2,7 +2,9 @@
 #include "Screen/Menu/PauseMenu.h"
 #include "Framework/Framework.h"
 
-PauseMenu::PauseMenu(Framework &framework, GameState returnState) : Menu(framework, GameState::Pause, returnState) {
+PauseMenu::PauseMenu(Framework &framework) : Menu(framework, GameState::Pause) {
+
+
     //Menu-Items
     sf::Vector2f ButtonSize = sf::Vector2f(250, 50);
     std::shared_ptr<MenuButton> button1(
@@ -14,7 +16,7 @@ PauseMenu::PauseMenu(Framework &framework, GameState returnState) : Menu(framewo
                            TextAlignment::Center));
     _MenuItems.push_back(button2);
     std::shared_ptr<MenuButton> button3(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 380), ButtonSize, MenuResult::Back, "MainMenu Menu",
+            new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 380), ButtonSize, MenuResult::Back, "Main Menu",
                            TextAlignment::Center));
     _MenuItems.push_back(button3);
     std::shared_ptr<MenuButton> button4(
@@ -54,17 +56,14 @@ void PauseMenu::handleEvent(sf::Event &event) {
 GameState PauseMenu::handleMenuItemResult(MenuResult result) {
     switch (result) {
         case MenuResult::Resume:
-            return _ReturnState;
-            break;
+//            _FW.goBackToLastGameState();
         case MenuResult::Option:
             return GameState::Options;
-            break;
         case MenuResult::Back:
+            _FW.reset();
             return GameState::MainMenu;
-            break;
         case MenuResult::Exit:
             return GameState::Exiting;
-            break;
     }
     return _MenuGameState;
 }

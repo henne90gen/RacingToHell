@@ -2,8 +2,7 @@
 #include "Screen/Menu/MultiplayerLobby.h"
 #include "Framework/Framework.h"
 
-MultiplayerLobby::MultiplayerLobby(Framework &framework) : Menu(framework, GameState::Lobby,
-                                                                GameState::MultiplayerSelection), _SelectedCar(0),
+MultiplayerLobby::MultiplayerLobby(Framework &framework) : Menu(framework, GameState::Lobby), _SelectedCar(0),
                                                            _NetworkHandle() {
     std::shared_ptr<PlayerTable> Table(new PlayerTable(sf::Vector2f(25, 25)));
     _MenuItems.push_back(Table);

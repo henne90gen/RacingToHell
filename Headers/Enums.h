@@ -1,6 +1,7 @@
 #pragma once
 
 enum class GameState {
+    Empty,
     Loading,
     LoadingToMain,
     MainMenu,

@@ -8,7 +8,7 @@ public:
 	/*
 		In this menu one can change the fps limit and the volume
 	*/
-	OptionsMenu(Framework &framework, GameState returnState);
+	OptionsMenu(Framework &framework);
 	virtual ~OptionsMenu() {}
 
 	/*
@@ -33,11 +33,6 @@ public:
 
 	void update(float FrameTime);
 
-	void enableDifficultySelection(bool enabled) { _MenuItems[Difficulty]->setEnabled(enabled); }
-
-	void enableGameModeSelection(bool enabled) { _MenuItems[Mode]->setEnabled(enabled); }
-
-	std::vector<float> getMultiplierList() { return _ScoreMultiplierList; }
 private:
 	std::vector<float> _ScoreMultiplierList;
 

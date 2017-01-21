@@ -3,7 +3,12 @@
 #include "Framework/Framework.h"
 
 GameObjectManager::GameObjectManager(Framework &framework) : _FW(framework), _PlayerBulletSpeed(600),
-                                                             _AIBulletSpeed(400), _BossFight(false) {}
+                                                             _AIBulletSpeed(400), _BossFight(false) {
+    _CarFrequency = 1;
+    _CanisterFrequency = 0.5;
+    _ToolboxFrequency = 0.25;
+    _BulletFrequency = 2;
+}
 
 GameObjectManager::~GameObjectManager() {
     _PickupItems.clear();
@@ -27,6 +32,7 @@ void GameObjectManager::update(float frameTime) {
 
     deleteDestroyedCars();
 
+    // TODO Activate BossFight again
     /*
     if (_BossFight) {
         _Boss->update(frameTime, _FW.getLevelManager().getRoadSpeed(), _Bullets, *_Player);
@@ -96,6 +102,19 @@ void GameObjectManager::deleteAllOffScreenObjects() {
     deleteOffScreenObjects(_Bullets);
 
     deleteOffScreenObjects(_PickupItems);
+}
+
+template<typename GameObjectList>
+void GameObjectManager::deleteOffScreenObjects(GameObjectList &goList) {
+    for (unsigned int i = 0; i < goList.size(); i++) {
+        if (goList.at(i)->getPos().y - goList.at(i)->getHeight() / 2 > SCREENHEIGHT ||
+            goList.at(i)->getPos().y + goList.at(i)->getHeight() / 2 <= 0 ||
+            goList.at(i)->getPos().x + goList.at(i)->getWidth() / 2 <= 0 ||
+            goList.at(i)->getPos().x - goList.at(i)->getWidth() / 2 >= SCREENWIDTH) {
+            deleteObject(goList, i);
+            i--;
+        }
+    }
 }
 
 void GameObjectManager::checkForCollisions(float frameTime) {
@@ -200,6 +219,7 @@ void GameObjectManager::checkPlayerForCollisions(float frameTime) {
 }
 
 void GameObjectManager::spawnObjects(float frameTime) {
+
     spawnAICar(frameTime);
 
     spawnBullet(frameTime);
@@ -330,6 +350,7 @@ void GameObjectManager::spawnAICar(float frameTime) {
         if (!_AboutToLevelUp) {
             if (_TimePassedCar + frameTime > 1 / _CarFrequency) {
                 _TimePassedCar += frameTime - 1 / _CarFrequency;
+
                 std::shared_ptr<AICar> newAiCar = GameObjectFactory::getAICar(getAiHP(),
                                                                               _FW.getLevelManager().getRoadSpeed());
 
@@ -402,19 +423,6 @@ void GameObjectManager::spawnCanister(float frameTime) {
             _PickupItems.push_back(GameObjectFactory::getCanister(sf::Vector2f(std::rand() % 3 * 150 + 150, -20)));
 
             std::cout << "Canister spawned" << std::endl;
-        }
-    }
-}
-
-template<typename GameObjectList>
-void GameObjectManager::deleteOffScreenObjects(GameObjectList &goList) {
-    for (unsigned int i = 0; i < goList.size(); i++) {
-        if (goList.at(i)->getPos().y - goList.at(i)->getHeight() / 2 > SCREENHEIGHT ||
-            goList.at(i)->getPos().y + goList.at(i)->getHeight() / 2 <= 0 ||
-            goList.at(i)->getPos().x + goList.at(i)->getWidth() / 2 <= 0 ||
-            goList.at(i)->getPos().x - goList.at(i)->getWidth() / 2 >= SCREENWIDTH) {
-            deleteObject(goList, i);
-            i--;
         }
     }
 }

@@ -111,9 +111,6 @@ public:
 	void setMaxHealth(sf::Int16 health) { _MaxHealth = health; }
 	void setHealth(sf::Int16 health) { _Health = health; }
 
-	/*
-	    TODO add documentation
-	*/
 	void applyKeyPress(sf::Uint8 keys);
 	sf::Uint8 getPressedKeys() { return _PressedKeys; }
 

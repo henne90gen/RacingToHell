@@ -60,9 +60,11 @@ std::vector<GameScreen *> GameScreenFactory::getGameScreens(Framework &framework
             break;
         case GameState::LevelUp:
 //            screen = new LevelUpScreen(framework);
+            screens.push_back(getLevelUpScreen(framework));
             break;
         case GameState::GameOver:
 //            screen = new GameOverMenu(framework);
+            screens.push_back(getGameOverMenu(framework));
             break;
         case GameState::Exiting:
             screens.push_back(getExitScreen(framework));
@@ -157,4 +159,18 @@ PauseMenu *GameScreenFactory::getPauseMenu(Framework &framework) {
         _PauseMenu = new PauseMenu(framework);
     }
     return _PauseMenu;
+}
+
+GameOverMenu *GameScreenFactory::getGameOverMenu(Framework &framework) {
+    if (_GameOverMenu == nullptr) {
+        _GameOverMenu = new GameOverMenu(framework);
+    }
+    return _GameOverMenu;
+}
+
+LevelUpScreen *GameScreenFactory::getLevelUpScreen(Framework &framework) {
+    if (_LevelUpScreen == nullptr) {
+        _LevelUpScreen = new LevelUpScreen(framework);
+    }
+    return _LevelUpScreen;
 }

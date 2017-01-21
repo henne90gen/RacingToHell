@@ -21,7 +21,7 @@ public:
 		@param window RenderWindow to poll the events from
 		@return GameState New GameState the game should be in
 	*/
-	virtual void handleEvents(sf::Event &event);
+	virtual void handleEvent(sf::Event &event);
 	
 	/*
 		Handles the result of the different MenuItems that are on the GameOverMenu

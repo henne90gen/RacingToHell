@@ -85,14 +85,13 @@ void GameOverMenu::setVolume(float volume) {
     }
 }
 
-void GameOverMenu::handleEvents(sf::Event &event) {
+void GameOverMenu::handleEvent(sf::Event &event) {
 
 //		float X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
 //		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
 
 //		handleJoystick(X);
 
-    // FIXME handle gamestate change
     _FW.setGameState(handleMenuItems(event));
 }
 
@@ -104,6 +103,7 @@ GameState GameOverMenu::handleMenuItemResult(MenuResult result) {
             _ScoreSubmitted = false;
             _MenuItems[0]->setEnabled(true);
             _MenuItems[1]->setEnabled(true);
+            _FW.reset();
             return GameState::MainMenu;
         case MenuResult::SubmitScore:
             if (!_ScoreSubmitted && name != "") {
@@ -111,7 +111,6 @@ GameState GameOverMenu::handleMenuItemResult(MenuResult result) {
                 _ScoreSubmitted = true;
                 _MenuItems[0]->setEnabled(false);
                 _MenuItems[1]->setEnabled(false);
-//			_JoystickSelection = 2;
             }
             break;
     }

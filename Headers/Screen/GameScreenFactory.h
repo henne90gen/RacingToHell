@@ -79,4 +79,12 @@ private:
     PauseMenu *_PauseMenu;
 
     PauseMenu *getPauseMenu(Framework &framework);
+
+    GameOverMenu *_GameOverMenu;
+
+    GameOverMenu *getGameOverMenu(Framework &framework);
+
+    LevelUpScreen *_LevelUpScreen;
+
+    LevelUpScreen *getLevelUpScreen(Framework &framework);
 };

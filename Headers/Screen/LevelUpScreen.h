@@ -25,7 +25,7 @@ public:
         Updates the LevelUpScreen and all the animations
         @return bool True when the animations are done
     */
-    virtual void update();
+    virtual void update(float frameTime);
 
     /*
         Sets up the LevelUpScreen for the next level

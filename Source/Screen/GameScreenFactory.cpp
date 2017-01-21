@@ -45,7 +45,9 @@ std::vector<GameScreen *> GameScreenFactory::getGameScreens(Framework &framework
             screens.push_back(getHighscoreMenu(framework));
             break;
         case GameState::Options:
-            if (framework.getCurrentGameState() == GameState::Pause) {
+            if (framework.getCurrentGameState() == GameState::Pause ||
+                (framework.getLastGameState() == GameState::Pause &&
+                 framework.getCurrentGameState() == GameState::Options)) {
                 screens.push_back(getGameObjectScreen(framework));
                 screens.push_back(getHeadsUpDisplayScreen(framework));
             }

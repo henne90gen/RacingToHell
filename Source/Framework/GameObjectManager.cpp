@@ -13,7 +13,6 @@ GameObjectManager::~GameObjectManager() {
 
 void GameObjectManager::update(float frameTime) {
 
-
     _Player->update(frameTime, _FW.getLevelManager().getRoadSpeed());
 
     if (!_Player->isAlive() && !_Player->isDying()) {

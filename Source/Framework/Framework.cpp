@@ -5,6 +5,7 @@ Framework::Framework() :
         _TimeSinceLastUpdate(sf::Time::Zero), _FrameTime(0), _IsRunning(true),
         _LastFPSCheck(), _LastFPSPrint(), _GameObjectManager(*this) {
 
+
     _GameStates.push_back(GameState::Loading);
 
     _RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell", sf::Style::Close);
@@ -25,8 +26,10 @@ Framework::Framework() :
 
     _DisplayedGameScreens = initGameScreens();
 
-    _LoadingThread = std::thread(&Framework::load, this);
-    _LoadingThread.detach();
+    // FIXME Loading with a thread causes SIGSEGV
+//    _LoadingThread = std::thread(&Framework::load, this);
+//    _LoadingThread.detach();
+    load();
 
     //Multiplayer
 // FIXME multiplayer needs help
@@ -124,7 +127,10 @@ void Framework::handleEvents() {
 
 void Framework::update(float frameTime) {
 
-    _LevelManager.update(frameTime, getCurrentGameState());
+    if (getCurrentGameState() != GameState::Pause &&
+        !(getCurrentGameState() == GameState::Options && getLastGameState() == GameState::Pause)) {
+        _LevelManager.update(frameTime, getCurrentGameState());
+    }
 
     if (getCurrentGameState() == GameState::Running) {
         _GameObjectManager.update(frameTime);

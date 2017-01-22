@@ -38,6 +38,8 @@ public:
 
     void setFont(sf::Font font);
 
+    bool isDebugOn();
+
     void loadOptions();
 
     void saveOptions();
@@ -49,6 +51,7 @@ private:
     int _Difficulty;
     float _FPS;
     float _Volume;
+    bool _Debug;
     std::string _MPName;
     sf::Font _Font;
 };

@@ -2,12 +2,14 @@
 
 #include <future>
 
+class Framework;
+
 class LevelManager {
 public:
     /*
         Manager class for the level, draws background and plays music
     */
-    LevelManager() : _ShouldMove(true) {}
+    LevelManager(Framework &framework) : _FW(framework), _ShouldMove(true) {}
 
     ~LevelManager() {}
 
@@ -89,6 +91,10 @@ public:
 
     void addScore(ScoreEvent event, float modifier);
 
+    int getAIHP();
+
+    int getBossHP();
+
     sf::Sprite &getSprite() {
         return _Sprite;
     }
@@ -102,6 +108,8 @@ public:
     }
 
 private:
+    Framework &_FW;
+
     sf::Music _Music;
 
     float _Score;

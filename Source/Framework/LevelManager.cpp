@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Framework/LevelManager.h"
+#include "Framework/Framework.h"
 
 void LevelManager::update(float frameTime, GameState gameState) {
 
@@ -89,5 +90,36 @@ void LevelManager::addScore(ScoreEvent event, float modifier) {
             _Score += (int) (1.5 * modifier);
             break;
         case ScoreEvent::DefeatedBoss:break;
+    }
+}
+
+
+int LevelManager::getAIHP() {
+    switch (_FW.getOptionsManager().getDifficulty()) {
+        case 0:
+            return 40 + _FW.getLevelManager().getLevel() * 10;
+        case 1:
+            return 50 + _FW.getLevelManager().getLevel() * 15;
+        case 2:
+            return 60 + _FW.getLevelManager().getLevel() * 20;
+        case 3:
+            return 65 + _FW.getLevelManager().getLevel() * 25;
+        default:
+            return 1;
+    }
+}
+
+int LevelManager::getBossHP() {
+    switch ((_FW.getLevelManager().getLevel() - 1) % 4) {
+        case 0:
+            return 4500 + (int) ((_FW.getLevelManager().getLevel() - 1) / 4.0f) * 2500;
+        case 1:
+            return 5500 + (int) ((_FW.getLevelManager().getLevel() - 1) / 4.0f) * 2500;
+        case 2:
+            return 1500 + 750 * (int) ((_FW.getLevelManager().getLevel() - 1) / 4.0f);
+        case 3:
+            return 6500 + (int) ((_FW.getLevelManager().getLevel() - 1) / 4.0f) * 2500;
+        default:
+            return 1;
     }
 }

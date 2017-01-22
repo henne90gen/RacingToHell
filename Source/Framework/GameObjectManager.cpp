@@ -282,8 +282,8 @@ bool GameObjectManager::bossIsDead() {
 
 void GameObjectManager::enterBossFight() {
     _Boss = GameObjectFactory::getBossCar((_FW.getLevelManager().getLevel() - 1) % 4,
-                                          _FW.getOptionsManager().getDifficulty(), getBossHP(), _SoundEffects,
-                                          _ExplosionSoundBuffer, _FW.getOptionsManager().getVolume());
+                                          _FW.getOptionsManager().getDifficulty(), _FW.getLevelManager().getBossHP(),
+                                          _SoundEffects, _ExplosionSoundBuffer, _FW.getOptionsManager().getVolume());
     _BossFight = true;
 }
 
@@ -351,7 +351,7 @@ void GameObjectManager::spawnAICar(float frameTime) {
             if (_TimePassedCar + frameTime > 1 / _CarFrequency) {
                 _TimePassedCar += frameTime - 1 / _CarFrequency;
 
-                std::shared_ptr<AICar> newAiCar = GameObjectFactory::getAICar(getAiHP(),
+                std::shared_ptr<AICar> newAiCar = GameObjectFactory::getAICar(_FW.getLevelManager().getAIHP(),
                                                                               _FW.getLevelManager().getRoadSpeed());
 
                 for (unsigned int i = 1; i < _Cars.size(); i++) {
@@ -509,35 +509,6 @@ void GameObjectManager::calculateAllFrequencies() {
     calculateBulletFrequency();
     calculateCanisterFrequency();
     calculateToolboxFrequency();
-}
-
-int GameObjectManager::getAiHP() {
-    switch (_FW.getOptionsManager().getDifficulty()) {
-        case 0:
-            return 40 + _FW.getLevelManager().getLevel() * 10;
-        case 1:
-            return 50 + _FW.getLevelManager().getLevel() * 15;
-        case 2:
-            return 60 + _FW.getLevelManager().getLevel() * 20;
-        case 3:
-            return 65 + _FW.getLevelManager().getLevel() * 25;
-        default:
-            return 1;
-    }
-}
-
-int GameObjectManager::getBossHP() {
-    switch ((_FW.getLevelManager().getLevel() - 1) % 4) {
-        case 0:
-            return 4500 + (int) ((_FW.getLevelManager().getLevel() - 1) / 4.0f) * 2500;
-        case 1:
-            return 5500 + (int) ((_FW.getLevelManager().getLevel() - 1) / 4.0f) * 2500;
-        case 2:
-            return 1500 + 750 * (int) ((_FW.getLevelManager().getLevel() - 1) / 4.0f);
-        case 3:
-            return 6500 + (int) ((_FW.getLevelManager().getLevel() - 1) / 4.0f) * 2500;
-    }
-
 }
 
 void GameObjectManager::playHitSound(sf::Vector2f position) {

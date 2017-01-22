@@ -11,6 +11,8 @@ OptionsManager::OptionsManager() {
     _GameMode = GameMode::Standard;
 
     _Font.loadFromFile("Resources/Font/arial.ttf");
+
+    _Debug = true;
 }
 
 void OptionsManager::loadOptions() {
@@ -97,4 +99,8 @@ sf::Font &OptionsManager::getFont() {
 
 void OptionsManager::setFont(sf::Font font) {
     _Font = font;
+}
+
+bool OptionsManager::isDebugOn() {
+    return _Debug;
 }

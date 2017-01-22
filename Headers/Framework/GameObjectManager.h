@@ -153,12 +153,6 @@ private:
     }
 
     /*
-        calculates the hp of a AIcar
-        @return HP of the AICar
-    */
-    int getAiHP();
-
-    /*
         Sets all frequencies dependig on the selected difficulty
     */
     void calculateAllFrequencies();
@@ -170,11 +164,6 @@ private:
     void calculateCanisterFrequency();
 
     void calculateToolboxFrequency();
-
-    /*
-        @retun Boss HP at given level
-    */
-    int getBossHP();
 
     void playHitSound(sf::Vector2f position);
 

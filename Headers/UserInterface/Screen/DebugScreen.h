@@ -16,4 +16,7 @@ public:
 
     virtual void update(float frameTime);
 
+private:
+    sf::Text _FPS, _UPS, _BulletsOnScreen, _CarsOnScreen, _AICarHealth;
+    sf::Text _FPSLabel, _UPSLabel, _BulletsOnScreenLabel, _CarsOnScreenLabel, _AICarHealthLabel;
 };

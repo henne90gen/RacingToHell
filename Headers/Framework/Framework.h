@@ -55,29 +55,23 @@ public:
 
     void stop();
 
-    GameState getCurrentGameState() {
-        if (_GameStates.size() < 1) {
-            return GameState::Empty;
-        }
-        return _GameStates.at(_GameStates.size() - 1);
-    }
+    GameState getCurrentGameState();
 
-    GameState getLastGameState() {
-        if (_GameStates.size() < 2) {
-            return GameState::Empty;
-        }
-        return _GameStates.at(_GameStates.size() - 2);
-    }
+    GameState getLastGameState();
 
-    void goBackOneGameState();
+    void setGameState(GameState gameState);
+
+    int getFPS();
+
+    int getUPS();
 
     LevelManager &getLevelManager() {
         return _LevelManager;
     }
 
     /**
-     * The GameObjectContainer (GOC) is the central entity for all GameObjects
-     * @return Reference to the GameObjectContainer
+     * The GameObjectManager (GOM) is the central entity for all GameObjects
+     * @return Reference to the GameObjectManager
      */
     GameObjectManager &getGameObjectManager() {
         return _GameObjectManager;
@@ -94,12 +88,6 @@ public:
     OptionsManager &getOptionsManager() {
         return _OptionsManager;
     }
-
-    sf::RenderWindow &getRenderWindow() {
-        return _RenderWindow;
-    }
-
-    void setGameState(GameState gameState);
 
 //    NetworkHandle &getNetworkHandle() {
 //        return _NetworkHandle;
@@ -119,7 +107,7 @@ public:
 
     void reset();
 
-    void initializeNetworkThread();
+//    void initializeNetworkThread();
 
 //    int getNumberOfCarsAvailable() {
 //        return (int) _CarSkins.size();

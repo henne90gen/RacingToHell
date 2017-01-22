@@ -88,6 +88,11 @@ std::vector<GameScreen *> GameScreenFactory::getGameScreens(Framework &framework
         case GameState::Countdown:
             break;
     }
+
+    if (framework.getOptionsManager().isDebugOn()) {
+        screens.push_back(getDebugScreen(framework));
+    }
+
     return screens;
 }
 

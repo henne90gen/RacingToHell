@@ -3,7 +3,7 @@
 
 Framework::Framework() :
         _TimeSinceLastUpdate(sf::Time::Zero), _FrameTime(0), _IsRunning(true),
-        _LastFPSCheck(), _LastFPSPrint(), _GameObjectManager(*this) {
+        _LastFPSCheck(), _LastFPSPrint(), _GameObjectManager(*this), _LevelManager(*this) {
 
 
     _GameStates.push_back(GameState::Loading);
@@ -371,6 +371,24 @@ bool Framework::isMouseVisible() {
     }
 }
 
-void Framework::goBackOneGameState() {
-    _GameStates.erase(_GameStates.begin());
+GameState Framework::getCurrentGameState() {
+    if (_GameStates.size() < 1) {
+        return GameState::Empty;
+    }
+    return _GameStates.at(_GameStates.size() - 1);
+}
+
+GameState Framework::getLastGameState() {
+    if (_GameStates.size() < 2) {
+        return GameState::Empty;
+    }
+    return _GameStates.at(_GameStates.size() - 2);
+}
+
+int Framework::getFPS() {
+    return -1;
+}
+
+int Framework::getUPS() {
+    return -1;
 }

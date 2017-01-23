@@ -146,9 +146,9 @@ void comment() {
         }
 
         // Spawn AICar
-        if (_TimePassedCar + FrameTime > 1 / _CarFrequency)
+        if (_TimePassedCar + FrameTime > 1 / _CarFreq)
         {
-            _TimePassedCar += FrameTime - 1 / _CarFrequency;
+            _TimePassedCar += FrameTime - 1 / _CarFreq;
             spawnAICar(RoadSpeed, network);
         }
         else
@@ -567,14 +567,15 @@ void MPGameObjectContainer::spawnBullet() {
 
     for (unsigned int i = 1; i < _GameObjects.size(); i++) {
         if (_GameObjects.at(i)->getType() == GameObjectType::AI) {
-            AICarVector.push_back(_GameObjects.at(i));
+            AICarVector.push_back((std::shared_ptr<GameObject> &&) _GameObjects.at(i));
         }
     }
 
     if (AICarVector.size() == 0)
         return;
 
-    std::shared_ptr<GameObject> SelectedCar = AICarVector.at(std::rand() % AICarVector.size());
+    std::shared_ptr<GameObject> SelectedCar = (std::shared_ptr<GameObject> &&) AICarVector.at(
+            std::rand() % AICarVector.size());
 
     sf::Vector2f dir = SelectedCar->divideByLength(getPlayerCar().getPos() - SelectedCar->getPos());
 

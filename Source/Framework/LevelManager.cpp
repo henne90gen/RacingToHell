@@ -97,28 +97,28 @@ void LevelManager::addScore(ScoreEvent event, float modifier) {
 int LevelManager::getAIHP() {
     switch (_FW.getOptionsManager().getDifficulty()) {
         case 0:
-            return 40 + _FW.getLevelManager().getLevel() * 10;
+            return 40 + _Level * 10;
         case 1:
-            return 50 + _FW.getLevelManager().getLevel() * 15;
+            return 50 + _Level * 15;
         case 2:
-            return 60 + _FW.getLevelManager().getLevel() * 20;
+            return 60 + _Level * 20;
         case 3:
-            return 65 + _FW.getLevelManager().getLevel() * 25;
+            return 65 + _Level * 25;
         default:
             return 1;
     }
 }
 
 int LevelManager::getBossHP() {
-    switch ((_FW.getLevelManager().getLevel() - 1) % 4) {
+    switch ((_Level - 1) % 4) {
         case 0:
-            return 4500 + (int) ((_FW.getLevelManager().getLevel() - 1) / 4.0f) * 2500;
+            return 4500 + (int) ((_Level - 1) / 4.0f) * 2500;
         case 1:
-            return 5500 + (int) ((_FW.getLevelManager().getLevel() - 1) / 4.0f) * 2500;
+            return 5500 + (int) ((_Level - 1) / 4.0f) * 2500;
         case 2:
-            return 1500 + 750 * (int) ((_FW.getLevelManager().getLevel() - 1) / 4.0f);
+            return 1500 + 750 * (int) ((_Level - 1) / 4.0f);
         case 3:
-            return 6500 + (int) ((_FW.getLevelManager().getLevel() - 1) / 4.0f) * 2500;
+            return 6500 + (int) ((_Level - 1) / 4.0f) * 2500;
         default:
             return 1;
     }

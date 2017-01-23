@@ -95,6 +95,14 @@ public:
 
     std::vector<std::shared_ptr<Animation>> &getAnimations() { return _Animations; }
 
+    float getCarFrequency() { return _CarFrequency; }
+
+    float getBulletFrequency() { return _BulletFrequency; }
+
+    float getCanisterFrequency() { return _CanisterFrequency; }
+
+    float getToolboxFrequency() { return _ToolboxFrequency; }
+
 private:
     Framework &_FW;
 

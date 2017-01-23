@@ -17,6 +17,15 @@ public:
     virtual void update(float frameTime);
 
 private:
-    sf::Text _FPS, _UPS, _BulletsOnScreen, _CarsOnScreen, _AICarHealth;
-    sf::Text _FPSLabel, _UPSLabel, _BulletsOnScreenLabel, _CarsOnScreenLabel, _AICarHealthLabel;
+    unsigned int _CharacterSize = 14;
+    int _XOffset = 0;
+    int _YOffset = 50;
+    int _HorizontalSpacing = 75;
+    int _VerticalSpacing = 15;
+
+    std::vector<std::string> _LabelStrings = {"FPS:", "UPS:", "Bullets:", "Cars:", "AI health:", "Car freq:",
+                                             "Bullet freq:", "Can. freq:", "Tool. freq:"};
+
+    std::vector<sf::Text> _Labels;
+    std::vector<sf::Text> _Values;
 };

@@ -6,7 +6,6 @@ LoadingScreen::LoadingScreen(Framework &framework) : GameScreen(framework), _Alp
     _Text.setString("Loading...");
     _Text.setFont(_FW.getOptionsManager().getFont());
     _Text.setCharacterSize(75);
-    _Text.setColor(sf::Color::White);
     _Text.setOrigin(sf::Vector2f(_Text.getLocalBounds().width / 2.0f, _Text.getLocalBounds().height / 2.0f));
     _Text.setPosition(SCREENWIDTH / 2, SCREENHEIGHT / 2);
 
@@ -23,11 +22,11 @@ void LoadingScreen::render(sf::RenderWindow &window) {
     _Background.setFillColor(backgroundColor);
     window.draw(_Background);
 
-    sf::Uint8 tr = _Text.getColor().r;
-    sf::Uint8 tg = _Text.getColor().g;
-    sf::Uint8 tb = _Text.getColor().b;
+    sf::Uint8 tr = _Text.getFillColor().r;
+    sf::Uint8 tg = _Text.getFillColor().g;
+    sf::Uint8 tb = _Text.getFillColor().b;
     const sf::Color &textColor = sf::Color(tr, tg, tb, _Alpha);
-    _Text.setColor(textColor);
+    _Text.setFillColor(textColor);
     window.draw(_Text);
 }
 

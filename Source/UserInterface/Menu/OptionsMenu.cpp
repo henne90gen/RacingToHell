@@ -152,11 +152,11 @@ void OptionsMenu::update(float FrameTime) {
             "Score: x" + floatToString(_ScoreMultiplierList[(int) _FW.getOptionsManager().getGameMode()], 1));
 
     if (_ScoreMultiplierList[(int) _FW.getOptionsManager().getGameMode()] == 1.0f) {
-        _ScoreMultiplierText.setColor(sf::Color::White);
+        _ScoreMultiplierText.setFillColor(sf::Color::White);
     } else if (_ScoreMultiplierList[(int) _FW.getOptionsManager().getGameMode()] < 1.0f) {
-        _ScoreMultiplierText.setColor(sf::Color::Red);
+        _ScoreMultiplierText.setFillColor(sf::Color::Red);
     } else {
-        _ScoreMultiplierText.setColor(sf::Color::Green);
+        _ScoreMultiplierText.setFillColor(sf::Color::Green);
     }
 }
 

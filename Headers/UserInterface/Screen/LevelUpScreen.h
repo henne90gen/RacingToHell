@@ -44,7 +44,6 @@ public:
     void setVolume(float volume) { _Sound.setVolume(volume); }
 
 private:
-    sf::Font _Font;
     sf::Text _Text;
 
     sf::Texture _FasterTexture;

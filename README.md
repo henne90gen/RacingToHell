@@ -1,8 +1,9 @@
-#RacingToHell#
+#RacingToHell
 
----Setup to compile the source---
+##Setup to compile the source
 
-Download SFML-2.3.2 for Visual Studio 2015 from http://www.sfml-dev.org/download/sfml/2.3.2
-Get both versions, 32-bit and 64-bit.
-Now you can open up Visual Studio and clone the repository. 
-Put each version of SFML into a folder in the repository named "SFML-x86" and "SFML-x64".
+- Download and install CMake and SFML-2.4.0
+- Clone the repository.
+- The CMakeLists.txt in the root directory contains everything necessary to run the build with CMake.
+- A build command might look something like this: cmake --build /path/to/repo/RacingToHell/cmake-build-debug --target RacingToHell -- -j 8
+- Make sure that SFML is either installed through the package manager, if you're on Linux or that it's on the PATH, if you're on Windows.

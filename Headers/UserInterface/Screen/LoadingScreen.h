@@ -30,6 +30,6 @@ private:
 
     sf::RectangleShape _Background;
     sf::Text _Text;
-    int _Alpha; // sf::Uint8 is unsigned, no negatives
+    sf::Uint8 _Alpha; // sf::Uint8 is unsigned, no negatives
 };
 

@@ -11,7 +11,6 @@ ExitScreen::ExitScreen(Framework &framework) : GameScreen(framework), _TotalFade
     _GoodByeText.setFont(_FW.getOptionsManager().getFont());
     _GoodByeText.setString("Good bye, see you soon.");
     _GoodByeText.setCharacterSize(40);
-    _GoodByeText.setColor(sf::Color::White);
     _GoodByeText.setStyle(sf::Text::Style::Bold);
     _GoodByeText.setOrigin(
             sf::Vector2f(_GoodByeText.getLocalBounds().width / 2, _GoodByeText.getLocalBounds().height / 2));

@@ -12,7 +12,7 @@ HighscoreMenu::HighscoreMenu(Framework &framework) : Menu(framework, GameState::
 
     _Text.setString("Highscores");
     _Text.setCharacterSize(53);
-    _Text.setColor(sf::Color::White);
+    _Text.setFillColor(sf::Color::White);
     _Text.setStyle(sf::Text::Style::Bold);
     _Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 160));
 }

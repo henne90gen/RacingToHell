@@ -9,7 +9,7 @@ GameOverMenu::GameOverMenu(Framework &framework) : Menu(framework, GameState::Ga
     sf::Font &font = _FW.getOptionsManager().getFont();
 
     _GOTLine1.setFont(font);
-    _GOTLine1.setColor(sf::Color(200, 0, 0));
+    _GOTLine1.setFillColor(sf::Color(200, 0, 0));
     _GOTLine1.setCharacterSize(60);
     _GOTLine1.setString("Game Over!");
     _GOTLine1.setOrigin(_GOTLine1.getLocalBounds().left + _GOTLine1.getLocalBounds().width / 2.0f,
@@ -17,14 +17,14 @@ GameOverMenu::GameOverMenu(Framework &framework) : Menu(framework, GameState::Ga
     _GOTLine1.setPosition(SCREENWIDTH / 2.0f, 50);
 
     _GOTLine2.setFont(font);
-    _GOTLine2.setColor(sf::Color(200, 0, 0));
+    _GOTLine2.setFillColor(sf::Color(200, 0, 0));
     _GOTLine2.setCharacterSize(40);
     _GOTLine2.setString("Your score was: ");
     _GOTLine2.setPosition(SCREENWIDTH / 2 - 225,
                           _GOTLine1.getGlobalBounds().top + _GOTLine1.getLocalBounds().height * 1.2f);
 
     _GOTLine3.setFont(font);
-    _GOTLine3.setColor(sf::Color(200, 0, 0));
+    _GOTLine3.setFillColor(sf::Color(200, 0, 0));
     _GOTLine3.setCharacterSize(40);
     _GOTLine3.setString("Enter your name:");
     _GOTLine3.setPosition(_GOTLine2.getPosition().x,

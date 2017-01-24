@@ -19,49 +19,41 @@ AboutMenu::AboutMenu(Framework &framework) : Menu(framework, GameState::About) {
 
     _Text.setFont(font);
     _Text.setStyle(sf::Text::Bold);
-    _Text.setColor(sf::Color::White);
     _Text.setString("This game was made by");
     _Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 110));
 
     _Text2.setFont(font);
     _Text2.setStyle(sf::Text::Bold);
-    _Text2.setColor(sf::Color::White);
     _Text2.setString("Alex Ivliev and Hendrik Müller");
     _Text2.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text2.getLocalBounds().width / 2, 145));
 
     _Music.setFont(font);
     _Music.setCharacterSize(25);
-    _Music.setColor(sf::Color::White);
     _Music.setString("Music by KsTBeats");
     _Music.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Music.getLocalBounds().width / 2, 250));
 
     _Cars.setFont(font);
     _Cars.setCharacterSize(25);
-    _Cars.setColor(sf::Color::White);
     _Cars.setString("Enemy cars by sujit1717");
     _Cars.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Cars.getLocalBounds().width / 2, 300));
 
     _Boss.setFont(font);
     _Boss.setCharacterSize(25);
-    _Boss.setColor(sf::Color::White);
     _Boss.setString("Boss sprites by Skorpio,");
     _Boss.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Boss.getLocalBounds().width / 2, 350));
 
     _Boss2.setFont(font);
     _Boss2.setCharacterSize(25);
-    _Boss2.setColor(sf::Color::White);
     _Boss2.setString("MillionthVector and Bleed");
     _Boss2.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Boss2.getLocalBounds().width / 2, 385));
 
     _LevelUp.setFont(font);
     _LevelUp.setCharacterSize(25);
-    _LevelUp.setColor(sf::Color::White);
     _LevelUp.setString("'LevelUp sound effect'");
     _LevelUp.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _LevelUp.getLocalBounds().width / 2, 435));
 
     _LevelUp2.setFont(font);
     _LevelUp2.setCharacterSize(25);
-    _LevelUp2.setColor(sf::Color::White);
     _LevelUp2.setString("by Bart Kelsey");
     _LevelUp2.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _LevelUp2.getLocalBounds().width / 2, 470));
 

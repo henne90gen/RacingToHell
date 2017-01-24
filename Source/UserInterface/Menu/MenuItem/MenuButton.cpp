@@ -5,8 +5,7 @@ MenuButton::MenuButton(sf::Vector2f pos, sf::Vector2f size, MenuResult action, s
         : MenuItem(MenuItemType::MButton, action), _Alignment(align) {
     _Text.setFont(_Font);
     _Text.setPosition(pos);
-    _Text.setColor(sf::Color::White);
-    _Text.setCharacterSize(0.8f * (float) size.y);
+    _Text.setCharacterSize((unsigned int) (0.8f * size.y));
     _Text.setString(text);
 
     _Background.setPosition(pos);
@@ -22,6 +21,8 @@ MenuButton::MenuButton(sf::Vector2f pos, sf::Vector2f size, MenuResult action, s
         case TextAlignment::Right:
             _Background.setPosition(_Background.getPosition() - sf::Vector2f(_Background.getLocalBounds().width, 0));
             break;
+        default:
+            break;
     }
 
     _Text.setPosition(_Background.getPosition() +
@@ -34,13 +35,13 @@ void MenuButton::render(sf::RenderWindow &window) {
     if (_Visible) {
         if ((_Hovering && _Enabled) || (_Focused && _Enabled)) {
             _Background.setFillColor(sf::Color(50, 50, 50, 100));
-            _Text.setColor(sf::Color::White);
+            _Text.setFillColor(sf::Color::White);
         } else if (_Enabled) {
             _Background.setFillColor(sf::Color(0, 0, 0, 175));
-            _Text.setColor(sf::Color::White);
+            _Text.setFillColor(sf::Color::White);
         } else {
             _Background.setFillColor(sf::Color(0, 0, 0, 100));
-            _Text.setColor(sf::Color(150, 150, 150, 255));
+            _Text.setFillColor(sf::Color(150, 150, 150, 255));
         }
 
         if (_Background.getSize().x > 0) {

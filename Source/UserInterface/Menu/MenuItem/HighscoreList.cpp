@@ -63,17 +63,17 @@ void HighscoreList::render(sf::RenderWindow& window)
 			_HighscoreTexts[i + 3 * _NumScores].setPosition(_HeadlineScore.getPosition() + sf::Vector2f(_HeadlineScoreWidth - _HighscoreTexts[i + 3 * _NumScores].getLocalBounds().width, _HeadlineNameHeight + i * _Gap));
 
 			if (_PlayerList[i].Score == _CurrentScore && _PlayerList[i].Name == _CurrentName && _PlayerList[i].Level == _CurrentLevel) {
-				_HighscoreTexts[i].setColor(sf::Color::Yellow);
-				_HighscoreTexts[i + _NumScores].setColor(sf::Color::Yellow);
-				_HighscoreTexts[i + 2 * _NumScores].setColor(sf::Color::Yellow);
-				_HighscoreTexts[i + 3 * _NumScores].setColor(sf::Color::Yellow);
+                _HighscoreTexts[i].setFillColor(sf::Color::Yellow);
+                _HighscoreTexts[i + _NumScores].setFillColor(sf::Color::Yellow);
+                _HighscoreTexts[i + 2 * _NumScores].setFillColor(sf::Color::Yellow);
+                _HighscoreTexts[i + 3 * _NumScores].setFillColor(sf::Color::Yellow);
 				newTopTen = true;
 			}
 			else {
-				_HighscoreTexts[i].setColor(sf::Color::White);
-				_HighscoreTexts[i + _NumScores].setColor(sf::Color::White);
-				_HighscoreTexts[i + 2 * _NumScores].setColor(sf::Color::White);
-				_HighscoreTexts[i + 3 * _NumScores].setColor(sf::Color::White);
+                _HighscoreTexts[i].setFillColor(sf::Color::White);
+                _HighscoreTexts[i + _NumScores].setFillColor(sf::Color::White);
+                _HighscoreTexts[i + 2 * _NumScores].setFillColor(sf::Color::White);
+                _HighscoreTexts[i + 3 * _NumScores].setFillColor(sf::Color::White);
 			}
 
 			window.draw(_HighscoreTexts[i]);
@@ -104,10 +104,10 @@ void HighscoreList::render(sf::RenderWindow& window)
 			_HighscoreTexts[_NumScores + 3 * _NumScores].setString(std::to_string(_PlayerList[i].Score));
 			_HighscoreTexts[_NumScores + 3 * _NumScores].setPosition(_HeadlineScore.getPosition() + sf::Vector2f(_HeadlineScoreWidth - _HighscoreTexts[_NumScores + 3 * _NumScores].getLocalBounds().width, _HeadlineNameHeight + _NumScores * _Gap));
 
-			_HighscoreTexts[_NumScores].setColor(sf::Color::Yellow);
-			_HighscoreTexts[_NumScores + _NumScores].setColor(sf::Color::Yellow);
-			_HighscoreTexts[_NumScores + 2 * _NumScores].setColor(sf::Color::Yellow);
-			_HighscoreTexts[_NumScores + 3 * _NumScores].setColor(sf::Color::Yellow);
+            _HighscoreTexts[_NumScores].setFillColor(sf::Color::Yellow);
+            _HighscoreTexts[_NumScores + _NumScores].setFillColor(sf::Color::Yellow);
+            _HighscoreTexts[_NumScores + 2 * _NumScores].setFillColor(sf::Color::Yellow);
+            _HighscoreTexts[_NumScores + 3 * _NumScores].setFillColor(sf::Color::Yellow);
 
 			window.draw(_HighscoreTexts[_NumScores]);
 			window.draw(_HighscoreTexts[_NumScores + _NumScores]);
@@ -141,7 +141,7 @@ void HighscoreList::saveScoreTable()
 {
 	std::ofstream fileStream;
 	fileStream.open(_Filename, std::ios::out | std::ofstream::binary);
-	int length = _PlayerList.size();
+    unsigned long length = _PlayerList.size();
 	fileStream.write((char*)&length, sizeof(length));
 	for (unsigned int i = 0; i < _PlayerList.size(); i++)
 	{

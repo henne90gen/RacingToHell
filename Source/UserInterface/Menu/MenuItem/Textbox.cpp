@@ -19,7 +19,7 @@ Textbox::Textbox(sf::Vector2f Position, sf::Vector2f Size, unsigned int characte
     _Text.setFont(_Font);
     _Text.setCharacterSize(characterSize);
     _Text.setPosition(Position + sf::Vector2f(2, 0));
-    _Text.setColor(_TextColor);
+    _Text.setFillColor(_TextColor);
 
     setText(_String);
 
@@ -61,11 +61,7 @@ void Textbox::render(sf::RenderWindow &RenderWindow) {
 
 MenuResult Textbox::handleEvent(sf::Event &Event, sf::Vector2f MousePos) {
     if (Event.type == sf::Event::MouseButtonPressed) {
-        if (pointInRectangle(getRect(), MousePos)) {
-            _Focused = true;
-        } else {
-            _Focused = false;
-        }
+        _Focused = pointInRectangle(getRect(), MousePos);
         if (_Enabled && _Focused) {
             _ShowCursor = true;
             _CursorClock.restart();

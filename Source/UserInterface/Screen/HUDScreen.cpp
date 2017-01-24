@@ -7,7 +7,6 @@ HUDScreen::HUDScreen(Framework &framework) : GameScreen(framework) {
     //Displays the current level
     _LevelText.setFont(_FW.getOptionsManager().getFont());
     _LevelText.setPosition(sf::Vector2f(0, 10));
-    _LevelText.setColor(sf::Color::White);
 
     //Progressbar
     _ProgressBar.setFillColor(sf::Color(255, 255, 255, 100));
@@ -41,7 +40,6 @@ HUDScreen::HUDScreen(Framework &framework) : GameScreen(framework) {
     //Health Text
     _HealthText.setFont(_FW.getOptionsManager().getFont());
     _HealthText.setCharacterSize(20);
-    _HealthText.setColor(sf::Color::White);
 
     //Health Icon
     _HealthIconTexture.loadFromFile("Resources/Texture/HUD/HUD_HealthIcon.png");
@@ -66,7 +64,6 @@ HUDScreen::HUDScreen(Framework &framework) : GameScreen(framework) {
     //Enrgy Text
     _EnergyText.setFont(_FW.getOptionsManager().getFont());
     _EnergyText.setCharacterSize(20);
-    _EnergyText.setColor(sf::Color::White);
 
     //Energy Icon
     _EnergyIconTexture.loadFromFile("Resources/Texture/HUD/HUD_EnergyIcon.png");
@@ -77,7 +74,6 @@ HUDScreen::HUDScreen(Framework &framework) : GameScreen(framework) {
     //Score
     _ScoreText.setFont(_FW.getOptionsManager().getFont());
     _ScoreText.setCharacterSize(30);
-    _ScoreText.setColor(sf::Color::White);
     _ScoreText.setPosition(sf::Vector2f(350, SCREENHEIGHT - _Background.getLocalBounds().height));
     _ScoreText.setString("Score: 00000000");
 }
@@ -130,9 +126,9 @@ void HUDScreen::update(float frameTime) {
 //    }
 
     if (health <= 10) {
-        _HealthText.setColor(sf::Color(255, 75, 75));
+        _HealthText.setFillColor(sf::Color(255, 75, 75));
     } else {
-        _HealthText.setColor(sf::Color::White);
+        _HealthText.setFillColor(sf::Color::White);
     }
 
     int energy = (int) _FW.getGOM().getPlayerCar()->getEnergy();
@@ -153,9 +149,9 @@ void HUDScreen::update(float frameTime) {
 //    }
 
     if (energy <= 10) {
-        _EnergyText.setColor(sf::Color(255, 75, 75));
+        _EnergyText.setFillColor(sf::Color(255, 75, 75));
     } else {
-        _EnergyText.setColor(sf::Color::White);
+        _EnergyText.setFillColor(sf::Color::White);
     }
 
     // FIXME implement score

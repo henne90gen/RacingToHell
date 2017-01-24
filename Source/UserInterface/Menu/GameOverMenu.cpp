@@ -37,12 +37,14 @@ GameOverMenu::GameOverMenu(Framework &framework) : Menu(framework, GameState::Ga
             sf::Vector2f(_GOTLine3.getPosition().x + _GOTLine3.getLocalBounds().width + 20,
                          _GOTLine3.getPosition().y + 10),
             sf::Vector2f(450 - _GOTLine3.getLocalBounds().width - 20, _GOTLine3.getLocalBounds().height), 25, "Name",
-            true));
+            MenuResult::SubmitScore, true));
     _MenuItems.push_back(box);
+
     std::shared_ptr<MenuButton> button1(
             new MenuButton(sf::Vector2f(SCREENWIDTH / 2 + 200, 735), ButtonSize, MenuResult::SubmitScore, "Submit",
                            TextAlignment::Center));
     _MenuItems.push_back(button1);
+
     std::shared_ptr<MenuButton> button2(
             new MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 200, 735), ButtonSize, MenuResult::Back, "Back",
                            TextAlignment::Center));
@@ -92,19 +94,16 @@ void GameOverMenu::handleEvent(sf::Event &event) {
 
 //		handleJoystick(X);
 
-    _FW.setGameState(handleMenuItems(event));
-}
-
-GameState GameOverMenu::handleMenuItemResult(MenuResult result) {
     std::string name = _MenuItems[0]->getText();
-    switch (result) {
+    switch (getMenuItemResult(event)) {
         case MenuResult::Back:
             _SoundPlayed = false;
             _ScoreSubmitted = false;
             _MenuItems[0]->setEnabled(true);
             _MenuItems[1]->setEnabled(true);
             _FW.reset();
-            return GameState::MainMenu;
+            _FW.setGameState(GameState::MainMenu);
+            break;
         case MenuResult::SubmitScore:
             if (!_ScoreSubmitted && name != "") {
                 _Highscore.placePlayer(name, _Level);
@@ -113,8 +112,9 @@ GameState GameOverMenu::handleMenuItemResult(MenuResult result) {
                 _MenuItems[1]->setEnabled(false);
             }
             break;
+        default:
+            break;
     }
-    return _MenuGameState;
 }
 
 void GameOverMenu::load() {

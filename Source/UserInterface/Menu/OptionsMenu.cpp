@@ -40,8 +40,7 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
     _ScoreMultiplierText.setFont(font);
     _ScoreMultiplierText.setString("Score: x1.0");
     _ScoreMultiplierText.setCharacterSize(15);
-    _ScoreMultiplierText.setColor(sf::Color::White);
-    _ScoreMultiplierText.setPosition(sf::Vector2f(SCREENWIDTH / 2 - 150 + 10, 480 + 2.5));
+    _ScoreMultiplierText.setPosition(sf::Vector2f(SCREENWIDTH / 2 - 150 + 10, 480.0f + 2.5f));
 
     std::shared_ptr<MenuButton> button1(
             new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 520), sf::Vector2f(150, 50), MenuResult::Credits, "Credits",
@@ -55,7 +54,6 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
 
     _Text.setString("Options");
     _Text.setCharacterSize(53);
-    _Text.setColor(sf::Color::White);
     _Text.setStyle(sf::Text::Style::Bold);
     _Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 160));
 
@@ -105,22 +103,20 @@ void OptionsMenu::handleEvent(sf::Event &event) {
 //		}
 //
 //		handleJoystick(Y);
-
-    _FW.setGameState(handleMenuItems(event));
-}
-
-GameState OptionsMenu::handleMenuItemResult(MenuResult result) {
-    switch (result) {
+    switch (getMenuItemResult(event)) {
         case MenuResult::SliderChange:
             _FW.getOptionsManager().setFPS(_MenuItems[FPS]->getValue());
             _FW.getOptionsManager().setVolume(_MenuItems[Volume]->getValue());
             break;
         case MenuResult::Back:
-            return _FW.getLastGameState();
+            _FW.goBackGameState();
+            break;
         case MenuResult::Credits:
-            return GameState::About;
+            _FW.setGameState(GameState::About);
+            break;
+        default:
+            break;
     }
-    return _MenuGameState;
 }
 
 void OptionsMenu::update(float FrameTime) {

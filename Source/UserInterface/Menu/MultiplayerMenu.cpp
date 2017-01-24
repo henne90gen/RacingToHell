@@ -19,7 +19,7 @@ MultiplayerMenu::MultiplayerMenu(Framework &framework) : Menu(framework, GameSta
 
     std::shared_ptr<Textbox> NameTextBox(new Textbox(
             _NameText.getPosition() + sf::Vector2f(_NameText.getGlobalBounds().width, 0) + sf::Vector2f(20, 0),
-            sf::Vector2f(200, 40), 30, "", true));
+            sf::Vector2f(200, 40), 30, "", MenuResult::Nothing, true));
     _MenuItems.push_back(NameTextBox);
 
     _BackgroundJoin.setFillColor(sf::Color(0, 0, 0, 100));
@@ -41,12 +41,12 @@ MultiplayerMenu::MultiplayerMenu(Framework &framework) : Menu(framework, GameSta
 
     std::shared_ptr<Textbox> IPTextBox(
             new Textbox(_BackgroundJoin.getPosition() + sf::Vector2f(170, 80), sf::Vector2f(240, 40), 30, "127.0.0.1",
-                        false));
+                        MenuResult::Nothing, false));
     _MenuItems.push_back(IPTextBox);
 
     std::shared_ptr<Textbox> PortTextBox(
             new Textbox(_BackgroundJoin.getPosition() + sf::Vector2f(440, 80), sf::Vector2f(100, 40), 30, "12345",
-                        false));
+                        MenuResult::Nothing, false));
     _MenuItems.push_back(PortTextBox);
 
     _PasswordText.setFont(font);
@@ -55,8 +55,8 @@ MultiplayerMenu::MultiplayerMenu(Framework &framework) : Menu(framework, GameSta
     _PasswordText.setString("Password:");
 
     std::shared_ptr<Textbox> PasswordTextBox(
-            new Textbox(_BackgroundJoin.getPosition() + sf::Vector2f(170, 150), sf::Vector2f(240, 40), 30, "", false,
-                        true));
+            new Textbox(_BackgroundJoin.getPosition() + sf::Vector2f(170, 150), sf::Vector2f(240, 40), 30, "",
+                        MenuResult::Nothing, false, true));
     _MenuItems.push_back(PasswordTextBox);
 
     std::shared_ptr<MenuButton> JoinButton(
@@ -86,13 +86,13 @@ MultiplayerMenu::MultiplayerMenu(Framework &framework) : Menu(framework, GameSta
     _CreatePassword.setString("Password:");
 
     std::shared_ptr<Textbox> PasswordTextBoxCreate(
-            new Textbox(_BackgroundCreate.getPosition() + sf::Vector2f(170, 75), sf::Vector2f(240, 40), 30, "", false,
-                        true));
+            new Textbox(_BackgroundCreate.getPosition() + sf::Vector2f(170, 75), sf::Vector2f(240, 40), 30, "",
+                        MenuResult::Nothing, false, true));
     _MenuItems.push_back(PasswordTextBoxCreate);
 
     std::shared_ptr<Textbox> PortCreate(
             new Textbox(_BackgroundCreate.getPosition() + sf::Vector2f(440, 75), sf::Vector2f(100, 40), 30, "12345",
-                        false, false));
+                        MenuResult::Nothing, false, false));
     _MenuItems.push_back(PortCreate);
 
     std::shared_ptr<MenuButton> CreateButton(
@@ -128,14 +128,10 @@ void MultiplayerMenu::render(sf::RenderWindow &window) {
 }
 
 void MultiplayerMenu::handleEvent(sf::Event &event) {
-//    return handleMenuItems(event);
-}
-
-GameState MultiplayerMenu::handleMenuItemResult(MenuResult result) {
-    switch (result) {
+    switch (getMenuItemResult(event)) {
         case MenuResult::Back:
             _CreatedLobby = -1;
-            return GameState::MainMenu;
+            _FW.setGameState(GameState::MainMenu);
             break;
         case MenuResult::Join: {
             if (_MenuItems[(int) MenuItemIndex::Name]->getText() == "") {
@@ -164,7 +160,7 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result) {
                 _CreatedLobby = 0;
                 _MenuGameState = GameState::Connecting;
             }
-            return _MenuGameState;
+            _FW.setGameState(_MenuGameState);
         }
             break;
         case MenuResult::Create:
@@ -183,7 +179,7 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result) {
                     std::cout << "Lobby opened with password '"
                               << _MenuItems[(int) MenuItemIndex::PasswordCreate]->getText() << "', listening on port: "
                               << _MenuItems[(int) MenuItemIndex::PortCreate]->getText() << std::endl;
-                    return GameState::Lobby;
+                    _FW.setGameState(GameState::Lobby);
                 } else {
                     _FeedbackTextCreate.setColor(sf::Color(220, 0, 0));
                     _FeedbackTextCreate.setString("Unable to bind listener socket to port " +
@@ -191,13 +187,11 @@ GameState MultiplayerMenu::handleMenuItemResult(MenuResult result) {
                 }
             }
 
-            return GameState::MultiplayerSelection;
+            _FW.setGameState(GameState::MultiplayerSelection);
             break;
         default:
             break;
     }
-
-    return _MenuGameState;
 }
 
 void MultiplayerMenu::update(float frametime) {

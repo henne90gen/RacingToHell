@@ -61,6 +61,7 @@ MenuResult Slider::handleEvent(sf::Event &Event, sf::Vector2f MousePos) {
             if (pointInRectangle(getRect(), MousePos)) {
                 setSlider(MousePos.x);
                 _MouseButtonPressed = true;
+                return _Action;
             }
         } else if (Event.type == sf::Event::MouseButtonReleased) {
             _MouseButtonPressed = false;
@@ -69,11 +70,12 @@ MenuResult Slider::handleEvent(sf::Event &Event, sf::Vector2f MousePos) {
             if (_MouseButtonPressed) {
                 _Hovering = true;
                 setSlider(MousePos.x);
+                return _Action;
             }
             _Focused = false;
         }
     }
-    return _Action;
+    return MenuResult::Nothing;
 }
 
 void Slider::setValue(float value) {

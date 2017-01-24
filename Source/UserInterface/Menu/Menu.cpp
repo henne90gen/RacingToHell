@@ -17,7 +17,7 @@ void Menu::render(sf::RenderWindow &renderWindow) {
     }
 }
 
-GameState Menu::handleMenuItems(sf::Event &event) {
+MenuResult Menu::getMenuItemResult(sf::Event &event) {
     //applyJoystickSelection(event);
 
     if (event.type == sf::Event::MouseButtonPressed) {
@@ -27,16 +27,16 @@ GameState Menu::handleMenuItems(sf::Event &event) {
     }
 
     if (event.type == sf::Event::Closed) {
-        return GameState::Exiting;
+        _FW.setGameState(GameState::Exiting);
     } else {
-        GameState result = _MenuGameState;
         for (int i = 0; i < _MenuItems.size(); i++) {
-            if (result == _MenuGameState) {
-                result = handleMenuItemResult(_MenuItems[i]->handleEvent(event, _MousePos));
+            MenuResult result = _MenuItems[i]->handleEvent(event, _MousePos);
+            if (result != MenuResult::Nothing) {
+                return result;
             }
         }
-        return result;
     }
+    return MenuResult::Nothing;
 }
 
 /*

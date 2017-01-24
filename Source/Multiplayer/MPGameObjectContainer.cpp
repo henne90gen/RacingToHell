@@ -571,8 +571,9 @@ void MPGameObjectContainer::spawnBullet() {
         }
     }
 
-    if (AICarVector.size() == 0)
+    if (AICarVector.size() == 0) {
         return;
+    }
 
     std::shared_ptr<GameObject> SelectedCar = (std::shared_ptr<GameObject> &&) AICarVector.at(
             std::rand() % AICarVector.size());
@@ -615,7 +616,7 @@ void MPGameObjectContainer::setAiCarFrequency() {
             _CarFrequency = 2.0f + 0.15f * std::pow((float) _Level, 1.3f);
             break;
         case 3:
-            _CarFrequency = 2.15f + 0.17 * std::pow((float) _Level, 1.45f);
+            _CarFrequency = 2.15f + 0.17f * std::pow((float) _Level, 1.45f);
             break;
         default:
             break;
@@ -685,18 +686,14 @@ int MPGameObjectContainer::getAiHP() {
     switch (_Difficulty) {
         case 0:
             return 40 + _Level * 10;
-            break;
         case 1:
             return 50 + _Level * 15;
-            break;
         case 2:
             return 60 + _Level * 20;
-            break;
         case 3:
             return 65 + _Level * 25;
-            break;
         default:
-            break;
+            return 1;
     }
 }
 
@@ -704,16 +701,14 @@ int MPGameObjectContainer::getBossHP() {
     switch ((_Level - 1) % 4) {
         case 0:
             return 4500 + (int) ((_Level - 1) / 4.0f) * 2500;
-            break;
         case 1:
             return 5500 + (int) ((_Level - 1) / 4.0f) * 2500;
-            break;
         case 2:
             return 1500 + 750 * (int) ((_Level - 1) / 4.0f);
-            break;
         case 3:
             return 6500 + (int) ((_Level - 1) / 4.0f) * 2500;
-            break;
+        default:
+            return 1;
     }
 
 }

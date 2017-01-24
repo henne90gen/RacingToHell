@@ -24,13 +24,6 @@ public:
 	virtual void handleEvent(sf::Event &event);
 	
 	/*
-		Handles the result of the different MenuItems that are on the GameOverMenu
-		@param result What the MenuItems returned as a MenuResult
-		@return GameState New GameState the game should be in
-	*/
-	GameState handleMenuItemResult(MenuResult result); 
-	
-	/*
 		Update the GameOverMenu with score and level
 		@parame score Score of the player
 		@param level Level the player is at

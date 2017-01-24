@@ -24,13 +24,6 @@ public:
     */
     virtual void handleEvent(sf::Event &event);
 
-    /*
-        Handles the result of the different MenuItems that are on the HighscoreMenu
-        @param result What the MenuItems returned as a MenuResult
-        @return GameState New GameState the game should be in
-    */
-    GameState handleMenuItemResult(MenuResult result);
-
     void loadScoreTable() { _List.loadScoreTable(); }
 
 private:

@@ -15,7 +15,7 @@ DebugScreen::DebugScreen(Framework &framework) : GameScreen(framework) {
         _Labels.push_back(label);
     }
 
-    for (unsigned int i =0; i < _LabelStrings.size(); i++) {
+    for (unsigned int i = 0; i < _LabelStrings.size(); i++) {
         sf::Text value = sf::Text("", font, _CharacterSize);
         value.setPosition(_XOffset + _HorizontalSpacing, _YOffset + i * _VerticalSpacing);
         _Values.push_back(value);
@@ -39,6 +39,9 @@ void DebugScreen::update(float frameTime) {
     std::vector<std::string> newValues;
     newValues.push_back(std::to_string(_FW.getFPS()));
     newValues.push_back(std::to_string(_FW.getUPS()));
+
+    newValues.push_back(std::to_string((int) _FW.getCurrentGameState()));
+    newValues.push_back(std::to_string((int) _FW.getLastGameState()));
 
     unsigned long bullets = _FW.getGOM().getBullets().size();
     newValues.push_back(std::to_string(bullets));

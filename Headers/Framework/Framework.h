@@ -61,6 +61,8 @@ public:
 
     void setGameState(GameState gameState);
 
+    void goBackGameState();
+
     int getFPS();
 
     int getUPS();

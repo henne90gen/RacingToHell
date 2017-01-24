@@ -103,13 +103,11 @@ void AboutMenu::render(sf::RenderWindow &window) {
 }
 
 void AboutMenu::handleEvent(sf::Event &event) {
-    _FW.setGameState(handleMenuItems(event));
-}
-
-GameState AboutMenu::handleMenuItemResult(MenuResult result) {
-    switch (result) {
+    switch (getMenuItemResult(event)) {
         case MenuResult::Back:
-            return _FW.getLastGameState();
+            _FW.goBackGameState();
+            break;
+        default:
+            break;
     }
-    return _MenuGameState;
 }

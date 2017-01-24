@@ -59,24 +59,20 @@ void PauseMultiplayerMenu::handleEvent(sf::Event &event) {
 //
 //		handleJoystick(Y);
 
-    _FW.setGameState(handleMenuItems(event));
-
-}
-
-GameState PauseMultiplayerMenu::handleMenuItemResult(MenuResult result) {
-    switch (result) {
+    switch (getMenuItemResult(event)) {
         case MenuResult::Resume:
-            return _ReturnState;
+            _FW.goBackGameState();
             break;
         case MenuResult::Option:
-            return GameState::Options;
+            _FW.setGameState(GameState::Options);
             break;
         case MenuResult::Back:
-            return GameState::MainMenu;
+            _FW.setGameState(GameState::MainMenu);
             break;
         case MenuResult::Exit:
-            return GameState::Exiting;
+            _FW.setGameState(GameState::Exiting);
+            break;
+        default:
             break;
     }
-    return _MenuGameState;
 }

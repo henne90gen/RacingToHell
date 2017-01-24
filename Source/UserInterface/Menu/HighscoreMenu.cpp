@@ -35,13 +35,11 @@ void HighscoreMenu::handleEvent(sf::Event &event) {
 //    }
 
 //		handleJoystick(Y);
-    _FW.setGameState(handleMenuItems(event));
-}
-
-GameState HighscoreMenu::handleMenuItemResult(MenuResult result) {
-    switch (result) {
+    switch (getMenuItemResult(event)) {
         case MenuResult::Back:
-            return GameState::MainMenu;
+            _FW.goBackGameState();
+            break;
+        default:
+            break;
     }
-    return _MenuGameState;
 }

@@ -22,7 +22,7 @@ public:
 
     virtual void update(float frameTime) {}
 
-    GameState handleMenuItems(sf::Event &event);
+    MenuResult getMenuItemResult(sf::Event &event);
 
     // FIXME are we still supporting joysticks?
     /*
@@ -36,8 +36,6 @@ protected:
     sf::Text _Text;
     GameState _MenuGameState;
     sf::Vector2f _MousePos;
-
-    virtual GameState handleMenuItemResult(MenuResult result) = 0;
 
     bool checkMenuItemHovered(sf::RenderWindow &Window, int index);
 

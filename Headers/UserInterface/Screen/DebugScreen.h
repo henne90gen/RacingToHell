@@ -23,8 +23,8 @@ private:
     int _HorizontalSpacing = 75;
     int _VerticalSpacing = 15;
 
-    std::vector<std::string> _LabelStrings = {"FPS:", "UPS:", "Bullets:", "Cars:", "AI health:", "Car freq:",
-                                             "Bullet freq:", "Can. freq:", "Tool. freq:"};
+    std::vector<std::string> _LabelStrings = {"FPS:", "UPS:", "CurrState:", "LastState:", "Bullets:", "Cars:",
+                                              "AI health:", "Car freq:", "Bullet freq:", "Can. freq:", "Tool. freq:"};
 
     std::vector<sf::Text> _Labels;
     std::vector<sf::Text> _Values;

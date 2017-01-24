@@ -282,14 +282,6 @@ void Framework::updateMPCarSelection() {
 //    _MPGOCClient.getPlayerCar().setStats(_OptionsManager.getCurrentCarSkinIndex());
 }
 
-void Framework::setGameState(GameState gameState) {
-    if (_GameStates.at(_GameStates.size() - 1) != gameState) {
-        _GameStates.push_back(gameState);
-        _DisplayedGameScreens = GameScreenFactory::getInstance().getGameScreens(*this);
-        std::cout << "Changed gamestate " << (int) gameState << std::endl;
-    }
-}
-
 std::vector<GameScreen *> Framework::initGameScreens() {
     return GameScreenFactory::getInstance().getGameScreens(*this);
 }
@@ -371,6 +363,14 @@ bool Framework::isMouseVisible() {
     }
 }
 
+void Framework::setGameState(GameState gameState) {
+    if (_GameStates.at(_GameStates.size() - 1) != gameState) {
+        _GameStates.push_back(gameState);
+        std::cout << "Changed gamestate " << (int) gameState << std::endl;
+    }
+    _DisplayedGameScreens = GameScreenFactory::getInstance().getGameScreens(*this);
+}
+
 GameState Framework::getCurrentGameState() {
     if (_GameStates.size() < 1) {
         return GameState::Empty;
@@ -383,6 +383,11 @@ GameState Framework::getLastGameState() {
         return GameState::Empty;
     }
     return _GameStates.at(_GameStates.size() - 2);
+}
+
+void Framework::goBackGameState() {
+    _GameStates.pop_back();
+    setGameState(_GameStates.at(_GameStates.size() -1));
 }
 
 int Framework::getFPS() {

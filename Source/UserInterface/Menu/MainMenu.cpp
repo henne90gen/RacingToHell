@@ -43,9 +43,8 @@ MainMenu::MainMenu(Framework &framework) : Menu(framework, GameState::MainMenu) 
     _MenuItems.push_back(button7);
 
     //MainMenu-Menu Text
-    _Text.setString("MainMenu Menu");
+    _Text.setString("Main Menu");
     _Text.setCharacterSize(53);
-    _Text.setColor(sf::Color::White);
     _Text.setStyle(sf::Text::Style::Bold);
     _Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 20));
 
@@ -78,19 +77,16 @@ void MainMenu::handleEvent(sf::Event &event) {
 //				_JoystickTimer.restart();
 //			}
 //		}
-    if (_FW.getCurrentGameState() == GameState::MainMenu) {
-        _FW.setGameState(handleMenuItems(event));
-    }
-}
-
-GameState MainMenu::handleMenuItemResult(MenuResult result) {
-    switch (result) {
+    switch (getMenuItemResult(event)) {
         case MenuResult::Resume:
-            return GameState::Running;
+            _FW.setGameState(GameState::Running);
+            break;
         case MenuResult::Highscore:
-            return GameState::Highscores;
+            _FW.setGameState(GameState::Highscores);
+            break;
         case MenuResult::Option:
-            return GameState::Options;
+            _FW.setGameState(GameState::Options);
+            break;
         case MenuResult::PreviousSkin:
             _FW.getGOM().previousPlayerCar();
             break;
@@ -98,9 +94,12 @@ GameState MainMenu::handleMenuItemResult(MenuResult result) {
             _FW.getGOM().nextPlayerCar();
             break;
         case MenuResult::Exit:
-            return GameState::Exiting;
+            _FW.setGameState(GameState::Exiting);
+            break;
         case MenuResult::Multiplayer:
-            return GameState::MultiplayerSelection;
+            _FW.setGameState(GameState::MultiplayerSelection);
+            break;
+        default:
+            break;
     }
-    return _MenuGameState;
 }

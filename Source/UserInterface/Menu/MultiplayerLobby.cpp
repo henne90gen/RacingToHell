@@ -2,6 +2,8 @@
 #include "UserInterface/Menu/MultiplayerLobby.h"
 #include "Framework/Framework.h"
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "TemplateArgumentsIssues"
 MultiplayerLobby::MultiplayerLobby(Framework &framework) : Menu(framework, GameState::Lobby), _SelectedCar(0),
                                                            _NetworkHandle() {
     std::shared_ptr<PlayerTable> Table(new PlayerTable(sf::Vector2f(25, 25)));
@@ -51,16 +53,12 @@ void MultiplayerLobby::render(sf::RenderWindow &window) {
 }
 
 void MultiplayerLobby::handleEvent(sf::Event &event) {
-    _FW.setGameState(handleMenuItems(event));
-}
-
-GameState MultiplayerLobby::handleMenuItemResult(MenuResult result) {
-    switch (result) {
+    switch (getMenuItemResult(event)) {
         case MenuResult::Back: {
             sf::Packet EmptyPacket;
             _NetworkHandle->addPacket(NetworkCommunication::Disconnect, EmptyPacket);
             std::cout << "Sending disconnect" << std::endl;
-            return GameState::MainMenu;
+            _FW.setGameState(GameState::MainMenu);
         }
             break;
         case MenuResult::PreviousSkin:
@@ -100,15 +98,13 @@ GameState MultiplayerLobby::handleMenuItemResult(MenuResult result) {
                 if (getClientReady()) {
                     sf::Packet packet;
                     _NetworkHandle->addPacket(NetworkCommunication::StartGame, packet);
-                    return GameState::Countdown;
+                    _FW.setGameState(GameState::Countdown);
                 }
             }
             break;
         default:
             break;
     }
-
-    return _MenuGameState;
 }
 
 void MultiplayerLobby::update(std::pair<NetworkCommunication, int> lastresponse) {
@@ -128,3 +124,5 @@ void MultiplayerLobby::EnableButtons(bool isAdmin) {
         _MenuItems[(int) MenuItemIndex::Ready]->setVisible(true);
     }
 }
+
+#pragma clang diagnostic pop

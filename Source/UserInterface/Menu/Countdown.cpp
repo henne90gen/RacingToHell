@@ -22,14 +22,6 @@ void Countdown::render(sf::RenderWindow &window) {
     window.draw(_Text);
 }
 
-void Countdown::handleEvent(sf::Event &event) {
-    _FW.setGameState(handleMenuItems(event));
-}
-
-GameState Countdown::handleMenuItemResult(MenuResult result) {
-    return _MenuGameState;
-}
-
 void Countdown::update(float frameTime) {
     if (!_Started) {
         _Timer.restart();

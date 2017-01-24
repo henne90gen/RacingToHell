@@ -22,12 +22,12 @@ public:
 
 	/*
 		Handles events for the MenuItem
-		@param newEvent Event to be handled
+		@param newEvent: Event to be handled
 	*/
 	virtual MenuResult handleEvent(sf::Event & newEvent, sf::Vector2f mousePos) = 0;
 
 	/*
-		@return sf::FloatRect Bounding box of the MenuItem
+		@return sf::FloatRect: Bounding box of the MenuItem
 	*/
 	virtual sf::FloatRect getRect() = 0;
 

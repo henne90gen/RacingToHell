@@ -15,17 +15,6 @@ addons:
       - libxrandr-dev
       - libudev-dev
       - libflac-dev
-#      - freetype
-#      - jpeg
-#      - x11
-#      - xrandr
-#      - xcb
-#      - x11-xcb
-#      - xcb-randr
-#      - xcb-image
-#      - opengl
-#      - flac
-#      - ogg
-#      - pthread
 script:
   - cmake -DCMAKE_BUILD_TYPE=Release -G "CodeBlocks - Unix Makefiles" ./
+  - cmake --build ./cmake-build-debug --target RacingToHell -- -j 8

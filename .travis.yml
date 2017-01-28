@@ -13,6 +13,7 @@ addons:
       - libvorbis-dev
       - libopenal-dev
       - libxrandr-dev
+      - libudev-dev
 #      - freetype
 #      - jpeg
 #      - x11

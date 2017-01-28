@@ -10,8 +10,8 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - gcc-5
-      - libvorbis
-      - libopenal
+      - libvorbis-dev
+      - libopenal-dev
 #      - freetype
 #      - jpeg
 #      - x11

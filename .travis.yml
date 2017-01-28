@@ -24,7 +24,4 @@ addons:
 #      - libopenal
 #      - pthread
 script:
-  - git clone https://github.com/SFML/SFML
   - cmake -DCMAKE_BUILD_TYPE=Release -G "CodeBlocks - Unix Makefiles" ./
-after_success:
-  coveralls

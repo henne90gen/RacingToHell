@@ -5,6 +5,10 @@ project(RacingToHell)
 set(CMAKE_CXX_STANDARD 11)
 set(EXECUTABLE_NAME RacingToHell)
 
+set(CLONE_SFML git clone https://github.com/SFML/SFML)
+execute_process(COMMAND ${CLONE_SFML}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
 add_subdirectory(SFML)
 add_subdirectory(Source)
 

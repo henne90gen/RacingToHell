@@ -8,7 +8,7 @@ addons:
   apt:
     packages:
       - gcc-6.2
-      - cmake-3.5
+      - cmake-3.2
       - libsfml-dev
 script:
   - cmake -DCMAKE_BUILD_TYPE=Release -G "CodeBlocks - Unix Makefiles" ./

@@ -7,6 +7,6 @@ addons:
     packages:
       - libsfml-dev
 script:
-  - cmake -DCMAKE_BUILD_TYPE=Release -G "CodeBlocks - Unix Makefile" ./RacingToHell
+  - cmake -DCMAKE_BUILD_TYPE=Release -G "CodeBlocks - Unix Makefiles" ./RacingToHell
 after_success:
   coveralls

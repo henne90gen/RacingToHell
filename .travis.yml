@@ -9,21 +9,22 @@ addons:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - gcc-5
+      - gcc-6
       - libvorbis-dev
       - libopenal-dev
       - libxrandr-dev
       - libudev-dev
       - libflac-dev
 script:
+# Link gcc-6 to the standard gcc command
+  - gcc -v
+  - sudo unlink /usr/bin/gcc && sudo ln -s /usr/bin/gcc-6 /usr/bin/gcc
+  - gcc -v
 # Create directory 'build' to not clutter up the root dir
 # CLion does this with the an option:
 # File -> Settings -> Build, Execution, Deployment -> CMake -> Generation path
 # Just set it to ./build
 # Run cmake in RacingToHell/build, but using the CMakeLists.txt from the parent directory (../)
-  - gcc -v
-  - sudo unlink /usr/bin/gcc && sudo ln -s /usr/bin/gcc-5 /usr/bin/gcc
-  - gcc -v
   - mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -G "CodeBlocks - Unix Makefiles" ../
 # Run cmake build with generated build files
   - cd .. && cmake --build ./build --target RacingToHell -- -j 8

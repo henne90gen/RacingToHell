@@ -16,5 +16,13 @@ addons:
       - libudev-dev
       - libflac-dev
 script:
-  - cmake -DCMAKE_BUILD_TYPE=Release -G "CodeBlocks - Unix Makefiles" ./
-  - cmake --build ./cmake-build-debug --target RacingToHell -- -j 8
+# Create directory 'build' to not clutter up the root dir
+# CLion does this with the an option:
+# File -> Settings -> Build, Execution, Deployment -> CMake -> Generation path
+# Just set it to ./build
+  - mkdir build && cd build
+# Run cmake in RacingToHell/build, but using the CMakeLists.txt from the parent directory (../)
+  - cmake -DCMAKE_BUILD_TYPE=Release -G "CodeBlocks - Unix Makefiles" ../
+  - cd ..
+# Run cmake build with generated build files
+  - cmake --build ./build --target RacingToHell -- -j 8

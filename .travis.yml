@@ -6,8 +6,12 @@ compiler:
   - gcc
 addons:
   apt:
+    sources:
+      - ubuntu-toolchain-r-test
     packages:
-      - g++-5
+      - gcc-5
+      - libvorbis
+      - libopenal
 #      - freetype
 #      - jpeg
 #      - x11
@@ -19,8 +23,6 @@ addons:
 #      - opengl
 #      - flac
 #      - ogg
-#      - libvorbis
-#      - libopenal
 #      - pthread
 script:
   - cmake -DCMAKE_BUILD_TYPE=Release -G "CodeBlocks - Unix Makefiles" ./

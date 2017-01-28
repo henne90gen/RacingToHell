@@ -22,6 +22,8 @@ script:
 # Just set it to ./build
 # Run cmake in RacingToHell/build, but using the CMakeLists.txt from the parent directory (../)
   - gcc -v
+  - sudo unlink /usr/bin/gcc && sudo ln -s /usr/bin/gcc-5 /usr/bin/gcc
+  - gcc -v
   - mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -G "CodeBlocks - Unix Makefiles" ../
 # Run cmake build with generated build files
   - cd .. && cmake --build ./build --target RacingToHell -- -j 8

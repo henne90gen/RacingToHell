@@ -18,12 +18,12 @@ addons:
       - libudev-dev
       - libflac-dev
 script:
-# Link gcc-6 to the standard gcc command
+# Link gcc-6 and g++-6 to their standard commands
   - sudo unlink /usr/bin/gcc && sudo ln -s /usr/bin/gcc-6 /usr/bin/gcc
+  - sudo unlink /usr/bin/g++ && sudo ln -s /usr/bin/g++-6 /usr/bin/g++
   - gcc -v
+  - g++ -v
   - cmake --version
-
-
 # Create directory 'build' to not clutter up the root dir
 # CLion does this with the an option:
 # File -> Settings -> Build, Execution, Deployment -> CMake -> Generation path

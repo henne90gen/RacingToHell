@@ -1,0 +1,12 @@
+language:
+  - cpp
+compiler:
+  - gcc
+addons:
+  apt:
+    packages:
+      - libsfml-dev
+script:
+  - cmake -DCMAKE_BUILD_TYPE=Release -G "CodeBlocks - Unix Makefile" ./RacingToHell
+after_success:
+  coveralls

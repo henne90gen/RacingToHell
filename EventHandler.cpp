@@ -242,6 +242,5 @@ void EventHandler::handleEvents(sf::RenderWindow &renderWindow) {
             break;
         case GameState::BossFightMultiplayer:
             break;
-             */
     }
-}
+}*/

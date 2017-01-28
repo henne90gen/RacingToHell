@@ -1,4 +1,4 @@
-dist: xenial
+dist: trusty
 sudo: required
 language:
   - cpp
@@ -9,8 +9,22 @@ addons:
     packages:
       - gcc-6.2
       - cmake-3.2
-      - libsfml-dev
+#      - freetype
+#      - jpeg
+#      - x11
+#      - xrandr
+#      - xcb
+#      - x11-xcb
+#      - xcb-randr
+#      - xcb-image
+#      - opengl
+#      - flac
+#      - ogg
+#      - libvorbis
+#      - libopenal
+#      - pthread
 script:
+  - git clone https://github.com/SFML/SFML
   - cmake -DCMAKE_BUILD_TYPE=Release -G "CodeBlocks - Unix Makefiles" ./
 after_success:
   coveralls

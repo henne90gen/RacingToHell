@@ -1,4 +1,4 @@
-dist: trusty
+dist: xenial
 sudo: required
 language:
   - cpp
@@ -7,6 +7,8 @@ compiler:
 addons:
   apt:
     packages:
+      - gcc-6.2
+      - cmake-3.5
       - libsfml-dev
 script:
   - cmake -DCMAKE_BUILD_TYPE=Release -G "CodeBlocks - Unix Makefiles" ./

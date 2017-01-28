@@ -1,5 +1,7 @@
 #RacingToHell
 
+[![Build Status](https://travis-ci.org/henne90gen/RacingToHell.svg?branch=master)](https://travis-ci.org/henne90gen/RacingToHell)
+
 ##Setup to compile the source
 
 - Download and install CMake and SFML-2.4.0

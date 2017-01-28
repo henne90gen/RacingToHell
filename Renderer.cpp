@@ -1,17 +1,9 @@
-//
-// Created by henne on 27.11.16.
-//
 
-#include "stdafx.h"
-#include "Framework/Renderer.h"
-#include "Framework/Framework.h"
+// TODO this file is only being kept in case any of its content is needed in the future (for multiplayer for example)
 
-Renderer::Renderer(Framework &framework) : _FW(framework) {
-
-}
-
+/*
 void Renderer::render() {
-    if ((_FW.getCurrentGameState() != GameState::Loading /*|| _CurrentGameScreen.isFadingAway()*/) &&
+    if ((_FW.getCurrentGameState() != GameState::Loading /*|| _CurrentGameScreen.isFadingAway()) &&
             _FW.getCurrentGameState() != GameState::Countdown) {
 
 //        _FW.getLevel().render(_RenderWindow);
@@ -91,7 +83,6 @@ void Renderer::render() {
             break;
         case GameState::BossFightMultiplayer:
             break;
-    }*/
+    }
 //    _RenderWindow.display();
-}
-
+}*/

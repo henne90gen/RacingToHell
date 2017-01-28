@@ -50,7 +50,8 @@ void GameObjectScreen::handleEvent(sf::Event &event) {
     if (_FW.getCurrentGameState() == GameState::Running) {
         if (event.type == sf::Event::EventType::KeyPressed) {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-                _FW.setGameState(GameState::Pause);
+                _FW.getLevelManager().stopMoving();
+                _FW.advanceToGamState(GameState::Pause);
             }
         }
         if (_FW.getGOM().getPlayerCar()->isAlive()) {

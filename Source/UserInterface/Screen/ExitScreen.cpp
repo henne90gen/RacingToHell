@@ -6,7 +6,8 @@
 #include "UserInterface/Screen/ExitScreen.h"
 #include "Framework/Framework.h"
 
-ExitScreen::ExitScreen(Framework &framework) : GameScreen(framework), _TotalFadeTime(2.0f), _FadeSpeed(15.0f), _InitialScale(10.0f) {
+ExitScreen::ExitScreen(Framework &framework) : GameScreen(framework), _TotalFadeTime(1.0f), _FadeSpeed(15.0f),
+                                               _InitialScale(10.0f) {
 
     _GoodByeText.setFont(_FW.getOptionsManager().getFont());
     _GoodByeText.setString("Good bye, see you soon.");

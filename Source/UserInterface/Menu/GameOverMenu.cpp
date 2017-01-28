@@ -5,7 +5,7 @@
 GameOverMenu::GameOverMenu(Framework &framework) : Menu(framework, GameState::GameOver),
                                                    _SoundPlayed(false),
                                                    _ScoreSubmitted(false),
-                                                   _Highscore(sf::Vector2f(SCREENWIDTH / 2 - 225, 190)) {
+                                                   _HighscoreList(_FW, sf::Vector2f(SCREENWIDTH / 2 - 225, 190)) {
     sf::Font &font = _FW.getOptionsManager().getFont();
 
     _GOTLine1.setFont(font);
@@ -54,20 +54,13 @@ GameOverMenu::GameOverMenu(Framework &framework) : Menu(framework, GameState::Ga
 }
 
 void GameOverMenu::render(sf::RenderWindow &window) {
-    _GOTLine2.setString("Your score was: " + std::to_string(_Highscore.getScore()));
-
     window.draw(_GOTLine1);
     window.draw(_GOTLine2);
     window.draw(_GOTLine3);
 
-    _Highscore.render(window);
+    _HighscoreList.render(window);
 
     Menu::render(window);
-}
-
-void GameOverMenu::update(int score, int level) {
-    _Highscore.setScore(score);
-    _Level = level;
 }
 
 void GameOverMenu::playSounds() {
@@ -102,11 +95,11 @@ void GameOverMenu::handleEvent(sf::Event &event) {
             _MenuItems[0]->setEnabled(true);
             _MenuItems[1]->setEnabled(true);
             _FW.reset();
-            _FW.setGameState(GameState::MainMenu);
+            _FW.advanceToGamState(GameState::MainMenu);
             break;
         case MenuResult::SubmitScore:
             if (!_ScoreSubmitted && name != "") {
-                _Highscore.placePlayer(name, _Level);
+                _FW.getHighscoreManager().saveScoreWithName(name);
                 _ScoreSubmitted = true;
                 _MenuItems[0]->setEnabled(false);
                 _MenuItems[1]->setEnabled(false);
@@ -121,4 +114,9 @@ void GameOverMenu::load() {
     if (_GameOverSoundBuffer.loadFromFile("Resources/Sound/gameOver.wav")) {
         _GameOverSound.setBuffer(_GameOverSoundBuffer);
     }
+}
+
+void GameOverMenu::update(float frameTime) {
+    _GOTLine2.setString("Your score was: " + std::to_string(_FW.getLevelManager().getScore()));
+    _HighscoreList.update(frameTime);
 }

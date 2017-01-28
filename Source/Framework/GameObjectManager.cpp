@@ -21,7 +21,8 @@ void GameObjectManager::update(float frameTime) {
     _Player->update(frameTime, _FW.getLevelManager().getRoadSpeed());
 
     if (!_Player->isAlive() && !_Player->isDying()) {
-        _FW.setGameState(GameState::GameOver);
+        _FW.getLevelManager().stopMoving();
+        _FW.advanceToGamState(GameState::GameOver);
     }
 
     spawnObjects(frameTime);
@@ -351,7 +352,7 @@ void GameObjectManager::spawnAICar(float frameTime) {
             if (_TimePassedCar + frameTime > 1 / _CarFrequency) {
                 _TimePassedCar += frameTime - 1 / _CarFrequency;
 
-                std::shared_ptr<AICar> newAiCar = GameObjectFactory::getAICar(_FW.getLevelManager().getAIHP(),
+                std::shared_ptr<AICar> newAiCar = GameObjectFactory::getAICar(_FW.getLevelManager().getAiHP(),
                                                                               _FW.getLevelManager().getRoadSpeed());
 
                 for (unsigned int i = 1; i < _Cars.size(); i++) {
@@ -363,7 +364,6 @@ void GameObjectManager::spawnAICar(float frameTime) {
 
                 _Cars.push_back(newAiCar);
 
-                std::cout << "Car spawned" << std::endl;
             } else {
                 _TimePassedCar += frameTime;
             }
@@ -389,8 +389,6 @@ void GameObjectManager::spawnBullet(float frameTime) {
                                                                                     _FW.getOptionsManager().getVolume());
             _Bullets.push_back(newBullet);
 
-            std::cout << "Bullet spawned" << std::endl;
-
             // FIXME should we really recalculate the freq after every spawn?
             calculateBulletFrequency();
         } else {
@@ -407,8 +405,6 @@ void GameObjectManager::spawnToolbox(float frameTime) {
             _TimePassedToolbox -= 1.0f / _ToolboxFrequency;
             _PickupItems.push_back(GameObjectFactory::getToolbox(sf::Vector2f(std::rand() % 3 * 150 + 150, -10)));
 
-            std::cout << "Toolbox spawned" << std::endl;
-
             // FIXME should we really recalculate the freq after every spawn?
             calculateToolboxFrequency();
         }
@@ -421,8 +417,6 @@ void GameObjectManager::spawnCanister(float frameTime) {
         if (_TimePassedCanister > 1.0f / _CanisterFrequency) {
             _TimePassedCanister -= 1.0f / _CanisterFrequency;
             _PickupItems.push_back(GameObjectFactory::getCanister(sf::Vector2f(std::rand() % 3 * 150 + 150, -20)));
-
-            std::cout << "Canister spawned" << std::endl;
         }
     }
 }

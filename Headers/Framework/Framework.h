@@ -17,26 +17,15 @@
 #include "UserInterface/Screen/LoadingScreen.h"
 #include "UserInterface/Screen/LevelUpScreen.h"
 #include "UserInterface/Screen/HUDScreen.h"
+#include "UserInterface/GameScreenFactory.h"
 #include "Multiplayer/NetworkHandle.h"
 #include "Multiplayer/MPGameObjectContainer.h"
 #include "LevelManager.h"
-#include "Renderer.h"
-#include "Updater.h"
-#include "EventHandler.h"
 #include "OptionsManager.h"
 
 #include <sstream>
 #include <fstream>
 #include <thread>
-
-/**
- * Forward declarations
- */
-class Renderer;
-
-class Updater;
-
-class EventHandler;
 
 class Framework {
 public:
@@ -59,7 +48,7 @@ public:
 
     GameState getLastGameState();
 
-    void setGameState(GameState gameState);
+    void advanceToGamState(GameState gameState);
 
     void goBackGameState();
 
@@ -89,6 +78,10 @@ public:
 
     OptionsManager &getOptionsManager() {
         return _OptionsManager;
+    }
+
+    HighscoreManager &getHighscoreManager() {
+        return _HighscoreManager;
     }
 
 //    NetworkHandle &getNetworkHandle() {
@@ -124,7 +117,10 @@ private:
 
     LevelManager _LevelManager;
 
+    HighscoreManager _HighscoreManager;
+
     GameObjectManager _GameObjectManager;
+
 
     sf::RenderWindow _RenderWindow;
 
@@ -133,8 +129,8 @@ private:
     std::vector<GameState> _GameStates;
 
     std::vector<GameScreen *> initGameScreens();
-
     std::thread _LoadingThread;
+
     sf::Clock _Clock;
 
     sf::Time _TimeSinceLastUpdate;
@@ -144,14 +140,11 @@ private:
 
     bool _IsRunning;
 
-//    MPGameObjectContainer _MPGOCClient;
 //    MPGameObjectContainer _MPGOCServer;
 
     // Music yo
     sf::Music _MenuMusic;
 
-    //Multiplayer
-//    NetworkHandle _NetworkHandle;
 //    std::thread _NetworkThread;
 
     // Functions
@@ -167,4 +160,7 @@ private:
 
     bool measureTime();
 
+//    MPGameObjectContainer _MPGOCClient;
+    //Multiplayer
+//    NetworkHandle _NetworkHandle;
 };

@@ -112,7 +112,7 @@ void OptionsMenu::handleEvent(sf::Event &event) {
             _FW.goBackGameState();
             break;
         case MenuResult::Credits:
-            _FW.setGameState(GameState::About);
+            _FW.advanceToGamState(GameState::About);
             break;
         default:
             break;

@@ -49,7 +49,7 @@ void DebugScreen::update(float frameTime) {
     unsigned long cars = _FW.getGOM().getCars().size() + 1;
     newValues.push_back(std::to_string(cars));
 
-    newValues.push_back(std::to_string(_FW.getLevelManager().getAIHP()));
+    newValues.push_back(std::to_string(_FW.getLevelManager().getAiHP()));
     newValues.push_back(std::to_string(_FW.getGOM().getCarFrequency()));
     newValues.push_back(std::to_string(_FW.getGOM().getBulletFrequency()));
     newValues.push_back(std::to_string(_FW.getGOM().getCanisterFrequency()));

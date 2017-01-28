@@ -131,7 +131,7 @@ void MultiplayerMenu::handleEvent(sf::Event &event) {
     switch (getMenuItemResult(event)) {
         case MenuResult::Back:
             _CreatedLobby = -1;
-            _FW.setGameState(GameState::MainMenu);
+            _FW.advanceToGamState(GameState::MainMenu);
             break;
         case MenuResult::Join: {
             if (_MenuItems[(int) MenuItemIndex::Name]->getText() == "") {
@@ -160,7 +160,7 @@ void MultiplayerMenu::handleEvent(sf::Event &event) {
                 _CreatedLobby = 0;
                 _MenuGameState = GameState::Connecting;
             }
-            _FW.setGameState(_MenuGameState);
+            _FW.advanceToGamState(_MenuGameState);
         }
             break;
         case MenuResult::Create:
@@ -179,7 +179,7 @@ void MultiplayerMenu::handleEvent(sf::Event &event) {
                     std::cout << "Lobby opened with password '"
                               << _MenuItems[(int) MenuItemIndex::PasswordCreate]->getText() << "', listening on port: "
                               << _MenuItems[(int) MenuItemIndex::PortCreate]->getText() << std::endl;
-                    _FW.setGameState(GameState::Lobby);
+                    _FW.advanceToGamState(GameState::Lobby);
                 } else {
                     _FeedbackTextCreate.setFillColor(sf::Color(220, 0, 0));
                     _FeedbackTextCreate.setString("Unable to bind listener socket to port " +
@@ -187,7 +187,7 @@ void MultiplayerMenu::handleEvent(sf::Event &event) {
                 }
             }
 
-            _FW.setGameState(GameState::MultiplayerSelection);
+            _FW.advanceToGamState(GameState::MultiplayerSelection);
             break;
         default:
             break;

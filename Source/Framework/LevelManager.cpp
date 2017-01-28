@@ -2,7 +2,7 @@
 #include "Framework/LevelManager.h"
 #include "Framework/Framework.h"
 
-void LevelManager::update(float frameTime, GameState gameState) {
+void LevelManager::update(float frameTime) {
 
     if (!_ShouldMove) {
         return;
@@ -16,7 +16,7 @@ void LevelManager::update(float frameTime, GameState gameState) {
         _Sprite.setPosition(sf::Vector2f(_Sprite.getPosition().x, _Sprite.getPosition().y + frameTime * getRoadSpeed()));
     }
 
-    if (gameState == GameState::Running) {
+    if (_FW.getCurrentGameState() == GameState::Running) {
         if (_LevelTime >= _TotalLevelTime) {
             levelUp();
         }
@@ -52,6 +52,7 @@ void LevelManager::resetToLevelOne() {
     _TotalLevelTime = 60.0f;
     _LevelTime = 0;
     _IsResettingLevel = true;
+    _ShouldMove = true;
 }
 
 int LevelManager::getRoadSpeed() {
@@ -93,8 +94,7 @@ void LevelManager::addScore(ScoreEvent event, float modifier) {
     }
 }
 
-
-int LevelManager::getAIHP() {
+int LevelManager::getAiHP() {
     switch (_FW.getOptionsManager().getDifficulty()) {
         case 0:
             return 40 + _Level * 10;

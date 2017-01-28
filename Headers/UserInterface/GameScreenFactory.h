@@ -5,7 +5,7 @@
 #pragma once
 
 #include "Enums.h"
-#include "Framework/LevelManager.h"
+//#include "Framework/LevelManager.h"
 #include "UserInterface/Screen/GameScreen.h"
 #include "UserInterface/Screen/EmptyScreen.h"
 #include "UserInterface/Menu/MainMenu.h"
@@ -21,6 +21,8 @@
 #include "UserInterface/Screen/LoadingScreen.h"
 #include "UserInterface/Screen/HUDScreen.h"
 #include "UserInterface/Screen/DebugScreen.h"
+
+class Framework;
 
 class GameScreenFactory {
 public:

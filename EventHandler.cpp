@@ -7,17 +7,17 @@
 EventHandler::EventHandler(Framework &framework) : _FW(framework) {
 
 }
-
+/*
 void EventHandler::handleEvents(sf::RenderWindow &renderWindow) {
     sf::Event event;
     switch (_FW.getCurrentGameState()) {
         case GameState::Running:
             if (renderWindow.pollEvent(event)) {
                 if (event.type == sf::Event::Closed) {
-                    _FW.setGameState(GameState::Exiting);
+                    _FW.advanceToGamState(GameState::Exiting);
                 } else if (event.type == sf::Event::MouseLeft || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) ||
                            sf::Joystick::isButtonPressed(0, 7)) {
-                    _FW.setGameState(GameState::Pause);
+                    _FW.advanceToGamState(GameState::Pause);
 //                  FIXME _FW.getRenderer().getCurrentGameScreen().setReturnState(_FW.getCurrentGameState());
                 } else {
 //                    _FW.getGOC().handleEvent(event);
@@ -203,7 +203,7 @@ void EventHandler::handleEvents(sf::RenderWindow &renderWindow) {
             }
             break;
         case GameState::Countdown:
-            _FW.setGameState(_FW.getCountdown().handleEvent(_FW, renderWindow));
+            _FW.advanceToGamState(_FW.getCountdown().handleEvent(_FW, renderWindow));
             break;
         case GameState::RunningMultiplayer:
             if (renderWindow.pollEvent(event)) {

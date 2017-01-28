@@ -44,7 +44,7 @@ ComboBox::ComboBox(sf::Vector2f pos, std::vector<std::string> &Items, MenuResult
     centerText();
 }
 
-void ComboBox::render(sf::RenderWindow &RenderWidnow) {
+void ComboBox::render(sf::RenderWindow &renderWindow) {
     if (_Enabled) {
         if (_HoveringLeft) {
             _ButtonLeft.setFillColor(_BgColorHovering);
@@ -67,14 +67,14 @@ void ComboBox::render(sf::RenderWindow &RenderWidnow) {
         _Text.setFillColor(_FgColorDisabled);
     }
 
-    RenderWidnow.draw(_ButtonLeft);
-    RenderWidnow.draw(_ButtonRight);
-    RenderWidnow.draw(_Body);
+    renderWindow.draw(_ButtonLeft);
+    renderWindow.draw(_ButtonRight);
+    renderWindow.draw(_Body);
 
-    RenderWidnow.draw(_Text);
+    renderWindow.draw(_Text);
 
-    RenderWidnow.draw(_LeftArrowSprite);
-    RenderWidnow.draw(_RightArrowSprite);
+    renderWindow.draw(_LeftArrowSprite);
+    renderWindow.draw(_RightArrowSprite);
 }
 
 MenuResult ComboBox::handleEvent(sf::Event &newEvent, sf::Vector2f mousePos) {

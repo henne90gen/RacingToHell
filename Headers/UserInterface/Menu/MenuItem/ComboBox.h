@@ -11,7 +11,7 @@ public:
     /*
         See MenuItem for details
     */
-    void render(sf::RenderWindow &RenderWidnow);
+    void render(sf::RenderWindow &renderWindow);
 
     /*
         See MenuItem for details

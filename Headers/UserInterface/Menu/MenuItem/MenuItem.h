@@ -19,7 +19,7 @@ public:
         Renders the MenuItem to the specified RenderWindow
         @param window Window to draw to
     */
-    virtual void render(sf::RenderWindow &window) = 0;
+    virtual void render(sf::RenderWindow &renderWindow) = 0;
 
     /*
         Handles events for the MenuItem

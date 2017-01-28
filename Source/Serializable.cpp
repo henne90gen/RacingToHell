@@ -10,7 +10,7 @@
 
 template <> void Serializable::write(std::ostream& stream, std::string input)
 {
-	int length = input.size();
+    unsigned long length = input.size();
 	stream.write((char*)&length, sizeof(length));
 	stream << input;
 }

@@ -16,10 +16,8 @@ public:
     /*
         Updates the Level with the given frame time
         @param frameTime Time that has passed since the last update
-        @param gameState State of the game
-        @return bool True if 'level up' has happened
     */
-    void update(float frameTime, GameState gameState);
+    void update(float frameTime);
 
     void load();
 
@@ -87,11 +85,11 @@ public:
     */
     float getTotalLevelTime() { return _TotalLevelTime; }
 
-    float getScore() { return _Score; }
+    int getScore() { return _Score; }
 
     void addScore(ScoreEvent event, float modifier);
 
-    int getAIHP();
+    int getAiHP();
 
     int getBossHP();
 
@@ -112,14 +110,13 @@ private:
 
     sf::Music _Music;
 
-    float _Score;
+    int _Score;
 
     float _LevelTime;
     float _TotalLevelTime;
 
     int _Level, _Difficulty;
 
-//    std::mutex _ThreadGuard;
     bool _IsResettingLevel;
 
     std::vector<std::shared_ptr<sf::Texture>> _Textures;

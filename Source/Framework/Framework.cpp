@@ -1,9 +1,8 @@
 #include "stdafx.h"
 #include "Framework/Framework.h"
 
-Framework::Framework() :
-        _TimeSinceLastUpdate(sf::Time::Zero), _FrameTime(0), _IsRunning(true),
-        _LastFPSCheck(), _LastFPSPrint(), _GameObjectManager(*this), _LevelManager(*this) {
+Framework::Framework() : _TimeSinceLastUpdate(sf::Time::Zero), _FrameTime(0), _IsRunning(true), _LastFPSCheck(),
+                         _LastFPSPrint(), _GameObjectManager(*this), _LevelManager(*this), _HighscoreManager(*this) {
 
 
     _GameStates.push_back(GameState::Loading);
@@ -129,7 +128,7 @@ void Framework::update(float frameTime) {
 
     if (getCurrentGameState() != GameState::Pause &&
         !(getCurrentGameState() == GameState::Options && getLastGameState() == GameState::Pause)) {
-        _LevelManager.update(frameTime, getCurrentGameState());
+        _LevelManager.update(frameTime);
     }
 
     if (getCurrentGameState() == GameState::Running) {
@@ -207,7 +206,7 @@ void Framework::load() {
         _GameObjectManager.load();
         _GameObjectManager.resetGameObjects();
 
-        setGameState(GameState::LoadingToMain);
+        advanceToGamState(GameState::LoadingToMain);
     }
     catch (...) {
         std::exit;
@@ -360,13 +359,14 @@ bool Framework::isMouseVisible() {
         case GameState::Exiting:
         case GameState::BossFightMultiplayer:
             return false;
+        default:
+            return true;
     }
 }
 
-void Framework::setGameState(GameState gameState) {
+void Framework::advanceToGamState(GameState gameState) {
     if (_GameStates.at(_GameStates.size() - 1) != gameState) {
         _GameStates.push_back(gameState);
-        std::cout << "Changed gamestate " << (int) gameState << std::endl;
     }
     _DisplayedGameScreens = GameScreenFactory::getInstance().getGameScreens(*this);
 }
@@ -387,7 +387,7 @@ GameState Framework::getLastGameState() {
 
 void Framework::goBackGameState() {
     _GameStates.pop_back();
-    setGameState(_GameStates.at(_GameStates.size() -1));
+    advanceToGamState(_GameStates.at(_GameStates.size() - 1));
 }
 
 int Framework::getFPS() {

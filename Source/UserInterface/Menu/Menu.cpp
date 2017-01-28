@@ -27,7 +27,7 @@ MenuResult Menu::getMenuItemResult(sf::Event &event) {
     }
 
     if (event.type == sf::Event::Closed) {
-        _FW.setGameState(GameState::Exiting);
+        _FW.advanceToGamState(GameState::Exiting);
     } else {
         for (int i = 0; i < _MenuItems.size(); i++) {
             MenuResult result = _MenuItems[i]->handleEvent(event, _MousePos);

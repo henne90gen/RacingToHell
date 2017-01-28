@@ -3,7 +3,7 @@
 #include "Framework/Framework.h"
 
 HighscoreMenu::HighscoreMenu(Framework &framework) : Menu(framework, GameState::Highscores),
-                                                     _List(sf::Vector2f(75, 100)) {
+                                                     _HighscoreList(_FW, sf::Vector2f(75, 100)) {
     sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
     std::shared_ptr<MenuButton> button(
             new MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 200, 735), ButtonSize, MenuResult::Back, "Back",
@@ -18,9 +18,15 @@ HighscoreMenu::HighscoreMenu(Framework &framework) : Menu(framework, GameState::
 }
 
 void HighscoreMenu::render(sf::RenderWindow &window) {
-    _List.render(window);
+    _HighscoreList.render(window);
 
     Menu::render(window);
+}
+
+void HighscoreMenu::update(float frameTime) {
+    _FW.getHighscoreManager().setHighlightedRow(-1);
+    _FW.getHighscoreManager().setShowAdditionalLine(false);
+    _HighscoreList.update(frameTime);
 }
 
 void HighscoreMenu::handleEvent(sf::Event &event) {

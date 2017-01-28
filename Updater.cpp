@@ -1,16 +1,9 @@
-//
-// Created by henne on 27.11.16.
-//
 
-#include <Enums.h>
-#include "Framework/Framework.h"
+// TODO this file is only being kept in case any of its content is needed in the future (for multiplayer for example)
 
-Updater::Updater(Framework &framework) : _FW(framework) {
-
-}
-
+/*
 void Updater::update(float frameTime) {
-    /*
+
     switch (_FW.getGameState()) {
         case GameState::Running:
             if (_FW.getLevel().update(frameTime, _FW.getGameState())) {
@@ -171,7 +164,7 @@ void Updater::update(float frameTime) {
                                 _FW.getLevel().getLevelTime(),
                                 _FW.getGameMode());
             if (!_FW.getMPGOC().isPlayerAlive()) {
-                _FW.setGameState(GameState::GameOverMultiplayer);
+                _FW.advanceToGamState(GameState::GameOverMultiplayer);
             }
             _FW.addScore();
             break;
@@ -179,5 +172,4 @@ void Updater::update(float frameTime) {
         case GameState::GameOverMultiplayer:break;
         case GameState::BossFightMultiplayer:break;
     }
-     */
-}
+}*/

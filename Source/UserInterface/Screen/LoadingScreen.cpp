@@ -36,7 +36,7 @@ void LoadingScreen::update(float frameTime) {
     if (_FW.getCurrentGameState() == GameState::LoadingToMain) {
         _Alpha -= 255.0f / _FadeTime * frameTime;
         if (_Alpha <= 0) {
-            _FW.setGameState(GameState::MainMenu);
+            _FW.advanceToGamState(GameState::MainMenu);
         }
     }
 }

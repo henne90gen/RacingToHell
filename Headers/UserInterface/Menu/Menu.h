@@ -16,7 +16,7 @@ class Menu : public GameScreen {
 public:
     Menu(Framework &framework, GameState menuState);
 
-    ~Menu() {}
+    virtual ~Menu() {}
 
     virtual void render(sf::RenderWindow &renderWindow);
 

@@ -24,9 +24,11 @@ public:
     */
     virtual void handleEvent(sf::Event &event);
 
-    void loadScoreTable() { _List.loadScoreTable(); }
+    virtual void update(float frameTime);
+
+//    void loadScoreTable() { _List.loadScoreTable(); }
 
 private:
-    HighscoreList _List;
+    HighscoreList _HighscoreList;
 };
 

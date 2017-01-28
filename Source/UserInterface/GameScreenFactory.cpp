@@ -8,10 +8,19 @@
 
 GameScreenFactory::~GameScreenFactory() {
     // TODO add all screens
-    free(_LevelScreen);
-    free(_LoadingScreen);
-    free(_MainMenu);
-    free(_OptionsMenu);
+    delete _LevelScreen;
+    delete _LoadingScreen;
+    delete _MainMenu;
+    delete _OptionsMenu;
+    delete _AboutMenu;
+    delete _DebugScreen;
+    delete _ExitScreen;
+    delete _GameObjectScreen;
+    delete _GameOverMenu;
+    delete _HeadsUpDisplay;
+    delete _HighscoreMenu;
+    delete _LevelUpScreen;
+    delete _PauseMenu;
 }
 
 std::vector<GameScreen *> GameScreenFactory::getGameScreens(Framework &framework) {
@@ -59,33 +68,17 @@ std::vector<GameScreen *> GameScreenFactory::getGameScreens(Framework &framework
         case GameState::BossFight:
             break;
         case GameState::LevelUp:
-//            screen = new LevelUpScreen(framework);
             screens.push_back(getLevelUpScreen(framework));
             break;
         case GameState::GameOver:
-//            screen = new GameOverMenu(framework);
+            screens.push_back(getGameObjectScreen(framework));
             screens.push_back(getGameOverMenu(framework));
             break;
         case GameState::Exiting:
             screens.push_back(getExitScreen(framework));
             break;
-
             // FIXME implement multiplayer stuff
-        case GameState::RunningMultiplayer:
-            break;
-        case GameState::PauseMultiplayer:
-            break;
-        case GameState::GameOverMultiplayer:
-            break;
-        case GameState::BossFightMultiplayer:
-            break;
-        case GameState::MultiplayerSelection:
-            break;
-        case GameState::Lobby:
-            break;
-        case GameState::Connecting:
-            break;
-        case GameState::Countdown:
+        default:
             break;
     }
 

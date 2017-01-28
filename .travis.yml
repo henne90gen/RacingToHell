@@ -14,6 +14,7 @@ addons:
       - libopenal-dev
       - libxrandr-dev
       - libudev-dev
+      - libflac-dev
 #      - freetype
 #      - jpeg
 #      - x11

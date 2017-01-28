@@ -7,8 +7,7 @@ compiler:
 addons:
   apt:
     packages:
-      - gcc-6
-      - cmake-3
+      - gcc-5
 #      - freetype
 #      - jpeg
 #      - x11

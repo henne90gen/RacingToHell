@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.2)
 
 project(RacingToHell)
 
-set(CMAKE_CXX_FLAGS "--std=gnu++11 ${CMAKE_CXX_FLAGS}")
+add_compile_options(-std=c++11)
+#set(CMAKE_CXX_FLAGS "--std=gnu++11 ${CMAKE_CXX_FLAGS}")
 
 set(EXECUTABLE_NAME RacingToHell)
 

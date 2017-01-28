@@ -12,7 +12,7 @@ addons:
       - gcc-5
       - libvorbis-dev
       - libopenal-dev
-      - xrandr
+      - x11-xserver-utils
 #      - freetype
 #      - jpeg
 #      - x11

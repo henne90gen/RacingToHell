@@ -11,6 +11,7 @@ addons:
     packages:
       - gcc-6
       - g++-6
+      - cmake
       - libvorbis-dev
       - libopenal-dev
       - libxrandr-dev
@@ -18,9 +19,9 @@ addons:
       - libflac-dev
 script:
 # Link gcc-6 to the standard gcc command
-  - gcc -v
   - sudo unlink /usr/bin/gcc && sudo ln -s /usr/bin/gcc-6 /usr/bin/gcc
   - gcc -v
+  - cmake --version
 # Create directory 'build' to not clutter up the root dir
 # CLion does this with the an option:
 # File -> Settings -> Build, Execution, Deployment -> CMake -> Generation path

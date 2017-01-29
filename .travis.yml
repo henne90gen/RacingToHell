@@ -20,10 +20,10 @@ addons:
       - libflac-dev
 script:
 # Link gcc-6 and g++-6 to their standard commands
-#  - sudo unlink /usr/bin/gcc && sudo ln -s /usr/bin/gcc-6 /usr/bin/gcc
-#  - sudo unlink /usr/bin/g++ && sudo ln -s /usr/bin/g++-6 /usr/bin/g++
   - export CC=/usr/bin/gcc-6
   - export CXX=/usr/bin/g++-6
+#  - sudo unlink /usr/bin/gcc && sudo ln -s /usr/bin/gcc-6 /usr/bin/gcc
+#  - sudo unlink /usr/bin/g++ && sudo ln -s /usr/bin/g++-6 /usr/bin/g++
 # Check versions of gcc, g++ and cmake
   - gcc -v && g++ -v && cmake --version
 # Create build directory and run cmake makefile generation

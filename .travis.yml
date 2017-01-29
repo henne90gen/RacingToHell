@@ -1,9 +1,7 @@
 dist: trusty
 sudo: required
-language:
-  - cpp
-compiler:
-  - gcc
+language: cpp
+compiler: gcc
 addons:
   apt:
     sources:
@@ -20,26 +18,13 @@ addons:
       - libflac-dev
 script:
 # Link gcc-6 and g++-6 to their standard commands
-#  - export CC=/usr/bin/gcc-6
-#  - export CXX=/usr/bin/g++-6
-  - sudo unlink /usr/bin/gcc && sudo ln -s /usr/bin/gcc-6 /usr/bin/gcc
-  - sudo unlink /usr/bin/g++ && sudo ln -s /usr/bin/g++-6 /usr/bin/g++
+  - export CC=/usr/bin/gcc-6
+  - export CXX=/usr/bin/g++-6
+#  - sudo unlink /usr/bin/gcc && sudo ln -s /usr/bin/gcc-6 /usr/bin/gcc
+#  - sudo unlink /usr/bin/g++ && sudo ln -s /usr/bin/g++-6 /usr/bin/g++
 # Check versions of gcc, g++ and cmake
   - gcc -v && g++ -v && cmake --version
 # Create build directory and run cmake makefile generation
   - mkdir build && cd build && cmake -G "CodeBlocks - Unix Makefiles" ../
 # Run cmake build with generated makefiles
   - cmake --build ./ --target RacingToHell -- -j 8
-#deploy:
-#  provider: releases
-#  api_key:
-#    secure: Z55GaQEIG1RqKOROVUGoVIJDjPsSEOgH9WYx3jDwa8MS7xjjI1UvwC2irU1CmgJTPFhTxoMOfA92bqbg39ob7yTvRNMGYBBOwMot/t5+xsdGbBjmDPI3be+jILHnxzRiI/Ojymjpx1z0u9zIm0137c4fnhoZTDO8ynUd1LKlWZPajT0+zqN8CwwGsZBP3T/zMDO7hzCo0g/Cpb0VaxOwy10ZbNBRpKRYWXXMVz0cYUv8tmfivFoFXtoIQRHUxKhY5/gdeQcCcIpCbyMh9TTHCRLJ6ufJEQpjBHH0pQ1O7V3WQdpTZLtXSImlmo6vB7/V394Ios82NG0Z0rnJBN2qBJIEhkMI6J9SDk2700YgOQGEzFarpXtfarnZFoiQQLCg2rYpmnTSy6kaFyVKMUF3aRaJBAryKYLVTWo8YjCjX9KVHpvt1zRTWZrgDlfUi6KEeapYTvWKExtUM2SeFt2F7ygGb3uDnePSMKgZvZzPdWQtpQhN8z/xpHtGTVaqygESOUukwdGbnnpQC8eAZpsMY7Z8MX6pRUczZIIbTY7hC3duC9UZOw1dCtDKPflC1g76xWa6nt1gcKRqYCVK9ALW979AU/rRl7mbLe8kInNhoaJik2Tm2AaCtURc2dY8yxF1gu2IhPlrXJO7woVJ/lHSPmsnxeDwv1T9MZmkpZ5DJ2A=
-#  before_deploy:
-    # Create zip archives for upload
-    -
-#  file:
-    - "./build/bin/RacingToHellLinux.zip"
-    - "./build/bin/RacingToHellWindows.zip"
-#  on:
-#    tags: true
-#    repo: henne90gen/RacingToHell

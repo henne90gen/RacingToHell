@@ -13,6 +13,10 @@ PlayerScore::PlayerScore(std::string name, int level, int score) : _Name(name), 
 
 }
 
+bool PlayerScore::operator<(PlayerScore &Player2) const {
+    return _Score < Player2.getScore();
+}
+
 void PlayerScore::operator<<(std::istream &stream) {
     read(stream, _Rank);
     read(stream, _Name);

@@ -15,9 +15,7 @@ public:
 
     PlayerScore(std::string name = "", int level = 0, int score = 0);
 
-    bool operator<(PlayerScore &Player2) {
-        return _Score < Player2.getScore();
-    }
+    bool operator<(PlayerScore &Player2) const;
 
     void operator>>(std::ostream &stream);
 

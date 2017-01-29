@@ -24,3 +24,5 @@ add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES})
 
 target_link_libraries(${EXECUTABLE_NAME} sfml-system sfml-window sfml-graphics sfml-network sfml-audio)
 target_link_libraries(${EXECUTABLE_NAME} pthread)
+
+file(COPY ${PROJECT_SOURCE_DIR}/Resources DESTINATION ${CMAKE_BINARY_DIR}/bin)

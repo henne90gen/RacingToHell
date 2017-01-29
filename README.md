@@ -18,6 +18,7 @@
     - `cmake --build ./ --target RacingToHell -- -j 8`
 
 Notes:
+- The compiled executable is located in `RacingToHell/build/bin`
 - This automatically downloads and builds SFML as well
 - Clion will automatically detect the relevant CMakeLists.txt and create a "cmake-build-debug" directory
     - You can change the name of the default build directory under: `File -> Settings -> Build, Execution, Deployment -> CMake -> Generation path`

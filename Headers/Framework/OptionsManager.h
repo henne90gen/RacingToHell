@@ -16,10 +16,6 @@ public:
 
     void setFPS(float fps);
 
-    float getScore();
-
-    void setScore(float score);
-
     GameMode getGameMode();
 
     void setGameMode(GameMode gm);
@@ -46,7 +42,6 @@ public:
 
 private:
     std::vector<float> _ScoreMultiplierList;
-    float _Score;
     GameMode _GameMode;
     int _Difficulty;
     float _FPS;

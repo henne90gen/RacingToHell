@@ -154,27 +154,22 @@ void HUDScreen::update(float frameTime) {
         _EnergyText.setFillColor(sf::Color::White);
     }
 
-    // FIXME implement score
-//    _ScoreText.setString("Score: " + ConvertScore(_FW.getLevelManager().getScore()));
+    _ScoreText.setString("Score: " + formatScore(_FW.getLevelManager().getScore()));
 }
 
-std::string HUDScreen::ConvertScore(int score) {
-    std::string ScoreString;
+std::string HUDScreen::formatScore(int score) {
+    std::string scoreString;
     int ScoreLength = (int) std::to_string(score).length();
 
     if (ScoreLength < 7) {
         for (unsigned int i = 0; i < 8 - ScoreLength; i++) {
-            ScoreString += "0";
+            scoreString += "0";
         }
 
-        ScoreString += std::to_string(score);
+        scoreString += std::to_string(score);
     } else {
-        ScoreString = std::to_string(score);
+        scoreString = std::to_string(score);
     }
 
-    return ScoreString;
-}
-
-void HUDScreen::handleEvent(sf::Event &event) {
-
+    return scoreString;
 }

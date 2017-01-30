@@ -42,5 +42,5 @@ enum class Key {
 };
 
 enum class ScoreEvent {
-    Tick, DestroyedCar, DefeatedBoss
+    Tick, DestroyedCar, DefeatedBoss, LevelUp
 };

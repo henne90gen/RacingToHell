@@ -23,7 +23,7 @@ public:
     */
     void update(float frameTime);
 
-    void handleEvent(sf::Event &event);
+    void handleEvent(sf::Event &event) {}
 
 private:
     sf::Texture _BackgroundTexture;
@@ -47,6 +47,6 @@ private:
 
     sf::Text _ScoreText;
 
-    std::string ConvertScore(int score);
+    std::string formatScore(int score);
 };
 

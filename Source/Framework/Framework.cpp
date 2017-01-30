@@ -215,7 +215,6 @@ void Framework::load() {
 
 void Framework::reset() {
     _Clock.restart();
-    _OptionsManager.setScore(0);
     _GameObjectManager.resetGameObjects();
     _LevelManager.resetToLevelOne();
 }
@@ -239,32 +238,6 @@ void Framework::setVolume(float volume) {
     _LevelUpScreen.setVolume(volume * 100);
     _GameOverScreen.setVolume(volume * 10);
     */
-}
-
-void Framework::addScore() {
-    // FIXME move into levelmanager
-    /*
-    float Multiplier = _OptionsMenu.getMultiplierList()[(int) _GameMode];
-
-    _Score += _GameObjectContainer.getCarScore() * Multiplier;
-
-    switch (_OptionsMenu.getDifficulty()) {
-        case 0:
-            _Score += 5 * _LevelManager.getLevel() * Multiplier * _FrameTime;
-            break;
-        case 1:
-            _Score += 10 * (int) std::pow((float) _LevelManager.getLevel(), 1.15f) * Multiplier * _FrameTime;
-            break;
-        case 2:
-            _Score += 30 * (int) std::pow((float) _LevelManager.getLevel(), 1.3f) * Multiplier * _FrameTime;
-            break;
-        case 3:
-            _Score += 60 * (int) std::pow((float) _LevelManager.getLevel(), 1.6f) * Multiplier * _FrameTime;
-            break;
-        default:
-            break;
-    }
-     */
 }
 
 void Framework::restartClock() {

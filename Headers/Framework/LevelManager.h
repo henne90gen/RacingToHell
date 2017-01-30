@@ -9,7 +9,7 @@ public:
     /*
         Manager class for the level, draws background and plays music
     */
-    LevelManager(Framework &framework) : _FW(framework), _ShouldMove(true) {}
+    LevelManager(Framework &framework) : _FW(framework), _ShouldMove(true), _Score(0) {}
 
     ~LevelManager() {}
 
@@ -85,7 +85,9 @@ public:
     */
     float getTotalLevelTime() { return _TotalLevelTime; }
 
-    int getScore() { return _Score; }
+    int getScore() { return (int) _Score; }
+
+    float getScoref() { return _Score; }
 
     void addScore(ScoreEvent event, float modifier);
 
@@ -110,7 +112,7 @@ private:
 
     sf::Music _Music;
 
-    int _Score;
+    float _Score;
 
     float _LevelTime;
     float _TotalLevelTime;

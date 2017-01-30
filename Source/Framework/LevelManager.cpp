@@ -8,8 +8,6 @@ void LevelManager::update(float frameTime) {
         return;
     }
 
-    _LevelTime += frameTime;
-
     if (_Sprite.getPosition().y + frameTime * getRoadSpeed() >= 0) {
         _Sprite.setPosition(sf::Vector2f(0, -1600));
     } else {
@@ -17,6 +15,8 @@ void LevelManager::update(float frameTime) {
     }
 
     if (_FW.getCurrentGameState() == GameState::Running) {
+        _LevelTime += frameTime;
+        addScore(ScoreEvent::Tick, frameTime);
         if (_LevelTime >= _TotalLevelTime) {
             levelUp();
         }
@@ -53,6 +53,7 @@ void LevelManager::resetToLevelOne() {
     _LevelTime = 0;
     _IsResettingLevel = true;
     _ShouldMove = true;
+    _Score = 0;
 }
 
 int LevelManager::getRoadSpeed() {
@@ -85,12 +86,48 @@ void LevelManager::load() {
 }
 
 void LevelManager::addScore(ScoreEvent event, float modifier) {
+
+    float multiplier = _FW.getOptionsManager().getScoreMultiplierList()[(int) _FW.getOptionsManager().getGameMode()];
+
+
+//    _Score += _GameObjectContainer.getCarScore() * multiplier;
+//
+//    switch (_OptionsMenu.getDifficulty()) {
+//        case 0:
+//            _Score += 5 * _LevelManager.getLevel() * multiplier * _FrameTime;
+//            break;
+//        case 1:
+//            _Score += 10 * (int) std::pow((float) _LevelManager.getLevel(), 1.15f) * multiplier * _FrameTime;
+//            break;
+//        case 2:
+//            _Score += 30 * (int) std::pow((float) _LevelManager.getLevel(), 1.3f) * multiplier * _FrameTime;
+//            break;
+//        case 3:
+//            _Score += 60 * (int) std::pow((float) _LevelManager.getLevel(), 1.6f) * multiplier * _FrameTime;
+//            break;
+//        default:
+//            break;
+//    }
+
+
     switch (event) {
-        case ScoreEvent::Tick:break;
-        case ScoreEvent::DestroyedCar:
-            _Score += (int) (1.5 * modifier);
+        case ScoreEvent::Tick: {
+            // modifier is frametime and this is being called every frame
+            int scorePerSecond = 5;
+            // TODO review added points
+            _Score += scorePerSecond * modifier;
+        }
             break;
-        case ScoreEvent::DefeatedBoss:break;
+        case ScoreEvent::DestroyedCar:
+            // TODO review added points
+            _Score += 1.5 * modifier;
+            break;
+        case ScoreEvent::DefeatedBoss:
+            // TODO add points for killing a boss
+            break;
+        case ScoreEvent::LevelUp:
+            // TODO add point for a level up
+            break;
     }
 }
 

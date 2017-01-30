@@ -37,29 +37,27 @@ void DebugScreen::handleEvent(sf::Event &event) {
 
 void DebugScreen::update(float frameTime) {
     std::vector<std::string> newValues;
-    newValues.push_back(std::to_string(_FW.getFPS()));
-    newValues.push_back(std::to_string(_FW.getUPS()));
+    newValues.push_back(std::to_string(_FW.getFPS())); // FPS
+    newValues.push_back(std::to_string(_FW.getUPS())); // UPS
 
-    newValues.push_back(std::to_string((int) _FW.getCurrentGameState()));
-    newValues.push_back(std::to_string((int) _FW.getLastGameState()));
+    newValues.push_back(std::to_string((int) _FW.getCurrentGameState())); // Current GameState
+    newValues.push_back(std::to_string((int) _FW.getLastGameState())); // Last GameState
+    newValues.push_back(std::to_string(_FW.getLevelManager().getScoref())); // Score
 
     unsigned long bullets = _FW.getGOM().getBullets().size();
-    newValues.push_back(std::to_string(bullets));
+    newValues.push_back(std::to_string(bullets)); // Bullet amount
 
     unsigned long cars = _FW.getGOM().getCars().size() + 1;
-    newValues.push_back(std::to_string(cars));
+    newValues.push_back(std::to_string(cars)); // Car amount
 
-    newValues.push_back(std::to_string(_FW.getLevelManager().getAiHP()));
-    newValues.push_back(std::to_string(_FW.getGOM().getCarFrequency()));
-    newValues.push_back(std::to_string(_FW.getGOM().getBulletFrequency()));
-    newValues.push_back(std::to_string(_FW.getGOM().getCanisterFrequency()));
-    newValues.push_back(std::to_string(_FW.getGOM().getToolboxFrequency()));
-
+    newValues.push_back(std::to_string(_FW.getLevelManager().getAiHP())); // Enemy health
+    newValues.push_back(std::to_string(_FW.getGOM().getCarFrequency())); // Car frequency
+    newValues.push_back(std::to_string(_FW.getGOM().getBulletFrequency())); // Bullet frequency
+    newValues.push_back(std::to_string(_FW.getGOM().getCanisterFrequency())); // Canister frequency
+    newValues.push_back(std::to_string(_FW.getGOM().getToolboxFrequency())); // Toolbox frequency
 
     for (unsigned int i = 0; i < _Values.size(); i++) {
-        if (i >= newValues.size()) {
-            break;
-        }
+        if (i >= newValues.size()) { break; }
         _Values.at(i).setString(newValues.at(i));
     }
 }

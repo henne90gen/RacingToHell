@@ -63,14 +63,6 @@ void OptionsManager::setFPS(float fps) {
     _FPS = fps;
 }
 
-float OptionsManager::getScore() {
-    return _Score;
-}
-
-void OptionsManager::setScore(float score) {
-    _Score = score;
-}
-
 GameMode OptionsManager::getGameMode() {
     return _GameMode;
 }

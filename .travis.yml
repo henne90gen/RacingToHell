@@ -19,8 +19,8 @@ addons:
       - libflac-dev
 script:
 # Linking the new compiler versions
-  - ln -s /usr/bin/gcc-6 /usr/local/bin/gcc
-  - ln -s /usr/bin/g++-6 /usr/local/bin/g++
+  - sudo ln -s /usr/bin/gcc-6 /usr/local/bin/gcc
+  - sudo ln -s /usr/bin/g++-6 /usr/local/bin/g++
 # Set cmake to use gcc-6 and g++-6
   - export CC=/usr/bin/gcc-6
   - export CXX=/usr/bin/g++-6
@@ -29,12 +29,13 @@ script:
 # Run cmake build with generated makefiles
   - cmake --build ./ --target RacingToHell -- -j 8
 # Compress resources and executable into zip archive
-  - zip -r RacingToHellLinux.zip bin
+  - zip -r RacingToHellLinux.zip bin && mv RacingToHellLinux.zip ../
+  - cmake --build ./ --target clean
 # Set cmake to use mingw-w64
   - export CC=/usr/bin/x86_64-w64-mingw32-gcc
   - export CXX=/usr/bin/x86_64-w64-mingw32-g++
   - cmake --build ./ --target RacingToHell -- -j 8
-  - zip -r RacingToHellWindows.zip bin
+  - zip -r RacingToHellWindows.zip bin && mv RacingToHellWindows.zip ../
 
 deploy:
   provider: releases

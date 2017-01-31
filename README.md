@@ -24,3 +24,14 @@ Notes:
     - You can change the name of the default build directory under: `File -> Settings -> Build, Execution, Deployment -> CMake -> Generation path`
 
 ###Windows
+
+1. Download and install [MinGW-w64](https://sourceforge.net/projects/mingw-w64/)
+1. Clone the repository:
+    - `git clone https://github.com/henne90gen/RacingToHell`
+1. Create a directory called "build" and go into it:
+    - `mkdir build`
+    - `cd build`
+1. Generate the makefiles:
+    - `cmake -G "MinGW Makefiles" ../`
+1. Execute the build:
+    - `mingw32-make`

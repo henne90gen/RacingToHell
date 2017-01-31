@@ -36,3 +36,10 @@ Notes:
     -   `cmake -G "MinGW Makefiles" ../`
 1.  Execute the build:
     -   `mingw32-make`
+
+Notes:
+-    Additionally you might have to set the following environment variables for cmake:
+     -  `set CC=C:/PATH/TO/MINGW/mingw64/bin/gcc`
+     -  `set CXX=C:/PATH/TO/MINGW/mingw64/bin/g++`
+     -  `set CMAKE_C_COMPILER=C:/PATH/TO/MINGW/mingw64/bin/gcc`
+     -  `set CMAKE_CXX_COMPILER=C:/PATH/TO/MINGW/mingw64/bin/g++`

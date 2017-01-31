@@ -31,7 +31,7 @@ configuration: Debug
 build_script:
   - mkdir build
   - cd build
-  - cmake -G "MinGW Makefiles" ../
+  - cmake -G "MSYS Makefiles" ../
   - mingw32-make
 
 #---------------------------------#

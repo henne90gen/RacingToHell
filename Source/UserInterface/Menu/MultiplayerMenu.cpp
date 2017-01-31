@@ -150,12 +150,12 @@ void MultiplayerMenu::handleEvent(sf::Event &event) {
 
                 _NetworkHandle->setState(NetworkState::NoNetState);
 
-                _ConnectionThread = std::thread(&NetworkHandle::connect, _NetworkHandle,
+                /*_ConnectionThread = std::thread(&NetworkHandle::connect, _NetworkHandle,
                                                 _MenuItems[(int) MenuItemIndex::IP]->getText(),
                                                 _MenuItems[(int) MenuItemIndex::PasswordJoin]->getText(),
                                                 _MenuItems[(int) MenuItemIndex::Name]->getText(),
                                                 std::stoi(_MenuItems[(int) MenuItemIndex::Port]->getText()), 2.0f);
-                _ConnectionThread.detach();
+                _ConnectionThread.detach();*/
 
                 _CreatedLobby = 0;
                 _MenuGameState = GameState::Connecting;

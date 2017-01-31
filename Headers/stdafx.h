@@ -12,7 +12,6 @@
 #include <fstream>
 #include <vector>
 #include <memory>
-#include <thread>
 #include <iomanip>
 #include <cmath>
 #include <limits>

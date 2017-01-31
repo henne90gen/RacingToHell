@@ -58,6 +58,6 @@ private:
         Name = 0, IP = 1, Port = 2, PasswordJoin = 3, PasswordCreate = 5, PortCreate = 6
     };
 
-    std::thread _ConnectionThread;
-    std::mutex _Mutex;
+    // std::thread _ConnectionThread;
+    // std::mutex _Mutex;
 };

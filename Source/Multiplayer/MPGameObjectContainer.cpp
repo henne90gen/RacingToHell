@@ -258,7 +258,7 @@ void MPGameObjectContainer::sendPacketClient(NetworkCommunication Type, sf::Pack
 
 
 void MPGameObjectContainer::sendPacketServer(NetworkCommunication Type, sf::Packet Packet) {
-    std::lock_guard<std::mutex> lock(_Mutex);
+    // std::lock_guard<std::mutex> lock(_Mutex);
     _NetworkHandle->addReceivedPacket(Type, Packet);
     _NetworkHandle->addPacket(Type, Packet);
 }
@@ -267,7 +267,7 @@ void MPGameObjectContainer::sendPlayerInformation() {
     //if (_PlayerInformationTimer.getElapsedTime().asSeconds() > 1.0f/16.0f) {
     _PlayerInformationTimer.restart();
 
-    std::lock_guard<std::mutex> lock(_Mutex);
+    // std::lock_guard<std::mutex> lock(_Mutex);
     sf::Packet Player1Packet;
     Player1Packet << (sf::Uint8) 1;
     *_Player1 >> Player1Packet;
@@ -504,7 +504,7 @@ void MPGameObjectContainer::enterBossFight() {
 }
 
 void MPGameObjectContainer::resetGameObjects(int SelectedCar) {
-    std::lock_guard<std::mutex> lock(_Mutex);
+    // std::lock_guard<std::mutex> lock(_Mutex);
 
     _GameObjects.clear();
     _Animations.clear();
@@ -725,7 +725,7 @@ void MPGameObjectContainer::playHitSound(sf::Vector2f position) {
 
 void MPGameObjectContainer::addGameObject(std::shared_ptr<GameObject> newGO, NetworkHandle &network) {
     if (newGO->getType() == GameObjectType::AI) {
-        std::lock_guard<std::mutex> lock(_Mutex);
+        // std::lock_guard<std::mutex> lock(_Mutex);
         sf::Packet tmp;
         tmp << sf::Uint8(NetworkCommunication::CreateGameObject) << network.getTick();
         *newGO >> tmp;
@@ -776,4 +776,3 @@ void MPGameObjectContainer::deleteGameObject(unsigned int id, bool sendDeletion)
 		_SendObjects.erase(_SendObjects.begin());
 	}
 }*/
-

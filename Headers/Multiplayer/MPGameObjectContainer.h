@@ -143,7 +143,7 @@ public:
 
 	//void handleOutgoingPackets(std::vector<std::pair<NetworkCommunication, sf::Packet>>& packets);
 private:
-	std::mutex _Mutex;
+	// std::mutex _Mutex;
 	NetworkRelation _Relation;
 	sf::Clock _SendTimer, _KeyPressTimer, _PlayerInformationTimer;
 

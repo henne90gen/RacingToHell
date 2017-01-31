@@ -25,7 +25,7 @@
 
 #include <sstream>
 #include <fstream>
-#include <thread>
+// #include <thread>
 
 class Framework {
 public:
@@ -129,7 +129,6 @@ private:
     std::vector<GameState> _GameStates;
 
     std::vector<GameScreen *> initGameScreens();
-    std::thread _LoadingThread;
 
     sf::Clock _Clock;
 

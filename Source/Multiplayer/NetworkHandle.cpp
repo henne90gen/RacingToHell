@@ -30,7 +30,7 @@ void NetworkHandle::connect(std::string ip, std::string password, std::string na
 		AuthPacket >> Response;
 		if (Response == (sf::Uint8)(NetworkCommunication::ConnectionSuccesfull))
 		{
-			std::lock_guard<std::mutex> lock(_Mutex);
+			// std::lock_guard<std::mutex> lock(_Mutex);
 			_Authenticated = true;
 			_LastResponse = std::make_pair(NetworkCommunication::ConnectionSuccesfull, 0);
 			_MyName = name;
@@ -161,7 +161,7 @@ void NetworkHandle::run()
 				{
 					//receiveData(incommingPacket);
 				}
-			} 
+			}
 
 			if (_Authenticated)
 			{
@@ -208,7 +208,7 @@ void NetworkHandle::run()
 
 std::pair<NetworkCommunication, int> NetworkHandle::getLastResponse()
 {
-	std::lock_guard<std::mutex> lock(_Mutex);
+	// std::lock_guard<std::mutex> lock(_Mutex);
 	std::pair<NetworkCommunication, int> tmp = _LastResponse;
 	_LastResponse = std::make_pair(NetworkCommunication::NoNetComm, 0);
 	return tmp;
@@ -216,7 +216,7 @@ std::pair<NetworkCommunication, int> NetworkHandle::getLastResponse()
 
 void NetworkHandle::addPacket(NetworkCommunication Type, sf::Packet newPacket)
 {
-	std::lock_guard<std::mutex> lock(_Mutex);
+	// std::lock_guard<std::mutex> lock(_Mutex);
 	std::pair<NetworkCommunication, sf::Packet> p;
 	p = std::make_pair(Type, newPacket);
 //	std::cout << "Packet is being added" << std::endl;
@@ -225,7 +225,7 @@ void NetworkHandle::addPacket(NetworkCommunication Type, sf::Packet newPacket)
 
 void NetworkHandle::addReceivedPacket(NetworkCommunication Type, sf::Packet newPacket)
 {
-	std::lock_guard<std::mutex> lock(_Mutex);
+	// std::lock_guard<std::mutex> lock(_Mutex);
 	sf::Packet TmpPacket;
 	TmpPacket << sf::Uint8(Type) << _Tick;
 
@@ -238,7 +238,7 @@ void NetworkHandle::addReceivedPacket(NetworkCommunication Type, sf::Packet newP
 
 void NetworkHandle::setReceivedPackets(std::vector<sf::Packet> packets)
 {
-	std::lock_guard<std::mutex> lock(_Mutex);
+	// std::lock_guard<std::mutex> lock(_Mutex);
 	_ReceivedPackets = packets;
 }
 
@@ -299,7 +299,7 @@ void NetworkHandle::receiveData(sf::Packet& packet)
 {
 	if (packet.getDataSize() > 0)
 	{
-		std::lock_guard<std::mutex> lock(_Mutex);
+		// std::lock_guard<std::mutex> lock(_Mutex);
 		sf::Packet tmp = packet;
 		sf::Uint8 Type;
 		sf::Uint32 Tick;
@@ -368,7 +368,7 @@ void NetworkHandle::sendData()
 {
 	while (_SendPackets.size() > 0)
 	{
-		std::lock_guard<std::mutex> lock(_Mutex);
+		// std::lock_guard<std::mutex> lock(_Mutex);
 		sf::Packet TmpPacket;
 		TmpPacket << sf::Uint8(_SendPackets[0].first) << _Tick;
 

@@ -35,7 +35,7 @@ public:
 	sf::Uint32 getTick() { return _Tick; }
 	int getTickRate() { return _TickRate; }
 
-	std::vector<sf::Packet> getReceivedPackets() { std::lock_guard<std::mutex> lock(_Mutex);  return _ReceivedPackets; }
+	std::vector<sf::Packet> getReceivedPackets() { /*std::lock_guard<std::mutex> lock(_Mutex);*/  return _ReceivedPackets; }
 	sf::Packet getNextPacket() { sf::Packet p = _ReceivedPackets.back(); _ReceivedPackets.pop_back(); return p; }
 	std::vector<std::pair<NetworkCommunication, sf::Packet>>& getSendPackets() { return _SendPackets; }
 
@@ -62,7 +62,7 @@ private:
 
 	std::vector<sf::Packet> _ReceivedPackets;
 	std::vector<std::pair<NetworkCommunication, sf::Packet>> _SendPackets;
-	std::mutex _Mutex;
+	// std::mutex _Mutex;
 
 	unsigned int _TickRate, _UpdateIntervall, _Port, _Authenticated;
 	int _Delay;

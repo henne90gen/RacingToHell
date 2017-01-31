@@ -1,6 +1,6 @@
 #RacingToHell
 
-[![Build Status](https://travis-ci.org/henne90gen/RacingToHell.svg?branch=master)](https://travis-ci.org/henne90gen/RacingToHell)
+[![Build Status](https://travis-ci.org/henne90gen/RacingToHell.svg?branch=master)](https://travis-ci.org/henne90gen/RacingToHell) [![Build status](https://ci.appveyor.com/api/projects/status/y3sk6m09nwjqwjl7?svg=true)](https://ci.appveyor.com/project/henne90gen/racingtohell)
 
 ##Compiling the source code
 

@@ -38,6 +38,7 @@ script:
   - export CC=/usr/bin/x86_64-w64-mingw32-gcc
   - export CXX=/usr/bin/x86_64-w64-mingw32-g++
   - gcc -v && g++ -v && cmake --version
+  - cmake -G "MinGW Makefiles" ../
   - cmake --build ./ --target RacingToHell -- -j 8
   - zip -r RacingToHellWindows.zip bin && mv RacingToHellWindows.zip ../ && cd ..
 deploy:

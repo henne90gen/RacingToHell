@@ -33,7 +33,9 @@ build_script:
   - cd build
   - set CC=C:\mingw-w64\i686-5.3.0-posix-dwarf-rt_v4-rev0\mingw32\bin\gcc
   - set CXX=C:\mingw-w64\i686-5.3.0-posix-dwarf-rt_v4-rev0\mingw32\bin\g++
-  - cmake -G "MinGW Makefiles" ../
+  - set CMAKE_C_COMPILER=C:\mingw-w64\i686-5.3.0-posix-dwarf-rt_v4-rev0\mingw32\bin\gcc
+  - set CMAKE_CXX_COMPILER=C:\mingw-w64\i686-5.3.0-posix-dwarf-rt_v4-rev0\mingw32\bin\g++
+  - cmake -G "Unix Makefiles" ../
   - mingw32-make
 
 #---------------------------------#

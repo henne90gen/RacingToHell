@@ -29,6 +29,7 @@ configuration: Debug
 
 # to run your custom scripts instead of automatic MSBuild
 build_script:
+  - git clone https://github.com/SFML/SFML
   - mkdir build
   - cd build
   - set CC=C:/mingw-w64/i686-5.3.0-posix-dwarf-rt_v4-rev0/mingw32/bin/gcc

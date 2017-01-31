@@ -33,8 +33,8 @@ script:
   - zip -r RacingToHellLinux.zip bin && mv RacingToHellLinux.zip ../
   - cd .. && rm -fr build && mkdir build && cd build
 # Set cmake to use mingw-w64
-  - sudo unlink /usr/local/gcc && sudo ln -s /usr/bin/x86_64-w64-mingw32-gcc /usr/local/bin/gcc
-  - sudo unlink /usr/local/g++ && sudo ln -s /usr/bin/x86_64-w64-mingw32-g++ /usr/local/bin/g++
+  - sudo unlink /usr/local/bin/gcc && sudo ln -s /usr/bin/x86_64-w64-mingw32-gcc /usr/local/bin/gcc
+  - sudo unlink /usr/local/bin/g++ && sudo ln -s /usr/bin/x86_64-w64-mingw32-g++ /usr/local/bin/g++
   - export CC=/usr/bin/x86_64-w64-mingw32-gcc
   - export CXX=/usr/bin/x86_64-w64-mingw32-g++
   - gcc -v && g++ -v && cmake --version

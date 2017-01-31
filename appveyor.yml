@@ -39,6 +39,10 @@ build_script:
   - set PATH=C:/mingw-w64/i686-5.3.0-posix-dwarf-rt_v4-rev0/mingw32/bin;"C:/Program Files (x86)/CMake/bin";"C:/Program Files/Git/bin"
   - cmake -G "MinGW Makefiles" ../
   - mingw32-make
+  - cd ..
+
+after_build:
+  - 7z a RacingToHell.zip build/bin
 
 #---------------------------------#
 #       tests configuration       #
@@ -49,14 +53,14 @@ test: off
 #      artifacts configuration    #
 #---------------------------------#
 artifacts:
-  - path: build/bin
+  - path: RacingToHell.zip
 
 #---------------------------------#
 #     deployment configuration    #
 #---------------------------------#
 deploy:
   - provider: GitHub
-    artifact: RacingToHellWindows.zip
+    artifact: RacingToHell.zip
     draft: false
     prerelease: false
     on:

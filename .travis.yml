@@ -24,7 +24,6 @@ script:
 # Set cmake to use gcc-6 and g++-6
   - export CC=/usr/bin/gcc-6
   - export CXX=/usr/bin/g++-6
-  - cmake --version
 # Create build directory and run cmake makefile generation
   - mkdir build && cd build && cmake -G "CodeBlocks - Unix Makefiles" ../
 # Run cmake build with generated makefiles

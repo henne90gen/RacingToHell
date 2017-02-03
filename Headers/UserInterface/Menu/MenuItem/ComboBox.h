@@ -4,7 +4,8 @@
 
 class ComboBox : public MenuItem {
 public:
-    ComboBox(sf::Vector2f pos, std::vector<std::string> &Items, MenuResult Action, int width = 200, int height = 50);
+    ComboBox(sf::Vector2f pos, std::vector<std::string> itemStrings, std::vector<float> itemValues, MenuResult Action,
+             int width = 200, int height = 50);
 
     virtual ~ComboBox() {};
 
@@ -26,7 +27,7 @@ public:
     /*
         @return std::string Text of the Button
     */
-    std::string getText() { return _Items[_CurrentItem]; }
+    std::string getText() { return _ItemStrings[_CurrentItem]; }
 
     /*
         set currentItem
@@ -47,7 +48,8 @@ public:
     float getMaxValue() { return 0.0f; }
 
 private:
-    std::vector<std::string> _Items;
+    std::vector<std::string> _ItemStrings;
+    std::vector<float> _ItemValues;
 
     sf::RectangleShape _ButtonLeft, _ButtonRight, _Body;
     sf::Vector2f _Position;

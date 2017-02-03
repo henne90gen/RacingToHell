@@ -13,7 +13,7 @@ public:
         @param minValue Minimum value of the slider
         @param maxValue Maximum value of the slider
     */
-    Slider(sf::Vector2f pos, MenuResult action, std::string text, float minValue, float maxValue);
+    Slider(sf::Vector2f pos, MenuResult action, sf::Font &font, std::string text, float minValue, float maxValue);
 
     ~Slider() {}
 

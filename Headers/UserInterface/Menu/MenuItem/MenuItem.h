@@ -11,7 +11,7 @@ public:
         @param type Type of MenuItem
         @param action Action the Button is associated with
     */
-    MenuItem(MenuItemType type, MenuResult action);
+    MenuItem(MenuItemType type, MenuResult action, sf::Font &font);
 
     virtual ~MenuItem() {}
 
@@ -109,7 +109,7 @@ public:
     MenuItemType getType() { return _Type; }
 
 protected:
-    sf::Font _Font;
+    sf::Font &_Font;
     MenuItemType _Type;
     MenuResult _Action;
     bool _Hovering, _Enabled, _Focused, _Visible;

@@ -6,13 +6,13 @@
 #pragma ide diagnostic ignored "TemplateArgumentsIssues"
 MultiplayerLobby::MultiplayerLobby(Framework &framework) : Menu(framework, GameState::Lobby), _SelectedCar(0),
                                                            _NetworkHandle() {
-    std::shared_ptr<PlayerTable> Table(new PlayerTable(sf::Vector2f(25, 25)));
-    _MenuItems.push_back(Table);
-
-    std::shared_ptr<MenuButton> StartButton(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 165), sf::Vector2f(200, 50), MenuResult::StartMultiplayer,
-                           "Start", TextAlignment::Center));
-    _MenuItems.push_back(StartButton);
+//    std::shared_ptr<PlayerTable> Table(new PlayerTable(sf::Vector2f(25, 25)));
+//    _MenuItems.push_back(Table);
+//
+//    std::shared_ptr<MenuButton> StartButton(
+//            new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 165), sf::Vector2f(200, 50), MenuResult::StartMultiplayer,
+//                           "Start", TextAlignment::Center));
+//    _MenuItems.push_back(StartButton);
 
 //    std::vector<std::string> difficulties = {"Easy", "Normal", "Hard", "Insane"};
 //    std::shared_ptr<ComboBox> comboboxDifficulty(
@@ -24,26 +24,26 @@ MultiplayerLobby::MultiplayerLobby(Framework &framework) : Menu(framework, GameS
 //            new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 100, 305), modes, MenuResult::Nothing));
 //    _MenuItems.push_back(comboboxMode);
 
-    std::shared_ptr<MenuButton> ReadyButton(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 165), sf::Vector2f(200, 50), MenuResult::Ready, "Ready",
-                           TextAlignment::Center));
-    _MenuItems.push_back(ReadyButton);
-
-    std::shared_ptr<MenuButton> buttonprev(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 60, SCREENHEIGHT - 335), sf::Vector2f(0, 50),
-                           MenuResult::PreviousSkin, "<<", TextAlignment::Left));
-    _MenuItems.push_back(buttonprev);
-    std::shared_ptr<MenuButton> buttonnext(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2 + 50, SCREENHEIGHT - 335), sf::Vector2f(0, 50),
-                           MenuResult::NextSkin, ">>", TextAlignment::Left));
-    _MenuItems.push_back(buttonnext);
-
-    _StatBox = std::make_shared<StatBox>(sf::Vector2f(SCREENWIDTH / 2, 575));
-
-    std::shared_ptr<MenuButton> LeaveButton(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 375), sf::Vector2f(200, 50), MenuResult::Back, "Leave",
-                           TextAlignment::Center));
-    _MenuItems.push_back(LeaveButton);
+//    std::shared_ptr<MenuButton> ReadyButton(
+//            new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 165), sf::Vector2f(200, 50), MenuResult::Ready, "Ready",
+//                           TextAlignment::Center));
+//    _MenuItems.push_back(ReadyButton);
+//
+//    std::shared_ptr<MenuButton> buttonprev(
+//            new MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 60, SCREENHEIGHT - 335), sf::Vector2f(0, 50),
+//                           MenuResult::PreviousSkin, "<<", TextAlignment::Left));
+//    _MenuItems.push_back(buttonprev);
+//    std::shared_ptr<MenuButton> buttonnext(
+//            new MenuButton(sf::Vector2f(SCREENWIDTH / 2 + 50, SCREENHEIGHT - 335), sf::Vector2f(0, 50),
+//                           MenuResult::NextSkin, ">>", TextAlignment::Left));
+//    _MenuItems.push_back(buttonnext);
+//
+//    _StatBox = std::make_shared<StatBox>(sf::Vector2f(SCREENWIDTH / 2, 575));
+//
+//    std::shared_ptr<MenuButton> LeaveButton(
+//            new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 375), sf::Vector2f(200, 50), MenuResult::Back, "Leave",
+//                           TextAlignment::Center));
+//    _MenuItems.push_back(LeaveButton);
 }
 
 void MultiplayerLobby::render(sf::RenderWindow &window) {

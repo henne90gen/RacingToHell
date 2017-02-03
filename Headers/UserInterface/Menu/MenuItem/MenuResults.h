@@ -21,5 +21,6 @@ enum class MenuResult {
     KickOtherPlayer,
     StartMultiplayer,
     GameModeChange,
-    DifficultyChange
+    DifficultyChange,
+    DebugChange
 };

@@ -4,7 +4,7 @@
 
 class PlayerTable : public MenuItem {
 public:
-    PlayerTable(sf::Vector2f Position);
+    PlayerTable(sf::Vector2f Position, sf::Font &font);
 
     ~PlayerTable() {}
 

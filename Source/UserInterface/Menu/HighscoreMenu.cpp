@@ -4,11 +4,14 @@
 
 HighscoreMenu::HighscoreMenu(Framework &framework) : Menu(framework, GameState::Highscores),
                                                      _HighscoreList(_FW, sf::Vector2f(75, 100)) {
+
+    sf::Font &font = _FW.getOptionsManager().getFont();
+
     sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
-    std::shared_ptr<MenuButton> button(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 200, 735), ButtonSize, MenuResult::Back, "Back",
-                           TextAlignment::Center));
-    _MenuItems.push_back(button);
+    std::shared_ptr<MenuButton> backBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2 - 200, 735),
+                                                                       ButtonSize, MenuResult::Back, font, "Back",
+                                                                       TextAlignment::Center);
+    _MenuItems.push_back(backBtn);
 
     _Text.setString("Highscores");
     _Text.setCharacterSize(53);

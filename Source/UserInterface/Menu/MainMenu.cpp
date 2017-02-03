@@ -3,44 +3,47 @@
 #include "Framework/Framework.h"
 
 MainMenu::MainMenu(Framework &framework) : Menu(framework, GameState::MainMenu) {
+    sf::Font &font = _FW.getOptionsManager().getFont();
+
     //Menu-Items
     sf::Vector2f ButtonSize = sf::Vector2f(250, 50);
 
-    std::shared_ptr<MenuButton> button1(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 100), ButtonSize, MenuResult::Resume, "Play",
-                           TextAlignment::Center));
-    _MenuItems.push_back(button1);
+    std::shared_ptr<MenuButton> playBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2, 100), ButtonSize,
+                                                                       MenuResult::Resume, font, "Play",
+                                                                       TextAlignment::Center);
+    _MenuItems.push_back(playBtn);
 
-    std::shared_ptr<MenuButton> button2(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 170), ButtonSize, MenuResult::Multiplayer, "Multiplayer",
-                           TextAlignment::Center));
-    button2->setEnabled(false);
-    _MenuItems.push_back(button2);
+    std::shared_ptr<MenuButton> multiplayerBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2, 170),
+                                                                              ButtonSize, MenuResult::Multiplayer, font,
+                                                                              "Multiplayer", TextAlignment::Center);
+    multiplayerBtn->setEnabled(false);
+    _MenuItems.push_back(multiplayerBtn);
 
-    std::shared_ptr<MenuButton> button3(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 240), ButtonSize, MenuResult::Highscore, "Highscores",
-                           TextAlignment::Center));
-    _MenuItems.push_back(button3);
+    std::shared_ptr<MenuButton> highscoresBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2, 240),
+                                                                             ButtonSize, MenuResult::Highscore, font,
+                                                                             "Highscores", TextAlignment::Center);
+    _MenuItems.push_back(highscoresBtn);
 
-    std::shared_ptr<MenuButton> button4(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 310), ButtonSize, MenuResult::Option, "Options",
-                           TextAlignment::Center));
-    _MenuItems.push_back(button4);
+    std::shared_ptr<MenuButton> optionsBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2, 310),
+                                                                          ButtonSize, MenuResult::Option, font,
+                                                                          "Options",
+                                                                          TextAlignment::Center);
+    _MenuItems.push_back(optionsBtn);
 
-    std::shared_ptr<MenuButton> button5(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 380), ButtonSize, MenuResult::Exit, "Exit",
-                           TextAlignment::Center));
-    _MenuItems.push_back(button5);
+    std::shared_ptr<MenuButton> exitBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2, 380), ButtonSize,
+                                                                       MenuResult::Exit, font, "Exit",
+                                                                       TextAlignment::Center);
+    _MenuItems.push_back(exitBtn);
 
-    std::shared_ptr<MenuButton> button6(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 60, SCREENHEIGHT - 335), sf::Vector2f(0, 50),
-                           MenuResult::PreviousSkin, "<<", TextAlignment::Left));
-    _MenuItems.push_back(button6);
+    std::shared_ptr<MenuButton> leftBtn = std::make_shared<MenuButton>(
+            sf::Vector2f(SCREENWIDTH / 2 - 60, SCREENHEIGHT - 335), sf::Vector2f(0, 50), MenuResult::PreviousSkin, font,
+            "<<", TextAlignment::Left);
+    _MenuItems.push_back(leftBtn);
 
-    std::shared_ptr<MenuButton> button7(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2 + 50, SCREENHEIGHT - 335), sf::Vector2f(0, 50),
-                           MenuResult::NextSkin, ">>", TextAlignment::Left));
-    _MenuItems.push_back(button7);
+    std::shared_ptr<MenuButton> rightBtn = std::make_shared<MenuButton>(
+            sf::Vector2f(SCREENWIDTH / 2 + 50, SCREENHEIGHT - 335), sf::Vector2f(0, 50), MenuResult::NextSkin, font,
+            ">>", TextAlignment::Left);
+    _MenuItems.push_back(rightBtn);
 
     //MainMenu-Menu Text
     _Text.setString("Main Menu");

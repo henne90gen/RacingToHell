@@ -34,17 +34,17 @@ public:
 		@return BossCar Constructed BossCar
 	*/
 	static std::shared_ptr<BossCar> getBossCar(int level, int diff, int hp, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer& expSB, float volume);
-	
+
 	/*
-		Bullet that can be shot by any Car
-		@param pos Starting position of the Bullet
-		@param dir Angle at which the Bullet will fly
-		@param speed Speed of the Bullet
-		@param type Specifies the type of the Bullet, thus who shot it
-		@param soundEffects Vector to register the sound of the shot in
-		@param volume Volume of the shot sound
-		@return Bullet
-	*/
+        Bullet that can be shot by any Car
+        @param pos Starting position of the Bullet
+        @param dir Angle at which the Bullet will fly
+        @param speed Speed of the Bullet
+        @param type Specifies the type of the Bullet, thus who shot it
+        @param soundEffects Vector to register the sound of the shot in
+        @param volume VolumeIndex of the shot sound
+        @return Bullet
+    */
 	static std::shared_ptr<Bullet> getBullet(sf::Vector2f pos, sf::Vector2f dir, int speed, GameObjectType type, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, float volume);
 	
 	/*

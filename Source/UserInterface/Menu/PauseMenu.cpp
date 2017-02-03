@@ -4,25 +4,31 @@
 
 PauseMenu::PauseMenu(Framework &framework) : Menu(framework, GameState::Pause) {
 
+    sf::Font &font = _FW.getOptionsManager().getFont();
 
     //Menu-Items
     sf::Vector2f ButtonSize = sf::Vector2f(250, 50);
-    std::shared_ptr<MenuButton> button1(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 240), ButtonSize, MenuResult::Resume, "Resume",
-                           TextAlignment::Center));
-    _MenuItems.push_back(button1);
-    std::shared_ptr<MenuButton> button2(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 310), ButtonSize, MenuResult::Option, "Options",
-                           TextAlignment::Center));
-    _MenuItems.push_back(button2);
-    std::shared_ptr<MenuButton> button3(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 380), ButtonSize, MenuResult::Back, "Main Menu",
-                           TextAlignment::Center));
-    _MenuItems.push_back(button3);
-    std::shared_ptr<MenuButton> button4(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 450), ButtonSize, MenuResult::Exit, "Exit",
-                           TextAlignment::Center));
-    _MenuItems.push_back(button4);
+
+    std::shared_ptr<MenuButton> resumeBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2, 240), ButtonSize,
+                                                                         MenuResult::Resume, font, "Resume",
+                                                                         TextAlignment::Center);
+    _MenuItems.push_back(resumeBtn);
+
+    std::shared_ptr<MenuButton> optionsBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2, 310),
+                                                                          ButtonSize, MenuResult::Option, font,
+                                                                          "Options", TextAlignment::Center);
+    _MenuItems.push_back(optionsBtn);
+
+    std::shared_ptr<MenuButton> backToMainBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2, 380),
+                                                                             ButtonSize,
+                                                                             MenuResult::Back, font, "Main Menu",
+                                                                             TextAlignment::Center);
+    _MenuItems.push_back(backToMainBtn);
+
+    std::shared_ptr<MenuButton> exitBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2, 450), ButtonSize,
+                                                                       MenuResult::Exit, font, "Exit",
+                                                                       TextAlignment::Center);
+    _MenuItems.push_back(exitBtn);
 
     //Menu-Text
     _Text.setString("Pause Menu");

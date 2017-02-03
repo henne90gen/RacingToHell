@@ -2,8 +2,8 @@
 #include "UserInterface/Menu/MenuItem/Textbox.h"
 
 Textbox::Textbox(sf::Vector2f Position, sf::Vector2f Size, unsigned int characterSize, std::string Text,
-                 MenuResult action, bool isFocused, bool isPassword)
-        : MenuItem(MenuItemType::MTextbox, action),
+                 MenuResult action, sf::Font &font, bool isFocused, bool isPassword)
+        : MenuItem(MenuItemType::MTextbox, action, font),
           _FillColor(sf::Color(255, 255, 255)), _FillColorDisabled(sf::Color(140, 140, 140)),
           _OutlineColor(sf::Color(0, 0, 0)), _OutlineColorFocused(sf::Color(0, 150, 205)),
           _TextColor(sf::Color(0, 0, 0)), _ShowCursor(true), _CursorPosition(0), _isPassword(isPassword), _String(Text),

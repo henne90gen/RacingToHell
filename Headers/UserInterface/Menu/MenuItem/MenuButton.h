@@ -13,7 +13,8 @@ public:
 		@param text Text that is going to be on the Button
 		@param align Alignment of the text on the Button
 	*/
-	MenuButton(sf::Vector2f pos, sf::Vector2f size, MenuResult action, std::string text, TextAlignment align);
+    MenuButton(sf::Vector2f pos, sf::Vector2f size, MenuResult action, sf::Font &font, std::string text,
+               TextAlignment align);
 	~MenuButton() {}
 
 	/*

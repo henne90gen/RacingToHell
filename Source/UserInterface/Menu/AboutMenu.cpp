@@ -3,10 +3,14 @@
 #include "Framework/Framework.h"
 
 AboutMenu::AboutMenu(Framework &framework) : Menu(framework, GameState::About) {
+
+    sf::Font &font = _FW.getOptionsManager().getFont();
+
     sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
-    std::shared_ptr<MenuButton> button(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 200, 735), ButtonSize, MenuResult::Back, "Back",
-                           TextAlignment::Center));
+    std::shared_ptr<MenuButton> button = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2 - 200, 735),
+                                                                      ButtonSize,
+                                                                      MenuResult::Back, font, "Back",
+                                                                      TextAlignment::Center);
     _MenuItems.push_back(button);
 
     _Frame.setPosition(sf::Vector2f(50, 75));
@@ -14,8 +18,6 @@ AboutMenu::AboutMenu(Framework &framework) : Menu(framework, GameState::About) {
     _Frame.setFillColor(sf::Color(0, 0, 0, 175));
     _Frame.setOutlineThickness(1);
     _Frame.setOutlineColor(sf::Color::Black);
-
-    sf::Font &font = _FW.getOptionsManager().getFont();
 
     _Text.setFont(font);
     _Text.setStyle(sf::Text::Bold);

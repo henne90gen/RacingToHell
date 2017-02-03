@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "UserInterface/Menu/MenuItem/Slider.h"
 
-Slider::Slider(sf::Vector2f pos, MenuResult action, std::string text, float minValue, float maxValue) : MenuItem(
-        MenuItemType::MSlider, action), _MinValue(minValue), _MaxValue(maxValue) {
+Slider::Slider(sf::Vector2f pos, MenuResult action, sf::Font &font, std::string text, float minValue, float maxValue)
+        : MenuItem(
+        MenuItemType::MSlider, action, font), _MinValue(minValue), _MaxValue(maxValue) {
 
     _Line.setFillColor(sf::Color::Black);
     _Line.setSize(sf::Vector2f(200, 5));

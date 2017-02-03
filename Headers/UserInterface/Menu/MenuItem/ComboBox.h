@@ -4,8 +4,8 @@
 
 class ComboBox : public MenuItem {
 public:
-    ComboBox(sf::Vector2f pos, std::vector<std::string> itemStrings, std::vector<float> itemValues, MenuResult Action,
-             int width = 200, int height = 50);
+    ComboBox(sf::Vector2f pos, std::vector<std::string> itemStrings, std::vector<float> itemValues, MenuResult action,
+             sf::Font &font, int width = 200, int height = 50);
 
     virtual ~ComboBox() {};
 

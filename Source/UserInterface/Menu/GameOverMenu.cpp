@@ -33,22 +33,22 @@ GameOverMenu::GameOverMenu(Framework &framework) : Menu(framework, GameState::Ga
 
     sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
 
-    std::shared_ptr<Textbox> box(new Textbox(
+    std::shared_ptr<Textbox> box = std::make_shared<Textbox>(
             sf::Vector2f(_GOTLine3.getPosition().x + _GOTLine3.getLocalBounds().width + 20,
                          _GOTLine3.getPosition().y + 10),
             sf::Vector2f(450 - _GOTLine3.getLocalBounds().width - 20, _GOTLine3.getLocalBounds().height), 25, "Name",
-            MenuResult::SubmitScore, true));
+            MenuResult::SubmitScore, font, true);
     _MenuItems.push_back(box);
 
-    std::shared_ptr<MenuButton> button1(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2 + 200, 735), ButtonSize, MenuResult::SubmitScore, "Submit",
-                           TextAlignment::Center));
-    _MenuItems.push_back(button1);
+    std::shared_ptr<MenuButton> submitBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2 + 200, 735),
+                                                                         ButtonSize, MenuResult::SubmitScore, font,
+                                                                         "Submit", TextAlignment::Center);
+    _MenuItems.push_back(submitBtn);
 
-    std::shared_ptr<MenuButton> button2(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 200, 735), ButtonSize, MenuResult::Back, "Back",
-                           TextAlignment::Center));
-    _MenuItems.push_back(button2);
+    std::shared_ptr<MenuButton> backBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2 - 200, 735),
+                                                                       ButtonSize, MenuResult::Back, font, "Back",
+                                                                       TextAlignment::Center);
+    _MenuItems.push_back(backBtn);
 
 //	_JoystickSelection = 1;
 }

@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "UserInterface/Menu/MenuItem/PlayerTable.h"
 
-PlayerTable::PlayerTable(sf::Vector2f Position) : MenuItem(MenuItemType::MLobbyList, MenuResult::Nothing),
-                                                  _Position(Position), _Size(550, 80) {
+PlayerTable::PlayerTable(sf::Vector2f Position, sf::Font &font) : MenuItem(MenuItemType::MLobbyList,
+                                                                           MenuResult::Nothing, font),
+                                                                  _Position(Position), _Size(550, 80) {
     _Background.setFillColor(sf::Color(0, 0, 0, 0));
     _Background.setOutlineThickness(1);
     _Background.setOutlineColor(sf::Color::Black);

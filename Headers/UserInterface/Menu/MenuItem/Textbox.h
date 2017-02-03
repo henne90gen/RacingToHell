@@ -15,8 +15,8 @@ public:
         @param text Text that will be displayed in the Textbox by default
         @param isFocused Whether the Textbox is focused right after initialization
     */
-    Textbox(sf::Vector2f pos, sf::Vector2f size, unsigned int characterSize, std::string text, MenuResult action, bool isFocused,
-            bool isPassword = false);
+    Textbox(sf::Vector2f pos, sf::Vector2f size, unsigned int characterSize, std::string text, MenuResult action,
+            sf::Font &font, bool isFocused, bool isPassword = false);
 
     virtual ~Textbox() {}
 

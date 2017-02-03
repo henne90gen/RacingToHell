@@ -108,9 +108,9 @@ public:
 	void stopSounds();
 
 	/*
-	Sets the Volume for all GamObjects
-	@param volume New volume that's being applied
-	*/
+    Sets the VolumeIndex for all GamObjects
+    @param volume New volume that's being applied
+    */
 	void setVolume(float volume) { _Volume = volume; }
 
 	/*

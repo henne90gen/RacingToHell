@@ -3,8 +3,9 @@
 #include "UserInterface/Menu/MenuItem/ComboBox.h"
 
 ComboBox::ComboBox(sf::Vector2f pos, std::vector<std::string> itemStrings, std::vector<float> itemValues,
-                   MenuResult Action, int width, int height)
-        : MenuItem(MenuItemType::MCombobox, Action), _ItemStrings(itemStrings), _ItemValues(itemValues), _Position(pos),
+                   MenuResult action, sf::Font &font, int width, int height)
+        : MenuItem(MenuItemType::MCombobox, action, font), _ItemStrings(itemStrings), _ItemValues(itemValues),
+          _Position(pos),
           _CurrentItem(0), _Height(height), _BodyWidth(width - 40), _ButtonWidth(20), _CharacterSize(40),
           _BgColorEnabled(sf::Color(0, 0, 0, 175)), _BgColorHovering(sf::Color(50, 50, 50, 100)),
           _BgColorDisabled(sf::Color(0, 0, 0, 175)),

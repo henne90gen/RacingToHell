@@ -60,13 +60,13 @@ void LevelManager::resetToLevelOne() {
 }
 
 int LevelManager::getRoadSpeed() {
-    // FIXME calculation of road speed is not correct
+    // FIXME maybe find some better calculation
     Difficulty difficulty = _FW.getOptionsManager().getDifficulty();
     switch (difficulty) {
         case Difficulty::Easy:
         case Difficulty::Normal:
         case Difficulty::Hard:
-            return (60 + ((int) (difficulty) + 1) * 20) * _Level + 100;
+            return (60 + ((int) difficulty) * 20) * _Level + 100;
         case Difficulty::Insane:
             return (110 * _Level + 150);
     }

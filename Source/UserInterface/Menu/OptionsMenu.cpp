@@ -4,31 +4,31 @@
 
 OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Options), _ChangeSliderValue() {
 
+    sf::Font &font = _FW.getOptionsManager().getFont();
 
-    // FIXME create constants for maximum and minimum fps
-    std::shared_ptr<Slider> fps(
-            new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 250)), MenuResult::SliderChange, "FPS",
-                       MIN_FPS, MAX_FPS));
+    std::shared_ptr<Slider> fps = std::make_shared<Slider>(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 250)),
+                                                           MenuResult::SliderChange, font, "FPS", MIN_FPS, MAX_FPS);
     fps->setValue(_FW.getOptionsManager().getFPS());
     _MenuItems.push_back(fps);
 
-    std::shared_ptr<Slider> volume(
-            new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 300)), MenuResult::SliderChange, "Volume",
-                       0.0f, 5.0f));
+    std::shared_ptr<Slider> volume = std::make_shared<Slider>(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 300)),
+                                                              MenuResult::SliderChange, font, "Volume", 0.0f, 5.0f);
     _MenuItems.push_back(volume);
 
     std::vector<std::string> difficultyStrings = _FW.getOptionsManager().getDifficultyStrings();
     std::vector<float> difficultyValues = _FW.getOptionsManager().getDifficultyValues();
-    std::shared_ptr<ComboBox> difficulty(
-            new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 100, 350), difficultyStrings, difficultyValues,
-                         MenuResult::DifficultyChange));
+    std::shared_ptr<ComboBox> difficulty = std::make_shared<ComboBox>(sf::Vector2f(SCREENWIDTH / 2 - 100, 350),
+                                                                      difficultyStrings,
+                                                                      difficultyValues, MenuResult::DifficultyChange,
+                                                                      font);
     _MenuItems.push_back(difficulty);
 
     std::vector<std::string> gamemodeStrings = _FW.getOptionsManager().getGameModeStrings();
     std::vector<float> gamemodeValues = _FW.getOptionsManager().getGameModeValues();
-    std::shared_ptr<ComboBox> gamemode(
-            new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 160, 420), gamemodeStrings, gamemodeValues,
-                         MenuResult::GameModeChange, 320));
+    std::shared_ptr<ComboBox> gamemode = std::make_shared<ComboBox>(sf::Vector2f(SCREENWIDTH / 2 - 160, 420),
+                                                                    gamemodeStrings,
+                                                                    gamemodeValues, MenuResult::GameModeChange, font,
+                                                                    320);
     _MenuItems.push_back(gamemode);
 
     _ScoreMultiplierBackground.setPosition(sf::Vector2f(SCREENWIDTH / 2 - 150, 480));
@@ -37,22 +37,22 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
     _ScoreMultiplierBackground.setOutlineThickness(1);
     _ScoreMultiplierBackground.setOutlineColor(sf::Color::Black);
 
-    sf::Font &font = _FW.getOptionsManager().getFont();
-
     _ScoreMultiplierText.setFont(font);
     _ScoreMultiplierText.setString("Score: x1.0");
     _ScoreMultiplierText.setCharacterSize(15);
     _ScoreMultiplierText.setPosition(sf::Vector2f(SCREENWIDTH / 2 - 150 + 10, 480.0f + 2.5f));
 
-    std::shared_ptr<MenuButton> button1(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 520), sf::Vector2f(150, 50), MenuResult::Credits, "Credits",
-                           TextAlignment::Center));
-    _MenuItems.push_back(button1);
+    std::shared_ptr<MenuButton> creditsBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2, 520),
+                                                                          sf::Vector2f(150, 50),
+                                                                          MenuResult::Credits, font, "Credits",
+                                                                          TextAlignment::Center);
+    _MenuItems.push_back(creditsBtn);
 
-    std::shared_ptr<MenuButton> button2(
-            new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 590), sf::Vector2f(150, 50), MenuResult::Back, "Back",
-                           TextAlignment::Center));
-    _MenuItems.push_back(button2);
+    std::shared_ptr<MenuButton> backBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2, 590),
+                                                                       sf::Vector2f(150, 50),
+                                                                       MenuResult::Back, font, "Back",
+                                                                       TextAlignment::Center);
+    _MenuItems.push_back(backBtn);
 
     _Text.setString("Options");
     _Text.setCharacterSize(53);

@@ -11,12 +11,15 @@ void LevelManager::update(float frameTime) {
     if (_Sprite.getPosition().y + frameTime * getRoadSpeed() >= 0) {
         _Sprite.setPosition(sf::Vector2f(0, -1600));
     } else {
-        _Sprite.setPosition(sf::Vector2f(_Sprite.getPosition().x, _Sprite.getPosition().y + frameTime * getRoadSpeed()));
+        _Sprite.setPosition(
+                sf::Vector2f(_Sprite.getPosition().x, _Sprite.getPosition().y + frameTime * getRoadSpeed()));
     }
 
     if (_FW.getCurrentGameState() == GameState::Running) {
         _LevelTime += frameTime;
-        addScore(ScoreEvent::Tick, frameTime);
+        if (_FW.getGOM().getPlayerCar()->isAlive()) {
+            addScore(ScoreEvent::Tick, frameTime);
+        }
         if (_LevelTime >= _TotalLevelTime) {
             levelUp();
         }
@@ -58,17 +61,15 @@ void LevelManager::resetToLevelOne() {
 
 int LevelManager::getRoadSpeed() {
     // FIXME calculation of road speed is not correct
-    return 100;
-//    switch (_Difficulty) {
-//        case 0:
-//        case 1:
-//        case 2:
-//            return (60 + _Difficulty * 20) * _Level + 100;
-//        case 3:
-//            return (110 * _Level + 150);
-//        default:
-//            return 100;
-//    }
+    Difficulty difficulty = _FW.getOptionsManager().getDifficulty();
+    switch (difficulty) {
+        case Difficulty::Easy:
+        case Difficulty::Normal:
+        case Difficulty::Hard:
+            return (60 + ((int) (difficulty) + 1) * 20) * _Level + 100;
+        case Difficulty::Insane:
+            return (110 * _Level + 150);
+    }
 }
 
 void LevelManager::load() {
@@ -80,15 +81,13 @@ void LevelManager::load() {
     _Sprite.setTexture((*_Textures.at(0)));
     _Sprite.setPosition(sf::Vector2f(0, -1600));
 
-    _Difficulty = 1;
-
     // TODO load level music here
 }
 
 void LevelManager::addScore(ScoreEvent event, float modifier) {
 
-    float multiplier = _FW.getOptionsManager().getScoreMultiplierList()[(int) _FW.getOptionsManager().getGameMode()];
-
+//    float multiplier = _FW.getOptionsManager().getScoreMultiplierList()[(int) _FW.getOptionsManager().getGameMode()];
+    float multiplier = _FW.getOptionsManager().getScoreMultiplier();
 
 //    _Score += _GameObjectContainer.getCarScore() * multiplier;
 //
@@ -133,16 +132,14 @@ void LevelManager::addScore(ScoreEvent event, float modifier) {
 
 int LevelManager::getAiHP() {
     switch (_FW.getOptionsManager().getDifficulty()) {
-        case 0:
+        case Difficulty::Easy:
             return 40 + _Level * 10;
-        case 1:
+        case Difficulty::Normal:
             return 50 + _Level * 15;
-        case 2:
+        case Difficulty::Hard:
             return 60 + _Level * 20;
-        case 3:
+        case Difficulty::Insane:
             return 65 + _Level * 25;
-        default:
-            return 1;
     }
 }
 

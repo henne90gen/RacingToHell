@@ -27,12 +27,11 @@ public:
 	void update(float FrameTime);
 
 private:
-	std::vector<float> _ScoreMultiplierList;
 
 	int _ChangeSliderValue;
 
 	enum Items {
-		FPS, Volume, Difficulty, Mode
+        FPSIndex, VolumeIndex, DifficultyIndex, GameModeIndex
 	};
 
 	sf::Text _FPS, _Volume, _ScoreMultiplierText;

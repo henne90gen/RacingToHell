@@ -117,7 +117,7 @@ private:
     float _LevelTime;
     float _TotalLevelTime;
 
-    int _Level, _Difficulty;
+    int _Level;
 
     bool _IsResettingLevel;
 

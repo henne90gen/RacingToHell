@@ -28,6 +28,10 @@ enum class GameMode {
     Standard, Invincible, InfEnergy, Hardcore
 };
 
+enum class Difficulty {
+    Easy, Normal, Hard, Insane
+};
+
 // TODO give them real names
 // HACK using last element for counting (http://stackoverflow.com/questions/2102582/how-can-i-count-the-items-in-an-enum)
 enum class PlayerCarIndex {

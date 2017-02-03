@@ -5,28 +5,30 @@
 OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Options), _ChangeSliderValue() {
 
 
-    _ScoreMultiplierList = {1.0f, 0.0f, 0.5f, 3.f};
-
     // FIXME create constants for maximum and minimum fps
     std::shared_ptr<Slider> fps(
-            new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 250)), MenuResult::SliderChange, "FPS", MIN_FPS,
-                       MAX_FPS));
+            new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 250)), MenuResult::SliderChange, "FPS",
+                       MIN_FPS, MAX_FPS));
     fps->setValue(_FW.getOptionsManager().getFPS());
     _MenuItems.push_back(fps);
 
     std::shared_ptr<Slider> volume(
-            new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 300)), MenuResult::SliderChange, "Volume", 0.0f,
-                       5.0f));
+            new Slider(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 300)), MenuResult::SliderChange, "Volume",
+                       0.0f, 5.0f));
     _MenuItems.push_back(volume);
 
-    std::vector<std::string> difficulties = {"Easy", "Normal", "Hard", "Insane"};
+    std::vector<std::string> difficultyStrings = _FW.getOptionsManager().getDifficultyStrings();
+    std::vector<float> difficultyValues = _FW.getOptionsManager().getDifficultyValues();
     std::shared_ptr<ComboBox> difficulty(
-            new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 100, 350), difficulties, MenuResult::Nothing));
+            new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 100, 350), difficultyStrings, difficultyValues,
+                         MenuResult::DifficultyChange));
     _MenuItems.push_back(difficulty);
 
-    std::vector<std::string> gamemodes = {"Standard", "Invincibility", "Infinite Energy", "Hardcore"};
+    std::vector<std::string> gamemodeStrings = _FW.getOptionsManager().getGameModeStrings();
+    std::vector<float> gamemodeValues = _FW.getOptionsManager().getGameModeValues();
     std::shared_ptr<ComboBox> gamemode(
-            new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 160, 420), gamemodes, MenuResult::Nothing, 320));
+            new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 160, 420), gamemodeStrings, gamemodeValues,
+                         MenuResult::GameModeChange, 320));
     _MenuItems.push_back(gamemode);
 
     _ScoreMultiplierBackground.setPosition(sf::Vector2f(SCREENWIDTH / 2 - 150, 480));
@@ -59,8 +61,8 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
 
     _FPS.setFont(font);
     _FPS.setString("000");
-    _FPS.setPosition(sf::Vector2f(_MenuItems[FPS]->getRect().left + _MenuItems[FPS]->getRect().width + 20,
-                                  _MenuItems[FPS]->getRect().top - 5));
+    _FPS.setPosition(sf::Vector2f(_MenuItems[FPSIndex]->getRect().left + _MenuItems[FPSIndex]->getRect().width + 20,
+                                  _MenuItems[FPSIndex]->getRect().top - 5));
 
     _FPSBackground.setPosition(sf::Vector2f(_FPS.getPosition().x - 10, _FPS.getPosition().y - 3));
     _FPSBackground.setSize(sf::Vector2f(_FPS.getLocalBounds().width + 20, _FPS.getLocalBounds().height + 20));
@@ -70,8 +72,9 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
 
     _Volume.setFont(font);
     _Volume.setString("000");
-    _Volume.setPosition(sf::Vector2f(_MenuItems[Volume]->getRect().left + _MenuItems[Volume]->getRect().width + 20,
-                                     _MenuItems[Volume]->getRect().top - 5));
+    _Volume.setPosition(
+            sf::Vector2f(_MenuItems[VolumeIndex]->getRect().left + _MenuItems[VolumeIndex]->getRect().width + 20,
+                         _MenuItems[VolumeIndex]->getRect().top - 5));
 
     _VolumeBackground.setPosition(sf::Vector2f(_Volume.getPosition().x - 10, _Volume.getPosition().y - 3));
     _VolumeBackground.setSize(sf::Vector2f(_Volume.getLocalBounds().width + 20, _Volume.getLocalBounds().height + 20));
@@ -105,8 +108,14 @@ void OptionsMenu::handleEvent(sf::Event &event) {
 //		handleJoystick(Y);
     switch (getMenuItemResult(event)) {
         case MenuResult::SliderChange:
-            _FW.getOptionsManager().setFPS(_MenuItems[FPS]->getValue());
-            _FW.getOptionsManager().setVolume(_MenuItems[Volume]->getValue());
+            _FW.getOptionsManager().setFPS(_MenuItems[FPSIndex]->getValue());
+            _FW.getOptionsManager().setVolume(_MenuItems[VolumeIndex]->getValue());
+            break;
+        case MenuResult::GameModeChange:
+            _FW.getOptionsManager().setGameMode((GameMode) (int) _MenuItems[GameModeIndex]->getValue());
+            break;
+        case MenuResult::DifficultyChange:
+            _FW.getOptionsManager().setDifficulty((Difficulty) (int) _MenuItems[DifficultyIndex]->getValue());
             break;
         case MenuResult::Back:
             _FW.goBackGameState();
@@ -132,7 +141,7 @@ void OptionsMenu::update(float FrameTime) {
 //    _ChangeSliderValue = 0;
 
     // Update and center text
-    _MenuItems[FPS]->setValue(_FW.getOptionsManager().getFPS());
+    _MenuItems[FPSIndex]->setValue(_FW.getOptionsManager().getFPS());
     _FPS.setString(floatToString(_FW.getOptionsManager().getFPS(), 0));
     _FPS.setPosition(sf::Vector2f(_FPSBackground.getPosition().x + _FPSBackground.getLocalBounds().width / 2.0f -
                                   _FPS.getLocalBounds().width / 2.0f,
@@ -140,7 +149,8 @@ void OptionsMenu::update(float FrameTime) {
                                   _FPS.getLocalBounds().height + 2));
 
     // Update and center text
-    _Volume.setString(std::to_string((int) (_MenuItems[Volume]->getValue() * 100 / _MenuItems[Volume]->getMaxValue())));
+    _Volume.setString(
+            std::to_string((int) (_MenuItems[VolumeIndex]->getValue() * 100 / _MenuItems[VolumeIndex]->getMaxValue())));
     _Volume.setPosition(sf::Vector2f(
             _VolumeBackground.getPosition().x + _VolumeBackground.getLocalBounds().width / 2.0f -
             _Volume.getLocalBounds().width / 2.0f,
@@ -148,12 +158,16 @@ void OptionsMenu::update(float FrameTime) {
             _Volume.getLocalBounds().height + 2));
 
 
+    float multiplier = _FW.getOptionsManager().getScoreMultiplier();
     _ScoreMultiplierText.setString(
-            "Score: x" + floatToString(_ScoreMultiplierList[(int) _FW.getOptionsManager().getGameMode()], 1));
+            "Score: x" + floatToString(multiplier, 1));
 
-    if (_ScoreMultiplierList[(int) _FW.getOptionsManager().getGameMode()] == 1.0f) {
+    _MenuItems[DifficultyIndex]->setValue((float) _FW.getOptionsManager().getDifficulty());
+    _MenuItems[GameModeIndex]->setValue((float) _FW.getOptionsManager().getGameMode());
+
+    if (multiplier == 1.0f) {
         _ScoreMultiplierText.setFillColor(sf::Color::White);
-    } else if (_ScoreMultiplierList[(int) _FW.getOptionsManager().getGameMode()] < 1.0f) {
+    } else if (multiplier < 1.0f) {
         _ScoreMultiplierText.setFillColor(sf::Color::Red);
     } else {
         _ScoreMultiplierText.setFillColor(sf::Color::Green);

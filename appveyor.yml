@@ -44,7 +44,7 @@ build_script:
   - cd ..
 
 after_build:
-  - 7z a RacingToHell.zip build/bin
+  - 7z a RacingToHellWindows.zip build/bin
 
 #---------------------------------#
 #       tests configuration       #
@@ -55,14 +55,14 @@ test: off
 #      artifacts configuration    #
 #---------------------------------#
 artifacts:
-  - path: RacingToHell.zip
+  - path: RacingToHellWindows.zip
 
 #---------------------------------#
 #     deployment configuration    #
 #---------------------------------#
 deploy:
   - provider: GitHub
-    artifact: RacingToHell.zip
+    artifact: RacingToHellWindows.zip
     draft: false
     prerelease: false
     on:

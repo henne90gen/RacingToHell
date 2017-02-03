@@ -2,9 +2,9 @@
 
 #include "UserInterface/Menu/MenuItem/ComboBox.h"
 
-ComboBox::ComboBox(sf::Vector2f pos, std::vector<std::string> &Items, MenuResult Action, int width, int height)
-        : MenuItem(MenuItemType::MCombobox, Action),
-          _Items(Items), _Position(pos),
+ComboBox::ComboBox(sf::Vector2f pos, std::vector<std::string> itemStrings, std::vector<float> itemValues,
+                   MenuResult Action, int width, int height)
+        : MenuItem(MenuItemType::MCombobox, Action), _ItemStrings(itemStrings), _ItemValues(itemValues), _Position(pos),
           _CurrentItem(0), _Height(height), _BodyWidth(width - 40), _ButtonWidth(20), _CharacterSize(40),
           _BgColorEnabled(sf::Color(0, 0, 0, 175)), _BgColorHovering(sf::Color(50, 50, 50, 100)),
           _BgColorDisabled(sf::Color(0, 0, 0, 175)),
@@ -40,7 +40,7 @@ ComboBox::ComboBox(sf::Vector2f pos, std::vector<std::string> &Items, MenuResult
 
     _Text.setFont(_Font);
     _Text.setCharacterSize(_CharacterSize);
-    _Text.setString(_Items[_CurrentItem]);
+    _Text.setString(_ItemStrings[_CurrentItem]);
     centerText();
 }
 
@@ -82,20 +82,21 @@ MenuResult ComboBox::handleEvent(sf::Event &newEvent, sf::Vector2f mousePos) {
         if (newEvent.type == sf::Event::MouseMoved) {
             _HoveringLeft = pointInRectangle(_ButtonLeft.getGlobalBounds(), mousePos);
             _HoveringRight = pointInRectangle(_ButtonRight.getGlobalBounds(), mousePos);
-
             _Hovering = _HoveringLeft || _HoveringRight;
         }
         if (newEvent.type == sf::Event::MouseButtonPressed) {
             if (pointInRectangle(_ButtonLeft.getGlobalBounds(), mousePos)) {
-                _CurrentItem = (_CurrentItem - 1 < 0) ? _Items.size() - 1 : _CurrentItem - 1;
+                _CurrentItem = (_CurrentItem - 1 < 0) ? _ItemStrings.size() - 1 : _CurrentItem - 1;
+                _Text.setString(_ItemStrings[_CurrentItem]);
+                centerText();
+                return _Action;
             } else if (pointInRectangle(_ButtonRight.getGlobalBounds(), mousePos)) {
-                _CurrentItem = (_CurrentItem + 1 >= _Items.size()) ? 0 : _CurrentItem + 1;
+                _CurrentItem = (_CurrentItem + 1 >= _ItemStrings.size()) ? 0 : _CurrentItem + 1;
+                _Text.setString(_ItemStrings[_CurrentItem]);
+                centerText();
+                return _Action;
             }
-
-            _Text.setString(_Items[_CurrentItem]);
-            centerText();
         }
-
     }
     return MenuResult::Nothing;
 }
@@ -110,7 +111,7 @@ void ComboBox::centerText() {
 }
 
 void ComboBox::setValue(float x) {
-    _CurrentItem = ((int) x % _Items.size());
-    _Text.setString(_Items[_CurrentItem]);
+    _CurrentItem = ((int) x % _ItemStrings.size());
+    _Text.setString(_ItemStrings[_CurrentItem]);
     centerText();
 }

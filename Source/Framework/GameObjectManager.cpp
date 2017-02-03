@@ -283,7 +283,8 @@ bool GameObjectManager::bossIsDead() {
 
 void GameObjectManager::enterBossFight() {
     _Boss = GameObjectFactory::getBossCar((_FW.getLevelManager().getLevel() - 1) % 4,
-                                          _FW.getOptionsManager().getDifficulty(), _FW.getLevelManager().getBossHP(),
+                                          (int) _FW.getOptionsManager().getDifficulty(),
+                                          _FW.getLevelManager().getBossHP(),
                                           _SoundEffects, _ExplosionSoundBuffer, _FW.getOptionsManager().getVolume());
     _BossFight = true;
 }
@@ -423,19 +424,17 @@ void GameObjectManager::spawnCanister(float frameTime) {
 
 void GameObjectManager::calculateAiCarFrequency() {
     switch (_FW.getOptionsManager().getDifficulty()) {
-        case 0:
+        case Difficulty::Easy:
             _CarFrequency = 1.5f + 0.1f * (float) _FW.getLevelManager().getLevel();
             break;
-        case 1:
+        case Difficulty::Normal:
             _CarFrequency = 1.75f + 0.11f * std::pow((float) _FW.getLevelManager().getLevel(), 1.3f);
             break;
-        case 2:
+        case Difficulty::Hard:
             _CarFrequency = 2.0f + 0.15f * std::pow((float) _FW.getLevelManager().getLevel(), 1.3f);
             break;
-        case 3:
+        case Difficulty::Insane:
             _CarFrequency = 2.15f + 0.17f * std::pow((float) _FW.getLevelManager().getLevel(), 1.45f);
-            break;
-        default:
             break;
     }
 }
@@ -443,57 +442,51 @@ void GameObjectManager::calculateAiCarFrequency() {
 
 void GameObjectManager::calculateBulletFrequency() {
     switch (_FW.getOptionsManager().getDifficulty()) {
-        case 0:
+        case Difficulty::Easy:
             _BulletFrequency = 0.8f + 0.065f * (float) _FW.getLevelManager().getLevel();
             break;
-        case 1:
+        case Difficulty::Normal:
             _BulletFrequency = 1.2f + 0.08f * std::pow((float) _FW.getLevelManager().getLevel(), 1.1f);
             break;
-        case 2:
+        case Difficulty::Hard:
             _BulletFrequency = 1.2f + 1.0f * std::pow((float) _FW.getLevelManager().getLevel(), 1.2f);
             break;
-        case 3:
+        case Difficulty::Insane:
             _BulletFrequency = 1.4f + 1.0f * std::pow((float) _FW.getLevelManager().getLevel(), 1.33f);
-            break;
-        default:
             break;
     }
 }
 
 void GameObjectManager::calculateCanisterFrequency() {
     switch (_FW.getOptionsManager().getDifficulty()) {
-        case 0:
+        case Difficulty::Easy:
             _CanisterFrequency = 0.5f;
             break;
-        case 1:
+        case Difficulty::Normal:
             _CanisterFrequency = 0.4f;
             break;
-        case 2:
+        case Difficulty::Hard:
             _CanisterFrequency = 0.3f;
             break;
-        case 3:
+        case Difficulty::Insane:
             _CanisterFrequency = 0.3f;
-            break;
-        default:
             break;
     }
 }
 
 void GameObjectManager::calculateToolboxFrequency() {
     switch (_FW.getOptionsManager().getDifficulty()) {
-        case 0:
+        case Difficulty::Easy:
             _ToolboxFrequency = (float) (std::rand() % 45) / 1000.f + 0.080f;
             break;
-        case 1:
+        case Difficulty::Normal:
             _ToolboxFrequency = (float) (std::rand() % 20) / 1000.f + 0.060f;
             break;
-        case 2:
+        case Difficulty::Hard:
             _ToolboxFrequency = (float) (std::rand() % 20) / 1000.f + 0.040f;
             break;
-        case 3:
+        case Difficulty::Insane:
             _ToolboxFrequency = (float) (std::rand() % 20) / 1000.f + 0.020f;
-            break;
-        default:
             break;
     }
 }

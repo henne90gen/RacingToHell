@@ -20,12 +20,10 @@ private:
     unsigned int _CharacterSize = 14;
     int _XOffset = 0;
     int _YOffset = 50;
-    int _HorizontalSpacing = 75;
+    int _HorizontalSpacing = 5;
     int _VerticalSpacing = 15;
 
-    std::vector<std::string> _LabelStrings = {"FPS:", "UPS:", "CurrState:", "LastState:", "Score:", "Bullets:", "Cars:",
-                                              "AI health:", "Car freq:", "Bullet freq:", "Can. freq:", "Tool. freq:"};
-
+    std::vector<std::string> _LabelStrings;
     std::vector<sf::Text> _Labels;
     std::vector<sf::Text> _Values;
 };

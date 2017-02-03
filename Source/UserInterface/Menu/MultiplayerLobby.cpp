@@ -14,15 +14,15 @@ MultiplayerLobby::MultiplayerLobby(Framework &framework) : Menu(framework, GameS
                            "Start", TextAlignment::Center));
     _MenuItems.push_back(StartButton);
 
-    std::vector<std::string> difficulties = {"Easy", "Normal", "Hard", "Insane"};
-    std::shared_ptr<ComboBox> comboboxDifficulty(
-            new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 100, 235), difficulties, MenuResult::Nothing));
-    _MenuItems.push_back(comboboxDifficulty);
+//    std::vector<std::string> difficulties = {"Easy", "Normal", "Hard", "Insane"};
+//    std::shared_ptr<ComboBox> comboboxDifficulty(
+//            new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 100, 235), difficulties, MenuResult::Nothing));
+//    _MenuItems.push_back(comboboxDifficulty);
 
-    std::vector<std::string> modes = {"Standard"};
-    std::shared_ptr<ComboBox> comboboxMode(
-            new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 100, 305), modes, MenuResult::Nothing));
-    _MenuItems.push_back(comboboxMode);
+//    std::vector<std::string> modes = {"Standard"};
+//    std::shared_ptr<ComboBox> comboboxMode(
+//            new ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 100, 305), modes, MenuResult::Nothing));
+//    _MenuItems.push_back(comboboxMode);
 
     std::shared_ptr<MenuButton> ReadyButton(
             new MenuButton(sf::Vector2f(SCREENWIDTH / 2, 165), sf::Vector2f(200, 50), MenuResult::Ready, "Ready",

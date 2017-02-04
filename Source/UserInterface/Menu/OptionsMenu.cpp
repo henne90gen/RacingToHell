@@ -7,12 +7,14 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
     sf::Font &font = _FW.getOptionsManager().getFont();
 
     std::shared_ptr<Slider> fps = std::make_shared<Slider>(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 250)),
-                                                           MenuResult::SliderChange, font, "FPS", MIN_FPS, MAX_FPS);
+                                                           MenuResult::FPSChange, font, "FPS", MIN_FPS, MAX_FPS);
     fps->setValue(_FW.getOptionsManager().getFPS());
     _MenuItems.push_back(fps);
 
     std::shared_ptr<Slider> volume = std::make_shared<Slider>(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 300)),
-                                                              MenuResult::SliderChange, font, "Volume", 0.0f, 5.0f);
+                                                              MenuResult::VolumeChange, font, "Volume", MIN_VOLUME,
+                                                              MAX_VOLUME);
+    volume->setValue(_FW.getOptionsManager().getVolume());
     _MenuItems.push_back(volume);
 
     std::vector<std::string> difficultyStrings = _FW.getOptionsManager().getDifficultyStrings();
@@ -106,9 +108,12 @@ void OptionsMenu::handleEvent(sf::Event &event) {
 //		}
 //
 //		handleJoystick(Y);
+
     switch (getMenuItemResult(event)) {
-        case MenuResult::SliderChange:
+        case MenuResult::FPSChange:
             _FW.getOptionsManager().setFPS(_MenuItems[FPSIndex]->getValue());
+            break;
+        case MenuResult::VolumeChange:
             _FW.getOptionsManager().setVolume(_MenuItems[VolumeIndex]->getValue());
             break;
         case MenuResult::GameModeChange:
@@ -117,11 +122,12 @@ void OptionsMenu::handleEvent(sf::Event &event) {
         case MenuResult::DifficultyChange:
             _FW.getOptionsManager().setDifficulty((Difficulty) (int) _MenuItems[DifficultyIndex]->getValue());
             break;
-        case MenuResult::Back:
-            _FW.goBackGameState();
-            break;
         case MenuResult::Credits:
             _FW.advanceToGamState(GameState::About);
+            break;
+        case MenuResult::Back:
+            _FW.getOptionsManager().saveOptions();
+            _FW.goBackGameState();
             break;
         default:
             break;

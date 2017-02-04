@@ -7,15 +7,18 @@
 #include "Framework/Framework.h"
 
 DebugScreen::DebugScreen(Framework &framework) : GameScreen(framework) {
-    _LabelStrings = {"FPSIndex:",
+    _LabelStrings = {"FPS:",
                      "UPS:",
                      "CurrState:",
                      "LastState:",
                      "",
+                     "Options",
+                     "FPSPreset:",
+                     "Volume:",
                      "Difficulty:",
                      "GameMode:",
-                     "Score:",
                      "ScoreMulti:",
+                     "Score:",
                      "",
                      "Bullets:",
                      "Cars:",
@@ -65,19 +68,22 @@ void DebugScreen::update(float frameTime) {
     std::vector<long> skipping;
     std::vector<std::string> newValues;
 
-    newValues.push_back(std::to_string(_FW.getFPS())); // FPSIndex
+    newValues.push_back(std::to_string(_FW.getFPS())); // FPS
     newValues.push_back(std::to_string(_FW.getUPS())); // UPS
 
     newValues.push_back(std::to_string((int) _FW.getCurrentGameState())); // Current GameState
     newValues.push_back(std::to_string((int) _FW.getLastGameState())); // Last GameState
 
     newValues.push_back("");  // Empty line
+    newValues.push_back("");  // Empty line
 
+    newValues.push_back(std::to_string(_FW.getOptionsManager().getFPS())); // FPSPreset
+    newValues.push_back(std::to_string(_FW.getOptionsManager().getVolume())); // Volume
     newValues.push_back(std::to_string((int) _FW.getOptionsManager().getDifficulty())); // Difficulty
     newValues.push_back(std::to_string((int) _FW.getOptionsManager().getGameMode())); // GameMode
 
-    newValues.push_back(std::to_string(_FW.getLevelManager().getScoref())); // Score
     newValues.push_back(std::to_string(_FW.getOptionsManager().getScoreMultiplier())); // ScoreMultiplier
+    newValues.push_back(std::to_string(_FW.getLevelManager().getScoref())); // Score
 
     newValues.push_back(""); // Empty line
 

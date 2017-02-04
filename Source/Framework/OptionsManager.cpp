@@ -21,7 +21,7 @@ void OptionsManager::loadOptions() {
     std::string option;
     std::ifstream fileStream;
 
-    fileStream.open("Resources/Data/settings.cfg");
+    fileStream.open("Resources/settings.cfg");
     while (std::getline(fileStream, option)) {
         settings.push_back(option);
     }
@@ -31,7 +31,7 @@ void OptionsManager::loadOptions() {
         _FPS = std::stoi(settings[0]);
         _Volume = std::stof(settings[1]);
         _Difficulty = (Difficulty) std::stoi(settings[2]);
-
+        _GameMode = (GameMode) std::stoi(settings[3]);
         if (settings.size() >= 4) {
             _MPName = settings[3];
         }
@@ -39,13 +39,17 @@ void OptionsManager::loadOptions() {
 }
 
 void OptionsManager::saveOptions() {
-    std::string Path = "Resources/Data/Settings.cfg";
-    std::ofstream FileStream;
-    FileStream.open(Path);
+    std::string Path = "Resources/settings.cfg";
+    std::ofstream fileStream;
+    fileStream.open(Path);
 
-    FileStream << _FPS << std::endl << _Volume << std::endl << ((int) _Difficulty) << std::endl/* << _MPName */;
+    fileStream << _FPS << std::endl;
+    fileStream << _Volume << std::endl;
+    fileStream << (int) _Difficulty << std::endl;
+    fileStream << (int) _GameMode << std::endl;
+//    fileStream << _MPName << std::endl;
 
-    FileStream.close();
+    fileStream.close();
 }
 
 float OptionsManager::getScoreMultiplier() {

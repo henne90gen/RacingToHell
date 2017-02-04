@@ -28,3 +28,5 @@
 #define PI 3.141592654f
 #define MIN_FPS 30.0f
 #define MAX_FPS 210.0f
+#define MIN_VOLUME 0.0f
+#define MAX_VOLUME 100.0f

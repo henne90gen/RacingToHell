@@ -4,7 +4,7 @@ enum class MenuResult {
     Nothing,
     Resume,
     Exit,
-    SliderChange,
+    VolumeChange,
     NextSkin,
     PreviousSkin,
     Restart,
@@ -22,5 +22,6 @@ enum class MenuResult {
     StartMultiplayer,
     GameModeChange,
     DifficultyChange,
-    DebugChange
+    DebugChange,
+    FPSChange
 };

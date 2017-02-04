@@ -76,7 +76,7 @@ std::vector<GameScreen *> GameScreenFactory::getGameScreens(Framework &framework
             break;
         case GameState::Exiting:
             screens.push_back(getExitScreen(framework));
-            break;
+            return screens;
             // FIXME implement multiplayer stuff
         default:
             break;
@@ -97,10 +97,10 @@ LoadingScreen *GameScreenFactory::getLoadingScreen(Framework &framework) {
 }
 
 MainMenu *GameScreenFactory::getMainMenu(Framework &framework) {
-    if (_MainMenu == nullptr) {
-        _MainMenu = new MainMenu(framework);
-    }
-    return _MainMenu;
+//    if (_MainMenu == nullptr) {
+//        _MainMenu = new MainMenu(framework);
+//    }
+    return new MainMenu(framework);
 }
 
 OptionsMenu *GameScreenFactory::getOptionsMenu(Framework &framework) {

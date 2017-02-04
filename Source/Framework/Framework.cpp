@@ -23,7 +23,7 @@ Framework::Framework() : _TimeSinceLastUpdate(sf::Time::Zero), _FrameTime(0), _I
     //Seed
     srand((unsigned int) time(NULL));
 
-    _DisplayedGameScreens = initGameScreens();
+    reloadGameScreens();
 
     // FIXME Loading with a thread causes SIGSEGV
 //    _LoadingThread = std::thread(&Framework::load, this);
@@ -249,13 +249,13 @@ void Framework::restartClock() {
 //    _NetworkThread.detach();
 //}
 
-void Framework::updateMPCarSelection() {
+//void Framework::updateMPCarSelection() {
 //    _MPGOCClient.getPlayerCar().setTexture((*_CarSkins.at((unsigned long) _OptionsManager.getCurrentCarSkinIndex())));
 //    _MPGOCClient.getPlayerCar().setStats(_OptionsManager.getCurrentCarSkinIndex());
-}
+//}
 
-std::vector<GameScreen *> Framework::initGameScreens() {
-    return GameScreenFactory::getInstance().getGameScreens(*this);
+void Framework::reloadGameScreens() {
+    _DisplayedGameScreens = GameScreenFactory::getInstance().getGameScreens(*this);
 }
 
 void Framework::setMouseVisibility() {

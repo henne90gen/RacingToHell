@@ -9,17 +9,18 @@
 
 class Cross {
 public:
-    Cross(sf::Vector2f pos, sf::Vector2f size, sf::Color color) : _Position(pos) {
+    Cross() {}
+
+    Cross(sf::Vector2f size, sf::Color color) : _Visible(true) {
         sf::Vector2f barSize = sf::Vector2f(size.x * size.x + size.y * size.y, _BarHeight);
         _Left = sf::RectangleShape(barSize);
         _Left.setOrigin(barSize.x / 2, barSize.y / 2);
-        _Left.setPosition(_Position);
-        _Left.setRotation(PI);
+        _Left.setRotation(45);
         _Left.setFillColor(color);
 
         _Right = sf::RectangleShape(barSize);
         _Right.setOrigin(barSize.x / 2, barSize.y / 2);
-        _Right.setPosition(_Position);
+        _Right.setRotation(-45);
         _Right.setFillColor(color);
     }
 
@@ -34,10 +35,14 @@ public:
 
     bool isVisible() { return _Visible; }
 
+    void setPosition(sf::Vector2f position) {
+        _Left.setPosition(position);
+        _Right.setPosition(position);
+    }
+
 private:
     bool _Visible;
     sf::RectangleShape _Left, _Right;
-    sf::Vector2f _Position;
     int _BarHeight = 5;
 };
 
@@ -64,8 +69,9 @@ public:
 private:
     bool _Checked;
     sf::Text _Text;
-    sf::RectangleShape _Box;
+    sf::RectangleShape _BoxBackground;
     Cross _Cross;
+    int _BoxTextPadding = 5;
 };
 
 

@@ -28,12 +28,13 @@ public:
 
     void setVolume(float volume) { _Volume = volume; }
 
-
     sf::Font &getFont() { return _Font; }
 
     void setFont(sf::Font font) { _Font = font; }
 
     bool isDebugOn() { return _Debug; }
+
+    void setDebug(bool debug) { _Debug = debug; }
 
     void loadOptions();
 

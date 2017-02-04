@@ -42,15 +42,21 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
     _ScoreMultiplierText.setFont(font);
     _ScoreMultiplierText.setString("Score: x1.0");
     _ScoreMultiplierText.setCharacterSize(15);
-    _ScoreMultiplierText.setPosition(sf::Vector2f(SCREENWIDTH / 2 - 150 + 10, 480.0f + 2.5f));
+    _ScoreMultiplierText.setPosition(sf::Vector2f(SCREENWIDTH / 2 - 150 + 10, 482.5f));
 
-    std::shared_ptr<MenuButton> creditsBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2, 520),
+    std::shared_ptr<CheckBox> debug = std::make_shared<CheckBox>(sf::Vector2f(SCREENWIDTH / 2, 540),
+                                                                 MenuResult::DebugChange, font,
+                                                                 "Debug");
+    debug->setValue(_FW.getOptionsManager().isDebugOn());
+    _MenuItems.push_back(debug);
+
+    std::shared_ptr<MenuButton> creditsBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2, 590),
                                                                           sf::Vector2f(150, 50),
                                                                           MenuResult::Credits, font, "Credits",
                                                                           TextAlignment::Center);
     _MenuItems.push_back(creditsBtn);
 
-    std::shared_ptr<MenuButton> backBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2, 590),
+    std::shared_ptr<MenuButton> backBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2, 650),
                                                                        sf::Vector2f(150, 50),
                                                                        MenuResult::Back, font, "Back",
                                                                        TextAlignment::Center);
@@ -121,6 +127,10 @@ void OptionsMenu::handleEvent(sf::Event &event) {
             break;
         case MenuResult::DifficultyChange:
             _FW.getOptionsManager().setDifficulty((Difficulty) (int) _MenuItems[DifficultyIndex]->getValue());
+            break;
+        case MenuResult::DebugChange:
+            _FW.getOptionsManager().setDebug((bool) _MenuItems[DebugIndex]->getValue());
+            _FW.reloadGameScreens();
             break;
         case MenuResult::Credits:
             _FW.advanceToGamState(GameState::About);

@@ -5,13 +5,11 @@
 #include "Framework/OptionsManager.h"
 
 OptionsManager::OptionsManager() {
-    // FIXME read startup config from file
+    // Standard configuration if there is no settings.cfg file
     _FPS = 60;
     _Volume = 20;
     _GameMode = GameMode::Standard;
-
     _Font.loadFromFile("Resources/Font/arial.ttf");
-
     _Debug = true;
 }
 
@@ -32,9 +30,10 @@ void OptionsManager::loadOptions() {
         _Volume = std::stof(settings[1]);
         _Difficulty = (Difficulty) std::stoi(settings[2]);
         _GameMode = (GameMode) std::stoi(settings[3]);
-        if (settings.size() >= 4) {
-            _MPName = settings[3];
-        }
+        _Debug = (bool) std::stoi(settings[4]);
+//        if (settings.size() >= 4) {
+//            _MPName = settings[3];
+//        }
     }
 }
 
@@ -47,6 +46,7 @@ void OptionsManager::saveOptions() {
     fileStream << _Volume << std::endl;
     fileStream << (int) _Difficulty << std::endl;
     fileStream << (int) _GameMode << std::endl;
+    fileStream << _Debug << std::endl;
 //    fileStream << _MPName << std::endl;
 
     fileStream.close();

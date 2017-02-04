@@ -92,8 +92,6 @@ public:
         return _MPGOCClient;
     }*/
 
-    void addScore();
-
     void setVolume(float Volume);
 
     void restartClock();
@@ -103,14 +101,11 @@ public:
     void reset();
 
 //    void initializeNetworkThread();
-
-//    int getNumberOfCarsAvailable() {
-//        return (int) _CarSkins.size();
-//    }
-
-    void updateMPCarSelection();
+//    void updateMPCarSelection();
 
     bool isMouseVisible();
+
+    void reloadGameScreens();
 
 private:
     OptionsManager _OptionsManager;
@@ -127,8 +122,6 @@ private:
     std::vector<GameScreen *> _DisplayedGameScreens;
 
     std::vector<GameState> _GameStates;
-
-    std::vector<GameScreen *> initGameScreens();
 
     sf::Clock _Clock;
 

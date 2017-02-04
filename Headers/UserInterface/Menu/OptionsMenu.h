@@ -1,6 +1,7 @@
 #pragma once
 #include "Menu.h"
 #include "MultiplayerMenu.h"
+#include "UserInterface/Menu/MenuItem/CheckBox.h"
 
 class OptionsMenu : public Menu
 {
@@ -31,7 +32,7 @@ private:
 	int _ChangeSliderValue;
 
 	enum Items {
-        FPSIndex, VolumeIndex, DifficultyIndex, GameModeIndex
+		FPSIndex, VolumeIndex, DifficultyIndex, GameModeIndex, DebugIndex
 	};
 
 	sf::Text _FPS, _Volume, _ScoreMultiplierText;

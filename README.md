@@ -6,7 +6,7 @@
 
 ###Linux
 
-1.  Download and install CMake and all the required [libraries for SFML](http://www.sfml-dev.org/tutorials/2.4/compile-with-cmake.php#installing-dependencies)
+1.  Download and install CMake and all the [libraries](http://www.sfml-dev.org/tutorials/2.4/compile-with-cmake.php#installing-dependencies) required for SFML
 1.  Clone the repository:
     -   `git clone https://github.com/henne90gen/RacingToHell`
 1.  Create a directory called "build" and go into it:

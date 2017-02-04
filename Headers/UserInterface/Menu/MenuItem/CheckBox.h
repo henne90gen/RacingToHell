@@ -64,6 +64,7 @@ public:
 
     void setValue(float newValue) {
         _Checked = (bool) newValue;
+        _Cross.setVisible((bool) newValue);
     }
 
 private:

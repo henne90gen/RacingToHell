@@ -119,7 +119,7 @@ private:
 
     sf::RenderWindow _RenderWindow;
 
-    std::vector<GameScreen *> _DisplayedGameScreens;
+    std::vector<std::shared_ptr<GameScreen>> _DisplayedGameScreens;
 
     std::vector<GameState> _GameStates;
 

@@ -35,63 +35,15 @@ public:
 
     void operator=(GameScreenFactory const &)  = delete;
 
-    std::vector<GameScreen *> getGameScreens(Framework &framework);
+    std::vector<std::shared_ptr<GameScreen>> getGameScreens(Framework &framework);
 
 private:
     GameScreenFactory() {}
 
-    ~GameScreenFactory();
+    ~GameScreenFactory() {}
 
-    // TODO maybe we can use a template here
-    LoadingScreen *_LoadingScreen;
-
-    LoadingScreen *getLoadingScreen(Framework &framework);
-
-    MainMenu *_MainMenu;
-
-    MainMenu *getMainMenu(Framework &framework);
-
-    LevelScreen *_LevelScreen;
-
-    LevelScreen *getLevelScreen(Framework &framework);
-
-    OptionsMenu *_OptionsMenu;
-
-    OptionsMenu *getOptionsMenu(Framework &framework);
-
-    ExitScreen *_ExitScreen;
-
-    ExitScreen *getExitScreen(Framework &framework);
-
-    HighscoreMenu *_HighscoreMenu;
-
-    HighscoreMenu *getHighscoreMenu(Framework &framework);
-
-    AboutMenu *_AboutMenu;
-
-    AboutMenu *getAboutMenu(Framework &framework);
-
-    GameObjectScreen *_GameObjectScreen;
-
-    GameObjectScreen *getGameObjectScreen(Framework &framework);
-
-    HUDScreen *_HeadsUpDisplay;
-
-    HUDScreen *getHeadsUpDisplayScreen(Framework &framework);
-
-    PauseMenu *_PauseMenu;
-
-    PauseMenu *getPauseMenu(Framework &framework);
-
-    GameOverMenu *_GameOverMenu;
-
-    GameOverMenu *getGameOverMenu(Framework &framework);
-
-    LevelUpScreen *_LevelUpScreen;
-
-    LevelUpScreen *getLevelUpScreen(Framework &framework);
-
-    DebugScreen *_DebugScreen;
-
-    DebugScreen *getDebugScreen(Framework &framework);
+    template<typename ScreenType>
+    std::shared_ptr<ScreenType> getScreen(Framework &framework) {
+        return std::make_shared<ScreenType>(framework);
+    }
 };

@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "Framework/Framework.h"
 
-Framework::Framework() : _TimeSinceLastUpdate(sf::Time::Zero), _FrameTime(0), _IsRunning(true), _LastFPSCheck(),
-                         _LastFPSPrint(), _GameObjectManager(*this), _LevelManager(*this), _HighscoreManager(*this) {
+Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameObjectManager(*this), _LevelManager(*this),
+                         _HighscoreManager(*this) {
 
 
     _GameStates.push_back(GameState::Loading);
@@ -39,68 +39,32 @@ Framework::Framework() : _TimeSinceLastUpdate(sf::Time::Zero), _FrameTime(0), _I
     //_MPGOCServer.setNetworkHandle(&_NetworkHandle, true);
 }
 
-Framework::~Framework() {
-//    _CarSkins.clear();
-}
+Framework::~Framework() {}
 
 void Framework::run() {
+//    Update at 60 updates per second
+//    Render at unlimited (TODO or limited) FPS
 
-    _FrameTime = 1 / _OptionsManager.getFPS();
-
-    while (_IsRunning /*|| _NetworkHandle.getState() != NetworkState::NoNetState*/) {
-        sf::Time elapsedTime = _Clock.restart();
-
-        _TimeSinceLastUpdate += elapsedTime;
-
-        while (_TimeSinceLastUpdate > sf::seconds(1 / _OptionsManager.getFPS())) {
-            _TimeSinceLastUpdate -= sf::seconds(1 / _OptionsManager.getFPS());
-            _FrameTime = 1 / _OptionsManager.getFPS();
-
-            handleEvents();
-
-            update(_FrameTime);
-        }
-
-        playSounds();
-        render();
-
-        // TODO Try 1:
-        /*handleEvent();
-
-        update();
-
-        playSounds();
-
-        render();
-
-        sf::Time elapsedTime = _Clock.restart();
-
-        if (elapsedTime < sf::seconds(1 / _OptionsManager.getFPS()))
-        {
-            _FrameTime = 1 / _OptionsManager.getFPS();
-            sf::sleep(sf::seconds(1.0f / _OptionsManager.getFPS()) - elapsedTime);
-        }
-        else
-        {
-            _FrameTime = elapsedTime.asSeconds();
-        } */
-
-
-
-        // TODO Try 2:
-        /*if (measureTime()) {
+//        Do everything in microseconds
+//        sf::Int64 startTime = _Clock.restart().asMicroseconds();
+    float secondsPerUpdate = 1000000.0f / 60.0f;
+    _UpdateTime = secondsPerUpdate;
+    while (_IsRunning) {
+        sf::Int64 totalRenderTime = 0;
+        sf::Clock renderClock;
+        sf::Clock updateClock;
+        while (totalRenderTime < secondsPerUpdate) {
 
             render();
+
+            sf::Int64 stoppedTime = renderClock.restart().asMicroseconds();
+            _FrameTime = stoppedTime / 1000000.0f;
+            totalRenderTime += stoppedTime;
         }
 
-        handleEvent();
-
-        update();
-
-        playSounds();
-
-
-        sf::sleep(sf::seconds(1.0f / 32.f)); */
+        handleEvents();
+        update(_UpdateTime);
+        _UpdateTime = updateClock.restart().asMicroseconds() / 1000000.0f;
     }
 }
 
@@ -170,22 +134,6 @@ void Framework::playSounds() {
      */
 }
 
-bool Framework::measureTime() {
-    _FrameTime = _Clock.restart().asMicroseconds() / 1000000.0f;
-    _LastFPSCheck += _FrameTime;
-    _LastFPSPrint += _FrameTime;
-
-    if (_LastFPSCheck >= 1 / _OptionsManager.getFPS()) {
-        if (_LastFPSPrint > 1) {
-            //std::cout << "FPS: " << 1 / _LastFPSCheck << std::endl;
-            _LastFPSPrint = 0;
-        }
-        _LastFPSCheck = 0;
-        return true;
-    }
-    return false;
-}
-
 void Framework::load() {
     try {
         // FIXME reenable Music
@@ -214,7 +162,6 @@ void Framework::load() {
 }
 
 void Framework::reset() {
-    _Clock.restart();
     _GameObjectManager.resetGameObjects();
     _LevelManager.resetToLevelOne();
 }
@@ -238,10 +185,6 @@ void Framework::setVolume(float volume) {
     _LevelUpScreen.setVolume(volume * 100);
     _GameOverScreen.setVolume(volume * 10);
     */
-}
-
-void Framework::restartClock() {
-    _Clock.restart();
 }
 
 //void Framework::initializeNetworkThread() {
@@ -364,9 +307,9 @@ void Framework::goBackGameState() {
 }
 
 int Framework::getFPS() {
-    return -1;
+    return (int) (1 / _FrameTime);
 }
 
 int Framework::getUPS() {
-    return -1;
+    return (int) (1 / _UpdateTime);
 }

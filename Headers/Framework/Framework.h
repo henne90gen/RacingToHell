@@ -27,12 +27,12 @@
 #include <fstream>
 // #include <thread>
 
+/**
+    The Framework takes care of all the major aspects of the game.
+    Rendering, updating and event handling are all managed in here.
+*/
 class Framework {
 public:
-    /**
-        The Framework takes care of all the major aspects of the game.
-        Rendering, updating and event handling are all managed in here.
-    */
     Framework();
 
     ~Framework();
@@ -70,7 +70,7 @@ public:
 
     /**
      * Shortcut for getGameObjectManager()
-     * @return
+     * @return Reference to the GameObjectManager
      */
     GameObjectManager &getGOM() {
         return getGameObjectManager();
@@ -93,8 +93,6 @@ public:
     }*/
 
     void setVolume(float Volume);
-
-    void restartClock();
 
     void load();
 
@@ -123,12 +121,8 @@ private:
 
     std::vector<GameState> _GameStates;
 
-    sf::Clock _Clock;
-
-    sf::Time _TimeSinceLastUpdate;
-
     // Variables
-    float _FrameTime, _LastFPSPrint, _LastFPSCheck;
+    float _FrameTime, _UpdateTime;
 
     bool _IsRunning;
 
@@ -149,8 +143,6 @@ private:
     void playSounds();
 
     void setMouseVisibility();
-
-    bool measureTime();
 
 //    MPGameObjectContainer _MPGOCClient;
     //Multiplayer

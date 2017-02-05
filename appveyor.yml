@@ -29,11 +29,10 @@ configuration: Debug
 
 # to run your custom scripts instead of automatic MSBuild
 build_script:
-
 #  Fetch mingw64
   - ps: $uri = 'https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/6.3.0/threads-posix/seh/x86_64-6.3.0-release-posix-seh-rt_v5-rev1.7z'
   - ps: Invoke-WebRequest -Uri $uri -OutFile mingw.7z -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::Chrome
-  - 7z e mingw.7z
+  - 7z e mingw.7z -r -ao
 
 # Fetch SFML
   - git clone https://github.com/SFML/SFML

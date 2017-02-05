@@ -39,7 +39,7 @@ build_script:
   - set OLD_PATH=%PATH%
   - set PATH=C:/mingw-w64/i686-5.3.0-posix-dwarf-rt_v4-rev0/mingw32/bin;"C:/Program Files (x86)/CMake/bin";"C:/Program Files/Git/bin"
   - cmake -G "MinGW Makefiles" ../
-  - mingw32-make
+  - cmake --build ./ --target RacingToHell -- -j 4
   - set PATH=%OLD_PATH%
   - cd ..
 

@@ -2,15 +2,26 @@
 // Created by henne on 29.11.16.
 //
 
+#include "stdafx.h"
 #include "Framework/OptionsManager.h"
 
 OptionsManager::OptionsManager() {
+    _Font.loadFromFile("Resources/Font/arial.ttf");
+
     // Standard configuration if there is no settings.cfg file
     _FPS = 60;
     _Volume = 20;
+    _Difficulty = Difficulty::Normal;
     _GameMode = GameMode::Standard;
-    _Font.loadFromFile("Resources/Font/arial.ttf");
     _Debug = true;
+}
+
+inline bool file_exists(const std::string &name) {
+    if (FILE *file = fopen(name.c_str(), "r")) {
+        fclose(file);
+        return true;
+    }
+    return false;
 }
 
 void OptionsManager::loadOptions() {
@@ -19,35 +30,36 @@ void OptionsManager::loadOptions() {
     std::string option;
     std::ifstream fileStream;
 
-    fileStream.open("Resources/settings.cfg");
+    if (!file_exists(_SettingsFileName)) {
+        saveOptions();
+        return;
+    }
+
+    fileStream.open(_SettingsFileName);
     while (std::getline(fileStream, option)) {
         settings.push_back(option);
     }
     fileStream.close();
 
-    if (settings.size() >= 3) {
+    if (settings.size() >= 5) {
         _FPS = std::stoi(settings[0]);
         _Volume = std::stof(settings[1]);
         _Difficulty = (Difficulty) std::stoi(settings[2]);
         _GameMode = (GameMode) std::stoi(settings[3]);
         _Debug = (bool) std::stoi(settings[4]);
-//        if (settings.size() >= 4) {
-//            _MPName = settings[3];
-//        }
     }
+    // FIXME Check settings integrity (Diff or Mode could be out of range)
 }
 
 void OptionsManager::saveOptions() {
-    std::string Path = "Resources/settings.cfg";
     std::ofstream fileStream;
-    fileStream.open(Path);
+    fileStream.open(_SettingsFileName);
 
     fileStream << _FPS << std::endl;
     fileStream << _Volume << std::endl;
     fileStream << (int) _Difficulty << std::endl;
     fileStream << (int) _GameMode << std::endl;
     fileStream << _Debug << std::endl;
-//    fileStream << _MPName << std::endl;
 
     fileStream.close();
 }

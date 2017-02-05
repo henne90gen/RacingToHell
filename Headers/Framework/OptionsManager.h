@@ -4,9 +4,6 @@
 
 #pragma once
 
-
-#include <stdafx.h>
-
 class OptionsManager {
 public:
 
@@ -65,8 +62,9 @@ private:
 
     bool _Debug;
 
-    std::string _MPName;
     sf::Font _Font;
+
+    const std::string _SettingsFileName = "Resources/settings.cfg";
 };
 
 

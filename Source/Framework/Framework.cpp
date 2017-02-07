@@ -2,8 +2,7 @@
 #include "Framework/Framework.h"
 
 Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameObjectManager(*this), _LevelManager(*this),
-                         _HighscoreManager(*this) {
-
+                         _HighscoreManager(*this), _LoadingThread(&Framework::load, &*this) {
 
     _GameStates.push_back(GameState::Loading);
 
@@ -20,23 +19,21 @@ Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameObjectManager(*th
         _RenderWindow.setIcon(Icon.getSize().x, Icon.getSize().y, Icon.getPixelsPtr());
     }
 
-    //Seed
+    // Seed for random number generators
     srand((unsigned int) time(NULL));
 
     reloadGameScreens();
 
-    // FIXME Loading with a thread causes SIGSEGV
-//    _LoadingThread = std::thread(&Framework::load, this);
-//    _LoadingThread.detach();
-    load();
+    _LoadingThread.launch();
 
-    //Multiplayer
-// FIXME multiplayer needs help
+
+//    Multiplayer
+//    FIXME multiplayer needs help
 //    _MultiplayerMenu.setNetworkHandle(&_NetworkHandle);
 //    _MultiplayerMenu.setPlayerName("Name");
 //    _MultiplayerLobby.setNetworkHandle(&_NetworkHandle);
 //    _MPGOCClient.setNetworkHandle(&_NetworkHandle, false);
-    //_MPGOCServer.setNetworkHandle(&_NetworkHandle, true);
+//    _MPGOCServer.setNetworkHandle(&_NetworkHandle, true);
 }
 
 Framework::~Framework() {}
@@ -117,12 +114,12 @@ void Framework::update(float frameTime) {
 
 void Framework::load() {
     try {
-        // FIXME reenable Music
+        // TODO enable Music again
 //        if (!_MenuMusic.openFromFile("Resources/Sound/Music/menu1.ogg")) {
 //            std::cout << "Couldn't load music" << std::endl;
 //        }
 
-        // FIXME ignoring this for now
+//        FIXME ignoring this for now
 //        _MPGOCClient.load();
 //        _MPGOCClient.setCarSkins(_CarSkins);
 //        _MPGOCClient.resetGameObjects(0);
@@ -150,11 +147,12 @@ void Framework::reset() {
 
 void Framework::stop() {
     _IsRunning = false;
-//    _NetworkHandle.setRelation(NetworkRelation::NoRel);
-//    _NetworkHandle.setState(NetworkState::NoNetState);
     _RenderWindow.close();
     _MenuMusic.stop();
     _LevelManager.stopMusic();
+
+//    _NetworkHandle.setRelation(NetworkRelation::NoRel);
+//    _NetworkHandle.setState(NetworkState::NoNetState);
 }
 
 void Framework::playSounds() {

@@ -13,7 +13,7 @@ OptionsManager::OptionsManager() {
     _Volume = 20;
     _Difficulty = Difficulty::Normal;
     _GameMode = GameMode::Standard;
-    _Debug = true;
+    _Debug = false;
 }
 
 inline bool file_exists(const std::string &name) {

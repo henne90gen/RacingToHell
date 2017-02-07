@@ -52,41 +52,23 @@ public:
 
     int getUPS();
 
-    LevelManager &getLevelManager() {
-        return _LevelManager;
-    }
+    LevelManager &getLevelManager() { return _LevelManager; }
 
     /**
      * The GameObjectManager (GOM) is the central entity for all GameObjects
      * @return Reference to the GameObjectManager
      */
-    GameObjectManager &getGameObjectManager() {
-        return _GameObjectManager;
-    }
+    GameObjectManager &getGameObjectManager() { return _GameObjectManager; }
 
     /**
      * Shortcut for getGameObjectManager()
      * @return Reference to the GameObjectManager
      */
-    GameObjectManager &getGOM() {
-        return getGameObjectManager();
-    }
+    GameObjectManager &getGOM() { return getGameObjectManager(); }
 
-    OptionsManager &getOptionsManager() {
-        return _OptionsManager;
-    }
+    OptionsManager &getOptionsManager() { return _OptionsManager; }
 
-    HighscoreManager &getHighscoreManager() {
-        return _HighscoreManager;
-    }
-
-//    NetworkHandle &getNetworkHandle() {
-//        return _NetworkHandle;
-//    }
-
-    /*MPGameObjectContainer &getMPGOC() {
-        return _MPGOCClient;
-    }*/
+    HighscoreManager &getHighscoreManager() { return _HighscoreManager; }
 
     void setVolume(float Volume);
 
@@ -94,12 +76,18 @@ public:
 
     void reset();
 
-//    void initializeNetworkThread();
-//    void updateMPCarSelection();
-
     bool isMouseVisible();
 
     void reloadGameScreens();
+
+//    void updateMPCarSelection();
+//    void initializeNetworkThread();
+//    MPGameObjectContainer &getMPGOC() {
+//        return _MPGOCClient;
+//    }
+//    NetworkHandle &getNetworkHandle() {
+//        return _NetworkHandle;
+//    }
 
 private:
     OptionsManager _OptionsManager;
@@ -110,7 +98,6 @@ private:
 
     GameObjectManager _GameObjectManager;
 
-
     sf::RenderWindow _RenderWindow;
 
     std::vector<std::shared_ptr<GameScreen>> _DisplayedGameScreens;
@@ -119,15 +106,13 @@ private:
 
     // Variables
     float _FrameTime, _UpdateTime;
-
     bool _IsRunning;
 
-//    MPGameObjectContainer _MPGOCServer;
+    sf::Thread _LoadingThread;
 
     // Music yo
     sf::Music _MenuMusic;
 
-//    std::thread _NetworkThread;
 
     // Functions
     void render();
@@ -141,6 +126,8 @@ private:
     void setMouseVisibility();
 
 //    MPGameObjectContainer _MPGOCClient;
-    //Multiplayer
+//    Multiplayer
 //    NetworkHandle _NetworkHandle;
+//    MPGameObjectContainer _MPGOCServer;
+//    sf::Thread _NetworkThread;
 };

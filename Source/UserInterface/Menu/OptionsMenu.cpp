@@ -101,11 +101,13 @@ void OptionsMenu::handleEvent(sf::Event &event) {
         case MenuResult::VolumeChange:
             _FW.getOptionsManager().setVolume(_MenuItems[VolumeIndex]->getValue());
             break;
-        case MenuResult::GameModeChange:
-            _FW.getOptionsManager().setGameMode((GameMode) (int) _MenuItems[GameModeIndex]->getValue());
-            break;
         case MenuResult::DifficultyChange:
+//            FIXME changing Difficulty by pressing left arrow causes SIGABRT sometimes
             _FW.getOptionsManager().setDifficulty((Difficulty) (int) _MenuItems[DifficultyIndex]->getValue());
+            break;
+        case MenuResult::GameModeChange:
+//            FIXME changing GameMode by pressing left arrow causes SIGABRT sometimes
+            _FW.getOptionsManager().setGameMode((GameMode) (int) _MenuItems[GameModeIndex]->getValue());
             break;
         case MenuResult::DebugChange:
             _FW.getOptionsManager().setDebug((bool) _MenuItems[DebugIndex]->getValue());
@@ -147,7 +149,7 @@ void OptionsMenu::update(float FrameTime) {
 
     float multiplier = _FW.getOptionsManager().getScoreMultiplier();
     _ScoreMultiplierText.setString(
-            "Score: x" + floatToString(multiplier, 1));
+            "Score: x" + floatToString(multiplier, 2));
 
     _MenuItems[DifficultyIndex]->setValue((float) _FW.getOptionsManager().getDifficulty());
     _MenuItems[GameModeIndex]->setValue((float) _FW.getOptionsManager().getGameMode());

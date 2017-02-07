@@ -42,6 +42,7 @@ Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameObjectManager(*th
 Framework::~Framework() {}
 
 void Framework::run() {
+//    Take a look at this for examples: http://gameprogrammingpatterns.com/game-loop.html
 //    Update at a maximum of 1000 UPS
 //    Render at 60 FPS
 //    All measurements are in microseconds
@@ -72,6 +73,8 @@ void Framework::run() {
         }
 
         render();
+        playSounds();
+
         sf::Int64 renderTime = renderClock.getElapsedTime().asMicroseconds();
         _FrameTime = renderTime / 1000000.0f;
     }
@@ -113,6 +116,48 @@ void Framework::update(float frameTime) {
     }
 }
 
+void Framework::load() {
+    try {
+        // FIXME reenable Music
+//        if (!_MenuMusic.openFromFile("Resources/Sound/Music/menu1.ogg")) {
+//            std::cout << "Couldn't load music" << std::endl;
+//        }
+
+        // FIXME ignoring this for now
+//        _MPGOCClient.load();
+//        _MPGOCClient.setCarSkins(_CarSkins);
+//        _MPGOCClient.resetGameObjects(0);
+
+        _OptionsManager.loadOptions();
+
+        _LevelManager.load();
+        _LevelManager.resetToLevelOne();
+
+        _GameObjectManager.load();
+        _GameObjectManager.resetGameObjects();
+
+        advanceToGamState(GameState::LoadingToMain);
+    }
+    catch (...) {
+        std::exit;
+    }
+}
+
+
+void Framework::reset() {
+    _GameObjectManager.resetGameObjects();
+    _LevelManager.resetToLevelOne();
+}
+
+void Framework::stop() {
+    _IsRunning = false;
+//    _NetworkHandle.setRelation(NetworkRelation::NoRel);
+//    _NetworkHandle.setState(NetworkState::NoNetState);
+    _RenderWindow.close();
+    _MenuMusic.stop();
+    _LevelManager.stopMusic();
+}
+
 void Framework::playSounds() {
     // FIXME sound is broken
     /*
@@ -143,47 +188,6 @@ void Framework::playSounds() {
      */
 }
 
-void Framework::load() {
-    try {
-        // FIXME reenable Music
-//        if (!_MenuMusic.openFromFile("Resources/Sound/Music/menu1.ogg")) {
-//            std::cout << "Couldn't load music" << std::endl;
-//        }
-
-        // FIXME ignoring this for now
-//        _MPGOCClient.load();
-//        _MPGOCClient.setCarSkins(_CarSkins);
-//        _MPGOCClient.resetGameObjects(0);
-
-        _OptionsManager.loadOptions();
-
-        _LevelManager.load();
-        _LevelManager.resetToLevelOne();
-
-        _GameObjectManager.load();
-        _GameObjectManager.resetGameObjects();
-
-        advanceToGamState(GameState::LoadingToMain);
-    }
-    catch (...) {
-        std::exit;
-    }
-}
-
-void Framework::reset() {
-    _GameObjectManager.resetGameObjects();
-    _LevelManager.resetToLevelOne();
-}
-
-void Framework::stop() {
-    _IsRunning = false;
-//    _NetworkHandle.setRelation(NetworkRelation::NoRel);
-//    _NetworkHandle.setState(NetworkState::NoNetState);
-    _RenderWindow.close();
-    _MenuMusic.stop();
-    _LevelManager.stopMusic();
-}
-
 void Framework::setVolume(float volume) {
     // FIXME sound is broken
     /*
@@ -195,16 +199,6 @@ void Framework::setVolume(float volume) {
     _GameOverScreen.setVolume(volume * 10);
     */
 }
-
-//void Framework::initializeNetworkThread() {
-//    _NetworkThread = std::thread(&NetworkHandle::run, &_NetworkHandle);
-//    _NetworkThread.detach();
-//}
-
-//void Framework::updateMPCarSelection() {
-//    _MPGOCClient.getPlayerCar().setTexture((*_CarSkins.at((unsigned long) _OptionsManager.getCurrentCarSkinIndex())));
-//    _MPGOCClient.getPlayerCar().setStats(_OptionsManager.getCurrentCarSkinIndex());
-//}
 
 void Framework::reloadGameScreens() {
     _DisplayedGameScreens = GameScreenFactory::getInstance().getGameScreens(*this);
@@ -239,6 +233,8 @@ void Framework::setMouseVisibility() {
         case GameState::GameOverMultiplayer:
             break;
         case GameState::BossFightMultiplayer:
+            break;
+        case GameState::Empty:
             break;
     }
 
@@ -322,3 +318,13 @@ int Framework::getFPS() {
 int Framework::getUPS() {
     return (int) (1 / _UpdateTime);
 }
+
+//void Framework::initializeNetworkThread() {
+//    _NetworkThread = std::thread(&NetworkHandle::run, &_NetworkHandle);
+//    _NetworkThread.detach();
+//}
+
+//void Framework::updateMPCarSelection() {
+//    _MPGOCClient.getPlayerCar().setTexture((*_CarSkins.at((unsigned long) _OptionsManager.getCurrentCarSkinIndex())));
+//    _MPGOCClient.getPlayerCar().setStats(_OptionsManager.getCurrentCarSkinIndex());
+//}

@@ -32,11 +32,11 @@ private:
 	int _ChangeSliderValue;
 
 	enum Items {
-		FPSIndex, VolumeIndex, DifficultyIndex, GameModeIndex, DebugIndex
+		VolumeIndex, DifficultyIndex, GameModeIndex, DebugIndex
 	};
 
-	sf::Text _FPS, _Volume, _ScoreMultiplierText;
-	sf::RectangleShape _FPSBackground, _VolumeBackground, _ScoreMultiplierBackground ;
+	sf::Text _Volume, _ScoreMultiplierText;
+	sf::RectangleShape _VolumeBackground, _ScoreMultiplierBackground;
 
 	std::string floatToString(float value, unsigned int precision);
 };

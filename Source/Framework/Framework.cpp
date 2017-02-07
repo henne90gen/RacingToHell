@@ -42,29 +42,38 @@ Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameObjectManager(*th
 Framework::~Framework() {}
 
 void Framework::run() {
-//    Update at 60 updates per second
-//    Render at unlimited (TODO or limited) FPS
+//    Update at a maximum of 1000 UPS
+//    Render at 60 FPS
+//    All measurements are in microseconds
 
-//        Do everything in microseconds
-//        sf::Int64 startTime = _Clock.restart().asMicroseconds();
-    float secondsPerUpdate = 1000000.0f / 60.0f;
-    _UpdateTime = secondsPerUpdate;
+    float microSecondsPerFrame = 1000000.0f / FPS;
+    _UpdateTime = microSecondsPerFrame / 1000000.0f;
+
     while (_IsRunning) {
-        sf::Int64 totalRenderTime = 0;
         sf::Clock renderClock;
-        sf::Clock updateClock;
-        while (totalRenderTime < secondsPerUpdate) {
 
-            render();
+        unsigned int updatesDone = 0;
+        sf::Int64 totalUpdateTime = 0;
+        while (totalUpdateTime < microSecondsPerFrame) {
+            sf::Clock updateClock;
 
-            sf::Int64 stoppedTime = renderClock.restart().asMicroseconds();
-            _FrameTime = stoppedTime / 1000000.0f;
-            totalRenderTime += stoppedTime;
+            handleEvents();
+            update(_UpdateTime);
+            updatesDone++;
+
+            sf::Int64 updateTime = updateClock.getElapsedTime().asMicroseconds();
+            float minTimePerUpdate = 1000000.0f / 1080.0f;
+            if (updateTime <= minTimePerUpdate) {
+                std::this_thread::sleep_for(std::chrono::microseconds((int) (minTimePerUpdate - updateTime)));
+            }
+            updateTime = updateClock.restart().asMicroseconds();
+            _UpdateTime = updateTime / 1000000.0f;
+            totalUpdateTime += updateTime;
         }
 
-        handleEvents();
-        update(_UpdateTime);
-        _UpdateTime = updateClock.restart().asMicroseconds() / 1000000.0f;
+        render();
+        sf::Int64 renderTime = renderClock.getElapsedTime().asMicroseconds();
+        _FrameTime = renderTime / 1000000.0f;
     }
 }
 

@@ -9,10 +9,6 @@ public:
 
     OptionsManager();
 
-    float getFPS() { return _FPS; }
-
-    void setFPS(float fps) { _FPS = fps; }
-
     GameMode getGameMode() { return _GameMode; }
 
     void setGameMode(GameMode gm) { _GameMode = gm; }
@@ -54,12 +50,9 @@ private:
     std::vector<float> _GameModeValues = {1.0f, 0.0f, 0.5f, 3.0f};
     std::vector<std::string> _GameModeStrings = {"Standard", "Invincibility", "Infinite Energy", "Hardcore"};
 
+    float _Volume;
     Difficulty _Difficulty;
     GameMode _GameMode;
-
-    float _FPS;
-    float _Volume;
-
     bool _Debug;
 
     sf::Font _Font;

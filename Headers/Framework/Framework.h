@@ -23,10 +23,6 @@
 #include "LevelManager.h"
 #include "OptionsManager.h"
 
-#include <sstream>
-#include <fstream>
-// #include <thread>
-
 /**
     The Framework takes care of all the major aspects of the game.
     Rendering, updating and event handling are all managed in here.

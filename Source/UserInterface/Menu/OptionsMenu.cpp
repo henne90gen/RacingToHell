@@ -6,12 +6,7 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
 
     sf::Font &font = _FW.getOptionsManager().getFont();
 
-    std::shared_ptr<Slider> fps = std::make_shared<Slider>(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 250)),
-                                                           MenuResult::FPSChange, font, "FPS", MIN_FPS, MAX_FPS);
-    fps->setValue(_FW.getOptionsManager().getFPS());
-    _MenuItems.push_back(fps);
-
-    std::shared_ptr<Slider> volume = std::make_shared<Slider>(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 300)),
+    std::shared_ptr<Slider> volume = std::make_shared<Slider>(sf::Vector2f(SCREENWIDTH / 2 - 100, 300),
                                                               MenuResult::VolumeChange, font, "Volume", MIN_VOLUME,
                                                               MAX_VOLUME);
     volume->setValue(_FW.getOptionsManager().getVolume());
@@ -67,17 +62,6 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
     _Text.setStyle(sf::Text::Style::Bold);
     _Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 160));
 
-    _FPS.setFont(font);
-    _FPS.setString("000");
-    _FPS.setPosition(sf::Vector2f(_MenuItems[FPSIndex]->getRect().left + _MenuItems[FPSIndex]->getRect().width + 20,
-                                  _MenuItems[FPSIndex]->getRect().top - 5));
-
-    _FPSBackground.setPosition(sf::Vector2f(_FPS.getPosition().x - 10, _FPS.getPosition().y - 3));
-    _FPSBackground.setSize(sf::Vector2f(_FPS.getLocalBounds().width + 20, _FPS.getLocalBounds().height + 20));
-    _FPSBackground.setFillColor(sf::Color(0, 0, 0, 175));
-    _FPSBackground.setOutlineThickness(1);
-    _FPSBackground.setOutlineColor(sf::Color::Black);
-
     _Volume.setFont(font);
     _Volume.setString("000");
     _Volume.setPosition(
@@ -93,8 +77,6 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
 
 void OptionsMenu::render(sf::RenderWindow &window) {
     window.draw(_Text);
-    window.draw(_FPSBackground);
-    window.draw(_FPS);
     window.draw(_VolumeBackground);
     window.draw(_Volume);
     window.draw(_ScoreMultiplierBackground);
@@ -116,9 +98,6 @@ void OptionsMenu::handleEvent(sf::Event &event) {
 //		handleJoystick(Y);
 
     switch (getMenuItemResult(event)) {
-        case MenuResult::FPSChange:
-            _FW.getOptionsManager().setFPS(_MenuItems[FPSIndex]->getValue());
-            break;
         case MenuResult::VolumeChange:
             _FW.getOptionsManager().setVolume(_MenuItems[VolumeIndex]->getValue());
             break;
@@ -155,14 +134,6 @@ void OptionsMenu::update(float FrameTime) {
 
 //	_MenuItems[_JoystickSelection]->setValue(_MenuItems[_JoystickSelection]->getValue() + _MenuItems[_JoystickSelection]->getMaxValue() * _ChangeSliderValue * FrameTime);
 //    _ChangeSliderValue = 0;
-
-    // Update and center text
-    _MenuItems[FPSIndex]->setValue(_FW.getOptionsManager().getFPS());
-    _FPS.setString(floatToString(_FW.getOptionsManager().getFPS(), 0));
-    _FPS.setPosition(sf::Vector2f(_FPSBackground.getPosition().x + _FPSBackground.getLocalBounds().width / 2.0f -
-                                  _FPS.getLocalBounds().width / 2.0f,
-                                  _FPSBackground.getPosition().y + _FPSBackground.getLocalBounds().height / 2.0f -
-                                  _FPS.getLocalBounds().height + 2));
 
     // Update and center text
     _Volume.setString(

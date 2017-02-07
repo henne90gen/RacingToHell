@@ -356,7 +356,7 @@ void GameObjectManager::spawnAICar(float frameTime) {
                 std::shared_ptr<AICar> newAiCar = GameObjectFactory::getAICar(_FW.getLevelManager().getAiHP(),
                                                                               _FW.getLevelManager().getRoadSpeed());
 
-                for (unsigned int i = 1; i < _Cars.size(); i++) {
+                for (unsigned int i = 0; i < _Cars.size(); i++) {
                     if (_Cars.at(i)->getLane() == newAiCar->getLane() &&
                         _Cars.at(i)->getPos().y < _Cars.at(i)->getHeight() / 2.0f + 20) {
                         return;

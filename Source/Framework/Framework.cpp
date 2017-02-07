@@ -44,14 +44,13 @@ Framework::~Framework() {}
 void Framework::run() {
 //    Take a look at this for examples: http://gameprogrammingpatterns.com/game-loop.html
 //    Update at a maximum of 1000 UPS
-//    Render at 60 FPS
+//    Render at modular FPS
 //    All measurements are in microseconds
-
-    float microSecondsPerFrame = 1000000.0f / FPS;
-    _UpdateTime = microSecondsPerFrame / 1000000.0f;
 
     while (_IsRunning) {
         sf::Clock renderClock;
+        float microSecondsPerFrame = 1000000.0f / (_OptionsManager.getFPS() + _OptionsManager.getFPS() / 10.0f);
+        _UpdateTime = microSecondsPerFrame / 1000000.0f;
 
         unsigned int updatesDone = 0;
         sf::Int64 totalUpdateTime = 0;

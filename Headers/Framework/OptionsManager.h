@@ -9,6 +9,14 @@ public:
 
     OptionsManager();
 
+    float getFPS() { return _FPS; }
+
+    void setFPS(float fps) { _FPS = fps; };
+
+    float getVolume() { return _Volume; }
+
+    void setVolume(float volume) { _Volume = volume; }
+
     GameMode getGameMode() { return _GameMode; }
 
     void setGameMode(GameMode gm) { _GameMode = gm; }
@@ -16,10 +24,6 @@ public:
     Difficulty getDifficulty() { return _Difficulty; }
 
     void setDifficulty(Difficulty newDiff) { _Difficulty = newDiff; }
-
-    float getVolume() { return _Volume; }
-
-    void setVolume(float volume) { _Volume = volume; }
 
     sf::Font &getFont() { return _Font; }
 
@@ -50,13 +54,14 @@ private:
     std::vector<float> _GameModeValues = {1.0f, 0.0f, 0.5f, 3.0f};
     std::vector<std::string> _GameModeStrings = {"Standard", "Invincibility", "Infinite Energy", "Hardcore"};
 
+    float _FPS;
     float _Volume;
     Difficulty _Difficulty;
     GameMode _GameMode;
+
     bool _Debug;
 
     sf::Font _Font;
-
     const std::string _SettingsFileName = "Resources/settings.cfg";
 };
 

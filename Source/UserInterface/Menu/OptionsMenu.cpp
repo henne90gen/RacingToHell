@@ -6,6 +6,11 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
 
     sf::Font &font = _FW.getOptionsManager().getFont();
 
+    std::shared_ptr<Slider> fps = std::make_shared<Slider>(sf::Vector2f(sf::Vector2f(SCREENWIDTH / 2 - 100, 250)),
+                                                           MenuResult::FPSChange, font, "FPS", MIN_FPS, MAX_FPS);
+    fps->setValue(_FW.getOptionsManager().getFPS());
+    _MenuItems.push_back(fps);
+
     std::shared_ptr<Slider> volume = std::make_shared<Slider>(sf::Vector2f(SCREENWIDTH / 2 - 100, 300),
                                                               MenuResult::VolumeChange, font, "Volume", MIN_VOLUME,
                                                               MAX_VOLUME);
@@ -62,8 +67,21 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
     _Text.setStyle(sf::Text::Style::Bold);
     _Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 160));
 
+    _FPS.setFont(font);
+    _FPS.setString("000");
+    _FPS.setFillColor(sf::Color::White);
+    _FPS.setPosition(sf::Vector2f(_MenuItems[FPSIndex]->getRect().left + _MenuItems[FPSIndex]->getRect().width + 20,
+                                  _MenuItems[FPSIndex]->getRect().top - 5));
+
+    _FPSBackground.setPosition(sf::Vector2f(_FPS.getPosition().x - 10, _FPS.getPosition().y - 3));
+    _FPSBackground.setSize(sf::Vector2f(_FPS.getLocalBounds().width + 20, _FPS.getLocalBounds().height + 20));
+    _FPSBackground.setFillColor(sf::Color(0, 0, 0, 175));
+    _FPSBackground.setOutlineThickness(1);
+    _FPSBackground.setOutlineColor(sf::Color::Black);
+
     _Volume.setFont(font);
     _Volume.setString("000");
+    _Volume.setFillColor(sf::Color::White);
     _Volume.setPosition(
             sf::Vector2f(_MenuItems[VolumeIndex]->getRect().left + _MenuItems[VolumeIndex]->getRect().width + 20,
                          _MenuItems[VolumeIndex]->getRect().top - 5));
@@ -77,6 +95,8 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
 
 void OptionsMenu::render(sf::RenderWindow &window) {
     window.draw(_Text);
+    window.draw(_FPSBackground);
+    window.draw(_FPS);
     window.draw(_VolumeBackground);
     window.draw(_Volume);
     window.draw(_ScoreMultiplierBackground);
@@ -86,27 +106,17 @@ void OptionsMenu::render(sf::RenderWindow &window) {
 }
 
 void OptionsMenu::handleEvent(sf::Event &event) {
-
-//		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
-//
-//		if (_Event.type == sf::Event::JoystickButtonPressed) {
-//			if (sf::Joystick::isButtonPressed(0, 1)) {
-//				return _ReturnState;
-//			}
-//		}
-//
-//		handleJoystick(Y);
-
     switch (getMenuItemResult(event)) {
+        case MenuResult::FPSChange:
+            _FW.getOptionsManager().setFPS(_MenuItems[FPSIndex]->getValue());
+            break;
         case MenuResult::VolumeChange:
             _FW.getOptionsManager().setVolume(_MenuItems[VolumeIndex]->getValue());
             break;
         case MenuResult::DifficultyChange:
-//            FIXME changing Difficulty by pressing left arrow causes SIGABRT sometimes
             _FW.getOptionsManager().setDifficulty((Difficulty) (int) _MenuItems[DifficultyIndex]->getValue());
             break;
         case MenuResult::GameModeChange:
-//            FIXME changing GameMode by pressing left arrow causes SIGABRT sometimes
             _FW.getOptionsManager().setGameMode((GameMode) (int) _MenuItems[GameModeIndex]->getValue());
             break;
         case MenuResult::DebugChange:
@@ -126,18 +136,16 @@ void OptionsMenu::handleEvent(sf::Event &event) {
 }
 
 void OptionsMenu::update(float FrameTime) {
-//	float X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
-//	if (X < -80) {
-//		_ChangeSliderValue = -1;
-//	}
-//	else if (X > 80) {
-//		_ChangeSliderValue = 1;
-//	}
-
-//	_MenuItems[_JoystickSelection]->setValue(_MenuItems[_JoystickSelection]->getValue() + _MenuItems[_JoystickSelection]->getMaxValue() * _ChangeSliderValue * FrameTime);
-//    _ChangeSliderValue = 0;
+    // Update and center text
+    _MenuItems[FPSIndex]->setValue(_FW.getOptionsManager().getFPS());
+    _FPS.setString(floatToString(_FW.getOptionsManager().getFPS(), 0));
+    _FPS.setPosition(sf::Vector2f(_FPSBackground.getPosition().x + _FPSBackground.getLocalBounds().width / 2.0f -
+                                  _FPS.getLocalBounds().width / 2.0f,
+                                  _FPSBackground.getPosition().y + _FPSBackground.getLocalBounds().height / 2.0f -
+                                  _FPS.getLocalBounds().height + 2));
 
     // Update and center text
+    _MenuItems[VolumeIndex]->setValue(_FW.getOptionsManager().getVolume());
     _Volume.setString(
             std::to_string((int) (_MenuItems[VolumeIndex]->getValue() * 100 / _MenuItems[VolumeIndex]->getMaxValue())));
     _Volume.setPosition(sf::Vector2f(
@@ -146,14 +154,16 @@ void OptionsMenu::update(float FrameTime) {
             _VolumeBackground.getPosition().y + _VolumeBackground.getLocalBounds().height / 2.0f -
             _Volume.getLocalBounds().height + 2));
 
-
+    // Get current multiplier
     float multiplier = _FW.getOptionsManager().getScoreMultiplier();
     _ScoreMultiplierText.setString(
             "Score: x" + floatToString(multiplier, 2));
 
+    // Update difficulty and GameMode
     _MenuItems[DifficultyIndex]->setValue((float) _FW.getOptionsManager().getDifficulty());
     _MenuItems[GameModeIndex]->setValue((float) _FW.getOptionsManager().getGameMode());
 
+    // Change color of multiplier text
     if (multiplier == 1.0f) {
         _ScoreMultiplierText.setFillColor(sf::Color::White);
     } else if (multiplier < 1.0f) {

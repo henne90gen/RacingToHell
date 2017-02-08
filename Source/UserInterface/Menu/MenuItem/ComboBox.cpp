@@ -10,6 +10,7 @@ ComboBox::ComboBox(sf::Vector2f pos, std::vector<std::string> itemStrings, std::
           _BgColorEnabled(sf::Color(0, 0, 0, 175)), _BgColorHovering(sf::Color(50, 50, 50, 100)),
           _BgColorDisabled(sf::Color(0, 0, 0, 175)),
           _FgColorEnabled(sf::Color(255, 255, 255, 255)), _FgColorDisabled(sf::Color(150, 150, 150, 255)) {
+
     _Body.setPosition(pos + sf::Vector2f(_ButtonWidth, 0));
     _Body.setSize(sf::Vector2f(_BodyWidth, _Height));
     _Body.setOutlineThickness(1);
@@ -71,9 +72,7 @@ void ComboBox::render(sf::RenderWindow &renderWindow) {
     renderWindow.draw(_ButtonLeft);
     renderWindow.draw(_ButtonRight);
     renderWindow.draw(_Body);
-
     renderWindow.draw(_Text);
-
     renderWindow.draw(_LeftArrowSprite);
     renderWindow.draw(_RightArrowSprite);
 }

@@ -46,8 +46,9 @@ void Framework::run() {
 
     while (_IsRunning) {
         sf::Clock renderClock;
+        float minTimePerUpdate = 1000000.0f / 1080.0f;
         float microSecondsPerFrame = 1000000.0f / (_OptionsManager.getFPS() + _OptionsManager.getFPS() / 10.0f);
-        _UpdateTime = microSecondsPerFrame / 1000000.0f;
+        _UpdateTime = minTimePerUpdate / 1000000.0f;
 
         unsigned int updatesDone = 0;
         sf::Int64 totalUpdateTime = 0;
@@ -59,7 +60,6 @@ void Framework::run() {
             updatesDone++;
 
             sf::Int64 updateTime = updateClock.getElapsedTime().asMicroseconds();
-            float minTimePerUpdate = 1000000.0f / 1080.0f;
             if (updateTime <= minTimePerUpdate) {
                 sf::sleep(sf::microseconds((int) (minTimePerUpdate - updateTime)));
             }

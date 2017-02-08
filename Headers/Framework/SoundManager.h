@@ -14,6 +14,8 @@ public:
 
     void update();
 
+    void playShotSound(sf::Vector2f position);
+
     void playHitSound(sf::Vector2f position);
 
     void playExplosionSound(sf::Vector2f position);
@@ -31,4 +33,16 @@ private:
     sf::SoundBuffer _ExplosionSoundBuffer, _ImpactSoundBuffer;
 
     void updateVolumes();
+
+    bool isInMenu();
+
+    void updateMenu();
+
+    bool isInLevel();
+
+    unsigned long getLevelMusicIndex();
+
+    void updateLevel();
+
+    void updateSoundEffects();
 };

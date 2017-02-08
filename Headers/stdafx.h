@@ -28,9 +28,11 @@
 #define SCREENWIDTH 600
 #define SCREENHEIGHT 800
 #define PI 3.141592654f
-// Limiting updates costs about 5 FPS, thus target of 60 FPS can only be reached with a preset of 65 FPS
-#define FPS 65.0f
 #define MIN_FPS 60.0f
 #define MAX_FPS 240.0f
 #define MIN_VOLUME 0.0f
 #define MAX_VOLUME 100.0f
+
+namespace rt {
+    bool file_exists(const std::string &name);
+}

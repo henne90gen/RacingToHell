@@ -16,21 +16,13 @@ OptionsManager::OptionsManager() {
     _Debug = false;
 }
 
-inline bool file_exists(const std::string &name) {
-    if (FILE *file = fopen(name.c_str(), "r")) {
-        fclose(file);
-        return true;
-    }
-    return false;
-}
-
 void OptionsManager::loadOptions() {
 
     std::vector<std::string> settings;
     std::string option;
     std::ifstream fileStream;
 
-    if (!file_exists(_SettingsFileName)) {
+    if (!rt::file_exists(_SettingsFileName)) {
         saveOptions();
         return;
     }

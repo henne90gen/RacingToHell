@@ -4,4 +4,11 @@
 
 #include "stdafx.h"
 
-// TODO: reference any additional headers you need in STDAFX.H and not in this file
+bool rt::file_exists(const std::string &name) {
+    if (FILE *file = fopen(name.c_str(), "r")) {
+        fclose(file);
+        return true;
+    }
+    return false;
+}
+

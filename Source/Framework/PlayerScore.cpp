@@ -4,14 +4,8 @@
 #include "stdafx.h"
 #include "Framework/PlayerScore.h"
 
-//PlayerScore::PlayerScore() : PlayerScore("", 0 , 0) {
-//
-//}
-
 PlayerScore::PlayerScore(std::string name, int level, int score) : _Name(name), _Level(level),
-                                                                   _Score(score) {
-
-}
+                                                                   _Score(score) {}
 
 bool PlayerScore::operator<(PlayerScore &Player2) const {
     return _Score < Player2.getScore();

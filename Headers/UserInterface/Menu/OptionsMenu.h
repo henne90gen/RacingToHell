@@ -38,6 +38,5 @@ private:
 	sf::Text _FPS, _Volume, _ScoreMultiplierText;
 	sf::RectangleShape _FPSBackground, _VolumeBackground, _ScoreMultiplierBackground;
 
-	std::string floatToString(float value, unsigned int precision);
 };
 

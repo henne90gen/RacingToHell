@@ -138,7 +138,7 @@ void OptionsMenu::handleEvent(sf::Event &event) {
 void OptionsMenu::update(float FrameTime) {
     // Update and center text
     _MenuItems[FPSIndex]->setValue(_FW.getOptionsManager().getFPS());
-    _FPS.setString(floatToString(_FW.getOptionsManager().getFPS(), 0));
+    _FPS.setString(rt::floatToString(_FW.getOptionsManager().getFPS(), 0));
     _FPS.setPosition(sf::Vector2f(_FPSBackground.getPosition().x + _FPSBackground.getLocalBounds().width / 2.0f -
                                   _FPS.getLocalBounds().width / 2.0f,
                                   _FPSBackground.getPosition().y + _FPSBackground.getLocalBounds().height / 2.0f -
@@ -157,7 +157,7 @@ void OptionsMenu::update(float FrameTime) {
     // Get current multiplier
     float multiplier = _FW.getOptionsManager().getScoreMultiplier();
     _ScoreMultiplierText.setString(
-            "Score: x" + floatToString(multiplier, 2));
+            "Score: x" + rt::floatToString(multiplier, 2));
 
     // Update difficulty and GameMode
     _MenuItems[DifficultyIndex]->setValue((float) _FW.getOptionsManager().getDifficulty());
@@ -171,11 +171,4 @@ void OptionsMenu::update(float FrameTime) {
     } else {
         _ScoreMultiplierText.setFillColor(sf::Color::Green);
     }
-}
-
-
-std::string OptionsMenu::floatToString(float value, unsigned int precision) {
-    std::stringstream ss;
-    ss << std::fixed << std::setprecision(precision) << value;
-    return ss.str();
 }

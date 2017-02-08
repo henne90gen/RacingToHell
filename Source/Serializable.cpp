@@ -44,7 +44,6 @@
 template<>
 void Serializable::write(std::ostream &stream, std::string input) {
     unsigned long length = input.size();
-    std::cout << "StringLength: " << length << " String: " << input << std::endl;
     stream.write((char *) &length, sizeof(length));
     stream << input;
 }

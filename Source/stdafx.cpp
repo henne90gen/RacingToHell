@@ -12,3 +12,8 @@ bool rt::file_exists(const std::string &name) {
     return false;
 }
 
+std::string rt::floatToString(float value, unsigned int precision) {
+    std::stringstream ss;
+    ss << std::fixed << std::setprecision(precision) << value;
+    return ss.str();
+}

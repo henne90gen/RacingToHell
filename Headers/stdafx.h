@@ -35,4 +35,6 @@
 
 namespace rt {
     bool file_exists(const std::string &name);
+
+    std::string floatToString(float value, unsigned int precision);
 }

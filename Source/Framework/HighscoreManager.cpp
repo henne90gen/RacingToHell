@@ -8,37 +8,24 @@
 
 HighscoreManager::HighscoreManager(Framework &framework) : _FW(framework), _Filename("Resources/scores.sco"),
                                                            _HighlightedRow(0) {
-    // FIXME remove after testing
-    for (int i = 0; i < 11; i++) {
-        PlayerScore newPlayer("Hello" + std::to_string(i), i, i * 25);
-        _ScoreList.push_back(newPlayer);
-    }
-
-    sortScoreTable();
-    // FIXME remove after testing ^^^^^^
-
-    // FIXME uncomment after testing
-//    loadScoreTable();
+    loadScoreTable();
 }
 
-// FIXME check this function for correctness
 void HighscoreManager::loadScoreTable() {
     if (!rt::file_exists(_Filename)) {
         return;
     }
 
     std::ifstream fileStream;
-    fileStream.open(_Filename, std::ios::in | std::ifstream::binary);
-    int length = 0;
+    fileStream.open(_Filename, std::ios::in);
+    unsigned long length = 0;
     fileStream.read((char *) &length, sizeof(length));
-
     _ScoreList.clear();
     for (int i = 0; i < length; i++) {
         PlayerScore newPlayer;
         newPlayer << fileStream;
         _ScoreList.push_back(newPlayer);
     }
-
     fileStream.close();
 
     sortScoreTable();

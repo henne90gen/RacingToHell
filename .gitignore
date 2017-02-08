@@ -232,3 +232,4 @@ Resources/Data/Highscore.sco
 cmake-build-debug/
 SFML/
 Resources/settings.cfg
+Resources/scores.sco

@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 
-bool rt::file_exists(const std::string &name) {
+bool rh::file_exists(const std::string &name) {
     if (FILE *file = fopen(name.c_str(), "r")) {
         fclose(file);
         return true;
@@ -12,7 +12,7 @@ bool rt::file_exists(const std::string &name) {
     return false;
 }
 
-std::string rt::floatToString(float value, unsigned int precision) {
+std::string rh::floatToString(float value, unsigned int precision) {
     std::stringstream ss;
     ss << std::fixed << std::setprecision(precision) << value;
     return ss.str();

@@ -86,9 +86,8 @@ MenuResult ComboBox::handleEvent(sf::Event &newEvent, sf::Vector2f mousePos) {
             _Hovering = _HoveringLeft || _HoveringRight;
         }
         if (newEvent.type == sf::Event::MouseButtonPressed) {
-            // FIXME pressing left can cause SIGSEGV
             if (pointInRectangle(_ButtonLeft.getGlobalBounds(), mousePos)) {
-                _CurrentItem = (_CurrentItem - 1 < 0) ? _ItemStrings.size() - 1 : _CurrentItem - 1;
+                _CurrentItem = (_CurrentItem - 1 < 0) ? (long) _ItemStrings.size() - 1 : _CurrentItem - 1;
                 _Text.setString(_ItemStrings[_CurrentItem]);
                 centerText();
                 return _Action;

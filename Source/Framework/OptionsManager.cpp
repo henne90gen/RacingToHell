@@ -22,7 +22,7 @@ void OptionsManager::loadOptions() {
     std::string option;
     std::ifstream fileStream;
 
-    if (!rt::file_exists(_SettingsFileName)) {
+    if (!rh::file_exists(_SettingsFileName)) {
         saveOptions();
         return;
     }

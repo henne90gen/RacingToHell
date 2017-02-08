@@ -2,7 +2,6 @@
 #include "Serializable.h"
 
 #ifdef SFML_SYSTEM_WINDOWS
-
 /**
      * Writes std::string to a stream
      * @param stream Output stream that is going to be written to
@@ -48,9 +47,9 @@ void Serializable::write(std::ostream &stream, std::string input) {
     stream << input;
 }
 
-
 /**
- * Reads std::string from a stream
+ * Reads std::string from a stream. This only works if the length of the string is saved as unsigned long in front of
+ * the string
  * @param stream Input stream that is going to be read from
  * @param result String that was read will be saved here
  */

@@ -33,7 +33,7 @@
 #define MIN_VOLUME 0.0f
 #define MAX_VOLUME 100.0f
 
-namespace rt {
+namespace rh {
     bool file_exists(const std::string &name);
 
     std::string floatToString(float value, unsigned int precision);

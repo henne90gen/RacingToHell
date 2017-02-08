@@ -14,37 +14,37 @@ public:
     */
     void render(sf::RenderWindow &renderWindow);
 
-    /*
-        See MenuItem for details
-    */
+    /**
+     * See MenuItem for details
+     */
     MenuResult handleEvent(sf::Event &newEvent, sf::Vector2f mousePos);
 
-    /*
-        See MenuItem for details
-    */
+    /**
+     * See MenuItem for details
+     */
     sf::FloatRect getRect();
 
-    /*
-        @return std::string Text of the Button
-    */
+    /**
+     * @return std::string Text of the Button
+     */
     std::string getText() { return _ItemStrings[_CurrentItem]; }
 
-    /*
-        set currentItem
-        @return bool False
-    */
+    /**
+     * set currentItem
+     * @return bool False
+     */
     void setValue(float x);
 
-    /*
-        return current Item
-        @return float 0.0f
-    */
+    /**
+     * return current Item
+     * @return float 0.0f
+     */
     float getValue() { return _CurrentItem; }
 
-    /*
-        Combo doesn't have a maximum value that could be returned
-        @return float 0.0f
-    */
+    /**
+     * Combo doesn't have a maximum value that could be returned
+     * @return float 0.0f
+     */
     float getMaxValue() { return 0.0f; }
 
 private:
@@ -61,7 +61,8 @@ private:
 
     bool _HoveringLeft, _HoveringRight;
     int _Height, _ButtonWidth, _BodyWidth;
-    unsigned long _CurrentItem;
+
+    long _CurrentItem;
     unsigned int _CharacterSize;
 
     void centerText();

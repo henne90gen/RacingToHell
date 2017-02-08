@@ -12,7 +12,7 @@ HighscoreManager::HighscoreManager(Framework &framework) : _FW(framework), _File
 }
 
 void HighscoreManager::loadScoreTable() {
-    if (!rt::file_exists(_Filename)) {
+    if (!rh::file_exists(_Filename)) {
         return;
     }
 

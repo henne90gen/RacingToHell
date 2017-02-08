@@ -15,12 +15,10 @@ HighscoreManager::HighscoreManager(Framework &framework) : _FW(framework), _File
     }
 
     sortScoreTable();
-
-    saveScoreTable();
     // FIXME remove after testing ^^^^^^
 
     // FIXME uncomment after testing
-    loadScoreTable();
+//    loadScoreTable();
 }
 
 // FIXME check this function for correctness

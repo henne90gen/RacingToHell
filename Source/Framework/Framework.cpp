@@ -61,7 +61,7 @@ void Framework::run() {
             sf::Int64 updateTime = updateClock.getElapsedTime().asMicroseconds();
             float minTimePerUpdate = 1000000.0f / 1080.0f;
             if (updateTime <= minTimePerUpdate) {
-                std::this_thread::sleep_for(std::chrono::microseconds((int) (minTimePerUpdate - updateTime)));
+                sf::sleep(sf::microseconds((int) (minTimePerUpdate - updateTime)));
             }
             updateTime = updateClock.restart().asMicroseconds();
             _UpdateTime = updateTime / 1000000.0f;

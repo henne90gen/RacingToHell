@@ -26,23 +26,23 @@ void LevelManager::update(float frameTime) {
     }
 }
 
-void LevelManager::playMusic() {
-    if (_Music.getStatus() == sf::Sound::Stopped || _Music.getStatus() == sf::Sound::Paused) {
-        _Music.play();
-    }
-}
-
-void LevelManager::stopMusic() {
-    _Music.stop();
-}
-
-void LevelManager::pauseMusic() {
-    _Music.pause();
-}
-
-void LevelManager::setVolume(float Volume) {
-    _Music.setVolume(Volume);
-}
+//void LevelManager::playMusic() {
+//    if (_Music.getStatus() == sf::Sound::Stopped || _Music.getStatus() == sf::Sound::Paused) {
+//        _Music.play();
+//    }
+//}
+//
+//void LevelManager::stopMusic() {
+//    _Music.stop();
+//}
+//
+//void LevelManager::pauseMusic() {
+//    _Music.pause();
+//}
+//
+//void LevelManager::update(float Volume) {
+//    _Music.update(Volume);
+//}
 
 void LevelManager::levelUp() {
     _LevelTime = 0;
@@ -50,7 +50,6 @@ void LevelManager::levelUp() {
 }
 
 void LevelManager::resetToLevelOne() {
-    // TODO set _TotalLevelTime back to 60
     _Level = 1;
     _TotalLevelTime = 60.0f;
     _LevelTime = 0;
@@ -73,24 +72,20 @@ int LevelManager::getRoadSpeed() {
 }
 
 void LevelManager::load() {
+    std::cout << "Loading level textures..." << std::endl;
+
     for (int i = 1; i <= 4; i++) {
-        std::shared_ptr<sf::Texture> texture(new sf::Texture());
+        std::shared_ptr<sf::Texture> texture = std::make_shared<sf::Texture>();
         (*texture).loadFromFile("Resources/Texture/Road/Road" + std::to_string(i) + ".jpg");
         _Textures.push_back(texture);
     }
     _Sprite.setTexture((*_Textures.at(0)));
     _Sprite.setPosition(sf::Vector2f(0, -1600));
-
-    // TODO load level music here
 }
 
 void LevelManager::addScore(ScoreEvent event, float modifier) {
-
-//    float multiplier = _FW.getOptionsManager().getScoreMultiplierList()[(int) _FW.getOptionsManager().getGameMode()];
-    float multiplier = _FW.getOptionsManager().getScoreMultiplier();
-
+//    float multiplier = _FW.getOptionsManager().getScoreMultiplier();
 //    _Score += _GameObjectContainer.getCarScore() * multiplier;
-//
 //    switch (_OptionsMenu.getDifficulty()) {
 //        case 0:
 //            _Score += 5 * _LevelManager.getLevel() * multiplier * _FrameTime;

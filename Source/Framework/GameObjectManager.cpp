@@ -141,7 +141,7 @@ void GameObjectManager::checkForCollisions(float frameTime) {
                     _Cars.at(i)->checkForCollision(*_Bullets[j])) {
                     if (_Bullets[j]->getType() == GameObjectType::BulletObjectPlayer) {
                         _Cars.at(i)->takeDamage(_Player->getBulletdamage());
-                        playHitSound(_Bullets[j]->getPos());
+                        _FW.getSoundManager().playHitSound(_Bullets[j]->getPos());
                     } else {
                         _Cars.at(i)->takeDamage(500);
                     }
@@ -154,7 +154,6 @@ void GameObjectManager::checkForCollisions(float frameTime) {
 }
 
 void GameObjectManager::checkPlayerForCollisions(float frameTime) {
-
     // Collision with bullets
     for (unsigned int i = 0; i < _Bullets.size(); i++) {
         _Bullets.at(i)->update(frameTime, _FW.getLevelManager().getRoadSpeed());
@@ -169,7 +168,7 @@ void GameObjectManager::checkPlayerForCollisions(float frameTime) {
                                           _FW.getOptionsManager().getVolume());
                         }
                     }
-                    playHitSound(_Player->getPos());
+                    _FW.getSoundManager().playHitSound(_Player->getPos());
                     deleteObject(_Bullets, i);
                     i--;
                     break;
@@ -230,20 +229,6 @@ void GameObjectManager::spawnObjects(float frameTime) {
     spawnToolbox(frameTime);
 }
 
-void GameObjectManager::playSounds() {
-    for (unsigned int i = 0; i < _SoundEffects.size(); i++) {
-        if (_SoundEffects[i].first->getStatus() == sf::Sound::Stopped ||
-            _SoundEffects[i].first->getStatus() == sf::Sound::Paused) {
-            if (_SoundEffects[i].second) {
-                _SoundEffects.erase(_SoundEffects.begin() + i);
-            } else {
-                _SoundEffects[i].first->play();
-                _SoundEffects[i].second = true;
-            }
-        }
-    }
-}
-
 void GameObjectManager::stopSounds() {
     _SoundEffects.clear();
     if (_BossFight) {
@@ -294,7 +279,6 @@ void GameObjectManager::resetGameObjects() {
     _Cars.clear();
     _Bullets.clear();
     _Animations.clear();
-    _SoundEffects.clear();
 
     PlayerCarIndex playerCarIndex = PlayerCarIndex::Car1;
     if (_Player != NULL) {
@@ -324,11 +308,11 @@ bool GameObjectManager::emptyScreen() {
 }
 
 void GameObjectManager::load() {
+    std::cout << "Loading object textures..." << std::endl;
+
     GameObjectFactory::load();
 
-    _ExplosionSoundBuffer.loadFromFile("Resources/Sound/explosion.wav");
     _ExplosionTexture.loadFromFile("Resources/Texture/Animation/explosion.png");
-    _ImpactSoundBuffer.loadFromFile("Resources/Sound/impact.wav");
 }
 
 /*
@@ -340,7 +324,7 @@ void GameObjectManager::load() {
 		}
 		else if (go == GameObjectType::Player) {
 			shotSound->setBuffer(_PlayerShotSoundBuffer);
-			shotSound->setVolume(_FW.getOptionsManager().getVolume() * 2);
+			shotSound->update(_FW.getOptionsManager().getVolume() * 2);
 		}
 
 		_SoundEffects.push_back({ shotSound, 0 });
@@ -496,16 +480,6 @@ void GameObjectManager::calculateAllFrequencies() {
     calculateBulletFrequency();
     calculateCanisterFrequency();
     calculateToolboxFrequency();
-}
-
-void GameObjectManager::playHitSound(sf::Vector2f position) {
-    std::shared_ptr<sf::Sound> ImpactSound = std::make_shared<sf::Sound>();
-    ImpactSound->setBuffer(_ImpactSoundBuffer);
-    ImpactSound->setVolume(_FW.getOptionsManager().getVolume() * 5.5f);
-    ImpactSound->setPosition(sf::Vector3f(position.x, 0, position.y));
-    ImpactSound->setMinDistance(650.0f);
-    ImpactSound->setAttenuation(2.0f);
-    _SoundEffects.push_back(std::make_pair(ImpactSound, false));
 }
 
 void GameObjectManager::nextPlayerCar() {

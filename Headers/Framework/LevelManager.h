@@ -22,27 +22,6 @@ public:
     void load();
 
     /*
-        Plays the level background music
-    */
-    void playMusic();
-
-    /*
-        Stops the Level background music
-    */
-    void stopMusic();
-
-    /*
-        Pauses the Level background music
-    */
-    void pauseMusic();
-
-    /*
-        Sets the volume to the given value
-        @param volume New Volume value
-    */
-    void setVolume(float volume);
-
-    /*
         Resets the Level to a state where a new game can be started
     */
     void resetToLevelOne();
@@ -109,8 +88,6 @@ public:
 
 private:
     Framework &_FW;
-
-    sf::Music _Music;
 
     float _Score;
 

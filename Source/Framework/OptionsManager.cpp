@@ -16,7 +16,8 @@ OptionsManager::OptionsManager() {
     _Debug = false;
 }
 
-void OptionsManager::loadOptions() {
+void OptionsManager::load() {
+    std::cout << "Loading settings..." << std::endl;
 
     std::vector<std::string> settings;
     std::string option;

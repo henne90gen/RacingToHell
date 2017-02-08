@@ -22,6 +22,7 @@
 #include "Multiplayer/MPGameObjectContainer.h"
 #include "LevelManager.h"
 #include "OptionsManager.h"
+#include "SoundManager.h"
 
 /**
     The Framework takes care of all the major aspects of the game.
@@ -70,6 +71,8 @@ public:
 
     HighscoreManager &getHighscoreManager() { return _HighscoreManager; }
 
+    SoundManager &getSoundManager() { return _SoundManager; }
+
     void setVolume(float Volume);
 
     void load();
@@ -98,6 +101,8 @@ private:
 
     GameObjectManager _GameObjectManager;
 
+    SoundManager _SoundManager;
+
     sf::RenderWindow _RenderWindow;
 
     std::vector<std::shared_ptr<GameScreen>> _DisplayedGameScreens;
@@ -109,10 +114,6 @@ private:
     bool _IsRunning;
 
     sf::Thread _LoadingThread;
-
-    // Music yo
-    sf::Music _MenuMusic;
-
 
     // Functions
     void render();

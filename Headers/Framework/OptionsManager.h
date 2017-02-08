@@ -33,7 +33,7 @@ public:
 
     void setDebug(bool debug) { _Debug = debug; }
 
-    void loadOptions();
+    void load();
 
     void saveOptions();
 

@@ -13,6 +13,7 @@ DebugScreen::DebugScreen(Framework &framework) : GameScreen(framework) {
                      "LastState:",
                      "",
                      "Options",
+                     "FPSPreset:",
                      "Volume:",
                      "Difficulty:",
                      "GameMode:",
@@ -74,8 +75,9 @@ void DebugScreen::update(float frameTime) {
     newValues.push_back(std::to_string((int) _FW.getLastGameState())); // Last GameState
 
     newValues.push_back("");  // Empty line
-    newValues.push_back("");  // Empty line
+    newValues.push_back("");  // Options heading
 
+    newValues.push_back(std::to_string(_FW.getOptionsManager().getFPS())); // FPSPreset
     newValues.push_back(std::to_string(_FW.getOptionsManager().getVolume())); // Volume
     newValues.push_back(std::to_string((int) _FW.getOptionsManager().getDifficulty())); // Difficulty
     newValues.push_back(std::to_string((int) _FW.getOptionsManager().getGameMode())); // GameMode

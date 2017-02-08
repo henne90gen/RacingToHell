@@ -1,5 +1,5 @@
-#pragma once
 
+#pragma once
 
 #include "UserInterface/Screen/GameScreen.h"
 #include "GameObject/GameObject.h"
@@ -19,68 +19,67 @@
 
 class GameObjectManager {
 public:
-    /*
-        GameObjectManager is the manager class for all GameObjects.
-        It handles their creation and deletion, as well as updating and rendering them
-    */
+    /**
+     * GameObjectManager is the manager class for all GameObjects.
+     * It handles their creation and deletion, as well as updating and rendering them
+     */
     GameObjectManager(Framework &framework);
 
     ~GameObjectManager();
 
-    /*
-        Updates all the GameObjects with the given frame time
-        @param frameTime Time that has passed since the last update
-        @param level Level
-        @param roadSpeed Speed of the road
-    */
-
+    /**
+     * Updates all the GameObjects with the given frame time
+     * @param frameTime Time that has passed since the last update
+     * @param level Level
+     * @param roadSpeed Speed of the road
+     */
     void update(float frameTime);
 
-    /*
-        @return GameObject* Pointer to the PlayerCar
-    */
+    /**
+     * @return GameObject* Pointer to the PlayerCar
+     */
     std::shared_ptr<PlayerCar> getPlayerCar() { return _Player; }
 
-    /*
-        @return GameObject* Pointer to the BossCar
-    */
+    /**
+     * @return GameObject* Pointer to the BossCar
+     */
     std::shared_ptr<BossCar> getBossCar() { return _Boss; }
 
-    /*
-        @return bool True if the boss is still alive
-    */
+    /**
+     * @return bool True if the boss is still alive
+     */
     bool bossIsDead();
 
-    /*
-        Sets all the necessary variables for a boss fight
-    */
+    /**
+     * Sets all the necessary variables for a boss fight
+     */
     void enterBossFight();
 
-    /*
-        Resets the GameObjectManager to a state where a new game can begin
-        @param selectedCar Index of the car that was selected by the player
-    */
+    /**
+     * Resets the GameObjectManager to a state where a new game can begin
+     * @param selectedCar Index of the car that was selected by the player
+     */
     void resetGameObjects();
 
-    /*
-        Empties the screen
-        @return bool True as soon as there are no GamObjects other than the player on the screen
-    */
+    /**
+     * Empties the screen
+     * @return bool True as soon as there are no GamObjects other than the player on the screen
+     */
     bool emptyScreen();
 
-    /*
-        Loads textures and sounds for all GameObjects
-    */
+    /**
+     * Loads textures and sounds for all GameObjects
+     */
     void load();
 
-    /*
-        Plays sounds for every GameObject
-    */
+    /**
+     * Plays sounds for every GameObject
+     */
     void playSounds();
 
-    /*
-        Stops all sounds from playing
-    */
+    /**
+     * Stops all sounds from playing
+     */
     void stopSounds();
 
     void nextPlayerCar();
@@ -115,33 +114,33 @@ private:
     std::vector<std::shared_ptr<Animation>> _Animations;
 
     sf::Texture _ExplosionTexture;
-    sf::SoundBuffer _ExplosionSoundBuffer;
-    sf::SoundBuffer _ImpactSoundBuffer;
-
+    // TODO remove sound buffers and sound vector at some point
+    sf::SoundBuffer _ExplosionSoundBuffer, _ImpactSoundBuffer;
     std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>> _SoundEffects;
+
 
     float _CarFrequency, _BulletFrequency, _CanisterFrequency, _ToolboxFrequency, _TimePassedCar, _TimePassedBullet, _TimePassedCanister, _TimePassedToolbox;
 
     int _PlayerBulletSpeed, _AIBulletSpeed;
     bool _AboutToLevelUp, _BossFight;
 
-    /*
-        Plays a shot sound depending on the type of the firing entity
-        @param go Type of the GameObject that is emitting the shot sound
-        @param position Position of the Soundobject
-    */
-    void playShotSound(GameObjectType go, sf::Vector2f position = sf::Vector2f(0.f, 0.f));
+//    /**
+//     * Plays a shot sound depending on the type of the firing entity
+//     * @param go Type of the GameObject that is emitting the shot sound
+//     * @param position Position of the Soundobject
+//     */
+//    void playShotSound(GameObjectType go, sf::Vector2f position = sf::Vector2f(0.f, 0.f));
 
-    /*
-        Spawns a new AICar on a random lane
-        @param level Levelnumber
-        @param roadSpeed Speed of the road
-    */
+    /**
+     * Spawns a new AICar on a random lane
+     * @param level Levelnumber
+     * @param roadSpeed Speed of the road
+     */
     void spawnAICar(float frameTime);
 
-    /*
-        Makes a random AICar shoot a bullet at the player
-    */
+    /**
+     * Makes a random AICar shoot a bullet at the player
+     */
     void spawnBullet(float frameTime);
 
     void spawnToolbox(float frameTime);
@@ -151,18 +150,18 @@ private:
     template <typename T>
     void deleteOffScreenObjects(T &goList);
 
-    /*
-        Deletes a GameObject from the vector of GameObjects
-        @param id Index of the GameObject that will be deleted
-    */
+    /**
+     * Deletes a GameObject from the vector of GameObjects
+     * @param id Index of the GameObject that will be deleted
+     */
     template<typename T>
     void deleteObject(T &arr, unsigned int id) {
         arr.erase(arr.begin() + id);
     }
 
-    /*
-        Sets all frequencies dependig on the selected difficulty
-    */
+    /**
+     * Sets all frequencies dependig on the selected difficulty
+     */
     void calculateAllFrequencies();
 
     void calculateAiCarFrequency();
@@ -172,8 +171,6 @@ private:
     void calculateCanisterFrequency();
 
     void calculateToolboxFrequency();
-
-    void playHitSound(sf::Vector2f position);
 
     void spawnObjects(float frameTime);
 

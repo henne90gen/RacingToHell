@@ -2,7 +2,7 @@
 #include "Framework/Framework.h"
 
 Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameObjectManager(*this), _LevelManager(*this),
-                         _HighscoreManager(*this), _LoadingThread(&Framework::load, &*this) {
+                         _HighscoreManager(*this), _SoundManager(*this), _LoadingThread(&Framework::load, &*this) {
 
     _GameStates.push_back(GameState::Loading);
 
@@ -107,6 +107,8 @@ void Framework::update(float frameTime) {
         _GameObjectManager.update(frameTime);
     }
 
+    _SoundManager.update();
+
     for (unsigned int i = 0; i < _DisplayedGameScreens.size(); i++) {
         _DisplayedGameScreens.at(i)->update(frameTime);
     }
@@ -114,17 +116,11 @@ void Framework::update(float frameTime) {
 
 void Framework::load() {
     try {
-        // TODO enable Music again
-//        if (!_MenuMusic.openFromFile("Resources/Sound/Music/menu1.ogg")) {
-//            std::cout << "Couldn't load music" << std::endl;
-//        }
+        std::cout << "Loading..." << std::endl;
 
-//        FIXME ignoring this for now
-//        _MPGOCClient.load();
-//        _MPGOCClient.setCarSkins(_CarSkins);
-//        _MPGOCClient.resetGameObjects(0);
+        _SoundManager.load();
 
-        _OptionsManager.loadOptions();
+        _OptionsManager.load();
 
         _LevelManager.load();
         _LevelManager.resetToLevelOne();
@@ -132,11 +128,10 @@ void Framework::load() {
         _GameObjectManager.load();
         _GameObjectManager.resetGameObjects();
 
+        std::cout << "Done loading." << std::endl;
+
         advanceToGamState(GameState::LoadingToMain);
-    }
-    catch (...) {
-        std::exit;
-    }
+    } catch (...) { std::exit; }
 }
 
 
@@ -148,53 +143,34 @@ void Framework::reset() {
 void Framework::stop() {
     _IsRunning = false;
     _RenderWindow.close();
-    _MenuMusic.stop();
-    _LevelManager.stopMusic();
-
-//    _NetworkHandle.setRelation(NetworkRelation::NoRel);
-//    _NetworkHandle.setState(NetworkState::NoNetState);
 }
 
 void Framework::playSounds() {
     // FIXME sound is broken
-    /*
-    if (_GameState == GameState::Running ||
-        _GameState == GameState::BossFight ||
-        _GameState == GameState::LevelUp ||
-        _GameState == GameState::Pause ||
-        (_GameState == GameState::Options && _OptionsMenu.getReturnState() == GameState::Pause)) {
-        _MenuMusic.stop();
-        _LevelManager.playMusic();
-        _GameObjectContainer.playSounds();
-        if (_GameState == GameState::LevelUp) {
-            _LevelUpScreen.playSound();
-        }
-    } else if (_GameState == GameState::MainMenu || _GameState == GameState::Highscores ||
-               (_GameState == GameState::Options && _OptionsMenu.getReturnState() == GameState::Pause)) {
-        _LevelManager.pauseMusic();
-        if (_MenuMusic.getStatus() == sf::Sound::Stopped || _MenuMusic.getStatus() == sf::Sound::Paused) {
-            _MenuMusic.play();
-        }
-    } else if (_GameState == GameState::GameOver) {
-        _LevelManager.stopMusic();
-        _GameOverScreen.playSounds();
-    } else if (_GameState == GameState::Exiting) {
-        _LevelManager.stopMusic();
-        _MenuMusic.stop();
-    }
-     */
-}
-
-void Framework::setVolume(float volume) {
-    // FIXME sound is broken
-    /*
-    sf::Listener::setGlobalVolume(volume * 7);
-    _MenuMusic.setVolume(volume * 9);
-    _LevelManager.setVolume(volume * 7);
-    _GameObjectContainer.setVolume((float) (volume * 2.7));
-    _LevelUpScreen.setVolume(volume * 100);
-    _GameOverScreen.setVolume(volume * 10);
-    */
+//    if (_GameState == GameState::Running ||
+//        _GameState == GameState::BossFight ||
+//        _GameState == GameState::LevelUp ||
+//        _GameState == GameState::Pause ||
+//        (_GameState == GameState::Options && _OptionsMenu.getReturnState() == GameState::Pause)) {
+//        _MenuMusic.stop();
+//        _LevelManager.playMusic();
+//        _GameObjectContainer.playSounds();
+//        if (_GameState == GameState::LevelUp) {
+//            _LevelUpScreen.playSound();
+//        }
+//    } else if (_GameState == GameState::MainMenu || _GameState == GameState::Highscores ||
+//               (_GameState == GameState::Options && _OptionsMenu.getReturnState() == GameState::Pause)) {
+//        _LevelManager.pauseMusic();
+//        if (_MenuMusic.getStatus() == sf::Sound::Stopped || _MenuMusic.getStatus() == sf::Sound::Paused) {
+//            _MenuMusic.play();
+//        }
+//    } else if (_GameState == GameState::GameOver) {
+//        _LevelManager.stopMusic();
+//        _GameOverScreen.playSounds();
+//    } else if (_GameState == GameState::Exiting) {
+//        _LevelManager.stopMusic();
+//        _MenuMusic.stop();
+//    }
 }
 
 void Framework::reloadGameScreens() {
@@ -315,13 +291,3 @@ int Framework::getFPS() {
 int Framework::getUPS() {
     return (int) (1 / _UpdateTime);
 }
-
-//void Framework::initializeNetworkThread() {
-//    _NetworkThread = std::thread(&NetworkHandle::run, &_NetworkHandle);
-//    _NetworkThread.detach();
-//}
-
-//void Framework::updateMPCarSelection() {
-//    _MPGOCClient.getPlayerCar().setTexture((*_CarSkins.at((unsigned long) _OptionsManager.getCurrentCarSkinIndex())));
-//    _MPGOCClient.getPlayerCar().setStats(_OptionsManager.getCurrentCarSkinIndex());
-//}

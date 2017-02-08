@@ -16,8 +16,10 @@ public:
         @param soundEffects Vector to register the sound of the shot in
         @param volume VolumeIndex of the shot sound
     */
-	Bullet(unsigned int id, sf::Vector2f pos, sf::Vector2f dir, float speed, GameObjectType type, sf::Texture& texture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float volume);
-	Bullet(sf::Packet &packet, GameObjectType type, sf::Texture& texture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBuffer, float Volume);
+    Bullet(unsigned int id, sf::Vector2f pos, sf::Vector2f dir, float speed, GameObjectType type,
+           sf::Texture &texture);
+
+    Bullet(sf::Packet &packet, GameObjectType type, sf::Texture &texture);
 	Bullet(sf::Packet &packet, sf::Vector2f PlayerPosition, GameObjectType type, sf::Texture& texture, sf::Uint32 ID, float Speed);
 	Bullet(GameObjectType type, sf::Texture &texture, float speed);
 	~Bullet() {}

@@ -6,12 +6,12 @@
 class AICar : public Car
 {
 public:
-	/*
-		Car that is controlled by the computer.
-		@param hp Helath of the car
-		@param roadSpeed Speed of the road
-		@param texture Texture that is going to be used for the sprite
-	*/
+    /*
+        Car that is controlled by the computer.
+        @param hp Health of the car
+        @param roadSpeed Speed of the road
+        @param texture Texture that is going to be used for the sprite
+    */
 	AICar(unsigned int id, int hp, int roadSpeed, sf::Texture& texture);
 	AICar(sf::Packet& packet, sf::Texture& texture);
 	~AICar() {}
@@ -41,14 +41,14 @@ public:
 	*/
 	int getLane() { return _Lane; }
 
-	/*
-		Writes the necessary data for a gameobject to a packet
-	*/
+    /*
+        Writes the necessary data for a GameObject to a packet
+    */
 	void operator>>(sf::Packet& packet);
 
-	/*
-		Reads the necessary data for a gameobject from a packet
-	*/
+    /*
+        Reads the necessary data for a GameObject from a packet
+    */
 	void operator<<(sf::Packet& packet);
 private:
 	sf::RectangleShape _HealthBar;

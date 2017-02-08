@@ -76,8 +76,8 @@ void GameObjectManager::update(float frameTime) {
     if ((bulletDir.x != 0 || bulletDir.y != 0) &&
         (_FW.getOptionsManager().getGameMode() == GameMode::InfEnergy || _Player->drainShotEnergy())) {
         _Bullets.push_back(GameObjectFactory::getBullet(_Player->getPos(), bulletDir, _PlayerBulletSpeed,
-                                                        GameObjectType::BulletObjectPlayer, _SoundEffects,
-                                                        _FW.getOptionsManager().getVolume()));
+                                                        GameObjectType::BulletObjectPlayer));
+        _FW.getSoundManager().playShotSound(GameObjectType::BulletObjectPlayer, _Player->getPos());
     }
 }
 
@@ -87,8 +87,8 @@ void GameObjectManager::deleteDestroyedCars() {
             if (_Cars.at(i)->getHealth() == 0) {
                 _FW.getLevelManager().addScore(ScoreEvent::DestroyedCar, _Cars.at(i)->getMaxHealth());
                 std::shared_ptr<Explosion> newExplosion(
-                        new Explosion(_Cars.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _Cars[i]->getSpeed()),
-                                      _SoundEffects, _ExplosionSoundBuffer, _FW.getOptionsManager().getVolume()));
+                        new Explosion(_Cars.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _Cars[i]->getSpeed())));
+                _FW.getSoundManager().playExplosionSound(_Cars.at(i)->getPos());
                 _Animations.push_back(newExplosion);
                 deleteObject(_Cars, i);
                 i--;
@@ -164,8 +164,7 @@ void GameObjectManager::checkPlayerForCollisions(float frameTime) {
                     if (_FW.getOptionsManager().getGameMode() != GameMode::Invincible) {
                         _Player->takeDamage(5);
                         if (!_Player->isAlive()) {
-                            _Player->kill(_ExplosionTexture, _SoundEffects, _ExplosionSoundBuffer,
-                                          _FW.getOptionsManager().getVolume());
+                            killPlayer();
                         }
                     }
                     _FW.getSoundManager().playHitSound(_Player->getPos());
@@ -210,12 +209,16 @@ void GameObjectManager::checkPlayerForCollisions(float frameTime) {
 //                deleteObject(_Cars, i);
 //                i--;
 //            } else {
-                _Player->kill(_ExplosionTexture, _SoundEffects, _ExplosionSoundBuffer,
-                              _FW.getOptionsManager().getVolume());
+                killPlayer();
 //            }
             }
         }
     }
+}
+
+void GameObjectManager::killPlayer() {
+    _Player->kill(_ExplosionTexture);
+    _FW.getSoundManager().playExplosionSound(_Player->getPos());
 }
 
 void GameObjectManager::spawnObjects(float frameTime) {
@@ -230,7 +233,6 @@ void GameObjectManager::spawnObjects(float frameTime) {
 }
 
 void GameObjectManager::stopSounds() {
-    _SoundEffects.clear();
     if (_BossFight) {
         getBossCar()->stopSounds();
     }
@@ -269,8 +271,7 @@ bool GameObjectManager::bossIsDead() {
 void GameObjectManager::enterBossFight() {
     _Boss = GameObjectFactory::getBossCar((_FW.getLevelManager().getLevel() - 1) % 4,
                                           (int) _FW.getOptionsManager().getDifficulty(),
-                                          _FW.getLevelManager().getBossHP(),
-                                          _SoundEffects, _ExplosionSoundBuffer, _FW.getOptionsManager().getVolume());
+                                          _FW.getLevelManager().getBossHP());
     _BossFight = true;
 }
 
@@ -369,9 +370,7 @@ void GameObjectManager::spawnBullet(float frameTime) {
 
             const std::shared_ptr<Bullet> &newBullet = GameObjectFactory::getBullet(SelectedCar->getPos(), dir,
                                                                                     _AIBulletSpeed,
-                                                                                    GameObjectType::BulletObjectAI,
-                                                                                    _SoundEffects,
-                                                                                    _FW.getOptionsManager().getVolume());
+                                                                                    GameObjectType::BulletObjectAI);
             _Bullets.push_back(newBullet);
 
             // FIXME should we really recalculate the freq after every spawn?

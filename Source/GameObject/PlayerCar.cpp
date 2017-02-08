@@ -262,14 +262,11 @@ bool PlayerCar::isAlive() {
     return _Energy > 0 && _Health > 0;
 }
 
-void PlayerCar::kill(sf::Texture &explosionTexture,
-                     std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>> &soundEffects,
-                     sf::SoundBuffer &explosionSoundBuffer, float volume) {
+void PlayerCar::kill(sf::Texture &explosionTexture) {
     _Health = 0;
     _Movement = sf::Vector2f(0, 0);
     _Force = sf::Vector2f(0, 0);
-    _Animation = std::make_shared<Explosion>(getPos(), explosionTexture, sf::Vector2f(0, 0), soundEffects,
-                                             explosionSoundBuffer, volume);
+    _Animation = std::make_shared<Explosion>(getPos(), explosionTexture, sf::Vector2f(0, 0));
     _Animation->play();
 }
 

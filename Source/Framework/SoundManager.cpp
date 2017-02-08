@@ -7,14 +7,15 @@
 #include "Framework/Framework.h"
 
 SoundManager::SoundManager(Framework &framework) : _FW(framework) {
-
+    _MenuMusic = std::make_shared<sf::Music>();
+    _LevelMusic = std::make_shared<sf::Music>();
 }
 
 void SoundManager::load() {
     std::cout << "Loading music and sound..." << std::endl;
 
 //    Load menu music
-    if (!_MenuMusic.openFromFile("Resources/Sound/Music/menu1.ogg")) {
+    if (!_MenuMusic->openFromFile("Resources/Sound/Music/menu1.ogg")) {
         std::cout << "Couldn't load music for menu" << std::endl;
     }
 
@@ -24,8 +25,9 @@ void SoundManager::load() {
         if (!(*music).openFromFile("Resources/Sound/Music/level" + std::to_string(i) + ".ogg")) {
             std::cout << "Couldn't load music for level " << i << std::endl;
         }
-        _LevelMusic.push_back(music);
+        _AllLevelMusic.push_back(music);
     }
+    _LevelMusic = _AllLevelMusic.at(0);
 
     _ExplosionSoundBuffer.loadFromFile("Resources/Sound/explosion.wav");
     _ImpactSoundBuffer.loadFromFile("Resources/Sound/impact.wav");
@@ -45,8 +47,9 @@ void SoundManager::updateVolumes() {
     float volume = _FW.getOptionsManager().getVolume() / 10.0f;
 
     sf::Listener::setGlobalVolume(volume * 7);
-    _MenuMusic.setVolume(volume * 9);
-//    _LevelManager.setVolume(volume * 7);
+    _MenuMusic->setVolume(volume * 9);
+    _LevelMusic->setVolume(volume * 7);
+
 //    _GameObjectContainer.setVolume((float) (volume * 2.7));
 //    _LevelUpScreen.setVolume(volume * 100);
 //    _GameOverScreen.setVolume(volume * 10);
@@ -54,38 +57,32 @@ void SoundManager::updateVolumes() {
 
 void SoundManager::updateMenu() {
     if (isInMenu()) {
-        if (_MenuMusic.getStatus() != sf::SoundSource::Playing) {
-            _MenuMusic.play();
+        if (_MenuMusic->getStatus() != sf::Music::Playing) {
+            _MenuMusic->play();
         }
     } else {
-        if (_MenuMusic.getStatus() == sf::SoundSource::Playing) {
-            _MenuMusic.stop();
+        if (_MenuMusic->getStatus() == sf::Music::Playing) {
+            _MenuMusic->stop();
         }
     }
 }
 
 void SoundManager::updateLevel() {
     if (isInLevel()) {
-        for (unsigned long i = 0; i < _LevelMusic.size(); i++) {
-            if (i == getLevelMusicIndex() && _LevelMusic.at(i)->getStatus() != sf::SoundSource::Playing) {
-                _LevelMusic.at(i)->play();
-            } else if (_LevelMusic.at(i)->getStatus() == sf::SoundSource::Playing) {
-                _LevelMusic.at(i)->stop();
-            }
+        if (_LevelMusic->getStatus() != sf::Music::Playing) {
+            _LevelMusic->play();
         }
     } else {
-        for (unsigned long i = 0; i < _LevelMusic.size(); i++) {
-            if (_LevelMusic.at(i)->getStatus() == sf::SoundSource::Playing) {
-                _LevelMusic.at(i)->stop();
-            }
+        if (_LevelMusic->getStatus() == sf::Music::Playing) {
+            _LevelMusic->stop();
         }
     }
 }
 
 void SoundManager::updateSoundEffects() {
     for (unsigned int i = 0; i < _SoundEffects.size(); i++) {
-        if (_SoundEffects[i].first->getStatus() == sf::SoundSource::Stopped ||
-            _SoundEffects[i].first->getStatus() == sf::SoundSource::Paused) {
+        if (_SoundEffects[i].first->getStatus() == sf::Music::Stopped ||
+            _SoundEffects[i].first->getStatus() == sf::Music::Paused) {
             if (_SoundEffects[i].second) {
                 _SoundEffects.erase(_SoundEffects.begin() + i);
             } else {
@@ -96,7 +93,7 @@ void SoundManager::updateSoundEffects() {
     }
 }
 
-void SoundManager::playShotSound(sf::Vector2f position) {
+void SoundManager::playShotSound(GameObjectType bulletType, sf::Vector2f position) {
 
 }
 
@@ -111,7 +108,13 @@ void SoundManager::playHitSound(sf::Vector2f position) {
 }
 
 void SoundManager::playExplosionSound(sf::Vector2f position) {
-
+    std::shared_ptr<sf::Sound> explosionSound(new sf::Sound());
+    explosionSound->setBuffer(_ExplosionSoundBuffer);
+    explosionSound->setPosition(position.x, 0.f, position.y);
+    explosionSound->setMinDistance(500.f);
+    explosionSound->setAttenuation(4.f);
+    explosionSound->setVolume(_FW.getOptionsManager().getVolume() * 5.0f);
+    _SoundEffects.push_back(std::make_pair(explosionSound, false));
 }
 
 bool SoundManager::isInMenu() {
@@ -126,5 +129,13 @@ bool SoundManager::isInLevel() {
 }
 
 unsigned long SoundManager::getLevelMusicIndex() {
-    return (unsigned long) (_FW.getLevelManager().getLevel() % 4);
+    return (unsigned long) ((_FW.getLevelManager().getLevel() - 1) % 4);
+}
+
+void SoundManager::nextLevel() {
+    for (unsigned long i = 0; i < _AllLevelMusic.size(); i++) {
+        if (i == getLevelMusicIndex()) {
+            _LevelMusic = _AllLevelMusic.at(i);
+        }
+    }
 }

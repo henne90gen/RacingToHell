@@ -12,7 +12,8 @@ public:
 		@param cols			Number of columns the sprite sheet has
 	 */
 	Animation(sf::Vector2f pos, sf::Texture & texture, float timePerFrame, int frames, int rows, int cols);
-	~Animation();
+
+    virtual ~Animation();
 	
 	/*
 		State an animation may be in

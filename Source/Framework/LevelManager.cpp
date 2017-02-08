@@ -47,6 +47,7 @@ void LevelManager::update(float frameTime) {
 void LevelManager::levelUp() {
     _LevelTime = 0;
     _Level++;
+    _FW.getSoundManager().nextLevel();
 }
 
 void LevelManager::resetToLevelOne() {

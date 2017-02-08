@@ -11,20 +11,20 @@ MPGameObjectContainer::~MPGameObjectContainer() {
 
 void MPGameObjectContainer::update(float FrameTime, int RoadSpeed) {
     return;
-    handleIncomingPackets();
-
-    _Player1->update(FrameTime, RoadSpeed);
-    _Player2->update(FrameTime, RoadSpeed);
-
-    for (unsigned int i = 0; i < _Bullets.size(); i++) {
-        _Bullets[i]->update(FrameTime, RoadSpeed);
-    }
-
-    if (_IsServer) {
-        sendPlayerInformation();
-    } else {
-        sendPlayerKeyPress();
-    }
+//    handleIncomingPackets();
+//
+//    _Player1->update(FrameTime, RoadSpeed);
+//    _Player2->update(FrameTime, RoadSpeed);
+//
+//    for (unsigned int i = 0; i < _Bullets.size(); i++) {
+//        _Bullets[i]->update(FrameTime, RoadSpeed);
+//    }
+//
+//    if (_IsServer) {
+//        sendPlayerInformation();
+//    } else {
+//        sendPlayerKeyPress();
+//    }
 }
 
 void comment() {
@@ -498,8 +498,7 @@ bool MPGameObjectContainer::bossIsDead() {
 }
 
 void MPGameObjectContainer::enterBossFight() {
-    _GameObjects.push_back(GameObjectFactory::getBossCar((_Level - 1) % 4, _Difficulty, getBossHP(), _SoundEffects,
-                                                         _ExplosionSoundBuffer, _Volume));
+    _GameObjects.push_back(GameObjectFactory::getBossCar((_Level - 1) % 4, _Difficulty, getBossHP()));
     _BossFight = true;
 }
 
@@ -581,8 +580,7 @@ void MPGameObjectContainer::spawnBullet() {
     sf::Vector2f dir = SelectedCar->divideByLength(getPlayerCar().getPos() - SelectedCar->getPos());
 
     _GameObjects.push_back(
-            GameObjectFactory::getBullet(SelectedCar->getPos(), dir, _AIBulletSpeed, GameObjectType::BulletObjectAI,
-                                         _SoundEffects, _Volume));
+            GameObjectFactory::getBullet(SelectedCar->getPos(), dir, _AIBulletSpeed, GameObjectType::BulletObjectAI));
 }
 
 bool MPGameObjectContainer::playerIsAlive() {

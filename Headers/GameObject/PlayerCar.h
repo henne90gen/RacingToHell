@@ -114,8 +114,7 @@ public:
 	void applyKeyPress(sf::Uint8 keys);
 	sf::Uint8 getPressedKeys() { return _PressedKeys; }
 
-    void kill(sf::Texture &explosionTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>> &soundEffects,
-              sf::SoundBuffer &explosionSoundBuffer, float volume);
+    void kill(sf::Texture &explosionTexture);
 
     bool isDying();
 

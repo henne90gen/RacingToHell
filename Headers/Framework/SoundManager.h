@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <GameObject/GameObjectType.h>
+
 class Framework;
 
 class SoundManager {
@@ -14,23 +16,30 @@ public:
 
     void update();
 
-    void playShotSound(sf::Vector2f position);
+    void playShotSound(GameObjectType bulletType, sf::Vector2f position);
 
     void playHitSound(sf::Vector2f position);
 
     void playExplosionSound(sf::Vector2f position);
 
+    void nextLevel();
+
+    unsigned long getNumSoundEffects() { return _SoundEffects.size(); }
+
+    unsigned long getLevelMusicIndex();
+
 private:
 
     Framework &_FW;
 
-    sf::Music _MenuMusic;
+    // Music is a pointer because sf::Music can't be copied around
+    std::shared_ptr<sf::Music> _MenuMusic, _LevelMusic;
 
-    std::vector<std::shared_ptr<sf::Music>> _LevelMusic;
+    std::vector<std::shared_ptr<sf::Music>> _AllLevelMusic;
 
     std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>> _SoundEffects;
 
-    sf::SoundBuffer _ExplosionSoundBuffer, _ImpactSoundBuffer;
+    sf::SoundBuffer _ExplosionSoundBuffer, _ImpactSoundBuffer, _AIShotSoundBuffer, _PlayerShotSoundBuffer;
 
     void updateVolumes();
 
@@ -39,8 +48,6 @@ private:
     void updateMenu();
 
     bool isInLevel();
-
-    unsigned long getLevelMusicIndex();
 
     void updateLevel();
 

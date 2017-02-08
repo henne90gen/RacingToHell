@@ -5,7 +5,7 @@
 AICar::AICar(unsigned int id, int hp, int roadSpeed, sf::Texture &texture) :
         Car(id, sf::Vector2f(0, 0), hp, std::rand() % ((int) (roadSpeed / 3)) + ((int) (roadSpeed / 3)),
             GameObjectType::AI, texture) {
-    _Lane = std::rand() % 4;
+    _Lane = (sf::Uint8) (std::rand() % 4);
     init();
     getSprite().setColor(sf::Color::White);
 }
@@ -48,7 +48,6 @@ void AICar::init() {
     int offset = 1;
     setPos(sf::Vector2f(_Lane * SCREENWIDTH / 4 + SCREENWIDTH / 8, -1 * getHeight() / 2 + offset));
 
-    //HP-Balken
     _HealthBar.setFillColor(sf::Color(200, 0, 0));
     _HealthBar.setSize(sf::Vector2f(45, 5));
 

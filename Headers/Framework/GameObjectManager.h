@@ -115,8 +115,8 @@ private:
 
     sf::Texture _ExplosionTexture;
     // TODO remove sound buffers and sound vector at some point
-    sf::SoundBuffer _ExplosionSoundBuffer, _ImpactSoundBuffer;
-    std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>> _SoundEffects;
+    sf::SoundBuffer _ExplosionSoundBuffer;
+//    std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>> _SoundEffects;
 
 
     float _CarFrequency, _BulletFrequency, _CanisterFrequency, _ToolboxFrequency, _TimePassedCar, _TimePassedBullet, _TimePassedCanister, _TimePassedToolbox;
@@ -181,4 +181,6 @@ private:
     void checkPlayerForCollisions(float frameTime);
 
     void deleteDestroyedCars();
+
+    void killPlayer();
 };

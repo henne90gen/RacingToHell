@@ -10,8 +10,9 @@ public:
 		@param texture Texture for the sprite
 		@param bulletTexture Texture for all bullets the boss shoots
 	*/
-	Carrier(unsigned int id, int difficulty, int HP, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float Volume);
-	Carrier(sf::Packet& packet, sf::Texture& texture, sf::Texture& bulletTexture, std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>>& soundEffects, sf::SoundBuffer &soundBufferShot, sf::SoundBuffer &soundBufferExplosion, float Volume);
+    Carrier(unsigned int id, int difficulty, int HP, sf::Texture &texture, sf::Texture &bulletTexture);
+
+    Carrier(sf::Packet &packet, sf::Texture &texture, sf::Texture &bulletTexture);
 	virtual ~Carrier() {}
 
 	/*

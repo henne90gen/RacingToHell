@@ -29,7 +29,10 @@ DebugScreen::DebugScreen(Framework &framework) : GameScreen(framework) {
                      "Car freq:",
                      "Bullet freq:",
                      "Can. freq:",
-                     "Tool. freq:"};
+                     "Tool. freq:",
+                     "",
+                     "Sounds:",
+                     "LevelMusic:"};
 
     sf::Font &font = _FW.getOptionsManager().getFont();
 
@@ -66,44 +69,49 @@ void DebugScreen::handleEvent(sf::Event &event) {
 void DebugScreen::update(float frameTime) {
 
     std::vector<long> skipping;
-    std::vector<std::string> newValues;
+    std::vector<std::string> values;
 
-    newValues.push_back(std::to_string(_FW.getFPS())); // FPS
-    newValues.push_back(std::to_string(_FW.getUPS())); // UPS
+    values.push_back(std::to_string(_FW.getFPS())); // FPS
+    values.push_back(std::to_string(_FW.getUPS())); // UPS
 
-    newValues.push_back(std::to_string((int) _FW.getCurrentGameState())); // Current GameState
-    newValues.push_back(std::to_string((int) _FW.getLastGameState())); // Last GameState
+    values.push_back(std::to_string((int) _FW.getCurrentGameState())); // Current GameState
+    values.push_back(std::to_string((int) _FW.getLastGameState())); // Last GameState
 
-    newValues.push_back("");  // Empty line
-    newValues.push_back("");  // Options heading
+    values.push_back("");  // Empty line
+    values.push_back("");  // Options heading
 
-    newValues.push_back(std::to_string(_FW.getOptionsManager().getFPS())); // FPSPreset
-    newValues.push_back(std::to_string(_FW.getOptionsManager().getVolume())); // Volume
-    newValues.push_back(std::to_string((int) _FW.getOptionsManager().getDifficulty())); // Difficulty
-    newValues.push_back(std::to_string((int) _FW.getOptionsManager().getGameMode())); // GameMode
+    values.push_back(std::to_string(_FW.getOptionsManager().getFPS())); // FPSPreset
+    values.push_back(std::to_string(_FW.getOptionsManager().getVolume())); // Volume
+    values.push_back(std::to_string((int) _FW.getOptionsManager().getDifficulty())); // Difficulty
+    values.push_back(std::to_string((int) _FW.getOptionsManager().getGameMode())); // GameMode
 
-    newValues.push_back(std::to_string(_FW.getOptionsManager().getScoreMultiplier())); // ScoreMultiplier
-    newValues.push_back(std::to_string(_FW.getLevelManager().getScoref())); // Score
+    values.push_back(std::to_string(_FW.getOptionsManager().getScoreMultiplier())); // ScoreMultiplier
+    values.push_back(std::to_string(_FW.getLevelManager().getScoref())); // Score
 
-    newValues.push_back(""); // Empty line
+    values.push_back(""); // Empty line
 
     unsigned long bullets = _FW.getGOM().getBullets().size();
-    newValues.push_back(std::to_string(bullets)); // Bullet amount
+    values.push_back(std::to_string(bullets)); // Bullet amount
     unsigned long cars = _FW.getGOM().getCars().size() + 1;
-    newValues.push_back(std::to_string(cars)); // Car amount
-    newValues.push_back(std::to_string(_FW.getLevelManager().getAiHP())); // Enemy health
-    newValues.push_back(std::to_string(_FW.getLevelManager().getRoadSpeed())); // RoadSpeed
+    values.push_back(std::to_string(cars)); // Car amount
+    values.push_back(std::to_string(_FW.getLevelManager().getAiHP())); // Enemy health
+    values.push_back(std::to_string(_FW.getLevelManager().getRoadSpeed())); // RoadSpeed
 
-    newValues.push_back(""); // Empty line
-    newValues.push_back(""); // Frequencies heading
+    values.push_back(""); // Empty line
+    values.push_back(""); // Frequencies heading
 
-    newValues.push_back(std::to_string(_FW.getGOM().getCarFrequency())); // Car frequency
-    newValues.push_back(std::to_string(_FW.getGOM().getBulletFrequency())); // Bullet frequency
-    newValues.push_back(std::to_string(_FW.getGOM().getCanisterFrequency())); // Canister frequency
-    newValues.push_back(std::to_string(_FW.getGOM().getToolboxFrequency())); // Toolbox frequency
+    values.push_back(std::to_string(_FW.getGOM().getCarFrequency())); // Car frequency
+    values.push_back(std::to_string(_FW.getGOM().getBulletFrequency())); // Bullet frequency
+    values.push_back(std::to_string(_FW.getGOM().getCanisterFrequency())); // Canister frequency
+    values.push_back(std::to_string(_FW.getGOM().getToolboxFrequency())); // Toolbox frequency
+
+    values.push_back(""); // Empty line
+
+    values.push_back(std::to_string(_FW.getSoundManager().getNumSoundEffects())); // Number of sound effects
+    values.push_back(std::to_string(_FW.getSoundManager().getLevelMusicIndex())); // Level music
 
     for (unsigned int i = 0; i < _Values.size(); i++) {
-        if (i >= newValues.size()) { break; }
-        _Values.at(i).setString(newValues.at(i));
+        if (i >= values.size()) { break; }
+        _Values.at(i).setString(values.at(i));
     }
 }

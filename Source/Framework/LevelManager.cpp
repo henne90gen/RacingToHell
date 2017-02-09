@@ -26,24 +26,6 @@ void LevelManager::update(float frameTime) {
     }
 }
 
-//void LevelManager::playMusic() {
-//    if (_Music.getStatus() == sf::Sound::Stopped || _Music.getStatus() == sf::Sound::Paused) {
-//        _Music.play();
-//    }
-//}
-//
-//void LevelManager::stopMusic() {
-//    _Music.stop();
-//}
-//
-//void LevelManager::pauseMusic() {
-//    _Music.pause();
-//}
-//
-//void LevelManager::update(float Volume) {
-//    _Music.update(Volume);
-//}
-
 void LevelManager::levelUp() {
     _LevelTime = 0;
     _Level++;

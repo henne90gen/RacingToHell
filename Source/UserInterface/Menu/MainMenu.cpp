@@ -82,13 +82,13 @@ void MainMenu::handleEvent(sf::Event &event) {
 //		}
     switch (getMenuItemResult(event)) {
         case MenuResult::Resume:
-            _FW.advanceToGamState(GameState::Running);
+            _FW.advanceToGameState(GameState::Running);
             break;
         case MenuResult::Highscore:
-            _FW.advanceToGamState(GameState::Highscores);
+            _FW.advanceToGameState(GameState::Highscores);
             break;
         case MenuResult::Option:
-            _FW.advanceToGamState(GameState::Options);
+            _FW.advanceToGameState(GameState::Options);
             break;
         case MenuResult::PreviousSkin:
             _FW.getGOM().previousPlayerCar();
@@ -97,10 +97,10 @@ void MainMenu::handleEvent(sf::Event &event) {
             _FW.getGOM().nextPlayerCar();
             break;
         case MenuResult::Exit:
-            _FW.advanceToGamState(GameState::Exiting);
+            _FW.advanceToGameState(GameState::Exiting);
             break;
         case MenuResult::Multiplayer:
-            _FW.advanceToGamState(GameState::MultiplayerSelection);
+            _FW.advanceToGameState(GameState::MultiplayerSelection);
             break;
         default:
             break;

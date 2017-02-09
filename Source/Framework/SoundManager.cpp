@@ -6,7 +6,7 @@
 #include "Framework/SoundManager.h"
 #include "Framework/Framework.h"
 
-SoundManager::SoundManager(Framework &framework) : _FW(framework) {
+SoundManager::SoundManager(Framework &framework) : _FW(framework), _SoundPath("Resources/Sound/") {
     _MenuMusic = std::make_shared<sf::Music>();
     _LevelMusic = std::make_shared<sf::Music>();
 }
@@ -15,14 +15,14 @@ void SoundManager::load() {
     std::cout << "Loading music and sound..." << std::endl;
 
 //    Load menu music
-    if (!_MenuMusic->openFromFile("Resources/Sound/Music/menu1.ogg")) {
+    if (!_MenuMusic->openFromFile(_SoundPath + "Music/menu1.ogg")) {
         std::cout << "Couldn't load music for menu" << std::endl;
     }
 
 //    Load level music
     for (int i = 1; i <= 4; i++) {
         std::shared_ptr<sf::Music> music = std::make_shared<sf::Music>();
-        if (!(*music).openFromFile("Resources/Sound/Music/level" + std::to_string(i) + ".ogg")) {
+        if (!(*music).openFromFile(_SoundPath + "Music/level" + std::to_string(i) + ".ogg")) {
             std::cout << "Couldn't load music for level " << i << std::endl;
         }
         _AllLevelMusic.push_back(music);
@@ -30,10 +30,21 @@ void SoundManager::load() {
     _LevelMusic = _AllLevelMusic.at(0);
 
 //    Load sound effects
-    _ExplosionSoundBuffer.loadFromFile("Resources/Sound/explosion.wav");
-    _ImpactSoundBuffer.loadFromFile("Resources/Sound/impact.wav");
-    _AIShotSoundBuffer.loadFromFile("Resources/Sound/shotAI.wav");
-    _PlayerShotSoundBuffer.loadFromFile("Resources/Sound/shotPlayer.wav");
+    if (!_ExplosionSoundBuffer.loadFromFile(_SoundPath + "explosion.wav")) {
+        std::cout << "Couldn't load Explosion sound." << std::endl;
+    }
+    if (!_ImpactSoundBuffer.loadFromFile(_SoundPath + "impact.wav")) {
+        std::cout << "Couldn't load Impact sound." << std::endl;
+    }
+    if (!_AIShotSoundBuffer.loadFromFile(_SoundPath + "shotAI.wav")) {
+        std::cout << "Couldn't load AIShot sound." << std::endl;
+    }
+    if (!_PlayerShotSoundBuffer.loadFromFile(_SoundPath + "shotPlayer.wav")) {
+        std::cout << "Couldn't load PlayerShot sound." << std::endl;
+    }
+    if (!_GameOverSoundBuffer.loadFromFile(_SoundPath + "gameOver.wav")) {
+        std::cout << "Couldn't load GameOver sound." << std::endl;
+    }
 }
 
 void SoundManager::update() {
@@ -124,13 +135,20 @@ void SoundManager::playHitSound(sf::Vector2f position) {
 
 // TODO balance audio levels
 void SoundManager::playExplosionSound(sf::Vector2f position) {
-    std::shared_ptr<sf::Sound> explosionSound(new sf::Sound());
+    std::shared_ptr<sf::Sound> explosionSound = std::make_shared<sf::Sound>();
     explosionSound->setBuffer(_ExplosionSoundBuffer);
     explosionSound->setPosition(position.x, 0.0f, position.y);
     explosionSound->setMinDistance(500.0f);
     explosionSound->setAttenuation(4.0f);
     explosionSound->setVolume(_FW.getOptionsManager().getVolume() * 5.0f);
     _SoundEffects.push_back(std::make_pair(explosionSound, false));
+}
+
+void SoundManager::playGameOverSound() {
+    std::shared_ptr<sf::Sound> gameOverSound = std::make_shared<sf::Sound>();
+    gameOverSound->setBuffer(_GameOverSoundBuffer);
+    gameOverSound->setVolume(_FW.getOptionsManager().getVolume());
+    _SoundEffects.push_back(std::make_pair(gameOverSound, false));
 }
 
 bool SoundManager::isInMenu() {

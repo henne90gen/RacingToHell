@@ -86,7 +86,7 @@ void DebugScreen::update(float frameTime) {
     values.push_back(std::to_string((int) _FW.getOptionsManager().getGameMode())); // GameMode
 
     values.push_back(std::to_string(_FW.getOptionsManager().getScoreMultiplier())); // ScoreMultiplier
-    values.push_back(std::to_string(_FW.getLevelManager().getScoref())); // Score
+    values.push_back(std::to_string(_FW.getLevelManager().getScore())); // Score
 
     values.push_back(""); // Empty line
 

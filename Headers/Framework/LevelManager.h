@@ -6,24 +6,24 @@ class Framework;
 
 class LevelManager {
 public:
-    /*
-        Manager class for the level, draws background and plays music
-    */
+    /**
+     * Manages the level. Draws background and keeps track of the score
+     */
     LevelManager(Framework &framework) : _FW(framework), _ShouldMove(true), _Score(0) {}
 
     ~LevelManager() {}
 
-    /*
-        Updates the Level with the given frame time
-        @param frameTime Time that has passed since the last update
-    */
+    /**
+     * Updates the Level with the given frame time
+     * @param frameTime Time that has passed since the last update
+     */
     void update(float frameTime);
 
     void load();
 
-    /*
-        Resets the Level to a state where a new game can be started
-    */
+    /**
+     * Resets the Level to a state where a new game can be started
+     */
     void resetToLevelOne();
 
     bool isResettingLevel() {
@@ -34,39 +34,37 @@ public:
         _IsResettingLevel = false;
     }
 
-    /*
-        Tells the Level to increase the difficulty and to change the background
-    */
+    /**
+     * Tells the Level to increase the difficulty and to change the background
+     */
     void levelUp();
 
-    /*
-        @return int Difficulty of the Level
-    */
+    /**
+     * @return int Difficulty of the Level
+     */
     int getLevel() { return _Level; }
 
-    /*
-        @return int Speed of the road
-    */
+    /**
+     * @return int Speed of the road
+     */
     int getRoadSpeed();
 
-    /*
-        Resets the internal timer of the Level
-    */
+    /**
+     * Resets the internal timer of the Level
+     */
     void resetTimer() { _LevelTime = 0; }
 
-    /*
-        @return float Time in seconds that has passed since the start of the level
-    */
+    /**
+     * @return float Time in seconds that has passed since the start of the level
+     */
     float getLevelTime() { return _LevelTime; }
 
-    /*
-        @return float Time in seconds that this level will last in total
-    */
+    /**
+     * @return float Time in seconds that this level will last in total
+     */
     float getTotalLevelTime() { return _TotalLevelTime; }
 
-    int getScore() { return (int) _Score; }
-
-    float getScoref() { return _Score; }
+    float getScore() { return _Score; }
 
     void addScore(ScoreEvent event, float modifier);
 

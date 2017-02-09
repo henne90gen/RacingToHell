@@ -28,12 +28,17 @@ public:
 
     unsigned long getLevelMusicIndex();
 
+    void playGameOverSound();
+
 private:
 
     Framework &_FW;
+    std::string _SoundPath;
 
     // Music is a pointer because sf::Music can't be copied around
     std::shared_ptr<sf::Music> _MenuMusic, _LevelMusic;
+
+    sf::SoundBuffer _GameOverSoundBuffer;
 
     std::vector<std::shared_ptr<sf::Music>> _AllLevelMusic;
 
@@ -52,4 +57,5 @@ private:
     void updateLevel();
 
     void updateSoundEffects();
+
 };

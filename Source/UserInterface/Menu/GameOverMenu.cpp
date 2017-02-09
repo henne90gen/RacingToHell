@@ -3,7 +3,6 @@
 #include "Framework/Framework.h"
 
 GameOverMenu::GameOverMenu(Framework &framework) : Menu(framework, GameState::GameOver),
-                                                   _SoundPlayed(false),
                                                    _ScoreSubmitted(false),
                                                    _HighscoreList(_FW, sf::Vector2f(SCREENWIDTH / 2 - 225, 190)) {
     sf::Font &font = _FW.getOptionsManager().getFont();
@@ -50,10 +49,11 @@ GameOverMenu::GameOverMenu(Framework &framework) : Menu(framework, GameState::Ga
                                                                        TextAlignment::Center);
     _MenuItems.push_back(backBtn);
 
-//	_JoystickSelection = 1;
+    _FW.getSoundManager().playGameOverSound();
 }
 
 void GameOverMenu::render(sf::RenderWindow &window) {
+    // TODO add background for text
     window.draw(_GOTLine1);
     window.draw(_GOTLine2);
     window.draw(_GOTLine3);
@@ -63,34 +63,10 @@ void GameOverMenu::render(sf::RenderWindow &window) {
     Menu::render(window);
 }
 
-void GameOverMenu::playSounds() {
-    if (_GameOverSound.getStatus() == sf::Sound::Stopped || _GameOverSound.getStatus() == sf::Sound::Paused) {
-        if (!_SoundPlayed) {
-            _GameOverSound.play();
-            _SoundPlayed = true;
-        }
-    }
-}
-
-void GameOverMenu::setVolume(float volume) {
-    if (volume > 0) {
-        _GameOverSound.setVolume(volume + 10);
-    } else {
-        _GameOverSound.setVolume(volume);
-    }
-}
-
 void GameOverMenu::handleEvent(sf::Event &event) {
-
-//		float X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
-//		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
-
-//		handleJoystick(X);
-
     std::string name = _MenuItems[0]->getText();
     switch (getMenuItemResult(event)) {
         case MenuResult::Back:
-            _SoundPlayed = false;
             _ScoreSubmitted = false;
             _MenuItems[0]->setEnabled(true);
             _MenuItems[1]->setEnabled(true);
@@ -110,13 +86,7 @@ void GameOverMenu::handleEvent(sf::Event &event) {
     }
 }
 
-void GameOverMenu::load() {
-    if (_GameOverSoundBuffer.loadFromFile("Resources/Sound/gameOver.wav")) {
-        _GameOverSound.setBuffer(_GameOverSoundBuffer);
-    }
-}
-
 void GameOverMenu::update(float frameTime) {
-    _GOTLine2.setString("Your score was: " + std::to_string(_FW.getLevelManager().getScore()));
+    _GOTLine2.setString("Your score was: " + std::to_string((int) _FW.getLevelManager().getScore()));
     _HighscoreList.update(frameTime);
 }

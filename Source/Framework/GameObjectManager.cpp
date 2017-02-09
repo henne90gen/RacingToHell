@@ -77,7 +77,7 @@ void GameObjectManager::update(float frameTime) {
         (_FW.getOptionsManager().getGameMode() == GameMode::InfEnergy || _Player->drainShotEnergy())) {
         _Bullets.push_back(GameObjectFactory::getBullet(_Player->getPos(), bulletDir, _PlayerBulletSpeed,
                                                         GameObjectType::BulletObjectPlayer));
-        _FW.getSoundManager().playShotSound(GameObjectType::BulletObjectPlayer, _Player->getPos());
+        _FW.getSoundManager().playShotSound(GameObjectType::Player, _Player->getPos());
     }
 }
 
@@ -348,13 +348,14 @@ void GameObjectManager::spawnBullet(float frameTime) {
             if (_Cars.size() == 0)
                 return;
 
-            std::shared_ptr<GameObject> SelectedCar = _Cars.at(std::rand() % _Cars.size());
+            std::shared_ptr<GameObject> selectedCar = _Cars.at(std::rand() % _Cars.size());
 
-            sf::Vector2f dir = SelectedCar->divideByLength(_Player->getPos() - SelectedCar->getPos());
+            sf::Vector2f dir = selectedCar->divideByLength(_Player->getPos() - selectedCar->getPos());
 
-            const std::shared_ptr<Bullet> &newBullet = GameObjectFactory::getBullet(SelectedCar->getPos(), dir,
+            const std::shared_ptr<Bullet> &newBullet = GameObjectFactory::getBullet(selectedCar->getPos(), dir,
                                                                                     _AIBulletSpeed,
                                                                                     GameObjectType::BulletObjectAI);
+            _FW.getSoundManager().playShotSound(GameObjectType::AI, selectedCar->getPos());
             _Bullets.push_back(newBullet);
 
             // FIXME should we really recalculate the freq after every spawn?

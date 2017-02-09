@@ -121,10 +121,6 @@ private:
 
     static sf::Texture &_BulletTexture();
 
-    static sf::SoundBuffer &_AIShotSoundBuffer();
-
-    static sf::SoundBuffer &_PlayerShotSoundBuffer();
-
     static sf::SoundBuffer &_JetSoundBuffer();
 
     static sf::Uint32 _CurrentGameObjectID;

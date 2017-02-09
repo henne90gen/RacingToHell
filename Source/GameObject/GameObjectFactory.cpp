@@ -31,16 +31,6 @@ sf::Texture &GameObjectFactory::_BulletTexture() {
     return *result;
 }
 
-sf::SoundBuffer &GameObjectFactory::_AIShotSoundBuffer() {
-    static sf::SoundBuffer *result = new sf::SoundBuffer();
-    return *result;
-}
-
-sf::SoundBuffer &GameObjectFactory::_PlayerShotSoundBuffer() {
-    static sf::SoundBuffer *result = new sf::SoundBuffer();
-    return *result;
-}
-
 sf::SoundBuffer &GameObjectFactory::_JetSoundBuffer() {
     static sf::SoundBuffer *result = new sf::SoundBuffer();
     return *result;
@@ -259,7 +249,5 @@ void GameObjectFactory::load() {
     _EnergyCanisterTexture().loadFromFile("Resources/Texture/Object/canister.png");
 
     // Loading sounds
-    _AIShotSoundBuffer().loadFromFile("Resources/Sound/shotAI.wav");
-    _PlayerShotSoundBuffer().loadFromFile("Resources/Sound/shotPlayer.wav");
     _JetSoundBuffer().loadFromFile("Resources/Sound/jetengine.wav");
 }

@@ -96,19 +96,22 @@ void SoundManager::updateSoundEffects() {
     }
 }
 
+// TODO balance audio levels
 void SoundManager::playShotSound(GameObjectType shooter, sf::Vector2f position) {
-    std::shared_ptr<sf::Sound> shotSound(new sf::Sound());
+    std::shared_ptr<sf::Sound> shotSound = std::make_shared<sf::Sound>();
     if (shooter == GameObjectType::AI) {
-        shotSound = _GOFactory.getAIShotSound(position, _FW.getOptionsManager().getVolume());
+        shotSound->setBuffer(_AIShotSoundBuffer);
     } else if (shooter == GameObjectType::Player) {
         shotSound->setBuffer(_PlayerShotSoundBuffer);
     }
     shotSound->setVolume(_FW.getOptionsManager().getVolume() * 2);
     shotSound->setPosition(position.x, position.y, 0);
-
+    shotSound->setMinDistance(650.0f);
+    shotSound->setAttenuation(2.0f);
     _SoundEffects.push_back(std::make_pair(shotSound, 0));
 }
 
+// TODO balance audio levels
 void SoundManager::playHitSound(sf::Vector2f position) {
     std::shared_ptr<sf::Sound> impactSound = std::make_shared<sf::Sound>();
     impactSound->setBuffer(_ImpactSoundBuffer);
@@ -119,12 +122,13 @@ void SoundManager::playHitSound(sf::Vector2f position) {
     _SoundEffects.push_back(std::make_pair(impactSound, false));
 }
 
+// TODO balance audio levels
 void SoundManager::playExplosionSound(sf::Vector2f position) {
     std::shared_ptr<sf::Sound> explosionSound(new sf::Sound());
     explosionSound->setBuffer(_ExplosionSoundBuffer);
-    explosionSound->setPosition(position.x, 0.f, position.y);
-    explosionSound->setMinDistance(500.f);
-    explosionSound->setAttenuation(4.f);
+    explosionSound->setPosition(position.x, 0.0f, position.y);
+    explosionSound->setMinDistance(500.0f);
+    explosionSound->setAttenuation(4.0f);
     explosionSound->setVolume(_FW.getOptionsManager().getVolume() * 5.0f);
     _SoundEffects.push_back(std::make_pair(explosionSound, false));
 }

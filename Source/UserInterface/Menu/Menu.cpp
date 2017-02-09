@@ -18,22 +18,15 @@ void Menu::render(sf::RenderWindow &renderWindow) {
 }
 
 MenuResult Menu::getMenuItemResult(sf::Event &event) {
-    //applyJoystickSelection(event);
-
     if (event.type == sf::Event::MouseButtonPressed) {
         _MousePos = sf::Vector2f(event.mouseButton.x, event.mouseButton.y);
     } else if (event.type == sf::Event::MouseMoved) {
         _MousePos = sf::Vector2f(event.mouseMove.x, event.mouseMove.y);
     }
-
-    if (event.type == sf::Event::Closed) {
-        _FW.advanceToGameState(GameState::Exiting);
-    } else {
-        for (int i = 0; i < _MenuItems.size(); i++) {
-            MenuResult result = _MenuItems[i]->handleEvent(event, _MousePos);
-            if (result != MenuResult::Nothing) {
-                return result;
-            }
+    for (int i = 0; i < _MenuItems.size(); i++) {
+        MenuResult result = _MenuItems[i]->handleEvent(event, _MousePos);
+        if (result != MenuResult::Nothing) {
+            return result;
         }
     }
     return MenuResult::Nothing;

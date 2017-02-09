@@ -64,22 +64,6 @@ void MainMenu::render(sf::RenderWindow &window) {
 }
 
 void MainMenu::handleEvent(sf::Event &event) {
-
-//		float X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
-//		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
-
-//		handleJoystick(Y);
-
-//		if (_JoystickTimer.getElapsedTime().asSeconds() >= _JoystickDelay - 0.05f) {
-//			if (X < -50) {
-//				_PlayerCarIndex--;
-//				_JoystickTimer.restart();
-//			}
-//			else if (X > 50) {
-//				_PlayerCarIndex++;
-//				_JoystickTimer.restart();
-//			}
-//		}
     switch (getMenuItemResult(event)) {
         case MenuResult::Resume:
             _FW.advanceToGameState(GameState::Running);

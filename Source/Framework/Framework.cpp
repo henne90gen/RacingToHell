@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "Framework/Framework.h"
 
-Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameObjectManager(*this), _LevelManager(*this),
-                         _HighscoreManager(*this), _SoundManager(*this) {
+Framework::Framework() : _FrameTime(0), _IsRunning(true), _OptionsManager(*this), _GameObjectManager(*this),
+                         _LevelManager(*this), _HighscoreManager(*this), _SoundManager(*this) {
 
     _GameStates.push_back(GameState::Loading);
 
@@ -35,66 +35,27 @@ void Framework::run() {
 //    Render at modular FPS
 //    All measurements are in microseconds
 
-	_RenderWindow.setVerticalSyncEnabled(true);
-
-	while (_IsRunning)
-	{
-		sf::Clock renderClock;
-		sf::Time targetFrameTime = sf::seconds(1.0f / 30.0f);
-		_UpdateTime = targetFrameTime.asSeconds();
-
-		handleEvents();
-		update(_UpdateTime);
-		render();
-
-		sf::Time actualFrameTime = renderClock.getElapsedTime();
-
-		if (actualFrameTime >= targetFrameTime)
-			std::cout << "FAIL" << std::endl;
-
-		/*while (actualFrameTime < targetFrameTime)
-		{
-			actualFrameTime = renderClock.getElapsedTime();
-		} */
-
-		sf::sleep(targetFrameTime - actualFrameTime);
-	} 
-
-    /*while (_IsRunning) {
+    while (_IsRunning) {
         sf::Clock renderClock;
-        float minTimePerUpdate = 1000000.0f / 1080.0f;
-        float microSecondsPerFrame = 1000000.0f / (_OptionsManager.getFPS() + _OptionsManager.getFPS() / 10.0f);
-        _UpdateTime = minTimePerUpdate / 1000000.0f;
+        sf::Time targetFrameTime = sf::seconds(1.0f / _OptionsManager.getFPS());
+        _FrameTime = targetFrameTime.asSeconds();
 
-        unsigned int updatesDone = 0;
-        sf::Int64 totalUpdateTime = 0;
-        while (totalUpdateTime < microSecondsPerFrame) {
-            sf::Clock updateClock;
-
-            handleEvents();
-            update(_UpdateTime);
-            updatesDone++;
-
-            sf::Int64 updateTime = updateClock.getElapsedTime().asMicroseconds();
-            if (updateTime <= minTimePerUpdate) {
-                sf::sleep(sf::microseconds((int) (minTimePerUpdate - updateTime)));
-            } 
-            updateTime = updateClock.restart().asMicroseconds();
-            _UpdateTime = updateTime / 1000000.0f;
-            totalUpdateTime += updateTime;
-        }
-
+        handleEvents();
+        update(_FrameTime);
         render();
 
-<<<<<<< HEAD
-		_FrameTime = renderClock.getElapsedTime().asSeconds();
-    } */
+        sf::Time actualFrameTime = renderClock.getElapsedTime();
+
+        if (actualFrameTime >= targetFrameTime) {
+            std::cout << "FAIL" << std::endl;
+        }
+
+        sf::sleep(targetFrameTime - actualFrameTime);
+    }
 }
 
 void Framework::render() {
     _RenderWindow.clear(sf::Color::Black);
-
-	_RenderWindow.clear(sf::Color::Black);
 
     setMouseVisibility();
 
@@ -108,6 +69,10 @@ void Framework::render() {
 void Framework::handleEvents() {
     sf::Event event;
     while (_RenderWindow.pollEvent(event)) {
+        if (event.type == sf::Event::Closed) {
+            advanceToGameState(GameState::Exiting);
+            return;
+        }
         for (unsigned int i = 0; i < _DisplayedGameScreens.size(); i++) {
             _DisplayedGameScreens.at(i)->handleEvent(event);
         }
@@ -115,7 +80,6 @@ void Framework::handleEvents() {
 }
 
 void Framework::update(float frameTime) {
-
     if (getCurrentGameState() != GameState::Pause &&
         !(getCurrentGameState() == GameState::Options && getLastGameState() == GameState::Pause)) {
         _LevelManager.update(frameTime);
@@ -281,8 +245,4 @@ void Framework::goBackGameState() {
 
 int Framework::getFPS() {
     return (int) (1 / _FrameTime);
-}
-
-int Framework::getUPS() {
-    return (int) (1 / _UpdateTime);
 }

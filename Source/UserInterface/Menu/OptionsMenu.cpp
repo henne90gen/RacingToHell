@@ -47,7 +47,7 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
     std::shared_ptr<CheckBox> debug = std::make_shared<CheckBox>(sf::Vector2f(SCREENWIDTH / 2, 540),
                                                                  MenuResult::DebugChange, font,
                                                                  "Debug");
-    debug->setValue(_FW.getOptionsManager().isDebugOn());
+    debug->setValue(_FW.getOptionsManager().isDebugEnabled());
     _MenuItems.push_back(debug);
 
     std::shared_ptr<MenuButton> creditsBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2, 590),
@@ -120,7 +120,7 @@ void OptionsMenu::handleEvent(sf::Event &event) {
             _FW.getOptionsManager().setGameMode((GameMode) (int) _MenuItems[GameModeIndex]->getValue());
             break;
         case MenuResult::DebugChange:
-            _FW.getOptionsManager().setDebug((bool) _MenuItems[DebugIndex]->getValue());
+            _FW.getOptionsManager().setDebugEnabled((bool) _MenuItems[DebugIndex]->getValue());
             _FW.reloadGameScreens();
             break;
         case MenuResult::Credits:

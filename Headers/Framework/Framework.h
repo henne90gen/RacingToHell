@@ -94,10 +94,7 @@ public:
      */
     int getFPS();
 
-    /**
-     * @return Current updates per second
-     */
-    int getUPS();
+    void setVSyncEnabled(bool vSync) { _RenderWindow.setVerticalSyncEnabled(vSync); }
 
 private:
     OptionsManager _OptionsManager;
@@ -116,7 +113,7 @@ private:
 
     std::vector<GameState> _GameStates;
 
-    float _FrameTime, _UpdateTime;
+    float _FrameTime;
 
     bool _IsRunning;
 

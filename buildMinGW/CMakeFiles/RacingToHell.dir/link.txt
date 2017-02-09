@@ -1,0 +1,3 @@
+D:\Progamme\CMake\bin\cmake.exe -E remove -f CMakeFiles\RacingToHell.dir/objects.a
+D:\Programme\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin\ar.exe cr CMakeFiles\RacingToHell.dir/objects.a @CMakeFiles\RacingToHell.dir\objects1.rsp
+D:\Programme\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin\g++.exe     -Wl,--whole-archive CMakeFiles\RacingToHell.dir/objects.a -Wl,--no-whole-archive  -o bin\RacingToHell.exe -Wl,--out-implib,lib\libRacingToHell.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\RacingToHell.dir\linklibs.rsp

@@ -35,7 +35,32 @@ void Framework::run() {
 //    Render at modular FPS
 //    All measurements are in microseconds
 
-    while (_IsRunning) {
+	_RenderWindow.setVerticalSyncEnabled(true);
+
+	while (_IsRunning)
+	{
+		sf::Clock renderClock;
+		sf::Time targetFrameTime = sf::seconds(1.0f / 30.0f);
+		_UpdateTime = targetFrameTime.asSeconds();
+
+		handleEvents();
+		update(_UpdateTime);
+		render();
+
+		sf::Time actualFrameTime = renderClock.getElapsedTime();
+
+		if (actualFrameTime >= targetFrameTime)
+			std::cout << "FAIL" << std::endl;
+
+		/*while (actualFrameTime < targetFrameTime)
+		{
+			actualFrameTime = renderClock.getElapsedTime();
+		} */
+
+		sf::sleep(targetFrameTime - actualFrameTime);
+	} 
+
+    /*while (_IsRunning) {
         sf::Clock renderClock;
         float minTimePerUpdate = 1000000.0f / 1080.0f;
         float microSecondsPerFrame = 1000000.0f / (_OptionsManager.getFPS() + _OptionsManager.getFPS() / 10.0f);
@@ -53,7 +78,7 @@ void Framework::run() {
             sf::Int64 updateTime = updateClock.getElapsedTime().asMicroseconds();
             if (updateTime <= minTimePerUpdate) {
                 sf::sleep(sf::microseconds((int) (minTimePerUpdate - updateTime)));
-            }
+            } 
             updateTime = updateClock.restart().asMicroseconds();
             _UpdateTime = updateTime / 1000000.0f;
             totalUpdateTime += updateTime;
@@ -61,12 +86,13 @@ void Framework::run() {
 
         render();
 
-        sf::Int64 renderTime = renderClock.getElapsedTime().asMicroseconds();
-        _FrameTime = renderTime / 1000000.0f;
-    }
+		_FrameTime = renderClock.getElapsedTime().asSeconds();
+    } */
 }
 
 void Framework::render() {
+
+	_RenderWindow.clear(sf::Color::Black);
 
     setMouseVisibility();
 

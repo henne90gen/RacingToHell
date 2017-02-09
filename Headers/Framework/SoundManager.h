@@ -16,7 +16,7 @@ public:
 
     void update();
 
-    void playShotSound(GameObjectType bulletType, sf::Vector2f position);
+    void playShotSound(GameObjectType shooter, sf::Vector2f position);
 
     void playHitSound(sf::Vector2f position);
 

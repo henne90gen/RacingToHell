@@ -114,22 +114,11 @@ private:
     std::vector<std::shared_ptr<Animation>> _Animations;
 
     sf::Texture _ExplosionTexture;
-    // TODO remove sound buffers and sound vector at some point
-    sf::SoundBuffer _ExplosionSoundBuffer;
-//    std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>> _SoundEffects;
-
 
     float _CarFrequency, _BulletFrequency, _CanisterFrequency, _ToolboxFrequency, _TimePassedCar, _TimePassedBullet, _TimePassedCanister, _TimePassedToolbox;
 
     int _PlayerBulletSpeed, _AIBulletSpeed;
     bool _AboutToLevelUp, _BossFight;
-
-//    /**
-//     * Plays a shot sound depending on the type of the firing entity
-//     * @param go Type of the GameObject that is emitting the shot sound
-//     * @param position Position of the Soundobject
-//     */
-//    void playShotSound(GameObjectType go, sf::Vector2f position = sf::Vector2f(0.f, 0.f));
 
     /**
      * Spawns a new AICar on a random lane

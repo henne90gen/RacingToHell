@@ -29,8 +29,11 @@ void SoundManager::load() {
     }
     _LevelMusic = _AllLevelMusic.at(0);
 
+//    Load sound effects
     _ExplosionSoundBuffer.loadFromFile("Resources/Sound/explosion.wav");
     _ImpactSoundBuffer.loadFromFile("Resources/Sound/impact.wav");
+    _AIShotSoundBuffer.loadFromFile("Resources/Sound/shotAI.wav");
+    _PlayerShotSoundBuffer.loadFromFile("Resources/Sound/shotPlayer.wav");
 }
 
 void SoundManager::update() {
@@ -93,8 +96,17 @@ void SoundManager::updateSoundEffects() {
     }
 }
 
-void SoundManager::playShotSound(GameObjectType bulletType, sf::Vector2f position) {
+void SoundManager::playShotSound(GameObjectType shooter, sf::Vector2f position) {
+    std::shared_ptr<sf::Sound> shotSound(new sf::Sound());
+    if (shooter == GameObjectType::AI) {
+        shotSound = _GOFactory.getAIShotSound(position, _FW.getOptionsManager().getVolume());
+    } else if (shooter == GameObjectType::Player) {
+        shotSound->setBuffer(_PlayerShotSoundBuffer);
+    }
+    shotSound->setVolume(_FW.getOptionsManager().getVolume() * 2);
+    shotSound->setPosition(position.x, position.y, 0);
 
+    _SoundEffects.push_back(std::make_pair(shotSound, 0));
 }
 
 void SoundManager::playHitSound(sf::Vector2f position) {

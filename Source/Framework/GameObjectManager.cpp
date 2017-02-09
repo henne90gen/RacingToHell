@@ -316,22 +316,6 @@ void GameObjectManager::load() {
     _ExplosionTexture.loadFromFile("Resources/Texture/Animation/explosion.png");
 }
 
-/*
-	void GameObjectManager::playShotSound(GameObjectType go, sf::Vector2f position)
-	{
-		std::shared_ptr<sf::Sound> shotSound(new sf::Sound());
-		if (go == GameObjectType::AI) {
-			shotSound = _GOFactory.getAIShotSound(position, _FW.getOptionsManager().getVolume());
-		}
-		else if (go == GameObjectType::Player) {
-			shotSound->setBuffer(_PlayerShotSoundBuffer);
-			shotSound->update(_FW.getOptionsManager().getVolume() * 2);
-		}
-
-		_SoundEffects.push_back({ shotSound, 0 });
-	}
-*/
-
 void GameObjectManager::spawnAICar(float frameTime) {
     if (!_BossFight || (_BossFight && getBossCar()->hasTraffic())) {
         if (!_AboutToLevelUp) {

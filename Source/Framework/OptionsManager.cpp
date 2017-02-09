@@ -9,11 +9,7 @@ OptionsManager::OptionsManager() {
     _Font.loadFromFile("Resources/Font/arial.ttf");
 
     // Standard configuration if there is no settings.cfg file
-    _FPS = 60.0f;
-    _Volume = 20;
-    _Difficulty = Difficulty::Normal;
-    _GameMode = GameMode::Standard;
-    _Debug = false;
+
 }
 
 void OptionsManager::load() {
@@ -24,7 +20,7 @@ void OptionsManager::load() {
     std::ifstream fileStream;
 
     if (!rh::file_exists(_SettingsFileName)) {
-        saveOptions();
+        save();
         return;
     }
 
@@ -44,7 +40,7 @@ void OptionsManager::load() {
     // FIXME Check settings integrity (Diff or Mode could be out of range)
 }
 
-void OptionsManager::saveOptions() {
+void OptionsManager::save() {
     std::ofstream fileStream;
     fileStream.open(_SettingsFileName);
 

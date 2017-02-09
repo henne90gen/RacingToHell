@@ -25,9 +25,9 @@
 #include "SoundManager.h"
 
 /**
-    The Framework takes care of all the major aspects of the game.
-    Rendering, updating and event handling are all managed in here.
-*/
+ * The Framework takes care of all the major aspects of the game.
+ * Rendering, updating and event handling are all managed in here.
+ */
 class Framework {
 public:
     Framework();
@@ -35,23 +35,25 @@ public:
     ~Framework();
 
     /**
-        Starts the main game loop
-    */
+     * Starts the main game loop
+     */
     void run();
 
     void stop();
 
-    GameState getCurrentGameState();
+    void load();
 
-    GameState getLastGameState();
+    void reset();
+
+    void reloadGameScreens();
 
     void advanceToGamState(GameState gameState);
 
     void goBackGameState();
 
-    int getFPS();
+    GameState getCurrentGameState();
 
-    int getUPS();
+    GameState getLastGameState();
 
     LevelManager &getLevelManager() { return _LevelManager; }
 
@@ -67,30 +69,35 @@ public:
      */
     GameObjectManager &getGOM() { return getGameObjectManager(); }
 
+    /**
+     *
+     * @return Reference to the OptionsManager
+     */
     OptionsManager &getOptionsManager() { return _OptionsManager; }
 
+    /**
+     *
+     * @return Reference to the HighscoreManager
+     */
     HighscoreManager &getHighscoreManager() { return _HighscoreManager; }
 
+    /**
+     *
+     * @return Reference to the SoundManager
+     */
     SoundManager &getSoundManager() { return _SoundManager; }
-
-    void setVolume(float Volume);
-
-    void load();
-
-    void reset();
 
     bool isMouseVisible();
 
-    void reloadGameScreens();
+    /**
+     * @return Current frames per second
+     */
+    int getFPS();
 
-//    void updateMPCarSelection();
-//    void initializeNetworkThread();
-//    MPGameObjectContainer &getMPGOC() {
-//        return _MPGOCClient;
-//    }
-//    NetworkHandle &getNetworkHandle() {
-//        return _NetworkHandle;
-//    }
+    /**
+     * @return Current updates per second
+     */
+    int getUPS();
 
 private:
     OptionsManager _OptionsManager;
@@ -109,26 +116,20 @@ private:
 
     std::vector<GameState> _GameStates;
 
-    // Variables
     float _FrameTime, _UpdateTime;
+
     bool _IsRunning;
 
     sf::Thread _LoadingThread;
 
-    // Functions
     void render();
 
     void handleEvents();
 
     void update(float frameTime);
 
-    void playSounds();
-
+    /**
+     * Takes care of hiding the mouse at the right moment.
+     */
     void setMouseVisibility();
-
-//    MPGameObjectContainer _MPGOCClient;
-//    Multiplayer
-//    NetworkHandle _NetworkHandle;
-//    MPGameObjectContainer _MPGOCServer;
-//    sf::Thread _NetworkThread;
 };

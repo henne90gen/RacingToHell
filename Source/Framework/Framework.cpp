@@ -69,7 +69,6 @@ void Framework::run() {
         }
 
         render();
-        playSounds();
 
         sf::Int64 renderTime = renderClock.getElapsedTime().asMicroseconds();
         _FrameTime = renderTime / 1000000.0f;
@@ -143,34 +142,6 @@ void Framework::reset() {
 void Framework::stop() {
     _IsRunning = false;
     _RenderWindow.close();
-}
-
-void Framework::playSounds() {
-    // FIXME sound is broken
-//    if (_GameState == GameState::Running ||
-//        _GameState == GameState::BossFight ||
-//        _GameState == GameState::LevelUp ||
-//        _GameState == GameState::Pause ||
-//        (_GameState == GameState::Options && _OptionsMenu.getReturnState() == GameState::Pause)) {
-//        _MenuMusic.stop();
-//        _LevelManager.playMusic();
-//        _GameObjectContainer.playSounds();
-//        if (_GameState == GameState::LevelUp) {
-//            _LevelUpScreen.playSound();
-//        }
-//    } else if (_GameState == GameState::MainMenu || _GameState == GameState::Highscores ||
-//               (_GameState == GameState::Options && _OptionsMenu.getReturnState() == GameState::Pause)) {
-//        _LevelManager.pauseMusic();
-//        if (_MenuMusic.getStatus() == sf::Sound::Stopped || _MenuMusic.getStatus() == sf::Sound::Paused) {
-//            _MenuMusic.play();
-//        }
-//    } else if (_GameState == GameState::GameOver) {
-//        _LevelManager.stopMusic();
-//        _GameOverScreen.playSounds();
-//    } else if (_GameState == GameState::Exiting) {
-//        _LevelManager.stopMusic();
-//        _MenuMusic.stop();
-//    }
 }
 
 void Framework::reloadGameScreens() {

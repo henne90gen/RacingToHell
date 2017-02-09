@@ -56,7 +56,7 @@ void PauseMenu::handleEvent(sf::Event &event) {
 
     switch (getMenuItemResult(event)) {
         case MenuResult::Resume:
-            _FW.getLevelManager().startMoving();
+            _FW.getLevelManager().setMoving(false);
             _FW.goBackGameState();
             break;
         case MenuResult::Option:

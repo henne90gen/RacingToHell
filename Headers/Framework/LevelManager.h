@@ -76,27 +76,23 @@ public:
         return _Sprite;
     }
 
-    void stopMoving() {
-        _ShouldMove = false;
-    }
-
-    void startMoving() {
-        _ShouldMove = true;
+    /**
+     * Controls the movement of the background.
+     */
+    void setMoving(bool moving) {
+        _ShouldMove = moving;
     }
 
 private:
     Framework &_FW;
 
-    float _Score;
-
-    float _LevelTime;
-    float _TotalLevelTime;
+    float _Score, _LevelTime, _TotalLevelTime;
 
     int _Level;
 
-    bool _IsResettingLevel;
+    bool _IsResettingLevel, _ShouldMove;
 
     std::vector<std::shared_ptr<sf::Texture>> _Textures;
+
     sf::Sprite _Sprite;
-    bool _ShouldMove;
 };

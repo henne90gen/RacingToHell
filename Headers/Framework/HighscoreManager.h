@@ -33,6 +33,9 @@ public:
      */
     void saveScoreWithName(std::string &name);
 
+    /**
+     * @return Amount of saved scores
+     */
     unsigned long getNumScores() {
         return _ScoreList.size();
     }
@@ -57,7 +60,7 @@ private:
 
     std::vector<PlayerScore> _ScoreList;
 
-    std::string _Filename;
+    const std::string _ScorePath = "Resources/scores.sco";
 
     PlayerScore _CurrentPlayerScore;
 

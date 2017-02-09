@@ -4,17 +4,17 @@
 
 class GameOverMenu : public Menu {
 public:
-    /*
-        After the player dies this screen is shown. It has the HighscoreList on it to add the players score
-    */
+    /**
+     * After the player dies this screen is shown. It has the HighscoreList on it to add the players score
+     */
     GameOverMenu(Framework &framework);
 
     ~GameOverMenu() {}
 
-    /*
-        Renders the GameOverMenu to the specified RenderWindow
-        @param window Window to draw to
-    */
+    /**
+     * Renders the GameOverMenu to the specified RenderWindow
+     * @param window Window to draw to
+     */
     virtual void render(sf::RenderWindow &window);
 
     /**
@@ -30,17 +30,6 @@ public:
      * @param level Level the player is at
      */
     virtual void update(float frameTime);
-
-    /**
-     * Loads the game over sound
-     */
-    void load();
-
-    /**
-     * Sets the volume for the game over sound
-     * @param volume New volume
-     */
-    void setVolume(float volume);
 
 private:
     bool _ScoreSubmitted;

@@ -21,7 +21,7 @@ void GameObjectManager::update(float frameTime) {
     _Player->update(frameTime, _FW.getLevelManager().getRoadSpeed());
 
     if (!_Player->isAlive() && !_Player->isDying()) {
-        _FW.getLevelManager().stopMoving();
+        _FW.getLevelManager().setMoving(false);
         _FW.advanceToGamState(GameState::GameOver);
     }
 
@@ -84,7 +84,7 @@ void GameObjectManager::update(float frameTime) {
 void GameObjectManager::deleteDestroyedCars() {
     if (!_BossFight || (_BossFight && getBossCar()->hasTraffic())) {
         for (unsigned int i = 0; i < _Cars.size(); i++) {
-            if (_Cars.at(i)->getHealth() == 0) {
+            if (_Cars.at(i)->getHealth() <= 0) {
                 _FW.getLevelManager().addScore(ScoreEvent::DestroyedCar, _Cars.at(i)->getMaxHealth());
                 std::shared_ptr<Explosion> newExplosion(
                         new Explosion(_Cars.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _Cars[i]->getSpeed())));

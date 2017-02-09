@@ -6,18 +6,17 @@
 #include "Framework/HighscoreManager.h"
 #include "Framework/Framework.h"
 
-HighscoreManager::HighscoreManager(Framework &framework) : _FW(framework), _Filename("Resources/scores.sco"),
-                                                           _HighlightedRow(0) {
+HighscoreManager::HighscoreManager(Framework &framework) : _FW(framework), _HighlightedRow(0) {
     loadScoreTable();
 }
 
 void HighscoreManager::loadScoreTable() {
-    if (!rh::file_exists(_Filename)) {
+    if (!rh::file_exists(_ScorePath)) {
         return;
     }
 
     std::ifstream fileStream;
-    fileStream.open(_Filename, std::ios::in);
+    fileStream.open(_ScorePath, std::ios::in);
     unsigned long length = 0;
     fileStream.read((char *) &length, sizeof(length));
     _ScoreList.clear();
@@ -33,7 +32,7 @@ void HighscoreManager::loadScoreTable() {
 
 void HighscoreManager::saveScoreTable() {
     std::ofstream fileStream;
-    fileStream.open(_Filename, std::ios::out | std::ofstream::binary);
+    fileStream.open(_ScorePath, std::ios::out | std::ofstream::binary);
     unsigned long length = _ScoreList.size();
     fileStream.write((char *) &length, sizeof(length));
     for (unsigned int i = 0; i < _ScoreList.size(); i++) {

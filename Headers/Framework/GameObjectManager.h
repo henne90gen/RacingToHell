@@ -72,16 +72,6 @@ public:
      */
     void load();
 
-    /**
-     * Plays sounds for every GameObject
-     */
-    void playSounds();
-
-    /**
-     * Stops all sounds from playing
-     */
-    void stopSounds();
-
     void nextPlayerCar();
 
     void previousPlayerCar();
@@ -120,6 +110,49 @@ private:
     int _PlayerBulletSpeed, _AIBulletSpeed;
     bool _AboutToLevelUp, _BossFight;
 
+    void deleteAllOffScreenObjects();
+
+    template <typename T>
+    void deleteOffScreenObjects(T &goList);
+
+    /**
+     * Deletes a GameObject from the vector of GameObjects
+     * @param id Index of the GameObject that will be deleted
+     */
+    template<typename T>
+    void deleteObject(T &arr, unsigned int id) {
+        arr.erase(arr.begin() + id);
+    }
+
+    void checkForCollisions(float frameTime);
+
+    void checkPlayerForCollisions(float frameTime);
+
+    /**
+     * Removes cars that don't have enough health any more.
+     */
+    void deleteDestroyedCars();
+
+    /**
+     * Plays explosion animation and sound effect.
+     */
+    void killPlayer();
+
+    /**
+     * Calculates new frequencies depending on the selected difficulty
+     */
+    void calculateAllFrequencies();
+
+    void calculateAiCarFrequency();
+
+    void calculateBulletFrequency();
+
+    void calculateCanisterFrequency();
+
+    void calculateToolboxFrequency();
+
+    void spawnObjects(float frameTime);
+
     /**
      * Spawns a new AICar on a random lane
      * @param level Levelnumber
@@ -135,41 +168,4 @@ private:
     void spawnToolbox(float frameTime);
 
     void spawnCanister(float frameTime);
-
-    template <typename T>
-    void deleteOffScreenObjects(T &goList);
-
-    /**
-     * Deletes a GameObject from the vector of GameObjects
-     * @param id Index of the GameObject that will be deleted
-     */
-    template<typename T>
-    void deleteObject(T &arr, unsigned int id) {
-        arr.erase(arr.begin() + id);
-    }
-
-    /**
-     * Sets all frequencies dependig on the selected difficulty
-     */
-    void calculateAllFrequencies();
-
-    void calculateAiCarFrequency();
-
-    void calculateBulletFrequency();
-
-    void calculateCanisterFrequency();
-
-    void calculateToolboxFrequency();
-
-    void spawnObjects(float frameTime);
-
-    void checkForCollisions(float frameTime);
-
-    void deleteAllOffScreenObjects();
-
-    void checkPlayerForCollisions(float frameTime);
-
-    void deleteDestroyedCars();
-
-    void killPlayer();
 };

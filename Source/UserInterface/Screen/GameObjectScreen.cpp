@@ -50,7 +50,7 @@ void GameObjectScreen::handleEvent(sf::Event &event) {
     if (_FW.getCurrentGameState() == GameState::Running) {
         if (event.type == sf::Event::EventType::KeyPressed) {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-                _FW.getLevelManager().stopMoving();
+                _FW.getLevelManager().setMoving(false);
                 _FW.advanceToGamState(GameState::Pause);
             }
         }

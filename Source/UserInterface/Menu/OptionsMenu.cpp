@@ -127,7 +127,7 @@ void OptionsMenu::handleEvent(sf::Event &event) {
             _FW.advanceToGamState(GameState::About);
             break;
         case MenuResult::Back:
-            _FW.getOptionsManager().saveOptions();
+            _FW.getOptionsManager().save();
             _FW.goBackGameState();
             break;
         default:

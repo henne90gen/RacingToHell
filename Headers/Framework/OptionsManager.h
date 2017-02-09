@@ -35,17 +35,29 @@ public:
 
     void load();
 
-    void saveOptions();
+    void save();
 
     float getScoreMultiplier();
 
+    /**
+     * Names for the difficulty levels
+     */
     std::vector<std::string> getDifficultyStrings() { return _DifficultyStrings; }
 
+    /**
+     * Values for the difficulty levels
+     */
     std::vector<float> getDifficultyValues() { return _DifficultyValues; }
 
-    std::vector<float> getGameModeValues() { return _GameModeValues; }
-
+    /**
+     * Names for all the GameModes
+     */
     std::vector<std::string> getGameModeStrings() { return _GameModeStrings; }
+
+    /**
+     * Values for all the GameModes
+     */
+    std::vector<float> getGameModeValues() { return _GameModeValues; }
 
 private:
     std::vector<float> _DifficultyValues = {0.5f, 1.0f, 1.5f, 2.0f};
@@ -54,14 +66,14 @@ private:
     std::vector<float> _GameModeValues = {1.0f, 0.0f, 0.5f, 3.0f};
     std::vector<std::string> _GameModeStrings = {"Standard", "Invincibility", "Infinite Energy", "Hardcore"};
 
-    float _FPS;
-    float _Volume;
-    Difficulty _Difficulty;
-    GameMode _GameMode;
-
-    bool _Debug;
+    float _FPS = 60.0f;
+    float _Volume = 30.0f;
+    Difficulty _Difficulty = Difficulty::Normal;
+    GameMode _GameMode = GameMode::Standard;
+    bool _Debug = false;
 
     sf::Font _Font;
+
     const std::string _SettingsFileName = "Resources/settings.cfg";
 };
 

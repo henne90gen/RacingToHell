@@ -63,13 +63,13 @@ void PauseMultiplayerMenu::handleEvent(sf::Event &event) {
             _FW.goBackGameState();
             break;
         case MenuResult::Option:
-            _FW.advanceToGamState(GameState::Options);
+            _FW.advanceToGameState(GameState::Options);
             break;
         case MenuResult::Back:
-            _FW.advanceToGamState(GameState::MainMenu);
+            _FW.advanceToGameState(GameState::MainMenu);
             break;
         case MenuResult::Exit:
-            _FW.advanceToGamState(GameState::Exiting);
+            _FW.advanceToGameState(GameState::Exiting);
             break;
         default:
             break;

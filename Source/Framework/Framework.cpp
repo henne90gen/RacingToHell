@@ -61,12 +61,12 @@ void Framework::run() {
 
         render();
 
-        sf::Int64 renderTime = renderClock.getElapsedTime().asMicroseconds();
-        _FrameTime = renderTime / 1000000.0f;
+        _FrameTime = renderClock.restart().asSeconds();
     }
 }
 
 void Framework::render() {
+    _RenderWindow.clear(sf::Color::Black);
 
     setMouseVisibility();
 
@@ -125,7 +125,7 @@ void Framework::load() {
 
         std::cout << "Done loading." << std::endl;
 
-        advanceToGamState(GameState::LoadingToMain);
+        advanceToGameState(GameState::LoadingToMain);
     } catch (...) { std::exit; }
 }
 
@@ -225,7 +225,7 @@ bool Framework::isMouseVisible() {
     }
 }
 
-void Framework::advanceToGamState(GameState gameState) {
+void Framework::advanceToGameState(GameState gameState) {
     if (_GameStates.at(_GameStates.size() - 1) != gameState) {
         _GameStates.push_back(gameState);
     }
@@ -248,7 +248,7 @@ GameState Framework::getLastGameState() {
 
 void Framework::goBackGameState() {
     _GameStates.pop_back();
-    advanceToGamState(_GameStates.at(_GameStates.size() - 1));
+    advanceToGameState(_GameStates.at(_GameStates.size() - 1));
 }
 
 int Framework::getFPS() {

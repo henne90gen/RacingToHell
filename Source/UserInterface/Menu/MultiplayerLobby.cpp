@@ -58,7 +58,7 @@ void MultiplayerLobby::handleEvent(sf::Event &event) {
             sf::Packet EmptyPacket;
             _NetworkHandle->addPacket(NetworkCommunication::Disconnect, EmptyPacket);
             std::cout << "Sending disconnect" << std::endl;
-            _FW.advanceToGamState(GameState::MainMenu);
+            _FW.advanceToGameState(GameState::MainMenu);
         }
             break;
         case MenuResult::PreviousSkin:
@@ -98,7 +98,7 @@ void MultiplayerLobby::handleEvent(sf::Event &event) {
                 if (getClientReady()) {
                     sf::Packet packet;
                     _NetworkHandle->addPacket(NetworkCommunication::StartGame, packet);
-                    _FW.advanceToGamState(GameState::Countdown);
+                    _FW.advanceToGameState(GameState::Countdown);
                 }
             }
             break;

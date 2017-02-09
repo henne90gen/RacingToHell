@@ -71,7 +71,7 @@ void GameOverMenu::handleEvent(sf::Event &event) {
             _MenuItems[0]->setEnabled(true);
             _MenuItems[1]->setEnabled(true);
             _FW.reset();
-            _FW.advanceToGamState(GameState::MainMenu);
+            _FW.advanceToGameState(GameState::MainMenu);
             break;
         case MenuResult::SubmitScore:
             if (!_ScoreSubmitted && name != "") {

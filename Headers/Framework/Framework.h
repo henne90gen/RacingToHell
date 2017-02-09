@@ -47,7 +47,7 @@ public:
 
     void reloadGameScreens();
 
-    void advanceToGamState(GameState gameState);
+    void advanceToGameState(GameState gameState);
 
     void goBackGameState();
 

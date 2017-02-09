@@ -124,7 +124,7 @@ void OptionsMenu::handleEvent(sf::Event &event) {
             _FW.reloadGameScreens();
             break;
         case MenuResult::Credits:
-            _FW.advanceToGamState(GameState::About);
+            _FW.advanceToGameState(GameState::About);
             break;
         case MenuResult::Back:
             _FW.getOptionsManager().save();

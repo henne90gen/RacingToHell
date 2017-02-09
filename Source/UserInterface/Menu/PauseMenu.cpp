@@ -44,30 +44,20 @@ void PauseMenu::render(sf::RenderWindow &window) {
 }
 
 void PauseMenu::handleEvent(sf::Event &event) {
-//		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
-
-//		if (_Event.type == sf::Event::JoystickButtonPressed) {
-//			if (sf::Joystick::isButtonPressed(0, 1)) {
-//				return GameState::Running;
-//			}
-//		}
-
-//		handleJoystick(Y);
-
     switch (getMenuItemResult(event)) {
         case MenuResult::Resume:
-            _FW.getLevelManager().setMoving(false);
+            _FW.getLevelManager().setMoving(true);
             _FW.goBackGameState();
             break;
         case MenuResult::Option:
-            _FW.advanceToGamState(GameState::Options);
+            _FW.advanceToGameState(GameState::Options);
             break;
         case MenuResult::Back:
             _FW.reset();
-            _FW.advanceToGamState(GameState::MainMenu);
+            _FW.advanceToGameState(GameState::MainMenu);
             break;
         case MenuResult::Exit:
-            _FW.advanceToGamState(GameState::Exiting);
+            _FW.advanceToGameState(GameState::Exiting);
             break;
         default:
             break;

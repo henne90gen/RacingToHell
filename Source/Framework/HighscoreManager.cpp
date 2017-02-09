@@ -12,6 +12,7 @@ HighscoreManager::HighscoreManager(Framework &framework) : _FW(framework), _High
 
 void HighscoreManager::loadScoreTable() {
     if (!rh::file_exists(_ScorePath)) {
+        // TODO create scores file with sample scores
         return;
     }
 

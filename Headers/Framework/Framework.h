@@ -120,8 +120,6 @@ private:
 
     bool _IsRunning;
 
-    sf::Thread _LoadingThread;
-
     void render();
 
     void handleEvents();

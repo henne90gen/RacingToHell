@@ -2,7 +2,7 @@
 #include "Framework/Framework.h"
 
 Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameObjectManager(*this), _LevelManager(*this),
-                         _HighscoreManager(*this), _SoundManager(*this), _LoadingThread(&Framework::load, &*this) {
+                         _HighscoreManager(*this), _SoundManager(*this) {
 
     _GameStates.push_back(GameState::Loading);
 
@@ -24,16 +24,7 @@ Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameObjectManager(*th
 
     reloadGameScreens();
 
-    _LoadingThread.launch();
-
-
-//    Multiplayer
-//    FIXME multiplayer needs help
-//    _MultiplayerMenu.setNetworkHandle(&_NetworkHandle);
-//    _MultiplayerMenu.setPlayerName("Name");
-//    _MultiplayerLobby.setNetworkHandle(&_NetworkHandle);
-//    _MPGOCClient.setNetworkHandle(&_NetworkHandle, false);
-//    _MPGOCServer.setNetworkHandle(&_NetworkHandle, true);
+    load();
 }
 
 Framework::~Framework() {}
@@ -114,12 +105,17 @@ void Framework::update(float frameTime) {
 }
 
 void Framework::load() {
+    // Display loading screen before starting to load
+    LoadingScreen screen(*this);
+    screen.render(_RenderWindow);
+    _RenderWindow.display();
+
     try {
         std::cout << "Loading..." << std::endl;
 
-        _SoundManager.load();
-
         _OptionsManager.load();
+
+        _SoundManager.load();
 
         _LevelManager.load();
         _LevelManager.resetToLevelOne();

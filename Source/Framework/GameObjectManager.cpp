@@ -303,7 +303,7 @@ bool GameObjectManager::emptyScreen() {
 }
 
 void GameObjectManager::load() {
-    std::cout << "Loading object textures..." << std::endl;
+    std::cout << "Loading GameObject textures..." << std::endl;
 
     GameObjectFactory::load();
 

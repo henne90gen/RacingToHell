@@ -232,12 +232,6 @@ void GameObjectManager::spawnObjects(float frameTime) {
     spawnToolbox(frameTime);
 }
 
-void GameObjectManager::stopSounds() {
-    if (_BossFight) {
-        getBossCar()->stopSounds();
-    }
-}
-
 bool GameObjectManager::bossIsDead() {
     if (_BossFight) {
         if (getBossCar()->getHealth() <= 0) {

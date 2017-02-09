@@ -6,10 +6,9 @@
 #include "Framework/OptionsManager.h"
 
 OptionsManager::OptionsManager() {
-    _Font.loadFromFile("Resources/Font/arial.ttf");
-
-    // Standard configuration if there is no settings.cfg file
-
+    if (!_Font.loadFromFile("Resources/Font/arial.ttf")) {
+        std::cout << "Couldn't load font." << std::endl;
+    }
 }
 
 void OptionsManager::load() {

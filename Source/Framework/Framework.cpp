@@ -44,13 +44,14 @@ void Framework::run() {
         update(_FrameTime);
         render();
 
-        sf::Time actualFrameTime = renderClock.getElapsedTime();
+		sf::Time actualFrameTime = renderClock.getElapsedTime();
 
-        if (actualFrameTime >= targetFrameTime) {
-            std::cout << "Update and render took too long." << std::endl;
-        }
+		if (actualFrameTime >= targetFrameTime)
+			std::cout << "Delta: " << (actualFrameTime - targetFrameTime).asSeconds() << std::endl;
 
         sf::sleep(targetFrameTime - actualFrameTime);
+
+        _RenderWindow.display()
     }
 }
 
@@ -62,8 +63,6 @@ void Framework::render() {
     for (unsigned int i = 0; i < _DisplayedGameScreens.size(); i++) {
         _DisplayedGameScreens.at(i)->render(_RenderWindow);
     }
-
-    _RenderWindow.display();
 }
 
 void Framework::handleEvents() {

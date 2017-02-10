@@ -8,12 +8,12 @@
 
 DebugScreen::DebugScreen(Framework &framework) : GameScreen(framework) {
     _LabelStrings = {"FPS:",
-                     "UPS:",
                      "CurrState:",
                      "LastState:",
                      "",
                      "Options",
                      "FPSPreset:",
+                     "VSync:",
                      "Volume:",
                      "Difficulty:",
                      "GameMode:",
@@ -72,7 +72,6 @@ void DebugScreen::update(float frameTime) {
     std::vector<std::string> values;
 
     values.push_back(std::to_string(_FW.getFPS())); // FPS
-    values.push_back(std::to_string(_FW.getUPS())); // UPS
 
     values.push_back(std::to_string((int) _FW.getCurrentGameState())); // Current GameState
     values.push_back(std::to_string((int) _FW.getLastGameState())); // Last GameState
@@ -81,6 +80,7 @@ void DebugScreen::update(float frameTime) {
     values.push_back("");  // Options heading
 
     values.push_back(std::to_string(_FW.getOptionsManager().getFPS())); // FPSPreset
+    values.push_back(std::to_string(_FW.getOptionsManager().isVSyncEnabled())); // VSync
     values.push_back(std::to_string(_FW.getOptionsManager().getVolume())); // Volume
     values.push_back(std::to_string((int) _FW.getOptionsManager().getDifficulty())); // Difficulty
     values.push_back(std::to_string((int) _FW.getOptionsManager().getGameMode())); // GameMode

@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "Framework/Framework.h"
 
-Framework::Framework() : _FrameTime(0), _IsRunning(true), _GameObjectManager(*this), _LevelManager(*this),
-                         _HighscoreManager(*this), _SoundManager(*this) {
+Framework::Framework() : _FrameTime(0), _IsRunning(true), _OptionsManager(*this), _GameObjectManager(*this),
+                         _LevelManager(*this), _HighscoreManager(*this), _SoundManager(*this) {
 
     _GameStates.push_back(GameState::Loading);
 
@@ -34,12 +34,12 @@ void Framework::run() {
 //    Update at a maximum of 1000 UPS
 //    Render at modular FPS
 //    All measurements are in microseconds
-
 	while (_IsRunning)
 	{
 		sf::Clock renderClock;
 		sf::Time targetFrameTime = sf::seconds(1.0f / _OptionsManager.getFPS());
-		
+		_FrameTime = targetFrameTime.asSeconds();
+
 		handleEvents();
 		update(targetFrameTime.asSeconds());
 		render();
@@ -48,11 +48,6 @@ void Framework::run() {
 
 		if (actualFrameTime >= targetFrameTime)
 			std::cout << "Delta: " << (actualFrameTime - targetFrameTime).asSeconds() << std::endl;
-
-		/*while (actualFrameTime < targetFrameTime)
-		{
-			actualFrameTime = renderClock.getElapsedTime();
-		} */
 
 		sf::sleep(targetFrameTime - actualFrameTime);
 
@@ -92,8 +87,6 @@ void Framework::run() {
 void Framework::render() {
     _RenderWindow.clear(sf::Color::Black);
 
-	_RenderWindow.clear(sf::Color::Black);
-
     setMouseVisibility();
 
     for (unsigned int i = 0; i < _DisplayedGameScreens.size(); i++) {
@@ -104,6 +97,10 @@ void Framework::render() {
 void Framework::handleEvents() {
     sf::Event event;
     while (_RenderWindow.pollEvent(event)) {
+        if (event.type == sf::Event::Closed) {
+            advanceToGameState(GameState::Exiting);
+            return;
+        }
         for (unsigned int i = 0; i < _DisplayedGameScreens.size(); i++) {
             _DisplayedGameScreens.at(i)->handleEvent(event);
         }
@@ -111,7 +108,6 @@ void Framework::handleEvents() {
 }
 
 void Framework::update(float frameTime) {
-
     if (getCurrentGameState() != GameState::Pause &&
         !(getCurrentGameState() == GameState::Options && getLastGameState() == GameState::Pause)) {
         _LevelManager.update(frameTime);
@@ -277,8 +273,4 @@ void Framework::goBackGameState() {
 
 int Framework::getFPS() {
     return (int) (1 / _FrameTime);
-}
-
-int Framework::getUPS() {
-    return (int) (1 / _UpdateTime);
 }

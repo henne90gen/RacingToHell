@@ -65,7 +65,7 @@ std::vector<std::shared_ptr<GameScreen>> GameScreenFactory::getGameScreens(Frame
             break;
     }
 
-    if (framework.getOptionsManager().isDebugOn()) {
+    if (framework.getOptionsManager().isDebugEnabled()) {
         screens.push_back(getScreen<DebugScreen>(framework));
     }
 

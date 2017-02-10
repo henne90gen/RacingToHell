@@ -4,8 +4,9 @@
 
 #include "stdafx.h"
 #include "Framework/OptionsManager.h"
+#include "Framework/Framework.h"
 
-OptionsManager::OptionsManager() {
+OptionsManager::OptionsManager(Framework &framework) : _FW(framework) {
     if (!_Font.loadFromFile("Resources/Font/arial.ttf")) {
         std::cout << "Couldn't load font." << std::endl;
     }
@@ -20,6 +21,7 @@ void OptionsManager::load() {
 
     if (!rh::file_exists(_SettingsFileName)) {
         save();
+        setVSyncEnabled(_VSyncEnabled);
         return;
     }
 
@@ -31,12 +33,15 @@ void OptionsManager::load() {
 
     if (settings.size() >= 5) {
         _FPS = std::stoi(settings[0]);
-        _Volume = std::stof(settings[1]);
-        _Difficulty = (Difficulty) std::stoi(settings[2]);
-        _GameMode = (GameMode) std::stoi(settings[3]);
-        _Debug = (bool) std::stoi(settings[4]);
+        _VSyncEnabled = (bool) std::stoi(settings[1]);
+        _Volume = std::stof(settings[2]);
+        _Difficulty = (Difficulty) std::stoi(settings[3]);
+        _GameMode = (GameMode) std::stoi(settings[4]);
+        _Debug = (bool) std::stoi(settings[5]);
     }
     // FIXME Check settings integrity (Diff or Mode could be out of range)
+
+    setVSyncEnabled(_VSyncEnabled);
 }
 
 void OptionsManager::save() {
@@ -44,6 +49,7 @@ void OptionsManager::save() {
     fileStream.open(_SettingsFileName);
 
     fileStream << _FPS << std::endl;
+    fileStream << _VSyncEnabled << std::endl;
     fileStream << _Volume << std::endl;
     fileStream << (int) _Difficulty << std::endl;
     fileStream << (int) _GameMode << std::endl;
@@ -54,4 +60,16 @@ void OptionsManager::save() {
 
 float OptionsManager::getScoreMultiplier() {
     return _DifficultyValues[(int) _Difficulty] * _GameModeValues[(int) _GameMode];
+}
+
+float OptionsManager::getFPS() {
+    if (_VSyncEnabled) {
+        return 60.0f;
+    }
+    return _FPS;
+}
+
+void OptionsManager::setVSyncEnabled(bool vSync) {
+    _VSyncEnabled = vSync;
+    _FW.setVSyncEnabled(vSync);
 }

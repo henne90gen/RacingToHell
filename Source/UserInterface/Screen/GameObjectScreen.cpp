@@ -48,12 +48,10 @@ void GameObjectScreen::update(float frameTime) {
 
 void GameObjectScreen::handleEvent(sf::Event &event) {
     if (_FW.getCurrentGameState() == GameState::Running) {
-        if (event.type == sf::Event::EventType::KeyPressed) {
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-                _FW.getLevelManager().setMoving(false);
-                _FW.advanceToGameState(GameState::Pause);
-                return;
-            }
+        if (event.type == sf::Event::EventType::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+            _FW.getLevelManager().setMoving(false);
+            _FW.advanceToGameState(GameState::Pause);
+            return;
         }
         if (_FW.getGOM().getPlayerCar()->isAlive()) {
             _FW.getGOM().getPlayerCar()->handleEvent(event);

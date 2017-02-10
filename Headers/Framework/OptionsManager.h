@@ -4,14 +4,20 @@
 
 #pragma once
 
+class Framework;
+
 class OptionsManager {
 public:
 
-    OptionsManager();
+    OptionsManager(Framework &framework);
 
-    float getFPS() { return _FPS; }
+    float getFPS();
 
     void setFPS(float fps) { _FPS = fps; };
+
+    bool isVSyncEnabled() { return _VSyncEnabled; }
+
+    void setVSyncEnabled(bool vSync);
 
     float getVolume() { return _Volume; }
 
@@ -29,9 +35,9 @@ public:
 
     void setFont(sf::Font font) { _Font = font; }
 
-    bool isDebugOn() { return _Debug; }
+    bool isDebugEnabled() { return _Debug; }
 
-    void setDebug(bool debug) { _Debug = debug; }
+    void setDebugEnabled(bool debug) { _Debug = debug; }
 
     void load();
 
@@ -60,6 +66,8 @@ public:
     std::vector<float> getGameModeValues() { return _GameModeValues; }
 
 private:
+    Framework &_FW;
+
     std::vector<float> _DifficultyValues = {0.5f, 1.0f, 1.5f, 2.0f};
     std::vector<std::string> _DifficultyStrings = {"Easy", "Normal", "Hard", "Insane"};
 
@@ -67,13 +75,13 @@ private:
     std::vector<std::string> _GameModeStrings = {"Standard", "Invincibility", "Infinite Energy", "Hardcore"};
 
     float _FPS = 60.0f;
+    bool _VSyncEnabled = false;
     float _Volume = 30.0f;
     Difficulty _Difficulty = Difficulty::Normal;
     GameMode _GameMode = GameMode::Standard;
     bool _Debug = false;
 
     sf::Font _Font;
-
     const std::string _SettingsFileName = "Resources/settings.cfg";
 };
 

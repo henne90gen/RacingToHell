@@ -51,11 +51,12 @@ void Framework::run() {
 
         sf::sleep(targetFrameTime - actualFrameTime);
 
-        _RenderWindow.display()
+        _RenderWindow.display();
     }
 }
 
 void Framework::render() {
+    sf::Clock timer;
     _RenderWindow.clear(sf::Color::Black);
 
     setMouseVisibility();
@@ -149,6 +150,7 @@ void Framework::setMouseVisibility() {
         case GameState::Pause:
         case GameState::MainMenu:
         case GameState::LoadingToMain:
+        case GameState::GameOverMultiplayer:
             visible = true;
             break;
         case GameState::Running:
@@ -157,15 +159,10 @@ void Framework::setMouseVisibility() {
         case GameState::Loading:
         case GameState::BossFight:
         case GameState::LevelUp:
-            visible = false;
-            break;
         case GameState::Exiting:
-            break;
-        case GameState::GameOverMultiplayer:
-            break;
         case GameState::BossFightMultiplayer:
-            break;
         case GameState::Empty:
+            visible = false;
             break;
     }
 

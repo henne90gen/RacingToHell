@@ -35,22 +35,19 @@ void Framework::run() {
 //    Render at modular FPS
 //    All measurements are in microseconds
 
-	_RenderWindow.setVerticalSyncEnabled(true);
-
 	while (_IsRunning)
 	{
 		sf::Clock renderClock;
-		sf::Time targetFrameTime = sf::seconds(1.0f / 30.0f);
-		_UpdateTime = targetFrameTime.asSeconds();
-
+		sf::Time targetFrameTime = sf::seconds(1.0f / _OptionsManager.getFPS());
+		
 		handleEvents();
-		update(_UpdateTime);
+		update(targetFrameTime.asSeconds());
 		render();
 
 		sf::Time actualFrameTime = renderClock.getElapsedTime();
 
 		if (actualFrameTime >= targetFrameTime)
-			std::cout << "FAIL" << std::endl;
+			std::cout << "Delta: " << (actualFrameTime - targetFrameTime).asSeconds() << std::endl;
 
 		/*while (actualFrameTime < targetFrameTime)
 		{
@@ -58,9 +55,11 @@ void Framework::run() {
 		} */
 
 		sf::sleep(targetFrameTime - actualFrameTime);
+
+		_RenderWindow.display();
 	} 
 
-    /*while (_IsRunning) {
+ /*  while (_IsRunning) {
         sf::Clock renderClock;
         float minTimePerUpdate = 1000000.0f / 1080.0f;
         float microSecondsPerFrame = 1000000.0f / (_OptionsManager.getFPS() + _OptionsManager.getFPS() / 10.0f);
@@ -86,7 +85,6 @@ void Framework::run() {
 
         render();
 
-<<<<<<< HEAD
 		_FrameTime = renderClock.getElapsedTime().asSeconds();
     } */
 }
@@ -101,8 +99,6 @@ void Framework::render() {
     for (unsigned int i = 0; i < _DisplayedGameScreens.size(); i++) {
         _DisplayedGameScreens.at(i)->render(_RenderWindow);
     }
-
-    _RenderWindow.display();
 }
 
 void Framework::handleEvents() {

@@ -13,6 +13,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CLONE_SFML git clone https://github.com/SFML/SFML)
 execute_process(COMMAND ${CLONE_SFML}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+set(PULL_SFML git pull origin master)
+execute_process(COMMAND ${PULL_SFML}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_subdirectory(SFML)
 add_subdirectory(Source)

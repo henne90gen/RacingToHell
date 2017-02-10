@@ -74,10 +74,6 @@ void SoundManager::updateMenu() {
         if (_MenuMusic->getStatus() != sf::Music::Playing) {
             _MenuMusic->play();
         }
-    } else {
-        if (_MenuMusic->getStatus() == sf::Music::Playing) {
-            _MenuMusic->stop();
-        }
     }
 }
 
@@ -85,10 +81,6 @@ void SoundManager::updateLevel() {
     if (isInLevel()) {
         if (_LevelMusic->getStatus() != sf::Music::Playing) {
             _LevelMusic->play();
-        }
-    } else {
-        if (_LevelMusic->getStatus() == sf::Music::Playing) {
-            _LevelMusic->stop();
         }
     }
 }

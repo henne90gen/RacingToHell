@@ -31,7 +31,7 @@ void OptionsManager::load() {
     }
     fileStream.close();
 
-    if (settings.size() >= 5) {
+    if (settings.size() >= 6) {
         _FPS = std::stoi(settings[0]);
         _VSyncEnabled = (bool) std::stoi(settings[1]);
         _Volume = std::stof(settings[2]);

@@ -66,6 +66,8 @@ void MainMenu::render(sf::RenderWindow &window) {
 void MainMenu::handleEvent(sf::Event &event) {
     switch (getMenuItemResult(event)) {
         case MenuResult::Resume:
+            _FW.getSoundManager().getLevelMusic()->play();
+            _FW.getSoundManager().getMenuMusic()->pause();
             _FW.advanceToGameState(GameState::Running);
             break;
         case MenuResult::Highscore:
@@ -81,6 +83,7 @@ void MainMenu::handleEvent(sf::Event &event) {
             _FW.getGOM().nextPlayerCar();
             break;
         case MenuResult::Exit:
+            _FW.getSoundManager().getMenuMusic()->stop();
             _FW.advanceToGameState(GameState::Exiting);
             break;
         case MenuResult::Multiplayer:

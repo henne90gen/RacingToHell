@@ -47,6 +47,8 @@ void PauseMenu::handleEvent(sf::Event &event) {
     switch (getMenuItemResult(event)) {
         case MenuResult::Resume:
             _FW.getLevelManager().setMoving(true);
+            _FW.getSoundManager().getLevelMusic()->play();
+            _FW.getSoundManager().getMenuMusic()->pause();
             _FW.goBackGameState();
             break;
         case MenuResult::Option:
@@ -54,9 +56,12 @@ void PauseMenu::handleEvent(sf::Event &event) {
             break;
         case MenuResult::Back:
             _FW.reset();
+            _FW.getSoundManager().getLevelMusic()->stop();
             _FW.advanceToGameState(GameState::MainMenu);
             break;
         case MenuResult::Exit:
+            _FW.getSoundManager().getLevelMusic()->stop();
+            _FW.getSoundManager().getMenuMusic()->stop();
             _FW.advanceToGameState(GameState::Exiting);
             break;
         default:

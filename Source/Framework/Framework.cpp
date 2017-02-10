@@ -47,7 +47,7 @@ void Framework::run() {
         sf::Time actualFrameTime = renderClock.getElapsedTime();
 
         if (actualFrameTime >= targetFrameTime) {
-            std::cout << "FAIL" << std::endl;
+            std::cout << "Update and render took too long." << std::endl;
         }
 
         sf::sleep(targetFrameTime - actualFrameTime);

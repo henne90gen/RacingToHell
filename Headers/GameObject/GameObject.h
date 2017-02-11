@@ -14,7 +14,8 @@ public:
 		@param type Type of the GameObject
 		@param texture Texture that is going to be used for the Sprite
 	*/
-	GameObject(unsigned int id, sf::Vector2f pos, GameObjectType type, sf::Texture& texture);
+    GameObject(unsigned int id, sf::Vector2f pos, GameObjectType type, sf::Texture &texture,
+               sf::IntRect textureRect);
 
 	/*
 		Any object that can be on the screen
@@ -22,7 +23,7 @@ public:
 		@param type Type of the GameObject
 		@param texture Texture that is going to be used for the Sprite
 	*/
-	GameObject(sf::Packet& packet, GameObjectType type, sf::Texture& texture);
+    GameObject(sf::Packet &packet, GameObjectType type, sf::Texture &texture, sf::IntRect textureRect);
 
 	/*
 		Any object that can be on the screen
@@ -141,7 +142,7 @@ public:
 	/*
 		Initializes the texture for this GameObject
 	*/
-	void initTexture(sf::Texture& texture);
+    void initTexture(sf::Texture &texture, sf::IntRect textureRect);
 
 	sf::Uint32 getID() { return (sf::Uint32)_ID; }
 

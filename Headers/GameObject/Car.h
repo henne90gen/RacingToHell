@@ -18,7 +18,8 @@ public:
 		@param type Type of the Car
 		@param texture Texture that is going to be used for the sprite
 	*/
-	Car(unsigned int id, sf::Vector2f pos, int maxHealth, float speed, GameObjectType type, sf::Texture& texture);
+    Car(unsigned int id, sf::Vector2f pos, int maxHealth, float speed, GameObjectType type, sf::Texture &texture,
+        sf::IntRect textureRect);
 
 	/*
 		Car that can drive around on the road
@@ -26,7 +27,10 @@ public:
 		@param type Type of the Car
 		@param texture Texture that is going to be used for the sprite
 	*/
-	Car(sf::Packet& packet, GameObjectType type, sf::Texture& texture) : GameObject(packet, type, texture) {}
+    Car(sf::Packet &packet, GameObjectType type, sf::Texture &texture, sf::IntRect textureRect) : GameObject(packet,
+                                                                                                             type,
+                                                                                                             texture,
+                                                                                                             textureRect) {}
 
 	/*
 		Car that can drive around on the road

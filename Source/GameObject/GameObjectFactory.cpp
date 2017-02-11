@@ -11,6 +11,11 @@ std::vector<std::shared_ptr<sf::Texture>> &GameObjectFactory::_AICarTextures() {
     return *result;
 }
 
+sf::Texture &GameObjectFactory::_AICarTextureMap() {
+    static sf::Texture *result = new sf::Texture();
+    return *result;
+}
+
 std::vector<std::shared_ptr<sf::Texture>> &GameObjectFactory::_BossCarTextures() {
     static std::vector<std::shared_ptr<sf::Texture>> *result = new std::vector<std::shared_ptr<sf::Texture>>();
     return *result;
@@ -77,16 +82,19 @@ std::shared_ptr<BossCar> GameObjectFactory::getBossCar(int level, int diff, int 
 
 std::shared_ptr<Bullet>
 GameObjectFactory::getBullet(sf::Vector2f pos, sf::Vector2f dir, int speed, GameObjectType type) {
-    if (type == GameObjectType::BulletObjectAI || type == GameObjectType::BulletObjectBoss) {
-        std::shared_ptr<Bullet> bullet(
-                new Bullet(_DeltaID + _CurrentGameObjectID++, pos, dir, speed, type, _BulletTexture()));
-        return bullet;
-    } else if (type == GameObjectType::BulletObjectPlayer) {
-        std::shared_ptr<Bullet> bullet(
-                new Bullet(_DeltaID + _CurrentGameObjectID++, pos, dir, speed, type, _BulletTexture()));
-        return bullet;
-    }
-    return NULL;
+    sf::IntRect textureRect(0, 0, _BulletTexture().getSize().x, _BulletTexture().getSize().y);
+    return std::make_shared<Bullet>(_DeltaID + _CurrentGameObjectID++, pos, dir, speed, type, _BulletTexture());
+
+//    if (type == GameObjectType::BulletObjectAI || type == GameObjectType::BulletObjectBoss) {
+//        std::shared_ptr<Bullet> bullet(
+//                new Bullet(_DeltaID + _CurrentGameObjectID++, pos, dir, speed, type, _BulletTexture(), sf::IntRect()));
+//        return bullet;
+//    } else if (type == GameObjectType::BulletObjectPlayer) {
+//        std::shared_ptr<Bullet> bullet(
+//                new Bullet(_DeltaID + _CurrentGameObjectID++, pos, dir, speed, type, _BulletTexture(), sf::IntRect()));
+//        return bullet;
+//    }
+//    return NULL;
 }
 
 
@@ -104,21 +112,33 @@ GameObjectFactory::getBullet(sf::Packet &packet, sf::Vector2f PlayerPosition, Ga
 }
 
 std::shared_ptr<AICar> GameObjectFactory::getAICar(int hp, int roadSpeed) {
+    unsigned long carIndex = (unsigned long) (std::rand() % 7);
+    int x = carIndex;
+    int y = 0;
+    if (carIndex > 3) {
+        y = 1;
+        x = carIndex - 4;
+    }
+    const sf::IntRect &textureRect = sf::IntRect(x * 40, y * 80, 40, 80);
     std::shared_ptr<AICar> car(
-            new AICar(_DeltaID + _CurrentGameObjectID++, hp, roadSpeed, (*_AICarTextures().at(
-                    (unsigned long) (std::rand() % 7)))));
+            new AICar(_DeltaID + _CurrentGameObjectID++, hp, roadSpeed, _AICarTextureMap(), textureRect));
     return car;
 }
 
 std::shared_ptr<GameObject> GameObjectFactory::getToolbox(sf::Vector2f pos) {
+    const sf::IntRect &textureRect = sf::IntRect(0, 0, _ToolboxTexture().getSize().x, _ToolboxTexture().getSize().y);
     std::shared_ptr<GameObject> toolbox(
-            new GameObject(_DeltaID + _CurrentGameObjectID++, pos, GameObjectType::Tools, _ToolboxTexture()));
+            new GameObject(_DeltaID + _CurrentGameObjectID++, pos, GameObjectType::Tools, _ToolboxTexture(),
+                           textureRect));
     return toolbox;
 }
 
 std::shared_ptr<GameObject> GameObjectFactory::getCanister(sf::Vector2f pos) {
+    const sf::IntRect &textureRect = sf::IntRect(0, 0, _EnergyCanisterTexture().getSize().x,
+                                                 _EnergyCanisterTexture().getSize().y);
     std::shared_ptr<GameObject> canister(
-            new GameObject(_DeltaID + _CurrentGameObjectID++, pos, GameObjectType::Canister, _EnergyCanisterTexture()));
+            new GameObject(_DeltaID + _CurrentGameObjectID++, pos, GameObjectType::Canister, _EnergyCanisterTexture(),
+                           textureRect));
     return canister;
 }
 
@@ -169,17 +189,31 @@ std::shared_ptr<Bullet> GameObjectFactory::getBullet(sf::Packet &packet, GameObj
 }
 
 std::shared_ptr<AICar> GameObjectFactory::getAICar(sf::Packet &packet) {
-    std::shared_ptr<AICar> car(new AICar(packet, (*_AICarTextures().at((unsigned long) (std::rand() % 7)))));
+    unsigned long carIndex = (unsigned long) (std::rand() % 7);
+    int x = carIndex;
+    int y = 0;
+    if (carIndex > 3) {
+        y = 1;
+        x = carIndex - 4;
+    }
+    const sf::IntRect &textureRect = sf::IntRect(x * 40, y * 80, (x + 1) * 40, (y + 1) * 80);
+    std::shared_ptr<AICar> car(
+            new AICar(packet, _AICarTextureMap(), textureRect));
     return car;
 }
 
 std::shared_ptr<GameObject> GameObjectFactory::getToolbox(sf::Packet &packet) {
-    std::shared_ptr<GameObject> toolbox(new GameObject(packet, GameObjectType::Tools, _ToolboxTexture()));
+    const sf::IntRect &textureRect = sf::IntRect(0, 0, _ToolboxTexture().getSize().x, _ToolboxTexture().getSize().y);
+    std::shared_ptr<GameObject> toolbox(
+            new GameObject(packet, GameObjectType::Tools, _ToolboxTexture(), textureRect));
     return toolbox;
 }
 
 std::shared_ptr<GameObject> GameObjectFactory::getCanister(sf::Packet &packet) {
-    std::shared_ptr<GameObject> canister(new GameObject(packet, GameObjectType::Canister, _EnergyCanisterTexture()));
+    const sf::IntRect &textureRect = sf::IntRect(0, 0, _EnergyCanisterTexture().getSize().x,
+                                                 _EnergyCanisterTexture().getSize().y);
+    std::shared_ptr<GameObject> canister(
+            new GameObject(packet, GameObjectType::Canister, _EnergyCanisterTexture(), textureRect));
     return canister;
 }
 
@@ -224,10 +258,13 @@ void GameObjectFactory::load() {
         }
     }
 
-    for (int i = 1; i <= 8; i++) {
-        std::shared_ptr<sf::Texture> texture(new sf::Texture());
-        (*texture).loadFromFile("Resources/Texture/TrafficCar/Traffic" + std::to_string(i) + ".png");
-        _AICarTextures().push_back(texture);
+//    for (int i = 1; i <= 8; i++) {
+//        std::shared_ptr<sf::Texture> texture(new sf::Texture());
+//        (*texture).loadFromFile("Resources/Texture/TrafficCar/Traffic" + std::to_string(i) + ".png");
+//        _AICarTextures().push_back(texture);
+//    }
+    if (!_AICarTextureMap().loadFromFile("Resources/Texture/TrafficCar/TrafficTextureMap.png")) {
+        std::cout << "Bullshit!" << std::endl;
     }
 
     std::string bossTextures[] =

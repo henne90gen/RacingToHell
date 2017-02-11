@@ -2,16 +2,16 @@
 #include "GameObject/AICar.h"
 
 
-AICar::AICar(unsigned int id, int hp, int roadSpeed, sf::Texture &texture) :
+AICar::AICar(unsigned int id, int hp, int roadSpeed, sf::Texture &texture, sf::IntRect textureRect) :
         Car(id, sf::Vector2f(0, 0), hp, std::rand() % ((int) (roadSpeed / 3)) + ((int) (roadSpeed / 3)),
-            GameObjectType::AI, texture) {
+            GameObjectType::AI, texture, textureRect) {
     _Lane = (sf::Uint8) (std::rand() % 4);
     init();
     getSprite().setColor(sf::Color::White);
 }
 
-AICar::AICar(sf::Packet &packet, sf::Texture &texture) :
-        Car(packet, GameObjectType::AI, texture) {
+AICar::AICar(sf::Packet &packet, sf::Texture &texture, sf::IntRect textureRect) :
+        Car(packet, GameObjectType::AI, texture, textureRect) {
     AICar::operator<<(packet);
     init();
 }

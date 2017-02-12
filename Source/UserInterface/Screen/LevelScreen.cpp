@@ -9,8 +9,7 @@
 LevelScreen::LevelScreen(Framework &framework) : GameScreen(framework) {}
 
 void LevelScreen::render(sf::RenderWindow &renderWindow) {
-    
-	renderWindow.draw(_FW.getLevelManager().getSprite());
+    renderWindow.draw(_FW.getLevelManager().getSprite());
 }
 
 void LevelScreen::handleEvent(sf::Event &event) {

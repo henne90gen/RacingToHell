@@ -49,8 +49,8 @@ void SoundManager::load() {
 
 void SoundManager::update() {
     updateVolumes();
-
-    updateMenu();
+	
+	updateMenu();
 
     updateLevel();
 
@@ -150,8 +150,8 @@ bool SoundManager::isInMenu() {
 }
 
 bool SoundManager::isInLevel() {
-    GameState gs = _FW.getCurrentGameState();
-    return gs == GameState::Running;
+	
+	return _FW.getCurrentGameState() == GameState::Running;
 }
 
 unsigned long SoundManager::getLevelMusicIndex() {

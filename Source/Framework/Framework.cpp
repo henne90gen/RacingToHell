@@ -34,9 +34,9 @@ void Framework::run() {
 //    Update at a maximum of 1000 UPS
 //    Render at modular FPS
 //    All measurements are in microseconds
-
     while (_IsRunning) {
         sf::Clock renderClock;
+
         sf::Time targetFrameTime = sf::seconds(1.0f / _OptionsManager.getFPS());
         _FrameTime = targetFrameTime.asSeconds();
 
@@ -47,21 +47,49 @@ void Framework::run() {
 		sf::Time actualFrameTime = renderClock.getElapsedTime();
 
 		if (actualFrameTime >= targetFrameTime)
-			std::cout << "Delta: " << (actualFrameTime - targetFrameTime).asSeconds() << std::endl;
+		{
+			std::cout << "!!!Delta!!!: " << (actualFrameTime - targetFrameTime).asSeconds() << std::endl;
+			update((actualFrameTime - targetFrameTime).asSeconds());
+		}
+		else
+		{
+			sf::sleep(targetFrameTime - actualFrameTime);
+		}
+	
+		//while (actualFrameTime < targetFrameTime)
+		//	actualFrameTime = renderClock.getElapsedTime();
 
-        sf::sleep(targetFrameTime - actualFrameTime);
-
-        _RenderWindow.display()
+		_RenderWindow.display();
     }
 }
 
 void Framework::render() {
-    _RenderWindow.clear(sf::Color::Black);
+	LARGE_INTEGER perfCountFrequency;
+	QueryPerformanceFrequency(&perfCountFrequency);
+
+	LARGE_INTEGER performanceCount, lastPerformanceCount;
+	QueryPerformanceCounter(&lastPerformanceCount);
+
+    //_RenderWindow.clear(sf::Color::Black);
+
+	//std::cout << "clear " << myClock.restart().asSeconds() << std::endl;
 
     setMouseVisibility();
 
+	QueryPerformanceCounter(&performanceCount);
+	float timePassed = (performanceCount.QuadPart - lastPerformanceCount.QuadPart) / (float)perfCountFrequency.QuadPart;
+	lastPerformanceCount = performanceCount;
+
+	//std::cout << "mouse " << timePassed << std::endl;
+
     for (unsigned int i = 0; i < _DisplayedGameScreens.size(); i++) {
         _DisplayedGameScreens.at(i)->render(_RenderWindow);
+
+		QueryPerformanceCounter(&performanceCount);
+		timePassed = (performanceCount.QuadPart - lastPerformanceCount.QuadPart) / (float)perfCountFrequency.QuadPart;
+		lastPerformanceCount = performanceCount;
+
+		//std::cout << "i = " << i << ": " << timePassed << std::endl;
     }
 }
 
@@ -79,20 +107,33 @@ void Framework::handleEvents() {
 }
 
 void Framework::update(float frameTime) {
+	//sf::Clock myClock;
+
     if (getCurrentGameState() != GameState::Pause &&
         !(getCurrentGameState() == GameState::Options && getLastGameState() == GameState::Pause)) {
         _LevelManager.update(frameTime);
     }
 
+
+	//std::cout << "level " << myClock.restart().asSeconds() << std::endl;
+
     if (getCurrentGameState() == GameState::Running) {
         _GameObjectManager.update(frameTime);
     }
 
+
+	//std::cout << "gom " << myClock.restart().asSeconds() << std::endl;
+
     _SoundManager.update();
+
+
+	//std::cout << "sm " << myClock.restart().asSeconds() << std::endl;
 
     for (unsigned int i = 0; i < _DisplayedGameScreens.size(); i++) {
         _DisplayedGameScreens.at(i)->update(frameTime);
     }
+
+	//std::cout << "screens " << myClock.restart().asSeconds() << std::endl;
 }
 
 void Framework::load() {

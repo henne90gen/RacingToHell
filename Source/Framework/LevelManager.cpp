@@ -3,7 +3,6 @@
 #include "Framework/Framework.h"
 
 void LevelManager::update(float frameTime) {
-
     if (!_ShouldMove) {
         return;
     }
@@ -57,13 +56,23 @@ int LevelManager::getRoadSpeed() {
 void LevelManager::load() {
     std::cout << "Loading level textures..." << std::endl;
 
+	_Textures = new sf::Texture[4];
+
     for (int i = 1; i <= 4; i++) {
-        std::shared_ptr<sf::Texture> texture = std::make_shared<sf::Texture>();
-        (*texture).loadFromFile("Resources/Texture/Road/Road" + std::to_string(i) + ".jpg");
-        _Textures.push_back(texture);
+        //std::unique_ptr<sf::Texture> texture = std::make_unique<sf::Texture>();
+        //(*texture).loadFromFile("Resources/Texture/Road/Road" + std::to_string(i) + ".jpg");
+      
+		if (!_Textures[i - 1].loadFromFile("Resources/Texture/Road/Road" + std::to_string(i) + ".jpg"))
+		{
+			std::cout << "WTF DUDE" << std::endl;
+		}
+
+		_Textures[i].setRepeated(true);
     }
-    _Sprite.setTexture((*_Textures.at(0)));
+
+	_Sprite.setTexture(_Textures[0]); //(*_Textures.at(0))
     _Sprite.setPosition(sf::Vector2f(0, -1600));
+	_Sprite.setTextureRect(sf::IntRect(0, 0, 600, 2400));
 }
 
 void LevelManager::addScore(ScoreEvent event, float modifier) {

@@ -92,7 +92,7 @@ private:
 
     bool _IsResettingLevel, _ShouldMove;
 
-    std::vector<std::shared_ptr<sf::Texture>> _Textures;
+    sf::Texture *_Textures;
 
     sf::Sprite _Sprite;
 };

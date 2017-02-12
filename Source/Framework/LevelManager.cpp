@@ -2,29 +2,6 @@
 #include "Framework/LevelManager.h"
 #include "Framework/Framework.h"
 
-void LevelManager::update(float frameTime) {
-    if (!_ShouldMove) {
-        return;
-    }
-
-    if (_Sprite.getPosition().y + frameTime * getRoadSpeed() >= 0) {
-        _Sprite.setPosition(sf::Vector2f(0, -1600));
-    } else {
-        _Sprite.setPosition(
-                sf::Vector2f(_Sprite.getPosition().x, _Sprite.getPosition().y + frameTime * getRoadSpeed()));
-    }
-
-    if (_FW.getCurrentGameState() == GameState::Running) {
-        _LevelTime += frameTime;
-        if (_FW.getGOM().getPlayerCar()->isAlive()) {
-            addScore(ScoreEvent::Tick, frameTime);
-        }
-        if (_LevelTime >= _TotalLevelTime) {
-            levelUp();
-        }
-    }
-}
-
 void LevelManager::load() {
     std::cout << "Loading level textures..." << std::endl;
 
@@ -42,6 +19,36 @@ void LevelManager::load() {
     _Sprite.setTextureRect(sf::IntRect(0, 0, 600, 2400));
 }
 
+void LevelManager::update(float frameTime) {
+    if (!_ShouldMove) {
+        return;
+    }
+
+    if (_Sprite.getPosition().y + frameTime * getRoadSpeed() >= 0) {
+        _Sprite.setPosition(sf::Vector2f(0, -1600));
+    } else {
+        _Sprite.setPosition(
+                sf::Vector2f(_Sprite.getPosition().x, _Sprite.getPosition().y + frameTime * getRoadSpeed()));
+    }
+
+    if (_FW.getCurrentGameState() == GameState::Running) {
+        if (!_FW.getGOM().isInBossFight()) {
+            _LevelTime += frameTime;
+        }
+        if (_FW.getGOM().getPlayerCar()->isAlive()) {
+            addScore(ScoreEvent::Tick, frameTime);
+        }
+        if (_LevelTime >= _TotalLevelTime) {
+            if (_FW.getGOM().emptyScreen()) {
+                _FW.getGOM().enterBossFight();
+                _LevelTime = 0;
+            }
+        } else if (_FW.getGOM().bossIsDead()) {
+            levelUp();
+        }
+    }
+}
+
 void LevelManager::levelUp() {
     _LevelTime = 0;
     _Level++;
@@ -54,9 +61,8 @@ void LevelManager::levelUp() {
 
 void LevelManager::resetToLevelOne() {
     _Level = 1;
-    _TotalLevelTime = 30.f;
+    _TotalLevelTime = 5.0f;
     _LevelTime = 0;
-    _IsResettingLevel = true;
     _ShouldMove = true;
     _Score = 0;
 
@@ -111,7 +117,9 @@ void LevelManager::addScore(ScoreEvent event, float modifier) {
             _Score += 1.5 * modifier;
             break;
         case ScoreEvent::DefeatedBoss:
-            // TODO add points for killing a boss
+            // TODO review added points
+            _Score += 5000 + 10000 * (int) _FW.getOptionsManager().getDifficulty() *
+                             (int) _FW.getOptionsManager().getDifficulty();
             break;
         case ScoreEvent::LevelUp:
             // TODO add point for a level up

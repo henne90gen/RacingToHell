@@ -22,10 +22,9 @@ void GameObjectScreen::render(sf::RenderWindow &renderWindow) {
         _FW.getGOM().getBullets().at(i)->render(renderWindow);
     }
 
-    // TODO render boss fight
-//    if (_BossFight) {
-//        _Boss->render(renderWindow);
-//    }
+    if (_FW.getGOM().isInBossFight()) {
+        _FW.getGOM().getBossCar()->render(renderWindow);
+    }
 
     _FW.getGOM().getPlayerCar()->render(renderWindow, !_FW.isMouseVisible());
 

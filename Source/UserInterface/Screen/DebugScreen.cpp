@@ -21,6 +21,7 @@ DebugScreen::DebugScreen(Framework &framework) : GameScreen(framework) {
                      "ScoreMulti:",
                      "Score:",
                      "",
+                     "InBossFight:",
                      "Bullets:",
                      "Cars:",
                      "AI health:",
@@ -92,6 +93,7 @@ void DebugScreen::update(float frameTime) {
 
     values.push_back(""); // Empty line
 
+    values.push_back(std::to_string(_FW.getGOM().isInBossFight()));
     unsigned long bullets = _FW.getGOM().getBullets().size();
     values.push_back(std::to_string(bullets)); // Bullet amount
     unsigned long cars = _FW.getGOM().getCars().size() + 1;

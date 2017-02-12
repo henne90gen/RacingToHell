@@ -39,7 +39,6 @@ void Framework::run() {
 
 	while (_IsRunning) {
         sf::Clock renderClock;
-
         sf::Time targetFrameTime = sf::seconds(1.0f / _OptionsManager.getFPS());
         _FrameTime = targetFrameTime.asSeconds();
 
@@ -51,17 +50,13 @@ void Framework::run() {
 
         if (actualFrameTime >= targetFrameTime) {
             float delta = (actualFrameTime - targetFrameTime).asSeconds();
-            std::cout << "Delta" << sleepCounter << ": " << delta << std::endl;
+            std::cout << "Delta " << sleepCounter << ": " << delta << std::endl;
             update(delta);
             sleepCounter = 0;
         } else {
             sleepCounter++;
             sf::sleep(targetFrameTime - actualFrameTime);
         }
-
-//        while (actualFrameTime < targetFrameTime) {
-//             actualFrameTime = renderClock.getElapsedTime();
-//        }
 
         _RenderWindow.display();
     }

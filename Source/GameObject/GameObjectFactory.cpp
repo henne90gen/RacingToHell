@@ -258,13 +258,8 @@ void GameObjectFactory::load() {
         }
     }
 
-//    for (int i = 1; i <= 8; i++) {
-//        std::shared_ptr<sf::Texture> texture(new sf::Texture());
-//        (*texture).loadFromFile("Resources/Texture/TrafficCar/Traffic" + std::to_string(i) + ".png");
-//        _AICarTextures().push_back(texture);
-//    }
     if (!_AICarTextureMap().loadFromFile("Resources/Texture/TrafficCar/TrafficTextureMap.png")) {
-        std::cout << "Bullshit!" << std::endl;
+        std::cout << "Couldn't load car texture!" << std::endl;
     }
 
     std::string bossTextures[] =

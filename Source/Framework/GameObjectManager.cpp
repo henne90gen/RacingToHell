@@ -22,6 +22,7 @@ void GameObjectManager::update(float frameTime) {
 
     if (!_Player->isAlive() && !_Player->isDying()) {
         _FW.getLevelManager().setMoving(false);
+        _FW.getSoundManager().getLevelMusic()->stop();
         _FW.advanceToGameState(GameState::GameOver);
     }
 

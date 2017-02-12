@@ -150,7 +150,6 @@ bool SoundManager::isInMenu() {
 }
 
 bool SoundManager::isInLevel() {
-	
 	return _FW.getCurrentGameState() == GameState::Running;
 }
 
@@ -159,6 +158,7 @@ unsigned long SoundManager::getLevelMusicIndex() {
 }
 
 void SoundManager::nextLevel() {
+    _LevelMusic->stop();
     for (unsigned long i = 0; i < _AllLevelMusic.size(); i++) {
         if (i == getLevelMusicIndex()) {
             _LevelMusic = _AllLevelMusic.at(i);

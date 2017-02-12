@@ -25,15 +25,34 @@ void LevelManager::update(float frameTime) {
     }
 }
 
+void LevelManager::load() {
+    std::cout << "Loading level textures..." << std::endl;
+
+    _Textures = new sf::Texture[4];
+
+    for (int i = 1; i <= 4; i++) {
+        if (!_Textures[i - 1].loadFromFile("Resources/Texture/Road/Road" + std::to_string(i) + ".jpg")) {
+            std::cout << "Couldn't load road texture." << std::endl;
+        }
+        _Textures[i - i].setRepeated(true);
+    }
+
+    _Sprite.setTexture(_Textures[0]);
+    _Sprite.setPosition(sf::Vector2f(0, -1600));
+    _Sprite.setTextureRect(sf::IntRect(0, 0, 600, 2400));
+}
+
 void LevelManager::levelUp() {
     _LevelTime = 0;
     _Level++;
+    _Textures[(_Level - 1) % 4].setRepeated(true);
+    _Sprite.setTexture(_Textures[(_Level - 1) % 4]);
     _FW.getSoundManager().nextLevel();
 }
 
 void LevelManager::resetToLevelOne() {
     _Level = 1;
-    _TotalLevelTime = 60.0f;
+    _TotalLevelTime = 5.0f;
     _LevelTime = 0;
     _IsResettingLevel = true;
     _ShouldMove = true;
@@ -51,23 +70,6 @@ int LevelManager::getRoadSpeed() {
         case Difficulty::Insane:
             return (110 * _Level + 150);
     }
-}
-
-void LevelManager::load() {
-    std::cout << "Loading level textures..." << std::endl;
-
-    _Textures = new sf::Texture[4];
-
-    for (int i = 1; i <= 4; i++) {
-        if (!_Textures[i - 1].loadFromFile("Resources/Texture/Road/Road" + std::to_string(i) + ".jpg")) {
-            std::cout << "Couldn't load road texture." << std::endl;
-        }
-        _Textures[i - i].setRepeated(true);
-    }
-
-    _Sprite.setTexture(_Textures[0]);
-    _Sprite.setPosition(sf::Vector2f(0, -1600));
-    _Sprite.setTextureRect(sf::IntRect(0, 0, 600, 2400));
 }
 
 void LevelManager::addScore(ScoreEvent event, float modifier) {

@@ -34,9 +34,9 @@ void LevelManager::load() {
         if (!_Textures[i - 1].loadFromFile("Resources/Texture/Road/Road" + std::to_string(i) + ".jpg")) {
             std::cout << "Couldn't load road texture." << std::endl;
         }
-        _Textures[i - i].setRepeated(true);
     }
 
+    _Textures[0].setRepeated(true);
     _Sprite.setTexture(_Textures[0]);
     _Sprite.setPosition(sf::Vector2f(0, -1600));
     _Sprite.setTextureRect(sf::IntRect(0, 0, 600, 2400));
@@ -45,8 +45,10 @@ void LevelManager::load() {
 void LevelManager::levelUp() {
     _LevelTime = 0;
     _Level++;
+
     _Textures[(_Level - 1) % 4].setRepeated(true);
     _Sprite.setTexture(_Textures[(_Level - 1) % 4]);
+
     _FW.getSoundManager().nextLevel();
 }
 
@@ -57,6 +59,9 @@ void LevelManager::resetToLevelOne() {
     _IsResettingLevel = true;
     _ShouldMove = true;
     _Score = 0;
+
+    _Textures[0].setRepeated(true);
+    _Sprite.setTexture(_Textures[0]);
 }
 
 int LevelManager::getRoadSpeed() {

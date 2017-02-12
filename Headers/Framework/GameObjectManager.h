@@ -105,7 +105,7 @@ private:
 
     sf::Texture _ExplosionTexture;
 
-    float _CarFrequency, _BulletFrequency, _CanisterFrequency, _ToolboxFrequency, _TimePassedCar, _TimePassedBullet, _TimePassedCanister, _TimePassedToolbox;
+    float _CarFrequency, _BulletFrequency, _CanisterFrequency, _ToolboxFrequency, _TimePassedCar, _TimePassedBullet, _TimePassedCanister, _TimePassedToolbox, _SwitchLaneFrequency, _TimePassedSwitch;
 
     int _PlayerBulletSpeed, _AIBulletSpeed;
     bool _AboutToLevelUp, _BossFight;
@@ -127,6 +127,8 @@ private:
     void checkForCollisions(float frameTime);
 
     void checkPlayerForCollisions(float frameTime);
+
+	void switchLane(float frameTime);
 
     /**
      * Removes cars that don't have enough health any more.

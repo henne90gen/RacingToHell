@@ -10,13 +10,13 @@ GameObjectScreen::GameObjectScreen(Framework &framework) : GameScreen(framework)
 }
 
 void GameObjectScreen::render(sf::RenderWindow &renderWindow) {
-    for (unsigned int i = 0; i < _FW.getGOM().getCars().size(); i++) {
-        _FW.getGOM().getCars().at(i)->render(renderWindow);
-    }
-
     for (unsigned int i = 0; i < _FW.getGOM().getPickupItems().size(); i++) {
         _FW.getGOM().getPickupItems().at(i)->render(renderWindow);
     }
+
+	for (unsigned int i = 0; i < _FW.getGOM().getCars().size(); i++) {
+		_FW.getGOM().getCars().at(i)->render(renderWindow);
+	}
 
     for (unsigned int i = 0; i < _FW.getGOM().getBullets().size(); i++) {
         _FW.getGOM().getBullets().at(i)->render(renderWindow);

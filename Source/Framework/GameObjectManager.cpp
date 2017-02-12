@@ -29,6 +29,8 @@ void GameObjectManager::update(float frameTime) {
 
     checkForCollisions(frameTime);
 
+	switchLane(frameTime);
+
     deleteAllOffScreenObjects();
 
     deleteDestroyedCars();
@@ -79,6 +81,21 @@ void GameObjectManager::update(float frameTime) {
                                                         GameObjectType::BulletObjectPlayer));
         _FW.getSoundManager().playShotSound(GameObjectType::Player, _Player->getPos());
     }
+}
+
+void GameObjectManager::switchLane(float frameTime)
+{
+	if (_TimePassedSwitch + frameTime >= 1.0f / _SwitchLaneFrequency)
+	{
+		_TimePassedSwitch += frameTime - 1 / _SwitchLaneFrequency;
+
+		std::shared_ptr<AICar> selectedCar = _Cars[rand() % _Cars.size()];
+		selectedCar->switchLaneRandomly();
+	}
+	else
+	{
+		_TimePassedSwitch += frameTime;
+	}
 }
 
 void GameObjectManager::deleteDestroyedCars() {
@@ -135,6 +152,15 @@ void GameObjectManager::checkForCollisions(float frameTime) {
                         _Cars.at(j)->setSpeed(minSpeed);
                     }
                 }
+
+				if (i != j)
+				{
+					if (_Cars[i]->checkForCollision(*_Cars[j]))
+					{
+						_Cars.at(i)->takeDamage(500);
+						_Cars.at(j)->takeDamage(500);
+					}
+				}
             }
             for (unsigned int j = 0; j < _Bullets.size(); j++) {
                 if (_Bullets[j]->getType() != GameObjectType::BulletObjectAI &&
@@ -288,6 +314,7 @@ void GameObjectManager::resetGameObjects() {
     _TimePassedBullet = 0.0f;
     _TimePassedCanister = 0.0f;
     _TimePassedToolbox = 0.0f;
+	_TimePassedSwitch = 0.0f;
 
     _AboutToLevelUp = false;
     _BossFight = false;
@@ -454,6 +481,9 @@ void GameObjectManager::calculateToolboxFrequency() {
 }
 
 void GameObjectManager::calculateAllFrequencies() {
+	//TODO scale with difficulty
+	_SwitchLaneFrequency = 0.5f;
+
     calculateAiCarFrequency();
     calculateBulletFrequency();
     calculateCanisterFrequency();

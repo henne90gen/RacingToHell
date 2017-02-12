@@ -10,6 +10,7 @@ DebugScreen::DebugScreen(Framework &framework) : GameScreen(framework) {
     _LabelStrings = {"FPS:",
                      "CurrState:",
                      "LastState:",
+                     "NumScreens:",
                      "",
                      "Options",
                      "FPSPreset:",
@@ -75,6 +76,7 @@ void DebugScreen::update(float frameTime) {
 
     values.push_back(std::to_string((int) _FW.getCurrentGameState())); // Current GameState
     values.push_back(std::to_string((int) _FW.getLastGameState())); // Last GameState
+    values.push_back(std::to_string(_FW.getNumScreens())); // NumScreens
 
     values.push_back("");  // Empty line
     values.push_back("");  // Options heading

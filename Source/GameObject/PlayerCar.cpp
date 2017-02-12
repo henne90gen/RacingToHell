@@ -3,7 +3,8 @@
 
 
 PlayerCar::PlayerCar(unsigned int id, PlayerCarIndex selectedCar, sf::Texture &texture) :
-        Car(id, sf::Vector2f(0, 0), 100, 500, GameObjectType::Player, texture),
+        Car(id, sf::Vector2f(0, 0), 100, 500, GameObjectType::Player, texture,
+            sf::IntRect(0, 0, texture.getSize().x, texture.getSize().y)),
         _CrosshairSpeed(600.0f), _PlayerCarIndex(selectedCar), _AccelerationTime(0.1f) {
     setStats(_PlayerCarIndex);
     _ShotBullet = sf::Vector2f(0, 0);
@@ -27,7 +28,7 @@ PlayerCar::PlayerCar(sf::Packet &packet, std::vector<std::shared_ptr<sf::Texture
         Car(packet, GameObjectType::Player) {
     PlayerCar::operator<<(packet);
     setStats(_PlayerCarIndex);
-    initTexture(*textures.at((int) _PlayerCarIndex));
+    initTexture(*textures.at((int) _PlayerCarIndex), sf::IntRect());
 }
 
 void PlayerCar::render(sf::RenderWindow &window, bool renderCrosshair) {

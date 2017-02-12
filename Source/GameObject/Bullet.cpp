@@ -3,7 +3,7 @@
 
 Bullet::Bullet(unsigned int id, sf::Vector2f pos, sf::Vector2f dir, float speed, GameObjectType type,
                sf::Texture &texture) :
-        GameObject(id, pos, type, texture),
+        GameObject(id, pos, type, texture, sf::IntRect(0, 0, 10, 10)),
         _Direction(dir), _Speed(speed) {
 
     if (type == GameObjectType::BulletObjectPlayer) {
@@ -19,7 +19,7 @@ Bullet::Bullet(unsigned int id, sf::Vector2f pos, sf::Vector2f dir, float speed,
 }
 
 Bullet::Bullet(sf::Packet &packet, GameObjectType type, sf::Texture &texture) :
-        GameObject(packet, type, texture) {
+        GameObject(packet, type, texture, sf::IntRect(0, 0, 10, 10)) {
     Bullet::operator<<(packet);
     if (type == GameObjectType::BulletObjectPlayer) {
         setSpriteColor(sf::Color(225, 0, 0));
@@ -36,7 +36,7 @@ Bullet::Bullet(sf::Packet &packet, sf::Vector2f PlayerPosition, GameObjectType t
     _Speed = Speed;
     _ID = ID;
     _Type = type;
-    initTexture(texture);
+    initTexture(texture, sf::IntRect(0, 0, 10, 10));
     setPos(PlayerPosition);
 
     float dx, dy;
@@ -55,7 +55,8 @@ Bullet::Bullet(sf::Packet &packet, sf::Vector2f PlayerPosition, GameObjectType t
 }
 
 Bullet::Bullet(GameObjectType type, sf::Texture &texture, float speed) : GameObject(0, sf::Vector2f(0, 0), type,
-                                                                                    texture) {
+                                                                                    texture,
+                                                                                    sf::IntRect(0, 0, 10, 10)) {
     _Speed = speed;
 
     if (type == GameObjectType::BulletObjectPlayer) {

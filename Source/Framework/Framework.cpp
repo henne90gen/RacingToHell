@@ -34,7 +34,10 @@ void Framework::run() {
 //    Update at a maximum of 1000 UPS
 //    Render at modular FPS
 //    All measurements are in microseconds
-    while (_IsRunning) {
+
+	int sleepCounter = 0;
+
+	while (_IsRunning) {
         sf::Clock renderClock;
 
         sf::Time targetFrameTime = sf::seconds(1.0f / _OptionsManager.getFPS());
@@ -44,52 +47,32 @@ void Framework::run() {
         update(_FrameTime);
         render();
 
-		sf::Time actualFrameTime = renderClock.getElapsedTime();
+        sf::Time actualFrameTime = renderClock.getElapsedTime();
 
-		if (actualFrameTime >= targetFrameTime)
-		{
-			std::cout << "!!!Delta!!!: " << (actualFrameTime - targetFrameTime).asSeconds() << std::endl;
-			update((actualFrameTime - targetFrameTime).asSeconds());
-		}
-		else
-		{
-			sf::sleep(targetFrameTime - actualFrameTime);
-		}
-	
-		//while (actualFrameTime < targetFrameTime)
-		//	actualFrameTime = renderClock.getElapsedTime();
 
-		_RenderWindow.display();
+        if (actualFrameTime >= targetFrameTime) {
+            float delta = (actualFrameTime - targetFrameTime).asSeconds();
+            std::cout << "Delta" << sleepCounter << ": " << delta << std::endl;
+            update(delta);
+            sleepCounter = 0;
+        } else {
+            sleepCounter++;
+            sf::sleep(targetFrameTime - actualFrameTime);
+        }
+
+//        while (actualFrameTime < targetFrameTime) {
+//             actualFrameTime = renderClock.getElapsedTime();
+//        }
+
+        _RenderWindow.display();
     }
 }
 
 void Framework::render() {
-	LARGE_INTEGER perfCountFrequency;
-	QueryPerformanceFrequency(&perfCountFrequency);
-
-	LARGE_INTEGER performanceCount, lastPerformanceCount;
-	QueryPerformanceCounter(&lastPerformanceCount);
-
-    //_RenderWindow.clear(sf::Color::Black);
-
-	//std::cout << "clear " << myClock.restart().asSeconds() << std::endl;
-
     setMouseVisibility();
-
-	QueryPerformanceCounter(&performanceCount);
-	float timePassed = (performanceCount.QuadPart - lastPerformanceCount.QuadPart) / (float)perfCountFrequency.QuadPart;
-	lastPerformanceCount = performanceCount;
-
-	//std::cout << "mouse " << timePassed << std::endl;
 
     for (unsigned int i = 0; i < _DisplayedGameScreens.size(); i++) {
         _DisplayedGameScreens.at(i)->render(_RenderWindow);
-
-		QueryPerformanceCounter(&performanceCount);
-		timePassed = (performanceCount.QuadPart - lastPerformanceCount.QuadPart) / (float)perfCountFrequency.QuadPart;
-		lastPerformanceCount = performanceCount;
-
-		//std::cout << "i = " << i << ": " << timePassed << std::endl;
     }
 }
 
@@ -190,6 +173,7 @@ void Framework::setMouseVisibility() {
         case GameState::Pause:
         case GameState::MainMenu:
         case GameState::LoadingToMain:
+        case GameState::GameOverMultiplayer:
             visible = true;
             break;
         case GameState::Running:
@@ -198,15 +182,10 @@ void Framework::setMouseVisibility() {
         case GameState::Loading:
         case GameState::BossFight:
         case GameState::LevelUp:
-            visible = false;
-            break;
         case GameState::Exiting:
-            break;
-        case GameState::GameOverMultiplayer:
-            break;
         case GameState::BossFightMultiplayer:
-            break;
         case GameState::Empty:
+            visible = false;
             break;
     }
 
@@ -216,8 +195,7 @@ void Framework::setMouseVisibility() {
         while (cursor > 0) {
             cursor = ShowCursor(0);
         }
-    }
-    else {
+    } else {
         int cursor = ShowCursor(1);
         while (cursor < 0) {
             cursor = ShowCursor(1);

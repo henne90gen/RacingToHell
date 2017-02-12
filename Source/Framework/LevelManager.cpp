@@ -6,13 +6,14 @@ void LevelManager::update(float frameTime) {
     if (!_ShouldMove) {
         return;
     }
-
+	
     if (_Sprite.getPosition().y + frameTime * getRoadSpeed() >= 0) {
         _Sprite.setPosition(sf::Vector2f(0, -1600));
     } else {
-        _Sprite.setPosition(
-                sf::Vector2f(_Sprite.getPosition().x, _Sprite.getPosition().y + frameTime * getRoadSpeed()));
-    }
+		_Sprite.setPosition(
+			sf::Vector2f(_Sprite.getPosition().x, _Sprite.getPosition().y + frameTime * getRoadSpeed()));
+
+    }  
 
     if (_FW.getCurrentGameState() == GameState::Running) {
         _LevelTime += frameTime;
@@ -67,7 +68,7 @@ void LevelManager::load() {
 			std::cout << "WTF DUDE" << std::endl;
 		}
 
-		_Textures[i].setRepeated(true);
+		_Textures[i - 1].setRepeated(true);
     }
 
 	_Sprite.setTexture(_Textures[0]); //(*_Textures.at(0))

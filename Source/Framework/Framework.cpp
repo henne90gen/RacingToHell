@@ -49,7 +49,6 @@ void Framework::run() {
 
         sf::Time actualFrameTime = renderClock.getElapsedTime();
 
-
         if (actualFrameTime >= targetFrameTime) {
             float delta = (actualFrameTime - targetFrameTime).asSeconds();
             std::cout << "Delta" << sleepCounter << ": " << delta << std::endl;

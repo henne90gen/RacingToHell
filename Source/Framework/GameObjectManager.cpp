@@ -222,12 +222,10 @@ void GameObjectManager::checkPlayerForCollisions(float frameTime) {
                 case GameObjectType::Canister:
                     _Player->addEnergy();
                     deleteObject(_PickupItems, i);
-                    i--;
                     break;
                 case GameObjectType::Tools:
                     _Player->addHealth();
                     deleteObject(_PickupItems, i);
-                    i--;
                     break;
             }
         }
@@ -246,7 +244,6 @@ void GameObjectManager::checkPlayerForCollisions(float frameTime) {
                                           sf::Vector2f(0, _Cars[i]->getSpeed())));
                     _Animations.push_back(newExplosion);
                     deleteObject(_Cars, i);
-                    i--;
                 } else {
                     killPlayer();
                 }

@@ -113,6 +113,8 @@ private:
 
     static std::vector<std::shared_ptr<sf::Texture>> &_AICarTextures();
 
+    static sf::Texture &_AICarTextureMap();
+
     static std::vector<std::shared_ptr<sf::Texture>> &_BossCarTextures();
 
     static sf::Texture &_ToolboxTexture();

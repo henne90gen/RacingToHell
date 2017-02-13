@@ -94,6 +94,8 @@ public:
      */
     int getFPS();
 
+    int getNumScreens() { return (int) _DisplayedGameScreens.size(); }
+
     void setVSyncEnabled(bool vSync) { _RenderWindow.setVerticalSyncEnabled(vSync); }
 
 private:

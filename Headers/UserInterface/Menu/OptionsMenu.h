@@ -32,7 +32,7 @@ private:
 	int _ChangeSliderValue;
 
 	enum Items {
-		FPSIndex, VolumeIndex, DifficultyIndex, GameModeIndex, DebugIndex
+        FPSIndex, VSyncIndex, VolumeIndex, DifficultyIndex, GameModeIndex, DebugIndex
 	};
 
 	sf::Text _FPS, _Volume, _ScoreMultiplierText;

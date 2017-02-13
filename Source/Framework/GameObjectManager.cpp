@@ -3,7 +3,7 @@
 #include "Framework/Framework.h"
 
 GameObjectManager::GameObjectManager(Framework &framework) : _FW(framework), _PlayerBulletSpeed(600),
-                                                             _AIBulletSpeed(400), _BossFight(false) {
+                                                             _AIBulletSpeed(400), _InBossFight(false) {
     _CarFrequency = 1;
     _CanisterFrequency = 0.5;
     _ToolboxFrequency = 0.25;
@@ -16,12 +16,21 @@ GameObjectManager::~GameObjectManager() {
     _Bullets.clear();
 }
 
+void GameObjectManager::load() {
+    std::cout << "Loading GameObject textures..." << std::endl;
+
+    GameObjectFactory::load();
+
+    _ExplosionTexture.loadFromFile("Resources/Texture/Animation/explosion.png");
+}
+
 void GameObjectManager::update(float frameTime) {
 
     _Player->update(frameTime, _FW.getLevelManager().getRoadSpeed());
 
     if (!_Player->isAlive() && !_Player->isDying()) {
         _FW.getLevelManager().setMoving(false);
+        _FW.getSoundManager().getLevelMusic()->stop();
         _FW.advanceToGameState(GameState::GameOver);
     }
 
@@ -29,43 +38,23 @@ void GameObjectManager::update(float frameTime) {
 
     checkForCollisions(frameTime);
 
+    switchLane(frameTime);
+
     deleteAllOffScreenObjects();
 
     deleteDestroyedCars();
 
-    // TODO Activate BossFight again
-    /*
-    if (_BossFight) {
+    if (_InBossFight) {
         _Boss->update(frameTime, _FW.getLevelManager().getRoadSpeed(), _Bullets, *_Player);
 
-        // Collision player with boss
-        if (_Player->checkForCollision(*_Boss)) {
-            _Animations.push_back(std::shared_ptr<Explosion>(
-                    new Explosion(_Player->getPos(), _ExplosionTexture, sf::Vector2f(0, 0), _SoundEffects,
-                                  _ExplosionSoundBuffer, _FW.getOptionsManager().getVolume())));
-            _PlayerAlive = false;
-        }
-        for (unsigned int i = 0; i < _Bullets.size(); i++) {
-            if (_Boss->checkForCollision(*_Bullets.at(i)) &&
-                _Bullets.at(i)->getType() == GameObjectType::BulletObjectPlayer) {
-                _Boss->takeDamage(_Player->getBulletdamage());
-                playHitSound(_Boss->getPos());
-                deleteObject(_Bullets, i);
-                i--;
-            }
-        }
-        for (unsigned int i = 0; i < _Cars.size(); i++) {
-            if (_Boss->checkForCollision(*_Cars[i])) {
-                std::shared_ptr<Explosion> newExplosion(
-                        new Explosion(_Cars.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _Cars[i]->getSpeed()),
-                                      _SoundEffects, _ExplosionSoundBuffer, _FW.getOptionsManager().getVolume()));
-                _Animations.push_back(newExplosion);
-                deleteObject(_Cars, i);
-                i--;
-            }
+        checkPlayerBossCollision();
+
+        checkBossBulletCollision();
+
+        if (_Boss->hasTraffic()) {
+            checkBossCarsCollision();
         }
     }
-    */
 
     if (_FW.getOptionsManager().getGameMode() != GameMode::InfEnergy) {
         _Player->drainEnergy(frameTime);
@@ -81,17 +70,62 @@ void GameObjectManager::update(float frameTime) {
     }
 }
 
+void GameObjectManager::switchLane(float frameTime) {
+    if (_Cars.size() > 0) {
+        if (_TimePassedSwitch + frameTime >= 1.0f / _SwitchLaneFrequency) {
+            _TimePassedSwitch += frameTime - 1 / _SwitchLaneFrequency;
+
+            std::shared_ptr<AICar> selectedCar = _Cars[rand() % _Cars.size()];
+            selectedCar->switchLaneRandomly();
+        } else {
+            _TimePassedSwitch += frameTime;
+        }
+    }
+}
+
+void GameObjectManager::checkBossCarsCollision() {
+    for (unsigned int i = 0; i < _Cars.size(); i++) {
+        if (_Boss->checkForCollision(*_Cars[i])) {
+            std::shared_ptr<Explosion> newExplosion(
+                    new Explosion(_Cars.at(i)->getPos(), _ExplosionTexture,
+                                  sf::Vector2f(0, _Cars[i]->getSpeed())));
+            _Animations.push_back(newExplosion);
+            deleteObject(_Cars, i);
+        }
+    }
+}
+
+void GameObjectManager::checkBossBulletCollision() {
+    for (unsigned int i = 0; i < _Bullets.size(); i++) {
+        if (_Boss->checkForCollision(*_Bullets.at(i)) &&
+            _Bullets.at(i)->getType() == GameObjectType::BulletObjectPlayer) {
+            _Boss->takeDamage(_Player->getBulletdamage());
+            _FW.getSoundManager().playHitSound(_Boss->getPos());
+            deleteObject(_Bullets, i);
+        }
+    }
+}
+
+void GameObjectManager::checkPlayerBossCollision() {
+    if (_Player->checkForCollision(*_Boss)) {
+        std::shared_ptr<Explosion> explosion = std::make_shared<Explosion>(_Player->getPos(), _ExplosionTexture,
+                                                                           sf::Vector2f(0, 0));
+        _Animations.push_back(explosion);
+        killPlayer();
+    }
+}
+
 void GameObjectManager::deleteDestroyedCars() {
-    if (!_BossFight || (_BossFight && getBossCar()->hasTraffic())) {
+    if (!_InBossFight || (_InBossFight && getBossCar()->hasTraffic())) {
         for (unsigned int i = 0; i < _Cars.size(); i++) {
             if (_Cars.at(i)->getHealth() <= 0) {
                 _FW.getLevelManager().addScore(ScoreEvent::DestroyedCar, _Cars.at(i)->getMaxHealth());
-                std::shared_ptr<Explosion> newExplosion(
-                        new Explosion(_Cars.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _Cars[i]->getSpeed())));
+                std::shared_ptr<Explosion> explosion = std::make_shared<Explosion>(_Cars.at(i)->getPos(),
+                                                                                   _ExplosionTexture, sf::Vector2f(0,
+                                                                                                                   _Cars[i]->getSpeed()));
                 _FW.getSoundManager().playExplosionSound(_Cars.at(i)->getPos());
-                _Animations.push_back(newExplosion);
+                _Animations.push_back(explosion);
                 deleteObject(_Cars, i);
-                i--;
             }
         }
     }
@@ -113,7 +147,6 @@ void GameObjectManager::deleteOffScreenObjects(GameObjectList &goList) {
             goList.at(i)->getPos().x + goList.at(i)->getWidth() / 2 <= 0 ||
             goList.at(i)->getPos().x - goList.at(i)->getWidth() / 2 >= SCREENWIDTH) {
             deleteObject(goList, i);
-            i--;
         }
     }
 }
@@ -122,7 +155,7 @@ void GameObjectManager::checkForCollisions(float frameTime) {
 
     checkPlayerForCollisions(frameTime);
 
-    if (!_BossFight || (_BossFight && getBossCar()->hasTraffic())) {
+    if (!_InBossFight || (_InBossFight && getBossCar()->hasTraffic())) {
 
         // Check AICars for collision
         for (unsigned int i = 0; i < _Cars.size(); i++) {
@@ -133,6 +166,13 @@ void GameObjectManager::checkForCollisions(float frameTime) {
                         int minSpeed = std::min({_Cars.at(i)->getSpeed(), _Cars.at(j)->getSpeed()});
                         _Cars.at(i)->setSpeed(minSpeed);
                         _Cars.at(j)->setSpeed(minSpeed);
+                    }
+                }
+
+                if (i != j) {
+                    if (_Cars[i]->checkForCollision(*_Cars[j])) {
+                        _Cars.at(i)->takeDamage(500);
+                        _Cars.at(j)->takeDamage(500);
                     }
                 }
             }
@@ -169,7 +209,6 @@ void GameObjectManager::checkPlayerForCollisions(float frameTime) {
                     }
                     _FW.getSoundManager().playHitSound(_Player->getPos());
                     deleteObject(_Bullets, i);
-                    i--;
                     break;
             }
         }
@@ -183,34 +222,31 @@ void GameObjectManager::checkPlayerForCollisions(float frameTime) {
                 case GameObjectType::Canister:
                     _Player->addEnergy();
                     deleteObject(_PickupItems, i);
-                    i--;
                     break;
                 case GameObjectType::Tools:
                     _Player->addHealth();
                     deleteObject(_PickupItems, i);
-                    i--;
                     break;
             }
         }
     }
 
-    if (!_BossFight || (_BossFight && getBossCar()->hasTraffic())) {
+    if (!_InBossFight || (_InBossFight && getBossCar()->hasTraffic())) {
 
         // Collision with AICars
         for (unsigned int i = 0; i < _Cars.size(); i++) {
             _Cars.at(i)->update(frameTime, _FW.getLevelManager().getRoadSpeed());
             if (_Player->isAlive() && _Player->checkForCollision(*_Cars.at(i))) {
                 // FIXME reenable invincibility mode
-//            if (_FW.getOptionsManager().getGameMode() == GameMode::Invincible) {
-//                const std::shared_ptr<Explosion> newExplosion(
-//                        new Explosion(_Cars.at(i)->getPos(), _ExplosionTexture, sf::Vector2f(0, _Cars[i]->getSpeed()),
-//                                      _SoundEffects, _ExplosionSoundBuffer, _FW.getOptionsManager().getVolume()));
-//                _Animations.push_back(newExplosion);
-//                deleteObject(_Cars, i);
-//                i--;
-//            } else {
-                killPlayer();
-//            }
+                if (_FW.getOptionsManager().getGameMode() == GameMode::Invincible) {
+                    const std::shared_ptr<Explosion> newExplosion(
+                            new Explosion(_Cars.at(i)->getPos(), _ExplosionTexture,
+                                          sf::Vector2f(0, _Cars[i]->getSpeed())));
+                    _Animations.push_back(newExplosion);
+                    deleteObject(_Cars, i);
+                } else {
+                    killPlayer();
+                }
             }
         }
     }
@@ -221,42 +257,32 @@ void GameObjectManager::killPlayer() {
     _FW.getSoundManager().playExplosionSound(_Player->getPos());
 }
 
-void GameObjectManager::spawnObjects(float frameTime) {
-
-    spawnAICar(frameTime);
-
-    spawnBullet(frameTime);
-
-    spawnCanister(frameTime);
-
-    spawnToolbox(frameTime);
-}
-
 bool GameObjectManager::bossIsDead() {
-    if (_BossFight) {
+    if (_InBossFight) {
         if (getBossCar()->getHealth() <= 0) {
             _AboutToLevelUp = true;
-        }
-        if (_AboutToLevelUp && getBossCar()->isDoneExploding(_ExplosionTexture)) {
-            _BossFight = false;
-            _AboutToLevelUp = false;
-            _Player->resetResources();
+            if (getBossCar()->isDoneExploding(_ExplosionTexture)) {
+                _InBossFight = false;
+                _AboutToLevelUp = false;
+                _Player->resetResources();
 
-            while (_PickupItems.size() != 0) {
-                deleteObject(_PickupItems, 0);
-            }
-            while (_Cars.size() != 0) {
-                deleteObject(_Cars, 0);
-            }
-            while (_Bullets.size() != 0) {
-                deleteObject(_Bullets, 0);
-            }
+                while (_PickupItems.size() != 0) {
+                    unsigned int id = 0;
+                    deleteObject(_PickupItems, id);
+                }
+                while (_Cars.size() != 0) {
+                    unsigned int id = 0;
+                    deleteObject(_Cars, id);
+                }
+                while (_Bullets.size() != 0) {
+                    unsigned int id = 0;
+                    deleteObject(_Bullets, id);
+                }
 
-            // FIXME move this to levelmanager::addScore
-//            _CarScore =
-//                    5000 + 10000 * _FW.getOptionsManager().getDifficulty() * _FW.getOptionsManager().getDifficulty();
+                _FW.getLevelManager().addScore(ScoreEvent::DefeatedBoss, 0);
 
-            return true;
+                return true;
+            }
         }
     }
     return false;
@@ -266,7 +292,7 @@ void GameObjectManager::enterBossFight() {
     _Boss = GameObjectFactory::getBossCar((_FW.getLevelManager().getLevel() - 1) % 4,
                                           (int) _FW.getOptionsManager().getDifficulty(),
                                           _FW.getLevelManager().getBossHP());
-    _BossFight = true;
+    _InBossFight = true;
 }
 
 void GameObjectManager::resetGameObjects() {
@@ -288,9 +314,10 @@ void GameObjectManager::resetGameObjects() {
     _TimePassedBullet = 0.0f;
     _TimePassedCanister = 0.0f;
     _TimePassedToolbox = 0.0f;
+    _TimePassedSwitch = 0.0f;
 
     _AboutToLevelUp = false;
-    _BossFight = false;
+    _InBossFight = false;
 }
 
 bool GameObjectManager::emptyScreen() {
@@ -302,41 +329,43 @@ bool GameObjectManager::emptyScreen() {
     return false;
 }
 
-void GameObjectManager::load() {
-    std::cout << "Loading GameObject textures..." << std::endl;
+void GameObjectManager::spawnObjects(float frameTime) {
+    if (!_AboutToLevelUp) {
+        spawnAICar(frameTime);
 
-    GameObjectFactory::load();
+        spawnToolbox(frameTime);
 
-    _ExplosionTexture.loadFromFile("Resources/Texture/Animation/explosion.png");
+        spawnCanister(frameTime);
+    }
+
+    spawnBullet(frameTime);
 }
 
 void GameObjectManager::spawnAICar(float frameTime) {
-    if (!_BossFight || (_BossFight && getBossCar()->hasTraffic())) {
-        if (!_AboutToLevelUp) {
-            if (_TimePassedCar + frameTime > 1 / _CarFrequency) {
-                _TimePassedCar += frameTime - 1 / _CarFrequency;
+    if (!_InBossFight || (_InBossFight && getBossCar()->hasTraffic())) {
+        if (_TimePassedCar + frameTime > 1 / _CarFrequency) {
+            _TimePassedCar += frameTime - 1 / _CarFrequency;
 
-                std::shared_ptr<AICar> newAiCar = GameObjectFactory::getAICar(_FW.getLevelManager().getAiHP(),
-                                                                              _FW.getLevelManager().getRoadSpeed());
+            std::shared_ptr<AICar> newAiCar = GameObjectFactory::getAICar(_FW.getLevelManager().getAiHP(),
+                                                                          _FW.getLevelManager().getRoadSpeed());
 
-                for (unsigned int i = 0; i < _Cars.size(); i++) {
-                    if (_Cars.at(i)->getLane() == newAiCar->getLane() &&
-                        _Cars.at(i)->getPos().y < _Cars.at(i)->getHeight() / 2.0f + 20) {
-                        return;
-                    }
+            for (unsigned int i = 0; i < _Cars.size(); i++) {
+                if (_Cars.at(i)->getLane() == newAiCar->getLane() &&
+                    _Cars.at(i)->getPos().y < _Cars.at(i)->getHeight() / 2.0f + 20) {
+                    return;
                 }
-
-                _Cars.push_back(newAiCar);
-
-            } else {
-                _TimePassedCar += frameTime;
             }
+
+            _Cars.push_back(newAiCar);
+
+        } else {
+            _TimePassedCar += frameTime;
         }
     }
 }
 
 void GameObjectManager::spawnBullet(float frameTime) {
-    if (!_BossFight || (_BossFight && getBossCar()->hasTraffic())) {
+    if (!_InBossFight || (_InBossFight && getBossCar()->hasTraffic())) {
         if (_Player->isAlive() && _TimePassedBullet + frameTime > 1 / _BulletFrequency) {
             _TimePassedBullet += frameTime - 1 / _BulletFrequency;
             if (_Cars.size() == 0)
@@ -361,27 +390,33 @@ void GameObjectManager::spawnBullet(float frameTime) {
 }
 
 void GameObjectManager::spawnToolbox(float frameTime) {
-    if (!_AboutToLevelUp) {
-        _TimePassedToolbox += frameTime;
-        if (_TimePassedToolbox > 1.0f / _ToolboxFrequency &&
-            _FW.getOptionsManager().getGameMode() != GameMode::Invincible) {
-            _TimePassedToolbox -= 1.0f / _ToolboxFrequency;
-            _PickupItems.push_back(GameObjectFactory::getToolbox(sf::Vector2f(std::rand() % 3 * 150 + 150, -10)));
+    _TimePassedToolbox += frameTime;
+    if (_TimePassedToolbox > 1.0f / _ToolboxFrequency &&
+        _FW.getOptionsManager().getGameMode() != GameMode::Invincible) {
+        _TimePassedToolbox -= 1.0f / _ToolboxFrequency;
+        _PickupItems.push_back(GameObjectFactory::getToolbox(sf::Vector2f(std::rand() % 3 * 150 + 150, -10)));
 
-            // FIXME should we really recalculate the freq after every spawn?
-            calculateToolboxFrequency();
-        }
+        // FIXME should we really recalculate the freq after every spawn?
+        calculateToolboxFrequency();
     }
 }
 
 void GameObjectManager::spawnCanister(float frameTime) {
-    if (!_AboutToLevelUp) {
-        _TimePassedCanister += frameTime;
-        if (_TimePassedCanister > 1.0f / _CanisterFrequency) {
-            _TimePassedCanister -= 1.0f / _CanisterFrequency;
-            _PickupItems.push_back(GameObjectFactory::getCanister(sf::Vector2f(std::rand() % 3 * 150 + 150, -20)));
-        }
+    _TimePassedCanister += frameTime;
+    if (_TimePassedCanister > 1.0f / _CanisterFrequency) {
+        _TimePassedCanister -= 1.0f / _CanisterFrequency;
+        _PickupItems.push_back(GameObjectFactory::getCanister(sf::Vector2f(std::rand() % 3 * 150 + 150, -20)));
     }
+}
+
+void GameObjectManager::calculateAllFrequencies() {
+    //TODO scale with difficulty
+    _SwitchLaneFrequency = 0.5f;
+
+    calculateAiCarFrequency();
+    calculateBulletFrequency();
+    calculateCanisterFrequency();
+    calculateToolboxFrequency();
 }
 
 void GameObjectManager::calculateAiCarFrequency() {
@@ -400,7 +435,6 @@ void GameObjectManager::calculateAiCarFrequency() {
             break;
     }
 }
-
 
 void GameObjectManager::calculateBulletFrequency() {
     switch (_FW.getOptionsManager().getDifficulty()) {
@@ -451,13 +485,6 @@ void GameObjectManager::calculateToolboxFrequency() {
             _ToolboxFrequency = (float) (std::rand() % 20) / 1000.f + 0.020f;
             break;
     }
-}
-
-void GameObjectManager::calculateAllFrequencies() {
-    calculateAiCarFrequency();
-    calculateBulletFrequency();
-    calculateCanisterFrequency();
-    calculateToolboxFrequency();
 }
 
 void GameObjectManager::nextPlayerCar() {

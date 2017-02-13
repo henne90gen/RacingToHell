@@ -23,5 +23,6 @@ enum class MenuResult {
     GameModeChange,
     DifficultyChange,
     DebugChange,
-    FPSChange
+    FPSChange,
+    VSyncChanged
 };

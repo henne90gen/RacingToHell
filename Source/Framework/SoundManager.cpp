@@ -49,8 +49,8 @@ void SoundManager::load() {
 
 void SoundManager::update() {
     updateVolumes();
-
-    updateMenu();
+	
+	updateMenu();
 
     updateLevel();
 
@@ -74,10 +74,6 @@ void SoundManager::updateMenu() {
         if (_MenuMusic->getStatus() != sf::Music::Playing) {
             _MenuMusic->play();
         }
-    } else {
-        if (_MenuMusic->getStatus() == sf::Music::Playing) {
-            _MenuMusic->stop();
-        }
     }
 }
 
@@ -85,10 +81,6 @@ void SoundManager::updateLevel() {
     if (isInLevel()) {
         if (_LevelMusic->getStatus() != sf::Music::Playing) {
             _LevelMusic->play();
-        }
-    } else {
-        if (_LevelMusic->getStatus() == sf::Music::Playing) {
-            _LevelMusic->stop();
         }
     }
 }
@@ -158,8 +150,7 @@ bool SoundManager::isInMenu() {
 }
 
 bool SoundManager::isInLevel() {
-    GameState gs = _FW.getCurrentGameState();
-    return gs == GameState::Running;
+	return _FW.getCurrentGameState() == GameState::Running;
 }
 
 unsigned long SoundManager::getLevelMusicIndex() {
@@ -167,6 +158,7 @@ unsigned long SoundManager::getLevelMusicIndex() {
 }
 
 void SoundManager::nextLevel() {
+    _LevelMusic->stop();
     for (unsigned long i = 0; i < _AllLevelMusic.size(); i++) {
         if (i == getLevelMusicIndex()) {
             _LevelMusic = _AllLevelMusic.at(i);

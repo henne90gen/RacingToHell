@@ -33,7 +33,9 @@ void Framework::run() {
 //    Render at modular FPS
 //    All measurements are in microseconds
 
-    while (_IsRunning) {
+	int sleepCounter = 0;
+
+	while (_IsRunning) {
         sf::Clock renderClock;
         sf::Time targetFrameTime = sf::seconds(1.0f / _OptionsManager.getFPS());
         _FrameTime = targetFrameTime.asSeconds();
@@ -45,23 +47,25 @@ void Framework::run() {
         sf::Time actualFrameTime = renderClock.getElapsedTime();
 
         if (actualFrameTime >= targetFrameTime) {
-            std::cout << "FAIL" << std::endl;
+            float delta = (actualFrameTime - targetFrameTime).asSeconds();
+            std::cout << "Delta " << sleepCounter << ": " << delta << std::endl;
+            update(delta);
+            sleepCounter = 0;
+        } else {
+            sleepCounter++;
+            sf::sleep(targetFrameTime - actualFrameTime);
         }
 
-        sf::sleep(targetFrameTime - actualFrameTime);
+        _RenderWindow.display();
     }
 }
 
 void Framework::render() {
-    _RenderWindow.clear(sf::Color::Black);
-
     setMouseVisibility();
 
     for (unsigned int i = 0; i < _DisplayedGameScreens.size(); i++) {
         _DisplayedGameScreens.at(i)->render(_RenderWindow);
     }
-
-    _RenderWindow.display();
 }
 
 void Framework::handleEvents() {
@@ -78,20 +82,33 @@ void Framework::handleEvents() {
 }
 
 void Framework::update(float frameTime) {
+	//sf::Clock myClock;
+
     if (getCurrentGameState() != GameState::Pause &&
         !(getCurrentGameState() == GameState::Options && getLastGameState() == GameState::Pause)) {
         _LevelManager.update(frameTime);
     }
 
+
+	//std::cout << "level " << myClock.restart().asSeconds() << std::endl;
+
     if (getCurrentGameState() == GameState::Running) {
         _GameObjectManager.update(frameTime);
     }
 
+
+	//std::cout << "gom " << myClock.restart().asSeconds() << std::endl;
+
     _SoundManager.update();
+
+
+	//std::cout << "sm " << myClock.restart().asSeconds() << std::endl;
 
     for (unsigned int i = 0; i < _DisplayedGameScreens.size(); i++) {
         _DisplayedGameScreens.at(i)->update(frameTime);
     }
+
+	//std::cout << "screens " << myClock.restart().asSeconds() << std::endl;
 }
 
 void Framework::load() {
@@ -148,6 +165,7 @@ void Framework::setMouseVisibility() {
         case GameState::Pause:
         case GameState::MainMenu:
         case GameState::LoadingToMain:
+        case GameState::GameOverMultiplayer:
             visible = true;
             break;
         case GameState::Running:
@@ -156,15 +174,10 @@ void Framework::setMouseVisibility() {
         case GameState::Loading:
         case GameState::BossFight:
         case GameState::LevelUp:
-            visible = false;
-            break;
         case GameState::Exiting:
-            break;
-        case GameState::GameOverMultiplayer:
-            break;
         case GameState::BossFightMultiplayer:
-            break;
         case GameState::Empty:
+            visible = false;
             break;
     }
 
@@ -174,8 +187,7 @@ void Framework::setMouseVisibility() {
         while (cursor > 0) {
             cursor = ShowCursor(0);
         }
-    }
-    else {
+    } else {
         int cursor = ShowCursor(1);
         while (cursor < 0) {
             cursor = ShowCursor(1);

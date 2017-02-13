@@ -51,6 +51,10 @@ public:
      */
     void nextLevel();
 
+    sf::Music *getLevelMusic() { return _LevelMusic.get(); }
+
+    sf::Music *getMenuMusic() { return _MenuMusic.get(); }
+
     /**
      * @return Size of sound effects vector
      */

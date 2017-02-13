@@ -26,14 +26,6 @@ public:
      */
     void resetToLevelOne();
 
-    bool isResettingLevel() {
-        return _IsResettingLevel;
-    }
-
-    void stopResettingLevel() {
-        _IsResettingLevel = false;
-    }
-
     /**
      * Tells the Level to increase the difficulty and to change the background
      */
@@ -48,11 +40,6 @@ public:
      * @return int Speed of the road
      */
     int getRoadSpeed();
-
-    /**
-     * Resets the internal timer of the Level
-     */
-    void resetTimer() { _LevelTime = 0; }
 
     /**
      * @return float Time in seconds that has passed since the start of the level
@@ -90,9 +77,9 @@ private:
 
     int _Level;
 
-    bool _IsResettingLevel, _ShouldMove;
+    bool _ShouldMove;
 
-    std::vector<std::shared_ptr<sf::Texture>> _Textures;
+    sf::Texture *_Textures;
 
     sf::Sprite _Sprite;
 };

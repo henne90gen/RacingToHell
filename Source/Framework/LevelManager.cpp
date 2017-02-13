@@ -2,8 +2,24 @@
 #include "Framework/LevelManager.h"
 #include "Framework/Framework.h"
 
-void LevelManager::update(float frameTime) {
+void LevelManager::load() {
+    std::cout << "Loading level textures..." << std::endl;
 
+    _Textures = new sf::Texture[4];
+
+    for (int i = 1; i <= 4; i++) {
+        if (!_Textures[i - 1].loadFromFile("Resources/Texture/Road/Road" + std::to_string(i) + ".jpg")) {
+            std::cout << "Couldn't load road texture." << std::endl;
+        }
+    }
+
+    _Textures[0].setRepeated(true);
+    _Sprite.setTexture(_Textures[0]);
+    _Sprite.setPosition(sf::Vector2f(0, -1600));
+    _Sprite.setTextureRect(sf::IntRect(0, 0, 600, 2400));
+}
+
+void LevelManager::update(float frameTime) {
     if (!_ShouldMove) {
         return;
     }
@@ -16,11 +32,18 @@ void LevelManager::update(float frameTime) {
     }
 
     if (_FW.getCurrentGameState() == GameState::Running) {
-        _LevelTime += frameTime;
+        if (!_FW.getGOM().isInBossFight()) {
+            _LevelTime += frameTime;
+        }
         if (_FW.getGOM().getPlayerCar()->isAlive()) {
             addScore(ScoreEvent::Tick, frameTime);
         }
         if (_LevelTime >= _TotalLevelTime) {
+            if (_FW.getGOM().emptyScreen()) {
+                _FW.getGOM().enterBossFight();
+                _LevelTime = 0;
+            }
+        } else if (_FW.getGOM().bossIsDead()) {
             levelUp();
         }
     }
@@ -29,16 +52,22 @@ void LevelManager::update(float frameTime) {
 void LevelManager::levelUp() {
     _LevelTime = 0;
     _Level++;
+
+    _Textures[(_Level - 1) % 4].setRepeated(true);
+    _Sprite.setTexture(_Textures[(_Level - 1) % 4]);
+
     _FW.getSoundManager().nextLevel();
 }
 
 void LevelManager::resetToLevelOne() {
     _Level = 1;
-    _TotalLevelTime = 60.0f;
+    _TotalLevelTime = 5.0f;
     _LevelTime = 0;
-    _IsResettingLevel = true;
     _ShouldMove = true;
     _Score = 0;
+
+    _Textures[0].setRepeated(true);
+    _Sprite.setTexture(_Textures[0]);
 }
 
 int LevelManager::getRoadSpeed() {
@@ -52,18 +81,6 @@ int LevelManager::getRoadSpeed() {
         case Difficulty::Insane:
             return (110 * _Level + 150);
     }
-}
-
-void LevelManager::load() {
-    std::cout << "Loading level textures..." << std::endl;
-
-    for (int i = 1; i <= 4; i++) {
-        std::shared_ptr<sf::Texture> texture = std::make_shared<sf::Texture>();
-        (*texture).loadFromFile("Resources/Texture/Road/Road" + std::to_string(i) + ".jpg");
-        _Textures.push_back(texture);
-    }
-    _Sprite.setTexture((*_Textures.at(0)));
-    _Sprite.setPosition(sf::Vector2f(0, -1600));
 }
 
 void LevelManager::addScore(ScoreEvent event, float modifier) {
@@ -100,7 +117,9 @@ void LevelManager::addScore(ScoreEvent event, float modifier) {
             _Score += 1.5 * modifier;
             break;
         case ScoreEvent::DefeatedBoss:
-            // TODO add points for killing a boss
+            // TODO review added points
+            _Score += 5000 + 10000 * (int) _FW.getOptionsManager().getDifficulty() *
+                             (int) _FW.getOptionsManager().getDifficulty();
             break;
         case ScoreEvent::LevelUp:
             // TODO add point for a level up

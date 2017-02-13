@@ -55,6 +55,8 @@ public:
      */
     void enterBossFight();
 
+    bool isInBossFight() { return _InBossFight; }
+
     /**
      * Resets the GameObjectManager to a state where a new game can begin
      * @param selectedCar Index of the car that was selected by the player
@@ -105,10 +107,10 @@ private:
 
     sf::Texture _ExplosionTexture;
 
-    float _CarFrequency, _BulletFrequency, _CanisterFrequency, _ToolboxFrequency, _TimePassedCar, _TimePassedBullet, _TimePassedCanister, _TimePassedToolbox;
+    float _CarFrequency, _BulletFrequency, _CanisterFrequency, _ToolboxFrequency, _TimePassedCar, _TimePassedBullet, _TimePassedCanister, _TimePassedToolbox, _SwitchLaneFrequency, _TimePassedSwitch;
 
     int _PlayerBulletSpeed, _AIBulletSpeed;
-    bool _AboutToLevelUp, _BossFight;
+    bool _AboutToLevelUp, _InBossFight;
 
     void deleteAllOffScreenObjects();
 
@@ -120,13 +122,16 @@ private:
      * @param id Index of the GameObject that will be deleted
      */
     template<typename T>
-    void deleteObject(T &arr, unsigned int id) {
+    void deleteObject(T &arr, unsigned int &id) {
         arr.erase(arr.begin() + id);
+        id--;
     }
 
     void checkForCollisions(float frameTime);
 
     void checkPlayerForCollisions(float frameTime);
+
+	void switchLane(float frameTime);
 
     /**
      * Removes cars that don't have enough health any more.
@@ -168,4 +173,10 @@ private:
     void spawnToolbox(float frameTime);
 
     void spawnCanister(float frameTime);
+
+    void checkPlayerBossCollision();
+
+    void checkBossBulletCollision();
+
+    void checkBossCarsCollision();
 };

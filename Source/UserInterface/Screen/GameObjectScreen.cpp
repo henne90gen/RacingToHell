@@ -10,22 +10,21 @@ GameObjectScreen::GameObjectScreen(Framework &framework) : GameScreen(framework)
 }
 
 void GameObjectScreen::render(sf::RenderWindow &renderWindow) {
-    for (unsigned int i = 0; i < _FW.getGOM().getCars().size(); i++) {
-        _FW.getGOM().getCars().at(i)->render(renderWindow);
-    }
-
     for (unsigned int i = 0; i < _FW.getGOM().getPickupItems().size(); i++) {
         _FW.getGOM().getPickupItems().at(i)->render(renderWindow);
     }
+
+	for (unsigned int i = 0; i < _FW.getGOM().getCars().size(); i++) {
+		_FW.getGOM().getCars().at(i)->render(renderWindow);
+	}
 
     for (unsigned int i = 0; i < _FW.getGOM().getBullets().size(); i++) {
         _FW.getGOM().getBullets().at(i)->render(renderWindow);
     }
 
-    // TODO render boss fight
-//    if (_BossFight) {
-//        _Boss->render(renderWindow);
-//    }
+    if (_FW.getGOM().isInBossFight()) {
+        _FW.getGOM().getBossCar()->render(renderWindow);
+    }
 
     _FW.getGOM().getPlayerCar()->render(renderWindow, !_FW.isMouseVisible());
 
@@ -48,11 +47,6 @@ void GameObjectScreen::update(float frameTime) {
 
 void GameObjectScreen::handleEvent(sf::Event &event) {
     if (_FW.getCurrentGameState() == GameState::Running) {
-        if (event.type == sf::Event::EventType::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-            _FW.getLevelManager().setMoving(false);
-            _FW.advanceToGameState(GameState::Pause);
-            return;
-        }
         if (_FW.getGOM().getPlayerCar()->isAlive()) {
             _FW.getGOM().getPlayerCar()->handleEvent(event);
             // TODO maybe move this into player

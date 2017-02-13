@@ -32,7 +32,7 @@ class Framework {
 public:
     Framework();
 
-    ~Framework();
+    ~Framework() {}
 
     /**
      * Starts the main game loop

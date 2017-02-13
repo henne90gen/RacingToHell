@@ -27,8 +27,6 @@ Framework::Framework() : _FrameTime(0), _IsRunning(true), _OptionsManager(*this)
     load();
 }
 
-Framework::~Framework() {}
-
 void Framework::run() {
 //    Take a look at this for examples: http://gameprogrammingpatterns.com/game-loop.html
 //    Update at a maximum of 1000 UPS

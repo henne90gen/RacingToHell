@@ -32,22 +32,30 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
         if (driveToNextPosition(frameTime)) {
             switch (_Movement) {
                 case Movement::DRIVETODEFAULT:
-                    _Movement = Movement::LEFTRIGHT;
-                    _Speed = 200;
-                    _Attack = true;
-                    _PhaseClock.restart();
-                    break;
-                case Movement::LEFTRIGHT:
-                    _MovementSwitch = !_MovementSwitch;
-                    if (_MovementSwitch) {
-                        _NextPosition = getPos() + sf::Vector2f(
-                                (SCREENWIDTH - getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
-                    } else {
-                        _NextPosition = getPos() -
-                                        sf::Vector2f((getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f,
-                                                     0.0f);
-                    }
-                    break;
+				{
+					_Movement = Movement::LEFTRIGHT;
+					_Speed = 200;
+					_Attack = true;
+					_PhaseClock.restart();
+
+				} break;
+                
+				case Movement::LEFTRIGHT:
+				{  
+					_MovementSwitch = !_MovementSwitch;
+					if (_MovementSwitch) 
+					{
+						_NextPosition = getPos() + sf::Vector2f(
+							(SCREENWIDTH - getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
+					}
+					else 
+					{
+						_NextPosition = getPos() -
+							sf::Vector2f((getPos().x - getWidth() / 2) * (std::rand() % 100) / 100.0f,
+								0.0f);
+					}
+				} break;
+
                 default:
                     break;
             }
@@ -118,9 +126,8 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
                         _GunOrientation = divideByLength(
                                 sf::Vector2f(((float) (std::rand() - (float) (RAND_MAX) / 2) / (float) (RAND_MAX)),
                                              ((float) (std::rand() - (float) (RAND_MAX) / 2) / (float) (RAND_MAX))));
-                        // FIXME shooting shouldn't require volume
-//                        BossCar::shootBullet(bullets, calcBulletPosition(), _GunOrientation,
-//                                             (float) (_Event1Counter % 5 < 2) * _Volume);
+
+						BossCar::shootBullet(bullets, calcBulletPosition(), _GunOrientation);
                     }
                     break;
             }

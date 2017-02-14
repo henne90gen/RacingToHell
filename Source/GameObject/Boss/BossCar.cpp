@@ -47,7 +47,9 @@ int BossCar::getBossEvent() {
 }
 
 bool BossCar::driveToNextPosition(float frameTime) {
-    if (std::abs((getPos().y - _NextPosition.y)) < 0.1f && std::abs((getPos().x - _NextPosition.x)) < 0.1f) {
+	float margin = 0.5f * frameTime * (float)_Speed;
+
+    if (std::abs((getPos().y - _NextPosition.y)) < margin && std::abs((getPos().x - _NextPosition.x)) < margin) {
         return true;
     } else {
         sf::Vector2f movement = sf::Vector2f(_NextPosition.x - getPos().x, _NextPosition.y - getPos().y);

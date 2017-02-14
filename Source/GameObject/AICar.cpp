@@ -19,8 +19,7 @@ AICar::AICar(sf::Packet &packet, sf::Texture &texture, sf::IntRect textureRect) 
 void AICar::update(float frameTime, int roadSpeed) {
     Car::update(frameTime, roadSpeed);
 
-	//to avoid rounding fails
-	float margin = 1.0f;
+	float margin = 0.5f * frameTime * (float)_Speed;
 	sf::Vector2f newPos;
 
 	if (getPos().x >= laneToX() - margin && getPos().x <= laneToX() + margin)

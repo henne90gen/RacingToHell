@@ -39,7 +39,7 @@ void PlayerCar::render(sf::RenderWindow &window, bool renderCrosshair) {
             window.draw(_Crosshair);
         }
     } else {
-        _Animation->render(window);
+		_Animation->render(window);
     }
 }
 

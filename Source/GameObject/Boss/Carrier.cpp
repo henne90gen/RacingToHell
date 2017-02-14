@@ -119,9 +119,8 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr
                                  i <= 2 * PI; i += PI / (7 + 2 * _Difficulty)) {
                                 _Event2Counter++;
                                 sf::Vector2f orientation = sf::Vector2f(std::cos(i), std::sin(i));
-                                // FIXME let him shoot again
-//                                BossCar::shootBullet(bullets, getPos(), orientation,
-//                                                     (float) (_Event2Counter % 4 == 0) * _Volume);
+                                
+								BossCar::shootBullet(bullets, calcBulletPosition(), _GunOrientation);
                             }
 
                             if (_Event1Counter + 1 < 4 + _Difficulty) {
@@ -147,9 +146,9 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr
                             for (float i = 0.0f; i < 2 * PI; i += PI / (4 + _Difficulty)) {
                                 _Event1Counter++;
                                 _GunOrientation = sf::Vector2f(std::cos(i), std::sin(i));
-                                // FIXME let him shoot again
-//                                BossCar::shootBullet(bullets, calcBulletPosition(), _GunOrientation,
-//                                                     (float) (_Event1Counter % 4 == 0) * _Volume);
+                               
+								BossCar::shootBullet(bullets, calcBulletPosition(), _GunOrientation);
+
                                 _GunOrientation = divideByLength(player.getPos() - getPos());
                             }
                         }
@@ -183,9 +182,7 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr
                         _GunOrientation = divideByLength(
                                 sf::Vector2f(((float) (std::rand() - (float) (RAND_MAX) / 2) / (float) (RAND_MAX)),
                                              ((float) (std::rand() - (float) (RAND_MAX) / 2) / (float) (RAND_MAX))));
-                        // FIXME let him shoot again
-//                        BossCar::shootBullet(bullets, calcBulletPosition(), _GunOrientation,
-//                                             (float) (_Event1Counter % 5 < 2) * _Volume);
+						BossCar::shootBullet(bullets, calcBulletPosition(), _GunOrientation);
                     }
                     break;
             }

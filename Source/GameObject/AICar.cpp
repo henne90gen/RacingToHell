@@ -24,7 +24,7 @@ void AICar::update(float frameTime, int roadSpeed) {
 
 	if (getPos().x >= laneToX() - margin && getPos().x <= laneToX() + margin)
 	{
-		newPos.x = getPos().x;
+		newPos.x = laneToX();
 	}
 	else if (getPos().x < laneToX() - margin)
 	{

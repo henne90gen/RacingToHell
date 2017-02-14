@@ -8,6 +8,11 @@ GameObjectManager::GameObjectManager(Framework &framework) : Manager(framework),
     _CanisterFrequency = 0.5;
     _ToolboxFrequency = 0.25;
     _BulletFrequency = 2;
+
+	_Cars.reserve(32);
+	_Bullets.reserve(256);
+	_Animations.reserve(16);
+	_PickupItems.reserve(16); 
 }
 
 GameObjectManager::~GameObjectManager() {

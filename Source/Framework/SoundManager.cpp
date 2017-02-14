@@ -44,6 +44,8 @@ void SoundManager::load() {
     if (!_LevelUpSoundBuffer.loadFromFile(_SoundPath + "levelUp.wav")) {
         std::cerr << "Couldn't load LevelUp sound." << std::endl;
     }
+
+	_SoundEffects.reserve(256);
 }
 
 void SoundManager::update() {

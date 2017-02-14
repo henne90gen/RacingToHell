@@ -289,6 +289,7 @@ bool GameObjectManager::bossIsDead() {
 }
 
 void GameObjectManager::enterBossFight() {
+//    std::cout << "BossHP: " << _FW.getLevelManager().getBossHP() << std::endl;
     _Boss = GameObjectFactory::getBossCar((_FW.getLevelManager().getLevel() - 1) % 4,
                                           (int) _FW.getOptionsManager().getDifficulty(),
                                           _FW.getLevelManager().getBossHP());

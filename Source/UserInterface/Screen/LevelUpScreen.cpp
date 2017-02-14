@@ -46,23 +46,12 @@ void LevelUpScreen::render(sf::RenderWindow &window) {
 }
 
 void LevelUpScreen::update(float frameTime) {
+    if (_Timer.getElapsedTime().asSeconds() > _SoundDelay && !_SoundPlayed) {
+        _FW.getSoundManager().playLevelUpSound();
+        _SoundPlayed = true;
+    }
     if (_Timer.getElapsedTime().asSeconds() > _ShowTime) {
         _Timer.restart();
-        _FW.advanceToGameState(GameState::MainMenu);
-    }
-}
-
-void LevelUpScreen::levelUp() {
-    _Timer.restart();
-    _FadeTimer.restart();
-    _SoundPlayed = false;
-}
-
-void LevelUpScreen::playSound() {
-    if ((_Sound.getStatus() == sf::Sound::Paused || _Sound.getStatus() == sf::Sound::Stopped) && !_SoundPlayed) {
-        if (_Timer.getElapsedTime().asSeconds() > _SoundDelay) {
-            _Sound.play();
-            _SoundPlayed = true;
-        }
+        _FW.advanceToGameState(GameState::Running);
     }
 }

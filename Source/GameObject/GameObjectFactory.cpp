@@ -54,11 +54,12 @@ std::shared_ptr<PlayerCar> GameObjectFactory::getPlayerCar(PlayerCarIndex carSki
 std::shared_ptr<BossCar> GameObjectFactory::getBossCar(int level, int diff, int hp) {
     switch (level) {
         case 0: {
-            std::shared_ptr<Tank> boss(
-                    new Tank(_DeltaID + _CurrentGameObjectID++, diff, hp, (*_BossCarTextures()[0]), _BulletTexture()));
+            std::shared_ptr<Tank> boss = std::make_shared<Tank>(_DeltaID + _CurrentGameObjectID++, diff, hp,
+                                                                (*_BossCarTextures()[0]), _BulletTexture());
             return boss;
         }
         case 1: {
+//            TODO use std::make:shared instead of new-operator
             std::shared_ptr<Mech> boss(new Mech(_DeltaID + _CurrentGameObjectID++, diff, hp, (*_BossCarTextures()[2]),
                                                 (*_BossCarTextures()[3]), _BulletTexture()));
             return boss;

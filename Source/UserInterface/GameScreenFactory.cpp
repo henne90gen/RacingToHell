@@ -48,8 +48,6 @@ std::vector<std::shared_ptr<GameScreen>> GameScreenFactory::getGameScreens(Frame
         case GameState::About:
             screens.push_back(getScreen<AboutMenu>(framework));
             break;
-        case GameState::BossFight:
-            break;
         case GameState::LevelUp:
             screens.push_back(getScreen<LevelUpScreen>(framework));
             break;
@@ -60,7 +58,6 @@ std::vector<std::shared_ptr<GameScreen>> GameScreenFactory::getGameScreens(Frame
         case GameState::Exiting:
             screens.push_back(getScreen<ExitScreen>(framework));
             return screens;
-            // FIXME implement multiplayer stuff
         default:
             break;
     }

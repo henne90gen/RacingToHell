@@ -1,7 +1,3 @@
-//
-// Created by henne on 08.02.17.
-//
-
 #include "stdafx.h"
 #include "Framework/SoundManager.h"
 #include "Framework/Framework.h"
@@ -16,14 +12,14 @@ void SoundManager::load() {
 
 //    Load menu music
     if (!_MenuMusic->openFromFile(_SoundPath + "Music/menu1.ogg")) {
-        std::cout << "Couldn't load music for menu" << std::endl;
+        std::cerr << "Couldn't load music for menu" << std::endl;
     }
 
 //    Load level music
     for (int i = 1; i <= 4; i++) {
         std::shared_ptr<sf::Music> music = std::make_shared<sf::Music>();
         if (!(*music).openFromFile(_SoundPath + "Music/level" + std::to_string(i) + ".ogg")) {
-            std::cout << "Couldn't load music for level " << i << std::endl;
+            std::cerr << "Couldn't load music for level " << i << std::endl;
         }
         _AllLevelMusic.push_back(music);
     }
@@ -31,19 +27,22 @@ void SoundManager::load() {
 
 //    Load sound effects
     if (!_ExplosionSoundBuffer.loadFromFile(_SoundPath + "explosion.wav")) {
-        std::cout << "Couldn't load Explosion sound." << std::endl;
+        std::cerr << "Couldn't load Explosion sound." << std::endl;
     }
     if (!_ImpactSoundBuffer.loadFromFile(_SoundPath + "impact.wav")) {
-        std::cout << "Couldn't load Impact sound." << std::endl;
+        std::cerr << "Couldn't load Impact sound." << std::endl;
     }
     if (!_AIShotSoundBuffer.loadFromFile(_SoundPath + "shotAI.wav")) {
-        std::cout << "Couldn't load AIShot sound." << std::endl;
+        std::cerr << "Couldn't load AIShot sound." << std::endl;
     }
     if (!_PlayerShotSoundBuffer.loadFromFile(_SoundPath + "shotPlayer.wav")) {
-        std::cout << "Couldn't load PlayerShot sound." << std::endl;
+        std::cerr << "Couldn't load PlayerShot sound." << std::endl;
     }
     if (!_GameOverSoundBuffer.loadFromFile(_SoundPath + "gameOver.wav")) {
-        std::cout << "Couldn't load GameOver sound." << std::endl;
+        std::cerr << "Couldn't load GameOver sound." << std::endl;
+    }
+    if (!_LevelUpSoundBuffer.loadFromFile(_SoundPath + "levelUp.wav")) {
+        std::cerr << "Couldn't load LevelUp sound." << std::endl;
     }
 }
 
@@ -141,6 +140,14 @@ void SoundManager::playGameOverSound() {
     gameOverSound->setBuffer(_GameOverSoundBuffer);
     gameOverSound->setVolume(_FW.getOptionsManager().getVolume());
     _SoundEffects.push_back(std::make_pair(gameOverSound, false));
+}
+
+void SoundManager::playLevelUpSound() {
+    std::shared_ptr<sf::Sound> levelUpSound = std::make_shared<sf::Sound>();
+    levelUpSound->setBuffer(_LevelUpSoundBuffer);
+    levelUpSound->setVolume(_FW.getOptionsManager().getVolume());
+    _SoundEffects.push_back(std::make_pair(levelUpSound, false));
+
 }
 
 bool SoundManager::isInMenu() {

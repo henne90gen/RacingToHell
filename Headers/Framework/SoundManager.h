@@ -1,7 +1,3 @@
-//
-// Created by henne on 08.02.17.
-//
-
 #pragma once
 
 #include <GameObject/GameObjectType.h>
@@ -47,6 +43,11 @@ public:
     void playGameOverSound();
 
     /**
+     * Plays a sound effect for a level up
+     */
+    void playLevelUpSound();
+
+    /**
      * Switches the level music to the next track
      */
     void nextLevel();
@@ -73,13 +74,12 @@ private:
     // Music is a pointer because sf::Music can't be copied around
     std::shared_ptr<sf::Music> _MenuMusic, _LevelMusic;
 
-    sf::SoundBuffer _GameOverSoundBuffer;
-
     std::vector<std::shared_ptr<sf::Music>> _AllLevelMusic;
 
     std::vector<std::pair<std::shared_ptr<sf::Sound>, bool>> _SoundEffects;
 
-    sf::SoundBuffer _ExplosionSoundBuffer, _ImpactSoundBuffer, _AIShotSoundBuffer, _PlayerShotSoundBuffer;
+    sf::SoundBuffer _ExplosionSoundBuffer, _ImpactSoundBuffer, _AIShotSoundBuffer, _PlayerShotSoundBuffer,
+            _GameOverSoundBuffer, _LevelUpSoundBuffer;
 
     void updateVolumes();
 

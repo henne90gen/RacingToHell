@@ -172,7 +172,6 @@ void Framework::setMouseVisibility() {
         case GameState::RunningMultiplayer:
         case GameState::Countdown:
         case GameState::Loading:
-        case GameState::BossFight:
         case GameState::LevelUp:
         case GameState::Exiting:
         case GameState::BossFightMultiplayer:
@@ -217,7 +216,6 @@ bool Framework::isMouseVisible() {
         case GameState::Running:
         case GameState::RunningMultiplayer:
         case GameState::Countdown:
-        case GameState::BossFight:
         case GameState::LevelUp:
         case GameState::Exiting:
         case GameState::BossFightMultiplayer:

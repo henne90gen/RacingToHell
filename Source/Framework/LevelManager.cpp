@@ -45,6 +45,7 @@ void LevelManager::update(float frameTime) {
             }
         } else if (_FW.getGOM().bossIsDead()) {
             levelUp();
+            _FW.advanceToGameState(GameState::LevelUp);
         }
     }
 }
@@ -143,7 +144,8 @@ int LevelManager::getAiHP() {
 int LevelManager::getBossHP() {
     switch ((_Level - 1) % 4) {
         case 0:
-            return 4500 + (int) ((_Level - 1) / 4.0f) * 2500;
+            // FIXME change 200 back to 4500
+            return 200 + (int) ((_Level - 1) / 4.0f) * 2500;
         case 1:
             return 5500 + (int) ((_Level - 1) / 4.0f) * 2500;
         case 2:

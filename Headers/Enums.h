@@ -10,7 +10,6 @@ enum class GameState {
     Highscores,
     Options,
     About,
-    BossFight,
     LevelUp,
     GameOver,
     Exiting,

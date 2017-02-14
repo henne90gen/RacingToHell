@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "GameObject/Boss/BossCar.h"
 
-BossCar::BossCar(unsigned int id, sf::Vector2f pos, int difficulty, int Health, float Speed, sf::Texture &Texture,
+BossCar::BossCar(unsigned int id, sf::Vector2f pos, int difficulty, int Health, float Speed, sf::Texture &texture,
                  sf::Texture &bulletTexture) :
-        Car(id, pos, Health, Speed, GameObjectType::Boss, Texture, sf::IntRect()),
-        _Difficulty(difficulty), _BulletSpeed(500), _BulletTexture(bulletTexture), _Movement(Movement::STILL),
+        Car(id, pos, Health, Speed, GameObjectType::Boss, texture,
+            sf::IntRect(0, 0, texture.getSize().x, texture.getSize().y)),
+        _Difficulty((sf::Uint16) difficulty), _BulletSpeed(500), _BulletTexture(bulletTexture),
+        _Movement(Movement::STILL),
         _Attack(false), _HasTraffic(false), _IsExploding(false),
         _Event1Counter(0), _Event2Counter(0), _Event1Frequency(0), _Event2Frequency(0), _Event1Switch(false),
         _Event2Switch(false), _CurrentPhase(0) {

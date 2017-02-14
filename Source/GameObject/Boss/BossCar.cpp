@@ -14,7 +14,8 @@ BossCar::BossCar(unsigned int id, sf::Vector2f pos, int difficulty, int Health, 
 }
 
 BossCar::BossCar(sf::Packet &packet, sf::Texture &texture, sf::Texture &bulletTexture) :
-        Car(packet, GameObjectType::Boss, texture, sf::IntRect()), _BulletSpeed(500),
+        Car(packet, GameObjectType::Boss, texture,
+            sf::IntRect(0, 0, texture.getSize().x, texture.getSize().y)), _BulletSpeed(500),
         _BulletTexture(bulletTexture), _Movement(Movement::STILL), _Attack(false), _HasTraffic(false),
         _IsExploding(false),
         _Event1Counter(0), _Event2Counter(0), _Event1Frequency(0), _Event2Frequency(0), _Event1Switch(false),

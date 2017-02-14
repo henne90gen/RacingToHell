@@ -4,9 +4,9 @@
 
 #pragma once
 
-class Framework;
+#include "Manager.h"
 
-class OptionsManager {
+class OptionsManager : public Manager {
 public:
 
     OptionsManager(Framework &framework);
@@ -66,8 +66,6 @@ public:
     std::vector<float> getGameModeValues() { return _GameModeValues; }
 
 private:
-    Framework &_FW;
-
     std::vector<float> _DifficultyValues = {0.5f, 1.0f, 1.5f, 2.0f};
     std::vector<std::string> _DifficultyStrings = {"Easy", "Normal", "Hard", "Insane"};
 

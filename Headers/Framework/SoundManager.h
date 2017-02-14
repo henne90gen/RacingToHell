@@ -1,10 +1,9 @@
 #pragma once
 
 #include <GameObject/GameObjectType.h>
+#include "Manager.h"
 
-class Framework;
-
-class SoundManager {
+class SoundManager : public Manager {
 public:
     SoundManager(Framework &framework);
 
@@ -67,8 +66,6 @@ public:
     unsigned long getLevelMusicIndex();
 
 private:
-    Framework &_FW;
-
     const std::string _SoundPath = "Resources/Sound/";
 
     // Music is a pointer because sf::Music can't be copied around

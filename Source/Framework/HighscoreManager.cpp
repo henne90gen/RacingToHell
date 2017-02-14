@@ -6,7 +6,7 @@
 #include "Framework/HighscoreManager.h"
 #include "Framework/Framework.h"
 
-HighscoreManager::HighscoreManager(Framework &framework) : _FW(framework), _HighlightedRow(0) {
+HighscoreManager::HighscoreManager(Framework &framework) : Manager(framework), _HighlightedRow(0) {
     loadScoreTable();
 }
 

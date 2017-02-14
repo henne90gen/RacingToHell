@@ -2,7 +2,7 @@
 #include "Framework/SoundManager.h"
 #include "Framework/Framework.h"
 
-SoundManager::SoundManager(Framework &framework) : _FW(framework) {
+SoundManager::SoundManager(Framework &framework) : Manager(framework) {
     _MenuMusic = std::make_shared<sf::Music>();
     _LevelMusic = std::make_shared<sf::Music>();
 }

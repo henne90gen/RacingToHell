@@ -17,3 +17,7 @@ std::string rh::floatToString(float value, unsigned int precision) {
     ss << std::fixed << std::setprecision(precision) << value;
     return ss.str();
 }
+
+void rh::centerText(sf::Text &text) {
+    text.setOrigin(text.getLocalBounds().width / 2, 0);
+}

@@ -45,6 +45,4 @@ private:
     int _NumScores;
 
     std::vector<std::vector<sf::Text>> _HighscoreTexts;
-
-    void centerText(sf::Text &text);
 };

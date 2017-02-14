@@ -6,7 +6,7 @@
 #include "Framework/OptionsManager.h"
 #include "Framework/Framework.h"
 
-OptionsManager::OptionsManager(Framework &framework) : _FW(framework) {
+OptionsManager::OptionsManager(Framework &framework) : Manager(framework) {
     if (!_Font.loadFromFile("Resources/Font/arial.ttf")) {
         std::cout << "Couldn't load font." << std::endl;
     }

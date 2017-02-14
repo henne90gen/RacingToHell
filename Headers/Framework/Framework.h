@@ -55,6 +55,8 @@ public:
 
     GameState getLastGameState();
 
+    GameState getLastGameState(int back);
+
     LevelManager &getLevelManager() { return _LevelManager; }
 
     /**

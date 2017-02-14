@@ -1,17 +1,14 @@
 #pragma once
 
 #include <future>
+#include "Manager.h"
 
-class Framework;
-
-class LevelManager {
+class LevelManager : public Manager {
 public:
     /**
      * Manages the level. Draws background and keeps track of the score
      */
-    LevelManager(Framework &framework) : _FW(framework), _ShouldMove(true), _Score(0) {}
-
-    ~LevelManager() {}
+    LevelManager(Framework &framework) : Manager(framework), _ShouldMove(true), _Score(0) {}
 
     /**
      * Updates the Level with the given frame time
@@ -71,8 +68,6 @@ public:
     }
 
 private:
-    Framework &_FW;
-
     float _Score, _LevelTime, _TotalLevelTime;
 
     int _Level;

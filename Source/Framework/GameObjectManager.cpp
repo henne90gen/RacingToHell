@@ -2,7 +2,7 @@
 #include "Framework/GameObjectManager.h"
 #include "Framework/Framework.h"
 
-GameObjectManager::GameObjectManager(Framework &framework) : _FW(framework), _PlayerBulletSpeed(600),
+GameObjectManager::GameObjectManager(Framework &framework) : Manager(framework), _PlayerBulletSpeed(600),
                                                              _AIBulletSpeed(400), _InBossFight(false) {
     _CarFrequency = 1;
     _CanisterFrequency = 0.5;

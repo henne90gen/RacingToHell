@@ -1,15 +1,10 @@
-//
-// Created by henne on 24.01.17.
-//
-
 #pragma once
 
+#include "Framework/Manager.h"
 #include "Serializable.h"
 #include "Framework/PlayerScore.h"
 
-class Framework;
-
-class HighscoreManager {
+class HighscoreManager : public Manager {
 public:
 
     HighscoreManager(Framework &framework);
@@ -56,8 +51,6 @@ public:
     void setHighlightedRow(int row) { _HighlightedRow = row; }
 
 private:
-    Framework &_FW;
-
     std::vector<PlayerScore> _ScoreList;
 
     const std::string _ScorePath = "Resources/scores.sco";

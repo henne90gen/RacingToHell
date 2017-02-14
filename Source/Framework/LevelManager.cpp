@@ -123,7 +123,7 @@ void LevelManager::addScore(ScoreEvent event, float modifier) {
                              (int) _FW.getOptionsManager().getDifficulty();
             break;
         case ScoreEvent::LevelUp:
-            // TODO add point for a level up
+            // TODO add points for level up
             break;
     }
 }

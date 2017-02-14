@@ -1,23 +1,23 @@
-
 #pragma once
 
+#include "Framework/Manager.h"
 #include "UserInterface/Screen/GameScreen.h"
 #include "GameObject/GameObject.h"
 #include "GameObject/GameObjectType.h"
 #include "GameObject/AICar.h"
 #include "GameObject/PlayerCar.h"
 #include "GameObject/Bullet.h"
-#include "GameObject/GameObjectFactory.h"
 
+#include "GameObject/GameObjectFactory.h"
 #include "GameObject/Boss/BossCar.h"
 #include "GameObject/Boss/Tank.h"
 #include "GameObject/Boss/Carrier.h"
 #include "GameObject/Boss/Mech.h"
-#include "GameObject/Boss/Jet.h"
 
+#include "GameObject/Boss/Jet.h"
 #include "Animation/Explosion.h"
 
-class GameObjectManager {
+class GameObjectManager : public Manager {
 public:
     /**
      * GameObjectManager is the manager class for all GameObjects.
@@ -95,8 +95,6 @@ public:
     float getToolboxFrequency() { return _ToolboxFrequency; }
 
 private:
-    Framework &_FW;
-
     std::vector<std::shared_ptr<GameObject>> _PickupItems;
     std::vector<std::shared_ptr<AICar>> _Cars;
     std::vector<std::shared_ptr<Bullet>> _Bullets;

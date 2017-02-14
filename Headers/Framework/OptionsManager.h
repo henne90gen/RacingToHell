@@ -1,7 +1,3 @@
-//
-// Created by henne on 29.11.16.
-//
-
 #pragma once
 
 #include "Manager.h"

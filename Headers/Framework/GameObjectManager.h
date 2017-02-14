@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "Framework/Manager.h"

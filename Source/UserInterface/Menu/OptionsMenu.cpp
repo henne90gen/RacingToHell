@@ -28,6 +28,9 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
                                                                       difficultyStrings,
                                                                       difficultyValues, MenuResult::DifficultyChange,
                                                                       font);
+    if (_FW.getLastGameState(2) == GameState::Running) {
+        difficulty->setEnabled(false);
+    }
     _MenuItems.push_back(difficulty);
 
     std::vector<std::string> gamemodeStrings = _FW.getOptionsManager().getGameModeStrings();
@@ -36,6 +39,9 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
                                                                     gamemodeStrings,
                                                                     gamemodeValues, MenuResult::GameModeChange, font,
                                                                     320);
+    if (_FW.getLastGameState(2) == GameState::Running) {
+        gamemode->setEnabled(false);
+    }
     _MenuItems.push_back(gamemode);
 
     _ScoreMultiplierBackground.setPosition(sf::Vector2f(SCREENWIDTH / 2 - 150, 480));
@@ -117,6 +123,7 @@ void OptionsMenu::handleEvent(sf::Event &event) {
             break;
         case MenuResult::VSyncChanged:
             _FW.getOptionsManager().setVSyncEnabled((bool) _MenuItems[VSyncIndex]->getValue());
+            break;
         case MenuResult::VolumeChange:
             _FW.getOptionsManager().setVolume(_MenuItems[VolumeIndex]->getValue());
             break;

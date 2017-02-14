@@ -1,7 +1,3 @@
-//
-// Created by henne on 14.02.17.
-//
-
 #pragma once
 
 class Framework;

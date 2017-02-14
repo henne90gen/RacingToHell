@@ -240,10 +240,14 @@ GameState Framework::getCurrentGameState() {
 }
 
 GameState Framework::getLastGameState() {
-    if (_GameStates.size() < 2) {
+    return getLastGameState(1);
+}
+
+GameState Framework::getLastGameState(int back) {
+    if (_GameStates.size() < back + 1) {
         return GameState::Empty;
     }
-    return _GameStates.at(_GameStates.size() - 2);
+    return _GameStates.at(_GameStates.size() - (back + 1));
 }
 
 void Framework::goBackGameState() {

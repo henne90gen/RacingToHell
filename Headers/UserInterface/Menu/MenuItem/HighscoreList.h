@@ -13,19 +13,19 @@ class Framework;
 class HighscoreList {
 public:
 
-    /*
-        Prints out the ranks 1-10 of the highscore list.
-        If the new highscore didn't make the top 10 it will be displayed below with the corresponding rank
-        @param pos Position of the HighscoreList on screen
-    */
+    /**
+     * Prints out the ranks 1-10 of the highscore list.
+     * If the new highscore didn't make the top 10 it will be displayed below with the corresponding rank
+     * @param pos Position of the HighscoreList on screen
+     */
     HighscoreList(Framework &framework, sf::Vector2f pos);
 
     ~HighscoreList() {}
 
-    /*
-        Renders the HighscoreList to the specified RenderWindow
-        @param window Window to draw to
-    */
+    /**
+     * Renders the HighscoreList to the specified RenderWindow
+     * @param window Window to draw to
+     */
     void render(sf::RenderWindow &renderWindow);
 
     void update(float frameTime);
@@ -38,9 +38,9 @@ private:
     sf::Text _HeadlineLevel;
     sf::Text _HeadlineScore;
 
-    float _HeadlineRankWidth, _HeadlineNameHeight, _HeadlineLevelWidth, _HeadlineScoreWidth, _Gap;
+    float _HeadlineRankWidth, _HeadlineLevelWidth, _HeadlineScoreWidth, _Gap;
 
-    std::string _CurrentName;
+//    std::string _CurrentName;
 
     int _NumScores;
 

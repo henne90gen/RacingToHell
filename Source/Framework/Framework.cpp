@@ -33,9 +33,9 @@ void Framework::run() {
 //    Render at modular FPS
 //    All measurements are in microseconds
 
-	int sleepCounter = 0;
+    int sleepCounter = 0;
 
-	while (_IsRunning) {
+    while (_IsRunning) {
         sf::Clock renderClock;
         sf::Time targetFrameTime = sf::seconds(1.0f / _OptionsManager.getFPS());
         _FrameTime = targetFrameTime.asSeconds();
@@ -82,7 +82,7 @@ void Framework::handleEvents() {
 }
 
 void Framework::update(float frameTime) {
-	//sf::Clock myClock;
+    //sf::Clock myClock;
 
     if (getCurrentGameState() != GameState::Pause &&
         !(getCurrentGameState() == GameState::Options && getLastGameState() == GameState::Pause)) {
@@ -90,25 +90,25 @@ void Framework::update(float frameTime) {
     }
 
 
-	//std::cout << "level " << myClock.restart().asSeconds() << std::endl;
+    //std::cout << "level " << myClock.restart().asSeconds() << std::endl;
 
     if (getCurrentGameState() == GameState::Running) {
         _GameObjectManager.update(frameTime);
     }
 
 
-	//std::cout << "gom " << myClock.restart().asSeconds() << std::endl;
+    //std::cout << "gom " << myClock.restart().asSeconds() << std::endl;
 
     _SoundManager.update();
 
 
-	//std::cout << "sm " << myClock.restart().asSeconds() << std::endl;
+    //std::cout << "sm " << myClock.restart().asSeconds() << std::endl;
 
     for (unsigned int i = 0; i < _DisplayedGameScreens.size(); i++) {
         _DisplayedGameScreens.at(i)->update(frameTime);
     }
 
-	//std::cout << "screens " << myClock.restart().asSeconds() << std::endl;
+    //std::cout << "screens " << myClock.restart().asSeconds() << std::endl;
 }
 
 void Framework::load() {
@@ -152,7 +152,6 @@ void Framework::reloadGameScreens() {
 }
 
 void Framework::setMouseVisibility() {
-    bool visible = false;
     switch (getCurrentGameState()) {
         case GameState::PauseMultiplayer:
         case GameState::Lobby:
@@ -166,7 +165,7 @@ void Framework::setMouseVisibility() {
         case GameState::MainMenu:
         case GameState::LoadingToMain:
         case GameState::GameOverMultiplayer:
-            visible = true;
+            _IsMouseVisible = true;
             break;
         case GameState::Running:
         case GameState::RunningMultiplayer:
@@ -176,12 +175,12 @@ void Framework::setMouseVisibility() {
         case GameState::Exiting:
         case GameState::BossFightMultiplayer:
         case GameState::Empty:
-            visible = false;
+            _IsMouseVisible = false;
             break;
     }
 
 #ifdef SFML_SYSTEM_WINDOWS
-    if (!visible) {
+    if (!_IsMouseVisible) {
         int cursor = ShowCursor(0);
         while (cursor > 0) {
             cursor = ShowCursor(0);
@@ -193,36 +192,8 @@ void Framework::setMouseVisibility() {
         }
     }
 #else
-    _RenderWindow.setMouseCursorVisible(visible);
+    _RenderWindow.setMouseCursorVisible(_IsMouseVisible);
 #endif
-}
-
-bool Framework::isMouseVisible() {
-    switch (getCurrentGameState()) {
-        case GameState::PauseMultiplayer:
-        case GameState::Lobby:
-        case GameState::Connecting:
-        case GameState::MultiplayerSelection:
-        case GameState::GameOverMultiplayer:
-        case GameState::GameOver:
-        case GameState::About:
-        case GameState::Options:
-        case GameState::Highscores:
-        case GameState::Pause:
-        case GameState::MainMenu:
-        case GameState::Loading:
-        case GameState::LoadingToMain:
-            return true;
-        case GameState::Running:
-        case GameState::RunningMultiplayer:
-        case GameState::Countdown:
-        case GameState::LevelUp:
-        case GameState::Exiting:
-        case GameState::BossFightMultiplayer:
-            return false;
-        default:
-            return true;
-    }
 }
 
 void Framework::advanceToGameState(GameState gameState) {

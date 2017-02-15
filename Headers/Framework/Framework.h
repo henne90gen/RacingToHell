@@ -39,24 +39,58 @@ public:
      */
     void run();
 
+    /**
+     * Stops the main game loop and closes the render window
+     */
     void stop();
 
+    /**
+     * Loads resources into memory
+     */
     void load();
 
+    /**
+     * Resets everything to be the way it was right after the game launched
+     */
     void reset();
 
+    /**
+     * Drops all GameScreens and loads new GameScreens depending on the current GameState
+     */
     void reloadGameScreens();
 
+    /**
+     * Moves forward to the given GameState
+     * @param gameState Next GameState
+     */
     void advanceToGameState(GameState gameState);
 
+    /**
+     * Goes back to the last GameState by removing the current one from the GameState's vector
+     */
     void goBackGameState();
 
+    /**
+     * @return Current GameState
+     */
     GameState getCurrentGameState();
 
+    /**
+     * Same as getLastGameState(1)
+     */
     GameState getLastGameState();
 
+    /**
+     * Checks the GameState vector for the GameState that's a certain distance (back) away from the current GameState.
+     * @param back Number of GameStates in the past
+     * @return GameState from vector or GameState::Empty
+     */
     GameState getLastGameState(int back);
 
+    /**
+     * The LevelManager takes care of the Level. (Keeping time, updating sprite, etc.)
+     * @return Reference to the LevelManager
+     */
     LevelManager &getLevelManager() { return _LevelManager; }
 
     /**
@@ -89,15 +123,26 @@ public:
      */
     SoundManager &getSoundManager() { return _SoundManager; }
 
-    bool isMouseVisible();
+    /**
+     *
+     * @return
+     */
+    bool isMouseVisible()  { return _IsMouseVisible; }
 
     /**
      * @return Current frames per second
      */
     int getFPS();
 
+    /**
+     * @return Number of screens that are being displayed right now. (Be aware that the DebugScreen is included in this number)
+     */
     int getNumScreens() { return (int) _DisplayedGameScreens.size(); }
 
+    /**
+     * Sets the vertical synchronisation property of the render window
+     * @param vSync true = enabled, false = disabled
+     */
     void setVSyncEnabled(bool vSync) { _RenderWindow.setVerticalSyncEnabled(vSync); }
 
 private:
@@ -119,12 +164,22 @@ private:
 
     float _FrameTime;
 
-    bool _IsRunning;
+    bool _IsRunning, _IsMouseVisible;
 
+    /**
+     * Renders the current GameScreens
+     */
     void render();
 
+    /**
+     * Processes any input that has occurred since the last call to this method
+     */
     void handleEvents();
 
+    /**
+     * Updates the game
+     * @param frameTime Amount of time that has passed since the last update
+     */
     void update(float frameTime);
 
     /**

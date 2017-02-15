@@ -26,7 +26,7 @@ HighscoreList::HighscoreList(Framework &framework, sf::Vector2f pos) : _FW(frame
     _HeadlineName = _HeadlineRank;
     _HeadlineName.setPosition(pos);
     _HeadlineName.setString("Name");
-    _HeadlineNameHeight = _HeadlineName.getLocalBounds().height + 30;
+//    _HeadlineNameHeight = _HeadlineName.getLocalBounds().height + 30;
 
     pos += sf::Vector2f(_HeadlineName.getLocalBounds().width + 70, 0);
 

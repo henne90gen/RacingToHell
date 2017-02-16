@@ -44,10 +44,11 @@ sf::SoundBuffer &GameObjectFactory::_JetSoundBuffer() {
 sf::Uint32 GameObjectFactory::_CurrentGameObjectID;
 sf::Uint32 GameObjectFactory::_DeltaID;
 
-std::shared_ptr<PlayerCar> GameObjectFactory::getPlayerCar(PlayerCarIndex carSkin) {
-    std::shared_ptr<PlayerCar> player(
-            new PlayerCar(_DeltaID + _CurrentGameObjectID++, carSkin, (*_PlayerCarTextures().at(
-                    (unsigned long) carSkin))));
+std::shared_ptr<PlayerCar> GameObjectFactory::getPlayerCar(PlayerCarIndex carSkin, sf::Texture &explosionTexture) {
+    std::shared_ptr<PlayerCar> player = std::make_shared<PlayerCar>(_DeltaID + _CurrentGameObjectID++, carSkin,
+                                                                    (*_PlayerCarTextures().at(
+                                                                            (unsigned long) carSkin)),
+                                                                    explosionTexture);
     return player;
 }
 
@@ -143,8 +144,8 @@ std::shared_ptr<GameObject> GameObjectFactory::getCanister(sf::Vector2f pos) {
     return canister;
 }
 
-std::shared_ptr<PlayerCar> GameObjectFactory::getPlayerCar(sf::Packet &packet) {
-    std::shared_ptr<PlayerCar> player(new PlayerCar(packet, _PlayerCarTextures()));
+std::shared_ptr<PlayerCar> GameObjectFactory::getPlayerCar(sf::Packet &packet, sf::Texture &explosionTexture) {
+    std::shared_ptr<PlayerCar> player = std::make_shared<PlayerCar>(packet, _PlayerCarTextures(), explosionTexture);
     return player;
 }
 
@@ -218,7 +219,8 @@ std::shared_ptr<GameObject> GameObjectFactory::getCanister(sf::Packet &packet) {
     return canister;
 }
 
-void GameObjectFactory::scanPacketForGO(int level, sf::Packet &packet, std::vector<std::shared_ptr<GameObject>> &gos) {
+void GameObjectFactory::scanPacketForGO(int level, sf::Packet &packet, std::vector<std::shared_ptr<GameObject>> &gos,
+                                        sf::Texture &explosionTexture) {
     sf::Uint8 type;
     packet >> type;
     switch ((GameObjectType) type) {
@@ -241,7 +243,7 @@ void GameObjectFactory::scanPacketForGO(int level, sf::Packet &packet, std::vect
             gos.push_back(getCanister(packet));
             break;
         case GameObjectType::Player:
-            gos.push_back(getPlayerCar(packet));
+            gos.push_back(getPlayerCar(packet, explosionTexture));
             break;
         case GameObjectType::Boss:
             gos.push_back(getBossCar(level, packet));

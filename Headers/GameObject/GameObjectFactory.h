@@ -22,7 +22,7 @@ public:
     /*
         @param carSkin Index of the car texture
     */
-    static std::shared_ptr<PlayerCar> getPlayerCar(PlayerCarIndex carSkin);
+    static std::shared_ptr<PlayerCar> getPlayerCar(PlayerCarIndex carSkin, sf::Texture &explosionTexture);
 
     /*
         @param level
@@ -32,8 +32,7 @@ public:
         @param volume
         @return BossCar Constructed BossCar
     */
-    static std::shared_ptr<BossCar>
-    getBossCar(int level, int diff, int hp);
+    static std::shared_ptr<BossCar> getBossCar(int level, int diff, int hp);
 
     /*
         Bullet that can be shot by any Car
@@ -68,7 +67,7 @@ public:
     /*
         @param packet packet to get the necessary data from
     */
-    static std::shared_ptr<PlayerCar> getPlayerCar(sf::Packet &packet);
+    static std::shared_ptr<PlayerCar> getPlayerCar(sf::Packet &packet, sf::Texture &explosionTexture);
 
     /*
         @param packet packet to get the necessary data from
@@ -104,7 +103,8 @@ public:
     */
     static std::shared_ptr<GameObject> getToolbox(sf::Packet &packet);
 
-    static void scanPacketForGO(int level, sf::Packet &packet, std::vector<std::shared_ptr<GameObject>> &gos);
+    static void scanPacketForGO(int level, sf::Packet &packet, std::vector<std::shared_ptr<GameObject>> &gos,
+                                sf::Texture &explosionTexture);
 
     static void setDeltaID(int deltaID) { _DeltaID = deltaID; }
 

@@ -258,7 +258,7 @@ void GameObjectManager::checkPlayerForCollisions(float frameTime) {
 }
 
 void GameObjectManager::killPlayer() {
-    _Player->kill(_ExplosionTexture);
+    _Player->kill();
     _FW.getSoundManager().playExplosionSound(_Player->getPos());
 }
 
@@ -311,7 +311,7 @@ void GameObjectManager::resetGameObjects() {
     if (_Player != NULL) {
         playerCarIndex = _Player->getPlayerCarIndex();
     }
-    _Player = GameObjectFactory::getPlayerCar(playerCarIndex);
+    _Player = GameObjectFactory::getPlayerCar(playerCarIndex, _ExplosionTexture);
 
     // Frequencies
     calculateAllFrequencies();
@@ -499,7 +499,7 @@ void GameObjectManager::nextPlayerCar() {
     if (index >= (int) PlayerCarIndex::NumberOfCars) {
         index = 0;
     }
-    _Player = GameObjectFactory::getPlayerCar((PlayerCarIndex) index);
+    _Player = GameObjectFactory::getPlayerCar((PlayerCarIndex) index, _ExplosionTexture);
 }
 
 void GameObjectManager::previousPlayerCar() {
@@ -508,5 +508,5 @@ void GameObjectManager::previousPlayerCar() {
     if (index < 0) {
         index = (int) PlayerCarIndex::NumberOfCars - 1;
     }
-    _Player = GameObjectFactory::getPlayerCar((PlayerCarIndex) index);
+    _Player = GameObjectFactory::getPlayerCar((PlayerCarIndex) index, _ExplosionTexture);
 }

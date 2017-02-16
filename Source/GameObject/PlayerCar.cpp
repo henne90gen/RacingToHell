@@ -2,10 +2,11 @@
 #include "GameObject/PlayerCar.h"
 
 
-PlayerCar::PlayerCar(unsigned int id, PlayerCarIndex selectedCar, sf::Texture &texture) :
+PlayerCar::PlayerCar(unsigned int id, PlayerCarIndex selectedCar, sf::Texture &texture, sf::Texture &explosionTexture) :
         Car(id, sf::Vector2f(0, 0), 100, 500, GameObjectType::Player, texture,
             sf::IntRect(0, 0, texture.getSize().x, texture.getSize().y)),
-        _CrosshairSpeed(600.0f), _PlayerCarIndex(selectedCar), _AccelerationTime(0.1f) {
+        _CrosshairSpeed(600.0f), _PlayerCarIndex(selectedCar), _AccelerationTime(0.1f),
+        _ExplosionTexture(explosionTexture) {
     setStats(_PlayerCarIndex);
     _ShotBullet = sf::Vector2f(0, 0);
     setPos(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT - 300));
@@ -24,8 +25,9 @@ PlayerCar::PlayerCar(unsigned int id, PlayerCarIndex selectedCar, sf::Texture &t
     sf::Listener::setDirection(0.f, 0.f, -1.f);
 }
 
-PlayerCar::PlayerCar(sf::Packet &packet, std::vector<std::shared_ptr<sf::Texture>> &textures) :
-        Car(packet, GameObjectType::Player) {
+PlayerCar::PlayerCar(sf::Packet &packet, std::vector<std::shared_ptr<sf::Texture>> &textures,
+                     sf::Texture &explosionTexture) :
+        Car(packet, GameObjectType::Player), _ExplosionTexture(explosionTexture) {
     PlayerCar::operator<<(packet);
     setStats(_PlayerCarIndex);
     initTexture(*textures.at((int) _PlayerCarIndex), sf::IntRect());
@@ -39,7 +41,7 @@ void PlayerCar::render(sf::RenderWindow &window, bool renderCrosshair) {
             window.draw(_Crosshair);
         }
     } else {
-		_Animation->render(window);
+        _Animation->render(window);
     }
 }
 
@@ -143,9 +145,6 @@ void PlayerCar::update(float frameTime, int RoadSpeed) {
         _AimLine.setRotation(angle);
     }
 
-    // FIXME reenable Joystick support
-//    _Crosshair.setPosition(_Crosshair.getPosition() + _CrosshairMovement * frameTime * _CrosshairSpeed);
-
     // TODO re-enable auto fire
     /*std::cout << "Time: " << _AutoFireTimer.getElapsedTime().asSeconds() << std::endl;
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
@@ -201,12 +200,12 @@ void PlayerCar::addEnergy() {
 void PlayerCar::setStats(PlayerCarIndex id) {
     _PlayerCarIndex = id;
     std::vector<int> Stats = PlayerStats::getPlayerStats(id);
-    _MaxHealth = Stats[0];
+    _MaxHealth = (sf::Int16) Stats[0];
     _Health = _MaxHealth;
-    _MaxEnergy = Stats[1];
+    _MaxEnergy = (sf::Uint16) Stats[1];
     _Energy = _MaxEnergy;
-    _Speed = Stats[2];
-    _Bulletdamage = Stats[3];
+    _Speed = (sf::Int16) Stats[2];
+    _Bulletdamage = (sf::Uint16) Stats[3];
 }
 
 void PlayerCar::operator>>(sf::Packet &packet) {
@@ -263,18 +262,28 @@ bool PlayerCar::isAlive() {
     return _Energy > 0 && _Health > 0;
 }
 
-void PlayerCar::kill(sf::Texture &explosionTexture) {
+void PlayerCar::kill() {
     _Health = 0;
     _Movement = sf::Vector2f(0, 0);
     _Force = sf::Vector2f(0, 0);
-    _Animation = std::make_shared<Explosion>(getPos(), explosionTexture, sf::Vector2f(0, 0));
+    _Animation = std::make_shared<Explosion>(getPos(), _ExplosionTexture, sf::Vector2f(0, 0));
     _Animation->play();
-}
-
-bool PlayerCar::isDying() {
-    return !isAlive() && _Animation->getAnimationState() == Animation::Play;
 }
 
 void PlayerCar::takeDamage(int damage) {
     Car::takeDamage(damage);
+    if (_Health <= 0 && !isDying()) {
+        kill();
+    }
+}
+
+void PlayerCar::drainEnergy(float frameTime) {
+    _Energy -= 2 * frameTime;
+    if (_Energy <= 0 && !isDying()) {
+        kill();
+    }
+}
+
+bool PlayerCar::isDying() {
+    return _Health <= 0 && _Animation->getAnimationState() == Animation::Play;
 }

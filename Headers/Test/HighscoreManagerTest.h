@@ -13,4 +13,7 @@ public:
     void testSaving();
 
     void testLoading();
+
+private:
+    const char *_FilePath = "Resources/scores.sco";
 };

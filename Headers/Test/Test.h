@@ -9,7 +9,7 @@ protected:
     template<typename T>
     void assertEqual(T expected, T actual) {
         if (expected != actual) {
-            std::cerr << actual << " doesn't equal expected " << expected << std::endl;
+            std::cerr << "Expected '" << expected << "', got '" << actual << "' instead." << std::endl;
             exit(1);
         }
     }

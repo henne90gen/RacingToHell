@@ -5,6 +5,7 @@ project(RacingToHell)
 add_compile_options(-std=c++11)
 
 set(EXECUTABLE_NAME RacingToHell)
+set(TEST_NAME RacingToHellTest)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -23,9 +24,15 @@ add_subdirectory(Source)
 include_directories(${PROJECT_SOURCE_DIR}/Headers)
 include_directories(./SFML/include)
 
-add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES})
-
+add_executable(${EXECUTABLE_NAME}
+        ${SOURCE_FILES}
+        ${CMAKE_CURRENT_SOURCE_DIR}/Source/RacingToHell.cpp)
 target_link_libraries(${EXECUTABLE_NAME} sfml-system sfml-window sfml-graphics sfml-network sfml-audio)
 target_link_libraries(${EXECUTABLE_NAME} -static-libgcc -static-libstdc++)
+
+set(TEST_FILES ${TEST_FILES} ${SOURCE_FILES})
+add_executable(${TEST_NAME} ${TEST_FILES})
+target_link_libraries(${TEST_NAME} sfml-system sfml-window sfml-graphics sfml-network sfml-audio)
+target_link_libraries(${TEST_NAME} -static-libgcc -static-libstdc++)
 
 file(COPY ${PROJECT_SOURCE_DIR}/Resources DESTINATION ${CMAKE_BINARY_DIR}/bin)

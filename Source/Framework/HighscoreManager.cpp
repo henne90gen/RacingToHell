@@ -6,9 +6,7 @@
 #include "Framework/HighscoreManager.h"
 #include "Framework/Framework.h"
 
-HighscoreManager::HighscoreManager(Framework &framework) : Manager(framework), _HighlightedRow(0) {
-    loadScoreTable();
-}
+HighscoreManager::HighscoreManager(Framework &framework) : Manager(framework), _HighlightedRow(0) {}
 
 void HighscoreManager::loadScoreTable() {
     if (!rh::file_exists(_ScorePath)) {
@@ -34,7 +32,7 @@ void HighscoreManager::loadScoreTable() {
 void HighscoreManager::saveScoreTable() {
     std::ofstream fileStream;
     fileStream.open(_ScorePath, std::ios::out | std::ofstream::binary);
-    unsigned long length = _ScoreList.size();
+    unsigned long length = (unsigned long) _ScoreList.size();
     fileStream.write((char *) &length, sizeof(length));
     for (unsigned int i = 0; i < _ScoreList.size(); i++) {
         _ScoreList[i] >> fileStream;
@@ -52,8 +50,11 @@ void HighscoreManager::sortScoreTable() {
 }
 
 void HighscoreManager::saveScoreWithName(std::string &name) {
+   saveScoreWithName(name, _FW.getLevelManager().getLevel(), _FW.getLevelManager().getScore());
+}
 
-    PlayerScore newPlayer(name, _FW.getLevelManager().getLevel(), _FW.getLevelManager().getScore());
+void HighscoreManager::saveScoreWithName(std::string &name, int level, float score) {
+    PlayerScore newPlayer(name, level, (int) score);
     _CurrentPlayerScore = newPlayer;
     _ScoreList.push_back(newPlayer);
 

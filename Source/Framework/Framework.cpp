@@ -2,36 +2,15 @@
 #include "Framework/Framework.h"
 
 Framework::Framework() : _FrameTime(0), _IsRunning(true), _OptionsManager(*this), _GameObjectManager(*this),
-                         _LevelManager(*this), _HighscoreManager(*this), _SoundManager(*this) {
-
-    _GameStates.push_back(GameState::Loading);
-
-    _RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell", sf::Style::Close);
-
-#ifdef SFML_SYSTEM_WINDOWS
-    _RenderWindow.setMouseCursorVisible(false);
-#else
-    _RenderWindow.setMouseCursorVisible(true);
-#endif
-
-    sf::Image Icon;
-    if (Icon.loadFromFile("Resources/Texture/Icon/Icon.png")) {
-        _RenderWindow.setIcon(Icon.getSize().x, Icon.getSize().y, Icon.getPixelsPtr());
-    }
-
-    // Seed for random number generators
-    srand((unsigned int) time(NULL));
-
-    reloadGameScreens();
-
-    load();
-}
+                         _LevelManager(*this), _HighscoreManager(*this), _SoundManager(*this) {}
 
 void Framework::run() {
 //    Take a look at this for examples: http://gameprogrammingpatterns.com/game-loop.html
 //    Update at a maximum of 1000 UPS
 //    Render at modular FPS
 //    All measurements are in microseconds
+
+    load();
 
     int sleepCounter = 0;
 
@@ -112,6 +91,26 @@ void Framework::update(float frameTime) {
 }
 
 void Framework::load() {
+    _GameStates.push_back(GameState::Loading);
+
+    _RenderWindow.create(sf::VideoMode(SCREENWIDTH, SCREENHEIGHT, 32U), "Racing to Hell", sf::Style::Close);
+
+#ifdef SFML_SYSTEM_WINDOWS
+    _RenderWindow.setMouseCursorVisible(false);
+#else
+    _RenderWindow.setMouseCursorVisible(true);
+#endif
+
+    sf::Image Icon;
+    if (Icon.loadFromFile("Resources/Texture/Icon/Icon.png")) {
+        _RenderWindow.setIcon(Icon.getSize().x, Icon.getSize().y, Icon.getPixelsPtr());
+    }
+
+    // Seed for random number generators
+    srand((unsigned int) time(NULL));
+
+    reloadGameScreens();
+
     // Display loading screen before starting to load
     LoadingScreen screen(*this);
     screen.render(_RenderWindow);
@@ -121,6 +120,8 @@ void Framework::load() {
         std::cout << "Loading..." << std::endl;
 
         _OptionsManager.load();
+
+        _HighscoreManager.loadScoreTable();
 
         _SoundManager.load();
 

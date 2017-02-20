@@ -28,6 +28,8 @@ public:
      */
     void saveScoreWithName(std::string &name);
 
+    void saveScoreWithName(std::string &name, int level, float score);
+
     /**
      * @return Amount of saved scores
      */

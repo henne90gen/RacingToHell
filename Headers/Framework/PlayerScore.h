@@ -1,10 +1,7 @@
+
 #pragma once
 
-#include <fstream>
-#include <sstream>
-#include <algorithm>
-
-#include <Serializable.h>
+#include "Serializable.h"
 
 class PlayerScore : public Serializable {
 public:

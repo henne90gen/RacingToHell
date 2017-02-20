@@ -5,10 +5,8 @@
 
 PlayerScoreTest::PlayerScoreTest() {
     std::cout << "Testing PlayerScore" << std::endl;
-
     testSaving();
     testLoading();
-
 }
 
 void PlayerScoreTest::testSaving() {
@@ -37,7 +35,7 @@ void PlayerScoreTest::testSaving() {
     ifileStream.read((char *) &rank, sizeof(rank));
     ifileStream.read((char *) &nameLength, sizeof(nameLength));
 
-    char buffer[nameLength];
+    char *buffer = new char[nameLength];
     ifileStream.read(buffer, nameLength);
 
     ifileStream.read((char *) &level, sizeof(level));
@@ -46,6 +44,7 @@ void PlayerScoreTest::testSaving() {
     ifileStream.close();
 
     assertEqual(1, rank);
+    assertEqual((int) 4, (int) nameLength);
     assertEqual("Test", buffer);
     assertEqual(2, level);
     assertEqual(100, s);

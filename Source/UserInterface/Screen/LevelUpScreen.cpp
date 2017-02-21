@@ -23,14 +23,11 @@ LevelUpScreen::LevelUpScreen(Framework &framework) : GameScreen(framework), _Sho
     _Background.setPosition(sf::Vector2f(0, 0));
     _Background.setSize(sf::Vector2f(SCREENWIDTH, SCREENHEIGHT));
 
-    _SoundBuffer.loadFromFile("Resources/Sound/levelUp.wav");
-    _Sound.setBuffer(_SoundBuffer);
-
     _Timer.restart();
 }
 
 void LevelUpScreen::render(sf::RenderWindow &window) {
-    float alpha = 0.0f;
+    float alpha;
     if (_FadeTimer.getElapsedTime().asSeconds() <= _FadeTime) {
         alpha = (_FadeTimer.getElapsedTime().asSeconds() * 255.0f) / _FadeTime;
     } else {

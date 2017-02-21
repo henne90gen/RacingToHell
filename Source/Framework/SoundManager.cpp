@@ -149,7 +149,6 @@ void SoundManager::playLevelUpSound() {
     levelUpSound->setBuffer(_LevelUpSoundBuffer);
     levelUpSound->setVolume(_FW.getOptionsManager().getVolume());
     _SoundEffects.push_back(std::make_pair(levelUpSound, false));
-
 }
 
 bool SoundManager::isInMenu() {

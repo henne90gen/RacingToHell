@@ -106,7 +106,7 @@ public:
     static void scanPacketForGO(int level, sf::Packet &packet, std::vector<std::shared_ptr<GameObject>> &gos,
                                 sf::Texture &explosionTexture);
 
-    static void setDeltaID(int deltaID) { _DeltaID = deltaID; }
+    static void setDeltaID(int deltaID) { _DeltaID = (sf::Uint32) deltaID; }
 
 private:
     static std::vector<std::shared_ptr<sf::Texture>> &_PlayerCarTextures();

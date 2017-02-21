@@ -101,17 +101,15 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
                                              PI / 14.4f * ((std::rand() % 100) / 100.0f);
                             sf::Vector2f bulOrientation = divideByLength(
                                     sf::Vector2f(std::cos(bulAngle), std::sin(bulAngle)));
+                            sf::Vector2f pos;
                             if (Hand) {
-                                // FIXME let him shoot again
-//                                shootBullet(bullets, calcGunPositions().first, bulOrientation,
-//                                            0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed),
-//                                            (float) (i % 3 > 0) * _Volume);
+                                pos = calcGunPositions().first;
                             } else {
-                                // FIXME let him shoot again
-//                                shootBullet(bullets, calcGunPositions().second, bulOrientation,
-//                                            0.75 * _BulletSpeed + ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed),
-//                                            (float) (i % 3 > 0) * _Volume);
+                                pos = calcGunPositions().second;
                             }
+                            int speed = (int) (0.75 * _BulletSpeed +
+                                               ((std::rand() % 100) / 100.0f * 0.5 * _BulletSpeed));
+                            shootBullet(bullets, calcGunPositions().first, bulOrientation, speed);
                         }
 
                         _Event1Counter = 0;
@@ -134,8 +132,8 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
 
                         for (int i = 0; i < NumberofBullets; i++) {
                             sf::Vector2f bulOrientation = sf::Vector2f(
-                                    std::cos((bulAngle + (i - (int) (NumberofBullets / 2)) * dAngle) / 180 * PI),
-                                    std::sin((bulAngle + (i - (int) (NumberofBullets / 2)) * dAngle) / 180 * PI));
+                                    std::cos((bulAngle + (i - NumberofBullets / 2) * dAngle) / 180 * PI),
+                                    std::sin((bulAngle + (i - NumberofBullets / 2) * dAngle) / 180 * PI));
 
                             if (Hand) {
                                 BossCar::shootBullet(bullets, calcGunPositions().first, bulOrientation);
@@ -161,8 +159,8 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
 
                         for (int i = 0; i < NumberofBullets; i++) {
                             sf::Vector2f bulOrientation = sf::Vector2f(
-                                    std::cos((bulAngle + (i - (int) (NumberofBullets / 2)) * dAngle) / 180 * PI),
-                                    std::sin((bulAngle + (i - (int) (NumberofBullets / 2)) * dAngle) / 180 * PI));
+                                    std::cos((bulAngle + (i - NumberofBullets / 2) * dAngle) / 180 * PI),
+                                    std::sin((bulAngle + (i - NumberofBullets / 2) * dAngle) / 180 * PI));
 
                             if (Hand) {
                                 BossCar::shootBullet(bullets, calcGunPositions().first, bulOrientation);
@@ -192,6 +190,22 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
                         _Event1Switch = true;
                         _Event2Switch = (std::rand() % 100) > 50;
                     }
+                case NOTHING:
+                    break;
+                case SIMPLESHOOT:
+                    break;
+                case HARDCORESPAM:
+                    break;
+                case BLASTSALVE:
+                    break;
+                case SPIRAL:
+                    break;
+                case RANDOMSPRAY:
+                    break;
+                case SIDE:
+                    break;
+                case SAVELANES:
+                    break;
             }
         }
 
@@ -246,8 +260,7 @@ void Mech::init() {
 }
 
 void
-Mech::shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed,
-                  float volume) {
+Mech::shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed) {
     bullets.push_back(GameObjectFactory::getBullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss));
 }
 

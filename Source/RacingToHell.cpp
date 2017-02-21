@@ -11,8 +11,9 @@ int main() {
 
 #ifdef SFML_SYSTEM_WINDOWS
 
+// FIXME Do we still need this?
 int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpszArgument, int nCmdShow) {
-    main();
+    return main();
 }
 
 #endif

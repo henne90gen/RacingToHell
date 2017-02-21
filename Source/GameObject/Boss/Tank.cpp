@@ -124,11 +124,31 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
                     if (getBossEvent() == 1) {
                         _Event1Counter++;
                         _GunOrientation = divideByLength(
-                                sf::Vector2f(((float) (std::rand() - (float) (RAND_MAX) / 2) / (float) (RAND_MAX)),
-                                             ((float) (std::rand() - (float) (RAND_MAX) / 2) / (float) (RAND_MAX))));
+                                sf::Vector2f(((std::rand() - (float) (RAND_MAX) / 2) / (float) (RAND_MAX)),
+                                             ((std::rand() - (float) (RAND_MAX) / 2) / (float) (RAND_MAX))));
 
 						BossCar::shootBullet(bullets, calcBulletPosition(), _GunOrientation);
                     }
+                    break;
+                case NOTHING:
+                    break;
+                case BLASTSALVE:
+                    break;
+                case SPIRAL:
+                    break;
+                case RANDOMSPRAY:
+                    break;
+                case SHOTGUN:
+                    break;
+                case SIDE:
+                    break;
+                case SAVELANES:
+                    break;
+                case RUNATPLAYERPHASE:
+                    break;
+                case ZICKZACKPHASE:
+                    break;
+                case SALVEZICKZACK:
                     break;
             }
 

@@ -215,6 +215,18 @@ void GameObjectManager::checkPlayerForCollisions(float frameTime) {
                     _FW.getSoundManager().playHitSound(_Player->getPos());
                     deleteObject(_Bullets, i);
                     break;
+                case GameObjectType::Player:
+                    break;
+                case GameObjectType::AI:
+                    break;
+                case GameObjectType::BulletObjectPlayer:
+                    break;
+                case GameObjectType::Canister:
+                    break;
+                case GameObjectType::Tools:
+                    break;
+                case GameObjectType::Boss:
+                    break;
             }
         }
     }
@@ -231,6 +243,18 @@ void GameObjectManager::checkPlayerForCollisions(float frameTime) {
                 case GameObjectType::Tools:
                     _Player->addHealth();
                     deleteObject(_PickupItems, i);
+                    break;
+                case GameObjectType::Player:
+                    break;
+                case GameObjectType::AI:
+                    break;
+                case GameObjectType::BulletObjectAI:
+                    break;
+                case GameObjectType::BulletObjectPlayer:
+                    break;
+                case GameObjectType::BulletObjectBoss:
+                    break;
+                case GameObjectType::Boss:
                     break;
             }
         }

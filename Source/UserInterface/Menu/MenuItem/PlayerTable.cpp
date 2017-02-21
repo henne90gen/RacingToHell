@@ -144,8 +144,5 @@ void PlayerTable::setMember(unsigned int index, bool ready, int score, std::stri
 }
 
 bool PlayerTable::getPlayerReady() {
-    if (_MemberList.size() == 2) {
-        return _MemberList[1]._Ready;
-    }
-    return false;
+    return _MemberList.size() == 2 && _MemberList[1]._Ready;
 }

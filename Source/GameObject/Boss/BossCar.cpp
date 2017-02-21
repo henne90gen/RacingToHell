@@ -48,7 +48,7 @@ int BossCar::getBossEvent() {
 }
 
 bool BossCar::driveToNextPosition(float frameTime) {
-	float margin = 0.5f * frameTime * (float)_Speed;
+    float margin = 0.5f * frameTime * (float) _Speed;
 
     if (std::abs((getPos().y - _NextPosition.y)) < margin && std::abs((getPos().x - _NextPosition.x)) < margin) {
         return true;
@@ -124,6 +124,8 @@ bool BossCar::isDoneExploding(sf::Texture &explosionTexture) {
                 break;
             case 4:
                 position = sf::Vector2f(getWidth() / -3.0f, getHeight() / 3.0f);
+                break;
+            default:
                 break;
         }
         _Explosions.push_back(new Explosion(getPos() + position, explosionTexture, sf::Vector2f(0, 0)));

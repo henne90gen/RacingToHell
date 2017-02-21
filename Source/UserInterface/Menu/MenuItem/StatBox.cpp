@@ -43,7 +43,7 @@ void StatBox::render(sf::RenderWindow &window) {
         StatBar.setTexture(_StatBarTexture);
         StatBar.setPosition(_Background.getPosition() + sf::Vector2f(140, 53 + 35 * i));
         StatBar.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(
-                ((int) (float) _PlayerStats[i] / (float) MaxStats[i] * (float) StatBar.getLocalBounds().width), 20)));
+                (int) ((int) (float) _PlayerStats[i] / (float) MaxStats[i] * StatBar.getLocalBounds().width), 20)));
 
         window.draw(StatName);
         window.draw(StatBar);

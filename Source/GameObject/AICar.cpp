@@ -3,8 +3,8 @@
 
 
 AICar::AICar(unsigned int id, int hp, int roadSpeed, sf::Texture &texture, sf::IntRect textureRect) :
-        Car(id, sf::Vector2f(0, 0), hp, std::rand() % ((int) (roadSpeed / 3)) + ((int) (roadSpeed / 3)),
-            GameObjectType::AI, texture, textureRect) {
+		Car(id, sf::Vector2f(0, 0), hp, std::rand() % (roadSpeed / 3) + roadSpeed / 3,
+			GameObjectType::AI, texture, textureRect) {
     _Lane = (sf::Uint8) (std::rand() % 4);
     init();
     getSprite().setColor(sf::Color::White);

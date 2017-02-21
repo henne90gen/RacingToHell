@@ -43,7 +43,7 @@ Bullet::Bullet(sf::Packet &packet, sf::Vector2f PlayerPosition, GameObjectType t
     packet >> dx >> dy;
 
     _Direction = sf::Vector2f(dx, dy) - getPos();
-    _Direction /= float(std::sqrt(std::pow(_Direction.x, 2) + std::pow(_Direction.y, 2)));
+    _Direction /= std::sqrt(std::pow(_Direction.x, 2) + std::pow(_Direction.y, 2));
 
     if (type == GameObjectType::BulletObjectPlayer) {
         setSpriteColor(sf::Color(225, 0, 0));
@@ -69,7 +69,7 @@ Bullet::Bullet(GameObjectType type, sf::Texture &texture, float speed) : GameObj
 }
 
 void Bullet::update(float FrameTime, int RoadSpeed) {
-    _Direction = _Direction / float(std::sqrt(std::pow(_Direction.x, 2) + std::pow(_Direction.y, 2)));
+    _Direction = _Direction / std::sqrt(std::pow(_Direction.x, 2) + std::pow(_Direction.y, 2));
     sf::Vector2f move = _Direction * FrameTime * _Speed;
     setPos(getPos() + move);
 }

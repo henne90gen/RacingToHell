@@ -80,7 +80,7 @@ MenuResult PlayerTable::handleEvent(sf::Event &newEvent, sf::Vector2f mousePos) 
             if (i < _MemberList.size() && !_MemberList[i]._Admin) {
                 sf::FloatRect Rect(_Position + sf::Vector2f(_Size.x - 35, 40 * i), sf::Vector2f(30, 40));
 
-                if (pointInRectangle(Rect, mousePos)) {
+                if (rh::pointInRectangle(Rect, mousePos)) {
                     _Hovering = true;
 
                     if (newEvent.type == sf::Event::MouseButtonPressed) {

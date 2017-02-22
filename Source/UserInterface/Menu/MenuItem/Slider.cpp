@@ -35,7 +35,7 @@ Slider::Slider(sf::Vector2f pos, MenuResult action, sf::Font &font, std::string 
     _BoundingBox.height = _Slider.getLocalBounds().height;
 }
 
-void Slider::render(sf::RenderWindow &Window) {
+void Slider::render(sf::RenderWindow &renderWindow) {
     if ((_Hovering && _Enabled) || (_Focused && _Enabled)) {
         _Slider.setOutlineColor(sf::Color::Black);
         _Slider.setOutlineThickness(3);
@@ -50,16 +50,16 @@ void Slider::render(sf::RenderWindow &Window) {
         _Slider.setOutlineColor(sf::Color(80, 73, 73));
     }
 
-    Window.draw(_TextBackground);
-    Window.draw(_Text);
-    Window.draw(_Line);
-    Window.draw(_Slider);
+    renderWindow.draw(_TextBackground);
+    renderWindow.draw(_Text);
+    renderWindow.draw(_Line);
+    renderWindow.draw(_Slider);
 }
 
 MenuResult Slider::handleEvent(sf::Event &Event, sf::Vector2f MousePos) {
     if (_Enabled) {
         if (Event.type == sf::Event::MouseButtonPressed) {
-            if (pointInRectangle(getRect(), MousePos)) {
+            if (rh::pointInRectangle(getRect(), MousePos)) {
                 setSlider(MousePos.x);
                 _MouseButtonPressed = true;
                 return _Action;
@@ -67,7 +67,7 @@ MenuResult Slider::handleEvent(sf::Event &Event, sf::Vector2f MousePos) {
         } else if (Event.type == sf::Event::MouseButtonReleased) {
             _MouseButtonPressed = false;
         } else if (Event.type == sf::Event::MouseMoved) {
-            _Hovering = pointInRectangle(getRect(), MousePos);
+            _Hovering = rh::pointInRectangle(getRect(), MousePos);
             if (_MouseButtonPressed) {
                 _Hovering = true;
                 setSlider(MousePos.x);

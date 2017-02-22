@@ -31,35 +31,6 @@ MenuResult Menu::getMenuItemResult(sf::Event &event) {
     return MenuResult::Nothing;
 }
 
-/*
-void Menu::handleJoystick(float axis) {
-	if (axis < 10 && axis > -10) {
-		_JoystickTimer.restart();
-	}
-
-	if (_JoystickTimer.getElapsedTime().asSeconds() >= _JoystickDelay) {
-		if (axis < -50 && _JoystickSelection > 0) {
-			_JoystickSelection--;
-			_JoystickTimer.restart();
-		} else if (axis > 50 && _JoystickSelection < _MenuItems.size() - 3) {
-			_JoystickSelection++;
-			_JoystickTimer.restart();
-		}
-	}
-}
-
-void Menu::applyJoystickSelection(sf::Event & Event) {
-	if (Event.type == sf::Event::MouseMoved
-			&& Event.type == sf::Event::JoystickMoved) {
-		for (int i = 0; i < _MenuItems.size(); i++) {
-			if (_MenuItems[i]->getType() != MenuItemType::MTextbox) {
-				_MenuItems[i]->setFocused(i == _JoystickSelection);
-			}
-		}
-	}
-}
-*/
-
 bool Menu::checkMenuItemHovered(sf::RenderWindow &Window, int index) {
 #ifdef SFML_SYSTEM_WINDOWS
     sf::StandardCursor Cursor;

@@ -1,6 +1,3 @@
-//
-// Created by henne on 02.02.17.
-//
 
 #include "stdafx.h"
 #include "UserInterface/Menu/MenuItem/CheckBox.h"
@@ -37,7 +34,7 @@ void CheckBox::render(sf::RenderWindow &renderWindow) {
 MenuResult CheckBox::handleEvent(sf::Event &newEvent, sf::Vector2f mousePos) {
 
     if (newEvent.type == sf::Event::MouseButtonPressed) {
-        if (pointInRectangle(_BoxBackground.getGlobalBounds(), mousePos)) {
+        if (rh::pointInRectangle(_BoxBackground.getGlobalBounds(), mousePos)) {
             _Checked = !_Checked;
             _Cross.setVisible(!_Cross.isVisible());
             return _Action;
@@ -50,6 +47,7 @@ sf::FloatRect CheckBox::getRect() {
     sf::FloatRect boundingBox;
     boundingBox.top = _BoxBackground.getGlobalBounds().top;
     boundingBox.left = _BoxBackground.getGlobalBounds().left;
-
-    return _BoxBackground.getLocalBounds();
+    boundingBox.width = _BoxBackground.getLocalBounds().width + _Text.getLocalBounds().width;
+    boundingBox.height = _BoxBackground.getLocalBounds().height;
+    return boundingBox;
 }

@@ -39,4 +39,6 @@ namespace rh {
     std::string floatToString(float value, unsigned int precision);
 
     void centerText(sf::Text &text);
+
+    bool pointInRectangle(sf::FloatRect rect, sf::Vector2f pos);
 }

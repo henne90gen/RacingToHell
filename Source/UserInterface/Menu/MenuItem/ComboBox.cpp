@@ -80,17 +80,17 @@ void ComboBox::render(sf::RenderWindow &renderWindow) {
 MenuResult ComboBox::handleEvent(sf::Event &newEvent, sf::Vector2f mousePos) {
     if (_Enabled) {
         if (newEvent.type == sf::Event::MouseMoved) {
-            _HoveringLeft = pointInRectangle(_ButtonLeft.getGlobalBounds(), mousePos);
-            _HoveringRight = pointInRectangle(_ButtonRight.getGlobalBounds(), mousePos);
+            _HoveringLeft = rh::pointInRectangle(_ButtonLeft.getGlobalBounds(), mousePos);
+            _HoveringRight = rh::pointInRectangle(_ButtonRight.getGlobalBounds(), mousePos);
             _Hovering = _HoveringLeft || _HoveringRight;
         }
         if (newEvent.type == sf::Event::MouseButtonPressed) {
-            if (pointInRectangle(_ButtonLeft.getGlobalBounds(), mousePos)) {
+            if (rh::pointInRectangle(_ButtonLeft.getGlobalBounds(), mousePos)) {
                 _CurrentItem = (_CurrentItem - 1 < 0) ? (long) _ItemStrings.size() - 1 : _CurrentItem - 1;
                 _Text.setString(_ItemStrings[_CurrentItem]);
                 centerText();
                 return _Action;
-            } else if (pointInRectangle(_ButtonRight.getGlobalBounds(), mousePos)) {
+            } else if (rh::pointInRectangle(_ButtonRight.getGlobalBounds(), mousePos)) {
                 _CurrentItem = (_CurrentItem + 1 >= _ItemStrings.size()) ? 0 : _CurrentItem + 1;
                 _Text.setString(_ItemStrings[_CurrentItem]);
                 centerText();

@@ -20,6 +20,7 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
     std::shared_ptr<Slider> fps = std::make_shared<Slider>(sf::Vector2f(SCREENWIDTH / 2 - 100, 250),
                                                            MenuResult::FPSChange, font, "FPS", MIN_FPS, MAX_FPS);
     fps->setValue(_FW.getOptionsManager().getFPS());
+    fps->setEnabled(!_FW.getOptionsManager().isVSyncEnabled());
     _MenuItems.push_back(fps);
 
     std::shared_ptr<CheckBox> vSync = std::make_shared<CheckBox>(sf::Vector2f(SCREENWIDTH / 2, 300),
@@ -123,6 +124,7 @@ void OptionsMenu::handleEvent(sf::Event &event) {
             break;
         case MenuResult::VSyncChanged:
             _FW.getOptionsManager().setVSyncEnabled((bool) _MenuItems[VSyncIndex]->getValue());
+            _MenuItems[FPSIndex]->setEnabled(!(bool) _MenuItems[VSyncIndex]->getValue());
             break;
         case MenuResult::VolumeChange:
             _FW.getOptionsManager().setVolume(_MenuItems[VolumeIndex]->getValue());

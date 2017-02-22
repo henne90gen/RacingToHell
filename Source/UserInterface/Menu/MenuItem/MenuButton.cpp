@@ -57,19 +57,12 @@ void MenuButton::render(sf::RenderWindow &window) {
 MenuResult MenuButton::handleEvent(sf::Event &event, sf::Vector2f mousePos) {
     if (_Enabled && _Visible) {
         if (event.type == sf::Event::MouseButtonPressed) {
-            if (mousePos.y > getRect().top && mousePos.y < getRect().top + getRect().height &&
-                mousePos.x > getRect().left && mousePos.x < getRect().left + getRect().width) {
-                return _Action;
-            }
-        } else if (event.type == sf::Event::JoystickButtonPressed) {
-            if (event.joystickButton.button == 0 && _Focused) {
+            if (rh::pointInRectangle(getRect(), mousePos)) {
                 return _Action;
             }
         } else if (event.type == sf::Event::MouseMoved) {
-            _Hovering = mousePos.y > getRect().top && mousePos.y < getRect().top + getRect().height &&
-                        mousePos.x > getRect().left && mousePos.x < getRect().left + getRect().width;
-
-            _Focused = false; //?
+            _Hovering = rh::pointInRectangle(getRect(), mousePos);
+//            _Focused = false; //?
         }
     }
     return MenuResult::Nothing;

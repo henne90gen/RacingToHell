@@ -20,7 +20,7 @@ public:
     /*
         See MenuItem for details
     */
-    void render(sf::RenderWindow &Window);
+    void render(sf::RenderWindow &renderWindow);
 
     /*
         See MenuItem for details

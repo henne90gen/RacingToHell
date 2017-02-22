@@ -61,7 +61,7 @@ void Textbox::render(sf::RenderWindow &RenderWindow) {
 
 MenuResult Textbox::handleEvent(sf::Event &Event, sf::Vector2f MousePos) {
     if (Event.type == sf::Event::MouseButtonPressed) {
-        _Focused = pointInRectangle(getRect(), MousePos);
+        _Focused = rh::pointInRectangle(getRect(), MousePos);
         if (_Enabled && _Focused) {
             _ShowCursor = true;
             _CursorClock.restart();
@@ -88,7 +88,7 @@ MenuResult Textbox::handleEvent(sf::Event &Event, sf::Vector2f MousePos) {
             setCursor();
         }
     } else if (Event.type == sf::Event::MouseMoved) {
-        _Hovering = pointInRectangle(getRect(), MousePos);
+        _Hovering = rh::pointInRectangle(getRect(), MousePos);
     } else if (Event.type == sf::Event::KeyPressed) {
         if (_Enabled && _Focused) {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {

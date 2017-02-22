@@ -21,3 +21,8 @@ std::string rh::floatToString(float value, unsigned int precision) {
 void rh::centerText(sf::Text &text) {
     text.setOrigin(text.getLocalBounds().width / 2, 0);
 }
+
+bool rh::pointInRectangle(sf::FloatRect rect, sf::Vector2f pos) {
+    return (pos.y > rect.top && pos.y < rect.top + rect.height && pos.x > rect.left &&
+            pos.x < rect.left + rect.width);
+}

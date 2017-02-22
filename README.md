@@ -13,9 +13,9 @@
     -   `mkdir build`
     -   `cd build`
 1.  Generate the makefiles:
-    -   `cmake -G "CodeBlocks - Unix Makefiles" ../`
+    -   `cmake -G "Unix Makefiles" ../`
 1.  Execute the build:
-    -   `cmake --build ./ --target RacingToHell -- -j 8`
+    -   `cmake --build ./ --target RacingToHell --`
 
 Notes:
 -   The compiled executable is located in `RacingToHell/build/bin`

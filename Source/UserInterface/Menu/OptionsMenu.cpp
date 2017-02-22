@@ -6,21 +6,26 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
 
     sf::Font &font = _FW.getOptionsManager().getFont();
 
+    _Text.setString("Options");
+    _Text.setCharacterSize(53);
+    _Text.setStyle(sf::Text::Style::Bold);
+    _Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 100));
+
+    std::shared_ptr<Slider> volume = std::make_shared<Slider>(sf::Vector2f(SCREENWIDTH / 2 - 100, 200),
+                                                              MenuResult::VolumeChange, font, "Volume", MIN_VOLUME,
+                                                              MAX_VOLUME);
+    volume->setValue(_FW.getOptionsManager().getVolume());
+    _MenuItems.push_back(volume);
+
     std::shared_ptr<Slider> fps = std::make_shared<Slider>(sf::Vector2f(SCREENWIDTH / 2 - 100, 250),
                                                            MenuResult::FPSChange, font, "FPS", MIN_FPS, MAX_FPS);
     fps->setValue(_FW.getOptionsManager().getFPS());
     _MenuItems.push_back(fps);
 
-    std::shared_ptr<CheckBox> vSync = std::make_shared<CheckBox>(sf::Vector2f(SCREENWIDTH / 2, 200),
+    std::shared_ptr<CheckBox> vSync = std::make_shared<CheckBox>(sf::Vector2f(SCREENWIDTH / 2, 300),
                                                                  MenuResult::VSyncChanged, font, "VSync");
     vSync->setValue(_FW.getOptionsManager().isVSyncEnabled());
     _MenuItems.push_back(vSync);
-
-    std::shared_ptr<Slider> volume = std::make_shared<Slider>(sf::Vector2f(SCREENWIDTH / 2 - 100, 300),
-                                                              MenuResult::VolumeChange, font, "Volume", MIN_VOLUME,
-                                                              MAX_VOLUME);
-    volume->setValue(_FW.getOptionsManager().getVolume());
-    _MenuItems.push_back(volume);
 
     std::vector<std::string> difficultyStrings = _FW.getOptionsManager().getDifficultyStrings();
     std::vector<float> difficultyValues = _FW.getOptionsManager().getDifficultyValues();
@@ -72,11 +77,6 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
                                                                        MenuResult::Back, font, "Back",
                                                                        TextAlignment::Center);
     _MenuItems.push_back(backBtn);
-
-    _Text.setString("Options");
-    _Text.setCharacterSize(53);
-    _Text.setStyle(sf::Text::Style::Bold);
-    _Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 160));
 
     _FPS.setFont(font);
     _FPS.setString("000");

@@ -2,8 +2,7 @@
 #include "UserInterface/Menu/Menu.h"
 #include "Framework/Framework.h"
 
-Menu::Menu(Framework &framework, GameState menuState) : GameScreen(framework),
-/*_JoystickSelection(0), _JoystickDelay(0.15f), */_MenuGameState(menuState) {
+Menu::Menu(Framework &framework, GameState menuState) : GameScreen(framework), _MenuGameState(menuState) {
     _Text.setFont(_FW.getOptionsManager().getFont());
 }
 

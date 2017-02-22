@@ -44,8 +44,7 @@ private:
     void checkPhase();
 
     virtual void
-    shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir, int BulletSpeed,
-                float volume);
+    shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir, int BulletSpeed);
 
     sf::SoundBuffer _EngineSoundBuffer;
     sf::Sound _EngineSound;

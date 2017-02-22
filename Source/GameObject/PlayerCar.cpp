@@ -172,7 +172,7 @@ bool PlayerCar::drainShotEnergy() {
 
 void PlayerCar::shoot() {
     _ShotBullet = _Crosshair.getPosition() - getPos();
-    _ShotBullet = _ShotBullet / std::sqrt(std::pow(_ShotBullet.x, 2) + std::pow(_ShotBullet.y, 2));
+    _ShotBullet = divideByLength(_ShotBullet);
 }
 
 sf::Vector2f PlayerCar::getShotBullet() {

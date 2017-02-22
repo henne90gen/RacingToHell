@@ -209,8 +209,8 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr
 }
 
 void
-Carrier::shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed,
-                     float volume) {
+Carrier::shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir,
+                     int bulletSpeed) {
     bullets.push_back(
             GameObjectFactory::getBullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss));
 }

@@ -30,7 +30,8 @@ private:
 	sf::Texture _GunTexture;
 	sf::Sprite _GunSprite;
 
-	virtual void shootBullet(std::vector<std::shared_ptr<Bullet>>& bullets, sf::Vector2f pos, sf::Vector2f dir, int BulletSpeed, float volume);
+	virtual void
+	shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir, int BulletSpeed);
 
 	bool _MovementSwitch;
 };

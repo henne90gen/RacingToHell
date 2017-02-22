@@ -99,8 +99,7 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bul
 }
 
 void
-Jet::shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed,
-                 float volume) {
+Jet::shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed) {
     bullets.push_back(GameObjectFactory::getBullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss));
 }
 

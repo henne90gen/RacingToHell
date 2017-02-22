@@ -164,8 +164,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
 }
 
 void
-Tank::shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed,
-                  float volume) {
+Tank::shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed) {
     bullets.push_back(
             GameObjectFactory::getBullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss));
 }

@@ -51,7 +51,7 @@ float GameObject::getAngleFromVector(sf::Vector2f vec) {
 }
 
 sf::Vector2f GameObject::divideByLength(sf::Vector2f vec) {
-    return vec / std::sqrt(std::pow(vec.x, 2) + std::pow(vec.y, 2));
+    return vec / (float) (std::sqrt(std::pow(vec.x, 2) + std::pow(vec.y, 2)));
 }
 
 void GameObject::operator>>(sf::Packet &packet) {

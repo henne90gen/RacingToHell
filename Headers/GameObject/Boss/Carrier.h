@@ -32,7 +32,8 @@ private:
 
 	float _Radius;
 
-	virtual void shootBullet(std::vector<std::shared_ptr<Bullet>>& bullets, sf::Vector2f pos, sf::Vector2f dir, int BulletSpeed, float volume);
+	virtual void
+	shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir, int BulletSpeed);
 
 	bool _MovementSwitchLeftRight, _MovementSwitchUpDown, _SwitchSides;
 	sf::Clock _SwitchSidesClock;

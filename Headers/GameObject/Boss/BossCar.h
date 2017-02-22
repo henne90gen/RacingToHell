@@ -119,15 +119,14 @@ protected:
     float PlayerAngle(GameObject &Player);
 
     void shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir) {
-        shootBullet(bullets, pos, dir, _BulletSpeed, 0);
+        shootBullet(bullets, pos, dir, _BulletSpeed);
     }
 
     void shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir,
-                     float volume) { shootBullet(bullets, pos, dir, _BulletSpeed, volume); }
+                     float volume) { shootBullet(bullets, pos, dir, _BulletSpeed); }
 
     virtual void
-    shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed,
-                float volume) = 0;
+    shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed) = 0;
 
     bool driveToNextPosition(float FrameTime);
 

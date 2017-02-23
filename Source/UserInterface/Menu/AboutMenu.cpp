@@ -7,9 +7,7 @@ AboutMenu::AboutMenu(Framework &framework) : Menu(framework, GameState::About) {
     sf::Font &font = _FW.getOptionsManager().getFont();
 
     sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
-    std::shared_ptr<MenuButton> button = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2 - 200, 735),
-                                                                      ButtonSize, font, "Back", TextAlignment::Center);
-//    _MenuItems.push_back(button);
+    _BackBtn = MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 200, 735), ButtonSize, font, "Back", TextAlignment::Center);
 
     _Frame.setPosition(sf::Vector2f(50, 75));
     _Frame.setSize(sf::Vector2f(SCREENWIDTH - 100, 645));
@@ -76,28 +74,26 @@ AboutMenu::AboutMenu(Framework &framework) : Menu(framework, GameState::About) {
             sf::Vector2f(SCREENWIDTH / 2 - _PlayerCarShotSounds2.getLocalBounds().width / 2, 640));
 }
 
-void AboutMenu::render(sf::RenderWindow &window) {
-    window.draw(_Frame);
-    window.draw(_Text);
-    window.draw(_Text2);
-    window.draw(_Music);
-    window.draw(_Cars);
-    window.draw(_Boss);
-    window.draw(_Boss2);
-    window.draw(_LevelUp);
-    window.draw(_LevelUp2);
-    window.draw(_AIShotSounds);
-    window.draw(_AIShotSounds2);
-    window.draw(_PlayerCarShotSounds);
-    window.draw(_PlayerCarShotSounds2);
+void AboutMenu::render(sf::RenderWindow &renderWindow) {
+    renderWindow.draw(_Frame);
+    renderWindow.draw(_Text);
+    renderWindow.draw(_Text2);
+    renderWindow.draw(_Music);
+    renderWindow.draw(_Cars);
+    renderWindow.draw(_Boss);
+    renderWindow.draw(_Boss2);
+    renderWindow.draw(_LevelUp);
+    renderWindow.draw(_LevelUp2);
+    renderWindow.draw(_AIShotSounds);
+    renderWindow.draw(_AIShotSounds2);
+    renderWindow.draw(_PlayerCarShotSounds);
+    renderWindow.draw(_PlayerCarShotSounds2);
+
+    _BackBtn.render(renderWindow);
 }
 
 void AboutMenu::handleEvent(sf::Event &event) {
-//    switch (getMenuItemResult(event)) {
-//        case MenuResult::Back:
-//            _FW.goBackGameState();
-//            break;
-//        default:
-//            break;
-//    }
+    if (menuItemTriggered(event, _BackBtn)) {
+        _FW.goBackGameState();
+    }
 }

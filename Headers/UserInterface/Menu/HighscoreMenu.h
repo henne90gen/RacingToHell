@@ -15,7 +15,7 @@ public:
         Renders the HighscoreMenu to the specified RenderWindow
         @param window Window to draw to
     */
-    virtual void render(sf::RenderWindow &Window);
+    virtual void render(sf::RenderWindow &renderWindow);
 
     /*
         Handles events for the HighscoreMenu
@@ -30,5 +30,6 @@ public:
 
 private:
     HighscoreList _HighscoreList;
+    MenuButton _BackBtn;
 };
 

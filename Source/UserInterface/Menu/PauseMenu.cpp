@@ -9,25 +9,14 @@ PauseMenu::PauseMenu(Framework &framework) : Menu(framework, GameState::Pause) {
     //Menu-Items
     sf::Vector2f ButtonSize = sf::Vector2f(250, 50);
 
-    std::shared_ptr<MenuButton> resumeBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2, 240), ButtonSize,
-                                                                         font, "Resume",
-                                                                         TextAlignment::Center);
-//    _MenuItems.push_back(resumeBtn);
+    _ResumeBtn = MenuButton(sf::Vector2f(SCREENWIDTH / 2, 240), ButtonSize, font, "Resume", TextAlignment::Center);
 
-    std::shared_ptr<MenuButton> optionsBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2, 310),
-                                                                          ButtonSize, font, "Options",
-                                                                          TextAlignment::Center);
-//    _MenuItems.push_back(optionsBtn);
+    _OptionsBtn = MenuButton(sf::Vector2f(SCREENWIDTH / 2, 310), ButtonSize, font, "Options", TextAlignment::Center);
 
-    std::shared_ptr<MenuButton> backToMainBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2, 380),
-                                                                             ButtonSize, font, "Main Menu",
-                                                                             TextAlignment::Center);
-//    _MenuItems.push_back(backToMainBtn);
+    _BackToMainBtn = MenuButton(sf::Vector2f(SCREENWIDTH / 2, 380), ButtonSize, font, "Main Menu",
+                                TextAlignment::Center);
 
-    std::shared_ptr<MenuButton> exitBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2, 450), ButtonSize,
-                                                                       font, "Exit",
-                                                                       TextAlignment::Center);
-//    _MenuItems.push_back(exitBtn);
+    _ExitBtn = MenuButton(sf::Vector2f(SCREENWIDTH / 2, 450), ButtonSize, font, "Exit", TextAlignment::Center);
 
     //Menu-Text
     _Text.setString("Pause Menu");
@@ -36,32 +25,30 @@ PauseMenu::PauseMenu(Framework &framework) : Menu(framework, GameState::Pause) {
     _Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 160));
 }
 
-void PauseMenu::render(sf::RenderWindow &window) {
-    window.draw(_Text);
+void PauseMenu::render(sf::RenderWindow &renderWindow) {
+    renderWindow.draw(_Text);
+
+    _ResumeBtn.render(renderWindow);
+    _OptionsBtn.render(renderWindow);
+    _BackToMainBtn.render(renderWindow);
+    _ExitBtn.render(renderWindow);
 }
 
 void PauseMenu::handleEvent(sf::Event &event) {
-//    switch (getMenuItemResult(event)) {
-//        case MenuResult::Resume:
-//            _FW.getLevelManager().setMoving(true);
-//            _FW.getSoundManager().getLevelMusic()->play();
-//            _FW.getSoundManager().getMenuMusic()->pause();
-//            _FW.goBackGameState();
-//            break;
-//        case MenuResult::Option:
-//            _FW.advanceToGameState(GameState::Options);
-//            break;
-//        case MenuResult::Back:
-//            _FW.reset();
-//            _FW.getSoundManager().getLevelMusic()->stop();
-//            _FW.advanceToGameState(GameState::MainMenu);
-//            break;
-//        case MenuResult::Exit:
-//            _FW.getSoundManager().getLevelMusic()->stop();
-//            _FW.getSoundManager().getMenuMusic()->stop();
-//            _FW.advanceToGameState(GameState::Exiting);
-//            break;
-//        default:
-//            break;
-//    }
+    if (menuItemTriggered(event, _ResumeBtn)) {
+        _FW.getLevelManager().setMoving(true);
+        _FW.getSoundManager().getLevelMusic()->play();
+        _FW.getSoundManager().getMenuMusic()->pause();
+        _FW.goBackGameState();
+    } else if (menuItemTriggered(event, _OptionsBtn)) {
+        _FW.advanceToGameState(GameState::Options);
+    } else if (menuItemTriggered(event, _BackToMainBtn)) {
+        _FW.reset();
+        _FW.getSoundManager().getLevelMusic()->stop();
+        _FW.advanceToGameState(GameState::MainMenu);
+    } else if (menuItemTriggered(event, _ExitBtn)) {
+        _FW.getSoundManager().getLevelMusic()->stop();
+        _FW.getSoundManager().getMenuMusic()->stop();
+        _FW.advanceToGameState(GameState::Exiting);
+    }
 }

@@ -8,9 +8,7 @@ HighscoreMenu::HighscoreMenu(Framework &framework) : Menu(framework, GameState::
     sf::Font &font = _FW.getOptionsManager().getFont();
 
     sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
-    std::shared_ptr<MenuButton> backBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2 - 200, 735),
-                                                                       ButtonSize, font, "Back", TextAlignment::Center);
-//    _MenuItems.push_back(backBtn);
+    _BackBtn = MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 200, 735), ButtonSize, font, "Back", TextAlignment::Center);
 
     _Text.setString("Highscores");
     _Text.setCharacterSize(53);
@@ -19,8 +17,9 @@ HighscoreMenu::HighscoreMenu(Framework &framework) : Menu(framework, GameState::
     _Text.setPosition(sf::Vector2f(SCREENWIDTH / 2 - _Text.getLocalBounds().width / 2, 160));
 }
 
-void HighscoreMenu::render(sf::RenderWindow &window) {
-    _HighscoreList.render(window);
+void HighscoreMenu::render(sf::RenderWindow &renderWindow) {
+    _HighscoreList.render(renderWindow);
+    _BackBtn.render(renderWindow);
 }
 
 void HighscoreMenu::update(float frameTime) {
@@ -30,11 +29,7 @@ void HighscoreMenu::update(float frameTime) {
 }
 
 void HighscoreMenu::handleEvent(sf::Event &event) {
-//    switch (getMenuItemResult(event)) {
-//        case MenuResult::Back:
-//            _FW.goBackGameState();
-//            break;
-//        default:
-//            break;
-//    }
+    if (menuItemTriggered(event, _BackBtn)) {
+        _FW.goBackGameState();
+    }
 }

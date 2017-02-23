@@ -35,6 +35,7 @@ private:
     Slider _VolumeSlider, _FpsSlider;
     MenuButton _CreditsBtn, _BackBtn;
     CheckBox _VSyncCheck, _DebugCheck;
-//    ComboBox _DifficultyCombo, _GameModeCombo;
+    ComboBox<Difficulty> _DifficultyCombo;
+    ComboBox<GameMode> _GameModeCombo;
 };
 

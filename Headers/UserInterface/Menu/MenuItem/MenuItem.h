@@ -102,8 +102,8 @@ public:
 
     MenuItemType getType() { return _Type; }
 
+    bool _Hovering, _Enabled, _Focused, _Visible;
 protected:
     MenuItemType _Type;
-    bool _Hovering, _Enabled, _Focused, _Visible;
 };
 

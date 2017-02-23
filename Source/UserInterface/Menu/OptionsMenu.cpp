@@ -22,19 +22,19 @@ OptionsMenu::OptionsMenu(Framework &framework) : Menu(framework, GameState::Opti
 
     std::vector<std::string> difficultyStrings = _FW.getOptionsManager().getDifficultyStrings();
     std::vector<float> difficultyValues = _FW.getOptionsManager().getDifficultyValues();
-//    _DifficultyCombo = ComboBox(sf::Vector2f(SCREENWIDTH / 2 - 100, 350), difficultyStrings, difficultyValues, font);
-//    if (_FW.getLastGameState(2) == GameState::Running) {
-//        _DifficultyCombo.setEnabled(false);
-//    }
+    _DifficultyCombo = ComboBox<Difficulty>(sf::Vector2f(SCREENWIDTH / 2 - 100, 350), difficultyStrings,
+                                            difficultyValues, font, 200, 50);
+    if (_FW.getLastGameState(2) == GameState::Running) {
+        _DifficultyCombo.setEnabled(false);
+    }
 
     std::vector<std::string> gamemodeStrings = _FW.getOptionsManager().getGameModeStrings();
     std::vector<float> gamemodeValues = _FW.getOptionsManager().getGameModeValues();
-//    std::shared_ptr<ComboBox> gamemode = std::make_shared<ComboBox>(sf::Vector2f(SCREENWIDTH / 2 - 160, 420),
-//                                                                    gamemodeStrings,
-//                                                                    gamemodeValues, font, 320);
-//    if (_FW.getLastGameState(2) == GameState::Running) {
-//        gamemode->setEnabled(false);
-//    }
+    _GameModeCombo = ComboBox<GameMode>(sf::Vector2f(SCREENWIDTH / 2 - 160, 420), gamemodeStrings, gamemodeValues, font,
+                                        320, 50);
+    if (_FW.getLastGameState(2) == GameState::Running) {
+        _GameModeCombo.setEnabled(false);
+    }
 
     _ScoreMultiplierBackground.setPosition(sf::Vector2f(SCREENWIDTH / 2 - 150, 480));
     _ScoreMultiplierBackground.setSize(sf::Vector2f(300, 25));
@@ -94,6 +94,8 @@ void OptionsMenu::render(sf::RenderWindow &renderWindow) {
 
     _VSyncCheck.render(renderWindow);
 
+    _DifficultyCombo.render(renderWindow);
+    _GameModeCombo.render(renderWindow);
     renderWindow.draw(_ScoreMultiplierBackground);
     renderWindow.draw(_ScoreMultiplierText);
 
@@ -111,10 +113,10 @@ void OptionsMenu::handleEvent(sf::Event &event) {
     } else if (menuItemTriggered(event, _VSyncCheck)) {
         _FW.getOptionsManager().setVSyncEnabled(_VSyncCheck.getValue());
         _FpsSlider.setEnabled(!_VSyncCheck.getValue());
-//    } else if (menuItemTriggered(event, _DifficultyCombo)) {
-//            _FW.getOptionsManager().setDifficulty(_DifficultyCombo.getValue());
-//    } else if (menuItemTriggered(event, _GameModeCombo)) {
-//            _FW.getOptionsManager().setGameMode(_GameModeCombo.getValue());
+    } else if (menuItemTriggered(event, _DifficultyCombo)) {
+        _FW.getOptionsManager().setDifficulty(_DifficultyCombo.getValue());
+    } else if (menuItemTriggered(event, _GameModeCombo)) {
+        _FW.getOptionsManager().setGameMode(_GameModeCombo.getValue());
     } else if (menuItemTriggered(event, _DebugCheck)) {
         _FW.getOptionsManager().setDebugEnabled(_DebugCheck.getValue());
         _FW.reloadGameScreens();
@@ -151,8 +153,8 @@ void OptionsMenu::update(float FrameTime) {
             "Score: x" + rh::floatToString(multiplier, 2));
 
     // Update difficulty and GameMode
-//    _MenuItems[DifficultyIndex]->setValue((float) _FW.getOptionsManager().getDifficulty());
-//    _MenuItems[GameModeIndex]->setValue((float) _FW.getOptionsManager().getGameMode());
+    _DifficultyCombo.setValue(_FW.getOptionsManager().getDifficulty());
+    _GameModeCombo.setValue(_FW.getOptionsManager().getGameMode());
 
     // Change color of multiplier text
     if (multiplier == 1.0f) {

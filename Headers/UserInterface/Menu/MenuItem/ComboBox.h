@@ -58,6 +58,7 @@ public:
     virtual ~ComboBox() {};
 
     void render(sf::RenderWindow &renderWindow) {
+        // 'this->' is necessary, explanation: http://stackoverflow.com/questions/7076169/not-declared-in-this-scope-error-with-templates-and-inheritance
         if (this->_Enabled) {
             if (this->_HoveringLeft) {
                 _ButtonLeft.setFillColor(_BgColorHovering);

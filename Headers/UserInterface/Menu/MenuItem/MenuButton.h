@@ -2,66 +2,59 @@
 
 #include "MenuItem.h"
 
-class MenuButton : public MenuItem
-{
+class MenuButton : public MenuItem<float> {
 public:
-	/*
-		Button element that can be placed in a menu
-		@param pos Position of the Button on the screen
-		@param size Size of the Button
-		@param action Action the Button is associated with
-		@param text Text that is going to be on the Button
-		@param align Alignment of the text on the Button
-	*/
-    MenuButton(sf::Vector2f pos, sf::Vector2f size, MenuResult action, sf::Font &font, std::string text,
-               TextAlignment align);
-	~MenuButton() {}
+    /*
+        Button element that can be placed in a menu
+        @param pos Position of the Button on the screen
+        @param size Size of the Button
+        @param action Action the Button is associated with
+        @param text Text that is going to be on the Button
+        @param align Alignment of the text on the Button
+    */
+    MenuButton(sf::Vector2f pos, sf::Vector2f size, sf::Font &font, std::string text, TextAlignment align);
 
-	/*
-		See MenuItem for details
-	*/
-	void render(sf::RenderWindow& window);
+    MenuButton() {}
 
-	/*
-		See MenuItem for details
-	*/
-	MenuResult handleEvent(sf::Event & event, sf::Vector2f mousePos);
+    ~MenuButton() {}
 
-	/*
-		See MenuItem for details
-	*/
-	sf::FloatRect getRect();
+    void render(sf::RenderWindow &renderWindow);
 
-	/*
-		@return std::string Text of the Button
-	*/
-	std::string getText() { return _Text.getString(); }
+    bool handleEvent(sf::Event &event, sf::Vector2f mousePos);
 
-	/*
-		@param text new text
-	*/
-	void setText(std::string text);
+    sf::FloatRect getRect();
 
-	/*
-		Button doesn't have a value that could be changed
-		@return bool False
-	*/
-	void setValue(float x) {}
+    /**
+     * @return std::string Text of the button
+     */
+    std::string getText() { return _Text.getString(); }
 
-	/*
-		Button doesn't have a value that could be returned
-		@return float 0.0f
-	*/
-	float getValue() { return 0.0f; }
-	
-	/*
-		Button doesn't have a maximum value that could be returned
-		@return float 0.0f
-	*/
-	float getMaxValue() { return 0.0f; }
+    /*
+        @param text new text
+    */
+    void setText(std::string text);
+
+    /*
+        Button doesn't have a value that could be changed
+        @return bool False
+    */
+    void setValue(float x) {}
+
+    /*
+        Button doesn't have a value that could be returned
+        @return float 0.0f
+    */
+    float getValue() { return 0.0f; }
+
+    /*
+        Button doesn't have a maximum value that could be returned
+        @return float 0.0f
+    */
+    float getMaxValue() { return 0.0f; }
+
 private:
-	sf::Text _Text;
-	TextAlignment _Alignment;
-	sf::RectangleShape _Background;
+    sf::Text _Text;
+    TextAlignment _Alignment;
+    sf::RectangleShape _Background;
 };
 

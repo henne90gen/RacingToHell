@@ -42,8 +42,6 @@ void PauseMultiplayerMenu::render(sf::RenderWindow &window) {
     window.draw(_Background);
 
     window.draw(_Text);
-
-    Menu::render(window);
 }
 
 void PauseMultiplayerMenu::handleEvent(sf::Event &event) {
@@ -58,20 +56,20 @@ void PauseMultiplayerMenu::handleEvent(sf::Event &event) {
 //
 //		handleJoystick(Y);
 
-    switch (getMenuItemResult(event)) {
-        case MenuResult::Resume:
-            _FW.goBackGameState();
-            break;
-        case MenuResult::Option:
-            _FW.advanceToGameState(GameState::Options);
-            break;
-        case MenuResult::Back:
-            _FW.advanceToGameState(GameState::MainMenu);
-            break;
-        case MenuResult::Exit:
-            _FW.advanceToGameState(GameState::Exiting);
-            break;
-        default:
-            break;
-    }
+//    switch (getMenuItemResult(event)) {
+//        case MenuResult::Resume:
+//            _FW.goBackGameState();
+//            break;
+//        case MenuResult::Option:
+//            _FW.advanceToGameState(GameState::Options);
+//            break;
+//        case MenuResult::Back:
+//            _FW.advanceToGameState(GameState::MainMenu);
+//            break;
+//        case MenuResult::Exit:
+//            _FW.advanceToGameState(GameState::Exiting);
+//            break;
+//        default:
+//            break;
+//    }
 }

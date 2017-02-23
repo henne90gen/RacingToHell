@@ -25,7 +25,7 @@ public:
 		@param window RenderWindow to poll the events from
 		@return GameState New GameState the game should be in
 	*/
-	GameState handleMenuItemResult(MenuResult result);
+//	GameState handleMenuItemResult(MenuResult result);
 
 	void setReturnState(GameState returnState) { _ReturnState = returnState; }
 	GameState getReturnState() { return _ReturnState; }

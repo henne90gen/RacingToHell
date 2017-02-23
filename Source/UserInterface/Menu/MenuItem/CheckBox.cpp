@@ -2,10 +2,10 @@
 #include "stdafx.h"
 #include "UserInterface/Menu/MenuItem/CheckBox.h"
 
-CheckBox::CheckBox(sf::Vector2f pos, MenuResult action, sf::Font &font, std::string text) : MenuItem(
-        MenuItemType::MCheckbox, action, font) {
+CheckBox::CheckBox(sf::Vector2f pos, sf::Font &font, std::string text) : MenuItem(
+        MenuItemType::MCheckbox, font) {
 
-    _Text.setFont(_Font);
+    _Text.setFont(font);
     _Text.setString(text);
     _Text.setOrigin(0, _Text.getLocalBounds().height / 2);
 
@@ -31,16 +31,15 @@ void CheckBox::render(sf::RenderWindow &renderWindow) {
     _Cross.render(renderWindow);
 }
 
-MenuResult CheckBox::handleEvent(sf::Event &newEvent, sf::Vector2f mousePos) {
-
+bool CheckBox::handleEvent(sf::Event &newEvent, sf::Vector2f mousePos) {
     if (newEvent.type == sf::Event::MouseButtonPressed) {
         if (rh::pointInRectangle(_BoxBackground.getGlobalBounds(), mousePos)) {
             _Checked = !_Checked;
             _Cross.setVisible(!_Cross.isVisible());
-            return _Action;
+            return true;
         }
     }
-    return MenuResult::Nothing;
+    return false;
 }
 
 sf::FloatRect CheckBox::getRect() {

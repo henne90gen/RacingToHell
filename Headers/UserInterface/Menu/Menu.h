@@ -4,7 +4,6 @@
 #include "UserInterface/Menu/MenuItem/MenuButton.h"
 #include "UserInterface/Menu/MenuItem/Slider.h"
 #include "UserInterface/Menu/MenuItem/Textbox.h"
-#include "UserInterface/Menu/MenuItem/MenuResults.h"
 #include "UserInterface/Menu/MenuItem/ComboBox.h"
 #include "UserInterface/Menu/MenuItem/HighscoreList.h"
 #include "UserInterface/Menu/MenuItem/PlayerTable.h"
@@ -18,29 +17,23 @@ public:
 
     virtual ~Menu() {}
 
-    virtual void render(sf::RenderWindow &renderWindow);
-
     virtual void update(float frameTime) {}
 
-    MenuResult getMenuItemResult(sf::Event &event);
-
-    // FIXME are we still supporting joysticks?
-    /*
-    void handleJoystick(float axis);
-
-    void applyJoystickSelection(sf::Event &Event);
-    */
+    template<typename T>
+    bool menuItemTriggered(sf::Event &event, MenuItem<T> &menuItem) {
+        if (event.type == sf::Event::MouseButtonPressed) {
+            _MousePos = sf::Vector2f(event.mouseButton.x, event.mouseButton.y);
+        } else if (event.type == sf::Event::MouseMoved) {
+            _MousePos = sf::Vector2f(event.mouseMove.x, event.mouseMove.y);
+        }
+        return menuItem.handleEvent(event, _MousePos);
+    }
 
 protected:
-    std::vector<std::shared_ptr<MenuItem>> _MenuItems;
     sf::Text _Text;
     GameState _MenuGameState;
     sf::Vector2f _MousePos;
 
     bool checkMenuItemHovered(sf::RenderWindow &Window, int index);
-
-//    int _JoystickSelection;
-//    sf::Clock _JoystickTimer;
-//    float _JoystickDelay;
 };
 

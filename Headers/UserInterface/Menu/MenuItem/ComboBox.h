@@ -2,27 +2,19 @@
 
 #include "MenuItem.h"
 
-class ComboBox : public MenuItem {
+template<class T>
+class ComboBox : public MenuItem<T> {
 public:
-    ComboBox(sf::Vector2f pos, std::vector<std::string> itemStrings, std::vector<float> itemValues, MenuResult action,
-             sf::Font &font, int width = 200, int height = 50);
+    ComboBox(sf::Vector2f pos, std::vector <std::string> itemStrings, std::vector<float> itemValues, sf::Font &font,
+             int width, int height) {}
 
     virtual ~ComboBox() {};
 
-    /*
-        See MenuItem for details
-    */
-    void render(sf::RenderWindow &renderWindow);
+    void render(sf::RenderWindow &renderWindow) {}
 
-    /**
-     * See MenuItem for details
-     */
-    MenuResult handleEvent(sf::Event &newEvent, sf::Vector2f mousePos);
+    bool handleEvent(sf::Event &newEvent, sf::Vector2f mousePos) {}
 
-    /**
-     * See MenuItem for details
-     */
-    sf::FloatRect getRect();
+    sf::FloatRect getRect() {}
 
     /**
      * @return std::string Text of the Button
@@ -33,19 +25,23 @@ public:
      * set currentItem
      * @return bool False
      */
-    void setValue(float x);
+    void setValue(T newValue) {
+        _CurrentItem = newValue;
+        _Text.setString(_ItemStrings[_CurrentItem]);
+        centerText();
+    }
 
     /**
      * return current Item
      * @return float 0.0f
      */
-    float getValue() { return _CurrentItem; }
+    T getValue() { return _CurrentItem; }
 
     /**
      * Combo doesn't have a maximum value that could be returned
      * @return float 0.0f
      */
-    float getMaxValue() { return 0.0f; }
+    T getMaxValue() { return nullptr; }
 
 private:
     std::vector<std::string> _ItemStrings;
@@ -62,9 +58,9 @@ private:
     bool _HoveringLeft, _HoveringRight;
     int _Height, _ButtonWidth, _BodyWidth;
 
-    long _CurrentItem;
+    T _CurrentItem;
     unsigned int _CharacterSize;
 
-    void centerText();
+    void centerText() {}
 };
 

@@ -33,13 +33,13 @@ public:
 	int getCarIndex() { return _SelectedCar; }
 	void setCarIndex(int x) { _SelectedCar = x; }
 
-	void resetTable() { _MenuItems[(int)MenuItemIndex::PlayerTable]->resetTable(); }
-	void addPlayer(std::string name, bool isadmin) { _MenuItems[(int)MenuItemIndex::PlayerTable]->addPlayer(name, isadmin); }
-	void removePlayer(int index) { _MenuItems[(int)MenuItemIndex::PlayerTable]->removePlayer(index); }
-	void setAdminTable(bool admin) { _MenuItems[(int)MenuItemIndex::PlayerTable]->setAdmin(admin); }
-	bool getClientReady() { return _MenuItems[(int)MenuItemIndex::PlayerTable]->getPlayerReady(); }
-	void setClientReady(bool rdy) { _MenuItems[(int)MenuItemIndex::PlayerTable]->setMember(1, rdy); }
-	void resetRdyButton() { _MenuItems[(int)MenuItemIndex::Ready]->setText("Ready"); }
+//	void resetTable() { _MenuItems[(int)MenuItemIndex::PlayerTable]->resetTable(); }
+//	void addPlayer(std::string name, bool isadmin) { _MenuItems[(int)MenuItemIndex::PlayerTable]->addPlayer(name, isadmin); }
+//	void removePlayer(int index) { _MenuItems[(int)MenuItemIndex::PlayerTable]->removePlayer(index); }
+//	void setAdminTable(bool admin) { _MenuItems[(int)MenuItemIndex::PlayerTable]->setAdmin(admin); }
+//	bool getClientReady() { return _MenuItems[(int)MenuItemIndex::PlayerTable]->getPlayerReady(); }
+//	void setClientReady(bool rdy) { _MenuItems[(int)MenuItemIndex::PlayerTable]->setMember(1, rdy); }
+//	void resetRdyButton() { _MenuItems[(int)MenuItemIndex::Ready]->setText("Ready"); }
 
 private:
 	enum class MenuItemIndex {PlayerTable = 0, Start = 1, Difficulty = 2, Modes = 3, Ready = 4, PrevCar = 5, NextCar = 6};

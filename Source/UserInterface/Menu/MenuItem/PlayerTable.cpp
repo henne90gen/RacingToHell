@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "UserInterface/Menu/MenuItem/PlayerTable.h"
 
-PlayerTable::PlayerTable(sf::Vector2f Position, sf::Font &font) : MenuItem(MenuItemType::MLobbyList,
-                                                                           MenuResult::Nothing, font),
+PlayerTable::PlayerTable(sf::Vector2f Position, sf::Font &font) : MenuItem(MenuItemType::MLobbyList, font),
                                                                   _Position(Position), _Size(550, 80) {
     _Background.setFillColor(sf::Color(0, 0, 0, 0));
     _Background.setOutlineThickness(1);
@@ -25,8 +24,8 @@ void PlayerTable::render(sf::RenderWindow &window) {
 
     for (unsigned int i = 0; i < 2; i++) {
         sf::RectangleShape Background;
-        sf::Text PlayerName, ScoreText;
-        sf::Sprite LeftSprite, RightSprite;
+        sf::Text playerName, scoreText;
+        sf::Sprite leftSprite, RightSprite;
 
         Background.setOutlineColor(sf::Color::Black);
         Background.setOutlineThickness(1);
@@ -36,37 +35,37 @@ void PlayerTable::render(sf::RenderWindow &window) {
         if (i < _MemberList.size()) {
             if (_MemberList[i]._Ready) {
                 Background.setFillColor(sf::Color(110, 190, 110, 100));
-                LeftSprite.setTexture(_ReadyIcon);
+                leftSprite.setTexture(_ReadyIcon);
             } else {
                 Background.setFillColor(sf::Color(190, 110, 110, 100));
-                LeftSprite.setTexture(_CrossIcon);
+                leftSprite.setTexture(_CrossIcon);
             }
 
             if (_MemberList[i]._Admin) {
-                LeftSprite.setTexture(_AdminIcon);
+                leftSprite.setTexture(_AdminIcon);
             } else {
                 RightSprite.setTexture(_TrashIcon);
                 RightSprite.setPosition(_Position + sf::Vector2f(_Size.x - 35, 5 + 40 * i));
             }
 
-            LeftSprite.setPosition(_Position + sf::Vector2f(5, 5 + 40 * i));
+            leftSprite.setPosition(_Position + sf::Vector2f(5, 5 + 40 * i));
 
-            PlayerName.setFont(_Font);
-            PlayerName.setCharacterSize(27);
-            PlayerName.setString(_MemberList[i]._Name);
-            PlayerName.setPosition(_Position + sf::Vector2f(50, 40 * i));
+//            playerName.setFont(font);
+            playerName.setCharacterSize(27);
+            playerName.setString(_MemberList[i]._Name);
+            playerName.setPosition(_Position + sf::Vector2f(50, 40 * i));
 
-            ScoreText = PlayerName;
-            ScoreText.setString(std::to_string(_MemberList[i]._Score));
-            ScoreText.setPosition(_Position + sf::Vector2f(_Size.x - 50 - ScoreText.getGlobalBounds().width, 40 * i));
+            scoreText = playerName;
+            scoreText.setString(std::to_string(_MemberList[i]._Score));
+            scoreText.setPosition(_Position + sf::Vector2f(_Size.x - 50 - scoreText.getGlobalBounds().width, 40 * i));
         } else {
             Background.setFillColor(sf::Color(0, 0, 0, 120));
         }
 
         window.draw(Background);
-        window.draw(PlayerName);
-        window.draw(ScoreText);
-        window.draw(LeftSprite);
+        window.draw(playerName);
+        window.draw(scoreText);
+        window.draw(leftSprite);
 
         if (_isAdmin) {
             window.draw(RightSprite);
@@ -74,7 +73,7 @@ void PlayerTable::render(sf::RenderWindow &window) {
     }
 }
 
-MenuResult PlayerTable::handleEvent(sf::Event &newEvent, sf::Vector2f mousePos) {
+bool PlayerTable::handleEvent(sf::Event &newEvent, sf::Vector2f mousePos) {
     if (_isAdmin) {
         for (unsigned int i = 0; i < 2; i++) {
             if (i < _MemberList.size() && !_MemberList[i]._Admin) {
@@ -84,7 +83,7 @@ MenuResult PlayerTable::handleEvent(sf::Event &newEvent, sf::Vector2f mousePos) 
                     _Hovering = true;
 
                     if (newEvent.type == sf::Event::MouseButtonPressed) {
-                        return MenuResult::KickOtherPlayer;
+                        return true;
                     }
 
                     break;
@@ -100,7 +99,7 @@ MenuResult PlayerTable::handleEvent(sf::Event &newEvent, sf::Vector2f mousePos) 
         _Hovering = false;
     }
 
-    return MenuResult::Nothing;
+    return false;
 }
 
 void PlayerTable::addPlayer(std::string name, bool isAdmin) {

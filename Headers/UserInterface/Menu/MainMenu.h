@@ -16,7 +16,7 @@ public:
         Renders the MainMenu to the specified RenderWindow
         @param window Window to draw to
     */
-    void render(sf::RenderWindow &window);
+    void render(sf::RenderWindow &renderWindow);
 
     /*
         Handles events for the MainMenu
@@ -25,5 +25,6 @@ public:
 
 private:
     std::shared_ptr<StatBox> _StatBox;
+    MenuButton _RightBtn, _LeftBtn, _ExitBtn, _HighscoreBtn, _OptionsBtn, _MultiplayerBtn, _PlayBtn;
 };
 

@@ -46,25 +46,27 @@ private:
     int _BarHeight = 5;
 };
 
-class CheckBox : public MenuItem {
+class CheckBox : public MenuItem<bool> {
 public:
-    CheckBox(sf::Vector2f pos, MenuResult action, sf::Font &font, std::string text);
+    CheckBox(sf::Vector2f pos, sf::Font &font, std::string text);
+
+    CheckBox() {}
 
     void render(sf::RenderWindow &renderWindow);
 
-    MenuResult handleEvent(sf::Event &newEvent, sf::Vector2f mousePos);
+    bool handleEvent(sf::Event &newEvent, sf::Vector2f mousePos);
 
     sf::FloatRect getRect();
 
     std::string getText() { return _Text.getString(); }
 
-    float getValue() { return _Checked; }
+    bool getValue() { return _Checked; }
 
-    float getMaxValue() { return 1; }
+    bool getMaxValue() { return true; }
 
-    void setValue(float newValue) {
-        _Checked = (bool) newValue;
-        _Cross.setVisible((bool) newValue);
+    void setValue(bool newValue) {
+        _Checked = newValue;
+        _Cross.setVisible(newValue);
     }
 
 private:

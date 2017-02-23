@@ -1,9 +1,9 @@
 ﻿#include "stdafx.h"
 #include "UserInterface/Menu/MenuItem/Textbox.h"
 
-Textbox::Textbox(sf::Vector2f Position, sf::Vector2f Size, unsigned int characterSize, std::string Text,
-                 MenuResult action, sf::Font &font, bool isFocused, bool isPassword)
-        : MenuItem(MenuItemType::MTextbox, action, font),
+Textbox::Textbox(sf::Vector2f Position, sf::Vector2f Size, unsigned int characterSize, std::string Text, sf::Font &font,
+                 bool isFocused, bool isPassword)
+        : MenuItem(MenuItemType::MTextbox, font),
           _FillColor(sf::Color(255, 255, 255)), _FillColorDisabled(sf::Color(140, 140, 140)),
           _OutlineColor(sf::Color(0, 0, 0)), _OutlineColorFocused(sf::Color(0, 150, 205)),
           _TextColor(sf::Color(0, 0, 0)), _ShowCursor(true), _CursorPosition(0), _isPassword(isPassword), _String(Text),
@@ -16,7 +16,7 @@ Textbox::Textbox(sf::Vector2f Position, sf::Vector2f Size, unsigned int characte
     _Box.setPosition(Position);
     _Box.setSize(Size);
 
-    _Text.setFont(_Font);
+    _Text.setFont(font);
     _Text.setCharacterSize(characterSize);
     _Text.setPosition(Position + sf::Vector2f(2, 0));
     _Text.setFillColor(_TextColor);
@@ -59,7 +59,7 @@ void Textbox::render(sf::RenderWindow &RenderWindow) {
     }
 }
 
-MenuResult Textbox::handleEvent(sf::Event &Event, sf::Vector2f MousePos) {
+bool Textbox::handleEvent(sf::Event &Event, sf::Vector2f MousePos) {
     if (Event.type == sf::Event::MouseButtonPressed) {
         _Focused = rh::pointInRectangle(getRect(), MousePos);
         if (_Enabled && _Focused) {
@@ -92,7 +92,7 @@ MenuResult Textbox::handleEvent(sf::Event &Event, sf::Vector2f MousePos) {
     } else if (Event.type == sf::Event::KeyPressed) {
         if (_Enabled && _Focused) {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
-                return _Action;
+                return true;
             } else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) &&
                        !sf::Keyboard::isKeyPressed(sf::Keyboard::RControl) &&
                        !sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt) &&
@@ -155,7 +155,7 @@ MenuResult Textbox::handleEvent(sf::Event &Event, sf::Vector2f MousePos) {
             }
         }
     }
-    return MenuResult::Nothing;
+    return false;
 }
 
 void Textbox::setCursor() {

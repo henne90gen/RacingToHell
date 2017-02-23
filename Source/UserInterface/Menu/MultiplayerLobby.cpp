@@ -2,8 +2,6 @@
 #include "UserInterface/Menu/MultiplayerLobby.h"
 #include "Framework/Framework.h"
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "TemplateArgumentsIssues"
 MultiplayerLobby::MultiplayerLobby(Framework &framework) : Menu(framework, GameState::Lobby), _SelectedCar(0),
                                                            _NetworkHandle() {
 //    std::shared_ptr<PlayerTable> Table(new PlayerTable(sf::Vector2f(25, 25)));
@@ -48,63 +46,61 @@ MultiplayerLobby::MultiplayerLobby(Framework &framework) : Menu(framework, GameS
 
 void MultiplayerLobby::render(sf::RenderWindow &window) {
 //    _StatBox->render(window, _SelectedCar);
-
-    Menu::render(window);
 }
 
 void MultiplayerLobby::handleEvent(sf::Event &event) {
-    switch (getMenuItemResult(event)) {
-        case MenuResult::Back: {
-            sf::Packet EmptyPacket;
-            _NetworkHandle->addPacket(NetworkCommunication::Disconnect, EmptyPacket);
-            std::cout << "Sending disconnect" << std::endl;
-            _FW.advanceToGameState(GameState::MainMenu);
-        }
-            break;
-        case MenuResult::PreviousSkin:
-            _SelectedCar--;
-            break;
-        case MenuResult::NextSkin:
-            _SelectedCar++;
-            break;
-        case MenuResult::KickOtherPlayer: {
-            sf::Packet EmptyPacket;
-            _NetworkHandle->addPacket(NetworkCommunication::Kick, EmptyPacket);
-            removePlayer(1);
-            std::cout << "Kicking player" << std::endl;
-            break;
-        }
-        case MenuResult::Ready: {
-            sf::Packet ReadyPacket;
-
-            if (_MenuItems[(int) MenuItemIndex::Ready]->getText() == "Ready") {
-                _MenuItems[(int) MenuItemIndex::Ready]->setText("Not ready");
-                ReadyPacket << (sf::Uint8) (1);
-                _MenuItems[(int) MenuItemIndex::PlayerTable]->setMember(1, true);
-                _MenuItems[(int) MenuItemIndex::PrevCar]->setEnabled(false);
-                _MenuItems[(int) MenuItemIndex::NextCar]->setEnabled(false);
-            } else {
-                _MenuItems[(int) MenuItemIndex::Ready]->setText("Ready");
-                ReadyPacket << (sf::Uint8) (0);
-                _MenuItems[(int) MenuItemIndex::PlayerTable]->setMember(1, false);
-                _MenuItems[(int) MenuItemIndex::PrevCar]->setEnabled(true);
-                _MenuItems[(int) MenuItemIndex::NextCar]->setEnabled(true);
-            }
-            _NetworkHandle->addPacket(NetworkCommunication::Ready, ReadyPacket);
-            break;
-        }
-        case MenuResult::StartMultiplayer:
-            if (_NetworkHandle->getRelation() == NetworkRelation::Host) {
-                if (getClientReady()) {
-                    sf::Packet packet;
-                    _NetworkHandle->addPacket(NetworkCommunication::StartGame, packet);
-                    _FW.advanceToGameState(GameState::Countdown);
-                }
-            }
-            break;
-        default:
-            break;
-    }
+//    switch (getMenuItemResult(event)) {
+//        case MenuResult::Back: {
+//            sf::Packet EmptyPacket;
+//            _NetworkHandle->addPacket(NetworkCommunication::Disconnect, EmptyPacket);
+//            std::cout << "Sending disconnect" << std::endl;
+//            _FW.advanceToGameState(GameState::MainMenu);
+//        }
+//            break;
+//        case MenuResult::PreviousSkin:
+//            _SelectedCar--;
+//            break;
+//        case MenuResult::NextSkin:
+//            _SelectedCar++;
+//            break;
+//        case MenuResult::KickOtherPlayer: {
+//            sf::Packet EmptyPacket;
+//            _NetworkHandle->addPacket(NetworkCommunication::Kick, EmptyPacket);
+//            removePlayer(1);
+//            std::cout << "Kicking player" << std::endl;
+//            break;
+//        }
+//        case MenuResult::Ready: {
+//            sf::Packet ReadyPacket;
+//
+//            if (_MenuItems[(int) MenuItemIndex::Ready]->getText() == "Ready") {
+//                _MenuItems[(int) MenuItemIndex::Ready]->setText("Not ready");
+//                ReadyPacket << (sf::Uint8) (1);
+//                _MenuItems[(int) MenuItemIndex::PlayerTable]->setMember(1, true);
+//                _MenuItems[(int) MenuItemIndex::PrevCar]->setEnabled(false);
+//                _MenuItems[(int) MenuItemIndex::NextCar]->setEnabled(false);
+//            } else {
+//                _MenuItems[(int) MenuItemIndex::Ready]->setText("Ready");
+//                ReadyPacket << (sf::Uint8) (0);
+//                _MenuItems[(int) MenuItemIndex::PlayerTable]->setMember(1, false);
+//                _MenuItems[(int) MenuItemIndex::PrevCar]->setEnabled(true);
+//                _MenuItems[(int) MenuItemIndex::NextCar]->setEnabled(true);
+//            }
+//            _NetworkHandle->addPacket(NetworkCommunication::Ready, ReadyPacket);
+//            break;
+//        }
+//        case MenuResult::StartMultiplayer:
+//            if (_NetworkHandle->getRelation() == NetworkRelation::Host) {
+//                if (getClientReady()) {
+//                    sf::Packet packet;
+//                    _NetworkHandle->addPacket(NetworkCommunication::StartGame, packet);
+//                    _FW.advanceToGameState(GameState::Countdown);
+//                }
+//            }
+//            break;
+//        default:
+//            break;
+//    }
 }
 
 void MultiplayerLobby::update(std::pair<NetworkCommunication, int> lastresponse) {
@@ -113,16 +109,14 @@ void MultiplayerLobby::update(std::pair<NetworkCommunication, int> lastresponse)
 
 void MultiplayerLobby::EnableButtons(bool isAdmin) {
     if (isAdmin) {
-        _MenuItems[(int) MenuItemIndex::Start]->setVisible(true);
-        _MenuItems[(int) MenuItemIndex::Difficulty]->setEnabled(true);
-        _MenuItems[(int) MenuItemIndex::Modes]->setEnabled(true);
-        _MenuItems[(int) MenuItemIndex::Ready]->setVisible(false);
+//        _MenuItems[(int) MenuItemIndex::Start]->setVisible(true);
+//        _MenuItems[(int) MenuItemIndex::Difficulty]->setEnabled(true);
+//        _MenuItems[(int) MenuItemIndex::Modes]->setEnabled(true);
+//        _MenuItems[(int) MenuItemIndex::Ready]->setVisible(false);
     } else {
-        _MenuItems[(int) MenuItemIndex::Start]->setVisible(false);
-        _MenuItems[(int) MenuItemIndex::Difficulty]->setEnabled(false);
-        _MenuItems[(int) MenuItemIndex::Modes]->setEnabled(false);
-        _MenuItems[(int) MenuItemIndex::Ready]->setVisible(true);
+//        _MenuItems[(int) MenuItemIndex::Start]->setVisible(false);
+//        _MenuItems[(int) MenuItemIndex::Difficulty]->setEnabled(false);
+//        _MenuItems[(int) MenuItemIndex::Modes]->setEnabled(false);
+//        _MenuItems[(int) MenuItemIndex::Ready]->setVisible(true);
     }
 }
-
-#pragma clang diagnostic pop

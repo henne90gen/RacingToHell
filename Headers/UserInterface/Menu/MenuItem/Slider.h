@@ -2,34 +2,27 @@
 
 #include "MenuItem.h"
 
-class Slider : public MenuItem {
+class Slider : public MenuItem<float> {
 public:
     /**
-        Slider element that can be placed in a menu to change numeric values
-        Range of slider is minValue to maxValue
-        @param pos Position of the Slider
-        @param action Action the Slider is associated with
-        @param text Text to the left of the Slider
-        @param minValue Minimum value of the slider
-        @param maxValue Maximum value of the slider
-    */
-    Slider(sf::Vector2f pos, MenuResult action, sf::Font &font, std::string text, float minValue, float maxValue);
+     * Slider element that can be placed in a menu to change numeric values
+     * Range of slider is minValue to maxValue
+     * @param pos Position of the Slider
+     * @param action Action the Slider is associated with
+     * @param text Text to the left of the Slider
+     * @param minValue Minimum value of the slider
+     * @param maxValue Maximum value of the slider
+     */
+    Slider(sf::Vector2f pos, sf::Font &font, std::string text, float minValue, float maxValue);
+
+    Slider() {}
 
     ~Slider() {}
 
-    /*
-        See MenuItem for details
-    */
     void render(sf::RenderWindow &renderWindow);
 
-    /*
-        See MenuItem for details
-    */
-    MenuResult handleEvent(sf::Event &Event, sf::Vector2f MousePos);
+    bool handleEvent(sf::Event &Event, sf::Vector2f MousePos);
 
-    /*
-        See MenuItem for details
-    */
     sf::FloatRect getRect() { return _BoundingBox; }
 
     /*

@@ -2,50 +2,40 @@
 
 #include "MenuItem.h"
 
-class PlayerTable : public MenuItem {
+// FIXME maybe use std::vector
+class PlayerTable : public MenuItem<float> {
 public:
     PlayerTable(sf::Vector2f Position, sf::Font &font);
 
     ~PlayerTable() {}
 
-    /*
-    Renders the MenuItem to the specified RenderWindow
-    @param window Window to draw to
-    */
     void render(sf::RenderWindow &window);
 
-    /*
-    Handles events for the MenuItem
-    @param newEvent Event to be handled
-    */
-    MenuResult handleEvent(sf::Event &newEvent, sf::Vector2f mousePos);
+    bool handleEvent(sf::Event &newEvent, sf::Vector2f mousePos);
 
-    /*
-    See MenuItem for details
-    */
     sf::FloatRect getRect() { return _Background.getGlobalBounds(); };
 
-    /*
-    @return std::string Text of the Button
-    */
+    /**
+     * @return std::string Text of the Button
+     */
     std::string getText() { return ""; }
 
-    /*
-    Button doesn't have a value that could be changed
-    @return bool False
-    */
+    /**
+     * Button doesn't have a value that could be changed
+     * @return bool False
+     */
     void setValue(float x) {}
 
-    /*
-    Button doesn't have a value that could be returned
-    @return float 0.0f
-    */
+    /**
+     * Button doesn't have a value that could be returned
+     * @return float 0.0f
+     */
     float getValue() { return 0.0f; }
 
-    /*
-    Button doesn't have a maximum value that could be returned
-    @return float 0.0f
-    */
+    /**
+     * Button doesn't have a maximum value that could be returned
+     * @return float 0.0f
+     */
     float getMaxValue() { return 0.0f; }
 
     void addPlayer(std::string name, bool isAdmin);

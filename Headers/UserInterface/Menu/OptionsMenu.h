@@ -15,7 +15,7 @@ public:
      * Renders the OptionsMenu to the specified RenderWindow
      * @param window Window to draw to
      */
-    virtual void render(sf::RenderWindow &Window);
+    virtual void render(sf::RenderWindow &renderWindow);
 
     /**
      * Handles events for the OptionsMenu
@@ -29,11 +29,12 @@ public:
 private:
     int _ChangeSliderValue;
 
-    enum Items {
-        VolumeIndex, FPSIndex, VSyncIndex, DifficultyIndex, GameModeIndex, DebugIndex
-    };
-
     sf::Text _FPS, _Volume, _ScoreMultiplierText;
     sf::RectangleShape _FPSBackground, _VolumeBackground, _ScoreMultiplierBackground;
+
+    Slider _VolumeSlider, _FpsSlider;
+    MenuButton _CreditsBtn, _BackBtn;
+    CheckBox _VSyncCheck, _DebugCheck;
+//    ComboBox _DifficultyCombo, _GameModeCombo;
 };
 

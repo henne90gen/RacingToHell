@@ -9,9 +9,8 @@ HighscoreMenu::HighscoreMenu(Framework &framework) : Menu(framework, GameState::
 
     sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
     std::shared_ptr<MenuButton> backBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2 - 200, 735),
-                                                                       ButtonSize, MenuResult::Back, font, "Back",
-                                                                       TextAlignment::Center);
-    _MenuItems.push_back(backBtn);
+                                                                       ButtonSize, font, "Back", TextAlignment::Center);
+//    _MenuItems.push_back(backBtn);
 
     _Text.setString("Highscores");
     _Text.setCharacterSize(53);
@@ -22,8 +21,6 @@ HighscoreMenu::HighscoreMenu(Framework &framework) : Menu(framework, GameState::
 
 void HighscoreMenu::render(sf::RenderWindow &window) {
     _HighscoreList.render(window);
-
-    Menu::render(window);
 }
 
 void HighscoreMenu::update(float frameTime) {
@@ -33,22 +30,11 @@ void HighscoreMenu::update(float frameTime) {
 }
 
 void HighscoreMenu::handleEvent(sf::Event &event) {
-
-//		float Y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
-
-//    if (event.type == sf::Event::JoystickButtonPressed) {
-//        if (sf::Joystick::isButtonPressed(0, 1)) {
-    // FIXME handle gamestate change
-//                return GameState::MainMenu;
-//        }
+//    switch (getMenuItemResult(event)) {
+//        case MenuResult::Back:
+//            _FW.goBackGameState();
+//            break;
+//        default:
+//            break;
 //    }
-
-//		handleJoystick(Y);
-    switch (getMenuItemResult(event)) {
-        case MenuResult::Back:
-            _FW.goBackGameState();
-            break;
-        default:
-            break;
-    }
 }

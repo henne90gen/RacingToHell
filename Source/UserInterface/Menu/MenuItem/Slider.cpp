@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "UserInterface/Menu/MenuItem/Slider.h"
 
-Slider::Slider(sf::Vector2f pos, MenuResult action, sf::Font &font, std::string text, float minValue, float maxValue)
+Slider::Slider(sf::Vector2f pos, sf::Font &font, std::string text, float minValue, float maxValue)
         : MenuItem(
-        MenuItemType::MSlider, action, font), _MinValue(minValue), _MaxValue(maxValue) {
+        MenuItemType::MSlider, font), _MinValue(minValue), _MaxValue(maxValue) {
 
     _Line.setFillColor(sf::Color::Black);
     _Line.setSize(sf::Vector2f(200, 5));
     _Line.setPosition(pos);
 
-    _Text.setFont(_Font);
+    _Text.setFont(font);
     _Text.setString(text);
     _Text.setPosition(sf::Vector2f(_Line.getPosition().x - _Text.getLocalBounds().width - 30,
                                    _Line.getPosition().y - _Text.getLocalBounds().height +
@@ -56,13 +56,13 @@ void Slider::render(sf::RenderWindow &renderWindow) {
     renderWindow.draw(_Slider);
 }
 
-MenuResult Slider::handleEvent(sf::Event &Event, sf::Vector2f MousePos) {
+bool Slider::handleEvent(sf::Event &Event, sf::Vector2f MousePos) {
     if (_Enabled) {
         if (Event.type == sf::Event::MouseButtonPressed) {
             if (rh::pointInRectangle(getRect(), MousePos)) {
                 setSlider(MousePos.x);
                 _MouseButtonPressed = true;
-                return _Action;
+                return true;
             }
         } else if (Event.type == sf::Event::MouseButtonReleased) {
             _MouseButtonPressed = false;
@@ -71,12 +71,12 @@ MenuResult Slider::handleEvent(sf::Event &Event, sf::Vector2f MousePos) {
             if (_MouseButtonPressed) {
                 _Hovering = true;
                 setSlider(MousePos.x);
-                return _Action;
+                return true;
             }
             _Focused = false;
         }
     }
-    return MenuResult::Nothing;
+    return false;
 }
 
 void Slider::setValue(float value) {

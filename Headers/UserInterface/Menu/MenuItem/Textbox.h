@@ -5,34 +5,25 @@
 
 //#include <Windows.h>
 
-class Textbox : public MenuItem {
+class Textbox : public MenuItem<std::string> {
 public:
-    /*
-        Textbox element that can be placed in a menu
-        @param pos Position of the Textbox
-        @param size Size of the Textbox
-        @param charSize Size of the chars in the Textbox
-        @param text Text that will be displayed in the Textbox by default
-        @param isFocused Whether the Textbox is focused right after initialization
-    */
-    Textbox(sf::Vector2f pos, sf::Vector2f size, unsigned int characterSize, std::string text, MenuResult action,
-            sf::Font &font, bool isFocused, bool isPassword = false);
+    /**
+     * Textbox element that can be placed in a menu
+     * @param pos Position of the Textbox
+     * @param size Size of the Textbox
+     * @param charSize Size of the chars in the Textbox
+     * @param text Text that will be displayed in the Textbox by default
+     * @param isFocused Whether the Textbox is focused right after initialization
+     */
+    Textbox(sf::Vector2f pos, sf::Vector2f size, unsigned int characterSize, std::string text, sf::Font &font,
+            bool isFocused, bool isPassword);
 
     virtual ~Textbox() {}
 
-    /*
-        See MenuItem for details
-    */
     void render(sf::RenderWindow &window);
 
-    /*
-        See MenuItem for details
-    */
-    MenuResult handleEvent(sf::Event &newEvent, sf::Vector2f mousePos);
+    bool handleEvent(sf::Event &newEvent, sf::Vector2f mousePos);
 
-    /*
-        See MenuItem for details
-    */
     sf::FloatRect getRect();
 
     /*
@@ -52,13 +43,13 @@ public:
         Textbox doesn't have a value that could be returned
         @return float 0.0f
     */
-    float getValue() { return 0.0f; }
+    std::string getValue() { return ""; }
 
     /*
         Button doesn't have a maximum value that could be returned
         @return float 0.0f
     */
-    float getMaxValue() { return 0.0f; }
+    std::string getMaxValue() { return ""; }
 
 private:
     std::string _String;

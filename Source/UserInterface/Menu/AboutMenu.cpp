@@ -8,10 +8,8 @@ AboutMenu::AboutMenu(Framework &framework) : Menu(framework, GameState::About) {
 
     sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
     std::shared_ptr<MenuButton> button = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2 - 200, 735),
-                                                                      ButtonSize,
-                                                                      MenuResult::Back, font, "Back",
-                                                                      TextAlignment::Center);
-    _MenuItems.push_back(button);
+                                                                      ButtonSize, font, "Back", TextAlignment::Center);
+//    _MenuItems.push_back(button);
 
     _Frame.setPosition(sf::Vector2f(50, 75));
     _Frame.setSize(sf::Vector2f(SCREENWIDTH - 100, 645));
@@ -92,16 +90,14 @@ void AboutMenu::render(sf::RenderWindow &window) {
     window.draw(_AIShotSounds2);
     window.draw(_PlayerCarShotSounds);
     window.draw(_PlayerCarShotSounds2);
-
-    Menu::render(window);
 }
 
 void AboutMenu::handleEvent(sf::Event &event) {
-    switch (getMenuItemResult(event)) {
-        case MenuResult::Back:
-            _FW.goBackGameState();
-            break;
-        default:
-            break;
-    }
+//    switch (getMenuItemResult(event)) {
+//        case MenuResult::Back:
+//            _FW.goBackGameState();
+//            break;
+//        default:
+//            break;
+//    }
 }

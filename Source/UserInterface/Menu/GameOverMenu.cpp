@@ -32,22 +32,21 @@ GameOverMenu::GameOverMenu(Framework &framework) : Menu(framework, GameState::Ga
 
     sf::Vector2f ButtonSize = sf::Vector2f(150, 50);
 
-    std::shared_ptr<Textbox> box = std::make_shared<Textbox>(
-            sf::Vector2f(_GOTLine3.getPosition().x + _GOTLine3.getLocalBounds().width + 20,
-                         _GOTLine3.getPosition().y + 10),
-            sf::Vector2f(450 - _GOTLine3.getLocalBounds().width - 20, _GOTLine3.getLocalBounds().height), 25, "Name",
-            MenuResult::SubmitScore, font, true);
-    _MenuItems.push_back(box);
+//    std::shared_ptr<Textbox> box = std::make_shared<Textbox>(
+//            sf::Vector2f(_GOTLine3.getPosition().x + _GOTLine3.getLocalBounds().width + 20,
+//                         _GOTLine3.getPosition().y + 10),
+//            sf::Vector2f(450 - _GOTLine3.getLocalBounds().width - 20, _GOTLine3.getLocalBounds().height), 25, "Name",
+//            MenuResult::SubmitScore, font, true);
+//    _MenuItems.push_back(box);
 
     std::shared_ptr<MenuButton> submitBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2 + 200, 735),
-                                                                         ButtonSize, MenuResult::SubmitScore, font,
-                                                                         "Submit", TextAlignment::Center);
-    _MenuItems.push_back(submitBtn);
+                                                                         ButtonSize, font, "Submit",
+                                                                         TextAlignment::Center);
+//    _MenuItems.push_back(submitBtn);
 
     std::shared_ptr<MenuButton> backBtn = std::make_shared<MenuButton>(sf::Vector2f(SCREENWIDTH / 2 - 200, 735),
-                                                                       ButtonSize, MenuResult::Back, font, "Back",
-                                                                       TextAlignment::Center);
-    _MenuItems.push_back(backBtn);
+                                                                       ButtonSize, font, "Back", TextAlignment::Center);
+//    _MenuItems.push_back(backBtn);
 
     _FW.getSoundManager().playGameOverSound();
 }
@@ -59,31 +58,29 @@ void GameOverMenu::render(sf::RenderWindow &window) {
     window.draw(_GOTLine3);
 
     _HighscoreList.render(window);
-
-    Menu::render(window);
 }
 
 void GameOverMenu::handleEvent(sf::Event &event) {
-    std::string name = _MenuItems[0]->getText();
-    switch (getMenuItemResult(event)) {
-        case MenuResult::Back:
-            _ScoreSubmitted = false;
-            _MenuItems[0]->setEnabled(true);
-            _MenuItems[1]->setEnabled(true);
-            _FW.reset();
-            _FW.advanceToGameState(GameState::MainMenu);
-            break;
-        case MenuResult::SubmitScore:
-            if (!_ScoreSubmitted && name != "") {
-                _FW.getHighscoreManager().saveScoreWithName(name);
-                _ScoreSubmitted = true;
-                _MenuItems[0]->setEnabled(false);
-                _MenuItems[1]->setEnabled(false);
-            }
-            break;
-        default:
-            break;
-    }
+    std::string name;// = _MenuItems[0]->getText();
+//    switch (getMenuItemResult(event)) {
+//        case MenuResult::Back:
+//            _ScoreSubmitted = false;
+//            _MenuItems[0]->setEnabled(true);
+//            _MenuItems[1]->setEnabled(true);
+//            _FW.reset();
+//            _FW.advanceToGameState(GameState::MainMenu);
+//            break;
+//        case MenuResult::SubmitScore:
+//            if (!_ScoreSubmitted && name != "") {
+//                _FW.getHighscoreManager().saveScoreWithName(name);
+//                _ScoreSubmitted = true;
+//                _MenuItems[0]->setEnabled(false);
+//                _MenuItems[1]->setEnabled(false);
+//            }
+//            break;
+//        default:
+//            break;
+//    }
 }
 
 void GameOverMenu::update(float frameTime) {

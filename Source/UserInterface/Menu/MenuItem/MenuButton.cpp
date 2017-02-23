@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "UserInterface/Menu/MenuItem/MenuButton.h"
 
-MenuButton::MenuButton(sf::Vector2f pos, sf::Vector2f size, MenuResult action, sf::Font &font, std::string text,
+MenuButton::MenuButton(sf::Vector2f pos, sf::Vector2f size, sf::Font &font, std::string text,
                        TextAlignment align)
-        : MenuItem(MenuItemType::MButton, action, font), _Alignment(align) {
-    _Text.setFont(_Font);
+        : MenuItem(MenuItemType::MButton, font), _Alignment(align) {
+    _Text.setFont(font);
     _Text.setPosition(pos);
     _Text.setCharacterSize((unsigned int) (0.8f * size.y));
     _Text.setString(text);
@@ -32,7 +32,7 @@ MenuButton::MenuButton(sf::Vector2f pos, sf::Vector2f size, MenuResult action, s
     _Visible = true;
 }
 
-void MenuButton::render(sf::RenderWindow &window) {
+void MenuButton::render(sf::RenderWindow &renderWindow) {
     if (_Visible) {
         if ((_Hovering && _Enabled) || (_Focused && _Enabled)) {
             _Background.setFillColor(sf::Color(50, 50, 50, 100));
@@ -46,34 +46,30 @@ void MenuButton::render(sf::RenderWindow &window) {
         }
 
         if (_Background.getSize().x > 0) {
-            window.draw(_Background);
+            renderWindow.draw(_Background);
         }
 
-        window.draw(_Text);
+        renderWindow.draw(_Text);
     }
 
 }
 
-MenuResult MenuButton::handleEvent(sf::Event &event, sf::Vector2f mousePos) {
+bool MenuButton::handleEvent(sf::Event &event, sf::Vector2f mousePos) {
     if (_Enabled && _Visible) {
         if (event.type == sf::Event::MouseButtonPressed) {
             if (rh::pointInRectangle(getRect(), mousePos)) {
-                return _Action;
+                return true;
             }
         } else if (event.type == sf::Event::MouseMoved) {
             _Hovering = rh::pointInRectangle(getRect(), mousePos);
 //            _Focused = false; //?
         }
     }
-    return MenuResult::Nothing;
+    return false;
 }
 
 sf::FloatRect MenuButton::getRect() {
-    if (_Action == MenuResult::NextSkin || _Action == MenuResult::PreviousSkin) {
-        return _Text.getGlobalBounds();
-    } else {
-        return _Background.getGlobalBounds();
-    }
+    return _Background.getGlobalBounds();
 }
 
 void MenuButton::setText(std::string text) {

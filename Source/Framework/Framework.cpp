@@ -2,7 +2,7 @@
 #include "Framework/Framework.h"
 
 Framework::Framework() : _FrameTime(0), _IsRunning(true), _OptionsManager(*this), _GameObjectManager(*this),
-                         _LevelManager(*this), _HighscoreManager(*this), _SoundManager(*this) {}
+                         _LevelManager(*this), _HighscoreManager(*this), _SoundManager(*this), _NetworkManager(*this) {}
 
 void Framework::run() {
 //    Take a look at this for examples: http://gameprogrammingpatterns.com/game-loop.html

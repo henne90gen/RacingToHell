@@ -7,6 +7,7 @@ Menu::Menu(Framework &framework, GameState menuState) : GameScreen(framework), _
 }
 
 bool Menu::checkMenuItemHovered(sf::RenderWindow &Window, int index) {
+// TODO Enable cursor change again
 #ifdef SFML_SYSTEM_WINDOWS
     //    sf::StandardCursor Cursor;
     //    if (_MenuItems[index]->getHoverState() && _MenuItems[index]->getEnabled()) {

@@ -23,6 +23,7 @@
 #include "LevelManager.h"
 #include "OptionsManager.h"
 #include "SoundManager.h"
+#include "NetworkManager.h"
 
 /**
  * The Framework takes care of all the major aspects of the game.
@@ -127,7 +128,7 @@ public:
      *
      * @return
      */
-    bool isMouseVisible()  { return _IsMouseVisible; }
+    bool isMouseVisible() { return _IsMouseVisible; }
 
     /**
      * @return Current frames per second
@@ -145,6 +146,8 @@ public:
      */
     void setVSyncEnabled(bool vSync) { _RenderWindow.setVerticalSyncEnabled(vSync); }
 
+    sf::Mutex &getMutex() { return _Mutex; }
+
 private:
     OptionsManager _OptionsManager;
 
@@ -156,11 +159,15 @@ private:
 
     SoundManager _SoundManager;
 
+    NetworkManager _NetworkManager;
+
     sf::RenderWindow _RenderWindow;
 
     std::vector<std::shared_ptr<GameScreen>> _DisplayedGameScreens;
 
     std::vector<GameState> _GameStates;
+
+    sf::Mutex _Mutex;
 
     float _FrameTime;
 

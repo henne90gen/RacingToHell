@@ -28,8 +28,6 @@ MenuButton::MenuButton(sf::Vector2f pos, sf::Vector2f size, sf::Font &font, std:
 
     _Text.setPosition(_Background.getPosition() +
                       sf::Vector2f(_Background.getLocalBounds().width / 2 - _Text.getLocalBounds().width / 2, 0));
-
-    _Visible = true;
 }
 
 void MenuButton::render(sf::RenderWindow &renderWindow) {

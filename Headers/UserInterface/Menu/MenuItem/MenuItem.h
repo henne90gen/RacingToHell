@@ -12,7 +12,8 @@ public:
      * @param type Type of MenuItem
      * @param action Action the Button is associated with
      */
-    MenuItem(MenuItemType type, sf::Font &font) : _Enabled(true), _Type(type), _Focused(false) {}
+    MenuItem(MenuItemType type, sf::Font &font) : _Enabled(true), _Visible(true), _Type(type), _Focused(false),
+                                                  _Hovering(false) {}
 
     MenuItem() {}
 
@@ -91,14 +92,6 @@ public:
      * @param visible
      */
     void setVisible(bool visible) { _Visible = visible; }
-
-// TODO check whether we need these methods
-//    virtual void resetTable() {}
-//    virtual void addPlayer(std::string name, bool admin) {}
-//    virtual void removePlayer(int index) {}
-//    virtual void setAdmin(bool admin) {}
-//    virtual void setMember(unsigned int index, bool ready, int score = -1, std::string name = "") {}
-//    virtual bool getPlayerReady() { return false; }
 
     MenuItemType getType() { return _Type; }
 

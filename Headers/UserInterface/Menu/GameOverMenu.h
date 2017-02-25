@@ -13,9 +13,9 @@ public:
 
     /**
      * Renders the GameOverMenu to the specified RenderWindow
-     * @param window Window to draw to
+     * @param renderWindow Window to draw to
      */
-    virtual void render(sf::RenderWindow &window);
+    virtual void render(sf::RenderWindow &renderWindow);
 
     /**
      * Handles events for the GameOverMenu
@@ -40,5 +40,7 @@ private:
     sf::Text _GOTLine3;
 
     HighscoreList _HighscoreList;
+    Textbox _TextBox;
+    MenuButton _BackBtn, _SubmitBtn;
 };
 

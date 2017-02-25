@@ -4,32 +4,16 @@
 
 #pragma once
 
-
 #include "MenuItem.h"
+#include <StandardCursor.h>
 
 class Cross {
 public:
     Cross() {}
 
-    Cross(sf::Vector2f size, sf::Color color) : _Visible(true) {
-        sf::Vector2f barSize = sf::Vector2f(size.x * size.x + size.y * size.y, _BarHeight);
-        _Left = sf::RectangleShape(barSize);
-        _Left.setOrigin(barSize.x / 2, barSize.y / 2);
-        _Left.setRotation(45);
-        _Left.setFillColor(color);
+    Cross(sf::Vector2f size, sf::Color color);
 
-        _Right = sf::RectangleShape(barSize);
-        _Right.setOrigin(barSize.x / 2, barSize.y / 2);
-        _Right.setRotation(-45);
-        _Right.setFillColor(color);
-    }
-
-    void render(sf::RenderWindow &renderWindow) {
-        if (_Visible) {
-            renderWindow.draw(_Left);
-            renderWindow.draw(_Right);
-        }
-    }
+    void render(sf::RenderWindow &renderWindow);
 
     void setVisible(bool visible) { _Visible = visible; }
 

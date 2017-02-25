@@ -1,7 +1,26 @@
 
-#include <StandardCursor.h>
 #include "stdafx.h"
 #include "UserInterface/Menu/MenuItem/CheckBox.h"
+
+Cross::Cross(sf::Vector2f size, sf::Color color) : _Visible(true) {
+    sf::Vector2f barSize = sf::Vector2f(size.x * size.x + size.y * size.y, _BarHeight);
+    _Left = sf::RectangleShape(barSize);
+    _Left.setOrigin(barSize.x / 2, barSize.y / 2);
+    _Left.setRotation(45);
+    _Left.setFillColor(color);
+
+    _Right = sf::RectangleShape(barSize);
+    _Right.setOrigin(barSize.x / 2, barSize.y / 2);
+    _Right.setRotation(-45);
+    _Right.setFillColor(color);
+}
+
+void Cross::render(sf::RenderWindow &renderWindow) {
+    if (_Visible) {
+        renderWindow.draw(_Left);
+        renderWindow.draw(_Right);
+    }
+}
 
 CheckBox::CheckBox(sf::Vector2f pos, sf::Font &font, std::string text) : MenuItem(
         MenuItemType::MCheckbox, font) {
@@ -61,3 +80,4 @@ sf::FloatRect CheckBox::getRect() {
     boundingBox.height = _BoxBackground.getLocalBounds().height;
     return boundingBox;
 }
+

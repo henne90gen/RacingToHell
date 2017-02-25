@@ -17,6 +17,7 @@ public:
      */
     Textbox(sf::Vector2f pos, sf::Vector2f size, unsigned int characterSize, std::string text, sf::Font &font,
             bool isFocused, bool isPassword);
+    Textbox() {}
 
     virtual ~Textbox() {}
 
@@ -37,13 +38,13 @@ public:
         Textbox doesn't have a value that could be changed
         @return bool False
     */
-    void setValue(float x) {}
+    void setValue(std::string string) { _String = string; }
 
     /*
         Textbox doesn't have a value that could be returned
         @return float 0.0f
     */
-    std::string getValue() { return ""; }
+    std::string getValue() { return _String; }
 
     /*
         Button doesn't have a maximum value that could be returned

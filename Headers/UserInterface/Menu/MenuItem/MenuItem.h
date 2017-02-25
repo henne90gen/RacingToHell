@@ -13,7 +13,7 @@ public:
      * @param action Action the Button is associated with
      */
     MenuItem(MenuItemType type, sf::Font &font) : _Enabled(true), _Visible(true), _Type(type), _Focused(false),
-                                                  _Hovering(false) {}
+                                                  _Hovering(false), _ChangeCursor(false) {}
 
     MenuItem() {}
 
@@ -95,8 +95,15 @@ public:
 
     MenuItemType getType() { return _Type; }
 
-    bool _Hovering, _Enabled, _Focused, _Visible;
+    bool _Hovering, _Enabled, _Focused, _Visible, _ChangeCursor;
 protected:
     MenuItemType _Type;
+
+    void updateCursor(sf::Event &event, sf::Vector2f mousePos) {
+        if (event.type == sf::Event::MouseMoved) {
+//            std::cout << getRect().top << ", " << getRect().left << std::endl;
+            _ChangeCursor = _Enabled && rh::pointInRectangle(getRect(), mousePos);
+        }
+    }
 };
 

@@ -21,7 +21,7 @@ public:
 
     void render(sf::RenderWindow &renderWindow);
 
-    bool handleEvent(sf::Event &Event, sf::Vector2f MousePos);
+    bool handleEvent(sf::Event &event, sf::Vector2f mousePos);
 
     sf::FloatRect getRect() { return _BoundingBox; }
 

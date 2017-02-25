@@ -75,6 +75,7 @@ private:
     sf::RectangleShape _BoxBackground;
     Cross _Cross;
     int _BoxTextPadding = 5;
+
 };
 
 

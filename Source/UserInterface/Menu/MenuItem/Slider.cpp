@@ -1,3 +1,4 @@
+#include <StandardCursor.h>
 #include "stdafx.h"
 #include "UserInterface/Menu/MenuItem/Slider.h"
 
@@ -50,32 +51,38 @@ void Slider::render(sf::RenderWindow &renderWindow) {
         _Slider.setOutlineColor(sf::Color(80, 73, 73));
     }
 
+    if (_ChangeCursor) {
+        sf::StandardCursor cursor;
+        cursor.set(renderWindow.getSystemHandle(), sf::StandardCursor::TYPE::HAND);
+    }
+
     renderWindow.draw(_TextBackground);
     renderWindow.draw(_Text);
     renderWindow.draw(_Line);
     renderWindow.draw(_Slider);
 }
 
-bool Slider::handleEvent(sf::Event &Event, sf::Vector2f MousePos) {
+bool Slider::handleEvent(sf::Event &event, sf::Vector2f mousePos) {
     if (_Enabled) {
-        if (Event.type == sf::Event::MouseButtonPressed) {
-            if (rh::pointInRectangle(getRect(), MousePos)) {
-                setSlider(MousePos.x);
+        if (event.type == sf::Event::MouseButtonPressed) {
+            if (rh::pointInRectangle(getRect(), mousePos)) {
+                setSlider(mousePos.x);
                 _MouseButtonPressed = true;
                 return true;
             }
-        } else if (Event.type == sf::Event::MouseButtonReleased) {
+        } else if (event.type == sf::Event::MouseButtonReleased) {
             _MouseButtonPressed = false;
-        } else if (Event.type == sf::Event::MouseMoved) {
-            _Hovering = rh::pointInRectangle(getRect(), MousePos);
+        } else if (event.type == sf::Event::MouseMoved) {
+            _Hovering = rh::pointInRectangle(getRect(), mousePos);
             if (_MouseButtonPressed) {
                 _Hovering = true;
-                setSlider(MousePos.x);
+                setSlider(mousePos.x);
                 return true;
             }
             _Focused = false;
         }
     }
+    MenuItem::updateCursor(event, mousePos);
     return false;
 }
 

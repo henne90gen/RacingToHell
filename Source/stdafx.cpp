@@ -26,3 +26,15 @@ bool rh::pointInRectangle(sf::FloatRect rect, sf::Vector2f pos) {
     return (pos.y > rect.top && pos.y < rect.top + rect.height && pos.x > rect.left &&
             pos.x < rect.left + rect.width);
 }
+
+float rh::getAngleFromVector(sf::Vector2f vec) {
+    float angle = std::atan(vec.y / vec.x) * 180.0f / PI;
+    if (vec.x < 0) {
+        angle += 180;
+    }
+    return angle;
+}
+
+sf::Vector2f rh::normalize(sf::Vector2f vec) {
+    return vec / (float) (std::sqrt(std::pow(vec.x, 2) + std::pow(vec.y, 2)));
+}

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <StandardCursor.h>
 #include "MenuItem.h"
 #include "MenuButton.h"
 

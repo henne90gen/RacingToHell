@@ -1,3 +1,4 @@
+#include <StandardCursor.h>
 #include "stdafx.h"
 #include "UserInterface/Menu/MenuItem/MenuButton.h"
 
@@ -27,7 +28,7 @@ MenuButton::MenuButton(sf::Vector2f pos, sf::Vector2f size, sf::Font &font, std:
     }
 
     _Text.setPosition(_Background.getPosition() +
-                      sf::Vector2f(_Background.getLocalBounds().width / 2 - _Text.getLocalBounds().width / 2, 0));
+                              sf::Vector2f(_Background.getLocalBounds().width / 2 - _Text.getLocalBounds().width / 2, 0));
 }
 
 void MenuButton::render(sf::RenderWindow &renderWindow) {
@@ -43,13 +44,17 @@ void MenuButton::render(sf::RenderWindow &renderWindow) {
             _Text.setFillColor(sf::Color(150, 150, 150, 255));
         }
 
+        if (_ChangeCursor) {
+            sf::StandardCursor cursor;
+            cursor.set(renderWindow.getSystemHandle(), sf::StandardCursor::TYPE::HAND);
+        }
+
         if (_Background.getSize().x > 0) {
             renderWindow.draw(_Background);
         }
 
         renderWindow.draw(_Text);
     }
-
 }
 
 bool MenuButton::handleEvent(sf::Event &event, sf::Vector2f mousePos) {
@@ -60,9 +65,9 @@ bool MenuButton::handleEvent(sf::Event &event, sf::Vector2f mousePos) {
             }
         } else if (event.type == sf::Event::MouseMoved) {
             _Hovering = rh::pointInRectangle(getRect(), mousePos);
-//            _Focused = false; //?
         }
     }
+    MenuItem::updateCursor(event, mousePos);
     return false;
 }
 

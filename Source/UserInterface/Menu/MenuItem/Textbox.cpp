@@ -31,7 +31,7 @@ Textbox::Textbox(sf::Vector2f Position, sf::Vector2f Size, unsigned int characte
     setCursor();
 }
 
-void Textbox::render(sf::RenderWindow &RenderWindow) {
+void Textbox::render(sf::RenderWindow &renderWindow) {
     if (_Enabled) {
         _Box.setFillColor(_FillColor);
 
@@ -51,11 +51,16 @@ void Textbox::render(sf::RenderWindow &RenderWindow) {
         _ShowCursor = false;
     }
 
-    RenderWindow.draw(_Box);
-    RenderWindow.draw(_Text);
+    if (_ChangeCursor) {
+        sf::StandardCursor cursor;
+        cursor.set(renderWindow.getSystemHandle(), sf::StandardCursor::TYPE::TEXT);
+    }
+
+    renderWindow.draw(_Box);
+    renderWindow.draw(_Text);
 
     if (_ShowCursor) {
-        RenderWindow.draw(_Cursor);
+        renderWindow.draw(_Cursor);
     }
 }
 

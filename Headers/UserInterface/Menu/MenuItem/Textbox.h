@@ -20,7 +20,7 @@ public:
 
     virtual ~Textbox() {}
 
-    void render(sf::RenderWindow &window);
+    void render(sf::RenderWindow &renderWindow);
 
     bool handleEvent(sf::Event &newEvent, sf::Vector2f mousePos);
 

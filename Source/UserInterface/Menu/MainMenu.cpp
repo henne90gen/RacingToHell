@@ -7,26 +7,27 @@ MainMenu::MainMenu(Framework &framework) : Menu(framework, GameState::MainMenu) 
     sf::Font &font = _FW.getOptionsManager().getFont();
 
     //Menu-Items
-    sf::Vector2f ButtonSize = sf::Vector2f(250, 50);
+    sf::Vector2f buttonSize = sf::Vector2f(250, 50);
 
-    _PlayBtn = MenuButton(sf::Vector2f(SCREENWIDTH / 2, 100), ButtonSize, font, "Play", TextAlignment::Center);
+    _PlayBtn = MenuButton(sf::Vector2f(SCREENWIDTH / 2, 100), buttonSize, font, "Play", TextAlignment::Center);
 
-    _MultiplayerBtn = MenuButton(sf::Vector2f(SCREENWIDTH / 2, 170), ButtonSize, font, "Multiplayer",
+    _MultiplayerBtn = MenuButton(sf::Vector2f(SCREENWIDTH / 2, 170), buttonSize, font, "Multiplayer",
                                  TextAlignment::Center);
     _MultiplayerBtn.setEnabled(false);
 
-    _HighscoreBtn = MenuButton(sf::Vector2f(SCREENWIDTH / 2, 240), ButtonSize, font, "Highscores",
+    _HighscoreBtn = MenuButton(sf::Vector2f(SCREENWIDTH / 2, 240), buttonSize, font, "Highscores",
                                TextAlignment::Center);
 
-    _OptionsBtn = MenuButton(sf::Vector2f(SCREENWIDTH / 2, 310), ButtonSize, font, "Options", TextAlignment::Center);
+    _OptionsBtn = MenuButton(sf::Vector2f(SCREENWIDTH / 2, 310), buttonSize, font, "Options", TextAlignment::Center);
 
-    _ExitBtn = MenuButton(sf::Vector2f(SCREENWIDTH / 2, 380), ButtonSize, font, "Exit", TextAlignment::Center);
+    _ExitBtn = MenuButton(sf::Vector2f(SCREENWIDTH / 2, 380), buttonSize, font, "Exit", TextAlignment::Center);
 
-    _LeftBtn = MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 60, SCREENHEIGHT - 335), sf::Vector2f(0, 50), font, "<<",
-                          TextAlignment::Left);
+    sf::Vector2f arrowSize = sf::Vector2f(80, 40);
+    _LeftBtn = MenuButton(sf::Vector2f(SCREENWIDTH / 2 - 90, 480), arrowSize, font, "<<",
+                          TextAlignment::Center);
 
-    _RightBtn = MenuButton(sf::Vector2f(SCREENWIDTH / 2 + 50, SCREENHEIGHT - 335), sf::Vector2f(0, 50), font, ">>",
-                           TextAlignment::Left);
+    _RightBtn = MenuButton(sf::Vector2f(SCREENWIDTH / 2 + 90, 480), arrowSize, font, ">>",
+                           TextAlignment::Center);
 
     //MainMenu-Menu Text
     _Text.setString("Main Menu");

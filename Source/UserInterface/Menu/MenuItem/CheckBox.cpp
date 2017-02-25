@@ -1,4 +1,5 @@
 
+#include <StandardCursor.h>
 #include "stdafx.h"
 #include "UserInterface/Menu/MenuItem/CheckBox.h"
 
@@ -26,6 +27,15 @@ CheckBox::CheckBox(sf::Vector2f pos, sf::Font &font, std::string text) : MenuIte
 }
 
 void CheckBox::render(sf::RenderWindow &renderWindow) {
+    if (_ChangeCursor) {
+        sf::StandardCursor cursor;
+        cursor.set(renderWindow.getSystemHandle(), sf::StandardCursor::TYPE::HAND);
+    }
+
+    if (!_Enabled) {
+        // TODO grey out the checkbox
+    }
+
     renderWindow.draw(_Text);
     renderWindow.draw(_BoxBackground);
     _Cross.render(renderWindow);
@@ -39,6 +49,7 @@ bool CheckBox::handleEvent(sf::Event &newEvent, sf::Vector2f mousePos) {
             return true;
         }
     }
+    MenuItem::updateCursor(newEvent, mousePos);
     return false;
 }
 

@@ -41,4 +41,18 @@ namespace rh {
     void centerText(sf::Text &text);
 
     bool pointInRectangle(sf::FloatRect rect, sf::Vector2f pos);
+
+    /**
+     * Calculates the angle a vector is at
+     * @param vec Vector whoms angle is going to be calculated
+     * @return float Angle in degrees
+     */
+    float getAngleFromVector(sf::Vector2f vec);
+
+    /**
+     * Divides a vector by it's length, basically providing the normalized vector
+     * @param vec Vector that is going to be normalized
+     * @return sf::Vector2f Resulting normalized vector
+     */
+    sf::Vector2f normalize(sf::Vector2f vec);
 }

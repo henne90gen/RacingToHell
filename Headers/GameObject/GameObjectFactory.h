@@ -57,12 +57,12 @@ public:
     /*
         @param pos Position of the Toolbox
     */
-    static std::shared_ptr<GameObject> getToolbox(sf::Vector2f pos);
+    static std::shared_ptr<GameObject> getToolbox(sf::Vector2f pos, float speed);
 
     /*
         @param pos Position of the Canister
     */
-    static std::shared_ptr<GameObject> getCanister(sf::Vector2f pos);
+    static std::shared_ptr<GameObject> getCanister(sf::Vector2f pos, float speed);
 
     /*
         @param packet packet to get the necessary data from

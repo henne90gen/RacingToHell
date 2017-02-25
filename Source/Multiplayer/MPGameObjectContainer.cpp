@@ -397,9 +397,9 @@ void MPGameObjectContainer::handleIncomingPackets() {
 
                 case NetworkCommunication::SpawnPlayerBullet: {
                     if (_NetworkHandle->getTick() > recTick + _NetworkHandle->getDelay()) {
-                        _Bullets.push_back(
-                                GameObjectFactory::getBullet(GameObjectType::BulletObjectPlayer, _PlayerBulletSpeed));
-                        *_Bullets.back() << p;
+//                        _Bullets.push_back(
+//                                GameObjectFactory::getBullet(GameObjectType::BulletObjectPlayer, _PlayerBulletSpeed));
+//                        *_Bullets.back() << p;
 
                         //std::cout << _Bullets.back()->getPos().x << "|" << _Bullets.back()->getPos().y << std::endl;
 
@@ -462,13 +462,6 @@ void MPGameObjectContainer::playSounds() {
                 _SoundEffects[i].second = true;
             }
         }
-    }
-}
-
-void MPGameObjectContainer::stopSounds() {
-    _SoundEffects.clear();
-    if (_BossFight) {
-        getBossCar().stopSounds();
     }
 }
 
@@ -577,7 +570,7 @@ void MPGameObjectContainer::spawnBullet() {
     std::shared_ptr<GameObject> SelectedCar = (std::shared_ptr<GameObject> &&) AICarVector.at(
             std::rand() % AICarVector.size());
 
-    sf::Vector2f dir = SelectedCar->divideByLength(getPlayerCar().getPos() - SelectedCar->getPos());
+    sf::Vector2f dir = rh::normalize(getPlayerCar().getPos() - SelectedCar->getPos());
 
     _GameObjects.push_back(
             GameObjectFactory::getBullet(SelectedCar->getPos(), dir, _AIBulletSpeed, GameObjectType::BulletObjectAI));

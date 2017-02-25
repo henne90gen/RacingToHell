@@ -80,7 +80,7 @@ public:
     /*
         Resets the movemnt vector that is applied to the PlayerCar
     */
-    void resetMovement() { _Movement = sf::Vector2f(0, 0); }
+//    void resetMovement() { _Movement = sf::Vector2f(0, 0); }
 
     bool isAlive();
 
@@ -153,22 +153,17 @@ private:
     //Time it takes to reach maximum speed
     float _AccelerationTime;
 
-    sf::Vector2f _Force;
-    sf::Vector2f _Acceleration;
-
     sf::Uint8 _PressedKeys;
 
-    float calcNewPosition(float dt, float a, float v, float s0);
-
-    template<typename T>
-    float sgn(T x) {
-        if (x < 0.0f) {
-            return -1.0f;
-        } else if (x > 0.0f) {
-            return 1.0f;
-        } else {
-            return 0.0f;
-        }
-    }
+//    template<typename T>
+//    float sgn(T x) {
+//        if (x < 0.0f) {
+//            return -1.0f;
+//        } else if (x > 0.0f) {
+//            return 1.0f;
+//        } else {
+//            return 0.0f;
+//        }
+//    }
 };
 

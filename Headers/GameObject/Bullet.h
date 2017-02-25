@@ -3,52 +3,44 @@
 #include "GameObject/GameObject.h"
 #include "GameObject/GameObjectType.h"
 
-class Bullet : public GameObject
-{
+class Bullet : public GameObject {
 public:
-    /*
-        Bullet that can be shot by any Car
-        @param pos Starting position of the Bullet
-        @param dir Angle at which the Bullet will fly
-        @param speed Speed of the Bullet
-        @param type Specifies the type of the Bullet, thus who shot it
-        @param texture Texture that is going to be used for the sprite
-        @param soundEffects Vector to register the sound of the shot in
-        @param volume VolumeIndex of the shot sound
-    */
+    /**
+     * Bullet that can be shot by any Car
+     * @param pos Starting position of the Bullet
+     * @param dir Angle at which the Bullet will fly
+     * @param speed Speed of the Bullet
+     * @param type Specifies the type of the Bullet, thus who shot it
+     * @param texture Texture that is going to be used for the sprite
+     * @param soundEffects Vector to register the sound of the shot in
+     * @param volume VolumeIndex of the shot sound
+     */
     Bullet(unsigned int id, sf::Vector2f pos, sf::Vector2f dir, float speed, GameObjectType type,
            sf::Texture &texture);
 
     Bullet(sf::Packet &packet, GameObjectType type, sf::Texture &texture);
-	Bullet(sf::Packet &packet, sf::Vector2f PlayerPosition, GameObjectType type, sf::Texture& texture, sf::Uint32 ID, float Speed);
-	Bullet(GameObjectType type, sf::Texture &texture, float speed);
-	~Bullet() {}
 
-	/*
-		Handles events for Bullet
-		@param newEvent Event to be handled
-	*/
-	void handleEvent(sf::Event &newEvent) {}
+    Bullet(sf::Packet &packet, sf::Vector2f PlayerPosition, GameObjectType type, sf::Texture &texture, sf::Uint32 ID,
+           float speed);
 
-	/*
-		Updates the Bullet with the given frame time
-		@param frameTime Time that has passed since the last update
-		@param roadSpeed Speed of the road
-	*/
-	void update(float frameTime, int roadSpeed);
+//    Bullet(GameObjectType type, sf::Texture &texture, float speed);
 
-	/*
-		Writes the necessary data for a gameobject to a packet
-	*/
-	void operator>>(sf::Packet& packet);
+    ~Bullet() {}
 
-	/*
-		Reads the necessary data for a gameobject from a packet
-	*/
-	void operator<<(sf::Packet& packet);
+    /**
+     * Handles events for Bullet
+     * @param newEvent Event to be handled
+     */
+    void handleEvent(sf::Event &newEvent) {}
 
-	sf::Vector2f getDir() { return _Direction; }
-private:
-	float _Speed;
-	sf::Vector2f _Direction;
+    /**
+     * Writes the necessary data for a GameObject to a packet
+     */
+    void operator>>(sf::Packet &packet);
+
+    /**
+     * Reads the necessary data for a GameObject from a packet
+     */
+    void operator<<(sf::Packet &packet);
+
 };

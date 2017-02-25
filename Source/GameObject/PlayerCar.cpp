@@ -7,6 +7,7 @@ PlayerCar::PlayerCar(unsigned int id, PlayerCarIndex selectedCar, sf::Texture &t
             sf::IntRect(0, 0, texture.getSize().x, texture.getSize().y)),
         _CrosshairSpeed(600.0f), _PlayerCarIndex(selectedCar), _AccelerationTime(0.1f),
         _ExplosionTexture(explosionTexture) {
+
     setStats(_PlayerCarIndex);
     _ShotBullet = sf::Vector2f(0, 0);
     setPos(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT - 300));
@@ -53,25 +54,21 @@ void PlayerCar::applyKeyPress(sf::Uint8 keys) {
     Down = keys & (sf::Uint8) Key::Down;
     Left = keys & (sf::Uint8) Key::Left;
 
-    _Force = sf::Vector2f(0, 0);
-
     if (Left) {
-        _Force.x = -20.0f;
+        _Movement.x = _Speed * -1.0f;
     } else if (Right) {
-        _Force.x = 20.0f;
+        _Movement.x = _Speed;
     } else {
-        _Force.x = 0.0f;
+        _Movement.x = 0.0f;
     }
 
     if (Up) {
-        _Force.y = -16.6f;
+        _Movement.y = _Speed * (4.0f/5.0f) * -1.0f;
     } else if (Down) {
-        _Force.y = 24.0f;
+        _Movement.y = _Speed * (6.0f/5.0f);
     } else {
-        _Force.y = 0.0f;
+        _Movement.y = 0.0f;
     }
-
-    //_Acceleration = _Force;
 }
 
 void PlayerCar::handleEvent(sf::Event &Event) {
@@ -86,17 +83,9 @@ void PlayerCar::handleEvent(sf::Event &Event) {
     _PressedKeys |= (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) *
                     (sf::Uint8) Key::Left;
 
-    // Apply mouse and joystick movement
-    // FIXME reenable Joystick support
-//    _CrosshairMovement = sf::Vector2f(0, 0);
+    // Apply mouse movement
     if (Event.type == sf::Event::MouseMoved) {
         _Crosshair.setPosition(Event.mouseMove.x, Event.mouseMove.y);
-//    } else if (Event.type == sf::Event::JoystickMoved) {
-//        float U = sf::Joystick::getAxisPosition(0, sf::Joystick::U);
-//        float R = sf::Joystick::getAxisPosition(0, sf::Joystick::R);
-//        if (U < -50 || U > 50 || R < -50 || R > 50) {
-//            _CrosshairMovement += sf::Vector2f(U / 65.0f, R / 65.0f);
-//        }
     } else if (Event.type == sf::Event::MouseButtonPressed ||
                (Event.type == sf::Event::JoystickButtonPressed && sf::Joystick::isButtonPressed(0, 5))) {
         shoot();
@@ -104,45 +93,10 @@ void PlayerCar::handleEvent(sf::Event &Event) {
     }
 }
 
-void PlayerCar::update(float frameTime, int RoadSpeed) {
-    Car::update(frameTime, RoadSpeed);
+void PlayerCar::update(float frameTime, int roadSpeed) {
 
     if (isDying()) {
         _Animation->update(frameTime);
-    }
-
-    // TODO comment this
-    _Movement = _Force / 20.0f;
-
-    setPos(sf::Vector2f(calcNewPosition(frameTime, _Acceleration.x, _Movement.x, getPos().x), getPos().y));
-
-    if (getPos().x < getWidth() / 2.0f) {
-        setPos(sf::Vector2f(getWidth() / 2.0f, getPos().y));
-    } else if (getPos().x > SCREENWIDTH - getWidth() / 2.0f) {
-        setPos(sf::Vector2f(SCREENWIDTH - getWidth() / 2.0f, getPos().y));
-    }
-
-    setPos(sf::Vector2f(getPos().x, getPos().y + 0.5f * _Speed * _Acceleration.y * frameTime * frameTime +
-                                    _Movement.y * _Speed * frameTime));
-
-    if (getPos().y < getHeight() / 2.0f) {
-        setPos(sf::Vector2f(getPos().x, getHeight() / 2.0f));
-    } else if (getPos().y > SCREENHEIGHT - getHeight() / 2.0f) {
-        setPos(sf::Vector2f(getPos().x, SCREENHEIGHT - getHeight() / 2.0f));
-    }
-
-    _Acceleration = sf::Vector2f(0, 0);
-    // TODO comment this ^
-
-    // TODO replace aimline with something cooler
-    // Update _AimLine
-    _AimLine.setPosition(getPos());
-    sf::Vector2f dir = _Crosshair.getPosition() - getPos();
-    float angle = std::atan(dir.y / dir.x) * 180.0f / PI;
-    if (dir.x < 0) {
-        _AimLine.setRotation(angle + 180);
-    } else {
-        _AimLine.setRotation(angle);
     }
 
     // TODO re-enable auto fire
@@ -154,12 +108,34 @@ void PlayerCar::update(float frameTime, int RoadSpeed) {
         }
     }*/
 
-    // Sound listener
+    // Set the position of the sound listener
     sf::Listener::setPosition(getPos().x, 0.f, getPos().y);
-}
 
-float PlayerCar::calcNewPosition(float dt, float a, float v, float s0) {
-    return 0.5f * (a * (float) _Speed) * dt * dt + (v * (float) _Speed) * dt + s0;
+    // Update the position according to movement
+    Car::update(frameTime, roadSpeed);
+
+    if (getPos().x < getWidth() / 2.0f) {
+        setPos(sf::Vector2f(getWidth() / 2.0f, getPos().y));
+    } else if (getPos().x > SCREENWIDTH - getWidth() / 2.0f) {
+        setPos(sf::Vector2f(SCREENWIDTH - getWidth() / 2.0f, getPos().y));
+    }
+
+    if (getPos().y < getHeight() / 2.0f) {
+        setPos(sf::Vector2f(getPos().x, getHeight() / 2.0f));
+    } else if (getPos().y > SCREENHEIGHT - getHeight() / 2.0f) {
+        setPos(sf::Vector2f(getPos().x, SCREENHEIGHT - getHeight() / 2.0f));
+    }
+
+    // TODO replace aimline with something cooler
+    // Update _AimLine
+    _AimLine.setPosition(getPos());
+    sf::Vector2f dir = _Crosshair.getPosition() - getPos();
+    float angle = std::atan(dir.y / dir.x) * 180.0f / PI;
+    if (dir.x < 0) {
+        _AimLine.setRotation(angle + 180);
+    } else {
+        _AimLine.setRotation(angle);
+    }
 }
 
 bool PlayerCar::drainShotEnergy() {
@@ -172,7 +148,7 @@ bool PlayerCar::drainShotEnergy() {
 
 void PlayerCar::shoot() {
     _ShotBullet = _Crosshair.getPosition() - getPos();
-    _ShotBullet = divideByLength(_ShotBullet);
+    _ShotBullet = rh::normalize(_ShotBullet);
 }
 
 sf::Vector2f PlayerCar::getShotBullet() {
@@ -222,8 +198,8 @@ void PlayerCar::operator>>(sf::Packet &packet) {
 
     Car::operator>>(packet);
     write(packet, (int) _PlayerCarIndex);
-    write(packet, _Force.x);
-    write(packet, _Force.y);
+//    write(packet, _Force.x);
+//    write(packet, _Force.y);
     write(packet, _Movement.x);
     write(packet, _Movement.y);
 }
@@ -244,8 +220,8 @@ void PlayerCar::operator<<(sf::Packet &packet) {
     _PlayerCarIndex = (PlayerCarIndex) selectedCar;
     setStats(_PlayerCarIndex);
     //std::cout << "Updated position" << _ID << ": " << getPos().x << " " << getPos().y << std::endl;
-    read(packet, _Force.x);
-    read(packet, _Force.y);
+//    read(packet, _Force.x);
+//    read(packet, _Force.y);
     float vx, vy;
     read(packet, vx);
     read(packet, vy);
@@ -265,7 +241,6 @@ bool PlayerCar::isAlive() {
 void PlayerCar::kill() {
     _Health = 0;
     _Movement = sf::Vector2f(0, 0);
-    _Force = sf::Vector2f(0, 0);
     _Animation = std::make_shared<Explosion>(getPos(), _ExplosionTexture, sf::Vector2f(0, 0));
     _Animation->play();
 }

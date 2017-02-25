@@ -201,7 +201,7 @@ void GameObjectManager::checkForCollisions(float frameTime) {
 void GameObjectManager::checkPlayerForCollisions(float frameTime) {
     // Collision with bullets
     for (unsigned int i = 0; i < _Bullets.size(); i++) {
-        _Bullets.at(i)->update(frameTime, _FW.getLevelManager().getRoadSpeed());
+        _Bullets.at(i)->update(frameTime);
         if (_Player->isAlive() && _Player->checkForCollision(*_Bullets.at(i))) {
             switch (_Bullets[i]->getType()) {
                 case GameObjectType::BulletObjectAI:
@@ -233,7 +233,7 @@ void GameObjectManager::checkPlayerForCollisions(float frameTime) {
 
     // Collision with gameobjects
     for (unsigned int i = 0; i < _PickupItems.size(); i++) {
-        _PickupItems.at(i)->update(frameTime, _FW.getLevelManager().getRoadSpeed());
+        _PickupItems.at(i)->update(frameTime);
         if (_Player->isAlive() && _Player->checkForCollision(*_PickupItems.at(i))) {
             switch (_PickupItems[i]->getType()) {
                 case GameObjectType::Canister:
@@ -337,6 +337,7 @@ void GameObjectManager::resetGameObjects() {
     }
     _Player = GameObjectFactory::getPlayerCar(playerCarIndex, _ExplosionTexture);
 
+
     // Frequencies
     calculateAllFrequencies();
 
@@ -403,7 +404,7 @@ void GameObjectManager::spawnBullet(float frameTime) {
 
             std::shared_ptr<GameObject> selectedCar = _Cars.at(std::rand() % _Cars.size());
 
-            sf::Vector2f dir = selectedCar->divideByLength(_Player->getPos() - selectedCar->getPos());
+            sf::Vector2f dir = rh::normalize(_Player->getPos() - selectedCar->getPos());
 
             const std::shared_ptr<Bullet> &newBullet = GameObjectFactory::getBullet(selectedCar->getPos(), dir,
                                                                                     _AIBulletSpeed,
@@ -424,7 +425,7 @@ void GameObjectManager::spawnToolbox(float frameTime) {
     if (_TimePassedToolbox > 1.0f / _ToolboxFrequency &&
         _FW.getOptionsManager().getGameMode() != GameMode::Invincible) {
         _TimePassedToolbox -= 1.0f / _ToolboxFrequency;
-        _PickupItems.push_back(GameObjectFactory::getToolbox(sf::Vector2f(std::rand() % 3 * 150 + 150, -10)));
+        _PickupItems.push_back(GameObjectFactory::getToolbox(sf::Vector2f(std::rand() % 3 * 150 + 150, -10), _FW.getLevelManager().getRoadSpeed()));
 
         // FIXME should we really recalculate the freq after every spawn?
         calculateToolboxFrequency();
@@ -435,7 +436,7 @@ void GameObjectManager::spawnCanister(float frameTime) {
     _TimePassedCanister += frameTime;
     if (_TimePassedCanister > 1.0f / _CanisterFrequency) {
         _TimePassedCanister -= 1.0f / _CanisterFrequency;
-        _PickupItems.push_back(GameObjectFactory::getCanister(sf::Vector2f(std::rand() % 3 * 150 + 150, -20)));
+        _PickupItems.push_back(GameObjectFactory::getCanister(sf::Vector2f(std::rand() % 3 * 150 + 150, -20), _FW.getLevelManager().getRoadSpeed()));
     }
 }
 

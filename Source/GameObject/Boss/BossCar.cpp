@@ -24,15 +24,15 @@ BossCar::BossCar(sf::Packet &packet, sf::Texture &texture, sf::Texture &bulletTe
     initBoss();
 }
 
-float BossCar::PlayerAngle(GameObject &Player) {
-    float Angle;
+float BossCar::playerAngle(GameObject &Player) {
+    float angle;
     sf::Vector2f dir = Player.getPos() - getPos();
 
-    Angle = std::atan(dir.y / dir.x) * 180.0f / PI;
-    if (dir.x < 0)
-        Angle += 180.0f;
-
-    return Angle;
+    angle = std::atan(dir.y / dir.x) * 180.0f / PI;
+    if (dir.x < 0) {
+        angle += 180.0f;
+    }
+    return angle;
 }
 
 int BossCar::getBossEvent() {

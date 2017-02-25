@@ -100,10 +100,10 @@ GameObjectFactory::getBullet(sf::Vector2f pos, sf::Vector2f dir, int speed, Game
 }
 
 
-std::shared_ptr<Bullet> GameObjectFactory::getBullet(GameObjectType type, float speed) {
-    std::shared_ptr<Bullet> bullet(new Bullet(type, _BulletTexture(), speed));
-    return bullet;
-}
+//std::shared_ptr<Bullet> GameObjectFactory::getBullet(GameObjectType type, float speed) {
+//    std::shared_ptr<Bullet> bullet(new Bullet(type, _BulletTexture(), speed));
+//    return bullet;
+//}
 
 std::shared_ptr<Bullet>
 GameObjectFactory::getBullet(sf::Packet &packet, sf::Vector2f PlayerPosition, GameObjectType type, sf::Uint32 ID,
@@ -127,20 +127,22 @@ std::shared_ptr<AICar> GameObjectFactory::getAICar(int hp, int roadSpeed) {
     return car;
 }
 
-std::shared_ptr<GameObject> GameObjectFactory::getToolbox(sf::Vector2f pos) {
+std::shared_ptr<GameObject> GameObjectFactory::getToolbox(sf::Vector2f pos, float speed) {
     const sf::IntRect &textureRect = sf::IntRect(0, 0, _ToolboxTexture().getSize().x, _ToolboxTexture().getSize().y);
     std::shared_ptr<GameObject> toolbox(
-            new GameObject(_DeltaID + _CurrentGameObjectID++, pos, GameObjectType::Tools, _ToolboxTexture(),
+            new GameObject(_DeltaID + _CurrentGameObjectID++, GameObjectType::Tools, pos, _ToolboxTexture(),
                            textureRect));
+    toolbox->setMovement(sf::Vector2f(0, speed));
     return toolbox;
 }
 
-std::shared_ptr<GameObject> GameObjectFactory::getCanister(sf::Vector2f pos) {
+std::shared_ptr<GameObject> GameObjectFactory::getCanister(sf::Vector2f pos, float speed) {
     const sf::IntRect &textureRect = sf::IntRect(0, 0, _EnergyCanisterTexture().getSize().x,
                                                  _EnergyCanisterTexture().getSize().y);
     std::shared_ptr<GameObject> canister(
-            new GameObject(_DeltaID + _CurrentGameObjectID++, pos, GameObjectType::Canister, _EnergyCanisterTexture(),
+            new GameObject(_DeltaID + _CurrentGameObjectID++, GameObjectType::Canister, pos, _EnergyCanisterTexture(),
                            textureRect));
+    canister->setMovement(sf::Vector2f(0, speed));
     return canister;
 }
 

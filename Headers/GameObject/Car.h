@@ -101,8 +101,8 @@ public:
     virtual void setHealth(sf::Int16 health) {}
 
 protected:
-    sf::Int16 _Health, _Speed, _MaxHealth;
-    sf::Vector2f _Movement;
+    sf::Int16 _Health, _MaxHealth;
+    sf::Int16 _Speed;
 
     float _resetColorTime;
     sf::SoundBuffer _ImpactSoundBuffer;

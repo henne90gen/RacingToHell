@@ -3,7 +3,7 @@
 
 Car::Car(unsigned int id, sf::Vector2f pos, int maxhealth, float speed, GameObjectType Type, sf::Texture &texture,
          sf::IntRect textureRect) :
-        GameObject(id, pos, Type, texture, textureRect) {
+        GameObject(id, Type, pos, texture, textureRect) {
     _Speed = speed;
     _MaxHealth = maxhealth;
     _Health = maxhealth;
@@ -48,4 +48,5 @@ void Car::update(float frametime, int roadspeed) {
             _resetColorTime = -1.0f;
         }
     }
+    GameObject::update(frametime);
 }

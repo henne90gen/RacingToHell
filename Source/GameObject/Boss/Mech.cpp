@@ -78,7 +78,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
                 case Phase::SPIN: {
                     _Event1Frequency = 11.0f + 3.0f * (float) _Difficulty;
 
-                    float gunAngle = getAngleFromVector(_GunOrientation) + (180 + 135 * _Difficulty) * frameTime;
+                    float gunAngle = rh::getAngleFromVector(_GunOrientation) + (180 + 135 * _Difficulty) * frameTime;
                     _GunOrientation = sf::Vector2f(std::cos(gunAngle * PI / 180), std::sin(gunAngle * PI / 180));
 
                     if (getBossEvent() == 1) {
@@ -90,16 +90,16 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
                     break;
                 }
                 case Phase::SHOTGUN:
-                    _GunOrientation = divideByLength(player.getPos() - getPos());
+                    _GunOrientation = rh::normalize(player.getPos() - getPos());
 
                     _Event1Frequency = 1.0f + 0.25f * (float) (_Difficulty);
 
                     if (getBossEvent() == 1) {
                         bool Hand = (std::rand() % 100) > 50;
                         for (int i = 0; i < 8 + 2 * _Difficulty; i++) {
-                            float bulAngle = (getAngleFromVector(_GunOrientation) * PI / 180.f - PI / 28.8f) +
+                            float bulAngle = (rh::getAngleFromVector(_GunOrientation) * PI / 180.f - PI / 28.8f) +
                                              PI / 14.4f * ((std::rand() % 100) / 100.0f);
-                            sf::Vector2f bulOrientation = divideByLength(
+                            sf::Vector2f bulOrientation = rh::normalize(
                                     sf::Vector2f(std::cos(bulAngle), std::sin(bulAngle)));
                             sf::Vector2f pos;
                             if (Hand) {
@@ -117,7 +117,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
                     }
                     break;
                 case Phase::SALVE:
-                    _GunOrientation = divideByLength(player.getPos() - getPos());
+                    _GunOrientation = rh::normalize(player.getPos() - getPos());
 
                     _Event1Frequency = 1.25f + 0.25f * (float) _Difficulty;
 
@@ -125,7 +125,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
                         bool Hand = _Event1Switch;//(std::rand() % 100) > 50;
                         _Event1Switch = !_Event1Switch;
 
-                        float bulAngle = getAngleFromVector(_GunOrientation);
+                        float bulAngle = rh::getAngleFromVector(_GunOrientation);
 
                         int NumberofBullets = (int) (5 + 0.5f * (float) _Difficulty);
                         float dAngle = (42.5f + 2.5f * (float) _Difficulty) / (float) NumberofBullets;
@@ -144,7 +144,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
                     }
                     break;
                 case Phase::SALVEZICKZACK:
-                    _GunOrientation = divideByLength(player.getPos() - getPos());
+                    _GunOrientation = rh::normalize(player.getPos() - getPos());
 
                     _Event1Frequency = 1.25f + 0.25f * (float) _Difficulty;
 
@@ -152,7 +152,7 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
                         bool Hand = _Event1Switch;//(std::rand() % 100) > 50;
                         _Event1Switch = !_Event1Switch;
 
-                        float bulAngle = getAngleFromVector(_GunOrientation);
+                        float bulAngle = rh::getAngleFromVector(_GunOrientation);
 
                         int NumberofBullets = (int) (3 + 0.5f * (float) _Difficulty);
                         float dAngle = (37.0f + 2.5f * (float) _Difficulty) / (float) NumberofBullets;
@@ -209,8 +209,8 @@ void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
             }
         }
 
-        _TopAnim.setRotation(getAngleFromVector(_GunOrientation) + 90);
-        _LegsAnim.setRotation(getAngleFromVector(_GunOrientation) + 90);
+        _TopAnim.setRotation(rh::getAngleFromVector(_GunOrientation) + 90);
+        _LegsAnim.setRotation(rh::getAngleFromVector(_GunOrientation) + 90);
 
         updateHealthBar();
 

@@ -114,7 +114,7 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr
             getSprite().setRotation((getPos().y - _DefaultPosition.y) * 180 / (SCREENHEIGHT - 2 * _DefaultPosition.y));
         }
 
-        _GunOrientation = divideByLength(player.getPos() - getPos());
+        _GunOrientation = rh::normalize(player.getPos() - getPos());
 
         if (_Attack) {
             switch (_Pattern[_CurrentPhase].first) {
@@ -159,7 +159,7 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr
                                
 								BossCar::shootBullet(bullets, calcBulletPosition(), _GunOrientation);
 
-                                _GunOrientation = divideByLength(player.getPos() - getPos());
+                                _GunOrientation = rh::normalize(player.getPos() - getPos());
                             }
                         }
                     } else {
@@ -175,7 +175,7 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr
                         for (float i = PI * (float) _MovementSwitchUpDown;
                              i < PI + PI * (float) _MovementSwitchUpDown; i += PI / (10 + 3 * _Difficulty)) {
                             _GunOrientation = sf::Vector2f(std::cos(i), std::sin(i));
-                            sf::Vector2f orientation = divideByLength(
+                            sf::Vector2f orientation = rh::normalize(
                                     sf::Vector2f(((std::rand() - (float) (RAND_MAX) / 2) / (float) (RAND_MAX)),
                                                  std::rand() / (float) (RAND_MAX) *
                                                  std::pow(-1, (int) (_MovementSwitchUpDown))));
@@ -189,7 +189,7 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr
 
                     if (getBossEvent() == 1) {
                         _Event1Counter++;
-                        _GunOrientation = divideByLength(
+                        _GunOrientation = rh::normalize(
                                 sf::Vector2f(((std::rand() - (float) (RAND_MAX) / 2) / (float) (RAND_MAX)),
                                              ((std::rand() - (float) (RAND_MAX) / 2) / (float) (RAND_MAX))));
 						BossCar::shootBullet(bullets, calcBulletPosition(), _GunOrientation);
@@ -199,7 +199,7 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr
         }
 
         _GunSprite.setPosition(getPos() + _GunPosition);
-        _GunSprite.setRotation(getAngleFromVector(_GunOrientation) - 90);
+        _GunSprite.setRotation(rh::getAngleFromVector(_GunOrientation) - 90);
 
         updateHealthBar();
         checkPhase();

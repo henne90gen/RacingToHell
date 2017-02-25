@@ -62,13 +62,13 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
         }
 
         if (_Attack) {
-            float angle = getAngleFromVector(_GunOrientation);
+            float angle = rh::getAngleFromVector(_GunOrientation);
 
             switch (_Pattern[_CurrentPhase].first) {
                 case Phase::SIMPLESHOOT:
                     _Event1Frequency = 4.25f + 1.25f * (float) _Difficulty;
 
-                    _GunOrientation = divideByLength(player.getPos() - getPos());
+                    _GunOrientation = rh::normalize(player.getPos() - getPos());
 
                     if (getBossEvent() == 1) {
                         BossCar::shootBullet(bullets, calcBulletPosition(), _GunOrientation);
@@ -79,7 +79,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
                     _Event1Frequency = 1.0f + 0.75f * (float) _Difficulty;
                     _Event2Frequency = 10.0f + 1.0f * (float) _Difficulty;
 
-                    _GunOrientation = divideByLength(player.getPos() - getPos());
+                    _GunOrientation = rh::normalize(player.getPos() - getPos());
 
                     if (_Event1Switch) {
                         if (getBossEvent() == 2) {
@@ -112,7 +112,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
                             angle -= frameTime * 100;
                         }
                     }
-                    _GunOrientation = divideByLength(
+                    _GunOrientation = rh::normalize(
                             sf::Vector2f(std::cos(angle * PI / 180), std::sin(angle * PI / 180)));
 
                     if (getBossEvent() == 1) {
@@ -123,7 +123,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
                     _Event1Frequency = 40.0f + 15.0f * (float) _Difficulty;
                     if (getBossEvent() == 1) {
                         _Event1Counter++;
-                        _GunOrientation = divideByLength(
+                        _GunOrientation = rh::normalize(
                                 sf::Vector2f(((std::rand() - (float) (RAND_MAX) / 2) / (float) (RAND_MAX)),
                                              ((std::rand() - (float) (RAND_MAX) / 2) / (float) (RAND_MAX))));
 
@@ -154,7 +154,7 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
 
         }
         _GunSprite.setPosition(getPos() + _GunPosition);
-        _GunSprite.setRotation(getAngleFromVector(_GunOrientation) - 90);
+        _GunSprite.setRotation(rh::getAngleFromVector(_GunOrientation) - 90);
 
         updateHealthBar();
         checkPhase();

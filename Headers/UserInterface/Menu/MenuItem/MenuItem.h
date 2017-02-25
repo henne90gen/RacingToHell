@@ -1,5 +1,6 @@
 #pragma once
 
+#include <StandardCursor.h>
 #include "MenuItemType.h"
 #include "UserInterface/Menu/AlignText.h"
 

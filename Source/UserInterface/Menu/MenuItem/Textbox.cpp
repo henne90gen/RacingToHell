@@ -52,8 +52,8 @@ void Textbox::render(sf::RenderWindow &renderWindow) {
     }
 
     if (_ChangeCursor) {
-        sf::StandardCursor cursor;
-        cursor.set(renderWindow.getSystemHandle(), sf::StandardCursor::TYPE::TEXT);
+        sf::StandardCursor cursor(sf::StandardCursor::TYPE::TEXT);
+        cursor.set(renderWindow.getSystemHandle());
     }
 
     renderWindow.draw(_Box);

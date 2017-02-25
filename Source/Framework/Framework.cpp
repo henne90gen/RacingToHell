@@ -42,8 +42,8 @@ void Framework::run() {
 void Framework::render() {
     setMouseVisibility();
 
-    sf::StandardCursor cursor;
-    cursor.set(_RenderWindow.getSystemHandle(), sf::StandardCursor::TYPE::NORMAL);
+    sf::StandardCursor cursor(sf::StandardCursor::TYPE::NORMAL);
+    cursor.set(_RenderWindow.getSystemHandle());
 
     for (unsigned int i = 0; i < _DisplayedGameScreens.size(); i++) {
         _DisplayedGameScreens.at(i)->render(_RenderWindow);

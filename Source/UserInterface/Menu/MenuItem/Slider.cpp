@@ -1,4 +1,4 @@
-#include <StandardCursor.h>
+
 #include "stdafx.h"
 #include "UserInterface/Menu/MenuItem/Slider.h"
 
@@ -52,8 +52,8 @@ void Slider::render(sf::RenderWindow &renderWindow) {
     }
 
     if (_ChangeCursor) {
-        sf::StandardCursor cursor;
-        cursor.set(renderWindow.getSystemHandle(), sf::StandardCursor::TYPE::HAND);
+        sf::StandardCursor cursor(sf::StandardCursor::TYPE::HAND);
+        cursor.set(renderWindow.getSystemHandle());
     }
 
     renderWindow.draw(_TextBackground);

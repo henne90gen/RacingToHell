@@ -47,8 +47,8 @@ CheckBox::CheckBox(sf::Vector2f pos, sf::Font &font, std::string text) : MenuIte
 
 void CheckBox::render(sf::RenderWindow &renderWindow) {
     if (_ChangeCursor) {
-        sf::StandardCursor cursor;
-        cursor.set(renderWindow.getSystemHandle(), sf::StandardCursor::TYPE::HAND);
+        sf::StandardCursor cursor(sf::StandardCursor::TYPE::HAND);
+        cursor.set(renderWindow.getSystemHandle());
     }
 
     if (!_Enabled) {

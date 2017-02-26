@@ -31,7 +31,7 @@ namespace sf {
 
         StandardCursor(const TYPE t);
 
-        void set(const sf::WindowHandle &aWindowHandle);
+        void set(const sf::WindowHandle &aWindowHandle) const;
 
         ~StandardCursor();
     };

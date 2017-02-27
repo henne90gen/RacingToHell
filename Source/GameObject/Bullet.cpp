@@ -27,7 +27,7 @@ Bullet::Bullet(sf::Packet &packet, GameObjectType type, sf::Texture &texture) :
     } else {
         setSpriteColor(sf::Color(255, 255, 0));
     }
-//    playShotSound(getPos(), soundEffects, soundBuffer, Volume);
+//    playShotSound(getPosition(), soundEffects, soundBuffer, Volume);
 }
 
 Bullet::Bullet(sf::Packet &packet, sf::Vector2f PlayerPosition, GameObjectType type, sf::Texture &texture,
@@ -40,7 +40,7 @@ Bullet::Bullet(sf::Packet &packet, sf::Vector2f PlayerPosition, GameObjectType t
     float dx, dy;
     packet >> dx >> dy;
 
-    _Movement = rh::normalize(sf::Vector2f(dx, dy) - getPos()) * speed;
+    _Movement = rh::normalize(sf::Vector2f(dx, dy) - getPosition()) * speed;
 
     if (type == GameObjectType::BulletObjectPlayer) {
         setSpriteColor(sf::Color(225, 0, 0));
@@ -53,7 +53,7 @@ Bullet::Bullet(sf::Packet &packet, sf::Vector2f PlayerPosition, GameObjectType t
 
 //Bullet::Bullet(GameObjectType type, sf::Texture &texture, float speed) : GameObject(0, type, sf::Vector2f(0, 0),
 //                                                                                    texture, sf::IntRect(0, 0, 10, 10)) {
-//    _Movement = rh::normalize(sf::Vector2f(dx, dy) - getPos()) * speed;
+//    _Movement = rh::normalize(sf::Vector2f(dx, dy) - getPosition()) * speed;
 //
 //    if (type == GameObjectType::BulletObjectPlayer) {
 //        setSpriteColor(sf::Color(225, 0, 0));

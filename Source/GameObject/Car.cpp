@@ -39,14 +39,14 @@ void Car::operator<<(sf::Packet &packet) {
     read(packet, _MaxHealth);
 }
 
-void Car::update(float frametime, int roadspeed) {
+void Car::update(float frameTime) {
     if (_resetColorTime >= 0) {
-        _resetColorTime += frametime;
+        _resetColorTime += frameTime;
 
         if (_resetColorTime > 0.055f) {
             getSprite().setColor(sf::Color::White);
             _resetColorTime = -1.0f;
         }
     }
-    GameObject::update(frametime);
+    GameObject::update(frameTime);
 }

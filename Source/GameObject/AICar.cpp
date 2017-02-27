@@ -16,31 +16,34 @@ AICar::AICar(sf::Packet &packet, sf::Texture &texture, sf::IntRect textureRect) 
     init();
 }
 
-void AICar::update(float frameTime, int roadSpeed) {
-    Car::update(frameTime, roadSpeed);
+void AICar::update(float frameTime, float roadSpeed) {
+	// TODO change this to use _Movement
+
+    Car::update(frameTime);
 
 	float margin = 0.5f * frameTime * (float)_Speed;
 	sf::Vector2f newPos;
 
-	if (getPos().x >= laneToX() - margin && getPos().x <= laneToX() + margin)
+	if (getPosition().x >= laneToX() - margin && getPosition().x <= laneToX() + margin)
 	{
 		newPos.x = laneToX();
 	}
-	else if (getPos().x < laneToX() - margin)
+	else if (getPosition().x < laneToX() - margin)
 	{
-		newPos.x = getPos().x + _Speed * frameTime;
+		newPos.x = getPosition().x + _Speed * frameTime;
 	}
 	else
 	{
-		newPos.x = getPos().x - _Speed * frameTime;
+		newPos.x = getPosition().x - _Speed * frameTime;
 	}
 
-	newPos.y = getPos().y + (roadSpeed - _Speed) * frameTime;
+	newPos.y = getPosition().y + (roadSpeed - _Speed) * frameTime;
 
     setPos(newPos);
 
-    _HealthBar.setPosition(sf::Vector2f(getPos().x - getWidth() / 2 - (_HealthBarFrame.getSize().x - getWidth()) / 2,
-                                        getPos().y - getHeight() / 2 - _HealthBarFrame.getSize().y - 8));
+    _HealthBar.setPosition(sf::Vector2f(
+            getPosition().x - getWidth() / 2 - (_HealthBarFrame.getSize().x - getWidth()) / 2,
+                                        getPosition().y - getHeight() / 2 - _HealthBarFrame.getSize().y - 8));
     _HealthBar.setSize(
             sf::Vector2f(_HealthBarFrame.getSize().x * getHealth() / getMaxHealth(), _HealthBarFrame.getSize().y));
     _HealthBarFrame.setPosition(_HealthBar.getPosition());

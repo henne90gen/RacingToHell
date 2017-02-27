@@ -53,7 +53,7 @@ public:
         @param frameTime Time that has passed since the last update
         @param roadSpeed Velocity of the road
     */
-    virtual void update(float frameTime, int roadSpeed);
+    virtual void update(float frameTime);
 
     /*
         @return int Health of the Car

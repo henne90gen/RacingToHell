@@ -39,7 +39,7 @@ public:
         @param frameTime Time that has passed since the last update
         @param roadSpeed Speed of the road
     */
-    void update(float frameTime, int roadSpeed);
+    void update(float frameTime);
 
     /*
         Gives back the direction of the shot bullet

@@ -31,7 +31,7 @@ void GameObjectManager::load() {
 
 void GameObjectManager::update(float frameTime) {
 
-    _Player->update(frameTime, _FW.getLevelManager().getRoadSpeed());
+    _Player->update(frameTime);
 
     if (!_Player->isAlive() && !_Player->isDying()) {
         _FW.getLevelManager().setMoving(false);
@@ -69,9 +69,9 @@ void GameObjectManager::update(float frameTime) {
     sf::Vector2f bulletDir = _Player->getShotBullet();
     if ((bulletDir.x != 0 || bulletDir.y != 0) &&
         (_FW.getOptionsManager().getGameMode() == GameMode::InfEnergy || _Player->drainShotEnergy())) {
-        _Bullets.push_back(GameObjectFactory::getBullet(_Player->getPos(), bulletDir, _PlayerBulletSpeed,
+        _Bullets.push_back(GameObjectFactory::getBullet(_Player->getPosition(), bulletDir, _PlayerBulletSpeed,
                                                         GameObjectType::BulletObjectPlayer));
-        _FW.getSoundManager().playShotSound(GameObjectType::Player, _Player->getPos());
+        _FW.getSoundManager().playShotSound(GameObjectType::Player, _Player->getPosition());
     }
 }
 
@@ -92,10 +92,10 @@ void GameObjectManager::checkBossCarsCollision() {
     for (unsigned int i = 0; i < _Cars.size(); i++) {
         if (_Boss->checkForCollision(*_Cars[i])) {
             std::shared_ptr<Explosion> newExplosion(
-                    new Explosion(_Cars.at(i)->getPos(), _ExplosionTexture,
+                    new Explosion(_Cars.at(i)->getPosition(), _ExplosionTexture,
                                   sf::Vector2f(0, _Cars[i]->getSpeed())));
             _Animations.push_back(newExplosion);
-            deleteObject(_Cars, i);
+            rh::deleteObject(_Cars, i);
         }
     }
 }
@@ -105,15 +105,15 @@ void GameObjectManager::checkBossBulletCollision() {
         if (_Boss->checkForCollision(*_Bullets.at(i)) &&
             _Bullets.at(i)->getType() == GameObjectType::BulletObjectPlayer) {
             _Boss->takeDamage(_Player->getBulletdamage());
-            _FW.getSoundManager().playHitSound(_Boss->getPos());
-            deleteObject(_Bullets, i);
+            _FW.getSoundManager().playHitSound(_Boss->getPosition());
+            rh::deleteObject(_Bullets, i);
         }
     }
 }
 
 void GameObjectManager::checkPlayerBossCollision() {
     if (_Player->checkForCollision(*_Boss)) {
-        std::shared_ptr<Explosion> explosion = std::make_shared<Explosion>(_Player->getPos(), _ExplosionTexture,
+        std::shared_ptr<Explosion> explosion = std::make_shared<Explosion>(_Player->getPosition(), _ExplosionTexture,
                                                                            sf::Vector2f(0, 0));
         _Animations.push_back(explosion);
         killPlayer();
@@ -125,12 +125,12 @@ void GameObjectManager::deleteDestroyedCars() {
         for (unsigned int i = 0; i < _Cars.size(); i++) {
             if (_Cars.at(i)->getHealth() <= 0) {
                 _FW.getLevelManager().addScore(ScoreEvent::DestroyedCar, _Cars.at(i)->getMaxHealth());
-                std::shared_ptr<Explosion> explosion = std::make_shared<Explosion>(_Cars.at(i)->getPos(),
+                std::shared_ptr<Explosion> explosion = std::make_shared<Explosion>(_Cars.at(i)->getPosition(),
                                                                                    _ExplosionTexture, sf::Vector2f(0,
                                                                                                                    _Cars[i]->getSpeed()));
-                _FW.getSoundManager().playExplosionSound(_Cars.at(i)->getPos());
+                _FW.getSoundManager().playExplosionSound(_Cars.at(i)->getPosition());
                 _Animations.push_back(explosion);
-                deleteObject(_Cars, i);
+                rh::deleteObject(_Cars, i);
             }
         }
     }
@@ -147,11 +147,11 @@ void GameObjectManager::deleteAllOffScreenObjects() {
 template<typename GameObjectList>
 void GameObjectManager::deleteOffScreenObjects(GameObjectList &goList) {
     for (unsigned int i = 0; i < goList.size(); i++) {
-        if (goList.at(i)->getPos().y - goList.at(i)->getHeight() / 2 > SCREENHEIGHT ||
-            goList.at(i)->getPos().y + goList.at(i)->getHeight() / 2 <= 0 ||
-            goList.at(i)->getPos().x + goList.at(i)->getWidth() / 2 <= 0 ||
-            goList.at(i)->getPos().x - goList.at(i)->getWidth() / 2 >= SCREENWIDTH) {
-            deleteObject(goList, i);
+        if (goList.at(i)->getPosition().y - goList.at(i)->getHeight() / 2 > SCREENHEIGHT ||
+            goList.at(i)->getPosition().y + goList.at(i)->getHeight() / 2 <= 0 ||
+            goList.at(i)->getPosition().x + goList.at(i)->getWidth() / 2 <= 0 ||
+            goList.at(i)->getPosition().x - goList.at(i)->getWidth() / 2 >= SCREENWIDTH) {
+            rh::deleteObject(goList, i);
         }
     }
 }
@@ -167,7 +167,7 @@ void GameObjectManager::checkForCollisions(float frameTime) {
             for (unsigned int j = 0; j < _Cars.size(); j++) {
                 if (i != j && _Cars.at(i)->getLane() == _Cars.at(j)->getLane() &&
                     _Cars.at(i)->getSpeed() != _Cars.at(j)->getSpeed()) {
-                    if (std::abs(_Cars.at(i)->getPos().y - _Cars.at(j)->getPos().y) < _Cars.at(i)->getHeight() + 20) {
+                    if (std::abs(_Cars.at(i)->getPosition().y - _Cars.at(j)->getPosition().y) < _Cars.at(i)->getHeight() + 20) {
                         int minSpeed = std::min({_Cars.at(i)->getSpeed(), _Cars.at(j)->getSpeed()});
                         _Cars.at(i)->setSpeed(minSpeed);
                         _Cars.at(j)->setSpeed(minSpeed);
@@ -186,11 +186,11 @@ void GameObjectManager::checkForCollisions(float frameTime) {
                     _Cars.at(i)->checkForCollision(*_Bullets[j])) {
                     if (_Bullets[j]->getType() == GameObjectType::BulletObjectPlayer) {
                         _Cars.at(i)->takeDamage(_Player->getBulletdamage());
-                        _FW.getSoundManager().playHitSound(_Bullets[j]->getPos());
+                        _FW.getSoundManager().playHitSound(_Bullets[j]->getPosition());
                     } else {
                         _Cars.at(i)->takeDamage(500);
                     }
-                    deleteObject(_Bullets, j);
+                    rh::deleteObject(_Bullets, j);
                     break;
                 }
             }
@@ -212,8 +212,8 @@ void GameObjectManager::checkPlayerForCollisions(float frameTime) {
                             killPlayer();
                         }
                     }
-                    _FW.getSoundManager().playHitSound(_Player->getPos());
-                    deleteObject(_Bullets, i);
+                    _FW.getSoundManager().playHitSound(_Player->getPosition());
+                    rh::deleteObject(_Bullets, i);
                     break;
                 case GameObjectType::Player:
                     break;
@@ -238,11 +238,11 @@ void GameObjectManager::checkPlayerForCollisions(float frameTime) {
             switch (_PickupItems[i]->getType()) {
                 case GameObjectType::Canister:
                     _Player->addEnergy();
-                    deleteObject(_PickupItems, i);
+                    rh::deleteObject(_PickupItems, i);
                     break;
                 case GameObjectType::Tools:
                     _Player->addHealth();
-                    deleteObject(_PickupItems, i);
+                    rh::deleteObject(_PickupItems, i);
                     break;
                 case GameObjectType::Player:
                     break;
@@ -269,10 +269,10 @@ void GameObjectManager::checkPlayerForCollisions(float frameTime) {
                 // FIXME reenable invincibility mode
                 if (_FW.getOptionsManager().getGameMode() == GameMode::Invincible) {
                     const std::shared_ptr<Explosion> newExplosion(
-                            new Explosion(_Cars.at(i)->getPos(), _ExplosionTexture,
+                            new Explosion(_Cars.at(i)->getPosition(), _ExplosionTexture,
                                           sf::Vector2f(0, _Cars[i]->getSpeed())));
                     _Animations.push_back(newExplosion);
-                    deleteObject(_Cars, i);
+                    rh::deleteObject(_Cars, i);
                 } else {
                     killPlayer();
                 }
@@ -283,7 +283,7 @@ void GameObjectManager::checkPlayerForCollisions(float frameTime) {
 
 void GameObjectManager::killPlayer() {
     _Player->kill();
-    _FW.getSoundManager().playExplosionSound(_Player->getPos());
+    _FW.getSoundManager().playExplosionSound(_Player->getPosition());
 }
 
 bool GameObjectManager::bossIsDead() {
@@ -297,15 +297,15 @@ bool GameObjectManager::bossIsDead() {
 
                 while (_PickupItems.size() != 0) {
                     unsigned int id = 0;
-                    deleteObject(_PickupItems, id);
+                    rh::deleteObject(_PickupItems, id);
                 }
                 while (_Cars.size() != 0) {
                     unsigned int id = 0;
-                    deleteObject(_Cars, id);
+                    rh::deleteObject(_Cars, id);
                 }
                 while (_Bullets.size() != 0) {
                     unsigned int id = 0;
-                    deleteObject(_Bullets, id);
+                    rh::deleteObject(_Bullets, id);
                 }
 
                 _FW.getLevelManager().addScore(ScoreEvent::DefeatedBoss, 0);
@@ -382,7 +382,7 @@ void GameObjectManager::spawnAICar(float frameTime) {
 
             for (unsigned int i = 0; i < _Cars.size(); i++) {
                 if (_Cars.at(i)->getLane() == newAiCar->getLane() &&
-                    _Cars.at(i)->getPos().y < _Cars.at(i)->getHeight() / 2.0f + 20) {
+                        _Cars.at(i)->getPosition().y < _Cars.at(i)->getHeight() / 2.0f + 20) {
                     return;
                 }
             }
@@ -404,12 +404,12 @@ void GameObjectManager::spawnBullet(float frameTime) {
 
             std::shared_ptr<GameObject> selectedCar = _Cars.at(std::rand() % _Cars.size());
 
-            sf::Vector2f dir = rh::normalize(_Player->getPos() - selectedCar->getPos());
+            sf::Vector2f dir = rh::normalize(_Player->getPosition() - selectedCar->getPosition());
 
-            const std::shared_ptr<Bullet> &newBullet = GameObjectFactory::getBullet(selectedCar->getPos(), dir,
+            const std::shared_ptr<Bullet> &newBullet = GameObjectFactory::getBullet(selectedCar->getPosition(), dir,
                                                                                     _AIBulletSpeed,
                                                                                     GameObjectType::BulletObjectAI);
-            _FW.getSoundManager().playShotSound(GameObjectType::AI, selectedCar->getPos());
+            _FW.getSoundManager().playShotSound(GameObjectType::AI, selectedCar->getPosition());
             _Bullets.push_back(newBullet);
 
             // FIXME should we really recalculate the freq after every spawn?

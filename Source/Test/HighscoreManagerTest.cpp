@@ -3,8 +3,7 @@
 #include "Test/HighscoreManagerTest.h"
 #include "Framework/Framework.h"
 
-HighscoreManagerTest::HighscoreManagerTest() {
-    std::cout << "Testing HighscoreManager" << std::endl;
+HighscoreManagerTest::HighscoreManagerTest() : Test("HighscoreManager") {
     testSaving();
     testLoading();
 }

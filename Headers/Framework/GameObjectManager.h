@@ -115,16 +115,6 @@ private:
     template <typename T>
     void deleteOffScreenObjects(T &goList);
 
-    /**
-     * Deletes a GameObject from the vector of GameObjects
-     * @param id Index of the GameObject that will be deleted
-     */
-    template<typename T>
-    void deleteObject(T &arr, unsigned int &id) {
-        arr.erase(arr.begin() + id);
-        id--;
-    }
-
     void checkForCollisions(float frameTime);
 
     void checkPlayerForCollisions(float frameTime);

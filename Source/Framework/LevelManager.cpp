@@ -62,7 +62,7 @@ void LevelManager::levelUp() {
 
 void LevelManager::resetToLevelOne() {
     _Level = 1;
-    _TotalLevelTime = 20.0f;
+    _TotalLevelTime = 0.5f;
     _LevelTime = 0;
     _ShouldMove = true;
     _Score = 0;

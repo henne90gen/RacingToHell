@@ -33,6 +33,6 @@ namespace sf {
 
         void set(const sf::WindowHandle &aWindowHandle) const;
 
-        ~StandardCursor();
+        ~StandardCursor() {}
     };
 }

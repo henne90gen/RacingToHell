@@ -93,7 +93,7 @@ void PlayerCar::handleEvent(sf::Event &Event) {
     }
 }
 
-void PlayerCar::update(float frameTime, int roadSpeed) {
+void PlayerCar::update(float frameTime) {
 
     if (isDying()) {
         _Animation->update(frameTime);
@@ -109,27 +109,27 @@ void PlayerCar::update(float frameTime, int roadSpeed) {
     }*/
 
     // Set the position of the sound listener
-    sf::Listener::setPosition(getPos().x, 0.f, getPos().y);
+    sf::Listener::setPosition(getPosition().x, 0.f, getPosition().y);
 
     // Update the position according to movement
-    Car::update(frameTime, roadSpeed);
+    Car::update(frameTime);
 
-    if (getPos().x < getWidth() / 2.0f) {
-        setPos(sf::Vector2f(getWidth() / 2.0f, getPos().y));
-    } else if (getPos().x > SCREENWIDTH - getWidth() / 2.0f) {
-        setPos(sf::Vector2f(SCREENWIDTH - getWidth() / 2.0f, getPos().y));
+    if (getPosition().x < getWidth() / 2.0f) {
+        setPos(sf::Vector2f(getWidth() / 2.0f, getPosition().y));
+    } else if (getPosition().x > SCREENWIDTH - getWidth() / 2.0f) {
+        setPos(sf::Vector2f(SCREENWIDTH - getWidth() / 2.0f, getPosition().y));
     }
 
-    if (getPos().y < getHeight() / 2.0f) {
-        setPos(sf::Vector2f(getPos().x, getHeight() / 2.0f));
-    } else if (getPos().y > SCREENHEIGHT - getHeight() / 2.0f) {
-        setPos(sf::Vector2f(getPos().x, SCREENHEIGHT - getHeight() / 2.0f));
+    if (getPosition().y < getHeight() / 2.0f) {
+        setPos(sf::Vector2f(getPosition().x, getHeight() / 2.0f));
+    } else if (getPosition().y > SCREENHEIGHT - getHeight() / 2.0f) {
+        setPos(sf::Vector2f(getPosition().x, SCREENHEIGHT - getHeight() / 2.0f));
     }
 
     // TODO replace aimline with something cooler
     // Update _AimLine
-    _AimLine.setPosition(getPos());
-    sf::Vector2f dir = _Crosshair.getPosition() - getPos();
+    _AimLine.setPosition(getPosition());
+    sf::Vector2f dir = _Crosshair.getPosition() - getPosition();
     float angle = std::atan(dir.y / dir.x) * 180.0f / PI;
     if (dir.x < 0) {
         _AimLine.setRotation(angle + 180);
@@ -147,7 +147,7 @@ bool PlayerCar::drainShotEnergy() {
 }
 
 void PlayerCar::shoot() {
-    _ShotBullet = _Crosshair.getPosition() - getPos();
+    _ShotBullet = _Crosshair.getPosition() - getPosition();
     _ShotBullet = rh::normalize(_ShotBullet);
 }
 
@@ -219,15 +219,15 @@ void PlayerCar::operator<<(sf::Packet &packet) {
     read(packet, selectedCar);
     _PlayerCarIndex = (PlayerCarIndex) selectedCar;
     setStats(_PlayerCarIndex);
-    //std::cout << "Updated position" << _ID << ": " << getPos().x << " " << getPos().y << std::endl;
+    //std::cout << "Updated position" << _ID << ": " << getPos().x << " " << getPosition().y << std::endl;
 //    read(packet, _Force.x);
 //    read(packet, _Force.y);
     float vx, vy;
     read(packet, vx);
     read(packet, vy);
 
-    //std::cout << "dX = " << std::abs(getPos().x - x) << " dY = " << std::abs(getPos().y - y) << " dVx = " << std::abs(_Movement.x - vx) << std::endl;
-    if (std::abs(getPos().x - x) > 1 || std::abs(getPos().y - y) > 1) {
+    //std::cout << "dX = " << std::abs(getPos().x - x) << " dY = " << std::abs(getPosition().y - y) << " dVx = " << std::abs(_Movement.x - vx) << std::endl;
+    if (std::abs(getPosition().x - x) > 1 || std::abs(getPosition().y - y) > 1) {
         setPos(sf::Vector2f(x, y));
     }
 
@@ -241,7 +241,7 @@ bool PlayerCar::isAlive() {
 void PlayerCar::kill() {
     _Health = 0;
     _Movement = sf::Vector2f(0, 0);
-    _Animation = std::make_shared<Explosion>(getPos(), _ExplosionTexture, sf::Vector2f(0, 0));
+    _Animation = std::make_shared<Explosion>(getPosition(), _ExplosionTexture, sf::Vector2f(0, 0));
     _Animation->play();
 }
 

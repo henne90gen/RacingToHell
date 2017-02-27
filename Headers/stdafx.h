@@ -18,6 +18,11 @@
 #include <cmath>
 #include <limits>
 #include <bitset>
+
+#ifdef SFML_SYSTEM_WINDOWS
+#include <windows.h>
+#endif
+
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
@@ -55,4 +60,16 @@ namespace rh {
      * @return sf::Vector2f Resulting normalized vector
      */
     sf::Vector2f normalize(sf::Vector2f vec);
+
+    float vectorLength(sf::Vector2f vec);
+
+    /**
+     * Deletes a object from a vector
+     * @param id Index of the GameObject that will be deleted
+     */
+    template<typename T>
+    void deleteObject(T &arr, unsigned int &id) {
+        arr.erase(arr.begin() + id);
+        id--;
+    }
 }

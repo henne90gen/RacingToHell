@@ -62,7 +62,7 @@ public:
     /**
      * @return Vectorf2f The position of the GameObject on the screen
      */
-    virtual sf::Vector2f getPos() { return _Position; }
+    virtual sf::Vector2f getPosition() { return _Position; }
 
     /**
      * @return float The Width of the sprite of the GameObject

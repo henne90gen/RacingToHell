@@ -179,7 +179,7 @@ void comment() {
                     if (_PickupItems.at(i)->checkForCollision(*_PickupItems.at(j)))
                     {
                         _PickupItems.at(i)->takeDamage(getPlayerCar().getBulletdamage());
-                        playHitSound(_PickupItems.at(j)->getPos());
+                        playHitSound(_PickupItems.at(j)->getPosition());
                         if (_Relation == NetworkRelation::Host) {
                             _SendObjects.push_back(std::make_pair(NetworkCommunication::UpdateAICar, _PickupItems.at(i)));
                         }
@@ -343,11 +343,11 @@ void MPGameObjectContainer::handleIncomingPackets() {
 
                     if (PlayerNumber == 1) {
                         _Bullets.push_back(
-                                GameObjectFactory::getBullet(p, _Player1->getPos(), GameObjectType::BulletObjectPlayer,
+                                GameObjectFactory::getBullet(p, _Player1->getPosition(), GameObjectType::BulletObjectPlayer,
                                                              _CurrentID++, _PlayerBulletSpeed));
                     } else {
                         _Bullets.push_back(
-                                GameObjectFactory::getBullet(p, _Player2->getPos(), GameObjectType::BulletObjectPlayer,
+                                GameObjectFactory::getBullet(p, _Player2->getPosition(), GameObjectType::BulletObjectPlayer,
                                                              _CurrentID++, _PlayerBulletSpeed));
                     }
 
@@ -401,7 +401,7 @@ void MPGameObjectContainer::handleIncomingPackets() {
 //                                GameObjectFactory::getBullet(GameObjectType::BulletObjectPlayer, _PlayerBulletSpeed));
 //                        *_Bullets.back() << p;
 
-                        //std::cout << _Bullets.back()->getPos().x << "|" << _Bullets.back()->getPos().y << std::endl;
+                        //std::cout << _Bullets.back()->getPosition().x << "|" << _Bullets.back()->getPos().y << std::endl;
 
                         Packets.erase(Packets.begin() + i);
                         i--;
@@ -544,7 +544,7 @@ void MPGameObjectContainer::spawnAICar(int roadSpeed, NetworkHandle &network) {
 
     for (unsigned int i = 1; i < _GameObjects.size(); i++) {
         if (_GameObjects.at(i)->getType() == GameObjectType::AI) {
-            //if (_PickupItems.at(i)->getLane() == newAiCar->getLane() && _PickupItems.at(i)->getPos().y < _PickupItems.at(i)->getHeight() / 2 + 20)
+            //if (_PickupItems.at(i)->getLane() == newAiCar->getLane() && _PickupItems.at(i)->getPosition().y < _PickupItems.at(i)->getHeight() / 2 + 20)
             //{
             //	return;
             //}
@@ -570,10 +570,10 @@ void MPGameObjectContainer::spawnBullet() {
     std::shared_ptr<GameObject> SelectedCar = (std::shared_ptr<GameObject> &&) AICarVector.at(
             std::rand() % AICarVector.size());
 
-    sf::Vector2f dir = rh::normalize(getPlayerCar().getPos() - SelectedCar->getPos());
+    sf::Vector2f dir = rh::normalize(getPlayerCar().getPosition() - SelectedCar->getPosition());
 
     _GameObjects.push_back(
-            GameObjectFactory::getBullet(SelectedCar->getPos(), dir, _AIBulletSpeed, GameObjectType::BulletObjectAI));
+            GameObjectFactory::getBullet(SelectedCar->getPosition(), dir, _AIBulletSpeed, GameObjectType::BulletObjectAI));
 }
 
 bool MPGameObjectContainer::playerIsAlive() {

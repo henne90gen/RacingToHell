@@ -5,6 +5,7 @@
 #include "GameObject/GameObjectType.h"
 #include "GameObject/Bullet.h"
 #include "Animation/Explosion.h"
+#include "GameObject/Boss/Action/BossAction.h"
 
 class BossCar : public Car {
 public:
@@ -38,6 +39,8 @@ public:
     virtual void
     update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bullet>> &bullets, PlayerCar &player) = 0;
 
+    virtual void update(float frameTime);
+
     /**
      * Returns true if the boss allows traffic
      */
@@ -47,6 +50,10 @@ public:
      * Returns true if the boss is dead and all explosion animations are done playing
      */
     bool isDoneExploding(sf::Texture &ExplosionTexture);
+
+    sf::Vector2f getDefaultPosition() { return _DefaultPosition; }
+
+    void setDefaultPosition(sf::Vector2f pos) { _DefaultPosition = pos; }
 
     /**
      * Writes the necessary data for a gameobject to a packet
@@ -63,33 +70,35 @@ public:
     void initBoss();
 
 protected:
-    enum Phase {
-        NOTHING,
-        SIMPLESHOOT,
-        SALVE,
-        SPIN,
-        HARDCORESPAM,
-        BLASTSALVE,
-        SPIRAL,
-        RANDOMSPRAY,
-        SHOTGUN,
-        SIDE,
-        SAVELANES,
-        RUNATPLAYERPHASE,
-        ZICKZACKPHASE,
-        SALVEZICKZACK
-    };
+//    enum Phase {
+//        NOTHING,
+//        SIMPLESHOOT,
+//        SALVE,
+//        SPIN,
+//        HARDCORESPAM,
+//        BLASTSALVE,
+//        SPIRAL,
+//        RANDOMSPRAY,
+//        SHOTGUN,
+//        SIDE,
+//        SAVELANES,
+//        RUNATPLAYERPHASE,
+//        ZICKZACKPHASE,
+//        SALVEZICKZACK
+//    };
 
-    int _CurrentPhase;
-    std::vector<std::pair<Phase, float>> _Pattern;
-    sf::Clock _PhaseClock;
+//    int _CurrentPhase;
+//    std::vector<std::pair<Phase, float>> _Pattern;
+//    sf::Clock _PhaseClock;
 
     sf::Uint16 _Difficulty;
 
-    enum Movement {
-        STILL, DRIVETODEFAULT, LEFTRIGHT, SWITCHSIDES, STRAIGHT, PARABOLA, RUNATPLAYER, ZICKZACK
-    };
-    Movement _Movement;
+//    enum Movement {
+//        STILL, DRIVETODEFAULT, LEFTRIGHT, SWITCHSIDES, STRAIGHT, PARABOLA, RUNATPLAYER, ZICKZACK
+//    };
+//    Movement _MovementCommand;
+
+    std::vector<std::shared_ptr<BossAction>> _Actions;
 
     sf::Vector2f _GunPosition;
     sf::Vector2f _GunOrientation;
@@ -108,11 +117,11 @@ protected:
     sf::Clock _ExplosionTimer;
     int _IsExploding;
 
-    sf::Clock _BossEventTimer1;
-    sf::Clock _BossEventTimer2;
-    float _Event1Frequency, _Event2Frequency;
-    bool _Event1Switch, _Event2Switch;
-    int _Event1Counter, _Event2Counter;
+//    sf::Clock _BossEventTimer1;
+//    sf::Clock _BossEventTimer2;
+//    float _Event1Frequency, _Event2Frequency;
+//    bool _Event1Switch, _Event2Switch;
+//    int _Event1Counter, _Event2Counter;
 
     sf::Vector2f _NextPosition;
     bool _Attack, _HasTraffic;

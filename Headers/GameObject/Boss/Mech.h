@@ -37,7 +37,7 @@ public:
     void setPos(sf::Vector2f pos);
 
     /*
-        Overriding getPos() of GameObject
+        Overriding getPosition() of GameObject
         @return sf::Vector2f Position of the center of the Mech
     */
     sf::Vector2f getPos() { return _TopAnim.getSprite().getPosition(); }

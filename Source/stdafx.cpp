@@ -36,5 +36,9 @@ float rh::getAngleFromVector(sf::Vector2f vec) {
 }
 
 sf::Vector2f rh::normalize(sf::Vector2f vec) {
-    return vec / (float) (std::sqrt(std::pow(vec.x, 2) + std::pow(vec.y, 2)));
+    return vec / (float) (vectorLength(vec));
+}
+
+float rh::vectorLength(sf::Vector2f vec) {
+    return std::sqrt(std::pow(vec.x, 2) + std::pow(vec.y, 2));
 }

@@ -3,8 +3,7 @@
 #include <Framework/PlayerScore.h>
 #include "Test/PlayerScoreTest.h"
 
-PlayerScoreTest::PlayerScoreTest() {
-    std::cout << "Testing PlayerScore" << std::endl;
+PlayerScoreTest::PlayerScoreTest() : Test("PlayerScore") {
     testSaving();
     testLoading();
 }

@@ -15,16 +15,10 @@ public:
     Tank(sf::Packet &packet, sf::Texture &Texture, sf::Texture &BulletTexture);
 	~Tank() {}
 
-	/*
-		See BossCar for details
-	*/
 	void render(sf::RenderWindow& RenderWindow);
 
-	/*
-		See BossCar for details
-	*/
 	void update(float FrameTime, int RoadSpeed, std::vector<std::shared_ptr<Bullet>>& bullets, PlayerCar& player);
-	
+
 	void init();
 private:
 	sf::Texture _GunTexture;

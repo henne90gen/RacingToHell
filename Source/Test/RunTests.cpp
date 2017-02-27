@@ -1,9 +1,13 @@
 
+#include <Test/HelperTest.h>
 #include <Test/PlayerScoreTest.h>
 #include <Test/HighscoreManagerTest.h>
+#include <Test/BossActionTest.h>
 
 int main() {
-    PlayerScoreTest();
-    HighscoreManagerTest();
+//    HelperTest();
+//    PlayerScoreTest();
+//    HighscoreManagerTest();
+    BossActionTest();
     return 0;
 }

@@ -28,6 +28,8 @@ void sf::StandardCursor::set(const sf::WindowHandle& aWindowHandle) const {
     SetClassLongPtr(aWindowHandle, GCLP_HCURSOR, reinterpret_cast<LONG_PTR>(Cursor));
 }
 
+//sf::StandardCursor::~StandardCursor() {}
+
 #elif defined(SFML_SYSTEM_LINUX)
 
 sf::StandardCursor::StandardCursor(const sf::StandardCursor::TYPE t) {

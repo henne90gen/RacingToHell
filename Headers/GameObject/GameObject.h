@@ -67,6 +67,8 @@ public:
      */
     virtual sf::Vector2f getPosition() { return _Position; }
 
+    virtual sf::Vector2f getMovement() { return _Movement; }
+
     /**
      * @return float The Width of the sprite of the GameObject
      */

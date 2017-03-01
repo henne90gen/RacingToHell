@@ -4,11 +4,10 @@
 
 
 PlayerCar::PlayerCar(unsigned int id, GameObjectManager &gom, PlayerCarIndex selectedCar, sf::Texture &texture,
-                     sf::Texture &explosionTexture, bool infEnergy) :
+                     bool infEnergy) :
         Car(id, gom, sf::Vector2f(0, 0), 100, 500, GameObjectType::Player, texture,
-            sf::IntRect(0, 0, texture.getSize().x, texture.getSize().y)),
-        _CrosshairSpeed(600.0f), _PlayerCarIndex(selectedCar), _AccelerationTime(0.1f),
-        _ExplosionTexture(explosionTexture), _InfiniteEnergy(infEnergy) {
+            sf::IntRect(0, 0, texture.getSize().x, texture.getSize().y)), _CrosshairSpeed(600.0f),
+        _PlayerCarIndex(selectedCar), _AccelerationTime(0.1f), _InfiniteEnergy(infEnergy) {
 
     setStats(_PlayerCarIndex);
     setPos(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT - 300));
@@ -64,9 +63,9 @@ void PlayerCar::applyKeyPress(sf::Uint8 keys) {
     }
 
     if (Up) {
-        _Movement.y = _Speed * (4.0f/5.0f) * -1.0f;
+        _Movement.y = _Speed * (4.0f / 5.0f) * -1.0f;
     } else if (Down) {
-        _Movement.y = _Speed * (6.0f/5.0f);
+        _Movement.y = _Speed * (6.0f / 5.0f);
     } else {
         _Movement.y = 0.0f;
     }
@@ -95,10 +94,6 @@ void PlayerCar::handleEvent(sf::Event &Event) {
 }
 
 void PlayerCar::update(float frameTime) {
-
-    if (isDying()) {
-        _Animation->update(frameTime);
-    }
 
     // TODO re-enable auto fire
     /*std::cout << "Time: " << _AutoFireTimer.getElapsedTime().asSeconds() << std::endl;
@@ -149,7 +144,8 @@ void PlayerCar::drainShotEnergy() {
 }
 
 void PlayerCar::shoot() {
-    _GOM.shootBullet(GameObjectType::BulletPlayer, getPosition(), _Crosshair.getPosition()-getPosition(), _GOM.getPlayerBulletSpeed());
+    _GOM.shootBullet(GameObjectType::BulletPlayer, getPosition(), _Crosshair.getPosition() - getPosition(),
+                     _GOM.getPlayerBulletSpeed());
     drainShotEnergy();
 }
 
@@ -236,9 +232,7 @@ bool PlayerCar::isAlive() {
 
 void PlayerCar::kill() {
     _Health = 0;
-    _Movement = sf::Vector2f(0, 0);
-    _Animation = std::make_shared<Explosion>(getPosition(), _ExplosionTexture, sf::Vector2f(0, 0));
-    _Animation->play();
+    _Animation = _GOM.playExplosion(_Position, _Movement);
 }
 
 void PlayerCar::takeDamage(int damage) {
@@ -256,5 +250,5 @@ void PlayerCar::drainEnergy(float frameTime) {
 }
 
 bool PlayerCar::isDying() {
-    return _Health <= 0 && _Animation->getAnimationState() == Animation::Play;
+    return _Animation && _Animation->getAnimationState() == Animation::AnimationState::Play;
 }

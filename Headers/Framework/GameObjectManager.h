@@ -80,6 +80,8 @@ public:
 
     void shootBullet(GameObjectType type, sf::Vector2f pos, sf::Vector2f dir, int speed);
 
+    std::shared_ptr<Animation> playExplosion(sf::Vector2f pos, sf::Vector2f movement);
+
     std::vector<std::shared_ptr<GameObject>> &getPickupItems() { return _PickupItems; }
 
     std::vector<std::shared_ptr<AICar>> &getCars() { return _Cars; }
@@ -128,11 +130,6 @@ private:
      * Removes cars that don't have enough health any more.
      */
     void deleteDestroyedCars();
-
-    /**
-     * Plays explosion animation and sound effect.
-     */
-    void killPlayer();
 
     /**
      * Calculates new frequencies depending on the selected difficulty

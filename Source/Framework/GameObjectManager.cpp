@@ -82,10 +82,7 @@ void GameObjectManager::switchLane(float frameTime) {
 void GameObjectManager::checkBossCarsCollision() {
     for (unsigned int i = 0; i < _Cars.size(); i++) {
         if (_Boss->checkForCollision(*_Cars[i])) {
-            std::shared_ptr<Explosion> newExplosion(
-                    new Explosion(_Cars.at(i)->getPosition(), _ExplosionTexture,
-                                  sf::Vector2f(0, _Cars[i]->getSpeed())));
-            _Animations.push_back(newExplosion);
+            playExplosion(_Cars[i]->getPosition(), _Cars[i]->getMovement());
             rh::deleteObject(_Cars, i);
         }
     }
@@ -104,10 +101,7 @@ void GameObjectManager::checkBossBulletCollision() {
 
 void GameObjectManager::checkPlayerBossCollision() {
     if (_Player->checkForCollision(*_Boss)) {
-        std::shared_ptr<Explosion> explosion = std::make_shared<Explosion>(_Player->getPosition(), _ExplosionTexture,
-                                                                           sf::Vector2f(0, 0));
-        _Animations.push_back(explosion);
-        killPlayer();
+        _Player->kill();
     }
 }
 
@@ -116,11 +110,7 @@ void GameObjectManager::deleteDestroyedCars() {
         for (unsigned int i = 0; i < _Cars.size(); i++) {
             if (_Cars.at(i)->getHealth() <= 0) {
                 _FW.getLevelManager().addScore(ScoreEvent::DestroyedCar, _Cars.at(i)->getMaxHealth());
-                std::shared_ptr<Explosion> explosion = std::make_shared<Explosion>(_Cars.at(i)->getPosition(),
-                                                                                   _ExplosionTexture, sf::Vector2f(0,
-                                                                                                                   _Cars[i]->getSpeed()));
-                _FW.getSoundManager().playExplosionSound(_Cars.at(i)->getPosition());
-                _Animations.push_back(explosion);
+                playExplosion(_Cars[i]->getPosition(), _Cars[i]->getMovement());
                 rh::deleteObject(_Cars, i);
             }
         }
@@ -200,9 +190,6 @@ void GameObjectManager::checkPlayerForCollisions(float frameTime) {
                 case GameObjectType::BulletBoss:
                     if (_FW.getOptionsManager().getGameMode() != GameMode::Invincible) {
                         _Player->takeDamage(5);
-                        if (!_Player->isAlive()) {
-                            killPlayer();
-                        }
                     }
                     _FW.getSoundManager().playHitSound(_Player->getPosition());
                     rh::deleteObject(_Bullets, i);
@@ -258,24 +245,15 @@ void GameObjectManager::checkPlayerForCollisions(float frameTime) {
         for (unsigned int i = 0; i < _Cars.size(); i++) {
             _Cars.at(i)->update(frameTime, _FW.getLevelManager().getRoadSpeed());
             if (_Player->isAlive() && _Player->checkForCollision(*_Cars.at(i))) {
-                // FIXME reenable invincibility mode
                 if (_FW.getOptionsManager().getGameMode() == GameMode::Invincible) {
-                    const std::shared_ptr<Explosion> newExplosion(
-                            new Explosion(_Cars.at(i)->getPosition(), _ExplosionTexture,
-                                          sf::Vector2f(0, _Cars[i]->getSpeed())));
-                    _Animations.push_back(newExplosion);
+                    playExplosion(_Cars[i]->getPosition(), _Cars[i]->getMovement());
                     rh::deleteObject(_Cars, i);
                 } else {
-                    killPlayer();
+                    _Player->kill();
                 }
             }
         }
     }
-}
-
-void GameObjectManager::killPlayer() {
-    _Player->kill();
-    _FW.getSoundManager().playExplosionSound(_Player->getPosition());
 }
 
 bool GameObjectManager::bossIsDead() {
@@ -327,7 +305,7 @@ void GameObjectManager::resetGameObjects() {
     if (_Player != NULL) {
         playerCarIndex = _Player->getPlayerCarIndex();
     }
-    _Player = GameObjectFactory::getPlayerCar(*this, playerCarIndex, _ExplosionTexture, false);
+    _Player = GameObjectFactory::getPlayerCar(*this, playerCarIndex, false);
 
 
     // Frequencies
@@ -513,7 +491,7 @@ void GameObjectManager::nextPlayerCar() {
     if (index >= (int) PlayerCarIndex::NumberOfCars) {
         index = 0;
     }
-    _Player = GameObjectFactory::getPlayerCar(*this, (PlayerCarIndex) index, _ExplosionTexture, false);
+    _Player = GameObjectFactory::getPlayerCar(*this, (PlayerCarIndex) index, false);
 }
 
 void GameObjectManager::previousPlayerCar() {
@@ -522,7 +500,7 @@ void GameObjectManager::previousPlayerCar() {
     if (index < 0) {
         index = (int) PlayerCarIndex::NumberOfCars - 1;
     }
-    _Player = GameObjectFactory::getPlayerCar(*this, (PlayerCarIndex) index, _ExplosionTexture, false);
+    _Player = GameObjectFactory::getPlayerCar(*this, (PlayerCarIndex) index, false);
 }
 
 void GameObjectManager::shootBullet(GameObjectType type, sf::Vector2f pos, sf::Vector2f dir, int speed) {
@@ -532,4 +510,11 @@ void GameObjectManager::shootBullet(GameObjectType type, sf::Vector2f pos, sf::V
         _Bullets.push_back(GameObjectFactory::getBullet(*this, pos, dir, speed, type));
         _FW.getSoundManager().playShotSound(type, pos);
     }
+}
+
+std::shared_ptr<Animation> GameObjectManager::playExplosion(sf::Vector2f pos, sf::Vector2f movement) {
+    std::shared_ptr<Explosion> newExplosion = std::make_shared<Explosion>(pos, _ExplosionTexture, movement);
+    _Animations.push_back(newExplosion);
+    _FW.getSoundManager().playExplosionSound(_Player->getPosition());
+    return newExplosion;
 }

@@ -16,7 +16,7 @@ public:
         @param texture Texture that is going to be used for the sprite
     */
     PlayerCar(unsigned int id, GameObjectManager &gom, PlayerCarIndex selectedCar, sf::Texture &texture,
-              sf::Texture &explosionTexture, bool infEnergy);
+              bool infEnergy);
 
 //    PlayerCar(sf::Packet &packet, std::vector<std::shared_ptr<sf::Texture>> &textures, sf::Texture &explosionTexture);
 
@@ -128,7 +128,6 @@ public:
 private:
     void shoot();
 
-    sf::Texture &_ExplosionTexture;
     std::shared_ptr<Animation> _Animation;
 
     float _Energy;

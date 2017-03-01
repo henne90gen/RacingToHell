@@ -58,11 +58,11 @@ void sf::StandardCursor::set(const sf::WindowHandle &aWindowHandle) const {
 //    XFlush(display);
 }
 
-sf::StandardCursor::~StandardCursor() {
+//sf::StandardCursor::~StandardCursor() {
 //    XFreeCursor(display, Cursor);
 //    delete display;
 //    display = NULL;
-}
+//}
 
 #else
 #error This OS is not yet supported by the cursor library.

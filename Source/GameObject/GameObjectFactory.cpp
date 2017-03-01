@@ -40,12 +40,10 @@ sf::Uint32 GameObjectFactory::_CurrentGameObjectID;
 sf::Uint32 GameObjectFactory::_DeltaID;
 
 std::shared_ptr<PlayerCar>
-GameObjectFactory::getPlayerCar(GameObjectManager &gom, PlayerCarIndex carSkin, sf::Texture &explosionTexture,
-                                bool infEnergy) {
+GameObjectFactory::getPlayerCar(GameObjectManager &gom, PlayerCarIndex carSkin, bool infEnergy) {
     std::shared_ptr<PlayerCar> player = std::make_shared<PlayerCar>(_DeltaID + _CurrentGameObjectID++, gom, carSkin,
                                                                     (*_PlayerCarTextures().at(
-                                                                            (unsigned long) carSkin)),
-                                                                    explosionTexture, infEnergy);
+                                                                            (unsigned long) carSkin)), infEnergy);
     return player;
 }
 

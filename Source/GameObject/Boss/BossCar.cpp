@@ -101,6 +101,7 @@ void BossCar::checkPhase() {
 //    }
 }
 
+// FIXME move these explosions into GOM and just keep pointers to check for being done with exploding
 void BossCar::renderExplosions(sf::RenderWindow &window) {
     if (_IsExploding) {
         for (int i = 0; i < _Explosions.size(); i++) {

@@ -9,10 +9,10 @@ GameObjectManager::GameObjectManager(Framework &framework) : Manager(framework),
     _ToolboxFrequency = 0.25;
     _BulletFrequency = 2;
 
-	_Cars.reserve(32);
-	_Bullets.reserve(256);
-	_Animations.reserve(16);
-	_PickupItems.reserve(16); 
+    _Cars.reserve(32);
+    _Bullets.reserve(256);
+    _Animations.reserve(16);
+    _PickupItems.reserve(16);
 }
 
 GameObjectManager::~GameObjectManager() {
@@ -64,15 +64,6 @@ void GameObjectManager::update(float frameTime) {
     if (_FW.getOptionsManager().getGameMode() != GameMode::InfEnergy) {
         _Player->drainEnergy(frameTime);
     }
-
-    // Check whether player fired a shot
-    sf::Vector2f bulletDir = _Player->getShotBullet();
-    if ((bulletDir.x != 0 || bulletDir.y != 0) &&
-        (_FW.getOptionsManager().getGameMode() == GameMode::InfEnergy || _Player->drainShotEnergy())) {
-        _Bullets.push_back(GameObjectFactory::getBullet(*this, _Player->getPosition(), bulletDir, _PlayerBulletSpeed,
-                                                        GameObjectType::BulletObjectPlayer));
-        _FW.getSoundManager().playShotSound(GameObjectType::Player, _Player->getPosition());
-    }
 }
 
 void GameObjectManager::switchLane(float frameTime) {
@@ -103,7 +94,7 @@ void GameObjectManager::checkBossCarsCollision() {
 void GameObjectManager::checkBossBulletCollision() {
     for (unsigned int i = 0; i < _Bullets.size(); i++) {
         if (_Boss->checkForCollision(*_Bullets.at(i)) &&
-            _Bullets.at(i)->getType() == GameObjectType::BulletObjectPlayer) {
+            _Bullets.at(i)->getType() == GameObjectType::BulletPlayer) {
             _Boss->takeDamage(_Player->getBulletdamage());
             _FW.getSoundManager().playHitSound(_Boss->getPosition());
             rh::deleteObject(_Bullets, i);
@@ -167,7 +158,8 @@ void GameObjectManager::checkForCollisions(float frameTime) {
             for (unsigned int j = 0; j < _Cars.size(); j++) {
                 if (i != j && _Cars.at(i)->getLane() == _Cars.at(j)->getLane() &&
                     _Cars.at(i)->getSpeed() != _Cars.at(j)->getSpeed()) {
-                    if (std::abs(_Cars.at(i)->getPosition().y - _Cars.at(j)->getPosition().y) < _Cars.at(i)->getHeight() + 20) {
+                    if (std::abs(_Cars.at(i)->getPosition().y - _Cars.at(j)->getPosition().y) <
+                        _Cars.at(i)->getHeight() + 20) {
                         int minSpeed = std::min({_Cars.at(i)->getSpeed(), _Cars.at(j)->getSpeed()});
                         _Cars.at(i)->setSpeed(minSpeed);
                         _Cars.at(j)->setSpeed(minSpeed);
@@ -182,9 +174,9 @@ void GameObjectManager::checkForCollisions(float frameTime) {
                 }
             }
             for (unsigned int j = 0; j < _Bullets.size(); j++) {
-                if (_Bullets[j]->getType() != GameObjectType::BulletObjectAI &&
+                if (_Bullets[j]->getType() != GameObjectType::BulletAI &&
                     _Cars.at(i)->checkForCollision(*_Bullets[j])) {
-                    if (_Bullets[j]->getType() == GameObjectType::BulletObjectPlayer) {
+                    if (_Bullets[j]->getType() == GameObjectType::BulletPlayer) {
                         _Cars.at(i)->takeDamage(_Player->getBulletdamage());
                         _FW.getSoundManager().playHitSound(_Bullets[j]->getPosition());
                     } else {
@@ -204,8 +196,8 @@ void GameObjectManager::checkPlayerForCollisions(float frameTime) {
         _Bullets.at(i)->update(frameTime);
         if (_Player->isAlive() && _Player->checkForCollision(*_Bullets.at(i))) {
             switch (_Bullets[i]->getType()) {
-                case GameObjectType::BulletObjectAI:
-                case GameObjectType::BulletObjectBoss:
+                case GameObjectType::BulletAI:
+                case GameObjectType::BulletBoss:
                     if (_FW.getOptionsManager().getGameMode() != GameMode::Invincible) {
                         _Player->takeDamage(5);
                         if (!_Player->isAlive()) {
@@ -219,7 +211,7 @@ void GameObjectManager::checkPlayerForCollisions(float frameTime) {
                     break;
                 case GameObjectType::AI:
                     break;
-                case GameObjectType::BulletObjectPlayer:
+                case GameObjectType::BulletPlayer:
                     break;
                 case GameObjectType::Canister:
                     break;
@@ -248,11 +240,11 @@ void GameObjectManager::checkPlayerForCollisions(float frameTime) {
                     break;
                 case GameObjectType::AI:
                     break;
-                case GameObjectType::BulletObjectAI:
+                case GameObjectType::BulletAI:
                     break;
-                case GameObjectType::BulletObjectPlayer:
+                case GameObjectType::BulletPlayer:
                     break;
-                case GameObjectType::BulletObjectBoss:
+                case GameObjectType::BulletBoss:
                     break;
                 case GameObjectType::Boss:
                     break;
@@ -335,7 +327,7 @@ void GameObjectManager::resetGameObjects() {
     if (_Player != NULL) {
         playerCarIndex = _Player->getPlayerCarIndex();
     }
-    _Player = GameObjectFactory::getPlayerCar(*this, playerCarIndex, _ExplosionTexture);
+    _Player = GameObjectFactory::getPlayerCar(*this, playerCarIndex, _ExplosionTexture, false);
 
 
     // Frequencies
@@ -382,7 +374,7 @@ void GameObjectManager::spawnAICar(float frameTime) {
 
             for (unsigned int i = 0; i < _Cars.size(); i++) {
                 if (_Cars.at(i)->getLane() == newAiCar->getLane() &&
-                        _Cars.at(i)->getPosition().y < _Cars.at(i)->getHeight() / 2.0f + 20) {
+                    _Cars.at(i)->getPosition().y < _Cars.at(i)->getHeight() / 2.0f + 20) {
                     return;
                 }
             }
@@ -404,13 +396,8 @@ void GameObjectManager::spawnBullet(float frameTime) {
 
             std::shared_ptr<GameObject> selectedCar = _Cars.at(std::rand() % _Cars.size());
 
-            sf::Vector2f dir = rh::normalize(_Player->getPosition() - selectedCar->getPosition());
-
-            std::shared_ptr<Bullet> newBullet = GameObjectFactory::getBullet(*this, selectedCar->getPosition(), dir,
-                                                                             _AIBulletSpeed,
-                                                                             GameObjectType::BulletObjectAI);
-            _FW.getSoundManager().playShotSound(GameObjectType::AI, selectedCar->getPosition());
-            _Bullets.push_back(newBullet);
+            sf::Vector2f dir = _Player->getPosition() - selectedCar->getPosition();
+            shootBullet(GameObjectType::BulletAI, selectedCar->getPosition(), dir, _AIBulletSpeed);
 
             // FIXME should we really recalculate the freq after every spawn?
             calculateBulletFrequency();
@@ -526,7 +513,7 @@ void GameObjectManager::nextPlayerCar() {
     if (index >= (int) PlayerCarIndex::NumberOfCars) {
         index = 0;
     }
-    _Player = GameObjectFactory::getPlayerCar(*this, (PlayerCarIndex) index, _ExplosionTexture);
+    _Player = GameObjectFactory::getPlayerCar(*this, (PlayerCarIndex) index, _ExplosionTexture, false);
 }
 
 void GameObjectManager::previousPlayerCar() {
@@ -535,5 +522,14 @@ void GameObjectManager::previousPlayerCar() {
     if (index < 0) {
         index = (int) PlayerCarIndex::NumberOfCars - 1;
     }
-    _Player = GameObjectFactory::getPlayerCar(*this, (PlayerCarIndex) index, _ExplosionTexture);
+    _Player = GameObjectFactory::getPlayerCar(*this, (PlayerCarIndex) index, _ExplosionTexture, false);
+}
+
+void GameObjectManager::shootBullet(GameObjectType type, sf::Vector2f pos, sf::Vector2f dir, int speed) {
+    if (type == GameObjectType::BulletPlayer || type == GameObjectType::BulletBoss ||
+        type == GameObjectType::BulletAI) {
+        dir = rh::normalize(dir);
+        _Bullets.push_back(GameObjectFactory::getBullet(*this, pos, dir, speed, type));
+        _FW.getSoundManager().playShotSound(type, pos);
+    }
 }

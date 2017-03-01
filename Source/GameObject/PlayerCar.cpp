@@ -1,16 +1,16 @@
 #include "stdafx.h"
 #include "GameObject/PlayerCar.h"
+#include "Framework/GameObjectManager.h"
 
 
 PlayerCar::PlayerCar(unsigned int id, GameObjectManager &gom, PlayerCarIndex selectedCar, sf::Texture &texture,
-                     sf::Texture &explosionTexture) :
+                     sf::Texture &explosionTexture, bool infEnergy) :
         Car(id, gom, sf::Vector2f(0, 0), 100, 500, GameObjectType::Player, texture,
             sf::IntRect(0, 0, texture.getSize().x, texture.getSize().y)),
         _CrosshairSpeed(600.0f), _PlayerCarIndex(selectedCar), _AccelerationTime(0.1f),
-        _ExplosionTexture(explosionTexture) {
+        _ExplosionTexture(explosionTexture), _InfiniteEnergy(infEnergy) {
 
     setStats(_PlayerCarIndex);
-    _ShotBullet = sf::Vector2f(0, 0);
     setPos(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT - 300));
 
     _AimLine.setFillColor(sf::Color::Black);
@@ -139,23 +139,18 @@ void PlayerCar::update(float frameTime) {
     }
 }
 
-bool PlayerCar::drainShotEnergy() {
+void PlayerCar::drainShotEnergy() {
+    if (_InfiniteEnergy) {
+        return;
+    }
     if (_Energy - 5 >= 10) {
         _Energy -= 5;
-        return true;
     }
-    return false;
 }
 
 void PlayerCar::shoot() {
-    _ShotBullet = _Crosshair.getPosition() - getPosition();
-    _ShotBullet = rh::normalize(_ShotBullet);
-}
-
-sf::Vector2f PlayerCar::getShotBullet() {
-    sf::Vector2f tmp = _ShotBullet;
-    _ShotBullet = sf::Vector2f(0, 0);
-    return tmp;
+    _GOM.shootBullet(GameObjectType::BulletPlayer, getPosition(), _Crosshair.getPosition()-getPosition(), _GOM.getPlayerBulletSpeed());
+    drainShotEnergy();
 }
 
 void PlayerCar::addHealth() {

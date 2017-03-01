@@ -78,6 +78,8 @@ public:
 
     void previousPlayerCar();
 
+    void shootBullet(GameObjectType type, sf::Vector2f pos, sf::Vector2f dir, int speed);
+
     std::vector<std::shared_ptr<GameObject>> &getPickupItems() { return _PickupItems; }
 
     std::vector<std::shared_ptr<AICar>> &getCars() { return _Cars; }
@@ -94,6 +96,7 @@ public:
 
     float getToolboxFrequency() { return _ToolboxFrequency; }
 
+    int getPlayerBulletSpeed() { return _PlayerBulletSpeed; }
 private:
     std::vector<std::shared_ptr<GameObject>> _PickupItems;
     std::vector<std::shared_ptr<AICar>> _Cars;

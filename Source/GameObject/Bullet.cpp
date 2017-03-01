@@ -5,10 +5,10 @@ Bullet::Bullet(unsigned int id, GameObjectManager &gom, sf::Vector2f pos, sf::Ve
                GameObjectType type,
                sf::Texture &texture) : GameObject(id, gom, type, pos, texture, sf::IntRect(0, 0, 10, 10)) {
 
-    if (type == GameObjectType::BulletObjectPlayer) {
+    if (type == GameObjectType::BulletPlayer) {
         setSpriteColor(sf::Color(225, 0, 0));
 //        playShotSound(pos, soundEffects, soundBuffer, Volume * 4.f);
-    } else if (type == GameObjectType::BulletObjectBoss) {
+    } else if (type == GameObjectType::BulletBoss) {
         setSpriteColor(sf::Color(0, 45, 255));
 //        playShotSound(pos, soundEffects, soundBuffer, Volume * 4.f);
     } else {

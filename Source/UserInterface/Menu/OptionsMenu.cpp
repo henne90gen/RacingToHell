@@ -131,7 +131,7 @@ void OptionsMenu::handleEvent(sf::Event &event) {
 void OptionsMenu::update(float FrameTime) {
     // Update and center text
     _FpsSlider.setValue(_FW.getOptionsManager().getFPS());
-    _FPS.setString(rh::floatToString(_FW.getOptionsManager().getFPS(), 0));
+    _FPS.setString(rh::to_string(_FW.getOptionsManager().getFPS(), 0));
     _FPS.setPosition(sf::Vector2f(_FPSBackground.getPosition().x + _FPSBackground.getLocalBounds().width / 2.0f -
                                   _FPS.getLocalBounds().width / 2.0f,
                                   _FPSBackground.getPosition().y + _FPSBackground.getLocalBounds().height / 2.0f -
@@ -150,7 +150,7 @@ void OptionsMenu::update(float FrameTime) {
     // Get current multiplier
     float multiplier = _FW.getOptionsManager().getScoreMultiplier();
     _ScoreMultiplierText.setString(
-            "Score: x" + rh::floatToString(multiplier, 2));
+            "Score: x" + rh::to_string(multiplier, 2));
 
     // Update difficulty and GameMode
     _DifficultyCombo.setValue(_FW.getOptionsManager().getDifficulty());

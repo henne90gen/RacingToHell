@@ -16,7 +16,7 @@ public:
         @param texture Texture that is going to be used for the sprite
     */
     PlayerCar(unsigned int id, GameObjectManager &gom, PlayerCarIndex selectedCar, sf::Texture &texture,
-              sf::Texture &explosionTexture);
+              sf::Texture &explosionTexture, bool infEnergy);
 
 //    PlayerCar(sf::Packet &packet, std::vector<std::shared_ptr<sf::Texture>> &textures, sf::Texture &explosionTexture);
 
@@ -41,12 +41,6 @@ public:
         @param roadSpeed Speed of the road
     */
     void update(float frameTime);
-
-    /*
-        Gives back the direction of the shot bullet
-        @return sf::Vector2f Direction of bullet
-    */
-    sf::Vector2f getShotBullet();
 
     /*
         Adds 20 to the players health if possible
@@ -93,7 +87,7 @@ public:
     /*
         Must be called after player shot
      */
-    bool drainShotEnergy();
+    void drainShotEnergy();
 
     /*
         Fills up resources to its maximum
@@ -138,13 +132,11 @@ private:
     std::shared_ptr<Animation> _Animation;
 
     float _Energy;
+    bool _InfiniteEnergy;
     sf::Uint16 _MaxEnergy, _Bulletdamage;
     PlayerCarIndex _PlayerCarIndex;
 
-    sf::Vector2f _ShotBullet;
-
     sf::RectangleShape _AimLine;
-//	sf::Vector2f _CrosshairMovement;
     sf::Texture _CrosshairTexture;
     sf::Sprite _Crosshair;
     float _CrosshairSpeed;
@@ -155,16 +147,5 @@ private:
     float _AccelerationTime;
 
     sf::Uint8 _PressedKeys;
-
-//    template<typename T>
-//    float sgn(T x) {
-//        if (x < 0.0f) {
-//            return -1.0f;
-//        } else if (x > 0.0f) {
-//            return 1.0f;
-//        } else {
-//            return 0.0f;
-//        }
-//    }
 };
 

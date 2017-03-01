@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <GameObject/Boss/Action/BossAction.h>
 #include "GameObject/Boss/BossCar.h"
+#include "Framework/GameObjectManager.h"
 
 BossCar::BossCar(unsigned int id, GameObjectManager &gom, sf::Vector2f pos, int difficulty, int Health, float Speed,
                  sf::Texture &texture, sf::Texture &bulletTexture) :
@@ -184,14 +185,15 @@ void BossCar::initBoss() {
 void BossCar::update(float frameTime) {
 //    std::cout << "BossPos: " << _Position.x << ", " << _Position.y << " | " << _Actions.size() << std::endl;
 
+    bool doneExecuting = true;
     for (unsigned int i = 0; i < _Actions.size(); i++) {
         _Actions.at(i)->execute();
-        if (_Actions.at(i)->hasBeenExecuted()) {
-            rh::deleteObject(_Actions, i);
+        if (!_Actions.at(i)->hasBeenExecuted()) {
+            doneExecuting = false;
         }
     }
 
-    if (_Actions.size() == 0) {
+    if (doneExecuting) {
         updateActions();
     }
 
@@ -203,5 +205,5 @@ void BossCar::update(float frameTime) {
 }
 
 void BossCar::shootBullet(sf::Vector2f pos, sf::Vector2f dir) {
-    // FIXME use GOM to shoot bullet
+    _GOM.shootBullet(GameObjectType::BulletBoss, pos, dir, _BulletSpeed);
 }

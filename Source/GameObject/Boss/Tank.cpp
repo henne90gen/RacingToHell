@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include <GameObject/Boss/Action/MoveToPosition.h>
+#include <GameObject/Boss/Action/MoveLeftRight.h>
 #include "GameObject/Boss/Tank.h"
 #include "GameObject/Boss/Action/ShootAtPlayer.h"
+#include "GameObject/Boss/Action/TimerAction.h"
 
 
 Tank::Tank(unsigned int id, GameObjectManager &gom, int difficulty, int HP, sf::Texture &texture,
@@ -194,18 +196,37 @@ void Tank::init() {
 }
 
 void Tank::updateActions() {
+    std::cout << "Phase: " << _NextPhase << std::endl;
+    _Actions = std::vector<std::shared_ptr<BossAction>>();
     switch (_NextPhase) {
-        case 1: { // Move to the left
-            sf::Vector2f position = sf::Vector2f(getWidth() / 2 + 20, 150);
-            std::shared_ptr<MoveToPosition> action = std::make_shared<MoveToPosition>(*this, position);
-            _Actions.push_back(action);
+        case 1: { // Move left and right and shoot at player
+            sf::Vector2f leftPosition = sf::Vector2f(getWidth() / 2 + 20, 150);
+            sf::Vector2f rightPosition = sf::Vector2f(SCREENWIDTH - (getWidth() / 2 + 20), 150);
+            std::shared_ptr<MoveLeftRight> moveAction = std::make_shared<MoveLeftRight>(*this, leftPosition,
+                                                                                        rightPosition, 1);
+            std::vector<float> shotFrequencies = {0.5f, 0.05f, 0.05f};
+            std::vector<float> salveAngles = {0};
+            std::shared_ptr<ShootAtPlayer> shootAction = std::make_shared<ShootAtPlayer>(*this, moveAction,
+                                                                                         shotFrequencies,
+                                                                                         salveAngles);
+
+//            std::shared_ptr<ShootAtPlayer> shootAction = std::make_shared<ShootAtPlayer>(*this, nullptr,
+//                                                                                         shotFrequencies,
+//                                                                                         salveAngles);
+            _Actions.push_back(moveAction);
+            _Actions.push_back(shootAction);
             break;
         }
-        case 2: { // Move to the right
-            sf::Vector2f position = sf::Vector2f(SCREENWIDTH - (getWidth() / 2 + 20), 150);
-            std::shared_ptr<MoveToPosition> moveAction = std::make_shared<MoveToPosition>(*this, position);
-            std::shared_ptr<ShootAtPlayer> shootAction = std::make_shared<ShootAtPlayer>(*this);
+        case 2: {
+            std::shared_ptr<MoveToPosition> moveAction = std::make_shared<MoveToPosition>(*this, _DefaultPosition);
+            std::shared_ptr<TimerAction> timerAction = std::make_shared<TimerAction>(*this, 10.0f);
+            std::vector<float> shotFrequencies = {0.5f, 0.05f, 0.05f};
+            std::vector<float> salveAngles = {-PI / 8, -PI / 16, 0, PI / 16, PI / 8};
+            std::shared_ptr<ShootAtPlayer> shootAction = std::make_shared<ShootAtPlayer>(*this, timerAction,
+                                                                                         shotFrequencies,
+                                                                                         salveAngles);
             _Actions.push_back(moveAction);
+            _Actions.push_back(timerAction);
             _Actions.push_back(shootAction);
             break;
         }

@@ -23,7 +23,8 @@ public:
         @param carSkin Index of the car texture
     */
     static std::shared_ptr<PlayerCar>
-    getPlayerCar(GameObjectManager &gom, PlayerCarIndex carSkin, sf::Texture &explosionTexture);
+    getPlayerCar(GameObjectManager &gom, PlayerCarIndex carSkin, sf::Texture &explosionTexture,
+                     bool infEnergy);
 
     /*
         @param level

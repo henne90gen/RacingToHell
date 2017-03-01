@@ -41,7 +41,16 @@
 namespace rh {
     bool file_exists(const std::string &name);
 
-    std::string floatToString(float value, unsigned int precision);
+    template<typename T>
+    std::string to_string(T obj) {
+        return std::to_string(obj);
+    }
+
+    std::string to_string(float value, unsigned int precision);
+
+    std::string to_string(sf::Vector2f vec);
+
+    float round(float value, int precision);
 
     void centerText(sf::Text &text);
 
@@ -49,10 +58,14 @@ namespace rh {
 
     /**
      * Calculates the angle a vector is at
-     * @param vec Vector whoms angle is going to be calculated
+     * @param vec Vector whom's angle is going to be calculated
      * @return float Angle in degrees
      */
     float getAngleFromVector(sf::Vector2f vec);
+
+    sf::Vector2f getVectorFromAngle(float angle);
+
+    sf::Vector2f rotateVector(sf::Vector2f vec, float angle);
 
     /**
      * Divides a vector by it's length, basically providing the normalized vector

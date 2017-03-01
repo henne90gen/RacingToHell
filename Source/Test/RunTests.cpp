@@ -5,9 +5,9 @@
 #include <Test/BossActionTest.h>
 
 int main() {
-//    HelperTest();
+    HelperTest();
 //    PlayerScoreTest();
 //    HighscoreManagerTest();
-    BossActionTest();
+//    BossActionTest();
     return 0;
 }

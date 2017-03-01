@@ -12,10 +12,20 @@ bool rh::file_exists(const std::string &name) {
     return false;
 }
 
-std::string rh::floatToString(float value, unsigned int precision) {
+std::string rh::to_string(float value, unsigned int precision) {
     std::stringstream ss;
     ss << std::fixed << std::setprecision(precision) << value;
     return ss.str();
+}
+
+std::string rh::to_string(sf::Vector2f vec) {
+    std::string result = "";
+    result += "(";
+    result += rh::to_string(vec.x);
+    result += "|";
+    result += rh::to_string(vec.y);
+    result += ")";
+    return result;
 }
 
 void rh::centerText(sf::Text &text) {
@@ -35,10 +45,31 @@ float rh::getAngleFromVector(sf::Vector2f vec) {
     return angle;
 }
 
+sf::Vector2f rh::getVectorFromAngle(float angle) {
+    sf::Vector2f vec(0, 0);
+    vec.x = rh::round(std::cos(angle), 3);
+    vec.y = rh::round(std::sin(angle), 3);
+    return normalize(vec);
+}
+
 sf::Vector2f rh::normalize(sf::Vector2f vec) {
-    return vec / (float) (vectorLength(vec));
+    return vec / vectorLength(vec);
 }
 
 float rh::vectorLength(sf::Vector2f vec) {
     return std::sqrt(std::pow(vec.x, 2) + std::pow(vec.y, 2));
+}
+
+float rh::round(float value, int precision) {
+    double precisionFactor = std::pow(10.0, precision);
+    value *= precisionFactor;
+    int tmp = (int) value;
+    value = (float) tmp / (float) precisionFactor;
+    return value;
+}
+
+sf::Vector2f rh::rotateVector(sf::Vector2f vec, float angle) {
+    vec.x = vec.x * std::cos(angle) - vec.y * std::sin(angle);
+    vec.y = vec.x * std::sin(angle) + vec.y * std::cos(angle);
+    return vec;
 }

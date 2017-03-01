@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "stdafx.h"
@@ -21,9 +20,9 @@ protected:
     template<typename T>
     void assertEqual(T expected, T actual) {
         std::string msg = "Expected '";
-        msg += std::to_string(expected);
+        msg += rh::to_string(expected);
         msg += "', got '";
-        msg += std::to_string(actual);
+        msg += rh::to_string(actual);
         msg += "' instead.";
         assertEqual(msg, expected, actual);
     }

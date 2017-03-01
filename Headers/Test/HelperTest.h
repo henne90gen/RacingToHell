@@ -8,5 +8,9 @@ public:
 
     void testNormalize();
     void testLength();
+
+    void testVectorFromAngle();
+
+    void testRound();
 };
 

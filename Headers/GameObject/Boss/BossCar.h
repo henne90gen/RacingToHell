@@ -72,6 +72,12 @@ public:
 
     virtual void updateActions() = 0;
 
+    void shootBullet(sf::Vector2f pos, sf::Vector2f dir);
+
+    void addAction(std::shared_ptr<BossAction> action) { _Actions.push_back(action); }
+
+    GameObjectManager &getGOM() { return _GOM; }
+
 protected:
 //    enum Phase {
 //        NOTHING,
@@ -131,8 +137,6 @@ protected:
     bool _Attack, _HasTraffic;
 
     float playerAngle(GameObject &Player);
-
-    void shootBullet(sf::Vector2f pos, sf::Vector2f dir);
 
     bool driveToNextPosition(float FrameTime);
 

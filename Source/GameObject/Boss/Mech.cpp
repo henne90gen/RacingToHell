@@ -1,20 +1,22 @@
 #include "stdafx.h"
 #include "GameObject/Boss/Mech.h"
 
-Mech::Mech(unsigned int id, int difficulty, int HP, sf::Texture &textureTop, sf::Texture &textureLegs,
-           sf::Texture &bulletTexture) :
-        BossCar(id, sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), difficulty, HP, 100, textureTop, bulletTexture),
+Mech::Mech(unsigned int id, GameObjectManager &gom, int difficulty, int HP, sf::Texture &textureTop,
+           sf::Texture &textureLegs, sf::Texture &bulletTexture) :
+        BossCar(id, gom, sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), difficulty, HP, 100, textureTop,
+                bulletTexture),
         _TopAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureTop),
         _LegsAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureLegs), _MovementSwitch(false) {
     init();
 }
 
-Mech::Mech(sf::Packet &packet, sf::Texture &textureTop, sf::Texture &textureLegs, sf::Texture &bulletTexture) :
-        BossCar(packet, textureTop, bulletTexture),
-        _TopAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureTop),
-        _LegsAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureLegs), _MovementSwitch(false) {
-    init();
-}
+//Mech::Mech(sf::Packet &packet, sf::Texture &textureTop, sf::Texture &textureLegs, sf::Texture &bulletTexture,
+//           PlayerCar &player) :
+//        BossCar(packet, textureTop, bulletTexture, player),
+//        _TopAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureTop),
+//        _LegsAnim(sf::Vector2f(SCREENWIDTH / 2, SCREENHEIGHT + 100), textureLegs), _MovementSwitch(false) {
+//    init();
+//}
 
 void Mech::render(sf::RenderWindow &window) {
     _LegsAnim.render(window);
@@ -26,7 +28,7 @@ void Mech::render(sf::RenderWindow &window) {
     renderExplosions(window);
 }
 
-void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bullet>> &bullets, PlayerCar &player) {
+void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bullet>> &bullets) {
     Car::update(frameTime);
 
     float gunPosLength = std::sqrt(std::pow(_GunPosition.x, 2) + std::pow(_GunPosition.y, 2));
@@ -257,11 +259,6 @@ void Mech::init() {
 //            std::make_pair(Phase::ZICKZACKPHASE, 0.25f), std::make_pair(Phase::SALVEZICKZACK, 3.0f),
 //            std::make_pair(Phase::NOTHING, 0.75f)
 //    };
-}
-
-void
-Mech::shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed) {
-    bullets.push_back(GameObjectFactory::getBullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss));
 }
 
 std::pair<sf::Vector2f, sf::Vector2f> Mech::calcGunPositions() {

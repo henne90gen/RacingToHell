@@ -12,10 +12,11 @@ public:
         @param texture Texture for the sprite
         @param bulletTexture Texture for all bullets the Mech shoots
     */
-    Mech(unsigned int id, int difficulty, int HP, sf::Texture &textureTop, sf::Texture &textureLegs,
+    Mech(unsigned int id, GameObjectManager &gom, int difficulty, int HP, sf::Texture &textureTop,
+         sf::Texture &textureLegs,
          sf::Texture &bulletTexture);
 
-    Mech(sf::Packet &packet, sf::Texture &textureTop, sf::Texture &textureLegs, sf::Texture &bulletTexture);
+//    Mech(sf::Packet &packet, sf::Texture &textureTop, sf::Texture &textureLegs, sf::Texture &bulletTexture, PlayerCar &player);
 
     ~Mech() {}
 
@@ -27,7 +28,7 @@ public:
     /*
         See BossCar for details
     */
-    void update(float FrameTime, int RoadSpeed, std::vector<std::shared_ptr<Bullet>> &bullets, PlayerCar &player);
+    void update(float FrameTime, int RoadSpeed, std::vector<std::shared_ptr<Bullet>> &bullets);
 
     /*
         Overriding setPos() of GameObject
@@ -62,12 +63,11 @@ public:
 
     void init();
 
+    void updateActions() {}
+
 private:
     MechTop _TopAnim;
     MechLegs _LegsAnim;
-
-    void
-    shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed);
 
     bool _MovementSwitch;
 

@@ -1,18 +1,19 @@
 #include "stdafx.h"
 #include "GameObject/Boss/Jet.h"
 
-Jet::Jet(unsigned int id, int difficulty, int HP, sf::Texture &texture, sf::Texture &bulletTexture,
+Jet::Jet(unsigned int id, GameObjectManager &gom, int difficulty, int HP, sf::Texture &texture,
+         sf::Texture &bulletTexture,
          sf::SoundBuffer &soundBufferEngine) :
-        BossCar(id, sf::Vector2f(-1 * texture.getSize().x, SCREENHEIGHT / 2), difficulty, HP, 500, texture,
+        BossCar(id, gom, sf::Vector2f(-1 * texture.getSize().x, SCREENHEIGHT / 2), difficulty, HP, 500, texture,
                 bulletTexture),
         _EngineSoundBuffer(soundBufferEngine) {
     init();
 }
 
-Jet::Jet(sf::Packet &packet, sf::Texture &texture, sf::Texture &bulletTexture, sf::SoundBuffer &soundBufferEngine) :
-        BossCar(packet, texture, bulletTexture) {
-    init();
-}
+//Jet::Jet(sf::Packet &packet, sf::Texture &texture, sf::Texture &bulletTexture, sf::SoundBuffer &soundBufferEngine, PlayerCar &player) :
+//        BossCar(packet, texture, bulletTexture, player) {
+//    init();
+//}
 
 void Jet::render(sf::RenderWindow &window) {
     window.draw(getSprite());
@@ -23,7 +24,7 @@ void Jet::render(sf::RenderWindow &window) {
     renderExplosions(window);
 }
 
-void Jet::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bullet>> &bullets, PlayerCar &player) {
+void Jet::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bullet>> &bullets) {
     Car::update(frameTime);
 
 //    if (!_IsExploding) {
@@ -96,11 +97,6 @@ void Jet::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bul
 //    } else {
 //        updateExplosions(frameTime);
 //    }
-}
-
-void
-Jet::shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed) {
-    bullets.push_back(GameObjectFactory::getBullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss));
 }
 
 void Jet::randomPosition() {

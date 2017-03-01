@@ -11,9 +11,10 @@ public:
         @param roadSpeed Speed of the road
         @param texture Texture that is going to be used for the sprite
     */
-    AICar(unsigned int id, int hp, int roadSpeed, sf::Texture &texture, sf::IntRect textureRect);
+    AICar(unsigned int id, GameObjectManager &gom, int hp, int roadSpeed, sf::Texture &texture,
+          sf::IntRect textureRect);
 
-    AICar(sf::Packet &packet, sf::Texture &texture, sf::IntRect textureRect);
+//    AICar(sf::Packet &packet, sf::Texture &texture, sf::IntRect textureRect);
 
     ~AICar() {}
 

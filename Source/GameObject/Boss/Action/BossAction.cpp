@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "GameObject/Boss/Action/BossAction.h"
 
-BossAction::BossAction(std::function<void()> action) : _Action(action), _Executed(false) {}
+BossAction::BossAction(BossCar &boss, std::function<void()> action) : _Action(action), _Executed(false), _Boss(boss) {}
 
 void BossAction::execute()  {
     std::cout << "Executing action" << std::endl;

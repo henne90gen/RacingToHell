@@ -341,15 +341,15 @@ void MPGameObjectContainer::handleIncomingPackets() {
                     sf::Uint8 PlayerNumber;
                     p >> PlayerNumber;
 
-                    if (PlayerNumber == 1) {
-                        _Bullets.push_back(
-                                GameObjectFactory::getBullet(p, _Player1->getPosition(), GameObjectType::BulletObjectPlayer,
-                                                             _CurrentID++, _PlayerBulletSpeed));
-                    } else {
-                        _Bullets.push_back(
-                                GameObjectFactory::getBullet(p, _Player2->getPosition(), GameObjectType::BulletObjectPlayer,
-                                                             _CurrentID++, _PlayerBulletSpeed));
-                    }
+//                    if (PlayerNumber == 1) {
+//                        _Bullets.push_back(
+//                                GameObjectFactory::getBullet(p, _Player1->getPosition(), GameObjectType::BulletObjectPlayer,
+//                                                             _CurrentID++, _PlayerBulletSpeed));
+//                    } else {
+//                        _Bullets.push_back(
+//                                GameObjectFactory::getBullet(p, _Player2->getPosition(), GameObjectType::BulletObjectPlayer,
+//                                                             _CurrentID++, _PlayerBulletSpeed));
+//                    }
 
                     Packets.erase(Packets.begin() + i);
                     i--;
@@ -491,8 +491,8 @@ bool MPGameObjectContainer::bossIsDead() {
 }
 
 void MPGameObjectContainer::enterBossFight() {
-    _GameObjects.push_back(GameObjectFactory::getBossCar((_Level - 1) % 4, _Difficulty, getBossHP()));
-    _BossFight = true;
+//    _GameObjects.push_back(GameObjectFactory::getBossCar((_Level - 1) % 4, _Difficulty, getBossHP(), *_Player1));
+//    _BossFight = true;
 }
 
 void MPGameObjectContainer::resetGameObjects(int SelectedCar) {
@@ -540,7 +540,7 @@ void MPGameObjectContainer::load() {
 }
 
 void MPGameObjectContainer::spawnAICar(int roadSpeed, NetworkHandle &network) {
-    std::shared_ptr<AICar> newAiCar = GameObjectFactory::getAICar(getAiHP(), roadSpeed);
+//    std::shared_ptr<AICar> newAiCar = GameObjectFactory::getAICar(getAiHP(), roadSpeed);
 
     for (unsigned int i = 1; i < _GameObjects.size(); i++) {
         if (_GameObjects.at(i)->getType() == GameObjectType::AI) {
@@ -551,7 +551,7 @@ void MPGameObjectContainer::spawnAICar(int roadSpeed, NetworkHandle &network) {
         }
     }
 
-    addGameObject(newAiCar, network);
+//    addGameObject(newAiCar, network);
 }
 
 void MPGameObjectContainer::spawnBullet() {
@@ -572,8 +572,8 @@ void MPGameObjectContainer::spawnBullet() {
 
     sf::Vector2f dir = rh::normalize(getPlayerCar().getPosition() - SelectedCar->getPosition());
 
-    _GameObjects.push_back(
-            GameObjectFactory::getBullet(SelectedCar->getPosition(), dir, _AIBulletSpeed, GameObjectType::BulletObjectAI));
+//    _GameObjects.push_back(
+//            GameObjectFactory::getBullet(SelectedCar->getPosition(), dir, _AIBulletSpeed, GameObjectType::BulletObjectAI));
 }
 
 bool MPGameObjectContainer::playerIsAlive() {

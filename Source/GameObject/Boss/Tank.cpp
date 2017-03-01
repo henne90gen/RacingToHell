@@ -1,19 +1,22 @@
 #include "stdafx.h"
+#include <GameObject/Boss/Action/MoveToPosition.h>
 #include "GameObject/Boss/Tank.h"
+#include "GameObject/Boss/Action/ShootAtPlayer.h"
 
 
-Tank::Tank(unsigned int id, int difficulty, int HP, sf::Texture &texture, sf::Texture &bulletTexture) :
-        BossCar(id, sf::Vector2f(SCREENWIDTH / 2, -1 * (float) texture.getSize().y / 2.0f), difficulty, HP, 200,
-                texture, bulletTexture),
-        _MovementSwitch(false) {
+Tank::Tank(unsigned int id, GameObjectManager &gom, int difficulty, int HP, sf::Texture &texture,
+           sf::Texture &bulletTexture) : BossCar(id, gom,
+                                                 sf::Vector2f(SCREENWIDTH / 2, -1 * (float) texture.getSize().y / 2.0f),
+                                                 difficulty, HP, 200, texture, bulletTexture),
+                                         _MovementSwitch(false) {
     init();
 }
 
-Tank::Tank(sf::Packet &packet, sf::Texture &texture, sf::Texture &bulletTexture) :
-        BossCar(packet, texture, bulletTexture),
-        _MovementSwitch(false) {
-    init();
-}
+//Tank::Tank(sf::Packet &packet, sf::Texture &texture, sf::Texture &bulletTexture, PlayerCar &player) :
+//        BossCar(packet, texture, bulletTexture, player),
+//        _MovementSwitch(false) {
+//    init();
+//}
 
 void Tank::render(sf::RenderWindow &window) {
     window.draw(getSprite());
@@ -25,7 +28,7 @@ void Tank::render(sf::RenderWindow &window) {
     renderExplosions(window);
 }
 
-void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bullet>> &bullets, PlayerCar &player) {
+void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bullet>> &bullets) {
 
 
     BossCar::update(frameTime);
@@ -168,12 +171,6 @@ void Tank::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bu
 //    }
 //}
 
-void
-Tank::shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed) {
-    bullets.push_back(
-            GameObjectFactory::getBullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss));
-}
-
 void Tank::init() {
     _GunTexture.loadFromFile("Resources/Texture/BossCar/CannonTank.png");
     _GunSprite.setTexture(_GunTexture);
@@ -184,11 +181,40 @@ void Tank::init() {
     _GunLength = _GunSprite.getLocalBounds().height - 50;
 
     _DefaultPosition = sf::Vector2f(SCREENWIDTH / 2, 150);
-    _NextPosition = _DefaultPosition;
+//    _NextPosition = _DefaultPosition;
+
+    _NextPhase = 0;
+    updateActions();
 
 //    _MovementCommand = Movement::DRIVETODEFAULT;
 //    _Pattern = {std::make_pair(Phase::SIMPLESHOOT, 4.0f), std::make_pair(Phase::NOTHING, 0.75f),
 //                std::make_pair(Phase::SPIN, 10.0f), std::make_pair(Phase::NOTHING, 0.75f),
 //                std::make_pair(Phase::SALVE, 10.0f), std::make_pair(Phase::NOTHING, 0.75f),
 //                std::make_pair(Phase::HARDCORESPAM, 6.0f), std::make_pair(Phase::NOTHING, 0.75f)};
+}
+
+void Tank::updateActions() {
+    switch (_NextPhase) {
+        case 1: { // Move to the left
+            sf::Vector2f position = sf::Vector2f(getWidth() / 2 + 20, 150);
+            std::shared_ptr<MoveToPosition> action = std::make_shared<MoveToPosition>(*this, position);
+            _Actions.push_back(action);
+            break;
+        }
+        case 2: { // Move to the right
+            sf::Vector2f position = sf::Vector2f(SCREENWIDTH - (getWidth() / 2 + 20), 150);
+            std::shared_ptr<MoveToPosition> moveAction = std::make_shared<MoveToPosition>(*this, position);
+            std::shared_ptr<ShootAtPlayer> shootAction = std::make_shared<ShootAtPlayer>(*this);
+            _Actions.push_back(moveAction);
+            _Actions.push_back(shootAction);
+            break;
+        }
+        default: {
+            std::shared_ptr<MoveToPosition> action = std::make_shared<MoveToPosition>(*this, _DefaultPosition);
+            _Actions.push_back(action);
+            _NextPhase = 0;
+            break;
+        }
+    }
+    _NextPhase++;
 }

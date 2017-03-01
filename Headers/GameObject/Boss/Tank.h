@@ -1,32 +1,34 @@
 #pragma once
+
 #include "GameObject/Boss/BossCar.h"
 #include "GameObject/GameObjectFactory.h"
 
-class Tank : public BossCar
-{
+class Tank : public BossCar {
 public:
-	/*
-		Tank boss
-		@param texture Texture for the sprite
-		@param bulletTexture Texture for all bullets the tank shoots
-	*/
-    Tank(unsigned int id, int difficulty, int HP, sf::Texture &Texture, sf::Texture &BulletTexture);
+    /*
+        Tank boss
+        @param texture Texture for the sprite
+        @param bulletTexture Texture for all bullets the tank shoots
+    */
+    Tank(unsigned int id, GameObjectManager &gom, int difficulty, int HP, sf::Texture &Texture,
+         sf::Texture &BulletTexture);
 
-    Tank(sf::Packet &packet, sf::Texture &Texture, sf::Texture &BulletTexture);
-	~Tank() {}
+//    Tank(sf::Packet &packet, sf::Texture &Texture, sf::Texture &BulletTexture, PlayerCar &player);
 
-	void render(sf::RenderWindow& RenderWindow);
+    ~Tank() {}
 
-	void update(float FrameTime, int RoadSpeed, std::vector<std::shared_ptr<Bullet>>& bullets, PlayerCar& player);
+    void render(sf::RenderWindow &RenderWindow);
 
-	void init();
+    void update(float FrameTime, int RoadSpeed, std::vector<std::shared_ptr<Bullet>> &bullets);
+
+    void init();
+
+    void updateActions();
+
 private:
-	sf::Texture _GunTexture;
-	sf::Sprite _GunSprite;
+    sf::Texture _GunTexture;
+    sf::Sprite _GunSprite;
 
-	virtual void
-	shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir, int BulletSpeed);
-
-	bool _MovementSwitch;
+    bool _MovementSwitch;
 };
 

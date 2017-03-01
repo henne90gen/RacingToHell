@@ -1,18 +1,19 @@
 #include "stdafx.h"
 #include "GameObject/Boss/Carrier.h"
 
-Carrier::Carrier(unsigned int id, int difficulty, int HP, sf::Texture &texture, sf::Texture &bulletTexture) :
-        BossCar(id, sf::Vector2f(SCREENWIDTH / 2, -1 * (float) texture.getSize().y / 2.0f), difficulty, HP, 2000,
+Carrier::Carrier(unsigned int id, GameObjectManager &gom, int difficulty, int HP, sf::Texture &texture,
+                 sf::Texture &bulletTexture) :
+        BossCar(id, gom, sf::Vector2f(SCREENWIDTH / 2, -1 * (float) texture.getSize().y / 2.0f), difficulty, HP, 2000,
                 texture, bulletTexture),
         _MovementSwitchLeftRight(false), _MovementSwitchUpDown(false), _Radius(50), _SwitchSideTime(8.0f),
         _SwitchSides(false) {
     init();
 }
 
-Carrier::Carrier(sf::Packet &packet, sf::Texture &texture, sf::Texture &bulletTexture) :
-        BossCar(packet, texture, bulletTexture) {
-    init();
-}
+//Carrier::Carrier(sf::Packet &packet, sf::Texture &texture, sf::Texture &bulletTexture, PlayerCar &player) :
+//        BossCar(packet, texture, bulletTexture, player) {
+//    init();
+//}
 
 void Carrier::render(sf::RenderWindow &window) {
     window.draw(getSprite());
@@ -42,7 +43,7 @@ void Carrier::init() {
 //                std::make_pair(Phase::HARDCORESPAM, 7.0f), std::make_pair(Phase::NOTHING, 1.5f)};
 }
 
-void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bullet>> &bullets, PlayerCar &player) {
+void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bullet>> &bullets) {
     Car::update(frameTime);
 
 //    if (!_IsExploding) {
@@ -206,13 +207,6 @@ void Carrier::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr
 //    } else {
 //        updateExplosions(frameTime);
 //    }
-}
-
-void
-Carrier::shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir,
-                     int bulletSpeed) {
-    bullets.push_back(
-            GameObjectFactory::getBullet(pos, dir, bulletSpeed, GameObjectType::BulletObjectBoss));
 }
 
 void Carrier::checkPhase() {

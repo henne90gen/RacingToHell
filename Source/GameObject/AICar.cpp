@@ -2,19 +2,20 @@
 #include "GameObject/AICar.h"
 
 
-AICar::AICar(unsigned int id, int hp, int roadSpeed, sf::Texture &texture, sf::IntRect textureRect) :
-		Car(id, sf::Vector2f(0, 0), hp, std::rand() % (roadSpeed / 3) + roadSpeed / 3,
+AICar::AICar(unsigned int id, GameObjectManager &gom, int hp, int roadSpeed, sf::Texture &texture,
+             sf::IntRect textureRect) :
+        Car(id, gom, sf::Vector2f(0, 0), hp, std::rand() % (roadSpeed / 3) + roadSpeed / 3,
 			GameObjectType::AI, texture, textureRect) {
     _Lane = (sf::Uint8) (std::rand() % 4);
     init();
     getSprite().setColor(sf::Color::White);
 }
 
-AICar::AICar(sf::Packet &packet, sf::Texture &texture, sf::IntRect textureRect) :
-        Car(packet, GameObjectType::AI, texture, textureRect) {
-    AICar::operator<<(packet);
-    init();
-}
+//AICar::AICar(sf::Packet &packet, sf::Texture &texture, sf::IntRect textureRect) :
+//        Car(packet, GameObjectType::AI, texture, textureRect) {
+//    AICar::operator<<(packet);
+//    init();
+//}
 
 void AICar::update(float frameTime, float roadSpeed) {
 	// TODO change this to use _Movement

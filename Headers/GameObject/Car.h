@@ -9,7 +9,7 @@
 class Car : public GameObject {
 public:
 
-    Car() {}
+    Car(GameObjectManager &gom) : GameObject(gom) {}
 
     /*
         Car that can drive around on the road
@@ -19,8 +19,8 @@ public:
         @param type Type of the Car
         @param texture Texture that is going to be used for the sprite
     */
-    Car(unsigned int id, sf::Vector2f pos, int maxHealth, float speed, GameObjectType type, sf::Texture &texture,
-        sf::IntRect textureRect);
+    Car(unsigned int id, GameObjectManager &gom, sf::Vector2f pos, int maxHealth, float speed, GameObjectType type,
+        sf::Texture &texture, sf::IntRect textureRect);
 
     /*
         Car that can drive around on the road
@@ -28,10 +28,12 @@ public:
         @param type Type of the Car
         @param texture Texture that is going to be used for the sprite
     */
-    Car(sf::Packet &packet, GameObjectType type, sf::Texture &texture, sf::IntRect textureRect) : GameObject(packet,
-                                                                                                             type,
-                                                                                                             texture,
-                                                                                                             textureRect) {}
+//    Car(sf::Packet &packet, GameObjectManager &gom, GameObjectType type, sf::Texture &texture, sf::IntRect textureRect)
+//            : GameObject(packet,
+//                         gom,
+//                         type,
+//                         texture,
+//                         textureRect) {}
 
     /*
         Car that can drive around on the road
@@ -40,7 +42,7 @@ public:
         @param stream Input stream that contains all the other information needed to make a Car
         @param type Type of the Car
     */
-    Car(sf::Packet &packet, GameObjectType type) : GameObject(packet, type) {}
+//    Car(sf::Packet &packet, GameObjectManager &gom, GameObjectType type) : GameObject(packet, gom, type) {}
 
     /*
         Handles events for Car

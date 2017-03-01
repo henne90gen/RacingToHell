@@ -15,9 +15,10 @@ public:
         @param selectedCar Index of the selected car to set the stats
         @param texture Texture that is going to be used for the sprite
     */
-    PlayerCar(unsigned int id, PlayerCarIndex selectedCar, sf::Texture &texture, sf::Texture &explosionTexture);
+    PlayerCar(unsigned int id, GameObjectManager &gom, PlayerCarIndex selectedCar, sf::Texture &texture,
+              sf::Texture &explosionTexture);
 
-    PlayerCar(sf::Packet &packet, std::vector<std::shared_ptr<sf::Texture>> &textures, sf::Texture &explosionTexture);
+//    PlayerCar(sf::Packet &packet, std::vector<std::shared_ptr<sf::Texture>> &textures, sf::Texture &explosionTexture);
 
     ~PlayerCar() {}
 

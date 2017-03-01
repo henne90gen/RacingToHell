@@ -4,9 +4,11 @@
 #include "Collision.h"
 #include "Serializable.h"
 
+class GameObjectManager;
+
 class GameObject : public Serializable {
 public:
-    GameObject() {}
+    GameObject(GameObjectManager &gom) : _GOM(gom) {}
 
     /**
      * Any object that can be on the screen
@@ -14,7 +16,8 @@ public:
      * @param type Type of the GameObject
      * @param texture Texture that is going to be used for the Sprite
      */
-    GameObject(unsigned int id, GameObjectType type, sf::Vector2f pos, sf::Texture &texture, sf::IntRect textureRect);
+    GameObject(unsigned int id, GameObjectManager &gom, GameObjectType type, sf::Vector2f pos, sf::Texture &texture,
+               sf::IntRect textureRect);
 
     /**
      * Any object that can be on the screen
@@ -22,7 +25,7 @@ public:
      * @param type Type of the GameObject
      * @param texture Texture that is going to be used for the Sprite
      */
-    GameObject(sf::Packet &packet, GameObjectType type, sf::Texture &texture, sf::IntRect textureRect);
+//    GameObject(sf::Packet &packet, GameObjectManager &gom, GameObjectType type, sf::Texture &texture, sf::IntRect textureRect);
 
     /**
      * Any object that can be on the screen
@@ -31,7 +34,7 @@ public:
      * @param stream Input stream that contains all the other information needed to make a GameObject
      * @param type Type of the GameObject
      */
-    GameObject(sf::Packet &packet, GameObjectType type);
+//    GameObject(sf::Packet &packet, GameObjectManager &gom, GameObjectType type);
 
     ~GameObject() {}
 
@@ -138,6 +141,7 @@ protected:
     sf::Uint32 _ID;
     GameObjectType _Type;
     sf::Vector2f _Position, _Movement;
+    GameObjectManager &_GOM;
 private:
     sf::Sprite _Sprite;
     sf::Texture _Texture;

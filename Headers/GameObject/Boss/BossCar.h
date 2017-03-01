@@ -17,10 +17,11 @@ public:
      * @param texture			Texture for the sprite that is going to be used for collision detection
      * @param bulletTexture	Texture for the bullets the boss will shoot
      */
-    BossCar(unsigned int id, sf::Vector2f pos, int difficulty, int health, float speed, sf::Texture &texture,
+    BossCar(unsigned int id, GameObjectManager &gom, sf::Vector2f pos, int difficulty, int health, float speed,
+            sf::Texture &texture,
             sf::Texture &bulletTexture);
 
-    BossCar(sf::Packet &packet, sf::Texture &texture, sf::Texture &bulletTexture);
+//    BossCar(sf::Packet &packet, sf::Texture &texture, sf::Texture &bulletTexture, PlayerCar &player);
 
     virtual ~BossCar() {}
 
@@ -36,8 +37,8 @@ public:
      * @param roadSpeed Velocity of the road
      * @param gameObjects Reference to the vector with all the game objects, so that the boss can add the bullets it shoots
      */
-    virtual void
-    update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bullet>> &bullets, PlayerCar &player) = 0;
+    // FIXME consolidate into single update function
+    virtual void update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bullet>> &bullets) = 0;
 
     virtual void update(float frameTime);
 
@@ -69,6 +70,8 @@ public:
 
     void initBoss();
 
+    virtual void updateActions() = 0;
+
 protected:
 //    enum Phase {
 //        NOTHING,
@@ -99,6 +102,7 @@ protected:
 //    Movement _MovementCommand;
 
     std::vector<std::shared_ptr<BossAction>> _Actions;
+    unsigned int _NextPhase;
 
     sf::Vector2f _GunPosition;
     sf::Vector2f _GunOrientation;
@@ -128,12 +132,7 @@ protected:
 
     float playerAngle(GameObject &Player);
 
-    void shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir) {
-        shootBullet(bullets, pos, dir, _BulletSpeed);
-    }
-
-    virtual void
-    shootBullet(std::vector<std::shared_ptr<Bullet>> &bullets, sf::Vector2f pos, sf::Vector2f dir, int bulletSpeed) = 0;
+    void shootBullet(sf::Vector2f pos, sf::Vector2f dir);
 
     bool driveToNextPosition(float FrameTime);
 

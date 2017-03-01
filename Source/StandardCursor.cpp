@@ -34,7 +34,7 @@ void sf::StandardCursor::set(const sf::WindowHandle& aWindowHandle) const {
 
 sf::StandardCursor::StandardCursor(const sf::StandardCursor::TYPE t) {
 //    display = XOpenDisplay(NULL);
-
+//
 //    switch (t) {
 //        case sf::StandardCursor::WAIT:
 //            Cursor = XCreateFontCursor(display, XC_watch);
@@ -53,7 +53,7 @@ sf::StandardCursor::StandardCursor(const sf::StandardCursor::TYPE t) {
 //    }
 }
 
-void sf::StandardCursor::set(const sf::WindowHandle &aWindowHandle) {
+void sf::StandardCursor::set(const sf::WindowHandle &aWindowHandle) const {
 //    XDefineCursor(display, aWindowHandle, Cursor);
 //    XFlush(display);
 }

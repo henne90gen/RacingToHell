@@ -2,8 +2,9 @@
 #include "GameObject/PlayerCar.h"
 
 
-PlayerCar::PlayerCar(unsigned int id, PlayerCarIndex selectedCar, sf::Texture &texture, sf::Texture &explosionTexture) :
-        Car(id, sf::Vector2f(0, 0), 100, 500, GameObjectType::Player, texture,
+PlayerCar::PlayerCar(unsigned int id, GameObjectManager &gom, PlayerCarIndex selectedCar, sf::Texture &texture,
+                     sf::Texture &explosionTexture) :
+        Car(id, gom, sf::Vector2f(0, 0), 100, 500, GameObjectType::Player, texture,
             sf::IntRect(0, 0, texture.getSize().x, texture.getSize().y)),
         _CrosshairSpeed(600.0f), _PlayerCarIndex(selectedCar), _AccelerationTime(0.1f),
         _ExplosionTexture(explosionTexture) {
@@ -26,13 +27,13 @@ PlayerCar::PlayerCar(unsigned int id, PlayerCarIndex selectedCar, sf::Texture &t
     sf::Listener::setDirection(0.f, 0.f, -1.f);
 }
 
-PlayerCar::PlayerCar(sf::Packet &packet, std::vector<std::shared_ptr<sf::Texture>> &textures,
-                     sf::Texture &explosionTexture) :
-        Car(packet, GameObjectType::Player), _ExplosionTexture(explosionTexture) {
-    PlayerCar::operator<<(packet);
-    setStats(_PlayerCarIndex);
-    initTexture(*textures.at((int) _PlayerCarIndex), sf::IntRect());
-}
+//PlayerCar::PlayerCar(sf::Packet &packet, std::vector<std::shared_ptr<sf::Texture>> &textures,
+//                     sf::Texture &explosionTexture) :
+//        Car(packet, GameObjectType::Player), _ExplosionTexture(explosionTexture) {
+//    PlayerCar::operator<<(packet);
+//    setStats(_PlayerCarIndex);
+//    initTexture(*textures.at((int) _PlayerCarIndex), sf::IntRect());
+//}
 
 void PlayerCar::render(sf::RenderWindow &window, bool renderCrosshair) {
     if (isAlive() && !isDying()) {

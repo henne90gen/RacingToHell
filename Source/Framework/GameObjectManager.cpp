@@ -50,7 +50,7 @@ void GameObjectManager::update(float frameTime) {
     deleteDestroyedCars();
 
     if (_InBossFight) {
-        _Boss->update(frameTime, _FW.getLevelManager().getRoadSpeed(), _Bullets, *_Player);
+        _Boss->update(frameTime, _FW.getLevelManager().getRoadSpeed(), _Bullets);
 
         checkPlayerBossCollision();
 
@@ -69,7 +69,7 @@ void GameObjectManager::update(float frameTime) {
     sf::Vector2f bulletDir = _Player->getShotBullet();
     if ((bulletDir.x != 0 || bulletDir.y != 0) &&
         (_FW.getOptionsManager().getGameMode() == GameMode::InfEnergy || _Player->drainShotEnergy())) {
-        _Bullets.push_back(GameObjectFactory::getBullet(_Player->getPosition(), bulletDir, _PlayerBulletSpeed,
+        _Bullets.push_back(GameObjectFactory::getBullet(*this, _Player->getPosition(), bulletDir, _PlayerBulletSpeed,
                                                         GameObjectType::BulletObjectPlayer));
         _FW.getSoundManager().playShotSound(GameObjectType::Player, _Player->getPosition());
     }
@@ -319,7 +319,7 @@ bool GameObjectManager::bossIsDead() {
 
 void GameObjectManager::enterBossFight() {
 //    std::cout << "BossHP: " << _FW.getLevelManager().getBossHP() << std::endl;
-    _Boss = GameObjectFactory::getBossCar((_FW.getLevelManager().getLevel() - 1) % 4,
+    _Boss = GameObjectFactory::getBossCar(*this, (_FW.getLevelManager().getLevel() - 1) % 4,
                                           (int) _FW.getOptionsManager().getDifficulty(),
                                           _FW.getLevelManager().getBossHP());
     _InBossFight = true;
@@ -335,7 +335,7 @@ void GameObjectManager::resetGameObjects() {
     if (_Player != NULL) {
         playerCarIndex = _Player->getPlayerCarIndex();
     }
-    _Player = GameObjectFactory::getPlayerCar(playerCarIndex, _ExplosionTexture);
+    _Player = GameObjectFactory::getPlayerCar(*this, playerCarIndex, _ExplosionTexture);
 
 
     // Frequencies
@@ -377,7 +377,7 @@ void GameObjectManager::spawnAICar(float frameTime) {
         if (_TimePassedCar + frameTime > 1 / _CarFrequency) {
             _TimePassedCar += frameTime - 1 / _CarFrequency;
 
-            std::shared_ptr<AICar> newAiCar = GameObjectFactory::getAICar(_FW.getLevelManager().getAiHP(),
+            std::shared_ptr<AICar> newAiCar = GameObjectFactory::getAICar(*this, _FW.getLevelManager().getAiHP(),
                                                                           _FW.getLevelManager().getRoadSpeed());
 
             for (unsigned int i = 0; i < _Cars.size(); i++) {
@@ -406,9 +406,9 @@ void GameObjectManager::spawnBullet(float frameTime) {
 
             sf::Vector2f dir = rh::normalize(_Player->getPosition() - selectedCar->getPosition());
 
-            const std::shared_ptr<Bullet> &newBullet = GameObjectFactory::getBullet(selectedCar->getPosition(), dir,
-                                                                                    _AIBulletSpeed,
-                                                                                    GameObjectType::BulletObjectAI);
+            std::shared_ptr<Bullet> newBullet = GameObjectFactory::getBullet(*this, selectedCar->getPosition(), dir,
+                                                                             _AIBulletSpeed,
+                                                                             GameObjectType::BulletObjectAI);
             _FW.getSoundManager().playShotSound(GameObjectType::AI, selectedCar->getPosition());
             _Bullets.push_back(newBullet);
 
@@ -425,7 +425,8 @@ void GameObjectManager::spawnToolbox(float frameTime) {
     if (_TimePassedToolbox > 1.0f / _ToolboxFrequency &&
         _FW.getOptionsManager().getGameMode() != GameMode::Invincible) {
         _TimePassedToolbox -= 1.0f / _ToolboxFrequency;
-        _PickupItems.push_back(GameObjectFactory::getToolbox(sf::Vector2f(std::rand() % 3 * 150 + 150, -10), _FW.getLevelManager().getRoadSpeed()));
+        _PickupItems.push_back(GameObjectFactory::getToolbox(*this, sf::Vector2f(std::rand() % 3 * 150 + 150, -10),
+                                                             _FW.getLevelManager().getRoadSpeed()));
 
         // FIXME should we really recalculate the freq after every spawn?
         calculateToolboxFrequency();
@@ -436,7 +437,8 @@ void GameObjectManager::spawnCanister(float frameTime) {
     _TimePassedCanister += frameTime;
     if (_TimePassedCanister > 1.0f / _CanisterFrequency) {
         _TimePassedCanister -= 1.0f / _CanisterFrequency;
-        _PickupItems.push_back(GameObjectFactory::getCanister(sf::Vector2f(std::rand() % 3 * 150 + 150, -20), _FW.getLevelManager().getRoadSpeed()));
+        _PickupItems.push_back(GameObjectFactory::getCanister(*this, sf::Vector2f(std::rand() % 3 * 150 + 150, -20),
+                                                              _FW.getLevelManager().getRoadSpeed()));
     }
 }
 
@@ -524,7 +526,7 @@ void GameObjectManager::nextPlayerCar() {
     if (index >= (int) PlayerCarIndex::NumberOfCars) {
         index = 0;
     }
-    _Player = GameObjectFactory::getPlayerCar((PlayerCarIndex) index, _ExplosionTexture);
+    _Player = GameObjectFactory::getPlayerCar(*this, (PlayerCarIndex) index, _ExplosionTexture);
 }
 
 void GameObjectManager::previousPlayerCar() {
@@ -533,5 +535,5 @@ void GameObjectManager::previousPlayerCar() {
     if (index < 0) {
         index = (int) PlayerCarIndex::NumberOfCars - 1;
     }
-    _Player = GameObjectFactory::getPlayerCar((PlayerCarIndex) index, _ExplosionTexture);
+    _Player = GameObjectFactory::getPlayerCar(*this, (PlayerCarIndex) index, _ExplosionTexture);
 }

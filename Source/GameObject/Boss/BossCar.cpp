@@ -1,33 +1,36 @@
-#include <GameObject/Boss/Action/BossAction.h>
-#include <GameObject/Boss/Action/DriveToDefault.h>
 #include "stdafx.h"
+#include <GameObject/Boss/Action/BossAction.h>
 #include "GameObject/Boss/BossCar.h"
 
-BossCar::BossCar(unsigned int id, sf::Vector2f pos, int difficulty, int Health, float Speed, sf::Texture &texture,
-                 sf::Texture &bulletTexture) :
-        Car(id, pos, Health, Speed, GameObjectType::Boss, texture,
+BossCar::BossCar(unsigned int id, GameObjectManager &gom, sf::Vector2f pos, int difficulty, int Health, float Speed,
+                 sf::Texture &texture, sf::Texture &bulletTexture) :
+        Car(id, gom, pos, Health, Speed, GameObjectType::Boss, texture,
             sf::IntRect(0, 0, texture.getSize().x, texture.getSize().y)),
-        _Difficulty((sf::Uint16) difficulty), _BulletSpeed(500), _BulletTexture(bulletTexture),
-        _Attack(false), _HasTraffic(false), _IsExploding(false)
-//        _MovementCommand(Movement::STILL),
-//        _Event1Counter(0), _Event2Counter(0), _Event1Frequency(0), _Event2Frequency(0), _Event1Switch(false),
-//        _Event2Switch(false), _CurrentPhase(0)
-{
-    initBoss();
-}
-
-BossCar::BossCar(sf::Packet &packet, sf::Texture &texture, sf::Texture &bulletTexture) :
-        Car(packet, GameObjectType::Boss, texture,
-            sf::IntRect(0, 0, texture.getSize().x, texture.getSize().y)), _BulletSpeed(500),
-        _BulletTexture(bulletTexture), _Attack(false), _HasTraffic(false),
+        _Difficulty((sf::Uint16) difficulty),
+        _BulletSpeed(500),
+        _BulletTexture(bulletTexture),
+        _Attack(false),
+        _HasTraffic(false),
         _IsExploding(false)
 //        _MovementCommand(Movement::STILL),
 //        _Event1Counter(0), _Event2Counter(0), _Event1Frequency(0), _Event2Frequency(0), _Event1Switch(false),
 //        _Event2Switch(false), _CurrentPhase(0)
 {
-    BossCar::operator<<(packet);
     initBoss();
 }
+
+//BossCar::BossCar(sf::Packet &packet, sf::Texture &texture, sf::Texture &bulletTexture, PlayerCar &player) :
+//        Car(packet, GameObjectType::Boss, texture,
+//            sf::IntRect(0, 0, texture.getSize().x, texture.getSize().y)), _BulletSpeed(500),
+//        _BulletTexture(bulletTexture), _Attack(false), _HasTraffic(false),
+//        _IsExploding(false), _Player(player)
+//        _MovementCommand(Movement::STILL),
+//        _Event1Counter(0), _Event2Counter(0), _Event1Frequency(0), _Event2Frequency(0), _Event1Switch(false),
+//        _Event2Switch(false), _CurrentPhase(0)
+//{
+//    BossCar::operator<<(packet);
+//    initBoss();
+//}
 
 float BossCar::playerAngle(GameObject &Player) {
     float angle;
@@ -176,9 +179,6 @@ void BossCar::initBoss() {
     _HealthBarFrame.setOutlineThickness(1);
     _HealthBarFrame.setSize(_HealthBar.getSize());
     _HealthBarFrame.setOrigin(origin);
-
-    std::shared_ptr<DriveToDefault> action = std::make_shared<DriveToDefault>(*this);
-    _Actions.push_back(action);
 }
 
 void BossCar::update(float frameTime) {
@@ -191,9 +191,17 @@ void BossCar::update(float frameTime) {
         }
     }
 
+    if (_Actions.size() == 0) {
+        updateActions();
+    }
+
     Car::update(frameTime);
 
     // TODO update health bar length
     _HealthBar.setPosition(getPosition());
     _HealthBarFrame.setPosition(getPosition());
+}
+
+void BossCar::shootBullet(sf::Vector2f pos, sf::Vector2f dir) {
+    // FIXME use GOM to shoot bullet
 }

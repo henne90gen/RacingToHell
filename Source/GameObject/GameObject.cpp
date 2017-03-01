@@ -2,25 +2,26 @@
 #include "GameObject/GameObject.h"
 
 
-GameObject::GameObject(unsigned int id, GameObjectType type, sf::Vector2f pos, sf::Texture &texture,
+GameObject::GameObject(unsigned int id, GameObjectManager &gom, GameObjectType type, sf::Vector2f pos,
+                       sf::Texture &texture,
                        sf::IntRect textureRect)
-        : _ID(id), _Type(type), _Position(pos), _Movement(sf::Vector2f(0, 0)) {
+        : _ID(id), _GOM(gom), _Type(type), _Position(pos), _Movement(sf::Vector2f(0, 0)) {
     initTexture(texture, textureRect);
 }
 
-GameObject::GameObject(sf::Packet &packet, GameObjectType type, sf::Texture &texture, sf::IntRect textureRect)
-        : _Type(type) {
-    if (_Type == GameObjectType::Canister || _Type == GameObjectType::Tools) {
-        GameObject::operator<<(packet);
-    }
-    initTexture(texture, textureRect);
-}
+//GameObject::GameObject(sf::Packet &packet, GameObjectManager &gom, GameObjectType type, sf::Texture &texture, sf::IntRect textureRect)
+//        : _Type(type), _GOM(gom){
+//    if (_Type == GameObjectType::Canister || _Type == GameObjectType::Tools) {
+//        GameObject::operator<<(packet);
+//    }
+//    initTexture(texture, textureRect);
+//}
 
-GameObject::GameObject(sf::Packet &packet, GameObjectType type) : _Type(type) {
-    if (_Type == GameObjectType::Canister || _Type == GameObjectType::Tools) {
-        GameObject::operator<<(packet);
-    }
-}
+//GameObject::GameObject(sf::Packet &packet, GameObjectManager &gom, GameObjectType type) : _Type(type), _GOM(gom) {
+//    if (_Type == GameObjectType::Canister || _Type == GameObjectType::Tools) {
+//        GameObject::operator<<(packet);
+//    }
+//}
 
 void GameObject::render(sf::RenderWindow &window) {
     window.draw(_Sprite);

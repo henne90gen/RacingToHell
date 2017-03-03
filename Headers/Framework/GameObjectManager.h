@@ -80,7 +80,7 @@ public:
 
     void shootBullet(GameObjectType type, sf::Vector2f pos, sf::Vector2f dir, int speed);
 
-    std::shared_ptr<Animation> playExplosion(sf::Vector2f pos, sf::Vector2f movement);
+    std::shared_ptr<Explosion> playExplosion(sf::Vector2f pos, sf::Vector2f movement);
 
     std::vector<std::shared_ptr<GameObject>> &getPickupItems() { return _PickupItems; }
 

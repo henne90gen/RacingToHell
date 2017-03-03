@@ -22,7 +22,7 @@ void Carrier::render(sf::RenderWindow &window) {
     window.draw(_HealthBar);
     window.draw(_HealthBarFrame);
 
-    renderExplosions(window);
+//    renderExplosions(window);
 }
 
 void Carrier::init() {

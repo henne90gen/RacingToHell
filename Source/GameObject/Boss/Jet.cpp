@@ -21,7 +21,7 @@ void Jet::render(sf::RenderWindow &window) {
     window.draw(_HealthBar);
     window.draw(_HealthBarFrame);
 
-    renderExplosions(window);
+//    renderExplosions(window);
 }
 
 void Jet::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bullet>> &bullets) {

@@ -260,7 +260,7 @@ bool GameObjectManager::bossIsDead() {
     if (_InBossFight) {
         if (getBossCar()->getHealth() <= 0) {
             _AboutToLevelUp = true;
-            if (getBossCar()->isDoneExploding(_ExplosionTexture)) {
+            if (getBossCar()->isDoneExploding()) {
                 _InBossFight = false;
                 _AboutToLevelUp = false;
                 _Player->resetResources();
@@ -512,7 +512,7 @@ void GameObjectManager::shootBullet(GameObjectType type, sf::Vector2f pos, sf::V
     }
 }
 
-std::shared_ptr<Animation> GameObjectManager::playExplosion(sf::Vector2f pos, sf::Vector2f movement) {
+std::shared_ptr<Explosion> GameObjectManager::playExplosion(sf::Vector2f pos, sf::Vector2f movement) {
     std::shared_ptr<Explosion> newExplosion = std::make_shared<Explosion>(pos, _ExplosionTexture, movement);
     _Animations.push_back(newExplosion);
     _FW.getSoundManager().playExplosionSound(_Player->getPosition());

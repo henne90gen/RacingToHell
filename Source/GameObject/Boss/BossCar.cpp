@@ -101,56 +101,44 @@ void BossCar::checkPhase() {
 //    }
 }
 
-// FIXME move these explosions into GOM and just keep pointers to check for being done with exploding
-void BossCar::renderExplosions(sf::RenderWindow &window) {
-    if (_IsExploding) {
-        for (int i = 0; i < _Explosions.size(); i++) {
-            _Explosions[i]->render(window);
+void BossCar::updateExplosions(float frameTime) {
+    for (unsigned int i = 0; i < _Explosions.size(); i++) {
+        if (_Explosions[i]->getAnimationState() == Animation::AnimationState::Stop) {
+            rh::deleteObject(_Explosions, i);
         }
     }
 }
 
-void BossCar::updateExplosions(float frameTime) {
-    for (int i = 0; i < _Explosions.size(); i++) {
-        _Explosions[i]->update(frameTime);
-    }
-}
-
-bool BossCar::isDoneExploding(sf::Texture &explosionTexture) {
+bool BossCar::isDoneExploding() {
     if (_Health <= 0 && !(bool) _IsExploding) {
         _IsExploding = 1;
         _ExplosionTimer.restart();
     }
     if (_Health <= 0 && _IsExploding && _ExplosionTimer.getElapsedTime().asSeconds() > 0.2) {
         _ExplosionTimer.restart();
-        sf::Vector2f position = sf::Vector2f(0, 0);
+        sf::Vector2f offset = sf::Vector2f(0, 0);
         switch (_Explosions.size()) {
             case 1:
-                position = sf::Vector2f(getWidth() / 3.0f, getHeight() / 3.0f);
+                offset = sf::Vector2f(getWidth() / 3.0f, getHeight() / 3.0f);
                 break;
             case 2:
-                position = sf::Vector2f(getWidth() / 3.0f, getHeight() / -3.0f);
+                offset = sf::Vector2f(getWidth() / 3.0f, getHeight() / -3.0f);
                 break;
             case 3:
-                position = sf::Vector2f(getWidth() / -3.0f, getHeight() / -3.0f);
+                offset = sf::Vector2f(getWidth() / -3.0f, getHeight() / -3.0f);
                 break;
             case 4:
-                position = sf::Vector2f(getWidth() / -3.0f, getHeight() / 3.0f);
+                offset = sf::Vector2f(getWidth() / -3.0f, getHeight() / 3.0f);
                 break;
             default:
                 break;
         }
-        _Explosions.push_back(new Explosion(getPosition() + position, explosionTexture, sf::Vector2f(0, 0)));
-        // FIXME play explosion sound (maybe move creation of explosion somewhere else?)
+        _Explosions.push_back(_GOM.playExplosion(getPosition() + offset, sf::Vector2f(0, 0)));
     }
     if (_Explosions.size() > 5) {
         _IsExploding = 2;
     }
     return (_Health <= 0 && _IsExploding == 2);
-}
-
-sf::Vector2f BossCar::calcBulletPosition() {
-    return getPosition() + _GunPosition + _GunOrientation * _GunLength;
 }
 
 void BossCar::operator>>(sf::Packet &packet) {
@@ -200,9 +188,11 @@ void BossCar::update(float frameTime) {
 
     Car::update(frameTime);
 
+    updateHealthBar();
+
     // TODO update health bar length
-    _HealthBar.setPosition(getPosition());
-    _HealthBarFrame.setPosition(getPosition());
+//    _HealthBar.setPosition(getPosition());
+//    _HealthBarFrame.setPosition(getPosition());
 }
 
 void BossCar::shootBullet(sf::Vector2f pos, sf::Vector2f dir) {

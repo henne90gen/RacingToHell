@@ -50,7 +50,7 @@ public:
     /**
      * Returns true if the boss is dead and all explosion animations are done playing
      */
-    bool isDoneExploding(sf::Texture &ExplosionTexture);
+    bool isDoneExploding();
 
     sf::Vector2f getDefaultPosition() { return _DefaultPosition; }
 
@@ -123,7 +123,7 @@ protected:
 
     int const _BulletSpeed;
 
-    std::vector<Explosion *> _Explosions;
+    std::vector<std::shared_ptr<Explosion>> _Explosions;
     sf::Clock _ExplosionTimer;
     int _IsExploding;
 
@@ -146,13 +146,5 @@ protected:
 
     virtual void checkPhase();
 
-    void renderExplosions(sf::RenderWindow &Window);
-
     void updateExplosions(float FrameTime);
-
-    /**
-     * Calculates the position where a bullet can be spawned
-     * @return sf::Vector2f Position for the bullet
-     */
-    virtual sf::Vector2f calcBulletPosition();
 };

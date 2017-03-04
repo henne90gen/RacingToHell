@@ -1,23 +1,25 @@
 
+#include <GameObject/Boss/Action/PointGunAtPlayer.h>
 #include "GameObject/Boss/Action/ShootAtPlayer.h"
 #include "GameObject/Boss/BossCar.h"
-#include "Framework/GameObjectManager.h"
 
-ShootAtPlayer::ShootAtPlayer(BossCar &boss, std::shared_ptr<BossAction> parentAction,
-                             std::vector<float> shotFrequencies, std::vector<float> salveAngles)
-        : BossAction(boss), _ParentAction(parentAction), _ShotFrequencies(shotFrequencies), _SalveAngles(salveAngles) {}
+ShootAtPlayer::ShootAtPlayer(BossCar &boss, std::vector<float> shotFrequencies, std::vector<float> salveAngles)
+        : BossAction(boss), _ShotFrequencies(shotFrequencies), _SalveAngles(salveAngles), _PointingAtPlayer(false) {}
 
 void ShootAtPlayer::execute() {
-    if (_ParentAction && _ParentAction->hasBeenExecuted()) {
-        _Executed = true;
+    if (!_PointingAtPlayer) {
+        _Boss.addAction(std::make_shared<PointGunAtPlayer>(_Boss, shared_from_this()));
+        _PointingAtPlayer = true;
     }
+    if (_ParentAction && _ParentAction->hasBeenExecuted()) {
+        BossAction::finishExecution();
+    }
+
     if (_Timer.getElapsedTime().asSeconds() >= _ShotFrequencies[_CurrentFrequencyIndex]) {
         for (unsigned int i = 0; i < _SalveAngles.size(); i++) {
             float angle = _SalveAngles[i];
-            sf::Vector2f dir = _Boss.getGOM().getPlayerCar()->getPosition() - _Boss.getPosition();
-            dir = rh::rotateVector(dir, angle);
-            // FIXME use position of end of gun
-            _Boss.shootBullet(_Boss.getPosition(), dir);
+            sf::Vector2f dir = rh::rotateVector(_Boss.getGunDirection(), angle);
+            _Boss.shootBullet(_Boss.getGunEnd(), dir);
         }
 
         _Timer.restart();

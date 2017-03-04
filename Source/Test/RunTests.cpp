@@ -6,8 +6,8 @@
 
 int main() {
     HelperTest();
-//    PlayerScoreTest();
-//    HighscoreManagerTest();
-//    BossActionTest();
+    PlayerScoreTest();
+    HighscoreManagerTest();
+    BossActionTest();
     return 0;
 }

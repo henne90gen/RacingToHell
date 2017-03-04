@@ -7,10 +7,15 @@ public:
     HelperTest();
 
     void testNormalize();
+
     void testLength();
 
     void testVectorFromAngle();
 
     void testRound();
+
+    void testAngleBetweenVectors();
+
+    void testRotateVector();
 };
 

@@ -19,7 +19,7 @@ public:
 
     void render(sf::RenderWindow &RenderWindow);
 
-    void update(float FrameTime, int RoadSpeed, std::vector<std::shared_ptr<Bullet>> &bullets);
+    void update(float FrameTime);
 
     void init();
 

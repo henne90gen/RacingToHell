@@ -61,11 +61,16 @@ namespace rh {
      * @param vec Vector whom's angle is going to be calculated
      * @return float Angle in degrees
      */
-    float getAngleFromVector(sf::Vector2f vec);
+    float angleFromVector(sf::Vector2f vec);
 
-    sf::Vector2f getVectorFromAngle(float angle);
+    /**
+     * Calculates a normalized vector from the given angle
+     */
+    sf::Vector2f vectorFromAngle(float angle);
 
     sf::Vector2f rotateVector(sf::Vector2f vec, float angle);
+
+    float angleBetweenVectors(sf::Vector2f vec1, sf::Vector2f vec2);
 
     /**
      * Divides a vector by it's length, basically providing the normalized vector

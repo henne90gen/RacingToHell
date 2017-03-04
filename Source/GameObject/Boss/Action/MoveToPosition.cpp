@@ -7,9 +7,9 @@ void MoveToPosition::execute() {
     sf::Vector2f dir = _TargetPosition - _Boss.getPosition();
     // Being too accurate causes the boss to just shake in place
     if (rh::vectorLength(dir) <= 1.5f) {
-        _Executed = true;
         // Reset movement to stop boss from moving over the target
         _Boss.setMovement(sf::Vector2f(0, 0));
+        BossAction::finishExecution();
         return;
     }
     dir = rh::normalize(dir) * (float) speed;

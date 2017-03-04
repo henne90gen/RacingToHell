@@ -11,8 +11,8 @@ MoveLeftRight::MoveLeftRight(BossCar &boss, sf::Vector2f leftPos, sf::Vector2f r
 
 void MoveLeftRight::execute() {
     if (_NumSwitches == 0) {
-        _Executed = true;
         _Boss.setMovement(sf::Vector2f(0, 0));
+        BossAction::finishExecution();
         return;
     }
     if (rh::vectorLength(_Boss.getPosition() - _LastTargetPosition) <= 1.5f) {

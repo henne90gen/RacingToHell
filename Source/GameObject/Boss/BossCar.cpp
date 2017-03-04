@@ -179,6 +179,8 @@ void BossCar::update(float frameTime) {
         _Actions.at(i)->execute();
         if (!_Actions.at(i)->hasBeenExecuted()) {
             doneExecuting = false;
+        } else if (_Actions[i]->deleteAfterExecution()) {
+            rh::deleteObject(_Actions, i);
         }
     }
 
@@ -187,6 +189,8 @@ void BossCar::update(float frameTime) {
     }
 
     Car::update(frameTime);
+
+    _GunDirection = rh::normalize(_GunDirection + _GunMovement * frameTime);
 
     updateHealthBar();
 
@@ -197,4 +201,17 @@ void BossCar::update(float frameTime) {
 
 void BossCar::shootBullet(sf::Vector2f pos, sf::Vector2f dir) {
     _GOM.shootBullet(GameObjectType::BulletBoss, pos, dir, _BulletSpeed);
+}
+
+sf::Vector2f BossCar::getGunDirection() {
+    return _GunDirection;
+}
+
+sf::Vector2f BossCar::getGunEnd() {
+    return getPosition() + _GunOffset + _GunDirection * _GunLength;
+}
+
+void BossCar::moveGunTowards(sf::Vector2f newDirection) {
+    sf::Vector2f movementDir = rh::normalize(newDirection - _GunDirection * _GunLength);
+    _GunMovement = movementDir * _GunSpeed;
 }

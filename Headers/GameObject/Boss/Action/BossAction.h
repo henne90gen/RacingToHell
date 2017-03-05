@@ -32,6 +32,8 @@ protected:
      */
     void finishExecution();
 
+    void checkParentAction();
+
     BossCar &_Boss;
     std::shared_ptr<BossAction> _ParentAction, _NextAction;
 private:

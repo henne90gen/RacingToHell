@@ -3,9 +3,9 @@
 #include "stdafx.h"
 #include <GameObject/Boss/Action/BossAction.h>
 
-class ShootAtPlayer : public BossAction {
+class Shoot : public BossAction {
 public:
-    ShootAtPlayer(BossCar &boss, std::vector<float> shotFrequencies, std::vector<float> salveAngles);
+    Shoot(BossCar &boss, std::vector<float> shotFrequencies, std::vector<float> salveAngles);
 
     void execute();
 

@@ -190,7 +190,7 @@ void BossCar::update(float frameTime) {
 
     Car::update(frameTime);
 
-    _GunDirection = rh::normalize(_GunDirection + _GunMovement * frameTime);
+    _GunDirection = rh::rotateVector(_GunDirection, _GunMovement * _GunSpeed * frameTime);
 
     updateHealthBar();
 
@@ -211,7 +211,21 @@ sf::Vector2f BossCar::getGunEnd() {
     return getPosition() + _GunOffset + _GunDirection * _GunLength;
 }
 
-void BossCar::moveGunTowards(sf::Vector2f newDirection) {
-    sf::Vector2f movementDir = rh::normalize(newDirection - _GunDirection * _GunLength);
-    _GunMovement = movementDir * _GunSpeed;
+void BossCar::rotateGunTowards(sf::Vector2f newDirection) {
+    float angle = rh::angleBetweenVectors(_GunDirection, newDirection);
+    // Scaling angle up to let integer rounding take care of setting movement to 0 when the angle is too small
+    // This value has been found with trial and error
+    // Anything bigger is inaccurate and anything smaller lets the gun move back and forth constantly
+    angle *= 25;
+    setGunMovement((int) angle);
+}
+
+void BossCar::setGunMovement(int movement) {
+    if (movement > 0) {
+        _GunMovement = 1;
+    } else if (movement < 0) {
+        _GunMovement = -1;
+    } else {
+        _GunMovement = 0;
+    }
 }

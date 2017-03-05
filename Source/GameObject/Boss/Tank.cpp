@@ -1,10 +1,9 @@
 #include "stdafx.h"
 #include <GameObject/Boss/Action/MoveToPosition.h>
 #include <GameObject/Boss/Action/MoveLeftRight.h>
-#include <GameObject/Boss/Action/PointGunAtPlayer.h>
+#include <GameObject/Boss/Action/RotateGunToPlayer.h>
 #include "GameObject/Boss/Tank.h"
-#include "GameObject/Boss/Action/ShootAtPlayer.h"
-#include "GameObject/Boss/Action/TimerAction.h"
+#include "GameObject/Boss/Action/Shoot.h"
 
 
 Tank::Tank(unsigned int id, GameObjectManager &gom, int difficulty, int HP, sf::Texture &texture,
@@ -37,41 +36,11 @@ void Tank::update(float frameTime) {
     _GunSprite.setPosition(getPosition() + _GunOffset);
     float newAngle = rh::angleFromVector(_GunDirection) - (PI / 2 * 180 / PI);
     _GunSprite.setRotation(newAngle);
+
+//    std::cout << rh::to_string(_GunDirection) << std::endl;
 }
 
 //    if (!_IsExploding) {
-//        if (driveToNextPosition(frameTime)) {
-//            switch (_MovementCommand) {
-//                case Movement::DRIVETODEFAULT:
-//				{
-//					_MovementCommand = Movement::LEFTRIGHT;
-//					_Speed = 200;
-//					_Attack = true;
-//					_PhaseClock.restart();
-//
-//				} break;
-//
-//				case Movement::LEFTRIGHT:
-//				{
-//					_MovementSwitch = !_MovementSwitch;
-//					if (_MovementSwitch)
-//					{
-//						_NextPosition = getPosition() + sf::Vector2f(
-//							(SCREENWIDTH - getPosition().x - getWidth() / 2) * (std::rand() % 100) / 100.0f, 0.0f);
-//					}
-//					else
-//					{
-//						_NextPosition = getPosition() -
-//							sf::Vector2f((getPosition().x - getWidth() / 2) * (std::rand() % 100) / 100.0f,
-//								0.0f);
-//					}
-//				} break;
-//
-//                default:
-//                    break;
-//            }
-//        }
-//
 //        if (_Attack) {
 //            float angle = rh::getAngleFromVector(_GunOrientation);
 //
@@ -199,45 +168,60 @@ void Tank::init() {
 void Tank::updateActions() {
     std::cout << "Phase: " << _NextPhase << std::endl;
     _Actions = std::vector<std::shared_ptr<BossAction>>();
+//    _NextPhase = 1;
     switch (_NextPhase) {
         case 1: { // Move left and right and shoot at player
-            // FIXME when not shooting any more, the gun of the boss just stops pointing at the player
             sf::Vector2f leftPosition = sf::Vector2f(getWidth() / 2 + 20, 150);
             sf::Vector2f rightPosition = sf::Vector2f(SCREENWIDTH - (getWidth() / 2 + 20), 150);
             std::shared_ptr<MoveLeftRight> moveAction = std::make_shared<MoveLeftRight>(*this, leftPosition,
-                                                                                        rightPosition, 1);
+                                                                                        rightPosition, 5);
+            _Actions.push_back(moveAction);
+
             std::vector<float> shotFrequencies = {0.5f, 0.05f, 0.05f};
             std::vector<float> salveAngles = {0};
-            std::shared_ptr<ShootAtPlayer> shootAction = std::make_shared<ShootAtPlayer>(*this, shotFrequencies,
-                                                                                         salveAngles);
+            std::shared_ptr<Shoot> shootAction = std::make_shared<Shoot>(*this, shotFrequencies,
+                                                                         salveAngles);
             shootAction->setParentAction(moveAction);
-
-            _Actions.push_back(moveAction);
             _Actions.push_back(shootAction);
+
+            std::shared_ptr<RotateGunToPlayer> spinAction = std::make_shared<RotateGunToPlayer>(*this, moveAction);
+            _Actions.push_back(spinAction);
             break;
         }
         case 2: { // Move to default position and shoot a burst of bullets at the player
-            std::shared_ptr<MoveToPosition> moveAction = std::make_shared<MoveToPosition>(*this, _DefaultPosition);
-            std::shared_ptr<TimerAction> timerAction = std::make_shared<TimerAction>(*this, 10.0f);
-            std::vector<float> shotFrequencies = {0.5f, 0.05f, 0.05f};
-            std::vector<float> salveAngles = {-PI / 8, -PI / 16, 0, PI / 16, PI / 8};
-            std::shared_ptr<ShootAtPlayer> shootAction = std::make_shared<ShootAtPlayer>(*this, shotFrequencies,
-                                                                                         salveAngles);
-            moveAction->setNextAction(timerAction);
-            shootAction->setParentAction(timerAction);
 
-            _Actions.push_back(moveAction);
-            _Actions.push_back(shootAction);
+//            std::shared_ptr<MoveToPosition> moveAction = std::make_shared<MoveToPosition>(*this, _DefaultPosition);
+//            _Actions.push_back(moveAction);
+//
+//            std::shared_ptr<RotateGunToPosition> rotateAction = std::make_shared<RotateGunToPosition>(*this, sf::Vector2f(0, 1));
+//            rotateAction->setParentAction(moveAction);
+//            _Actions.push_back(rotateAction);
+//
+//            std::shared_ptr<TimerAction> timerAction = std::make_shared<TimerAction>(*this, 10.0f);
+//            moveAction->setNextAction(timerAction);
+//
+//            std::vector<float> shotFrequencies = {0.5f, 0.05f, 0.05f};
+//            std::vector<float> salveAngles = {-PI / 8, -PI / 16, 0, PI / 16, PI / 8};
+//            std::shared_ptr<Shoot> shootAction = std::make_shared<Shoot>(*this, shotFrequencies,
+//                                                                                         salveAngles);
+//            shootAction->setParentAction(timerAction);
+//            _Actions.push_back(shootAction);
+//
+//            std::shared_ptr<RotateGunToPlayer> spinAction = std::make_shared<RotateGunToPlayer>(*this, timerAction);
+//            _Actions.push_back(spinAction);
             break;
         }
         case 3: {
-
+//            std::shared_ptr<RotateGun>
+//            std::shared_ptr<Shoot> shootAction = std::make_shared<Spin>(*this);
             break;
         }
         default: {
             std::shared_ptr<MoveToPosition> moveAction = std::make_shared<MoveToPosition>(*this, _DefaultPosition);
-            std::shared_ptr<PointGunAtPlayer> pointAction = std::make_shared<PointGunAtPlayer>(*this, moveAction);
             _Actions.push_back(moveAction);
+
+            std::shared_ptr<RotateGunToPlayer> pointAction = std::make_shared<RotateGunToPlayer>(*this, moveAction);
+            pointAction->setParentAction(moveAction);
             _Actions.push_back(pointAction);
             _NextPhase = 0;
             break;

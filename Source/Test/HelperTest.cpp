@@ -2,11 +2,11 @@
 #include <Test/HelperTest.h>
 
 HelperTest::HelperTest() : Test("Helpers") {
-//    testRound();
-//    testLength();
-//    testNormalize();
-//    testVectorFromAngle();
-//    testRotateVector();
+    testRound();
+    testLength();
+    testNormalize();
+    testVectorFromAngle();
+    testRotateVector();
     testAngleBetweenVectors();
 }
 

@@ -1,18 +1,15 @@
 
-#include <GameObject/Boss/Action/PointGunAtPlayer.h>
-#include "GameObject/Boss/Action/ShootAtPlayer.h"
+#include <GameObject/Boss/Action/RotateGunToPlayer.h>
+#include "GameObject/Boss/Action/Shoot.h"
 #include "GameObject/Boss/BossCar.h"
 
-ShootAtPlayer::ShootAtPlayer(BossCar &boss, std::vector<float> shotFrequencies, std::vector<float> salveAngles)
+Shoot::Shoot(BossCar &boss, std::vector<float> shotFrequencies, std::vector<float> salveAngles)
         : BossAction(boss), _ShotFrequencies(shotFrequencies), _SalveAngles(salveAngles), _PointingAtPlayer(false) {}
 
-void ShootAtPlayer::execute() {
-    if (!_PointingAtPlayer) {
-        _Boss.addAction(std::make_shared<PointGunAtPlayer>(_Boss, shared_from_this()));
-        _PointingAtPlayer = true;
-    }
-    if (_ParentAction && _ParentAction->hasBeenExecuted()) {
-        BossAction::finishExecution();
+void Shoot::execute() {
+    BossAction::checkParentAction();
+    if (BossAction::hasBeenExecuted()) {
+        return;
     }
 
     if (_Timer.getElapsedTime().asSeconds() >= _ShotFrequencies[_CurrentFrequencyIndex]) {

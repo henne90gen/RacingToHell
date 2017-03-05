@@ -18,3 +18,9 @@ void BossAction::finishExecution() {
         _Boss.addAction(_NextAction);
     }
 }
+
+void BossAction::checkParentAction() {
+    if (_ParentAction && _ParentAction->hasBeenExecuted()) {
+        BossAction::finishExecution();
+    }
+}

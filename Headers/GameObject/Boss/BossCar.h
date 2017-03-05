@@ -79,7 +79,14 @@ public:
 
     sf::Vector2f getGunBasePosition() { return getPosition() + _GunOffset; }
 
-    void moveGunTowards(sf::Vector2f newDirection);
+    void rotateGunTowards(sf::Vector2f newDirection);
+
+    /**
+     * -1 means clockwise rotation and 1 means counterclockwise
+     */
+    void setGunMovement(int movement);
+
+    int getGunMovement() { return _GunMovement; }
 
     void addAction(std::shared_ptr<BossAction> action) { _Actions.push_back(action); }
 
@@ -124,11 +131,10 @@ protected:
     sf::Vector2f _GunDirection;
     float _GunLength;
 
-    // Angular
-    sf::Vector2f _GunMovement;
+    int _GunMovement;
 
     // FIXME initialize this in the constructor
-    float _GunSpeed = 200.0f;
+    float _GunSpeed = 0.8f;
 
     sf::Vector2f _DefaultPosition;
 

@@ -1,5 +1,6 @@
 
 #include <GameObject/Boss/Action/MoveToPosition.h>
+#include <GameObject/Boss/Action/RotateGunToPosition.h>
 #include "GameObject/Boss/Action/MoveLeftRight.h"
 #include "GameObject/Boss/BossCar.h"
 
@@ -10,11 +11,18 @@ MoveLeftRight::MoveLeftRight(BossCar &boss, sf::Vector2f leftPos, sf::Vector2f r
 }
 
 void MoveLeftRight::execute() {
-    if (_NumSwitches == 0) {
-        _Executed = true;
-        _Boss.setMovement(sf::Vector2f(0, 0));
+    BossAction::checkParentAction();
+    if (BossAction::hasBeenExecuted()) {
         return;
     }
+
+    if (_NumSwitches == 0) {
+        BossAction::finishExecution();
+        _Boss.setMovement(sf::Vector2f(0, 0));
+        _Boss.addAction(std::make_shared<RotateGunToPosition>(_Boss, sf::Vector2f(0, 1)));
+        return;
+    }
+
     if (rh::vectorLength(_Boss.getPosition() - _LastTargetPosition) <= 1.5f) {
         if (_LastTargetPosition == _RightTargetPosition) {
             _LastTargetPosition = _LeftTargetPosition;

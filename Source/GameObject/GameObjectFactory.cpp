@@ -56,23 +56,23 @@ std::shared_ptr<BossCar> GameObjectFactory::getBossCar(GameObjectManager &gom, i
         }
         case 1: {
 //            TODO use std::make:shared instead of new-operator
-            std::shared_ptr<Mech> boss(
-                    new Mech(_DeltaID + _CurrentGameObjectID++, gom, diff, hp, (*_BossCarTextures()[2]),
-                             (*_BossCarTextures()[3]), _BulletTexture()));
-            return boss;
+//            std::shared_ptr<Mech> boss(
+//                    new Mech(_DeltaID + _CurrentGameObjectID++, gom, diff, hp, (*_BossCarTextures()[2]),
+//                             (*_BossCarTextures()[3]), _BulletTexture()));
+//            return boss;
         }
         case 2: {
-            std::shared_ptr<Jet> boss(
-                    new Jet(_DeltaID + _CurrentGameObjectID++, gom, diff, hp, (*_BossCarTextures()[4]),
-                            _BulletTexture(),
-                            _JetSoundBuffer()));
-            return boss;
+//            std::shared_ptr<Jet> boss(
+//                    new Jet(_DeltaID + _CurrentGameObjectID++, gom, diff, hp, (*_BossCarTextures()[4]),
+//                            _BulletTexture(),
+//                            _JetSoundBuffer()));
+//            return boss;
         }
         case 3: {
-            std::shared_ptr<Carrier> boss(
-                    new Carrier(_DeltaID + _CurrentGameObjectID++, gom, diff, hp, (*_BossCarTextures()[1]),
-                                _BulletTexture()));
-            return boss;
+//            std::shared_ptr<Carrier> boss(
+//                    new Carrier(_DeltaID + _CurrentGameObjectID++, gom, diff, hp, (*_BossCarTextures()[1]),
+//                                _BulletTexture()));
+//            return boss;
         }
         default:
             return NULL;

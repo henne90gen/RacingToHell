@@ -30,8 +30,8 @@ void Carrier::init() {
     _GunSprite.setTexture(_GunTexture);
     _GunSprite.setOrigin(_GunTexture.getSize().x / 2, 50);
 
-    _GunPosition = sf::Vector2f(0, 0);
-    _GunLength = _GunSprite.getLocalBounds().height - 50;
+    _GunOffset = sf::Vector2f(0, 0);
+//    _GunLength = _GunSprite.getLocalBounds().height - 50;
 
     _DefaultPosition = sf::Vector2f(SCREENWIDTH / 2, 150);
     _NextPosition = _DefaultPosition;

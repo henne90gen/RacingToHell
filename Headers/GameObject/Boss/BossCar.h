@@ -37,10 +37,9 @@ public:
      * @param roadSpeed Velocity of the road
      * @param gameObjects Reference to the vector with all the game objects, so that the boss can add the bullets it shoots
      */
-    // FIXME consolidate into single update function
-    virtual void update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bullet>> &bullets) = 0;
-
     virtual void update(float frameTime);
+
+//    virtual void update(float frameTime);
 
     /**
      * Returns true if the boss allows traffic
@@ -73,6 +72,21 @@ public:
     virtual void updateActions() = 0;
 
     void shootBullet(sf::Vector2f pos, sf::Vector2f dir);
+
+    sf::Vector2f getGunEnd();
+
+    sf::Vector2f getGunDirection();
+
+    sf::Vector2f getGunBasePosition() { return getPosition() + _GunOffset; }
+
+    void rotateGunTowards(sf::Vector2f newDirection);
+
+    /**
+     * -1 means clockwise rotation and 1 means counterclockwise
+     */
+    void setGunMovement(int movement);
+
+    int getGunMovement() { return _GunMovement; }
 
     void addAction(std::shared_ptr<BossAction> action) { _Actions.push_back(action); }
 
@@ -110,9 +124,17 @@ protected:
     std::vector<std::shared_ptr<BossAction>> _Actions;
     unsigned int _NextPhase;
 
-    sf::Vector2f _GunPosition;
-    sf::Vector2f _GunOrientation;
+    // Points to the base position of the gun
+    sf::Vector2f _GunOffset;
+
+    // Points from the gun position to the end of the gun (where the bullets spawn)
+    sf::Vector2f _GunDirection;
     float _GunLength;
+
+    int _GunMovement;
+
+    // FIXME initialize this in the constructor
+    float _GunSpeed = 0.8f;
 
     sf::Vector2f _DefaultPosition;
 

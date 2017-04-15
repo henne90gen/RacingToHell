@@ -31,9 +31,9 @@ void Mech::render(sf::RenderWindow &window) {
 void Mech::update(float frameTime, int roadSpeed, std::vector<std::shared_ptr<Bullet>> &bullets) {
     Car::update(frameTime);
 
-    float gunPosLength = std::sqrt(std::pow(_GunPosition.x, 2) + std::pow(_GunPosition.y, 2));
-    _GunPosition = sf::Vector2f(cosf(std::atan(_GunOrientation.y / _GunOrientation.x) + PI / 2),
-                                sinf(std::atan(_GunOrientation.y / _GunOrientation.x) + PI / 2)) * gunPosLength;
+    float gunPosLength = std::sqrt(std::pow(_GunOffset.x, 2) + std::pow(_GunOffset.y, 2));
+//    _GunOffset = sf::Vector2f(cosf(std::atan(_GunOrientation.y / _GunOrientation.x) + PI / 2),
+//                                sinf(std::atan(_GunOrientation.y / _GunOrientation.x) + PI / 2)) * gunPosLength;
 
 //    if (!_IsExploding) {
 //        if (driveToNextPosition(frameTime)) {
@@ -235,9 +235,9 @@ void Mech::setPos(sf::Vector2f pos) {
 void Mech::init() {
     setSprite(_TopAnim.getSprite());
 
-    _GunOrientation = sf::Vector2f(0, -1);
-    _GunPosition = sf::Vector2f(62, 0);
-    _GunLength = 53.0f;
+//    _GunOrientation = sf::Vector2f(0, -1);
+    _GunOffset = sf::Vector2f(62, 0);
+//    _GunLength = 53.0f;
 
     //HP-Balken
     _HealthBar.setSize(sf::Vector2f(getWidth() + 5, 5));
@@ -262,7 +262,7 @@ void Mech::init() {
 }
 
 std::pair<sf::Vector2f, sf::Vector2f> Mech::calcGunPositions() {
-    sf::Vector2f pos1 = getPos() - _GunPosition + _GunOrientation * _GunLength;
-    sf::Vector2f pos2 = getPos() + _GunPosition + _GunOrientation * _GunLength;
-    return std::make_pair(pos1, pos2);
+//    sf::Vector2f pos1 = getPos() - _GunOffset + _GunOrientation * _GunLength;
+//    sf::Vector2f pos2 = getPos() + _GunOffset + _GunOrientation * _GunLength;
+//    return std::make_pair(pos1, pos2);
 }

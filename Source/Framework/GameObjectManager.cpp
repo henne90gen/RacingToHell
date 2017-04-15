@@ -50,7 +50,7 @@ void GameObjectManager::update(float frameTime) {
     deleteDestroyedCars();
 
     if (_InBossFight) {
-        _Boss->update(frameTime, _FW.getLevelManager().getRoadSpeed(), _Bullets);
+        _Boss->update(frameTime);
 
         checkPlayerBossCollision();
 

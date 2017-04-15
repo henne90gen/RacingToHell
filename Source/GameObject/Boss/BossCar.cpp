@@ -155,7 +155,6 @@ void BossCar::initBoss() {
 //    _BossEventTimer1.restart();
 //    _BossEventTimer2.restart();
 //    _PhaseClock.restart();
-
 //    _Pattern = {std::make_pair(Phase::NOTHING, 1.0f)};
 
     //HP-Balken

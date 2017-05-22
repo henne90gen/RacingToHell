@@ -1,17 +1,17 @@
-UNAME := $(shell uname)
-
-ifeq ($(UNAME), Linux)
-	PLATFORM_FILE := linux_RacingToHell.cpp
-	PLATFORM_FLAGS :=
-	EXTENSION := .out
-else
+ifeq ($(OS), Windows_NT)
 	PLATFORM_FILE := win32_RacingToHell.cpp
 	PLATFORM_FLAGS := -mwindows
 	EXTENSION := .exe
+	CLEAN_CMD := del *$(EXTENSION)
+else
+	PLATFORM_FILE := linux_RacingToHell.cpp
+	PLATFORM_FLAGS :=
+	EXTENSION := .out
+	CLEAN_CMD := rm -f *$(EXTENSION)
 endif
 
 all:
-	g++ -Wall $(PLATFORM_FLAGS) $(PLATFORM_FILE) -o RacingToHell$(EXTENSION)
+	g++ -Wall $(PLATFORM_FLAGS) $(PLATFORM_FILE) RacingToHell.cpp -o RacingToHell$(EXTENSION)
 
 clean:
-	rm -f *$(EXTENSION) *.o
+	$(CLEAN_CMD)

@@ -10,8 +10,10 @@ else
 	CLEAN_CMD := rm -f *$(EXTENSION)
 endif
 
+GCC_FLAGS := -Wall -g -O0
+
 all:
-	g++ -Wall $(PLATFORM_FLAGS) $(PLATFORM_FILE) RacingToHell.cpp -o RacingToHell$(EXTENSION)
+	g++ $(GCC_FLAGS) $(PLATFORM_FLAGS) $(PLATFORM_FILE) RacingToHell.cpp -o RacingToHell$(EXTENSION)
 
 clean:
 	$(CLEAN_CMD)

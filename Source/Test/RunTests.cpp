@@ -9,5 +9,6 @@ int main() {
     PlayerScoreTest();
     HighscoreManagerTest();
     BossActionTest();
+    std::cout << "Tests complete" << std::endl;
     return 0;
 }

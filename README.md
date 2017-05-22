@@ -14,8 +14,10 @@
     -   `cd build`
 1.  Generate the makefiles:
     -   `cmake -G "Unix Makefiles" ../`
-1.  Execute the build:
-    -   `cmake --build ./ --target RacingToHell --`
+1.  Build the game:
+    -   `make RacingToHell`
+1.  Build the tests:
+    -   `make RacingToHellTest`
 
 Notes:
 -   The compiled executable is located in `RacingToHell/build/bin`
@@ -24,6 +26,8 @@ Notes:
     -   You can change the name of the default build directory under: `File -> Settings -> Build, Execution, Deployment -> CMake -> Generation path`
 
 ###Windows
+
+(TODO update windows build instructions to include building tests)
 
 1.  Download and install [MinGW-w64](https://sourceforge.net/projects/mingw-w64/)
     -   Add mingw64/bin to your path

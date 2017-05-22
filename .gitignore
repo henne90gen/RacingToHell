@@ -234,3 +234,5 @@ SFML/
 Resources/settings.cfg
 Resources/scores.sco
 /buildMinGW/
+.externalToolBuilders
+.project

@@ -211,10 +211,26 @@ void FreeFileMemory(File *file)
     file->size = 0;
 }
 
+uint64_t getClockCounter(uin64_t frequency)
+{
+    LARGE_INTEGER queryResult;
+    QueryPerformanceCounter(&queryResult);
+
+    uint64_t value = queryResult.QuadPart;
+
+    return value;
+}
+
 int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 {
+    const float targetFrameTime = 1.0f / 60.0f;
+
+    LARGE_INTEGER frequencyResult;
+    QueryPerformanceFrequency(&frequencyResult);
+
+    uint64_t performanceCountFrequency = frequencyResult.QuadPart;
+
 	resizeOffscreenBuffer(&buffer, 1280, 720);
-	drawSomething(&buffer);
 	
 	HWND windowHandle = openWindow(instance, show);
 
@@ -224,6 +240,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 	
 	while (isRunning)
 	{
+        uint64_t loopStartCount = getClockCounter(performanceCountFrequency);
         *newInput = *oldInput;
 
 		MSG message;
@@ -259,6 +276,14 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
         Input *tmp = oldInput;
         oldInput = newInput;
         newInput = tmp;
+
+        uint64_t loopEndCounter = getClockCounter();
+        float secondsElapsed = (loopEndCounter - loopStartCount) / (float)performanceCountFrequency;
+    
+        if (secondsElapsed < targetFrameTime)
+        {
+            Sleep(1000.0f * (targetFrameTime - secondsElapsed));
+        }
     }
 	
 	return 0;

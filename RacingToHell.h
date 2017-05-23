@@ -12,6 +12,8 @@ struct VideoBuffer
 
 struct Input
 {
+    unsigned mouseX, mouseY;
+
     bool upKey, downKey, leftKey, rightKey;
     bool pauseKey;
     bool shootKey;

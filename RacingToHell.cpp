@@ -18,5 +18,5 @@ void updateAndRender(VideoBuffer *buffer, Input *input) {
 		//readImageFile(buffer->content, fileName);
 	}
 
-    testGraphics(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8));
+    testGraphics(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8) + (((int)(input->shootKey) * 255) << 16));
 }

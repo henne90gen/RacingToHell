@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include <stdlib.h>
 #include <iostream>
+#include <string>
 
 #include "RacingToHell.h"
 #include "win32_RacingToHell.h"
@@ -211,7 +212,7 @@ void FreeFileMemory(File *file)
     file->size = 0;
 }
 
-uint64_t getClockCounter(uin64_t frequency)
+uint64_t getClockCounter(uint64_t frequency)
 {
     LARGE_INTEGER queryResult;
     QueryPerformanceCounter(&queryResult);
@@ -221,9 +222,16 @@ uint64_t getClockCounter(uin64_t frequency)
     return value;
 }
 
+void debugString(std::string s)
+{
+    OutputDebugString(s.c_str());
+}
+
 int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 {
     const float targetFrameTime = 1.0f / 60.0f;
+    INT desiredSchedulerMS = 1;
+    timeBeginPeriod(desiredSchedulerMS);
 
     LARGE_INTEGER frequencyResult;
     QueryPerformanceFrequency(&frequencyResult);
@@ -250,7 +258,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 			{
 				isRunning = false;
 			}
-			else if (message.message == WM_KEYDOWN || message.message == WM_KEYUP)
+			else if (message.message == WM_KEYDOWN || message.message == WM_KEYUP || message.message == WM_SYSKEYDOWN || message.message == WM_SYSKEYUP)
 			{
 				handleKeyStroke(newInput, message.wParam, message.lParam);
 			}
@@ -260,6 +268,13 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 				DispatchMessage(&message);
 			}
 		}
+
+        POINT mousePosition;
+        GetCursorPos(&mousePosition);
+        newInput->mouseX = mousePosition.x;
+        newInput->mouseY = mousePosition.y;
+
+        newInput->shootKey = (bool)(GetKeyState(VK_LBUTTON) & (1 << 15));
 		
 		VideoBuffer vBuffer;
 		vBuffer.width = buffer.width;
@@ -277,13 +292,16 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
         oldInput = newInput;
         newInput = tmp;
 
-        uint64_t loopEndCounter = getClockCounter();
+        uint64_t loopEndCounter = getClockCounter(performanceCountFrequency);
         float secondsElapsed = (loopEndCounter - loopStartCount) / (float)performanceCountFrequency;
     
         if (secondsElapsed < targetFrameTime)
         {
             Sleep(1000.0f * (targetFrameTime - secondsElapsed));
         }
+
+        float timePassed = 1000.0f * (getClockCounter(performanceCountFrequency) - loopStartCount) / (float)performanceCountFrequency;
+        debugString("Frametime: " + std::to_string(timePassed) + '\n');
     }
 	
 	return 0;

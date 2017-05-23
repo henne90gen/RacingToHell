@@ -3,19 +3,12 @@
 #include <iostream>
 
 #include "RacingToHell.h"
-
-struct win32_offScreenBuffer
-{
-	BITMAPINFO info;
-	
-	unsigned width, height, bytesPerPixel;
-	void *content;
-};
+#include "win32_RacingToHell.h"
 
 static bool isRunning = true;
-static win32_offScreenBuffer buffer;
+static OffscreenBuffer buffer;
 
-void resizeOffscreenBuffer(win32_offScreenBuffer *buffer, unsigned width, unsigned height)
+void resizeOffscreenBuffer(OffscreenBuffer *buffer, unsigned width, unsigned height)
 {
 	if (buffer->content)
 	{
@@ -38,7 +31,7 @@ void resizeOffscreenBuffer(win32_offScreenBuffer *buffer, unsigned width, unsign
 	buffer->content = VirtualAlloc(0, size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 }
 
-void drawBuffer(HDC deviceContext, win32_offScreenBuffer *buffer)
+void drawBuffer(HDC deviceContext, OffscreenBuffer *buffer)
 {
 	int result = StretchDIBits(
 		deviceContext,
@@ -61,6 +54,7 @@ LRESULT CALLBACK WndProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM 
 	switch (message)
 	{
 		case WM_DESTROY:
+        case WM_CLOSE:
 		{
 			PostQuitMessage(0);
 			return 0;
@@ -110,7 +104,6 @@ HWND openWindow(HINSTANCE instance, int show)
 		exit(1);
 	}
 
-    //Show the window
     ShowWindow(windowHandle, show);
 
 	return windowHandle;
@@ -124,7 +117,7 @@ void handleKeyStroke(WPARAM keyCode, LPARAM flags)
 	}
 }
 
-void drawSomething(win32_offScreenBuffer *buffer)
+void drawSomething(OffscreenBuffer *buffer)
 {
 	for (unsigned y = 0; y < buffer->height; ++y)
 	{
@@ -136,11 +129,61 @@ void drawSomething(win32_offScreenBuffer *buffer)
 	}
 }
 
+File readEntireFile(char *filename)
+{
+    File result = {};
+
+    HANDLE fileHandle = CreateFileA(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+
+    if (fileHandle != INVALID_HANDLE_VALUE)
+    {
+        LARGE_INTEGER fileSize;
+
+        if (GetFileSizeEx(fileHandle, &fileSize))
+        {
+            size_t fileSize_t = fileSize.QuadPart;
+            result.content = VirtualAlloc(0, fileSize_t, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+        
+            if (result.content)
+            {
+                DWORD bytesRead;
+
+                if (ReadFile(fileHandle, result.content, fileSize_t, &bytesRead, 0) && fileSize_t == bytesRead)
+                {
+                    result.size = fileSize_t;
+                }
+                else
+                {
+                    VirtualFree(result.content, 0, MEM_RELEASE);
+                    result.content = NULL;
+                }
+            }
+        }
+    }
+
+    return result;
+}
+
+struct PNGImage
+{
+    unsigned width, height, bytesPerPixel;
+
+    void *content;
+};
+
+void loadPNG(char *filename)
+{
+    File PNGFile = readEntireFile(filename);
+}
+
 int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 {
 	resizeOffscreenBuffer(&buffer, 1280, 720);
 	drawSomething(&buffer);
 	
+    char filename[] = "playercar1.png";
+    loadPNG(filename);
+
 	HWND windowHandle = openWindow(instance, show);
 	
 	while (isRunning)

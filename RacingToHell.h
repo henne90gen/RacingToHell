@@ -1,11 +1,11 @@
 #pragma once
 #include <iostream>
 
-struct videoBuffer
+struct VideoBuffer
 {
 	unsigned width, height, bytesPerPixel;
 	
 	void *content;
 };
 
-void updateAndRender(videoBuffer *buffer);
+void updateAndRender(VideoBuffer *buffer);

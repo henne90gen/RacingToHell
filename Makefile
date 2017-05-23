@@ -5,7 +5,7 @@ ifeq ($(OS), Windows_NT)
 	CLEAN_CMD := del *$(EXTENSION)
 else
 	PLATFORM_FILE := linux_RacingToHell.cpp
-	PLATFORM_FLAGS :=
+	PLATFORM_FLAGS := -L/usr/X11R6/lib -lX11
 	EXTENSION := .out
 	CLEAN_CMD := rm -f *$(EXTENSION)
 endif

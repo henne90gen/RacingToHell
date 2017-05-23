@@ -1,4 +1,8 @@
 #pragma once
 #include "RacingToHell.h"
 
-void readImageFile(Texture* texture, char* fileName);
+/**
+ * @return Gives back the files size plus 1
+ */
+long int getFileSizePlusOne(char* fileName);
+void readFile(char* fileName, char* content);

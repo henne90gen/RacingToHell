@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include <stdlib.h>
 #include <iostream>
+#include <string>
 
 #include "RacingToHell.h"
 #include "win32_RacingToHell.h"
@@ -109,12 +110,49 @@ HWND openWindow(HINSTANCE instance, int show)
 	return windowHandle;
 }
 
-void handleKeyStroke(WPARAM keyCode, LPARAM flags)
+void handleKeyStroke(Input *input, WPARAM keyCode, LPARAM flags)
 {
 	if (keyCode == VK_ESCAPE)
 	{
 		isRunning = false;
+        return;
 	}
+
+    bool wasKeyDown = (bool)(flags & (1 << 30));
+    bool isKeyDown = !((bool)(flags & (1 << 31)));
+
+    if (wasKeyDown != isKeyDown)
+    {
+        switch (keyCode)
+        {
+            case ('W'):
+            {
+                input->upKey = isKeyDown;
+            } break;
+        
+            case ('A'):
+            {
+                input->leftKey = isKeyDown;
+            } break;
+
+            case ('S'):
+            {
+                input->downKey = isKeyDown;
+            } break;
+
+            case ('D'):
+            {
+                input->rightKey = isKeyDown;
+            } break;
+
+            case (VK_SPACE):
+            {
+                input->pauseKey = isKeyDown;
+            } break;
+        }
+    }
+
+
 }
 
 void drawSomething(OffscreenBuffer *buffer)
@@ -164,30 +202,55 @@ File readEntireFile(char *filename)
     return result;
 }
 
-struct PNGImage
+void FreeFileMemory(File *file)
 {
-    unsigned width, height, bytesPerPixel;
+    if (file->content)
+    {
+        VirtualFree(file, 0, MEM_RELEASE);
+    }
 
-    void *content;
-};
+    file->size = 0;
+}
 
-void loadPNG(char *filename)
+uint64_t getClockCounter(uint64_t frequency)
 {
-    File PNGFile = readEntireFile(filename);
+    LARGE_INTEGER queryResult;
+    QueryPerformanceCounter(&queryResult);
+
+    uint64_t value = queryResult.QuadPart;
+
+    return value;
+}
+
+void debugString(std::string s)
+{
+    OutputDebugString(s.c_str());
 }
 
 int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 {
-	resizeOffscreenBuffer(&buffer, 1280, 720);
-	drawSomething(&buffer);
-	
-    char filename[] = "playercar1.png";
-    loadPNG(filename);
+    const float targetFrameTime = 1.0f / 60.0f;
+    INT desiredSchedulerMS = 1;
+    timeBeginPeriod(desiredSchedulerMS);
 
+    LARGE_INTEGER frequencyResult;
+    QueryPerformanceFrequency(&frequencyResult);
+
+    uint64_t performanceCountFrequency = frequencyResult.QuadPart;
+
+	resizeOffscreenBuffer(&buffer, 1280, 720);
+	
 	HWND windowHandle = openWindow(instance, show);
+
+    Input input[2];
+    Input *oldInput = &input[0];
+    Input *newInput = &input[1];
 	
 	while (isRunning)
 	{
+        uint64_t loopStartCount = getClockCounter(performanceCountFrequency);
+        *newInput = *oldInput;
+
 		MSG message;
 		while (PeekMessage(&message, NULL, 0, 0, PM_REMOVE))
 		{	
@@ -195,9 +258,9 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 			{
 				isRunning = false;
 			}
-			else if (message.message == WM_KEYDOWN || message.message == WM_KEYUP)
+			else if (message.message == WM_KEYDOWN || message.message == WM_KEYUP || message.message == WM_SYSKEYDOWN || message.message == WM_SYSKEYUP)
 			{
-				handleKeyStroke(message.wParam, message.lParam);
+				handleKeyStroke(newInput, message.wParam, message.lParam);
 			}
 			else
 			{
@@ -205,6 +268,13 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 				DispatchMessage(&message);
 			}
 		}
+
+        POINT mousePosition;
+        GetCursorPos(&mousePosition);
+        newInput->mouseX = mousePosition.x;
+        newInput->mouseY = mousePosition.y;
+
+        newInput->shootKey = (bool)(GetKeyState(VK_LBUTTON) & (1 << 15));
 		
 		VideoBuffer vBuffer;
 		vBuffer.width = buffer.width;
@@ -212,12 +282,27 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 		vBuffer.bytesPerPixel = buffer.bytesPerPixel;
 		vBuffer.content = buffer.content;
 		
-		updateAndRender(&vBuffer);
+		updateAndRender(&vBuffer, newInput);
 		
 		HDC deviceContext = GetDC(windowHandle);
 		drawBuffer(deviceContext, &buffer);
 		ReleaseDC(windowHandle, deviceContext);
-	}
+	
+        Input *tmp = oldInput;
+        oldInput = newInput;
+        newInput = tmp;
+
+        uint64_t loopEndCounter = getClockCounter(performanceCountFrequency);
+        float secondsElapsed = (loopEndCounter - loopStartCount) / (float)performanceCountFrequency;
+    
+        if (secondsElapsed < targetFrameTime)
+        {
+            Sleep(1000.0f * (targetFrameTime - secondsElapsed));
+        }
+
+        float timePassed = 1000.0f * (getClockCounter(performanceCountFrequency) - loopStartCount) / (float)performanceCountFrequency;
+        debugString("Frametime: " + std::to_string(timePassed) + '\n');
+    }
 	
 	return 0;
 }

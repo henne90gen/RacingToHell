@@ -4,12 +4,13 @@
 
 static int counter = 0;
 static bool loaded = false;
+
 static Texture texture;
 
-void testGraphics(VideoBuffer *buffer) {
+void testGraphics(VideoBuffer *buffer, int color) {
 	for (unsigned int y = 0; y < buffer->height; y++) {
 		for (unsigned int x = 0; x < buffer->width; x++) {
-			((int*) buffer->content)[y * buffer->width + x] = counter++;
+			((int*) buffer->content)[y * buffer->width + x] = color;
 		}
 	}
 }
@@ -77,7 +78,7 @@ void readBmpFile(Texture* texture, char* content, char* fileName) {
 	printf("Successfully loaded image %s.\n", fileName);
 }
 
-void updateAndRender(VideoBuffer *buffer) {
+void updateAndRender(VideoBuffer *buffer, Input *input) {
 	if (!loaded) {
 		loaded = true;
 		char fileName[] = "sample.bmp";
@@ -85,6 +86,7 @@ void updateAndRender(VideoBuffer *buffer) {
 		readFile(fileName, content);
 		readBmpFile(&texture, content, fileName);
 	}
-	testGraphics(buffer);
+
 	renderTexture(buffer, &texture);
+	testGraphics(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8) + (((int)(input->shootKey) * 255) << 16));
 }

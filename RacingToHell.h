@@ -9,4 +9,11 @@ struct VideoBuffer
 	void *content;
 };
 
-void updateAndRender(VideoBuffer *buffer);
+struct Input
+{
+    bool upKey, downKey, leftKey, rightKey;
+    bool pauseKey;
+    bool shootKey;
+};
+
+void updateAndRender(VideoBuffer *buffer, Input *input);

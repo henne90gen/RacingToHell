@@ -109,12 +109,49 @@ HWND openWindow(HINSTANCE instance, int show)
 	return windowHandle;
 }
 
-void handleKeyStroke(WPARAM keyCode, LPARAM flags)
+void handleKeyStroke(Input *input, WPARAM keyCode, LPARAM flags)
 {
 	if (keyCode == VK_ESCAPE)
 	{
 		isRunning = false;
+        return;
 	}
+
+    bool wasKeyDown = (bool)(flags & (1 << 30));
+    bool isKeyDown = !((bool)(flags & (1 << 31)));
+
+    if (wasKeyDown != isKeyDown)
+    {
+        switch (keyCode)
+        {
+            case ('W'):
+            {
+                input->upKey = isKeyDown;
+            } break;
+        
+            case ('A'):
+            {
+                input->leftKey = isKeyDown;
+            } break;
+
+            case ('S'):
+            {
+                input->downKey = isKeyDown;
+            } break;
+
+            case ('D'):
+            {
+                input->rightKey = isKeyDown;
+            } break;
+
+            case (VK_SPACE):
+            {
+                input->pauseKey = isKeyDown;
+            } break;
+        }
+    }
+
+
 }
 
 void drawSomething(OffscreenBuffer *buffer)
@@ -164,16 +201,14 @@ File readEntireFile(char *filename)
     return result;
 }
 
-struct PNGImage
+void FreeFileMemory(File *file)
 {
-    unsigned width, height, bytesPerPixel;
+    if (file->content)
+    {
+        VirtualFree(file, 0, MEM_RELEASE);
+    }
 
-    void *content;
-};
-
-void loadPNG(char *filename)
-{
-    File PNGFile = readEntireFile(filename);
+    file->size = 0;
 }
 
 int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
@@ -181,13 +216,16 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 	resizeOffscreenBuffer(&buffer, 1280, 720);
 	drawSomething(&buffer);
 	
-    char filename[] = "playercar1.png";
-    loadPNG(filename);
-
 	HWND windowHandle = openWindow(instance, show);
+
+    Input input[2];
+    Input *oldInput = &input[0];
+    Input *newInput = &input[1];
 	
 	while (isRunning)
 	{
+        *newInput = *oldInput;
+
 		MSG message;
 		while (PeekMessage(&message, NULL, 0, 0, PM_REMOVE))
 		{	
@@ -197,7 +235,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 			}
 			else if (message.message == WM_KEYDOWN || message.message == WM_KEYUP)
 			{
-				handleKeyStroke(message.wParam, message.lParam);
+				handleKeyStroke(newInput, message.wParam, message.lParam);
 			}
 			else
 			{
@@ -212,12 +250,16 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 		vBuffer.bytesPerPixel = buffer.bytesPerPixel;
 		vBuffer.content = buffer.content;
 		
-		updateAndRender(&vBuffer);
+		updateAndRender(&vBuffer, newInput);
 		
 		HDC deviceContext = GetDC(windowHandle);
 		drawBuffer(deviceContext, &buffer);
 		ReleaseDC(windowHandle, deviceContext);
-	}
+	
+        Input *tmp = oldInput;
+        oldInput = newInput;
+        newInput = tmp;
+    }
 	
 	return 0;
 }

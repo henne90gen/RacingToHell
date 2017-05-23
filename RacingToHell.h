@@ -1,11 +1,12 @@
 #pragma once
 #include <iostream>
+#include "platform.h"
 
-struct videoBuffer
+struct VideoBuffer
 {
 	unsigned width, height, bytesPerPixel;
 	
 	void *content;
 };
 
-void updateAndRender(videoBuffer *buffer);
+void updateAndRender(VideoBuffer *buffer);

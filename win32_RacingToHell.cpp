@@ -206,7 +206,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 			}
 		}
 		
-		videoBuffer vBuffer;
+		VideoBuffer vBuffer;
 		vBuffer.width = buffer.width;
 		vBuffer.height = buffer.height;
 		vBuffer.bytesPerPixel = buffer.bytesPerPixel;

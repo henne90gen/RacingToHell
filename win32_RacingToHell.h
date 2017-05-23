@@ -6,9 +6,3 @@ struct OffscreenBuffer
     void *content;
 };
 
-struct File
-{
-    void *content;
-    
-    size_t size;
-};

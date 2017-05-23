@@ -14,7 +14,7 @@ endif
 
 GCC_FLAGS := -Wall -g -O0
 
-g++:
+all:
 	g++ $(GCC_FLAGS) $(PLATFORM_FLAGS) $(PLATFORM_FILE) RacingToHell.cpp -o RacingToHell$(EXTENSION)
 
 cl:

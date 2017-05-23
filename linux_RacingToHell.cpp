@@ -55,17 +55,7 @@ GraphicsData initGraphicsData(Display *display) {
 	return graphics;
 }
 
-long int getFileSizePlusOne(char* fileName) {
-	FILE *f = fopen(fileName, "rb");
-	if (!f) {
-		fprintf(stderr, "Could not read file size for '%s'\n", fileName);
-		exit(1);
-	}
-	fseek(f, 0, SEEK_END);
-	return ftell(f) + 1;
-}
-
-void readFile(char* fileName, char* content) {
+File readFile(char* fileName) {
 	printf("Reading %s\n", fileName);
 
 	FILE *f = fopen(fileName, "rb");
@@ -77,10 +67,17 @@ void readFile(char* fileName, char* content) {
 	long int fileSize = ftell(f);
 	rewind(f);
 
+	char* content = (char*) malloc(fileSize + 1);
 	fread(content, fileSize, 1, f);
 	fclose(f);
 
 	content[fileSize] = 0; // 0-terminated
+
+	File file = {};
+	file.size = fileSize;
+	file.content = content;
+
+	return file;
 }
 
 int main() {
@@ -109,7 +106,9 @@ int main() {
 			}
 		}
 
-		updateAndRender(&graphics.videoBuffer);
+		Input input = { };
+
+		updateAndRender(&graphics.videoBuffer, &input);
 
 		// swapping buffer
 		XPutImage(display, graphics.pixmap, graphics.gc, graphics.image, 0, 0,

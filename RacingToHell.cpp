@@ -16,10 +16,15 @@ void testGraphics(VideoBuffer *buffer, int color) {
 }
 
 void renderTexture(VideoBuffer *buffer, Texture* texture) {
+	int pos_x = 0;
+	int pos_y = 0;
+
 	for (unsigned y = 0; y < texture->height; y++) {
 		for (unsigned x = 0; x < texture->width; x++) {
-			int index = y * buffer->width + x;
-//			((int*) buffer->content)[index] = ((int*) texture->content)[index];
+			int bufferIndex = buffer->width * (pos_y + y) + pos_x + x;
+			int textureIndex = y * texture->width + x;
+			((int*) buffer->content)[bufferIndex] =
+					((int*) texture->content)[textureIndex];
 		}
 	}
 }
@@ -66,7 +71,7 @@ Texture readBmpFile(File file) {
 	texture.bytesPerPixel = bitsPerPixel / 8;
 	texture.content = malloc(pixelArraySize);
 
-	getRange(reader, &texture.content, 0, pixelArraySize);
+	getRange(reader, texture.content, 0, pixelArraySize);
 	printf("Successfully loaded texture.\n");
 	return texture;
 }
@@ -77,7 +82,6 @@ void updateAndRender(VideoBuffer *buffer, Input *input) {
 		char fileName[] = "sample_32bit.bmp";
 		texture = readBmpFile(readFile(fileName));
 	}
-
 	renderTexture(buffer, &texture);
 //	testGraphics(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8) + (((int)(input->shootKey) * 255) << 16));
 }

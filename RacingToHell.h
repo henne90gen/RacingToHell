@@ -4,15 +4,15 @@
 #include "platform.h"
 
 struct VideoBuffer {
-	unsigned width, height, bytesPerPixel;
 
-	void *content;
+	unsigned width, height, bytesPerPixel;
+	void* content;
 };
 
 struct Texture {
+
 	unsigned width, height, bytesPerPixel;
-	
-	void *content;
+	void* content;
 };
 
 struct Input

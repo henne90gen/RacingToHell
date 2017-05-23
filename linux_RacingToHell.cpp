@@ -3,7 +3,6 @@
 #include <X11/cursorfont.h>
 #include <X11/X.h>
 #include <X11/Xlib.h>
-#include <X11/Xutil.h>
 
 #include "RacingToHell.h"
 
@@ -57,33 +56,68 @@ GraphicsData initGraphicsData(Display *display) {
 	return graphics;
 }
 
-void readImageFile(void* content, char* fileName) {
-	printf("Reading %s\n", fileName);
-	unsigned width;
-	unsigned height;
-	int x_hot;
-	int y_hot;
-	int result = XReadBitmapFileData(fileName, &width, &height,
-			(unsigned char**) (&content), &x_hot, &y_hot);
-
-	switch (result) {
-	case BitmapSuccess:
-		printf("Successfully read image.\n");
-		break;
-	case BitmapOpenFailed:
-		fprintf(stderr, "Could not open image file '%s'\n", fileName);
-		exit(1);
-		break;
-	case BitmapFileInvalid:
-		fprintf(stderr, "File '%s' doesn't contain a valid bitmap.\n",
-				fileName);
-		exit(1);
-		break;
-	case BitmapNoMemory:
-		fprintf(stderr, "Not enough memory to read image file.\n");
-		exit(1);
-		break;
+void getRange(char* input, char* output, int startIndex, int endIndex) {
+	for (int i = 0; i < endIndex - startIndex; i++) {
+		output[i] = input[startIndex + i];
 	}
+}
+
+void readImageFile(Texture* texture, char* fileName) {
+	printf("Reading %s\n", fileName);
+
+	FILE *f = fopen(fileName, "rb");
+	if (!f) {
+		fprintf(stderr, "Could not open file '%s'\n", fileName);
+		exit(1);
+	}
+	fseek(f, 0, SEEK_END);
+	long fileSize = ftell(f);
+	rewind(f);
+
+	char* content = (char*) malloc(fileSize + 1);
+	fread(content, fileSize, 1, f);
+	fclose(f);
+
+	content[fileSize] = 0; // 0-terminated
+	if (content[0] != 'B' || content[1] != 'M') {
+		fprintf(stderr, "Not a .bmp file.");
+		exit(1);
+	}
+
+	// Check file size
+	char* reader = (char*) malloc(4);
+	getRange(content, reader, 2, 6);
+	if (*((int*) reader) != fileSize) {
+		fprintf(stderr, "Corrupt image file");
+		exit(1);
+	}
+
+	int fileHeaderSize = 14;
+	getRange(content, reader, fileHeaderSize, 18);
+	int bitmapHeaderSize = *((int*) reader);
+
+	getRange(content, reader, 18, 22);
+	int width = *((int*) reader);
+
+	getRange(content, reader, 22, 26);
+	int height = *((int*) reader);
+
+	reader = (char*) malloc(2);
+	getRange(content, reader, 26, 28);
+	short colorPlanes = *((short*) reader);
+	getRange(content, reader, 28, 30);
+	short bytesPerPixel = *((short*) reader);
+
+	long int pixelArraySize = fileSize - (fileHeaderSize + bitmapHeaderSize);
+	reader = (char*) malloc(pixelArraySize);
+	getRange(content, reader, fileHeaderSize + bitmapHeaderSize, fileSize);
+
+	texture->width = width;
+	texture->height = height;
+	texture->bytesPerPixel = bytesPerPixel;
+	texture->content = malloc(pixelArraySize);
+	getRange(reader, (char*) texture->content, 0, pixelArraySize);
+	printf("Successfully loaded image %s.\n", fileName);
 }
 
 int main() {

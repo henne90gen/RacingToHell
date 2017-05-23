@@ -1,9 +1,13 @@
 #pragma once
 #include <iostream>
-#include "platform.h"
 
-struct VideoBuffer
-{
+struct VideoBuffer {
+	unsigned width, height, bytesPerPixel;
+
+	void *content;
+};
+
+struct Texture {
 	unsigned width, height, bytesPerPixel;
 	
 	void *content;

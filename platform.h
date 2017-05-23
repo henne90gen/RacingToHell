@@ -1,3 +1,4 @@
 #pragma once
+#include "RacingToHell.h"
 
-void readImageFile(void *content, char* fileName);
+void readImageFile(Texture* texture, char* fileName);

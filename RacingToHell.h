@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include "platform.h"
 
 struct VideoBuffer
 {

@@ -3,19 +3,87 @@
 #include <X11/cursorfont.h>
 #include <X11/X.h>
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
+
 #include "RacingToHell.h"
 
-Window createWindow(Display* display, int x, int y, unsigned width,
-		unsigned height) {
+struct GraphicsData {
+	Display* display;
+	Window window;
+	GC gc;
+	Pixmap pixmap;
+	XImage* image;
+	VideoBuffer videoBuffer;
+};
+
+static GraphicsData graphics;
+
+GraphicsData initGraphicsData(Display *display) {
+	GraphicsData graphics = { };
+	graphics.display = display;
+	VideoBuffer videoBuffer = { };
+	videoBuffer.width = 400;
+	videoBuffer.height = 300;
+	videoBuffer.bytesPerPixel = 4;
+	videoBuffer.content = malloc(
+			videoBuffer.bytesPerPixel * videoBuffer.width * videoBuffer.height);
+	graphics.videoBuffer = videoBuffer;
+
 	int screen = DefaultScreen(display);
-	Visual* visual = DefaultVisual(display, screen);
 	int depth = DefaultDepth(display, screen);
+	int x = 200;
+	int y = 200;
+	int border_width = 5;
+	Visual* visual = DefaultVisual(display, screen);
 	XSetWindowAttributes attributes = { };
 	attributes.background_pixel = XWhitePixel(display, screen);
-	int border_width = 5;
-	return XCreateWindow(display, XRootWindow(display, screen), x, y, width,
-			height, border_width, depth, InputOutput, visual, CWBackPixel,
-			&attributes);
+	graphics.window = XCreateWindow(display, XRootWindow(display, screen), x, y,
+			videoBuffer.width, videoBuffer.height, border_width, depth,
+			InputOutput, visual,
+			CWBackPixel, &attributes);
+
+	XSelectInput(display, graphics.window, ExposureMask | KeyPressMask);
+	XDefineCursor(display, graphics.window,
+			XCreateFontCursor(display, XC_box_spiral));
+	XMapWindow(display, graphics.window);
+
+	graphics.gc = XDefaultGC(display, screen);
+
+	graphics.pixmap = XCreatePixmap(display, graphics.window,
+			graphics.videoBuffer.width, graphics.videoBuffer.height, depth);
+	graphics.image = XCreateImage(display, visual, depth, ZPixmap, 0,
+			(char *) graphics.videoBuffer.content, graphics.videoBuffer.width,
+			graphics.videoBuffer.height, 32, 0);
+	return graphics;
+}
+
+void readImageFile(void* content, char* fileName) {
+	printf("Reading %s\n", fileName);
+	unsigned width;
+	unsigned height;
+	int x_hot;
+	int y_hot;
+	int result = XReadBitmapFileData(fileName, &width, &height,
+			(unsigned char**) (&content), &x_hot, &y_hot);
+
+	switch (result) {
+	case BitmapSuccess:
+		printf("Successfully read image.\n");
+		break;
+	case BitmapOpenFailed:
+		fprintf(stderr, "Could not open image file '%s'\n", fileName);
+		exit(1);
+		break;
+	case BitmapFileInvalid:
+		fprintf(stderr, "File '%s' doesn't contain a valid bitmap.\n",
+				fileName);
+		exit(1);
+		break;
+	case BitmapNoMemory:
+		fprintf(stderr, "Not enough memory to read image file.\n");
+		exit(1);
+		break;
+	}
 }
 
 int main() {
@@ -24,26 +92,8 @@ int main() {
 		fprintf(stderr, "Cannot open display\n");
 		exit(1);
 	};
-	int screen = DefaultScreen(display);
-	int depth = DefaultDepth(display, screen);
-	GC gc = XDefaultGC(display, screen);
 
-	int x = 200;
-	int y = 200;
-	int width = 350;
-	int height = 200;
-	Window window = createWindow(display, x, y, width, height);
-	XSelectInput(display, window, ExposureMask | KeyPressMask);
-
-	Pixmap pixmap = XCreatePixmap(display, window, width, height, depth);
-	char* buffer = (char*) malloc(4 * width * height);
-
-	Visual* visual = DefaultVisual(display, screen);
-	XImage *image = XCreateImage(display, visual, depth, ZPixmap, 0, buffer,
-			width, height, 32, 0);
-
-	XDefineCursor(display, window, XCreateFontCursor(display, XC_box_spiral));
-	XMapWindow(display, window);
+	graphics = initGraphicsData(display);
 
 	XEvent e;
 	while (1) {
@@ -53,28 +103,25 @@ int main() {
 			}
 			if (e.type == KeyPress) {
 				printf("Button %d pressed\n", e.xkey.keycode);
-				if (e.xbutton.button == 9) {
+				if (e.xbutton.button == 9) { // Escape pressed
 					printf("Exiting\n");
-					XFreePixmap(display, pixmap);
+					XFreePixmap(display, graphics.pixmap);
 					XCloseDisplay(display);
 					return 0;
 				}
 			}
 		}
 
-		VideoBuffer videoBuffer = { };
-		videoBuffer.bytesPerPixel = 4;
-		videoBuffer.width = width;
-		videoBuffer.height = height;
-		videoBuffer.content = buffer;
+		updateAndRender(&graphics.videoBuffer);
 
-		updateAndRender(&videoBuffer);
-
-		XPutImage(display, pixmap, gc, image, 0, 0, 0, 0, width, height);
-		XCopyArea(display, pixmap, window, gc, 0, 0, width, height, 0, 0);
+		// swapping buffer
+		XPutImage(display, graphics.pixmap, graphics.gc, graphics.image, 0, 0,
+				0, 0, graphics.videoBuffer.width, graphics.videoBuffer.height);
+		XCopyArea(display, graphics.pixmap, graphics.window, graphics.gc, 0, 0,
+				graphics.videoBuffer.width, graphics.videoBuffer.height, 0, 0);
 	}
 
-	XFreePixmap(display, pixmap);
+	XFreePixmap(display, graphics.pixmap);
 	XCloseDisplay(display);
 	return 0;
 }

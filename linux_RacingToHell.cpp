@@ -3,6 +3,7 @@
 #include <X11/cursorfont.h>
 #include <X11/X.h>
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
 
 #include "platform.h"
 #include "RacingToHell.h"
@@ -65,8 +66,14 @@ GraphicsData initGraphicsData() {
 	XStoreName(graphics.display, graphics.window, WINDOW_TITLE);
 
 	// set icon name
-//	XTextProperty text = XmbTextListToTextProperty(graphics.display, , 1)
-//	XSetWMIconName(graphics.display, graphics.window, text);
+	XSetIconName(graphics.display, graphics.window, "RtH");
+
+	// set class name
+	XClassHint* classHint = XAllocClassHint();
+	char name[] = WINDOW_TITLE;
+	classHint->res_name = name;
+	classHint->res_class = name;
+	XSetClassHint(graphics.display, graphics.window, classHint);
 
 	// subscribe to events
 	XSelectInput(graphics.display, graphics.window, EVENTS_MASK);

@@ -32,9 +32,14 @@ long int EVENTS_MASK = KeyPressMask | KeyReleaseMask | ButtonPressMask
 static bool isRunning;
 static GraphicsData graphics;
 
-GraphicsData initGraphicsData(Display *display) {
+GraphicsData initGraphicsData() {
 	GraphicsData graphics = { };
-	graphics.display = display;
+	graphics.display = XOpenDisplay(NULL);
+	if (graphics.display == NULL) {
+		fprintf(stderr, "Cannot open display\n");
+		exit(1);
+	};
+
 	VideoBuffer videoBuffer = { };
 	videoBuffer.width = 400;
 	videoBuffer.height = 300;
@@ -43,28 +48,32 @@ GraphicsData initGraphicsData(Display *display) {
 			videoBuffer.bytesPerPixel * videoBuffer.width * videoBuffer.height);
 	graphics.videoBuffer = videoBuffer;
 
-	int screen = DefaultScreen(display);
-	int depth = DefaultDepth(display, screen);
+	int screen = DefaultScreen(graphics.display);
+	int depth = DefaultDepth(graphics.display, screen);
 	int x = 500;
 	int y = 300;
 	int border_width = 5;
-	Visual* visual = DefaultVisual(display, screen);
+	Visual* visual = DefaultVisual(graphics.display, screen);
 	XSetWindowAttributes attributes = { };
-	attributes.background_pixel = XWhitePixel(display, screen);
-	graphics.window = XCreateWindow(display, XRootWindow(display, screen), x, y,
-			videoBuffer.width, videoBuffer.height, border_width, depth,
+	attributes.background_pixel = XWhitePixel(graphics.display, screen);
+	graphics.window = XCreateWindow(graphics.display,
+			XRootWindow(graphics.display, screen), x, y, videoBuffer.width,
+			videoBuffer.height, border_width, depth,
 			InputOutput, visual, CWBackPixel, &attributes);
 
-	XSelectInput(display, graphics.window, EVENTS_MASK);
-	XDefineCursor(display, graphics.window,
-			XCreateFontCursor(display, XC_arrow));
-	XMapWindow(display, graphics.window);
+	XSelectInput(graphics.display, graphics.window, EVENTS_MASK);
+	XDefineCursor(graphics.display, graphics.window,
+			XCreateFontCursor(graphics.display, XC_arrow));
+	XMapWindow(graphics.display, graphics.window);
 
-	graphics.gc = XDefaultGC(display, screen);
+	Atom wmDeleteWindow = XInternAtom(graphics.display, "WM_DELETE_WINDOW", 0);
+	XSetWMProtocols(graphics.display, graphics.window, &wmDeleteWindow, 1);
 
-	graphics.pixmap = XCreatePixmap(display, graphics.window,
+	graphics.gc = XDefaultGC(graphics.display, screen);
+
+	graphics.pixmap = XCreatePixmap(graphics.display, graphics.window,
 			graphics.videoBuffer.width, graphics.videoBuffer.height, depth);
-	graphics.image = XCreateImage(display, visual, depth, ZPixmap, 0,
+	graphics.image = XCreateImage(graphics.display, visual, depth, ZPixmap, 0,
 			(char *) graphics.videoBuffer.content, graphics.videoBuffer.width,
 			graphics.videoBuffer.height, 32, 0);
 	return graphics;
@@ -178,16 +187,10 @@ void handleMouseEvent(Input* input, XButtonEvent event) {
 }
 
 int main() {
-	Display *display = XOpenDisplay(NULL);
-	if (display == NULL) {
-		fprintf(stderr, "Cannot open display\n");
-		exit(1);
-	};
-
+	graphics = initGraphicsData();
 	isRunning = true;
-	graphics = initGraphicsData(display);
 
-	Input input[2];
+	Input input[2] = { };
 	Input *oldInput = &input[0];
 	Input *newInput = &input[1];
 
@@ -197,27 +200,37 @@ int main() {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &startTime);
 		*newInput = *oldInput;
 
-		while (XCheckMaskEvent(display, EVENTS_MASK, &event)) {
+		while (XEventsQueued(graphics.display, QueuedAfterReading)) {
+			XNextEvent(graphics.display, &event);
+			if (event.type == ClientMessage) {
+				printf("Exiting\n");
+				isRunning = false;
+			}
 			if (event.type == KeyPress || event.type == KeyRelease) {
-				handleKeyEvent(display, newInput, event.xkey);
+				handleKeyEvent(graphics.display, newInput, event.xkey);
 			}
 			if (event.type == ButtonPress || event.type == ButtonRelease) {
 				handleMouseEvent(newInput, event.xbutton);
 			}
-
 			if (event.type == MotionNotify) {
 				newInput->mouseX = event.xmotion.x;
 				newInput->mouseY = event.xmotion.y;
 			}
 		}
 
+		if (!isRunning) {
+			break;
+		}
+
 		updateAndRender(&graphics.videoBuffer, newInput);
 
 		// swapping buffer
-		XPutImage(display, graphics.pixmap, graphics.gc, graphics.image, 0, 0,
-				0, 0, graphics.videoBuffer.width, graphics.videoBuffer.height);
-		XCopyArea(display, graphics.pixmap, graphics.window, graphics.gc, 0, 0,
-				graphics.videoBuffer.width, graphics.videoBuffer.height, 0, 0);
+		XPutImage(graphics.display, graphics.pixmap, graphics.gc,
+				graphics.image, 0, 0, 0, 0, graphics.videoBuffer.width,
+				graphics.videoBuffer.height);
+		XCopyArea(graphics.display, graphics.pixmap, graphics.window,
+				graphics.gc, 0, 0, graphics.videoBuffer.width,
+				graphics.videoBuffer.height, 0, 0);
 
 		Input *tmp = oldInput;
 		oldInput = newInput;
@@ -242,7 +255,7 @@ int main() {
 //				1.0f / secondsElapsed);
 	}
 
-	XFreePixmap(display, graphics.pixmap);
-	XCloseDisplay(display);
+	XFreePixmap(graphics.display, graphics.pixmap);
+	XCloseDisplay(graphics.display);
 	return 0;
 }

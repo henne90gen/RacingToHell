@@ -71,12 +71,17 @@ Texture readBmpFile(File file) {
 	return texture;
 }
 
+void init() {
+	loaded = true;
+	char fileName[] = "sample_32bit.bmp";
+	texture = readBmpFile(readFile(fileName));
+}
+
 void updateAndRender(VideoBuffer *buffer, Input *input) {
 	if (!loaded) {
-		loaded = true;
-		char fileName[] = "sample_32bit.bmp";
-		texture = readBmpFile(readFile(fileName));
+		init();
 	}
+	printf("(%d|%d)\n", input->mouseX, input->mouseY);
 	renderTexture(buffer, &texture);
 //	testGraphics(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8) + (((int)(input->shootKey) * 255) << 16));
 }

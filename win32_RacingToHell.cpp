@@ -242,7 +242,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 	
 	HWND windowHandle = openWindow(instance, show);
 
-    Input input[2];
+    Input input[2] = { };
     Input *oldInput = &input[0];
     Input *newInput = &input[1];
 	

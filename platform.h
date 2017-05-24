@@ -5,6 +5,7 @@ struct File {
 
 	void* content;
 	size_t size;
+	char* name;
 };
 
 #pragma pack(8)

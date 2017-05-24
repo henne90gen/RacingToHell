@@ -12,6 +12,11 @@
 #define XK_S 39
 #define XK_D 40
 #define XK_Space 65
+#define XM_Left Button1
+#define XM_Right Button3
+#define XM_Middle Button2 // FIXME is this really mouse middle?
+#define XM_ScrollUp Button4
+#define XM_ScrollDown Button5
 
 struct GraphicsData {
 	Display* display;
@@ -22,6 +27,8 @@ struct GraphicsData {
 	VideoBuffer videoBuffer;
 };
 
+long int EVENTS_MASK = KeyPressMask | KeyReleaseMask | ButtonPressMask
+		| ButtonReleaseMask | PointerMotionMask;
 static bool isRunning;
 static GraphicsData graphics;
 
@@ -48,8 +55,7 @@ GraphicsData initGraphicsData(Display *display) {
 			videoBuffer.width, videoBuffer.height, border_width, depth,
 			InputOutput, visual, CWBackPixel, &attributes);
 
-	XSelectInput(display, graphics.window,
-	KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask);
+	XSelectInput(display, graphics.window, EVENTS_MASK);
 	XDefineCursor(display, graphics.window,
 			XCreateFontCursor(display, XC_arrow));
 	XMapWindow(display, graphics.window);
@@ -84,6 +90,7 @@ File readFile(char* fileName) {
 
 	File file = { };
 	file.size = fileSize;
+	file.name = fileName;
 	file.content = content;
 
 	return file;
@@ -149,26 +156,23 @@ void handleKeyEvent(Display* display, Input* input, XKeyEvent event) {
 void handleMouseEvent(Input* input, XButtonEvent event) {
 	bool buttonPressed = event.type == ButtonPress;
 	if (buttonPressed) {
-		printf("Mouse button pressed!\n");
+		printf("Mouse button %d pressed!\n", event.button);
 	} else {
-		printf("Mouse button released!\n");
+		printf("Mouse button %d released!\n", event.button);
 	}
 
 	switch (event.button) {
-	case Button1:
-		printf("");
+	case XM_Left:
+		input->shootKey = buttonPressed;
 		break;
-	case Button2:
-		printf("");
+	case XM_Middle:
 		break;
-	case Button3:
-		printf("");
+	case XM_Right:
+		input->shootKey = buttonPressed;
 		break;
-	case Button4:
-		printf("");
+	case XM_ScrollUp:
 		break;
-	case Button5:
-		printf("");
+	case XM_ScrollDown:
 		break;
 	}
 }
@@ -193,17 +197,17 @@ int main() {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &startTime);
 		*newInput = *oldInput;
 
-		while (XCheckMaskEvent(display,
-				Expose | KeyPressMask | KeyReleaseMask | ButtonPressMask
-						| ButtonReleaseMask, &event)) {
-			if (event.type == Expose) {
-				printf("Exposing\n");
-			}
+		while (XCheckMaskEvent(display, EVENTS_MASK, &event)) {
 			if (event.type == KeyPress || event.type == KeyRelease) {
 				handleKeyEvent(display, newInput, event.xkey);
 			}
 			if (event.type == ButtonPress || event.type == ButtonRelease) {
 				handleMouseEvent(newInput, event.xbutton);
+			}
+
+			if (event.type == MotionNotify) {
+				newInput->mouseX = event.xmotion.x;
+				newInput->mouseY = event.xmotion.y;
 			}
 		}
 

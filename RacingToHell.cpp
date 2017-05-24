@@ -15,8 +15,8 @@ void testGraphics(VideoBuffer *buffer, int color) {
 }
 
 void renderTexture(VideoBuffer *buffer, Texture* texture) {
-	int pos_x = 0;
-	int pos_y = 0;
+	int pos_x = 100;
+	int pos_y = 10;
 
 	for (unsigned y = 0; y < texture->height; y++) {
 		for (unsigned x = 0; x < texture->width; x++) {
@@ -39,15 +39,15 @@ void importPixelData(void* input, void* output, unsigned width,
 			uint8_t g = (color & 0x00ff0000) >> 16;
 			uint8_t b = (color & 0x0000ff00) >> 8;
 			uint8_t a = color & 0x000000ff;
-			((uint32_t*) output)[outputIndex] = (a << 24) + (r << 16) + (g << 8)
-					+ b;
+			color = (a << 24) + (r << 16) + (g << 8) + b;
+			((uint32_t*) output)[outputIndex] = color;
 		}
 	}
 }
 
 Texture readBmpFile(File file) {
 	if (((char*) file.content)[0] != 'B' || ((char*) file.content)[1] != 'M') {
-		fprintf(stderr, "Not a .bmp file.\n");
+		fprintf(stderr, "%s is not a .bmp file.\n", file.name);
 		exit(1);
 	}
 	int fileHeaderSize = 14;
@@ -67,8 +67,7 @@ Texture readBmpFile(File file) {
 
 	importPixelData(((char*) file.content) + header.size + fileHeaderSize,
 			texture.content, header.width, header.height);
-
-	printf("Successfully loaded texture.\n");
+	printf("Successfully loaded %s.\n", file.name);
 	return texture;
 }
 

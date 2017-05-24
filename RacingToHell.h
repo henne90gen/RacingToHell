@@ -15,13 +15,13 @@ struct Texture {
 	void* content;
 };
 
-struct Input
-{
-    unsigned mouseX, mouseY;
+struct Input {
 
-    bool upKey, downKey, leftKey, rightKey;
-    bool pauseKey;
-    bool shootKey;
+	// TODO think about coordinate system for screen
+	unsigned mouseX, mouseY;
+	bool upKey, downKey, leftKey, rightKey;
+	bool pauseKey;
+	bool shootKey;
 };
 
 void updateAndRender(VideoBuffer *buffer, Input *input);

@@ -1,19 +1,25 @@
 #pragma once
-#include "RacingToHell.h"
+#include <stdint.h>
+#include <string>
+
+#define WINDOW_WIDTH 600
+#define WINDOW_HEIGHT 800
+#define WINDOW_TITLE "Racing to Hell"
 
 struct File {
 
 	char* content;
 	size_t size;
-	char* name;
+	std::string name;
 };
 
 struct GameMemory
 {
-    unsigned temporaryMemorySize, permanentMemmorySize;
+    unsigned temporaryMemorySize, permanentMemorySize;
     char *temporary, *permanent;
 
-    unsigned permanentMemmoryOffset = 0;
+    unsigned permanentMemoryOffset = 0;
+    unsigned temporaryMemoryOffset = 0;
 };
 
 #pragma pack(8)
@@ -31,5 +37,5 @@ struct BitmapHeader {
 	uint32_t colorsImportant; /* Minimum number of important colors */
 };
 
-File readFile(char* fileName);
-void deleteFile(File *file);
+File readFile(std::string fileName);
+void freeFile(File *file);

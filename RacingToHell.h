@@ -1,17 +1,16 @@
 #pragma once
 #include <iostream>
-#include <stdint.h>
 #include "platform.h"
 
 struct VideoBuffer {
 
-	unsigned width, height, bytesPerPixel;
+	uint32_t width, height, bytesPerPixel;
 	void* content;
 };
 
 struct Texture {
 
-	unsigned width, height, bytesPerPixel;
+	uint32_t width, height, bytesPerPixel;
 	void* content;
 };
 
@@ -24,10 +23,16 @@ struct Input {
 	bool shootKey;
 };
 
-struct Player
-{
-    float x, y;
-    unsigned health;
+struct Player {
+	float x, y;
+	uint8_t health;
+};
+
+struct GameState {
+	Player player;
+	uint8_t level;
+	uint8_t difficulty;
+
 };
 
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory);

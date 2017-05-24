@@ -41,8 +41,8 @@ GraphicsData initGraphicsData() {
 	};
 
 	VideoBuffer videoBuffer = { };
-	videoBuffer.width = 400;
-	videoBuffer.height = 300;
+	videoBuffer.width = WINDOW_WIDTH;
+	videoBuffer.height = WINDOW_HEIGHT;
 	videoBuffer.bytesPerPixel = 4;
 	videoBuffer.content = malloc(
 			videoBuffer.bytesPerPixel * videoBuffer.width * videoBuffer.height);
@@ -61,9 +61,20 @@ GraphicsData initGraphicsData() {
 			videoBuffer.height, border_width, depth,
 			InputOutput, visual, CWBackPixel, &attributes);
 
+	// set window title
+	XStoreName(graphics.display, graphics.window, WINDOW_TITLE);
+
+	// set icon name
+//	XTextProperty text = XmbTextListToTextProperty(graphics.display, , 1)
+//	XSetWMIconName(graphics.display, graphics.window, text);
+
+	// subscribe to events
 	XSelectInput(graphics.display, graphics.window, EVENTS_MASK);
+
+	// change cursor
 	XDefineCursor(graphics.display, graphics.window,
 			XCreateFontCursor(graphics.display, XC_arrow));
+
 	XMapWindow(graphics.display, graphics.window);
 
 	Atom wmDeleteWindow = XInternAtom(graphics.display, "WM_DELETE_WINDOW", 0);
@@ -79,12 +90,12 @@ GraphicsData initGraphicsData() {
 	return graphics;
 }
 
-File readFile(char* fileName) {
-	printf("Reading %s\n", fileName);
+File readFile(std::string fileName) {
+	printf("Reading %s\n", fileName.c_str());
 
-	FILE *f = fopen(fileName, "rb");
+	FILE *f = fopen(fileName.c_str(), "rb");
 	if (!f) {
-		fprintf(stderr, "Could not open file '%s'\n", fileName);
+		fprintf(stderr, "Could not open file '%s'\n", fileName.c_str());
 		exit(1);
 	}
 	fseek(f, 0, SEEK_END);
@@ -105,7 +116,7 @@ File readFile(char* fileName) {
 	return file;
 }
 
-void deleteFile(File *file)
+void freeFile(File *file)
 {
     if (file->content)
     {
@@ -210,8 +221,8 @@ void correctTiming(timespec startTime) {
 	}
 
 	clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
-	float secondsElapsed = (endTime.tv_nsec - startTime.tv_nsec)
-			/ 1000000000.0f;
+//	float secondsElapsed = (endTime.tv_nsec - startTime.tv_nsec)
+//			/ 1000000000.0f;
 	//		printf("Frametime: %f, Framerate: %f\n", secondsElapsed,
 	//				1.0f / secondsElapsed);
 }
@@ -222,9 +233,9 @@ int main() {
 
     GameMemory memory;
     memory.temporaryMemorySize = 10 * 1024 * 1024;
-    memory.permanentMemmorySize = 100 * 1024 * 1024;
-    memory.temporary = (char*)malloc(memory.temporaryMemorySize);
-    memory.permanent = (char *)memory.temporary + memory.temporaryMemorySize;
+    memory.permanentMemorySize = 100 * 1024 * 1024;
+    memory.temporary = (char*) malloc(memory.temporaryMemorySize);
+    memory.permanent = (char*) malloc(memory.permanentMemorySize);
 
 	Input input[2] = { };
 	Input *oldInput = &input[0];

@@ -202,7 +202,7 @@ File readFile(char *filename)
     return result;
 }
 
-void deleteFile(File *file)
+void freeFile(File *file)
 {
     if (file->content)
     {
@@ -242,8 +242,8 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 
     GameMemory memory;
     memory.temporaryMemorySize = 10 * 1024 * 1024;
-    memory.permanentMemmorySize = 100 * 1024 * 1024;
-    memory.temporary = (char*)VirtualAlloc(0, memory.permanentMemmorySize + memory.temporaryMemorySize, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+    memory.permanentMemorySize = 100 * 1024 * 1024;
+    memory.temporary = (char*)VirtualAlloc(0, memory.permanentMemorySize + memory.temporaryMemorySize, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
     memory.permanent = (char *)memory.temporary + memory.temporaryMemorySize;
 
 	HWND windowHandle = openWindow(instance, show);

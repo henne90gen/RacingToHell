@@ -1,10 +1,13 @@
 #include "RacingToHell.h"
 #include "platform.h"
 #include <math.h>
+#include <sstream>
+#include <string.h>
 
 static bool loaded = false;
 
-static Texture texture;
+static Texture roads[4];
+static GameState gameState;
 
 void clearScreen(VideoBuffer *buffer, int color) {
 	for (unsigned int y = 0; y < buffer->height; y++) {
@@ -14,7 +17,8 @@ void clearScreen(VideoBuffer *buffer, int color) {
 	}
 }
 
-void renderTexture(VideoBuffer *buffer, Texture* texture, int pos_x, int pos_y) {
+void renderTexture(VideoBuffer *buffer, Texture* texture, int pos_x,
+		int pos_y) {
 	for (unsigned y = 0; y < texture->height; y++) {
 		for (unsigned x = 0; x < texture->width; x++) {
 			if (pos_x + x >= buffer->width || pos_y + y >= buffer->height) {
@@ -47,12 +51,11 @@ void importPixelData(void* input, void* output, unsigned width,
 
 Texture readBmpIntoMemory(File file, GameMemory *memory) {
 	if (((char*) file.content)[0] != 'B' || (file.content)[1] != 'M') {
-		fprintf(stderr, "%s is not a .bmp file.\n", file.name);
+		fprintf(stderr, "%s is not a .bmp file.\n", file.name.c_str());
 		exit(1);
 	}
 	int fileHeaderSize = 14;
-	BitmapHeader header = *((BitmapHeader*) (file.content
-			+ fileHeaderSize));
+	BitmapHeader header = *((BitmapHeader*) (file.content + fileHeaderSize));
 
 	if (header.bitsPerPixel != 32) {
 		fprintf(stderr, "Image must have 32-bit colors.");
@@ -63,31 +66,47 @@ Texture readBmpIntoMemory(File file, GameMemory *memory) {
 	texture.width = header.width;
 	texture.height = header.height;
 	texture.bytesPerPixel = header.bitsPerPixel / 8;
-	texture.content = memory->permanent + memory->permanentMemmoryOffset;
+	texture.content = memory->permanent + memory->permanentMemoryOffset;
 
-    memory->permanentMemmoryOffset += header.width * header.height;
+	memory->permanentMemoryOffset += header.width * header.height
+			* texture.bytesPerPixel;
 
-	importPixelData((file.content) + header.size + fileHeaderSize,
+	importPixelData(file.content + header.size + fileHeaderSize,
 			texture.content, header.width, header.height);
-	printf("Successfully loaded %s.\n", file.name);
+	printf("Successfully loaded %s.\n", file.name.c_str());
 	return texture;
+}
+
+void loadTextures(GameMemory *memory) {
+	for (int i = 0; i < 4; i++) {
+		std::stringstream fileName;
+		fileName << "./res/textures/roads/road" << i << ".bmp";
+		File file = readFile(fileName.str());
+		roads[i] = readBmpIntoMemory(file, memory);
+		freeFile(&file);
+	}
+	for (int i = 0; i < 4; i++) {
+		printf("Texture %d: %d\n", i, roads[i].width * roads[i].height);
+	}
 }
 
 void init(GameMemory *memory) {
 	loaded = true;
-	char fileName[] = "sample_32bit.bmp";
-    File file = readFile(fileName);
-	texture = readBmpIntoMemory(file, memory);
-    deleteFile(&file);
+	loadTextures(memory);
+
+	gameState = {};
+	gameState.player = {};
+	gameState.level = 0;
+	gameState.difficulty = 0;
 }
 
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	if (!loaded) {
 		init(memory);
 	}
-//	printf("(%d|%d)\n", input->mouseX, input->mouseY);
-
 	clearScreen(buffer, 0);
-	renderTexture(buffer, &texture, input->mouseX, input->mouseY);
+
+//	printf("(%d|%d)\n", input->mouseX, input->mouseY);
+	renderTexture(buffer, &roads[2], 0, 0);
 //	clearScreen(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8) + (((int)(input->shootKey) * 255) << 16));
 }

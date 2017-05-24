@@ -146,6 +146,33 @@ void handleKeyEvent(Display* display, Input* input, XKeyEvent event) {
 	}
 }
 
+void handleMouseEvent(Input* input, XButtonEvent event) {
+	bool buttonPressed = event.type == ButtonPress;
+	if (buttonPressed) {
+		printf("Mouse button pressed!\n");
+	} else {
+		printf("Mouse button released!\n");
+	}
+
+	switch (event.button) {
+	case Button1:
+		printf("");
+		break;
+	case Button2:
+		printf("");
+		break;
+	case Button3:
+		printf("");
+		break;
+	case Button4:
+		printf("");
+		break;
+	case Button5:
+		printf("");
+		break;
+	}
+}
+
 int main() {
 	Display *display = XOpenDisplay(NULL);
 	if (display == NULL) {
@@ -162,11 +189,13 @@ int main() {
 
 	XEvent event;
 	while (isRunning) {
+		timespec startTime = { };
+		clock_gettime(CLOCK_MONOTONIC_RAW, &startTime);
 		*newInput = *oldInput;
 
 		while (XCheckMaskEvent(display,
-		KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask,
-				&event)) {
+				Expose | KeyPressMask | KeyReleaseMask | ButtonPressMask
+						| ButtonReleaseMask, &event)) {
 			if (event.type == Expose) {
 				printf("Exposing\n");
 			}
@@ -174,7 +203,7 @@ int main() {
 				handleKeyEvent(display, newInput, event.xkey);
 			}
 			if (event.type == ButtonPress || event.type == ButtonRelease) {
-//				handleMouseEvent();
+				handleMouseEvent(newInput, event.xbutton);
 			}
 		}
 
@@ -190,19 +219,23 @@ int main() {
 		oldInput = newInput;
 		newInput = tmp;
 
-//		TODO do game loop timing
-//		uint64_t loopEndCounter = getClockCounter(performanceCountFrequency);
-//		float secondsElapsed = (loopEndCounter - loopStartCount)
-//				/ (float) performanceCountFrequency;
-//
-//		if (secondsElapsed < targetFrameTime) {
-//			Sleep(1000.0f * (targetFrameTime - secondsElapsed));
-//		}
-//
-//		float timePassed = 1000.0f
-//				* (getClockCounter(performanceCountFrequency) - loopStartCount)
-//				/ (float) performanceCountFrequency;
-//		debugString("Frametime: " + std::to_string(timePassed) + '\n');
+		timespec endTime = { };
+		clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
+		long nanoSecondsElapsed = endTime.tv_nsec - startTime.tv_nsec;
+		const float targetFrameTime = 1000000000.0f / 60.0f;
+		if (nanoSecondsElapsed < targetFrameTime) {
+			timespec sleepTime = { };
+			sleepTime.tv_sec = (targetFrameTime - nanoSecondsElapsed)
+					/ 1000000000.0f;
+			sleepTime.tv_nsec = targetFrameTime - nanoSecondsElapsed;
+			nanosleep(&sleepTime, NULL);
+		}
+
+		clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
+		float secondsElapsed = (endTime.tv_nsec - startTime.tv_nsec)
+				/ 1000000000.0f;
+//		printf("Frametime: %f, Framerate: %f\n", secondsElapsed,
+//				1.0f / secondsElapsed);
 	}
 
 	XFreePixmap(display, graphics.pixmap);

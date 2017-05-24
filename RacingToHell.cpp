@@ -28,9 +28,14 @@ void renderTexture(VideoBuffer *buffer, Texture* texture) {
 	}
 }
 
-void getRange(void* input, void* output, int startIndex, int endIndex) {
-	for (int i = 0; i < endIndex - startIndex; i++) {
-		((char*) output)[i] = ((char*) input)[startIndex + i];
+void importPixelData(void* input, void* output, unsigned width,
+		unsigned height) {
+
+	for (unsigned y = 0; y < height; y++) {
+		for (unsigned x = 0; x < width; x++) {
+			int index = y * width + x;
+			((uint32_t*) output)[index] = ((uint32_t*) input)[index];
+		}
 	}
 }
 
@@ -39,38 +44,24 @@ Texture readBmpFile(File file) {
 		fprintf(stderr, "Not a .bmp file.\n");
 		exit(1);
 	}
-
-	void* reader = malloc(4);
-	getRange(file.content, reader, 2, 6);
-	int fileSize = *((int*) reader);
-
 	int fileHeaderSize = 14;
-	getRange(file.content, reader, fileHeaderSize, 18);
-	int bitmapHeaderSize = *((int*) reader);
+	BitmapHeader header = *((BitmapHeader*) ((char*) file.content
+			+ fileHeaderSize));
 
-	getRange(file.content, reader, 18, 22);
-	int width = *((int*) reader);
-
-	getRange(file.content, reader, 22, 26);
-	int height = *((int*) reader);
-
-	reader = malloc(2);
-	getRange(file.content, reader, 26, 28);
-	short colorPlanes = *((short*) reader);
-	getRange(file.content, reader, 28, 30);
-	short bitsPerPixel = *((short*) reader);
-
-	int pixelArraySize = fileSize - (fileHeaderSize + bitmapHeaderSize);
-	reader = malloc(pixelArraySize);
-	getRange(file.content, reader, fileHeaderSize + bitmapHeaderSize, fileSize);
+	if (header.bitsPerPixel != 32) {
+		fprintf(stderr, "Image must have 32-bit colors.");
+		exit(1);
+	}
 
 	Texture texture = { };
-	texture.width = width;
-	texture.height = height;
-	texture.bytesPerPixel = bitsPerPixel / 8;
-	texture.content = malloc(pixelArraySize);
+	texture.width = header.width;
+	texture.height = header.height;
+	texture.bytesPerPixel = header.bitsPerPixel / 8;
+	texture.content = malloc(header.sizeOfBitmap);
 
-	getRange(reader, texture.content, 0, pixelArraySize);
+	importPixelData(((char*)file.content) + header.size + fileHeaderSize, texture.content,
+			header.width, header.height);
+
 	printf("Successfully loaded texture.\n");
 	return texture;
 }

@@ -3,9 +3,17 @@
 
 struct File {
 
-	void* content;
+	char* content;
 	size_t size;
 	char* name;
+};
+
+struct GameMemory
+{
+    unsigned temporaryMemorySize, permanentMemmorySize;
+    char *temporary, *permanent;
+
+    unsigned permanentMemmoryOffset = 0;
 };
 
 #pragma pack(8)
@@ -24,3 +32,4 @@ struct BitmapHeader {
 };
 
 File readFile(char* fileName);
+void deleteFile(File *file);

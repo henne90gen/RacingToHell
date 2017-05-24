@@ -45,13 +45,13 @@ void importPixelData(void* input, void* output, unsigned width,
 	}
 }
 
-Texture readBmpFile(File file) {
-	if (((char*) file.content)[0] != 'B' || ((char*) file.content)[1] != 'M') {
+Texture readBmpIntoMemory(File file, GameMemory *memory) {
+	if (((char*) file.content)[0] != 'B' || (file.content)[1] != 'M') {
 		fprintf(stderr, "%s is not a .bmp file.\n", file.name);
 		exit(1);
 	}
 	int fileHeaderSize = 14;
-	BitmapHeader header = *((BitmapHeader*) ((char*) file.content
+	BitmapHeader header = *((BitmapHeader*) (file.content
 			+ fileHeaderSize));
 
 	if (header.bitsPerPixel != 32) {
@@ -63,23 +63,27 @@ Texture readBmpFile(File file) {
 	texture.width = header.width;
 	texture.height = header.height;
 	texture.bytesPerPixel = header.bitsPerPixel / 8;
-	texture.content = malloc(header.sizeOfBitmap);
+	texture.content = memory->permanent + memory->permanentMemmoryOffset;
 
-	importPixelData(((char*) file.content) + header.size + fileHeaderSize,
+    memory->permanentMemmoryOffset += header.width * header.height;
+
+	importPixelData((file.content) + header.size + fileHeaderSize,
 			texture.content, header.width, header.height);
 	printf("Successfully loaded %s.\n", file.name);
 	return texture;
 }
 
-void init() {
+void init(GameMemory *memory) {
 	loaded = true;
 	char fileName[] = "sample_32bit.bmp";
-	texture = readBmpFile(readFile(fileName));
+    File file = readFile(fileName);
+	texture = readBmpIntoMemory(file, memory);
+    deleteFile(&file);
 }
 
-void updateAndRender(VideoBuffer *buffer, Input *input) {
+void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	if (!loaded) {
-		init();
+		init(memory);
 	}
 //	printf("(%d|%d)\n", input->mouseX, input->mouseY);
 

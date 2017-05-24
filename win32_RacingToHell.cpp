@@ -167,7 +167,7 @@ void drawSomething(OffscreenBuffer *buffer)
 	}
 }
 
-File readEntireFile(char *filename)
+File readFile(char *filename)
 {
     File result = {};
 
@@ -180,7 +180,7 @@ File readEntireFile(char *filename)
         if (GetFileSizeEx(fileHandle, &fileSize))
         {
             size_t fileSize_t = fileSize.QuadPart;
-            result.content = VirtualAlloc(0, fileSize_t, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+            result.content = (char*)VirtualAlloc(0, fileSize_t, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
         
             if (result.content)
             {
@@ -202,7 +202,7 @@ File readEntireFile(char *filename)
     return result;
 }
 
-void FreeFileMemory(File *file)
+void deleteFile(File *file)
 {
     if (file->content)
     {
@@ -239,7 +239,13 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
     uint64_t performanceCountFrequency = frequencyResult.QuadPart;
 
 	resizeOffscreenBuffer(&buffer, 1280, 720);
-	
+
+    GameMemory memory;
+    memory.temporaryMemorySize = 10 * 1024 * 1024;
+    memory.permanentMemmorySize = 100 * 1024 * 1024;
+    memory.temporary = (char*)VirtualAlloc(0, memory.permanentMemmorySize + memory.temporaryMemorySize, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+    memory.permanent = (char *)memory.temporary + memory.temporaryMemorySize;
+
 	HWND windowHandle = openWindow(instance, show);
 
     Input input[2] = { };
@@ -271,6 +277,8 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 
         POINT mousePosition;
         GetCursorPos(&mousePosition);
+        ScreenToClient(windowHandle, &mousePosition);
+
         newInput->mouseX = mousePosition.x;
         newInput->mouseY = mousePosition.y;
 
@@ -282,7 +290,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 		vBuffer.bytesPerPixel = buffer.bytesPerPixel;
 		vBuffer.content = buffer.content;
 		
-		updateAndRender(&vBuffer, newInput);
+		updateAndRender(&vBuffer, newInput, &memory);
 		
 		HDC deviceContext = GetDC(windowHandle);
 		drawBuffer(deviceContext, &buffer);

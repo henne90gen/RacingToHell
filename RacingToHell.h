@@ -24,4 +24,10 @@ struct Input {
 	bool shootKey;
 };
 
-void updateAndRender(VideoBuffer *buffer, Input *input);
+struct Player
+{
+    float x, y;
+    unsigned health;
+};
+
+void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory);

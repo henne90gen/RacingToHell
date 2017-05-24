@@ -105,6 +105,16 @@ File readFile(char* fileName) {
 	return file;
 }
 
+void deleteFile(File *file)
+{
+    if (file->content)
+    {
+        free(file->content);
+    }
+
+    file->size = 0;
+}
+
 void handleKeyEvent(Display* display, Input* input, XKeyEvent event) {
 	if (event.keycode == 9) { // Escape pressed
 		printf("Exiting\n");
@@ -210,6 +220,12 @@ int main() {
 	graphics = initGraphicsData();
 	isRunning = true;
 
+    GameMemory memory;
+    memory.temporaryMemorySize = 10 * 1024 * 1024;
+    memory.permanentMemmorySize = 100 * 1024 * 1024;
+    memory.temporary = (char*)malloc(memory.temporaryMemorySize);
+    memory.permanent = (char *)memory.temporary + memory.temporaryMemorySize;
+
 	Input input[2] = { };
 	Input *oldInput = &input[0];
 	Input *newInput = &input[1];
@@ -242,7 +258,7 @@ int main() {
 			break;
 		}
 
-		updateAndRender(&graphics.videoBuffer, newInput);
+		updateAndRender(&graphics.videoBuffer, newInput, &memory);
 
 		// swapping buffer
 		XPutImage(graphics.display, graphics.pixmap, graphics.gc,

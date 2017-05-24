@@ -2,7 +2,6 @@
 #include "platform.h"
 #include <math.h>
 
-static int counter = 0;
 static bool loaded = false;
 
 static Texture texture;

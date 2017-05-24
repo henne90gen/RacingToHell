@@ -4,7 +4,14 @@
 #include <X11/X.h>
 #include <X11/Xlib.h>
 
+#include "platform.h"
 #include "RacingToHell.h"
+
+#define XK_W 25
+#define XK_A 38
+#define XK_S 39
+#define XK_D 40
+#define XK_Space 65
 
 struct GraphicsData {
 	Display* display;
@@ -15,6 +22,7 @@ struct GraphicsData {
 	VideoBuffer videoBuffer;
 };
 
+static bool isRunning;
 static GraphicsData graphics;
 
 GraphicsData initGraphicsData(Display *display) {
@@ -40,7 +48,8 @@ GraphicsData initGraphicsData(Display *display) {
 			videoBuffer.width, videoBuffer.height, border_width, depth,
 			InputOutput, visual, CWBackPixel, &attributes);
 
-	XSelectInput(display, graphics.window, ExposureMask | KeyPressMask);
+	XSelectInput(display, graphics.window,
+	KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask);
 	XDefineCursor(display, graphics.window,
 			XCreateFontCursor(display, XC_box_spiral));
 	XMapWindow(display, graphics.window);
@@ -73,11 +82,68 @@ File readFile(char* fileName) {
 
 	content[fileSize] = 0; // 0-terminated
 
-	File file = {};
+	File file = { };
 	file.size = fileSize;
 	file.content = content;
 
 	return file;
+}
+
+void handleKeyEvent(Display* display, Input* input, XKeyEvent event) {
+	if (event.keycode == 9) { // Escape pressed
+		printf("Exiting\n");
+		isRunning = false;
+		return;
+	}
+
+	bool keyPressed = event.type == KeyPress;
+	if (!keyPressed) {
+		while (XEventsQueued(display, QueuedAfterReading)) {
+			XEvent nextEvent;
+			XPeekEvent(display, &nextEvent);
+
+			// FIXME getting a lot of NoExpose for some reason
+			if (nextEvent.type == NoExpose) {
+				XNextEvent(display, &nextEvent);
+				continue;
+			}
+
+			if (nextEvent.type == KeyPress && nextEvent.xkey.time == event.time
+					&& nextEvent.xkey.keycode == event.keycode) {
+				// key wasn't acutally released
+				return;
+			}
+		}
+	}
+
+	switch (event.keycode) {
+	case XK_W:
+		input->upKey = keyPressed;
+		printf("Pressed W\n");
+		break;
+	case XK_A:
+		input->leftKey = keyPressed;
+		printf("Pressed A\n");
+		break;
+	case XK_S:
+		input->downKey = keyPressed;
+		printf("Pressed S\n");
+		break;
+	case XK_D:
+		input->rightKey = keyPressed;
+		printf("Pressed D\n");
+		break;
+	case XK_Space:
+		input->shootKey = keyPressed;
+		printf("Pressed Space\n");
+		break;
+	}
+
+	if (keyPressed) {
+		printf("Button %d pressed\n", event.keycode);
+	} else {
+		printf("Button %d released\n", event.keycode);
+	}
 }
 
 int main() {
@@ -87,34 +153,56 @@ int main() {
 		exit(1);
 	};
 
+	isRunning = true;
 	graphics = initGraphicsData(display);
 
-	XEvent e;
-	while (1) {
-		while (XCheckMaskEvent(display, ExposureMask | KeyPressMask, &e)) {
-			if (e.type == Expose) {
+	Input input[2];
+	Input *oldInput = &input[0];
+	Input *newInput = &input[1];
+
+	XEvent event;
+	while (isRunning) {
+		*newInput = *oldInput;
+
+		while (XCheckMaskEvent(display,
+		KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask,
+				&event)) {
+			if (event.type == Expose) {
 				printf("Exposing\n");
 			}
-			if (e.type == KeyPress) {
-				printf("Button %d pressed\n", e.xkey.keycode);
-				if (e.xbutton.button == 9) { // Escape pressed
-					printf("Exiting\n");
-					XFreePixmap(display, graphics.pixmap);
-					XCloseDisplay(display);
-					return 0;
-				}
+			if (event.type == KeyPress || event.type == KeyRelease) {
+				handleKeyEvent(display, newInput, event.xkey);
+			}
+			if (event.type == ButtonPress || event.type == ButtonRelease) {
+//				handleMouseEvent();
 			}
 		}
 
-		Input input = { };
-
-		updateAndRender(&graphics.videoBuffer, &input);
+		updateAndRender(&graphics.videoBuffer, newInput);
 
 		// swapping buffer
 		XPutImage(display, graphics.pixmap, graphics.gc, graphics.image, 0, 0,
 				0, 0, graphics.videoBuffer.width, graphics.videoBuffer.height);
 		XCopyArea(display, graphics.pixmap, graphics.window, graphics.gc, 0, 0,
 				graphics.videoBuffer.width, graphics.videoBuffer.height, 0, 0);
+
+		Input *tmp = oldInput;
+		oldInput = newInput;
+		newInput = tmp;
+
+//		TODO do game loop timing
+//		uint64_t loopEndCounter = getClockCounter(performanceCountFrequency);
+//		float secondsElapsed = (loopEndCounter - loopStartCount)
+//				/ (float) performanceCountFrequency;
+//
+//		if (secondsElapsed < targetFrameTime) {
+//			Sleep(1000.0f * (targetFrameTime - secondsElapsed));
+//		}
+//
+//		float timePassed = 1000.0f
+//				* (getClockCounter(performanceCountFrequency) - loopStartCount)
+//				/ (float) performanceCountFrequency;
+//		debugString("Frametime: " + std::to_string(timePassed) + '\n');
 	}
 
 	XFreePixmap(display, graphics.pixmap);

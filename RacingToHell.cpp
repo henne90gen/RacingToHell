@@ -30,11 +30,17 @@ void renderTexture(VideoBuffer *buffer, Texture* texture) {
 
 void importPixelData(void* input, void* output, unsigned width,
 		unsigned height) {
-
 	for (unsigned y = 0; y < height; y++) {
 		for (unsigned x = 0; x < width; x++) {
-			int index = y * width + x;
-			((uint32_t*) output)[index] = ((uint32_t*) input)[index];
+			int inputIndex = (height - y) * width + x;
+			int outputIndex = y * width + x;
+			uint32_t color = ((uint32_t*) input)[inputIndex];
+			uint8_t r = (color & 0xff000000) >> 24;
+			uint8_t g = (color & 0x00ff0000) >> 16;
+			uint8_t b = (color & 0x0000ff00) >> 8;
+			uint8_t a = color & 0x000000ff;
+			((uint32_t*) output)[outputIndex] = (a << 24) + (r << 16) + (g << 8)
+					+ b;
 		}
 	}
 }
@@ -59,8 +65,8 @@ Texture readBmpFile(File file) {
 	texture.bytesPerPixel = header.bitsPerPixel / 8;
 	texture.content = malloc(header.sizeOfBitmap);
 
-	importPixelData(((char*)file.content) + header.size + fileHeaderSize, texture.content,
-			header.width, header.height);
+	importPixelData(((char*) file.content) + header.size + fileHeaderSize,
+			texture.content, header.width, header.height);
 
 	printf("Successfully loaded texture.\n");
 	return texture;

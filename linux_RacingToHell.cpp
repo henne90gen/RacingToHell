@@ -51,7 +51,7 @@ GraphicsData initGraphicsData(Display *display) {
 	XSelectInput(display, graphics.window,
 	KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask);
 	XDefineCursor(display, graphics.window,
-			XCreateFontCursor(display, XC_box_spiral));
+			XCreateFontCursor(display, XC_arrow));
 	XMapWindow(display, graphics.window);
 
 	graphics.gc = XDefaultGC(display, screen);

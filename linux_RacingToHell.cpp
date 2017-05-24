@@ -186,6 +186,26 @@ void handleMouseEvent(Input* input, XButtonEvent event) {
 	}
 }
 
+void correctTiming(timespec startTime) {
+	timespec endTime = { };
+	clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
+	long nanoSecondsElapsed = endTime.tv_nsec - startTime.tv_nsec;
+	const float targetFrameTime = 1000000000.0f / 60.0f;
+	if (nanoSecondsElapsed < targetFrameTime) {
+		timespec sleepTime = { };
+		sleepTime.tv_sec = (targetFrameTime - nanoSecondsElapsed)
+				/ 1000000000.0f;
+		sleepTime.tv_nsec = targetFrameTime - nanoSecondsElapsed;
+		nanosleep(&sleepTime, NULL);
+	}
+
+	clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
+	float secondsElapsed = (endTime.tv_nsec - startTime.tv_nsec)
+			/ 1000000000.0f;
+	//		printf("Frametime: %f, Framerate: %f\n", secondsElapsed,
+	//				1.0f / secondsElapsed);
+}
+
 int main() {
 	graphics = initGraphicsData();
 	isRunning = true;
@@ -236,23 +256,7 @@ int main() {
 		oldInput = newInput;
 		newInput = tmp;
 
-		timespec endTime = { };
-		clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
-		long nanoSecondsElapsed = endTime.tv_nsec - startTime.tv_nsec;
-		const float targetFrameTime = 1000000000.0f / 60.0f;
-		if (nanoSecondsElapsed < targetFrameTime) {
-			timespec sleepTime = { };
-			sleepTime.tv_sec = (targetFrameTime - nanoSecondsElapsed)
-					/ 1000000000.0f;
-			sleepTime.tv_nsec = targetFrameTime - nanoSecondsElapsed;
-			nanosleep(&sleepTime, NULL);
-		}
-
-		clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
-		float secondsElapsed = (endTime.tv_nsec - startTime.tv_nsec)
-				/ 1000000000.0f;
-//		printf("Frametime: %f, Framerate: %f\n", secondsElapsed,
-//				1.0f / secondsElapsed);
+		correctTiming(startTime);
 	}
 
 	XFreePixmap(graphics.display, graphics.pixmap);

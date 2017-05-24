@@ -6,7 +6,7 @@ static bool loaded = false;
 
 static Texture texture;
 
-void testGraphics(VideoBuffer *buffer, int color) {
+void clearScreen(VideoBuffer *buffer, int color) {
 	for (unsigned int y = 0; y < buffer->height; y++) {
 		for (unsigned int x = 0; x < buffer->width; x++) {
 			((int*) buffer->content)[y * buffer->width + x] = color;
@@ -14,12 +14,12 @@ void testGraphics(VideoBuffer *buffer, int color) {
 	}
 }
 
-void renderTexture(VideoBuffer *buffer, Texture* texture) {
-	int pos_x = 100;
-	int pos_y = 10;
-
+void renderTexture(VideoBuffer *buffer, Texture* texture, int pos_x, int pos_y) {
 	for (unsigned y = 0; y < texture->height; y++) {
 		for (unsigned x = 0; x < texture->width; x++) {
+			if (pos_x + x >= buffer->width || pos_y + y >= buffer->height) {
+				continue;
+			}
 			int bufferIndex = buffer->width * (pos_y + y) + pos_x + x;
 			int textureIndex = y * texture->width + x;
 			((int*) buffer->content)[bufferIndex] =
@@ -81,7 +81,9 @@ void updateAndRender(VideoBuffer *buffer, Input *input) {
 	if (!loaded) {
 		init();
 	}
-	printf("(%d|%d)\n", input->mouseX, input->mouseY);
-	renderTexture(buffer, &texture);
-//	testGraphics(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8) + (((int)(input->shootKey) * 255) << 16));
+//	printf("(%d|%d)\n", input->mouseX, input->mouseY);
+
+	clearScreen(buffer, 0);
+	renderTexture(buffer, &texture, input->mouseX, input->mouseY);
+//	clearScreen(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8) + (((int)(input->shootKey) * 255) << 16));
 }

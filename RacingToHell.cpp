@@ -122,7 +122,7 @@ void init(GameMemory *memory) {
 
 int getRoadSpeed() {
 	// FIXME balance road speed
-	return gameState.level * 10 + 1;
+	return gameState.level * 10 + 10;
 }
 
 Texture* getCurrentRoad() {
@@ -137,7 +137,7 @@ void updateAndRenderRoad(VideoBuffer *buffer) {
 	Texture* road = getCurrentRoad();
 	road->y = gameState.roadPosition;
 	renderTexture(buffer, getCurrentRoad());
-	road->y -= 800;
+	road->y -= 799;
 	renderTexture(buffer, getCurrentRoad());
 }
 

@@ -129,27 +129,15 @@ Texture* getCurrentRoad() {
 	return &roads[gameState.level % 4];
 }
 
-/**
- * roadIndex is referring to whether its the top part of the road or the bottom part
- */
-void moveRoad(int roadIndex) {
-	if (!roadIndex) {
-		gameState.roadPosition += getRoadSpeed();
-		if (gameState.roadPosition >= 800) {
-			gameState.roadPosition = 0;
-		}
+void updateAndRenderRoad(VideoBuffer *buffer) {
+	gameState.roadPosition += getRoadSpeed();
+	if (gameState.roadPosition >= 800) {
+		gameState.roadPosition = 0;
 	}
 	Texture* road = getCurrentRoad();
 	road->y = gameState.roadPosition;
-	if (roadIndex) {
-		road->y -= 800;
-	}
-}
-
-void renderRoad(VideoBuffer *buffer) {
-	moveRoad(0);
 	renderTexture(buffer, getCurrentRoad());
-	moveRoad(1);
+	road->y -= 800;
 	renderTexture(buffer, getCurrentRoad());
 }
 
@@ -161,6 +149,6 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 
 	printf("RoadPosition: %d\n", gameState.roadPosition);
 
-	renderRoad(buffer);
+	updateAndRenderRoad(buffer);
 //	clearScreen(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8) + (((int)(input->shootKey) * 255) << 16));
 }

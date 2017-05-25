@@ -6,13 +6,16 @@
 
 static bool loaded = false;
 
+static int counter = 0;
+
 static Texture roads[4];
+static Texture cars;
 static GameState gameState;
 
 void clearScreen(VideoBuffer *buffer, int color) {
 	for (unsigned int y = 0; y < buffer->height; y++) {
 		for (unsigned int x = 0; x < buffer->width; x++) {
-			((int*) buffer->content)[y * buffer->width + x] = color;
+            ((uint32_t*)buffer->content)[y * buffer->width + x] = color;
 		}
 	}
 }
@@ -26,17 +29,53 @@ void renderTexture(VideoBuffer *buffer, Texture* texture, int pos_x,
 			}
 			int bufferIndex = buffer->width * (pos_y + y) + pos_x + x;
 			int textureIndex = y * texture->width + x;
+
 			((int*) buffer->content)[bufferIndex] =
 					((int*) texture->content)[textureIndex];
 		}
 	}
 }
 
+void renderTextureAlpha(VideoBuffer *buffer, Texture* texture, unsigned offsetX, unsigned offsetY)
+{
+    uint32_t *currentBufferPixel = (uint32_t *)buffer->content + offsetY * buffer->width + offsetX;
+    uint32_t *currentTexturePixel = (uint32_t *)texture->content;
+
+    for (unsigned y = 0; y < texture->height; ++y)
+    {
+        for (unsigned x = 0; x < texture->width; ++x)
+        {
+            uint8_t *currentBufferPixel8 = (uint8_t *)currentBufferPixel;
+            uint8_t *currentTexturePixel8 = (uint8_t *)currentTexturePixel;
+
+            uint8_t textureB = *currentTexturePixel8++;
+            uint8_t textureG = *currentTexturePixel8++;
+            uint8_t textureR = *currentTexturePixel8++;
+            uint8_t textureA = *currentTexturePixel8++;
+
+            uint8_t bufferA = *(uint8_t *)currentBufferPixel;
+
+            float textureAlpha = textureA / 255.0f;
+            float bufferAlpha = bufferA / 255.0f;
+
+            *currentBufferPixel8++ = (uint8_t)((1.0f - textureAlpha) * *currentBufferPixel8) + (uint8_t)(textureAlpha * textureB); 
+            *currentBufferPixel8++ = (uint8_t)((1.0f - textureAlpha) * *currentBufferPixel8) + (uint8_t)(textureAlpha * textureG);
+            *currentBufferPixel8++ = (uint8_t)((1.0f - textureAlpha) * *currentBufferPixel8) + (uint8_t)(textureAlpha * textureR);
+            *currentBufferPixel8++;// = 0; //Overflow?
+
+            currentBufferPixel++;
+            currentTexturePixel++;
+        }
+
+        currentBufferPixel = (uint32_t *)buffer->content + (offsetY + y + 1) * buffer->width + offsetX;
+    }
+}
+
 void importPixelData(void* input, void* output, unsigned width,
 		unsigned height) {
 	for (unsigned y = 0; y < height; y++) {
 		for (unsigned x = 0; x < width; x++) {
-			int inputIndex = (height - y) * width + x;
+			int inputIndex = (height - y - 1) * width + x;
 			int outputIndex = y * width + x;
 			uint32_t color = ((uint32_t*) input)[inputIndex];
 			uint8_t r = (color & 0xff000000) >> 24;
@@ -86,8 +125,13 @@ void loadTextures(GameMemory *memory) {
 		freeFile(&file);
 	}
 	for (int i = 0; i < 4; i++) {
-		printf("Texture %d: %d\n", i, roads[i].width * roads[i].height);
+		//printf("Texture %d: %d\n", i, roads[i].width * roads[i].height);
 	}
+
+    std::string carSprites = "./res/textures/cars/cars.bmp";
+    File carFile = readFile(carSprites);
+    cars = readBmpIntoMemory(carFile, memory);
+    freeFile(&carFile);
 }
 
 void init(GameMemory *memory) {
@@ -104,9 +148,11 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	if (!loaded) {
 		init(memory);
 	}
-	clearScreen(buffer, 0);
+	clearScreen(buffer, (255 + counter));
+    //counter++;
 
 //	printf("(%d|%d)\n", input->mouseX, input->mouseY);
-	renderTexture(buffer, &roads[2], 0, 0);
+	//renderTexture(buffer, &roads[2], 0, 0);
+    renderTextureAlpha(buffer, &cars, 0, 0);
 //	clearScreen(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8) + (((int)(input->shootKey) * 255) << 16));
 }

@@ -253,7 +253,7 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 //	clearScreen(buffer, 0);
 	//printf("RoadPosition: %d\n", gameState.roadPosition);
 
-	updateAndRenderRoad(buffer);
+//	updateAndRenderRoad(buffer);
 
 //	renderTextureAlpha(buffer, &cars, 0, 0);
 

@@ -5,6 +5,7 @@
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include <X11/Xatom.h>
 #include <cstdio>
 #include <ctime>
 #include <string>
@@ -36,6 +37,7 @@ long int EVENTS_MASK = KeyPressMask | KeyReleaseMask | ButtonPressMask
 		| ButtonReleaseMask | PointerMotionMask;
 static bool isRunning;
 static GraphicsData graphics;
+Pixmap icon_pixmap;
 
 GraphicsData initGraphicsData(GameMemory *memory) {
 	GraphicsData graphics = { };
@@ -55,9 +57,9 @@ GraphicsData initGraphicsData(GameMemory *memory) {
 
 	int screen = DefaultScreen(graphics.display);
 	int depth = DefaultDepth(graphics.display, screen);
-	int x = 500;
-	int y = 300;
-	int border_width = 5;
+	int x = 0;
+	int y = 0;
+	int border_width = 0;
 	graphics.window = XCreateSimpleWindow(graphics.display,
 			RootWindow(graphics.display, screen), x, y, videoBuffer.width,
 			videoBuffer.height, border_width,
@@ -68,7 +70,7 @@ GraphicsData initGraphicsData(GameMemory *memory) {
 	XStoreName(graphics.display, graphics.window, WINDOW_TITLE);
 
 	// set icon name
-	XSetIconName(graphics.display, graphics.window, "RtH");
+	XSetIconName(graphics.display, graphics.window, WINDOW_TITLE);
 
 	// set class name
 	XClassHint* classHint = XAllocClassHint();
@@ -77,36 +79,27 @@ GraphicsData initGraphicsData(GameMemory *memory) {
 	classHint->res_class = name;
 	XSetClassHint(graphics.display, graphics.window, classHint);
 
-	// set icon size
-	XIconSize iconSize = *XAllocIconSize();
-	iconSize.min_width = 256;
-	iconSize.min_height = 256;
-	iconSize.max_width = 256;
-	iconSize.max_height = 256;
-	XSetIconSizes(graphics.display, graphics.window, &iconSize, 1);
-
 	// set icon
-	Pixmap icon_pixmap;
-	unsigned width, height;
-	int x_hot, y_hot;
-	if (XReadBitmapFile(graphics.display, graphics.window, "./res/icon.xbm",
-			&width, &height, &icon_pixmap, &x_hot, &y_hot) != BitmapSuccess) {
-		fprintf(stderr, "Couldn't load icon.\n");
-		exit(1);
-	}
+	Atom iconAtom = XInternAtom(graphics.display, "_NET_WM_ICON", 0);
+	File file = readFile("./res/icon.bmp");
+	Texture texture = readBmpIntoMemory(file, memory);
+	int propsize= 2 + (texture.width * texture.height);
+	long *propdata = (long*) malloc(propsize * sizeof(long));
 
-	XWMHints* wmHints = XAllocWMHints();
-	if (!wmHints) {
-		fprintf(stderr, "Couldn't allocate window hints.\n");
-		exit(1);
+	propdata[0] = texture.width;
+	propdata[1] = texture.height;
+	uint32_t *src;
+	long *dst = &propdata[2];
+	for (unsigned y = 0; y < texture.height; ++y) {
+		src =
+				(uint32_t*) ((uint8_t*) texture.content
+						+ y * (texture.width * 4));
+		for (unsigned x = 0; x < texture.width; ++x) {
+			*dst++ = *src++;
+		}
 	}
-	wmHints->flags = IconPixmapHint | StateHint | IconPositionHint;
-	wmHints->icon_pixmap = icon_pixmap;
-	wmHints->initial_state = NormalState;
-	wmHints->icon_x = 0;
-	wmHints->icon_y = 0;
-	XSetWMHints(graphics.display, graphics.window, wmHints);
-	XFree(wmHints);
+	XChangeProperty(graphics.display, graphics.window, iconAtom, XA_CARDINAL,
+			32, PropModeReplace, (unsigned char *) propdata, propsize);
 
 	// subscribe to events
 	XSelectInput(graphics.display, graphics.window, EVENTS_MASK);
@@ -293,6 +286,7 @@ int main() {
 		XCopyArea(graphics.display, graphics.pixmap, graphics.window,
 				graphics.gc, 0, 0, graphics.videoBuffer.width,
 				graphics.videoBuffer.height, 0, 0);
+		XSync(graphics.display, false);
 
 		Input *tmp = oldInput;
 		oldInput = newInput;

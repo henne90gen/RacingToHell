@@ -15,7 +15,7 @@ static GameState gameState;
 void clearScreen(VideoBuffer *buffer, int color) {
 	for (unsigned int y = 0; y < buffer->height; y++) {
 		for (unsigned int x = 0; x < buffer->width; x++) {
-            ((uint32_t*)buffer->content)[y * buffer->width + x] = color;
+            ((uint32_t*)buffer->content)[y * buffer->width + x] = color + (255 << 24);
 		}
 	}
 }
@@ -58,11 +58,20 @@ void renderTextureAlpha(VideoBuffer *buffer, Texture* texture, unsigned offsetX,
             float textureAlpha = textureA / 255.0f;
             float bufferAlpha = bufferA / 255.0f;
 
-            *currentBufferPixel8++ = (uint8_t)((1.0f - textureAlpha) * *currentBufferPixel8) + (uint8_t)(textureAlpha * textureB); 
-            *currentBufferPixel8++ = (uint8_t)((1.0f - textureAlpha) * *currentBufferPixel8) + (uint8_t)(textureAlpha * textureG);
-            *currentBufferPixel8++ = (uint8_t)((1.0f - textureAlpha) * *currentBufferPixel8) + (uint8_t)(textureAlpha * textureR);
-            *currentBufferPixel8++;// = 0; //Overflow?
+            float resultAlpha = textureAlpha + bufferAlpha * (1.0f - textureAlpha);
 
+            if (resultAlpha == 0.0f)
+            {
+                *currentBufferPixel = 0;
+            }
+            else
+            {
+                *currentBufferPixel8++ = (uint8_t)(((bufferAlpha * (1.0f - textureAlpha) * *currentBufferPixel8) + (textureAlpha * textureB)) / resultAlpha);
+                *currentBufferPixel8++ = (uint8_t)(((bufferAlpha * (1.0f - textureAlpha) * *currentBufferPixel8) + (textureAlpha * textureG)) / resultAlpha);
+                *currentBufferPixel8++ = (uint8_t)(((bufferAlpha * (1.0f - textureAlpha) * *currentBufferPixel8) + (textureAlpha * textureR)) / resultAlpha);
+                *currentBufferPixel8++ = (uint8_t)(resultAlpha * 255.0f);
+            }
+        
             currentBufferPixel++;
             currentTexturePixel++;
         }
@@ -148,7 +157,7 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	if (!loaded) {
 		init(memory);
 	}
-	clearScreen(buffer, (255 + counter));
+	clearScreen(buffer, (255));
     //counter++;
 
 //	printf("(%d|%d)\n", input->mouseX, input->mouseY);

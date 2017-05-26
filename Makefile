@@ -3,6 +3,7 @@ ifeq ($(OS), Windows_NT)
 	PLATFORM_FLAGS := -mwindows
     CL_FLAGS := -Od -MT -nologo -GR- -Gm- -EHa- -Oi -FC -Zi
     CL_LINKER := -opt:ref -incremental:no user32.lib gdi32.lib winmm.lib
+	GCC_LINKER := -lwinmm -luser32 -lgdi32
 	EXTENSION := .exe
 	CLEAN_CMD := del *$(EXTENSION)
 else
@@ -15,7 +16,7 @@ endif
 GCC_FLAGS := -Wall -g -O0
 
 all:
-	g++ $(GCC_FLAGS) $(PLATFORM_FLAGS) $(PLATFORM_FILE) RacingToHell.cpp -o RacingToHell$(EXTENSION)
+	g++ $(GCC_FLAGS) $(PLATFORM_FLAGS) $(PLATFORM_FILE) RacingToHell.cpp -o RacingToHell$(EXTENSION) $(GCC_LINKER)
 
 cl:
 	cl $(CL_FLAGS) RacingToHell.cpp $(PLATFORM_FILE) -o bin/RacingToHell$(EXTENSION) -link $(CL_LINKER)

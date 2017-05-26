@@ -231,6 +231,10 @@ void debugString(std::string s)
 
 int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 {
+	// flush stdout and stderr to console
+	setvbuf(stdout, NULL, _IONBF, 0);
+	setvbuf(stderr, NULL, _IONBF, 0);
+	
     const float targetFrameTime = 1.0f / 60.0f;
     INT desiredSchedulerMS = 1;
     timeBeginPeriod(desiredSchedulerMS);

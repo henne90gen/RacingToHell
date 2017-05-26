@@ -210,6 +210,6 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 
 	//printf("RoadPosition: %d\n", gameState.roadPosition);
 
-	updateAndRenderRoad(buffer);
+	//updateAndRenderRoad(buffer);
 //	clearScreen(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8) + (((int)(input->shootKey) * 255) << 16));
 }

@@ -1,8 +1,9 @@
-#include "RacingToHell.h"
-#include "platform.h"
 #include <math.h>
 #include <sstream>
 #include <string.h>
+#include "RacingToHell.h"
+#include "platform.h"
+#include "Font.h"
 
 static bool loaded = false;
 static int counter = 0;
@@ -101,7 +102,8 @@ void renderBackgroundTexture(VideoBuffer *buffer, Texture* texture) {
 	}
 }
 
-// FIXME this can only render textures that are completely on screen
+// FIXME can't render textures that are partially on screen
+// FIXME use coordinates of texture instead of offsetX and offsetY
 void renderTextureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 		int offsetY) {
 	uint32_t *currentBufferPixel = (uint32_t *) buffer->content
@@ -235,6 +237,8 @@ void loadFont(GameMemory *memory) {
 	font.size = file.size;
 	font.content = file.content;
 	printf("Font size: %d\n", (int) font.size);
+
+	freeFile(&file);
 	return;
 }
 
@@ -245,7 +249,7 @@ void init(GameMemory *memory) {
 
 	gameState = {};
 	gameState.player = {};
-	gameState.level = 3;
+	gameState.level = 0;
 	gameState.difficulty = 0;
 	gameState.roadPosition = 0;
 }
@@ -261,7 +265,6 @@ Texture* getCurrentRoad() {
 
 void updateAndRenderRoad(VideoBuffer *buffer) {
 	gameState.roadPosition += getRoadSpeed();
-
 	if (gameState.roadPosition >= 800) {
 		gameState.roadPosition = 0;
 	}
@@ -282,4 +285,6 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	updateAndRenderRoad(buffer);
 
 	renderTextureAlpha(buffer, &cars, 0, 0);
+
+	renderText(buffer, 'A', 100, 200);
 }

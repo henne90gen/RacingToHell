@@ -211,7 +211,7 @@ void handleMouseEvent(Input* input, XButtonEvent event) {
 	}
 }
 
-void correctTiming(timespec startTime) {
+void correctTiming(timespec startTime, bool consoleOutput) {
 	timespec endTime = { };
 	clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
 	if (endTime.tv_nsec < startTime.tv_nsec) {
@@ -224,14 +224,16 @@ void correctTiming(timespec startTime) {
 		sleepTime.tv_sec = (targetFrameTime - nanoSecondsElapsed)
 				/ 1000000000.0f;
 		sleepTime.tv_nsec = targetFrameTime - nanoSecondsElapsed;
-//		nanosleep(&sleepTime, NULL);
+		nanosleep(&sleepTime, NULL);
 	}
 
 	clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
 	float milliSecondsElapsed = (endTime.tv_nsec - startTime.tv_nsec)
 			/ 1000000.0f;
-	printf("Frametime: %fms, Framerate: %f\n", milliSecondsElapsed,
-			1.0f / milliSecondsElapsed * 1000.0f);
+	if (consoleOutput) {
+		printf("Frametime: %fms, Framerate: %f\n", milliSecondsElapsed,
+				1.0f / milliSecondsElapsed * 1000.0f);
+	}
 }
 
 int main() {
@@ -291,7 +293,7 @@ int main() {
 		oldInput = newInput;
 		newInput = tmp;
 
-		correctTiming(startTime);
+		correctTiming(startTime, 0);
 	}
 
 	XCloseDisplay(graphics.display);

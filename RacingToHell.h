@@ -15,6 +15,11 @@ struct Texture {
 	void* content;
 };
 
+struct GameFont {
+	size_t size;
+	void* content;
+};
+
 struct Input {
 
 	// TODO think about coordinate system for screen

@@ -109,8 +109,18 @@ void loadTextures(GameMemory *memory) {
 	}
 }
 
+void loadFont(GameMemory *memory) {
+	File file = readFile("./res/font/arial.ttf");
+	GameFont font = {};
+	font.size = file.size;
+	font.content = file.content;
+	printf("Font size: %d\n", (int)font.size);
+	return;
+}
+
 void init(GameMemory *memory) {
 	loaded = true;
+	loadFont(memory);
 	loadTextures(memory);
 
 	gameState = {};
@@ -147,8 +157,8 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	}
 	clearScreen(buffer, 0);
 
-	printf("RoadPosition: %d\n", gameState.roadPosition);
-
 	updateAndRenderRoad(buffer);
+
+
 //	clearScreen(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8) + (((int)(input->shootKey) * 255) << 16));
 }

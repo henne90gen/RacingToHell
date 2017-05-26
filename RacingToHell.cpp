@@ -48,7 +48,8 @@ void renderTexture(VideoBuffer *buffer, Texture* texture) {
 			}
 			int bufferIndex = buffer->width * (texture->y + y) + texture->x + x;
 			int textureIndex = y * texture->width + x;
-			((int*) buffer->content)[bufferIndex] = ((int*) (texture->content))[textureIndex];
+			((int*) buffer->content)[bufferIndex] =
+					((int*) (texture->content))[textureIndex];
 		}
 	}
 }
@@ -61,8 +62,9 @@ void renderTextureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 
 	for (unsigned y = 0; y < texture->height; ++y) {
 		for (unsigned x = 0; x < texture->width; ++x) {
-			if (offsetX + x >= buffer->width
-					|| offsetY + y >= buffer->height) {
+			if (offsetX + x >= buffer->width || offsetY + y >= buffer->height) {
+				currentBufferPixel++;
+				currentTexturePixel++;
 				continue;
 			}
 
@@ -216,16 +218,19 @@ void updateAndRenderRoad(VideoBuffer *buffer) {
 	}
 	Texture* road = getCurrentRoad();
 	road->y = gameState.roadPosition;
-	renderTextureAlpha(buffer, getCurrentRoad(), getCurrentRoad()->x, getCurrentRoad()->y);
+	renderTextureAlpha(buffer, getCurrentRoad(), getCurrentRoad()->x,
+			getCurrentRoad()->y);
 	road->y -= 799;
-	renderTextureAlpha(buffer, getCurrentRoad(), getCurrentRoad()->x, getCurrentRoad()->y);
+	renderTextureAlpha(buffer, getCurrentRoad(), getCurrentRoad()->x,
+			getCurrentRoad()->y);
 }
 
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	if (!loaded) {
 		init(memory);
 	}
-	counter++;
+	printf("%d\n", counter++);
+
 	clearScreen(buffer, 0);
 	//printf("RoadPosition: %d\n", gameState.roadPosition);
 

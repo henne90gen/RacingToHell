@@ -66,8 +66,35 @@ void renderTexture(VideoBuffer *buffer, Texture* texture) {
 			int bufferIndex = buffer->width * (texture->y + y) + texture->x + x;
 			int textureIndex = y * texture->width + x;
 			((int*) buffer->content)[bufferIndex] =
-					((int*) (texture->content))[textureIndex];
+			((int*) (texture->content))[textureIndex];
 		}
+	}
+}
+
+#define MIN(a, b) ((a < b) ? a : b)
+#define MAX(a, b) ((a > b) ? a : b)
+#define ABS(a) ((a < 0) ? -a : a)
+
+void renderBackgroundTexture(VideoBuffer *buffer, Texture* texture) {
+	if (texture->y < -(int32_t) texture->height
+			|| texture->y > (int32_t) texture->height) {
+		return;
+	}
+
+	uint32_t *currentTexturePixel = (uint32_t *) texture->content
+			- MIN(texture->y * (int32_t )texture->width, 0);
+	uint32_t *currentBufferPixel = (uint32_t *) buffer->content
+			+ MAX(0, texture->y * (int32_t )buffer->width);
+
+	uint32_t nextLine = buffer->width - texture->width;
+	unsigned yMax = MIN(texture->height, buffer->height) - MAX(texture->y, 0);
+	//-MIN(texture->y * (int32_t)texture->width, 0)
+	for (unsigned y = 0; y < yMax; ++y) {
+		for (unsigned x = 0; x < texture->width; ++x) {
+			*currentBufferPixel++ = *currentTexturePixel++;
+		}
+
+		currentBufferPixel += nextLine;
 	}
 }
 
@@ -214,14 +241,14 @@ void init(GameMemory *memory) {
 
 	gameState = {};
 	gameState.player = {};
-	gameState.level = 0;
+	gameState.level = 3;
 	gameState.difficulty = 0;
 	gameState.roadPosition = 0;
 }
 
 int getRoadSpeed() {
 	// FIXME balance road speed
-	return gameState.level * 10 + 10;
+	return gameState.level * 1 + 10;
 }
 
 Texture* getCurrentRoad() {
@@ -230,6 +257,7 @@ Texture* getCurrentRoad() {
 
 void updateAndRenderRoad(VideoBuffer *buffer) {
 	gameState.roadPosition += getRoadSpeed();
+
 	if (gameState.roadPosition >= 800) {
 		gameState.roadPosition = 0;
 	}
@@ -237,11 +265,14 @@ void updateAndRenderRoad(VideoBuffer *buffer) {
 	road->y = gameState.roadPosition;
 //	renderTextureAlpha(buffer, getCurrentRoad(), getCurrentRoad()->x,
 //			getCurrentRoad()->y);
-	renderTexture(buffer, getCurrentRoad());
-	road->y -= 799;
+//	renderTexture(buffer, getCurrentRoad());
+//	road->y -= 799;
 //	renderTextureAlpha(buffer, getCurrentRoad(), getCurrentRoad()->x,
 //			getCurrentRoad()->y);
-	renderTexture(buffer, getCurrentRoad());
+//	renderTexture(buffer, getCurrentRoad());
+	renderBackgroundTexture(buffer, getCurrentRoad());
+	road->y -= 799;
+	renderBackgroundTexture(buffer, getCurrentRoad());
 }
 
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
@@ -251,11 +282,11 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 //	printf("%d\n", counter++);
 
 //	clearScreen(buffer, 0);
-	//printf("RoadPosition: %d\n", gameState.roadPosition);
+//printf("RoadPosition: %d\n", gameState.roadPosition);
 
-//	updateAndRenderRoad(buffer);
+	updateAndRenderRoad(buffer);
 
-//	renderTextureAlpha(buffer, &cars, 0, 0);
+//renderTextureAlpha(buffer, &cars, 0, 0);
 
-	//clearScreen(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8) + (((int)(input->shootKey) * 255) << 16));
+//clearScreen(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8) + (((int)(input->shootKey) * 255) << 16));
 }

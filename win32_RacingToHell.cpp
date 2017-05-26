@@ -231,6 +231,10 @@ void debugString(std::string s)
 
 int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 {
+	// flush stdout and stderr to console
+	setvbuf(stdout, NULL, _IONBF, 0);
+	setvbuf(stderr, NULL, _IONBF, 0);
+	
     const float targetFrameTime = 1.0f / 60.0f;
     INT desiredSchedulerMS = 1;
     timeBeginPeriod(desiredSchedulerMS);
@@ -240,7 +244,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 
     uint64_t performanceCountFrequency = frequencyResult.QuadPart;
 
-	resizeOffscreenBuffer(&buffer, 1280, 720);
+	resizeOffscreenBuffer(&buffer, 600, 800);
 
     GameMemory memory;
     memory.temporaryMemorySize = 10 * 1024 * 1024;
@@ -312,9 +316,13 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
         {
             Sleep(1000.0f * (targetFrameTime - secondsElapsed));
         }
+        else
+        {
+            debugString("Missed");
+        } 
 
-        float timePassed = 1000.0f * (getClockCounter(performanceCountFrequency) - loopStartCount) / (float)performanceCountFrequency;
-        debugString("Frametime: " + std::to_string(timePassed) + '\n');
+        float timePassed = (getClockCounter(performanceCountFrequency) - loopStartCount) / (float)performanceCountFrequency;
+        debugString("Frametime: " + std::to_string(1.f / timePassed) + '\n');
     }
 	
 	return 0;

@@ -224,7 +224,6 @@ void correctTiming(timespec startTime) {
 		sleepTime.tv_sec = (targetFrameTime - nanoSecondsElapsed)
 				/ 1000000000.0f;
 		sleepTime.tv_nsec = targetFrameTime - nanoSecondsElapsed;
-		printf("Sleeping");
 		nanosleep(&sleepTime, NULL);
 	}
 

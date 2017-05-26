@@ -44,14 +44,14 @@ void renderTexture(VideoBuffer *buffer, Texture* texture) {
 	if (texture->y < 0) {
 		startY = 0 - texture->y;
 		printf("setting new startY");
-	} else if (texture->y >= (int)buffer->height) {
+	} else if (texture->y >= (int) buffer->height) {
 		return;
 	}
 
 	unsigned startX = 0;
 	if (texture->x < 0) {
 		startX = 0 - texture->x;
-	} else if (texture->x >= (int)buffer->width) {
+	} else if (texture->x >= (int) buffer->width) {
 		return;
 	}
 
@@ -66,7 +66,7 @@ void renderTexture(VideoBuffer *buffer, Texture* texture) {
 			int bufferIndex = buffer->width * (texture->y + y) + texture->x + x;
 			int textureIndex = y * texture->width + x;
 			((int*) buffer->content)[bufferIndex] =
-			((int*) (texture->content))[textureIndex];
+					((int*) (texture->content))[textureIndex];
 		}
 	}
 }
@@ -87,13 +87,16 @@ void renderBackgroundTexture(VideoBuffer *buffer, Texture* texture) {
 			+ MAX(0, texture->y * (int32_t )buffer->width);
 
 	uint32_t nextLine = buffer->width - texture->width;
-	unsigned yMax = MIN(texture->height, buffer->height) - MAX(texture->y, 0);
-	//-MIN(texture->y * (int32_t)texture->width, 0)
+	unsigned yMax = 0;
+	if (texture->y > 0) {
+		yMax = buffer->height - texture->y;
+	} else if (texture->y < 0) {
+		yMax = texture->height - ABS(texture->y);
+	}
 	for (unsigned y = 0; y < yMax; ++y) {
 		for (unsigned x = 0; x < texture->width; ++x) {
 			*currentBufferPixel++ = *currentTexturePixel++;
 		}
-
 		currentBufferPixel += nextLine;
 	}
 }
@@ -286,7 +289,7 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 
 	updateAndRenderRoad(buffer);
 
-//renderTextureAlpha(buffer, &cars, 0, 0);
+	renderTextureAlpha(buffer, &cars, 0, 0);
 
 //clearScreen(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8) + (((int)(input->shootKey) * 255) << 16));
 }

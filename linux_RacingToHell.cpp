@@ -89,8 +89,8 @@ GraphicsData initGraphicsData(GameMemory *memory) {
 	Pixmap icon_pixmap;
 	unsigned width, height;
 	int x_hot, y_hot;
-	if (XReadBitmapFile(graphics.display,
-			graphics.window, "./res/icon.xbm", &width, &height, &icon_pixmap, &x_hot, &y_hot) != BitmapSuccess) {
+	if (XReadBitmapFile(graphics.display, graphics.window, "./res/icon.xbm",
+			&width, &height, &icon_pixmap, &x_hot, &y_hot) != BitmapSuccess) {
 		fprintf(stderr, "Couldn't load icon.\n");
 		exit(1);
 	}
@@ -221,6 +221,9 @@ void handleMouseEvent(Input* input, XButtonEvent event) {
 void correctTiming(timespec startTime) {
 	timespec endTime = { };
 	clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
+	if (endTime.tv_nsec < startTime.tv_nsec) {
+		return;
+	}
 	long nanoSecondsElapsed = endTime.tv_nsec - startTime.tv_nsec;
 	const float targetFrameTime = 1000000000.0f / 60.0f;
 	if (nanoSecondsElapsed < targetFrameTime) {
@@ -228,14 +231,15 @@ void correctTiming(timespec startTime) {
 		sleepTime.tv_sec = (targetFrameTime - nanoSecondsElapsed)
 				/ 1000000000.0f;
 		sleepTime.tv_nsec = targetFrameTime - nanoSecondsElapsed;
+		printf("Sleeping");
 		nanosleep(&sleepTime, NULL);
 	}
 
 	clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
-//	float secondsElapsed = (endTime.tv_nsec - startTime.tv_nsec)
-//			/ 1000000000.0f;
-	//		printf("Frametime: %f, Framerate: %f\n", secondsElapsed,
-	//				1.0f / secondsElapsed);
+	float milliSecondsElapsed = (endTime.tv_nsec - startTime.tv_nsec)
+			/ 1000000.0f;
+	printf("Frametime: %fms, Framerate: %f\n", milliSecondsElapsed,
+			1.0f / milliSecondsElapsed * 1000.0f);
 }
 
 int main() {

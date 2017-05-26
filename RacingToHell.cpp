@@ -40,10 +40,27 @@ void clearScreen(VideoBuffer *buffer, int color) {
 }
 
 void renderTexture(VideoBuffer *buffer, Texture* texture) {
-	for (unsigned y = 0; y < texture->height; y++) {
-		for (unsigned x = 0; x < texture->width; x++) {
-			if (texture->x + x >= buffer->width
-					|| texture->y + y >= buffer->height) {
+	unsigned startY = 0;
+	if (texture->y < 0) {
+		startY = 0 - texture->y;
+		printf("setting new startY");
+	} else if (texture->y >= (int)buffer->height) {
+		return;
+	}
+
+	unsigned startX = 0;
+	if (texture->x < 0) {
+		startX = 0 - texture->x;
+	} else if (texture->x >= (int)buffer->width) {
+		return;
+	}
+
+	for (unsigned y = startY; y < texture->height; y++) {
+		if (texture->y + y >= buffer->height) {
+			continue;
+		}
+		for (unsigned x = startX; x < texture->width; x++) {
+			if (texture->x + x >= buffer->width) {
 				continue;
 			}
 			int bufferIndex = buffer->width * (texture->y + y) + texture->x + x;
@@ -218,25 +235,27 @@ void updateAndRenderRoad(VideoBuffer *buffer) {
 	}
 	Texture* road = getCurrentRoad();
 	road->y = gameState.roadPosition;
-	renderTextureAlpha(buffer, getCurrentRoad(), getCurrentRoad()->x,
-			getCurrentRoad()->y);
+//	renderTextureAlpha(buffer, getCurrentRoad(), getCurrentRoad()->x,
+//			getCurrentRoad()->y);
+	renderTexture(buffer, getCurrentRoad());
 	road->y -= 799;
-	renderTextureAlpha(buffer, getCurrentRoad(), getCurrentRoad()->x,
-			getCurrentRoad()->y);
+//	renderTextureAlpha(buffer, getCurrentRoad(), getCurrentRoad()->x,
+//			getCurrentRoad()->y);
+	renderTexture(buffer, getCurrentRoad());
 }
 
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	if (!loaded) {
 		init(memory);
 	}
-	printf("%d\n", counter++);
+//	printf("%d\n", counter++);
 
-	clearScreen(buffer, 0);
+//	clearScreen(buffer, 0);
 	//printf("RoadPosition: %d\n", gameState.roadPosition);
 
 	updateAndRenderRoad(buffer);
 
-	renderTextureAlpha(buffer, &cars, 0, 0);
+//	renderTextureAlpha(buffer, &cars, 0, 0);
 
 	//clearScreen(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8) + (((int)(input->shootKey) * 255) << 16));
 }

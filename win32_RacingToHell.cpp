@@ -167,11 +167,11 @@ void drawSomething(OffscreenBuffer *buffer)
 	}
 }
 
-File readFile(char *filename)
+File readFile(std::string filename)
 {
     File result = {};
 
-    HANDLE fileHandle = CreateFileA(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+    HANDLE fileHandle = CreateFileA(filename.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
 
     if (fileHandle != INVALID_HANDLE_VALUE)
     {
@@ -198,6 +198,8 @@ File readFile(char *filename)
             }
         }
     }
+
+    result.name = filename;
 
     return result;
 }
@@ -243,8 +245,11 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
     GameMemory memory;
     memory.temporaryMemorySize = 10 * 1024 * 1024;
     memory.permanentMemorySize = 100 * 1024 * 1024;
-    memory.temporary = (char*)VirtualAlloc(0, memory.permanentMemorySize + memory.temporaryMemorySize, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+    memory.temporary = (char *)VirtualAlloc(0, memory.permanentMemorySize + memory.temporaryMemorySize, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
     memory.permanent = (char *)memory.temporary + memory.temporaryMemorySize;
+
+    //memory.temporary = (char *)malloc(memory.temporaryMemorySize);
+    //memory.permanent = (char *)malloc(memory.permanentMemorySize);
 
 	HWND windowHandle = openWindow(instance, show);
 

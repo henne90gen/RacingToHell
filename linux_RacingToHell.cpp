@@ -83,7 +83,7 @@ GraphicsData initGraphicsData(GameMemory *memory) {
 	Atom iconAtom = XInternAtom(graphics.display, "_NET_WM_ICON", 0);
 	File file = readFile("./res/icon.bmp");
 	Texture texture = readBmpIntoMemory(file, memory);
-	int propsize= 2 + (texture.width * texture.height);
+	int propsize = 2 + (texture.width * texture.height);
 	long *propdata = (long*) malloc(propsize * sizeof(long));
 
 	propdata[0] = texture.width;
@@ -224,7 +224,7 @@ void correctTiming(timespec startTime) {
 		sleepTime.tv_sec = (targetFrameTime - nanoSecondsElapsed)
 				/ 1000000000.0f;
 		sleepTime.tv_nsec = targetFrameTime - nanoSecondsElapsed;
-		nanosleep(&sleepTime, NULL);
+//		nanosleep(&sleepTime, NULL);
 	}
 
 	clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
@@ -294,9 +294,6 @@ int main() {
 		correctTiming(startTime);
 	}
 
-	XFreePixmap(graphics.display, graphics.pixmap);
-	XDestroyImage(graphics.image);
-	XFreeGC(graphics.display, graphics.gc);
 	XCloseDisplay(graphics.display);
 	return 0;
 }

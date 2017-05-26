@@ -18,6 +18,9 @@ GCC_FLAGS := -Wall -g -O0
 all:
 	g++ $(GCC_FLAGS) $(PLATFORM_FLAGS) $(PLATFORM_FILE) RacingToHell.cpp -o RacingToHell$(EXTENSION) $(GCC_LINKER)
 
+optimized:
+	g++ -O3 $(PLATFORM_FLAGS) $(PLATFORM_FILE) RacingToHell.cpp -o RacingToHell$(EXTENSION) $(GCC_LINKER)
+
 cl:
 	cl $(CL_FLAGS) RacingToHell.cpp $(PLATFORM_FILE) -o bin/RacingToHell$(EXTENSION) -link $(CL_LINKER)
     

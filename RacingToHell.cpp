@@ -101,6 +101,7 @@ void renderBackgroundTexture(VideoBuffer *buffer, Texture* texture) {
 	}
 }
 
+// FIXME this can only render textures that are completely on screen
 void renderTextureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 		int offsetY) {
 	uint32_t *currentBufferPixel = (uint32_t *) buffer->content
@@ -266,13 +267,6 @@ void updateAndRenderRoad(VideoBuffer *buffer) {
 	}
 	Texture* road = getCurrentRoad();
 	road->y = gameState.roadPosition;
-//	renderTextureAlpha(buffer, getCurrentRoad(), getCurrentRoad()->x,
-//			getCurrentRoad()->y);
-//	renderTexture(buffer, getCurrentRoad());
-//	road->y -= 799;
-//	renderTextureAlpha(buffer, getCurrentRoad(), getCurrentRoad()->x,
-//			getCurrentRoad()->y);
-//	renderTexture(buffer, getCurrentRoad());
 	renderBackgroundTexture(buffer, getCurrentRoad());
 	road->y -= 799;
 	renderBackgroundTexture(buffer, getCurrentRoad());
@@ -283,13 +277,9 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 		init(memory);
 	}
 //	printf("%d\n", counter++);
-
-//	clearScreen(buffer, 0);
-//printf("RoadPosition: %d\n", gameState.roadPosition);
+//	printf("RoadPosition: %d\n", gameState.roadPosition);
 
 	updateAndRenderRoad(buffer);
 
 	renderTextureAlpha(buffer, &cars, 0, 0);
-
-//clearScreen(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8) + (((int)(input->shootKey) * 255) << 16));
 }

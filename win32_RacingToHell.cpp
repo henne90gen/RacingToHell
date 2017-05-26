@@ -309,7 +309,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
         oldInput = newInput;
         newInput = tmp;
 
-        uint64_t loopEndCounter = getClockCounter(performanceCountFrequency);
+        /*uint64_t loopEndCounter = getClockCounter(performanceCountFrequency);
         float secondsElapsed = (loopEndCounter - loopStartCount) / (float)performanceCountFrequency;
     
         if (secondsElapsed < targetFrameTime)
@@ -319,7 +319,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
         else
         {
             debugString("Missed");
-        } 
+        } */
 
         float timePassed = (getClockCounter(performanceCountFrequency) - loopStartCount) / (float)performanceCountFrequency;
         debugString("Frametime: " + std::to_string(1.f / timePassed) + '\n');

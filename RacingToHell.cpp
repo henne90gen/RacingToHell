@@ -203,7 +203,7 @@ void loadTextures(GameMemory *memory) {
 		//printf("Texture %d: %d\n", i, roads[i].width * roads[i].height);
 	}
 
-	std::string carSprites = "./res/textures/cars/cars.bmp";
+	std::string carSprites = "./res/textures/cars/playercar2.bmp";
 	File carFile = readFile(carSprites);
 	cars = readBmpIntoMemory(carFile, memory);
 	freeFile(&carFile);
@@ -266,7 +266,7 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 
 	updateAndRenderRoad(buffer);
 
-	//renderTextureAlpha(buffer, &cars, 0, 0);
+	renderTextureAlpha(buffer, &cars, 300, 0);
 
 	//clearScreen(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8) + (((int)(input->shootKey) * 255) << 16));
 }

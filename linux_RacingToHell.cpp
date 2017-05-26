@@ -86,11 +86,12 @@ GraphicsData initGraphicsData(GameMemory *memory) {
 	XSetIconSizes(graphics.display, graphics.window, &iconSize, 1);
 
 	// set icon
-	File file = readFile("./res/icon.xpm");
-	Pixmap icon_pixmap = XCreateBitmapFromData(graphics.display,
-			graphics.window, file.content, 256, 256);
-	if (!icon_pixmap) {
-		fprintf(stderr, "Couldn't load icons.\n");
+	Pixmap icon_pixmap;
+	unsigned width, height;
+	int x_hot, y_hot;
+	if (XReadBitmapFile(graphics.display,
+			graphics.window, "./res/icon.xbm", &width, &height, &icon_pixmap, &x_hot, &y_hot) != BitmapSuccess) {
+		fprintf(stderr, "Couldn't load icon.\n");
 		exit(1);
 	}
 

@@ -5,7 +5,6 @@
 #include <string.h>
 
 static bool loaded = false;
-
 static int counter = 0;
 
 static Texture roads[4];
@@ -34,13 +33,42 @@ void testInput(Input* input) {
 void clearScreen(VideoBuffer *buffer, int color) {
 	for (unsigned int y = 0; y < buffer->height; y++) {
 		for (unsigned int x = 0; x < buffer->width; x++) {
-            ((uint32_t*)buffer->content)[y * buffer->width + x] = color + (255 << 24);
+			((uint32_t*) buffer->content)[y * buffer->width + x] = color
+					+ (255 << 24);
 		}
 	}
 }
 
-void renderTexture(VideoBuffer *buffer, Texture* texture) {
-	for (unsigned y = 0; y < texture->height; y++) {
+#define MIN(a, b) ((a < b) ? a : b)
+#define MAX(a, b) ((a > b) ? a : b)
+#define ABS(a) ((a < 0) ? -a : a)
+
+void renderBackgroundTexture(VideoBuffer *buffer, Texture* texture)
+{
+    if (texture->y < -(int32_t)texture->height || texture->y > (int32_t)texture->height)
+    {
+        return;
+    }
+
+    uint32_t *currentTexturePixel = (uint32_t *)texture->content - MIN(texture->y * (int32_t)texture->width, 0);
+    uint32_t *currentBufferPixel = (uint32_t *)buffer->content + MAX(0, texture->y * (int32_t)buffer->width);
+
+    uint32_t nextLine = buffer->width - texture->width;
+    unsigned yMax = MIN(texture->height, buffer->height) - MAX(texture->y, 0);
+    //-MIN(texture->y * (int32_t)texture->width, 0)
+    for (unsigned y = 0; y < yMax; ++y)
+    {
+        for (unsigned x = 0; x < texture->width; ++x)
+        {
+            *currentBufferPixel++ = *currentTexturePixel++;
+        }
+
+        currentBufferPixel += nextLine;
+    }
+}
+
+void renderTexture(VideoBuffer *buffer, Texture* texture) {    
+    for (unsigned y = 0; y < texture->height; y++) {
 		for (unsigned x = 0; x < texture->width; x++) {
 			if (texture->x + x >= buffer->width
 					|| texture->y + y >= buffer->height) {
@@ -48,55 +76,71 @@ void renderTexture(VideoBuffer *buffer, Texture* texture) {
 			}
 			int bufferIndex = buffer->width * (texture->y + y) + texture->x + x;
 			int textureIndex = y * texture->width + x;
-
 			((int*) buffer->content)[bufferIndex] =
-					((int*) texture->content)[textureIndex];
+					((int*) (texture->content))[textureIndex];
 		}
 	}
 }
 
-void renderTextureAlpha(VideoBuffer *buffer, Texture* texture, unsigned offsetX, unsigned offsetY)
-{
-    uint32_t *currentBufferPixel = (uint32_t *)buffer->content + offsetY * buffer->width + offsetX;
-    uint32_t *currentTexturePixel = (uint32_t *)texture->content;
+void renderTextureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
+		int offsetY) {
+	uint32_t *currentBufferPixel = (uint32_t *) buffer->content
+			+ offsetY * buffer->width + offsetX;
+	uint32_t *currentTexturePixel = (uint32_t *) texture->content;
 
-    for (unsigned y = 0; y < texture->height; ++y)
-    {
-        for (unsigned x = 0; x < texture->width; ++x)
-        {
-            uint8_t *currentBufferPixel8 = (uint8_t *)currentBufferPixel;
-            uint8_t *currentTexturePixel8 = (uint8_t *)currentTexturePixel;
+	for (unsigned y = 0; y < texture->height; ++y) {
+		for (unsigned x = 0; x < texture->width; ++x) {
+			if (offsetX + x >= buffer->width || offsetY + y >= buffer->height) {
+				currentBufferPixel++;
+				currentTexturePixel++;
+				continue;
+			}
 
-            uint8_t textureB = *currentTexturePixel8++;
-            uint8_t textureG = *currentTexturePixel8++;
-            uint8_t textureR = *currentTexturePixel8++;
-            uint8_t textureA = *currentTexturePixel8++;
+			uint8_t *currentBufferPixel8 = (uint8_t *) currentBufferPixel;
+			uint8_t *currentTexturePixel8 = (uint8_t *) currentTexturePixel;
 
-            uint8_t bufferA = *(uint8_t *)currentBufferPixel;
+			uint8_t textureB = *currentTexturePixel8++;
+			uint8_t textureG = *currentTexturePixel8++;
+			uint8_t textureR = *currentTexturePixel8++;
+			uint8_t textureA = *currentTexturePixel8++;
 
-            float textureAlpha = textureA / 255.0f;
-            float bufferAlpha = bufferA / 255.0f;
+			uint8_t bufferA = *(uint8_t *) currentBufferPixel;
 
-            float resultAlpha = textureAlpha + bufferAlpha * (1.0f - textureAlpha);
+			float textureAlpha = textureA / 255.0f;
+			float bufferAlpha = bufferA / 255.0f;
 
-            if (resultAlpha == 0.0f)
-            {
-                *currentBufferPixel = 0;
-            }
-            else
-            {
-                *currentBufferPixel8++ = (uint8_t)(((bufferAlpha * (1.0f - textureAlpha) * *currentBufferPixel8) + (textureAlpha * textureB)) / resultAlpha);
-                *currentBufferPixel8++ = (uint8_t)(((bufferAlpha * (1.0f - textureAlpha) * *currentBufferPixel8) + (textureAlpha * textureG)) / resultAlpha);
-                *currentBufferPixel8++ = (uint8_t)(((bufferAlpha * (1.0f - textureAlpha) * *currentBufferPixel8) + (textureAlpha * textureR)) / resultAlpha);
-                *currentBufferPixel8++ = (uint8_t)(resultAlpha * 255.0f);
-            }
-        
-            currentBufferPixel++;
-            currentTexturePixel++;
-        }
+			float resultAlpha = textureAlpha
+					+ bufferAlpha * (1.0f - textureAlpha);
 
-        currentBufferPixel = (uint32_t *)buffer->content + (offsetY + y + 1) * buffer->width + offsetX;
-    }
+			if (resultAlpha == 0.0f) {
+				*currentBufferPixel = 0;
+			} else {
+				float newB = ((bufferAlpha * (1.0f - textureAlpha)
+						* *currentBufferPixel8) + (textureAlpha * textureB))
+						/ resultAlpha;
+				*currentBufferPixel8++ = (uint8_t) newB;
+
+				float newG = ((bufferAlpha * (1.0f - textureAlpha)
+						* *currentBufferPixel8) + (textureAlpha * textureG))
+						/ resultAlpha;
+				*currentBufferPixel8++ = (uint8_t) newG;
+
+				float newR = ((bufferAlpha * (1.0f - textureAlpha)
+						* *currentBufferPixel8) + (textureAlpha * textureR))
+						/ resultAlpha;
+				*currentBufferPixel8++ = (uint8_t) newR;
+
+				float newA = resultAlpha * 255.0f;
+				*currentBufferPixel8++ = (uint8_t) newA;
+			}
+
+			currentBufferPixel++;
+			currentTexturePixel++;
+		}
+
+		currentBufferPixel = (uint32_t *) buffer->content
+				+ (offsetY + y + 1) * buffer->width + offsetX;
+	}
 }
 
 void importPixelData(void* input, void* output, unsigned width,
@@ -159,26 +203,36 @@ void loadTextures(GameMemory *memory) {
 		//printf("Texture %d: %d\n", i, roads[i].width * roads[i].height);
 	}
 
-    std::string carSprites = "./res/textures/cars/cars.bmp";
-    File carFile = readFile(carSprites);
-    cars = readBmpIntoMemory(carFile, memory);
-    freeFile(&carFile);
+	std::string carSprites = "./res/textures/cars/cars.bmp";
+	File carFile = readFile(carSprites);
+	cars = readBmpIntoMemory(carFile, memory);
+	freeFile(&carFile);
+}
+
+void loadFont(GameMemory *memory) {
+	File file = readFile("./res/font/arial.ttf");
+	GameFont font = { };
+	font.size = file.size;
+	font.content = file.content;
+	printf("Font size: %d\n", (int) font.size);
+	return;
 }
 
 void init(GameMemory *memory) {
 	loaded = true;
+	loadFont(memory);
 	loadTextures(memory);
 
 	gameState = {};
 	gameState.player = {};
-	gameState.level = 0;
+	gameState.level = 3;
 	gameState.difficulty = 0;
 	gameState.roadPosition = 0;
 }
 
 int getRoadSpeed() {
 	// FIXME balance road speed
-	return gameState.level * 10 + 1;
+	return gameState.level * 1 + 10;
 }
 
 Texture* getCurrentRoad() {
@@ -187,29 +241,32 @@ Texture* getCurrentRoad() {
 
 void updateAndRenderRoad(VideoBuffer *buffer) {
 	gameState.roadPosition += getRoadSpeed();
+
 	if (gameState.roadPosition >= 800) {
 		gameState.roadPosition = 0;
 	}
 	Texture* road = getCurrentRoad();
 	road->y = gameState.roadPosition;
-	renderTexture(buffer, getCurrentRoad());
-	road->y -= 800;
-	renderTexture(buffer, getCurrentRoad());
+	renderBackgroundTexture(buffer, getCurrentRoad());
+	road->y -= 799;
+	renderBackgroundTexture(buffer, getCurrentRoad());
 }
 
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	if (!loaded) {
 		init(memory);
 	}
-	clearScreen(buffer, (255));
-    //counter++;
+	printf("%d\n", counter++);
 
-//	printf("(%d|%d)\n", input->mouseX, input->mouseY);
-	//renderTexture(buffer, &roads[2], 0, 0);
-    renderTextureAlpha(buffer, &cars, 0, 0);
-
+	clearScreen(buffer, 0);
 	//printf("RoadPosition: %d\n", gameState.roadPosition);
 
 	//updateAndRenderRoad(buffer);
 //	clearScreen(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8) + (((int)(input->shootKey) * 255) << 16));
+
+	updateAndRenderRoad(buffer);
+
+	//renderTextureAlpha(buffer, &cars, 0, 0);
+
+	//clearScreen(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8) + (((int)(input->shootKey) * 255) << 16));
 }

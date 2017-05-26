@@ -1,22 +1,27 @@
-#include <stdio.h>
+#include <bits/types/struct_timespec.h>
 #include <stdlib.h>
+#include <sys/time.h>
 #include <X11/cursorfont.h>
 #include <X11/X.h>
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <cstdio>
+#include <ctime>
+#include <string>
 
 #include "platform.h"
 #include "RacingToHell.h"
 
-#define XK_W 25
-#define XK_A 38
-#define XK_S 39
-#define XK_D 40
-#define XK_Space 65
-#define XM_Left Button1
-#define XM_Right Button3
-#define XM_Middle Button2 // FIXME is this really mouse middle?
-#define XM_ScrollUp Button4
-#define XM_ScrollDown Button5
+#define KeyW 25
+#define KeyA 38
+#define KeyS 39
+#define KeyD 40
+#define KeySpace 65
+#define MouseLeft Button1
+#define MouseRight Button3
+#define MouseMiddle Button2 // FIXME is this really mouse middle?
+#define MouseScrollUp Button4
+#define MouseScrollDown Button5
 
 struct GraphicsData {
 	Display* display;
@@ -32,7 +37,7 @@ long int EVENTS_MASK = KeyPressMask | KeyReleaseMask | ButtonPressMask
 static bool isRunning;
 static GraphicsData graphics;
 
-GraphicsData initGraphicsData() {
+GraphicsData initGraphicsData(GameMemory *memory) {
 	GraphicsData graphics = { };
 	graphics.display = XOpenDisplay(NULL);
 	if (graphics.display == NULL) {
@@ -53,20 +58,54 @@ GraphicsData initGraphicsData() {
 	int x = 500;
 	int y = 300;
 	int border_width = 5;
-	Visual* visual = DefaultVisual(graphics.display, screen);
-	XSetWindowAttributes attributes = { };
-	attributes.background_pixel = XWhitePixel(graphics.display, screen);
-	graphics.window = XCreateWindow(graphics.display,
-			XRootWindow(graphics.display, screen), x, y, videoBuffer.width,
-			videoBuffer.height, border_width, depth,
-			InputOutput, visual, CWBackPixel, &attributes);
+	graphics.window = XCreateSimpleWindow(graphics.display,
+			RootWindow(graphics.display, screen), x, y, videoBuffer.width,
+			videoBuffer.height, border_width,
+			BlackPixel(graphics.display, screen),
+			WhitePixel(graphics.display, screen));
 
 	// set window title
 	XStoreName(graphics.display, graphics.window, WINDOW_TITLE);
 
 	// set icon name
-//	XTextProperty text = XmbTextListToTextProperty(graphics.display, , 1)
-//	XSetWMIconName(graphics.display, graphics.window, text);
+	XSetIconName(graphics.display, graphics.window, "RtH");
+
+	// set class name
+	XClassHint* classHint = XAllocClassHint();
+	char name[] = WINDOW_TITLE;
+	classHint->res_name = name;
+	classHint->res_class = name;
+	XSetClassHint(graphics.display, graphics.window, classHint);
+
+	// set icon size
+	XIconSize iconSize = *XAllocIconSize();
+	iconSize.min_width = 256;
+	iconSize.min_height = 256;
+	iconSize.max_width = 256;
+	iconSize.max_height = 256;
+	XSetIconSizes(graphics.display, graphics.window, &iconSize, 1);
+
+	// set icon
+	File file = readFile("./res/icon.xpm");
+	Pixmap icon_pixmap = XCreateBitmapFromData(graphics.display,
+			graphics.window, file.content, 256, 256);
+	if (!icon_pixmap) {
+		fprintf(stderr, "Couldn't load icons.\n");
+		exit(1);
+	}
+
+	XWMHints* wmHints = XAllocWMHints();
+	if (!wmHints) {
+		fprintf(stderr, "Couldn't allocate window hints.\n");
+		exit(1);
+	}
+	wmHints->flags = IconPixmapHint | StateHint | IconPositionHint;
+	wmHints->icon_pixmap = icon_pixmap;
+	wmHints->initial_state = NormalState;
+	wmHints->icon_x = 0;
+	wmHints->icon_y = 0;
+	XSetWMHints(graphics.display, graphics.window, wmHints);
+	XFree(wmHints);
 
 	// subscribe to events
 	XSelectInput(graphics.display, graphics.window, EVENTS_MASK);
@@ -80,13 +119,16 @@ GraphicsData initGraphicsData() {
 	Atom wmDeleteWindow = XInternAtom(graphics.display, "WM_DELETE_WINDOW", 0);
 	XSetWMProtocols(graphics.display, graphics.window, &wmDeleteWindow, 1);
 
-	graphics.gc = XDefaultGC(graphics.display, screen);
-
-	graphics.pixmap = XCreatePixmap(graphics.display, graphics.window,
-			graphics.videoBuffer.width, graphics.videoBuffer.height, depth);
-	graphics.image = XCreateImage(graphics.display, visual, depth, ZPixmap, 0,
+	graphics.image = XCreateImage(graphics.display,
+			XDefaultVisual(graphics.display, screen), depth, ZPixmap, 0,
 			(char *) graphics.videoBuffer.content, graphics.videoBuffer.width,
 			graphics.videoBuffer.height, 32, 0);
+	graphics.pixmap = XCreatePixmap(graphics.display, graphics.window,
+			graphics.videoBuffer.width, graphics.videoBuffer.height, depth);
+	graphics.gc = XDefaultGC(graphics.display, screen);
+
+	XFlush(graphics.display);
+
 	return graphics;
 }
 
@@ -116,14 +158,12 @@ File readFile(std::string fileName) {
 	return file;
 }
 
-void freeFile(File *file)
-{
-    if (file->content)
-    {
-        free(file->content);
-    }
+void freeFile(File *file) {
+	if (file->content) {
+		free(file->content);
+	}
 
-    file->size = 0;
+	file->size = 0;
 }
 
 void handleKeyEvent(Display* display, Input* input, XKeyEvent event) {
@@ -134,52 +174,22 @@ void handleKeyEvent(Display* display, Input* input, XKeyEvent event) {
 	}
 
 	bool keyPressed = event.type == KeyPress;
-	if (!keyPressed) {
-		while (XEventsQueued(display, QueuedAfterReading)) {
-			XEvent nextEvent;
-			XPeekEvent(display, &nextEvent);
-
-			// FIXME getting a lot of NoExpose for some reason
-			if (nextEvent.type == NoExpose) {
-				XNextEvent(display, &nextEvent);
-				continue;
-			}
-
-			if (nextEvent.type == KeyPress && nextEvent.xkey.time == event.time
-					&& nextEvent.xkey.keycode == event.keycode) {
-				// key wasn't acutally released
-				return;
-			}
-		}
-	}
-
 	switch (event.keycode) {
-	case XK_W:
+	case KeyW:
 		input->upKey = keyPressed;
-		printf("Pressed W\n");
 		break;
-	case XK_A:
+	case KeyA:
 		input->leftKey = keyPressed;
-		printf("Pressed A\n");
 		break;
-	case XK_S:
+	case KeyS:
 		input->downKey = keyPressed;
-		printf("Pressed S\n");
 		break;
-	case XK_D:
+	case KeyD:
 		input->rightKey = keyPressed;
-		printf("Pressed D\n");
 		break;
-	case XK_Space:
+	case KeySpace:
 		input->shootKey = keyPressed;
-		printf("Pressed Space\n");
 		break;
-	}
-
-	if (keyPressed) {
-		printf("Button %d pressed\n", event.keycode);
-	} else {
-		printf("Button %d released\n", event.keycode);
 	}
 }
 
@@ -192,17 +202,17 @@ void handleMouseEvent(Input* input, XButtonEvent event) {
 	}
 
 	switch (event.button) {
-	case XM_Left:
+	case MouseLeft:
 		input->shootKey = buttonPressed;
 		break;
-	case XM_Middle:
+	case MouseMiddle:
 		break;
-	case XM_Right:
+	case MouseRight:
 		input->shootKey = buttonPressed;
 		break;
-	case XM_ScrollUp:
+	case MouseScrollUp:
 		break;
-	case XM_ScrollDown:
+	case MouseScrollDown:
 		break;
 	}
 }
@@ -228,14 +238,14 @@ void correctTiming(timespec startTime) {
 }
 
 int main() {
-	graphics = initGraphicsData();
-	isRunning = true;
+	GameMemory memory;
+	memory.temporaryMemorySize = 10 * 1024 * 1024;
+	memory.permanentMemorySize = 100 * 1024 * 1024;
+	memory.temporary = (char*) malloc(memory.temporaryMemorySize);
+	memory.permanent = (char*) malloc(memory.permanentMemorySize);
 
-    GameMemory memory;
-    memory.temporaryMemorySize = 10 * 1024 * 1024;
-    memory.permanentMemorySize = 100 * 1024 * 1024;
-    memory.temporary = (char*) malloc(memory.temporaryMemorySize);
-    memory.permanent = (char*) malloc(memory.permanentMemorySize);
+	graphics = initGraphicsData(&memory);
+	isRunning = true;
 
 	Input input[2] = { };
 	Input *oldInput = &input[0];
@@ -287,6 +297,8 @@ int main() {
 	}
 
 	XFreePixmap(graphics.display, graphics.pixmap);
+	XDestroyImage(graphics.image);
+	XFreeGC(graphics.display, graphics.gc);
 	XCloseDisplay(graphics.display);
 	return 0;
 }

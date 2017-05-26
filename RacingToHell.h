@@ -11,6 +11,7 @@ struct VideoBuffer {
 struct Texture {
 
 	uint32_t width, height, bytesPerPixel;
+	int x, y;
 	void* content;
 };
 
@@ -32,7 +33,8 @@ struct GameState {
 	Player player;
 	uint8_t level;
 	uint8_t difficulty;
-
+	uint32_t roadPosition;
 };
 
+Texture readBmpIntoMemory(File file, GameMemory *memory);
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory);

@@ -12,6 +12,25 @@ static Texture roads[4];
 static Texture cars;
 static GameState gameState;
 
+void testInput(Input* input) {
+	printf("(%d|%d)\n", input->mouseX, input->mouseY);
+	if (input->upKey) {
+		printf("Going up!\n");
+	}
+	if (input->downKey) {
+		printf("Going down!\n");
+	}
+	if (input->leftKey) {
+		printf("Going left!\n");
+	}
+	if (input->rightKey) {
+		printf("Going right!\n");
+	}
+	if (input->shootKey) {
+		printf("Shooting!\n");
+	}
+}
+
 void clearScreen(VideoBuffer *buffer, int color) {
 	for (unsigned int y = 0; y < buffer->height; y++) {
 		for (unsigned int x = 0; x < buffer->width; x++) {
@@ -20,14 +39,14 @@ void clearScreen(VideoBuffer *buffer, int color) {
 	}
 }
 
-void renderTexture(VideoBuffer *buffer, Texture* texture, int pos_x,
-		int pos_y) {
+void renderTexture(VideoBuffer *buffer, Texture* texture) {
 	for (unsigned y = 0; y < texture->height; y++) {
 		for (unsigned x = 0; x < texture->width; x++) {
-			if (pos_x + x >= buffer->width || pos_y + y >= buffer->height) {
+			if (texture->x + x >= buffer->width
+					|| texture->y + y >= buffer->height) {
 				continue;
 			}
-			int bufferIndex = buffer->width * (pos_y + y) + pos_x + x;
+			int bufferIndex = buffer->width * (texture->y + y) + texture->x + x;
 			int textureIndex = y * texture->width + x;
 
 			((int*) buffer->content)[bufferIndex] =
@@ -86,13 +105,13 @@ void importPixelData(void* input, void* output, unsigned width,
 		for (unsigned x = 0; x < width; x++) {
 			int inputIndex = (height - y - 1) * width + x;
 			int outputIndex = y * width + x;
-			uint32_t color = ((uint32_t*) input)[inputIndex];
+			uint32_t color = ((uint32_t*) (input))[inputIndex];
 			uint8_t r = (color & 0xff000000) >> 24;
 			uint8_t g = (color & 0x00ff0000) >> 16;
 			uint8_t b = (color & 0x0000ff00) >> 8;
 			uint8_t a = color & 0x000000ff;
 			color = (a << 24) + (r << 16) + (g << 8) + b;
-			((uint32_t*) output)[outputIndex] = color;
+			((uint32_t*) (output))[outputIndex] = color;
 		}
 	}
 }
@@ -111,6 +130,8 @@ Texture readBmpIntoMemory(File file, GameMemory *memory) {
 	}
 
 	Texture texture = { };
+	texture.x = 0;
+	texture.y = 0;
 	texture.width = header.width;
 	texture.height = header.height;
 	texture.bytesPerPixel = header.bitsPerPixel / 8;
@@ -131,6 +152,7 @@ void loadTextures(GameMemory *memory) {
 		fileName << "./res/textures/roads/road" << i << ".bmp";
 		File file = readFile(fileName.str());
 		roads[i] = readBmpIntoMemory(file, memory);
+		roads[i].y = -800;
 		freeFile(&file);
 	}
 	for (int i = 0; i < 4; i++) {
@@ -151,6 +173,28 @@ void init(GameMemory *memory) {
 	gameState.player = {};
 	gameState.level = 0;
 	gameState.difficulty = 0;
+	gameState.roadPosition = 0;
+}
+
+int getRoadSpeed() {
+	// FIXME balance road speed
+	return gameState.level * 10 + 1;
+}
+
+Texture* getCurrentRoad() {
+	return &roads[gameState.level % 4];
+}
+
+void updateAndRenderRoad(VideoBuffer *buffer) {
+	gameState.roadPosition += getRoadSpeed();
+	if (gameState.roadPosition >= 800) {
+		gameState.roadPosition = 0;
+	}
+	Texture* road = getCurrentRoad();
+	road->y = gameState.roadPosition;
+	renderTexture(buffer, getCurrentRoad());
+	road->y -= 800;
+	renderTexture(buffer, getCurrentRoad());
 }
 
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
@@ -163,5 +207,9 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 //	printf("(%d|%d)\n", input->mouseX, input->mouseY);
 	//renderTexture(buffer, &roads[2], 0, 0);
     renderTextureAlpha(buffer, &cars, 0, 0);
+
+	//printf("RoadPosition: %d\n", gameState.roadPosition);
+
+	updateAndRenderRoad(buffer);
 //	clearScreen(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8) + (((int)(input->shootKey) * 255) << 16));
 }

@@ -5,6 +5,8 @@
 // FIXME compile version 2.8 of the freetype library for windows:
 // https://stackoverflow.com/questions/6207176/compiling-freetype-to-dll-as-opposed-to-static-library
 
+// FIXME create namespace for font methods
+
 FT_Library fontLibrary;
 FT_Face face;
 
@@ -24,7 +26,7 @@ void renderText(VideoBuffer* buffer, char character, int posX, int posY) {
 			exit(1);
 		}
 	}
-	printf("%d\n", face->glyph->bitmap.pitch);
+
 	int bytesPerPixel = 4;
 	for (unsigned y = 0; y < face->glyph->bitmap.rows / bytesPerPixel; y++) {
 		for (unsigned x = 0; x < face->glyph->bitmap.width / bytesPerPixel;
@@ -34,6 +36,14 @@ void renderText(VideoBuffer* buffer, char character, int posX, int posY) {
 			((uint32_t*) buffer->content)[bufferIndex] =
 					((uint32_t *) face->glyph->bitmap.buffer)[glyphIndex];
 		}
+	}
+}
+
+void setFontSize(unsigned fontSizeInPixel) {
+	int error = FT_Set_Pixel_Sizes(face, 0, 500);
+	if (error) {
+		fprintf(stderr, "Couldn't set pixel sizes.");
+		exit(1);
 	}
 }
 
@@ -51,15 +61,5 @@ void loadFont(char* fontFileName) {
 		exit(1);
 	}
 
-//	error = FT_Set_Char_Size(face, 0, 16 * 64, 72, 72);
-//	if (error) {
-//		fprintf(stderr, "Couldn't set character size.");
-//		exit(1);
-//	}
-
-	error = FT_Set_Pixel_Sizes(face, 0, 500);
-	if (error) {
-		fprintf(stderr, "Couldn't set pixel sizes.");
-		exit(1);
-	}
+	setFontSize(50);
 }

@@ -39,39 +39,28 @@ void clearScreen(VideoBuffer *buffer, int color) {
 	}
 }
 
-#define MIN(a, b) ((a < b) ? a : b)
-#define MAX(a, b) ((a > b) ? a : b)
-#define ABS(a) ((a < 0) ? -a : a)
+void renderTexture(VideoBuffer *buffer, Texture* texture) {
+	unsigned startY = 0;
+	if (texture->y < 0) {
+		startY = 0 - texture->y;
+		printf("setting new startY");
+	} else if (texture->y >= (int) buffer->height) {
+		return;
+	}
 
-void renderBackgroundTexture(VideoBuffer *buffer, Texture* texture)
-{
-    if (texture->y < -(int32_t)texture->height || texture->y > (int32_t)texture->height)
-    {
-        return;
-    }
+	unsigned startX = 0;
+	if (texture->x < 0) {
+		startX = 0 - texture->x;
+	} else if (texture->x >= (int) buffer->width) {
+		return;
+	}
 
-    uint32_t *currentTexturePixel = (uint32_t *)texture->content - MIN(texture->y * (int32_t)texture->width, 0);
-    uint32_t *currentBufferPixel = (uint32_t *)buffer->content + MAX(0, texture->y * (int32_t)buffer->width);
-
-    uint32_t nextLine = buffer->width - texture->width;
-    unsigned yMax = MIN(texture->height, buffer->height) - MAX(texture->y, 0);
-    //-MIN(texture->y * (int32_t)texture->width, 0)
-    for (unsigned y = 0; y < yMax; ++y)
-    {
-        for (unsigned x = 0; x < texture->width; ++x)
-        {
-            *currentBufferPixel++ = *currentTexturePixel++;
-        }
-
-        currentBufferPixel += nextLine;
-    }
-}
-
-void renderTexture(VideoBuffer *buffer, Texture* texture) {    
-    for (unsigned y = 0; y < texture->height; y++) {
-		for (unsigned x = 0; x < texture->width; x++) {
-			if (texture->x + x >= buffer->width
-					|| texture->y + y >= buffer->height) {
+	for (unsigned y = startY; y < texture->height; y++) {
+		if (texture->y + y >= buffer->height) {
+			continue;
+		}
+		for (unsigned x = startX; x < texture->width; x++) {
+			if (texture->x + x >= buffer->width) {
 				continue;
 			}
 			int bufferIndex = buffer->width * (texture->y + y) + texture->x + x;
@@ -82,6 +71,39 @@ void renderTexture(VideoBuffer *buffer, Texture* texture) {
 	}
 }
 
+#define MIN(a, b) ((a < b) ? a : b)
+#define MAX(a, b) ((a > b) ? a : b)
+#define ABS(a) ((a < 0) ? -a : a)
+
+void renderBackgroundTexture(VideoBuffer *buffer, Texture* texture) {
+	if (texture->y < -(int32_t) texture->height
+			|| texture->y > (int32_t) texture->height) {
+		return;
+	}
+
+	uint32_t *currentTexturePixel = (uint32_t *) texture->content
+			- MIN(texture->y * (int32_t )texture->width, 0);
+	uint32_t *currentBufferPixel = (uint32_t *) buffer->content
+			+ MAX(0, texture->y * (int32_t )buffer->width);
+
+	uint32_t nextLine = buffer->width - texture->width;
+	unsigned yMax = 0;
+
+	if (texture->y > 0) {
+		yMax = buffer->height - texture->y;
+	} else if (texture->y < 0) {
+		yMax = texture->height - ABS(texture->y);
+	}
+
+	for (unsigned y = 0; y < yMax; ++y) {
+		for (unsigned x = 0; x < texture->width; ++x) {
+			*currentBufferPixel++ = *currentTexturePixel++;
+		}
+		currentBufferPixel += nextLine;
+	}
+}
+
+// FIXME this can only render textures that are completely on screen
 void renderTextureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 		int offsetY) {
 	uint32_t *currentBufferPixel = (uint32_t *) buffer->content
@@ -225,14 +247,14 @@ void init(GameMemory *memory) {
 
 	gameState = {};
 	gameState.player = {};
-	gameState.level = 3;
+	gameState.level = 2;
 	gameState.difficulty = 0;
 	gameState.roadPosition = 0;
 }
 
 int getRoadSpeed() {
 	// FIXME balance road speed
-	return gameState.level * 1 + 10;
+	return gameState.level * 1 + 3;
 }
 
 Texture* getCurrentRoad() {
@@ -256,17 +278,10 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	if (!loaded) {
 		init(memory);
 	}
-	printf("%d\n", counter++);
-
-	clearScreen(buffer, 0);
-	//printf("RoadPosition: %d\n", gameState.roadPosition);
-
-	//updateAndRenderRoad(buffer);
-//	clearScreen(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8) + (((int)(input->shootKey) * 255) << 16));
+//	printf("%d\n", counter++);
+//	printf("RoadPosition: %d\n", gameState.roadPosition);
 
 	updateAndRenderRoad(buffer);
 
-	renderTextureAlpha(buffer, &cars, 300, 0);
-
-	//clearScreen(buffer, ((int)(input->upKey) * 255) + (((int)(input->downKey) * 255) << 8) + (((int)(input->shootKey) * 255) << 16));
+	renderTextureAlpha(buffer, &cars, 0, 0);
 }

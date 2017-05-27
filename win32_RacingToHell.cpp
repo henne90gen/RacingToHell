@@ -235,7 +235,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 	setvbuf(stdout, NULL, _IONBF, 0);
 	setvbuf(stderr, NULL, _IONBF, 0);
 	
-    const float targetFrameTime = 1.0f / 60.0f;
+    const float targetFrameTime = 1.0f / 120.0f;
     INT desiredSchedulerMS = 1;
     timeBeginPeriod(desiredSchedulerMS);
 
@@ -261,6 +261,8 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
     Input *oldInput = &input[0];
     Input *newInput = &input[1];
 	
+    uint64_t lastCounter = getClockCounter(performanceCountFrequency);
+
 	while (isRunning)
 	{
         uint64_t loopStartCount = getClockCounter(performanceCountFrequency);
@@ -309,8 +311,8 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
         oldInput = newInput;
         newInput = tmp;
 
-        /*uint64_t loopEndCounter = getClockCounter(performanceCountFrequency);
-        float secondsElapsed = (loopEndCounter - loopStartCount) / (float)performanceCountFrequency;
+        uint64_t workCounter = getClockCounter(performanceCountFrequency);
+        float secondsElapsed = (workCounter - lastCounter) / (float)performanceCountFrequency;
     
         if (secondsElapsed < targetFrameTime)
         {
@@ -319,10 +321,13 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
         else
         {
             debugString("Missed");
-        } */
+        } 
 
-        float timePassed = (getClockCounter(performanceCountFrequency) - loopStartCount) / (float)performanceCountFrequency;
-        debugString("Frametime: " + std::to_string(1.f / timePassed) + '\n');
+        uint64_t prevLastCounter = lastCounter;
+        lastCounter = getClockCounter(performanceCountFrequency);
+
+        float timePassed = (lastCounter - prevLastCounter) / (float)performanceCountFrequency;
+        //debugString("Frametime: " + std::to_string(1.f / timePassed) + '\n');
     }
 	
 	return 0;

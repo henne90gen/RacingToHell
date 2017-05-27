@@ -1,11 +1,12 @@
 ifeq ($(OS), Windows_NT)
 	PLATFORM_FILE := win32_RacingToHell.cpp
 	PLATFORM_FLAGS := -mwindows
-	CL_FLAGS := -Od -MT -nologo -GR- -Gm- -EHa- -Oi -FC -Zi
-	CL_LINKER := -opt:ref -incremental:no user32.lib gdi32.lib winmm.lib
-	GCC_LINKER := -lwinmm -luser32 -lgdi32
 	EXTENSION := .exe
 	CLEAN_CMD := del *$(EXTENSION)
+	CL_FLAGS := -Od -MT -nologo -GR- -Gm- -EHa- -Oi -FC -Zi -I./include
+	CL_LINKER := -opt:ref -incremental:no user32.lib gdi32.lib winmm.lib
+	GCC_LINKER := -lwinmm -luser32 -lgdi32 -lwinfreetype
+	GCC_INCLUDES := -I./include -L./
 else
 	PLATFORM_FILE := linux_RacingToHell.cpp
 	PLATFORM_FLAGS := -L/usr/X11R6/lib -lX11

@@ -1,8 +1,8 @@
 ifeq ($(OS), Windows_NT)
 	PLATFORM_FILE := win32_RacingToHell.cpp
 	PLATFORM_FLAGS := -mwindows
-	CL_FLAGS := -Od -MT -nologo -GR- -Gm- -EHa- -Oi -FC -Zi
-	CL_LINKER := -opt:ref -incremental:no user32.lib gdi32.lib winmm.lib
+	CL_FLAGS := -Od -MT -nologo -GR- -Gm- -EHa- -Oi -FC -Zi -EHsc -I include
+	CL_LINKER := -opt:ref -incremental:no user32.lib gdi32.lib winmm.lib freetype28.lib
 	GCC_LINKER := -lwinmm -luser32 -lgdi32
 	EXTENSION := .exe
 	CLEAN_CMD := del *$(EXTENSION)
@@ -26,7 +26,7 @@ optimized:
 	g++ -O3 $(PLATFORM_FLAGS) $(PLATFORM_FILE) $(SOURCE_FILES) -o RacingToHell$(EXTENSION) $(GCC_LINKER)
 
 cl:
-	cl $(CL_FLAGS) $(SOURCE_FILES) $(PLATFORM_FILE) -o bin/RacingToHell$(EXTENSION) -link $(CL_LINKER)
+	cl $(CL_FLAGS) freetype28.lib $(SOURCE_FILES) $(PLATFORM_FILE) /Febin\RacingToHell$(EXTENSION) -link $(CL_LINKER)
     
 clean:
 	$(CLEAN_CMD)

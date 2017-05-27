@@ -22,7 +22,7 @@ struct GameMemory
     unsigned temporaryMemoryOffset = 0;
 };
 
-#pragma pack(8)
+#pragma pack(push)
 struct BitmapHeader {
 	uint32_t size; /* Size of this header in bytes */
 	uint32_t width; /* Image width in pixels */

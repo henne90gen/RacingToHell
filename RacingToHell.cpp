@@ -89,11 +89,13 @@ void renderBackgroundTexture(VideoBuffer *buffer, Texture* texture) {
 
 	uint32_t nextLine = buffer->width - texture->width;
 	unsigned yMax = 0;
+
 	if (texture->y > 0) {
 		yMax = buffer->height - texture->y;
 	} else if (texture->y < 0) {
 		yMax = texture->height - ABS(texture->y);
 	}
+
 	for (unsigned y = 0; y < yMax; ++y) {
 		for (unsigned x = 0; x < texture->width; ++x) {
 			*currentBufferPixel++ = *currentTexturePixel++;
@@ -225,7 +227,7 @@ void loadTextures(GameMemory *memory) {
 		//printf("Texture %d: %d\n", i, roads[i].width * roads[i].height);
 	}
 
-	std::string carSprites = "./res/textures/cars/cars.bmp";
+	std::string carSprites = "./res/textures/cars/playercar2.bmp";
 	File carFile = readFile(carSprites);
 	cars = readBmpIntoMemory(carFile, memory);
 	freeFile(&carFile);
@@ -238,14 +240,14 @@ void init(GameMemory *memory) {
 
 	gameState = {};
 	gameState.player = {};
-	gameState.level = 0;
+
 	gameState.difficulty = 0;
 	gameState.roadPosition = 0;
 }
 
 int getRoadSpeed() {
 	// FIXME balance road speed
-	return gameState.level * 1 + 10;
+	return gameState.level * 1 + 3;
 }
 
 Texture* getCurrentRoad() {

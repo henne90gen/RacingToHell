@@ -36,6 +36,7 @@ struct BitmapHeader {
 	uint32_t colorsUsed; /* Number of colors in the image */
 	uint32_t colorsImportant; /* Minimum number of important colors */
 };
+#pragma pack(pop)
 
 File readFile(std::string fileName);
 void freeFile(File *file);

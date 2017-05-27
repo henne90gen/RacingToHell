@@ -233,7 +233,7 @@ void loadTextures(GameMemory *memory) {
 
 void init(GameMemory *memory) {
 	loaded = true;
-	loadFont("./res/font/arial.ttf");
+	font::loadFont("./res/font/arial.ttf");
 	loadTextures(memory);
 
 	gameState = {};
@@ -275,5 +275,5 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 
 	renderTextureAlpha(buffer, &cars, 0, 0);
 
-	renderText(buffer, 'A', 100, 200);
+	font::renderText(buffer, "Hello", 200, 200);
 }

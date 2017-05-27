@@ -293,7 +293,7 @@ int main() {
 		oldInput = newInput;
 		newInput = tmp;
 
-		correctTiming(startTime, 0);
+		correctTiming(startTime, false);
 	}
 
 	XCloseDisplay(graphics.display);

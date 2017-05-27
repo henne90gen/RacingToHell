@@ -231,20 +231,9 @@ void loadTextures(GameMemory *memory) {
 	freeFile(&carFile);
 }
 
-void loadFont(GameMemory *memory) {
-	File file = readFile("./res/font/arial.ttf");
-	GameFont font = { };
-	font.size = file.size;
-	font.content = file.content;
-	printf("Font size: %d\n", (int) font.size);
-
-	freeFile(&file);
-	return;
-}
-
 void init(GameMemory *memory) {
 	loaded = true;
-	loadFont(memory);
+	loadFont("./res/font/arial.ttf");
 	loadTextures(memory);
 
 	gameState = {};

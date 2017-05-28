@@ -246,8 +246,6 @@ void loadTextures(GameMemory *memory, GameState *gameState) {
 void init(GameMemory *memory) {
     memory->isInitialized = true;
 
-	font::loadFont(memory, "./res/font/arial.ttf");
-
     GameState *gameState = (GameState *)reservePermanentMemory(memory, sizeof(GameState));
 
 	*gameState = {};
@@ -255,8 +253,11 @@ void init(GameMemory *memory) {
 
 	gameState->difficulty = 0;
 	gameState->roadPosition = 0;
+ 
+    font::loadFont(memory, "./res/font/arial.ttf");
 
     loadTextures(memory, gameState);
+
 }
 
 int getRoadSpeed(GameState *gameState) {
@@ -294,7 +295,7 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 //	printf("%d\n", counter++);
 //	printf("RoadPosition: %d\n", gameState.roadPosition);
 
-    GameState *gameState = (GameState *)memory;
+    GameState *gameState = (GameState *)(memory->permanent);
 
 	updateAndRenderRoad(buffer, gameState);
 

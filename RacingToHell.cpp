@@ -150,7 +150,7 @@ void renderTextureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
             }
             else
             {
-                uint8_t bufferA = *(uint8_t *)currentBufferPixel;
+                uint8_t bufferA = *currentBufferPixel8;
 
                 float textureAlpha = textureA / 255.0f;
                 float bufferAlpha = bufferA / 255.0f;
@@ -290,12 +290,12 @@ void updateAndRenderRoad(VideoBuffer *buffer) {
 }
 
 void renderDebugInformation(VideoBuffer *buffer, Input *input) {
-	/*std::string text = "Player 1: " + std::to_string(gameState.player.x) + ", "
+	std::string text = "Player 1: " + std::to_string(gameState.player.x) + ", "
 			+ std::to_string(gameState.player.y);
 	font::renderText(buffer, text, 0, 50, 10);
 
 	font::renderText(buffer, text, 0, 50, 10);
-	font::renderText(buffer, text, 0, 50, 10); */
+	font::renderText(buffer, text, 0, 50, 10); 
 }
 
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {

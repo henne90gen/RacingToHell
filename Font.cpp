@@ -12,7 +12,7 @@ FT_Library fontLibrary;
 FT_Face face;
 
 Character characterMap[3][100];
-unsigned availableFontSizes[] = { 14, 18, 24 };
+unsigned availableFontSizes[] = { 5, 10, 20 };
 
 void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 	int glyphIndex = FT_Get_Char_Index(face, loadCharacter);

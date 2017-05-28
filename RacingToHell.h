@@ -41,6 +41,7 @@ struct Resources
     Texture car;
 };
 
+#pragma pack(push)
 struct GameState {
 	Player player;
 	uint8_t level;
@@ -49,6 +50,7 @@ struct GameState {
 
     Resources resources;
 };
+#pragma pack(pop)
 
 #pragma pack(push)
 struct BitmapHeader {

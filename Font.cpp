@@ -85,6 +85,7 @@ int getFontSizeIndex(unsigned fontSize) {
 		}
 	}
 	abort("Font size " + std::to_string(fontSize) + " not available.");
+	return -1;
 }
 
 void renderText(VideoBuffer* buffer, std::string text, int posX, int posY,

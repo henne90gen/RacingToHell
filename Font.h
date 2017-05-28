@@ -12,9 +12,13 @@ struct Character {
 	char* bitmap;
 };
 
+/**
+ * Renders the given text at position (x|y), which is the bottom left corner of the text.
+ * Method will crash if fontSize is not one of the available font sizes.
+ */
 void renderText(VideoBuffer* buffer, std::string text, int x, int y, unsigned fontSize);
 
-void setFontSize(unsigned fontSizeInPixel);
+int* getAvailableFontSizes(int* amount);
 
 void loadFont(GameMemory* memory, std::string fontFileName);
 

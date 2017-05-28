@@ -281,10 +281,7 @@ void updateAndRenderRoad(VideoBuffer *buffer) {
 void renderDebugInformation(VideoBuffer *buffer, Input *input) {
 	std::string text = "Player 1: " + std::to_string(gameState.player.x) + ", "
 			+ std::to_string(gameState.player.y);
-	font::renderText(buffer, "Abcdef", 300, 300, 14);
-
-//	font::renderText(buffer, text, 0, 50, 10);
-//	font::renderText(buffer, text, 0, 50, 10);
+	font::renderText(buffer, "Abcdef", 100, 20, 14);
 }
 
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
@@ -298,34 +295,33 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 
 	renderDebugInformation(buffer, input);
 
-//	renderTextureAlpha(buffer, &cars, -20, 780);
-//    renderTextureAlpha(buffer, &cars, -20, -20);
-//    renderTextureAlpha(buffer, &cars, 580, 780);
-//    renderTextureAlpha(buffer, &cars, 580, -20);
-//    renderTextureAlpha(buffer, &cars, 0, 400);
-//    renderTextureAlpha(buffer, &cars, 0, 500);
-//
-//    renderTextureAlpha(buffer, &cars, 100, 0);
-//    renderTextureAlpha(buffer, &cars, 100, 100);
-//    renderTextureAlpha(buffer, &cars, 100, 200);
-//    renderTextureAlpha(buffer, &cars, 100, 300);
-//    renderTextureAlpha(buffer, &cars, 100, 400);
-//    renderTextureAlpha(buffer, &cars, 100, 500);
-//
-//    renderTextureAlpha(buffer, &cars, 200, 0);
-//    renderTextureAlpha(buffer, &cars, 200, 100);
-//    renderTextureAlpha(buffer, &cars, 200, 200);
-//    renderTextureAlpha(buffer, &cars, 200, 300);
-//    renderTextureAlpha(buffer, &cars, 200, 400);
-//    renderTextureAlpha(buffer, &cars, 200, 500);
-//
-//    renderTextureAlpha(buffer, &cars, 300, 0);
-//    renderTextureAlpha(buffer, &cars, 300, 100);
-//    renderTextureAlpha(buffer, &cars, 300, 200);
-//    renderTextureAlpha(buffer, &cars, 300, 300);
-//    renderTextureAlpha(buffer, &cars, 300, 400);
-//    renderTextureAlpha(buffer, &cars, 300, 500);
+	renderTextureAlpha(buffer, &cars, -20, 780);
+    renderTextureAlpha(buffer, &cars, -20, -20);
+    renderTextureAlpha(buffer, &cars, 580, 780);
+    renderTextureAlpha(buffer, &cars, 580, -20);
+    renderTextureAlpha(buffer, &cars, 0, 400);
+    renderTextureAlpha(buffer, &cars, 0, 500);
 
+    renderTextureAlpha(buffer, &cars, 100, 0);
+    renderTextureAlpha(buffer, &cars, 100, 100);
+    renderTextureAlpha(buffer, &cars, 100, 200);
+    renderTextureAlpha(buffer, &cars, 100, 300);
+    renderTextureAlpha(buffer, &cars, 100, 400);
+    renderTextureAlpha(buffer, &cars, 100, 500);
+
+    renderTextureAlpha(buffer, &cars, 200, 0);
+    renderTextureAlpha(buffer, &cars, 200, 100);
+    renderTextureAlpha(buffer, &cars, 200, 200);
+    renderTextureAlpha(buffer, &cars, 200, 300);
+    renderTextureAlpha(buffer, &cars, 200, 400);
+    renderTextureAlpha(buffer, &cars, 200, 500);
+
+    renderTextureAlpha(buffer, &cars, 300, 0);
+    renderTextureAlpha(buffer, &cars, 300, 100);
+    renderTextureAlpha(buffer, &cars, 300, 200);
+    renderTextureAlpha(buffer, &cars, 300, 300);
+    renderTextureAlpha(buffer, &cars, 300, 400);
+    renderTextureAlpha(buffer, &cars, 300, 500);
 }
 
 void abort(std::string message) {

@@ -104,17 +104,28 @@ void renderBackgroundTexture(VideoBuffer *buffer, Texture* texture) {
 	}
 }
 
-// FIXME can't render textures that are partially on screen
-// FIXME use coordinates of texture instead of offsetX and offsetY
 void renderTextureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 		int offsetY) {
-	uint32_t *currentBufferPixel = (uint32_t *) buffer->content
-			+ offsetY * buffer->width + offsetX;
-	uint32_t *currentTexturePixel = (uint32_t *) texture->content;
+	int32_t *currentBufferPixel = (int32_t *) buffer->content
+			+ offsetY * (int)buffer->width + offsetX;
+	int32_t *currentTexturePixel = (int32_t *) texture->content;
 
-	for (unsigned y = 0; y < texture->height; ++y) {
-		for (unsigned x = 0; x < texture->width; ++x) {
-			if (offsetX + x >= buffer->width || offsetY + y >= buffer->height) {
+    int32_t nextLine = buffer->width - texture->width;
+
+	for (int y = 0; y < texture->height; ++y) {
+        if (offsetY + y < 0)
+        {
+            currentBufferPixel += buffer->width;
+            currentTexturePixel += texture->width;
+            continue;
+        }
+        else if (offsetY + y >= buffer->height)
+        {
+            break;
+        }
+
+		for (int x = 0; x < texture->width; ++x) {
+			if (offsetX + x < 0 || offsetX + x >= buffer->width) {
 				currentBufferPixel++;
 				currentTexturePixel++;
 				continue;
@@ -128,42 +139,54 @@ void renderTextureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 			uint8_t textureR = *currentTexturePixel8++;
 			uint8_t textureA = *currentTexturePixel8++;
 
-			uint8_t bufferA = *(uint8_t *) currentBufferPixel;
+            if (textureA == 255)
+            {
+                *currentBufferPixel++ = *currentTexturePixel++;
+            }
+            else if (textureA == 0)
+            {
+                currentBufferPixel++;
+                currentTexturePixel++;
+            }
+            else
+            {
+                uint8_t bufferA = *(uint8_t *)currentBufferPixel;
 
-			float textureAlpha = textureA / 255.0f;
-			float bufferAlpha = bufferA / 255.0f;
+                float textureAlpha = textureA / 255.0f;
+                float bufferAlpha = bufferA / 255.0f;
 
-			float resultAlpha = textureAlpha
-					+ bufferAlpha * (1.0f - textureAlpha);
+                float resultAlpha = textureAlpha
+                    + bufferAlpha * (1.0f - textureAlpha);
 
-			if (resultAlpha == 0.0f) {
-				*currentBufferPixel = 0;
-			} else {
-				float newB = ((bufferAlpha * (1.0f - textureAlpha)
-						* *currentBufferPixel8) + (textureAlpha * textureB))
-						/ resultAlpha;
-				*currentBufferPixel8++ = (uint8_t) newB;
+                if (resultAlpha == 0.0f) {
+                    *currentBufferPixel = 0;
+                }
+                else {
+                    float newB = ((bufferAlpha * (1.0f - textureAlpha)
+                        * *currentBufferPixel8) + (textureAlpha * textureB))
+                        / resultAlpha;
+                    *currentBufferPixel8++ = (uint8_t)newB;
 
-				float newG = ((bufferAlpha * (1.0f - textureAlpha)
-						* *currentBufferPixel8) + (textureAlpha * textureG))
-						/ resultAlpha;
-				*currentBufferPixel8++ = (uint8_t) newG;
+                    float newG = ((bufferAlpha * (1.0f - textureAlpha)
+                        * *currentBufferPixel8) + (textureAlpha * textureG))
+                        / resultAlpha;
+                    *currentBufferPixel8++ = (uint8_t)newG;
 
-				float newR = ((bufferAlpha * (1.0f - textureAlpha)
-						* *currentBufferPixel8) + (textureAlpha * textureR))
-						/ resultAlpha;
-				*currentBufferPixel8++ = (uint8_t) newR;
+                    float newR = ((bufferAlpha * (1.0f - textureAlpha)
+                        * *currentBufferPixel8) + (textureAlpha * textureR))
+                        / resultAlpha;
+                    *currentBufferPixel8++ = (uint8_t)newR;
 
-				float newA = resultAlpha * 255.0f;
-				*currentBufferPixel8++ = (uint8_t) newA;
-			}
+                    float newA = resultAlpha * 255.0f;
+                    *currentBufferPixel8++ = (uint8_t)newA;
+                }
 
-			currentBufferPixel++;
-			currentTexturePixel++;
+                currentBufferPixel++;
+                currentTexturePixel++;
+            }	
 		}
 
-		currentBufferPixel = (uint32_t *) buffer->content
-				+ (offsetY + y + 1) * buffer->width + offsetX;
+        currentBufferPixel += nextLine;
 	}
 }
 
@@ -267,12 +290,12 @@ void updateAndRenderRoad(VideoBuffer *buffer) {
 }
 
 void renderDebugInformation(VideoBuffer *buffer, Input *input) {
-	std::string text = "Player 1: " + std::to_string(gameState.player.x) + ", "
+	/*std::string text = "Player 1: " + std::to_string(gameState.player.x) + ", "
 			+ std::to_string(gameState.player.y);
 	font::renderText(buffer, text, 0, 50, 10);
 
 	font::renderText(buffer, text, 0, 50, 10);
-	font::renderText(buffer, text, 0, 50, 10);
+	font::renderText(buffer, text, 0, 50, 10); */
 }
 
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
@@ -284,7 +307,33 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 
 	updateAndRenderRoad(buffer);
 
-//	renderTextureAlpha(buffer, &cars, 0, 0);
+	renderTextureAlpha(buffer, &cars, -20, 780);
+    renderTextureAlpha(buffer, &cars, -20, -20);
+    renderTextureAlpha(buffer, &cars, 580, 780);
+    renderTextureAlpha(buffer, &cars, 580, -20);
+    renderTextureAlpha(buffer, &cars, 0, 400);
+    renderTextureAlpha(buffer, &cars, 0, 500);
 
-	renderDebugInformation(buffer, input);
+    renderTextureAlpha(buffer, &cars, 100, 0);
+    renderTextureAlpha(buffer, &cars, 100, 100);
+    renderTextureAlpha(buffer, &cars, 100, 200);
+    renderTextureAlpha(buffer, &cars, 100, 300);
+    renderTextureAlpha(buffer, &cars, 100, 400);
+    renderTextureAlpha(buffer, &cars, 100, 500);
+
+    renderTextureAlpha(buffer, &cars, 200, 0);
+    renderTextureAlpha(buffer, &cars, 200, 100);
+    renderTextureAlpha(buffer, &cars, 200, 200);
+    renderTextureAlpha(buffer, &cars, 200, 300);
+    renderTextureAlpha(buffer, &cars, 200, 400);
+    renderTextureAlpha(buffer, &cars, 200, 500);
+
+    renderTextureAlpha(buffer, &cars, 300, 0);
+    renderTextureAlpha(buffer, &cars, 300, 100);
+    renderTextureAlpha(buffer, &cars, 300, 200);
+    renderTextureAlpha(buffer, &cars, 300, 300); 
+    renderTextureAlpha(buffer, &cars, 300, 400);
+    renderTextureAlpha(buffer, &cars, 300, 500);
+
+	//renderDebugInformation(buffer, input);
 }

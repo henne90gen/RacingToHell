@@ -9,6 +9,11 @@
 static bool isRunning = true;
 static OffscreenBuffer buffer;
 
+void debugString(std::string s)
+{
+    OutputDebugString(s.c_str());
+}
+
 void resizeOffscreenBuffer(OffscreenBuffer *buffer, unsigned width, unsigned height)
 {
 	if (buffer->content)
@@ -74,7 +79,7 @@ LRESULT CALLBACK WndProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM 
 	return DefWindowProc(windowHandle, message, wParam, lParam);
 }  
 
-HWND openWindow(HINSTANCE instance, int show)
+HWND openWindow(HINSTANCE instance, int show, unsigned width, unsigned height)
 {
     WNDCLASS windowClass = {};
     windowClass.hCursor = LoadCursor(0, IDC_ARROW);
@@ -85,15 +90,18 @@ HWND openWindow(HINSTANCE instance, int show)
 
     RegisterClass(&windowClass);
 
+    RECT windowRect = {0 ,0, (LONG)width, (LONG)height};
+    AdjustWindowRectEx(&windowRect, WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, false, 0);
+
     HWND windowHandle = CreateWindowEx(
         0,
         windowClass.lpszClassName,
-        "Racing To Hell",
-        WS_OVERLAPPEDWINDOW,
+        WINDOW_TITLE,
+        WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
         CW_USEDEFAULT,
         CW_USEDEFAULT,
-        CW_USEDEFAULT,
-        CW_USEDEFAULT,
+        windowRect.right - windowRect.left,
+        windowRect.bottom - windowRect.top,
         NULL,
         NULL,
         instance,
@@ -224,11 +232,6 @@ uint64_t getClockCounter(uint64_t frequency)
     return value;
 }
 
-void debugString(std::string s)
-{
-    OutputDebugString(s.c_str());
-}
-
 int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 {
 	// flush stdout and stderr to console
@@ -244,7 +247,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 
     uint64_t performanceCountFrequency = frequencyResult.QuadPart;
 
-	resizeOffscreenBuffer(&buffer, 600, 800);
+	resizeOffscreenBuffer(&buffer, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     GameMemory memory;
     memory.temporaryMemorySize = 10 * 1024 * 1024;
@@ -255,7 +258,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
     //memory.temporary = (char *)malloc(memory.temporaryMemorySize);
     //memory.permanent = (char *)malloc(memory.permanentMemorySize);
 
-	HWND windowHandle = openWindow(instance, show);
+	HWND windowHandle = openWindow(instance, show, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     Input input[2] = { };
     Input *oldInput = &input[0];
@@ -314,20 +317,20 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
         uint64_t workCounter = getClockCounter(performanceCountFrequency);
         float secondsElapsed = (workCounter - lastCounter) / (float)performanceCountFrequency;
     
-        if (secondsElapsed < targetFrameTime)
+        /*if (secondsElapsed < targetFrameTime)
         {
             Sleep(1000.0f * (targetFrameTime - secondsElapsed));
         }
         else
         {
             debugString("Missed :");
-        } 
+        }  */
 
         uint64_t prevLastCounter = lastCounter;
         lastCounter = getClockCounter(performanceCountFrequency);
 
         float timePassed = (lastCounter - prevLastCounter) / (float)performanceCountFrequency;
-        debugString("Frametime: " + std::to_string(1.f / timePassed) + '\n');
+        //debugString("Frametime: " + std::to_string(1.f / timePassed) + '\n');
     }
 	
 	return 0;

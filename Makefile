@@ -18,7 +18,7 @@ endif
 
 GCC_FLAGS := -Wall -g -O0
 
-SOURCE_FILES :=  freetype28.lib Font.cpp  RacingToHell.cpp 
+SOURCE_FILES := Font.cpp  RacingToHell.cpp 
 
 all:
 	g++ $(GCC_FLAGS) $(GCC_INCLUDES) $(PLATFORM_FLAGS) $(PLATFORM_FILE) $(SOURCE_FILES) -o RacingToHell$(EXTENSION) $(GCC_LINKER)
@@ -27,7 +27,7 @@ optimized:
 	g++ -O3 $(PLATFORM_FLAGS) $(PLATFORM_FILE) $(SOURCE_FILES) -o RacingToHell$(EXTENSION) $(GCC_LINKER)
 
 cl:
-	cl $(CL_FLAGS) $(SOURCE_FILES) $(PLATFORM_FILE) /Febin\RacingToHell$(EXTENSION) -link $(CL_LINKER)
+	cl $(CL_FLAGS) freetype28.lib $(SOURCE_FILES) $(PLATFORM_FILE) /Febin\RacingToHell$(EXTENSION) -link $(CL_LINKER)
     
 clean:
 	$(CLEAN_CMD)

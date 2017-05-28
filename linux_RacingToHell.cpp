@@ -43,9 +43,8 @@ Pixmap icon_pixmap;
 GraphicsData initGraphicsData(GameMemory *memory) {
 	GraphicsData graphics = { };
 	graphics.display = XOpenDisplay(NULL);
-	if (graphics.display == NULL) {
-		fprintf(stderr, "Cannot open display\n");
-		exit(1);
+	if (!graphics.display) {
+		abort("Cannot open display.");
 	};
 
 	VideoBuffer videoBuffer = { };
@@ -130,18 +129,17 @@ GraphicsData initGraphicsData(GameMemory *memory) {
 File readFile(std::string fileName) {
 	printf("Reading %s\n", fileName.c_str());
 
-	FILE *f = fopen(fileName.c_str(), "rb");
-	if (!f) {
-		fprintf(stderr, "Could not open file '%s'\n", fileName.c_str());
-		exit(1);
+	FILE *fileHandle = fopen(fileName.c_str(), "rb");
+	if (!fileHandle) {
+		abort("Could not open file " + fileName);
 	}
-	fseek(f, 0, SEEK_END);
-	long int fileSize = ftell(f);
-	rewind(f);
+	fseek(fileHandle, 0, SEEK_END);
+	long int fileSize = ftell(fileHandle);
+	rewind(fileHandle);
 
 	char* content = (char*) malloc(fileSize + 1);
-	fread(content, fileSize, 1, f);
-	fclose(f);
+	fread(content, fileSize, 1, fileHandle);
+	fclose(fileHandle);
 
 	content[fileSize] = 0; // 0-terminated
 
@@ -235,14 +233,16 @@ void correctTiming(timespec startTime, bool consoleOutput) {
 		timeCounter = 0;
 
 		std::stringstream ss;
-		ss << WINDOW_TITLE << ": " << std::to_string(nanoSecondsElapsed / 1000000.0f);
+		ss << WINDOW_TITLE << ": "
+				<< std::to_string(nanoSecondsElapsed / 1000000.0f);
 		ss << "ms, " << std::to_string(1000000000.0f / nanoSecondsElapsed);
 		ss << " FPS";
 		XStoreName(graphics.display, graphics.window, ss.str().c_str());
 		XFlush(graphics.display);
 
 		if (consoleOutput) {
-			printf("Frametime: %fms, Framerate: %f\n", nanoSecondsElapsed / 1000000.0f,
+			printf("Frametime: %fms, Framerate: %f\n",
+					nanoSecondsElapsed / 1000000.0f,
 					1000000000.0f / nanoSecondsElapsed);
 		}
 	}

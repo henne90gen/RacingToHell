@@ -11,29 +11,21 @@ namespace font {
 FT_Library fontLibrary;
 FT_Face face;
 
-Character characterMap[100];
+Character characterMap[3][100];
+unsigned availableFontSizes[] = { 14, 18, 24 };
 
-void setFontSize(unsigned fontSizeInPixel) {
-int error = FT_Set_Char_Size(face, 0, fontSizeInPixel * 64, 300, 300);
-	if (error) {
-		fprintf(stderr, "Couldn't set pixel sizes.");
-		exit(1);
-	}
-}
-
-void loadCharacter(GameMemory* memory, char loadCharacter) {
+void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 	int glyphIndex = FT_Get_Char_Index(face, loadCharacter);
 	int error = FT_Load_Glyph(face, glyphIndex, FT_LOAD_DEFAULT);
 	if (error) {
-		fprintf(stderr, "Couldn't load glyph for '%c'.", loadCharacter);
-		exit(1);
+		abort("Couldn't load glyph for " + std::to_string(loadCharacter));
 	}
 	if (face->glyph->format != FT_GLYPH_FORMAT_BITMAP) {
 		error = FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL);
 		if (error) {
-			fprintf(stderr, "Couldn't render character '%c' as bitmap.",
-					loadCharacter);
-			exit(1);
+			abort(
+					"Couldn't render character " + std::to_string(loadCharacter)
+							+ " as bitmap.");
 		}
 	}
 
@@ -47,38 +39,60 @@ void loadCharacter(GameMemory* memory, char loadCharacter) {
 	memory->permanentMemoryOffset += bitmapSizeInPixel;
 
 	memcpy(newCharacter.bitmap, face->glyph->bitmap.buffer, bitmapSizeInPixel);
-	characterMap[loadCharacter - ' '] = newCharacter;
+	characterMap[fontSize][loadCharacter - ' '] = newCharacter;
+}
+
+int getFontSize(int fontSizeIndex) {
+	return availableFontSizes[fontSizeIndex];
 }
 
 void loadFont(GameMemory* memory, std::string fontFileName) {
 	int error;
 	error = FT_Init_FreeType(&fontLibrary);
 	if (error) {
-		fprintf(stderr, "Couldn't initialize font library.");
-		exit(1);
+		abort("Couldn't initialize font library.");
 	}
 
 	error = FT_New_Face(fontLibrary, "./res/font/arial.ttf", 0, &face);
 	if (error) {
-		fprintf(stderr, "Couldn't load font %s.", fontFileName.c_str());
-		exit(1);
+		abort("Couldn't load font " + fontFileName + ".");
 	}
 
-	setFontSize(20);
+	for (unsigned fontSizeIndex = 0;
+			fontSizeIndex < sizeof(availableFontSizes) / 4; fontSizeIndex++) {
+		int fontSize = getFontSize(fontSizeIndex);
+		int error = FT_Set_Char_Size(face, 0, fontSize * 64, 300, 300);
+		if (error) {
+			std::string message = "Couldn't set pixel size to "
+					+ std::to_string(fontSize) + ".";
+			abort(message);
+		}
 
-	for (char currentChar = ' ' + 1; currentChar < '~'; currentChar++) {
-		loadCharacter(memory, currentChar);
+		for (char currentChar = ' ' + 1; currentChar < '~'; currentChar++) {
+			loadCharacter(memory, currentChar, fontSizeIndex);
+		}
 	}
 }
 
-Character getCharacter(char character) {
-	return characterMap[character - ' '];
+Character getCharacter(char character, int fontSizeIndex) {
+	return characterMap[fontSizeIndex][character - ' '];
 }
 
-void renderText(VideoBuffer* buffer, std::string text, int posX, int posY) {
+int getFontSizeIndex(unsigned fontSize) {
+	for (unsigned i = 0; i < sizeof(availableFontSizes) / 4; i++) {
+		if (availableFontSizes[i] == fontSize) {
+			return i;
+		}
+	}
+	abort("Font size " + std::to_string(fontSize) + " not available.");
+}
+
+void renderText(VideoBuffer* buffer, std::string text, int posX, int posY,
+		unsigned fontSize) {
 	Character character;
+	int fontSizeIndex = getFontSizeIndex(fontSize);
 	for (unsigned i = 0; i < text.size(); i++) {
-		character = getCharacter(text[i]);
+		character = getCharacter(text[i], fontSizeIndex);
 
 		for (int y = character.height - 1; y >= 0; y--) {
 			int yIndex = posY - (character.height - y);
@@ -95,17 +109,11 @@ void renderText(VideoBuffer* buffer, std::string text, int posX, int posY) {
 				int bufferIndex = yIndex * buffer->width + (xIndex);
 				int glyphIndex = y * character.width + x;
 				((uint32_t*) buffer->content)[bufferIndex] |=
-						(character.bitmap)[glyphIndex];
+						character.bitmap[glyphIndex];
 			}
 		}
 		posX += character.width + 10;
 	}
-}
-
-void renderText(VideoBuffer* buffer, std::string text, int posX, int posY,
-		unsigned fontSize) {
-	setFontSize(fontSize);
-	renderText(buffer, text, posX, posY);
 }
 
 }

@@ -42,4 +42,7 @@ struct GameState {
 };
 
 Texture readBmpIntoMemory(File file, GameMemory *memory);
+
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory);
+
+void abort(std::string message);

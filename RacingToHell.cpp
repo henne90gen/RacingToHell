@@ -200,15 +200,13 @@ void importPixelData(void* input, void* output, unsigned width,
 
 Texture readBmpIntoMemory(File file, GameMemory *memory) {
 	if (((char*) file.content)[0] != 'B' || (file.content)[1] != 'M') {
-		fprintf(stderr, "%s is not a .bmp file.\n", file.name.c_str());
-		exit(1);
+		abort(file.name + " is not a bitmap file.");
 	}
 	int fileHeaderSize = 14;
 	BitmapHeader header = *((BitmapHeader*) (file.content + fileHeaderSize));
 
 	if (header.bitsPerPixel != 32) {
-		fprintf(stderr, "Image must have 32-bit colors.");
-		exit(1);
+		abort("Image must have 32-bit of color depth.");
 	}
 
 	Texture texture = { };
@@ -283,7 +281,7 @@ void updateAndRenderRoad(VideoBuffer *buffer) {
 void renderDebugInformation(VideoBuffer *buffer, Input *input) {
 	std::string text = "Player 1: " + std::to_string(gameState.player.x) + ", "
 			+ std::to_string(gameState.player.y);
-	font::renderText(buffer, "Abcdef", 300, 300, 50);
+	font::renderText(buffer, "Abcdef", 300, 300, 14);
 
 //	font::renderText(buffer, text, 0, 50, 10);
 //	font::renderText(buffer, text, 0, 50, 10);
@@ -328,4 +326,9 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 //    renderTextureAlpha(buffer, &cars, 300, 400);
 //    renderTextureAlpha(buffer, &cars, 300, 500);
 
+}
+
+void abort(std::string message) {
+	fprintf(stderr, message.c_str());
+	exit(1);
 }

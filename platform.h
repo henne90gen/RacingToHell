@@ -13,13 +13,12 @@ struct File {
 	std::string name;
 };
 
-struct GameMemory
-{
-    unsigned temporaryMemorySize, permanentMemorySize;
-    char *temporary, *permanent;
+struct GameMemory {
+	size_t temporaryMemorySize, permanentMemorySize;
+	char *temporary, *permanent;
 
-    unsigned permanentMemoryOffset = 0;
-    unsigned temporaryMemoryOffset = 0;
+	size_t permanentMemoryOffset = 0;
+	size_t temporaryMemoryOffset = 0;
 };
 
 #pragma pack(push)

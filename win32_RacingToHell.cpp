@@ -109,9 +109,8 @@ HWND openWindow(HINSTANCE instance, int show, unsigned width, unsigned height)
         );
 
     if(!windowHandle) {
-        std::cout << "Failed to create window" << std::endl;
-		exit(1);
-	}
+    	abort("Could not create window.");
+    }
 
     ShowWindow(windowHandle, show);
 

@@ -202,15 +202,13 @@ void importPixelData(void* input, void* output, unsigned width,
 
 Texture readBmpIntoMemory(File file, GameMemory *memory) {
 	if (((char*) file.content)[0] != 'B' || (file.content)[1] != 'M') {
-		fprintf(stderr, "%s is not a .bmp file.\n", file.name.c_str());
-		exit(1);
+		abort(file.name + " is not a bitmap file.");
 	}
 	int fileHeaderSize = 14;
 	BitmapHeader header = *((BitmapHeader*) (file.content + fileHeaderSize));
 
 	if (header.bitsPerPixel != 32) {
-		fprintf(stderr, "Image must have 32-bit colors.");
-		exit(1);
+		abort("Image must have 32-bit of color depth.");
 	}
 
 	Texture texture = { };
@@ -282,13 +280,11 @@ void updateAndRenderRoad(VideoBuffer *buffer, GameState *gameState) {
 	renderBackgroundTexture(buffer, getCurrentRoad(gameState));
 }
 
+
 void renderDebugInformation(VideoBuffer *buffer, Input *input, GameState *gameState) {
 	std::string text = "Player 1: " + std::to_string(gameState->player.x) + ", "
 			+ std::to_string(gameState->player.y);
-	font::renderText(buffer, "A B", 300, 300, 1);
-
-//	font::renderText(buffer, text, 0, 50, 10);
-//	font::renderText(buffer, text, 0, 50, 10);
+	font::renderText(buffer, "Abcdef", 100, 20, 14);
 }
 
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
@@ -303,33 +299,37 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	updateAndRenderRoad(buffer, gameState);
 
 	renderDebugInformation(buffer, input, gameState);
+    /*
+    renderTextureAlpha(buffer, &cars, -20, 780);
+    renderTextureAlpha(buffer, &cars, -20, -20);
+    renderTextureAlpha(buffer, &cars, 580, 780);
+    renderTextureAlpha(buffer, &cars, 580, -20);
+    renderTextureAlpha(buffer, &cars, 0, 400);
+    renderTextureAlpha(buffer, &cars, 0, 500);
 
-//	renderTextureAlpha(buffer, &cars, -20, 780);
-//    renderTextureAlpha(buffer, &cars, -20, -20);
-//    renderTextureAlpha(buffer, &cars, 580, 780);
-//    renderTextureAlpha(buffer, &cars, 580, -20);
-//    renderTextureAlpha(buffer, &cars, 0, 400);
-//    renderTextureAlpha(buffer, &cars, 0, 500);
-//
-//    renderTextureAlpha(buffer, &cars, 100, 0);
-//    renderTextureAlpha(buffer, &cars, 100, 100);
-//    renderTextureAlpha(buffer, &cars, 100, 200);
-//    renderTextureAlpha(buffer, &cars, 100, 300);
-//    renderTextureAlpha(buffer, &cars, 100, 400);
-//    renderTextureAlpha(buffer, &cars, 100, 500);
-//
-//    renderTextureAlpha(buffer, &cars, 200, 0);
-//    renderTextureAlpha(buffer, &cars, 200, 100);
-//    renderTextureAlpha(buffer, &cars, 200, 200);
-//    renderTextureAlpha(buffer, &cars, 200, 300);
-//    renderTextureAlpha(buffer, &cars, 200, 400);
-//    renderTextureAlpha(buffer, &cars, 200, 500);
-//
-//    renderTextureAlpha(buffer, &cars, 300, 0);
-//    renderTextureAlpha(buffer, &cars, 300, 100);
-//    renderTextureAlpha(buffer, &cars, 300, 200);
-//    renderTextureAlpha(buffer, &cars, 300, 300);
-//    renderTextureAlpha(buffer, &cars, 300, 400);
-//    renderTextureAlpha(buffer, &cars, 300, 500);
+    renderTextureAlpha(buffer, &cars, 100, 0);
+    renderTextureAlpha(buffer, &cars, 100, 100);
+    renderTextureAlpha(buffer, &cars, 100, 200);
+    renderTextureAlpha(buffer, &cars, 100, 300);
+    renderTextureAlpha(buffer, &cars, 100, 400);
+    renderTextureAlpha(buffer, &cars, 100, 500);
 
+    renderTextureAlpha(buffer, &cars, 200, 0);
+    renderTextureAlpha(buffer, &cars, 200, 100);
+    renderTextureAlpha(buffer, &cars, 200, 200);
+    renderTextureAlpha(buffer, &cars, 200, 300);
+    renderTextureAlpha(buffer, &cars, 200, 400);
+    renderTextureAlpha(buffer, &cars, 200, 500);
+
+    renderTextureAlpha(buffer, &cars, 300, 0);
+    renderTextureAlpha(buffer, &cars, 300, 100);
+    renderTextureAlpha(buffer, &cars, 300, 200);
+    renderTextureAlpha(buffer, &cars, 300, 300);
+    renderTextureAlpha(buffer, &cars, 300, 400);
+    renderTextureAlpha(buffer, &cars, 300, 500); */
+}
+
+void abort(std::string message) {
+	fprintf(stderr, message.c_str());
+	exit(1);
 }

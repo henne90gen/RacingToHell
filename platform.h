@@ -16,7 +16,7 @@ struct GameMemory
 {
     bool isInitialized = false;
 
-    size_t temporaryMemorySize, permanentMemorySize;
+    size_t temporaryMemorySize = 0, permanentMemorySize = 0;
     char *temporary, *permanent;
 
     size_t permanentMemoryOffset = 0;

@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <ctime>
 #include <string>
+#include <sstream>
 
 #include "platform.h"
 #include "RacingToHell.h"
@@ -231,9 +232,12 @@ void correctTiming(timespec startTime, bool consoleOutput) {
 	float milliSecondsElapsed = (endTime.tv_nsec - startTime.tv_nsec)
 			/ 1000000.0f;
 
-//	std::string windowText = WINDOW_TITLE + " " + std::to_string(1);
-//	XStoreName(graphics.display, graphics.window, windowText.c_str());
-//	XFlush(graphics.display);
+	std::stringstream ss;
+	ss << WINDOW_TITLE << ": " << std::to_string(milliSecondsElapsed);
+	ss << "ms, " << std::to_string(1.0f / milliSecondsElapsed * 1000.0f);
+	ss << " FPS";
+	XStoreName(graphics.display, graphics.window, ss.str().c_str());
+	XFlush(graphics.display);
 
 	if (consoleOutput) {
 		printf("Frametime: %fms, Framerate: %f\n", milliSecondsElapsed,

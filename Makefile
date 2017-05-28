@@ -3,7 +3,7 @@ ifeq ($(OS), Windows_NT)
 	PLATFORM_FLAGS := -mwindows
 	EXTENSION := .exe
 	CLEAN_CMD := del *$(EXTENSION)
-	CL_FLAGS := -O2 -MT -nologo -GR- -Gm- -EHsc- -Oi -FC -Zi -Iinclude
+	CL_FLAGS := -Od -MT -nologo -GR- -Gm- -EHsc- -Oi -FC -Zi -Iinclude
 	CL_LINKER := -opt:ref -incremental:no user32.lib gdi32.lib winmm.lib
 	GCC_LINKER := -lwinmm -luser32 -lgdi32 -lwinfreetype
 	GCC_INCLUDES := -I./include -L./

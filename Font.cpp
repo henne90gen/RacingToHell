@@ -41,19 +41,19 @@ void loadCharacter(GameMemory* memory, char loadCharacter) {
 
 	Character newCharacter = { };
 	newCharacter.value = loadCharacter;
-	newCharacter.width = face->glyph->bitmap.width / bytesPerPixel;
-	newCharacter.height = face->glyph->bitmap.rows / bytesPerPixel;
+	newCharacter.width = face->glyph->bitmap.width;
+	newCharacter.height = face->glyph->bitmap.rows;
 	newCharacter.bitmap = memory->permanent + memory->permanentMemoryOffset;
 
 	unsigned bitmapSizeInPixel = newCharacter.width * newCharacter.height;
 	memory->permanentMemoryOffset += bitmapSizeInPixel * bytesPerPixel;
 
 	memcpy(newCharacter.bitmap, face->glyph->bitmap.buffer,
-			bitmapSizeInPixel * bytesPerPixel);
-//	for (unsigned i = 0; i < bitmapSizeInPixel; i++) {
-//		((uint32_t*) newCharacter.bitmap)[i] =
-//				((uint32_t *) face->glyph->bitmap.buffer)[i];
-//	}
+			bitmapSizeInPixel);
+	/*for (unsigned i = 0; i < bitmapSizeInPixel; i++) {
+		((uint32_t*) newCharacter.bitmap)[i] =
+				(face->glyph->bitmap.buffer)[i];
+	} */
 	characterMap[loadCharacter - ' '] = newCharacter;
 }
 
@@ -73,7 +73,7 @@ void loadFont(GameMemory* memory, std::string fontFileName) {
 
 	setFontSize(20);
 
-	for (char currentChar = ' '; currentChar < '~'; currentChar++) {
+	for (char currentChar = ' ' + 1; currentChar < '~'; currentChar++) {
 		loadCharacter(memory, currentChar);
 	}
 }
@@ -100,7 +100,7 @@ void renderText(VideoBuffer* buffer, std::string text, int posX, int posY) {
 				}
 
 				int bufferIndex = yIndex * buffer->width + (xIndex);
-				int glyphIndex = y * character.width * 4 + x;
+				int glyphIndex = y * character.width + x;
 				((uint32_t*) buffer->content)[bufferIndex] |=
 						((uint32_t *) character.bitmap)[glyphIndex];
 			}

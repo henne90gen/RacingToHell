@@ -5,12 +5,14 @@
 #include "platform.h"
 #include "Font.h"
 
-static bool loaded = false;
-static int counter = 0;
+char *reservePermanentMemory(GameMemory *memory, size_t size)
+{
+    char *Result = memory->permanent + memory->permanentMemoryOffset;
 
-static Texture roads[4];
-static Texture cars;
-static GameState gameState;
+    memory->permanentMemoryOffset += size;
+
+    return Result;
+}
 
 void testInput(Input* input) {
 	printf("(%d|%d)\n", input->mouseX, input->mouseY);
@@ -217,10 +219,7 @@ Texture readBmpIntoMemory(File file, GameMemory *memory) {
 	texture.width = header.width;
 	texture.height = header.height;
 	texture.bytesPerPixel = header.bitsPerPixel / 8;
-	texture.content = memory->permanent + memory->permanentMemoryOffset;
-
-	memory->permanentMemoryOffset += texture.width * texture.height
-			* texture.bytesPerPixel;
+	texture.content = reservePermanentMemory(memory, texture.width * texture.height * texture.bytesPerPixel);
 
 	importPixelData(file.content + header.size + fileHeaderSize,
 			texture.content, texture.width, texture.height);
@@ -228,13 +227,12 @@ Texture readBmpIntoMemory(File file, GameMemory *memory) {
 	return texture;
 }
 
-void loadTextures(GameMemory *memory) {
+void loadTextures(GameMemory *memory, GameState *gameState) {
 	for (int i = 0; i < 4; i++) {
-		std::stringstream fileName;
-		fileName << "./res/textures/roads/road" << i << ".bmp";
-		File file = readFile(fileName.str());
-		roads[i] = readBmpIntoMemory(file, memory);
-		roads[i].y = -800;
+		std::string filename = "./res/textures/roads/road" + std::to_string(i) + ".bmp";
+		File file = readFile(filename);
+		gameState->resources.roadTextures[i] = readBmpIntoMemory(file, memory);
+        gameState->resources.roadTextures[i].y = -800;
 		freeFile(&file);
 	}
 	for (int i = 0; i < 4; i++) {
@@ -243,62 +241,68 @@ void loadTextures(GameMemory *memory) {
 
 	std::string carSprites = "./res/textures/cars/playercar2.bmp";
 	File carFile = readFile(carSprites);
-	cars = readBmpIntoMemory(carFile, memory);
+	gameState->resources.car = readBmpIntoMemory(carFile, memory);
 	freeFile(&carFile);
 }
 
 void init(GameMemory *memory) {
-	loaded = true;
+    memory->isInitialized = true;
+
 	font::loadFont(memory, "./res/font/arial.ttf");
-	loadTextures(memory);
 
-	gameState = {};
-	gameState.player = {};
+    GameState *gameState = (GameState *)reservePermanentMemory(memory, sizeof(GameState));
 
-	gameState.difficulty = 0;
-	gameState.roadPosition = 0;
+	*gameState = {};
+	gameState->player = {};
+
+	gameState->difficulty = 0;
+	gameState->roadPosition = 0;
+
+    loadTextures(memory, gameState);
 }
 
-int getRoadSpeed() {
+int getRoadSpeed(GameState *gameState) {
 	// FIXME balance road speed
-	return gameState.level * 1 + 3;
+	return gameState->level * 1 + 3;
 }
 
-Texture* getCurrentRoad() {
-	return &roads[gameState.level % 4];
+Texture* getCurrentRoad(GameState *gameState) {
+	return &gameState->resources.roadTextures[gameState->level % 4];
 }
 
-void updateAndRenderRoad(VideoBuffer *buffer) {
-	gameState.roadPosition += getRoadSpeed();
-	if (gameState.roadPosition >= 800) {
-		gameState.roadPosition = 0;
+void updateAndRenderRoad(VideoBuffer *buffer, GameState *gameState) {
+	gameState->roadPosition += getRoadSpeed(gameState);
+	if (gameState->roadPosition >= 800) {
+		gameState->roadPosition = 0;
 	}
-	Texture* road = getCurrentRoad();
-	road->y = gameState.roadPosition;
-	renderBackgroundTexture(buffer, getCurrentRoad());
+	Texture* road = getCurrentRoad(gameState);
+	road->y = gameState->roadPosition;
+	renderBackgroundTexture(buffer, getCurrentRoad(gameState));
 	road->y -= 799;
-	renderBackgroundTexture(buffer, getCurrentRoad());
+	renderBackgroundTexture(buffer, getCurrentRoad(gameState));
 }
 
-void renderDebugInformation(VideoBuffer *buffer, Input *input) {
-	std::string text = "Player 1: " + std::to_string(gameState.player.x) + ", "
-			+ std::to_string(gameState.player.y);
-	font::renderText(buffer, "A", 300, 300, 10);
+void renderDebugInformation(VideoBuffer *buffer, Input *input, GameState *gameState) {
+	std::string text = "Player 1: " + std::to_string(gameState->player.x) + ", "
+			+ std::to_string(gameState->player.y);
+	font::renderText(buffer, "A B", 300, 300, 1);
 
 //	font::renderText(buffer, text, 0, 50, 10);
 //	font::renderText(buffer, text, 0, 50, 10);
 }
 
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
-	if (!loaded) {
+	if (!memory->isInitialized) {
 		init(memory);
 	}
 //	printf("%d\n", counter++);
 //	printf("RoadPosition: %d\n", gameState.roadPosition);
 
-	updateAndRenderRoad(buffer);
+    GameState *gameState = (GameState *)memory;
 
-	renderDebugInformation(buffer, input);
+	updateAndRenderRoad(buffer, gameState);
+
+	renderDebugInformation(buffer, input, gameState);
 
 //	renderTextureAlpha(buffer, &cars, -20, 780);
 //    renderTextureAlpha(buffer, &cars, -20, -20);

@@ -73,7 +73,7 @@ void loadFont(GameMemory* memory, std::string fontFileName) {
 
 	setFontSize(20);
 
-	for (char currentChar = ' ' + 1; currentChar < '~'; currentChar++) {
+	for (char currentChar = ' '; currentChar < '~'; currentChar++) {
 		loadCharacter(memory, currentChar);
 	}
 }

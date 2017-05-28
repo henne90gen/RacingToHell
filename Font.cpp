@@ -14,7 +14,7 @@ FT_Face face;
 Character characterMap[100];
 
 void setFontSize(unsigned fontSizeInPixel) {
-	int error = FT_Set_Pixel_Sizes(face, 0, fontSizeInPixel * 10);
+int error = FT_Set_Char_Size(face, 0, fontSizeInPixel * 64, 300, 300);
 	if (error) {
 		fprintf(stderr, "Couldn't set pixel sizes.");
 		exit(1);
@@ -37,8 +37,6 @@ void loadCharacter(GameMemory* memory, char loadCharacter) {
 		}
 	}
 
-	int bytesPerPixel = 4;
-
 	Character newCharacter = { };
 	newCharacter.value = loadCharacter;
 	newCharacter.width = face->glyph->bitmap.width;
@@ -48,12 +46,7 @@ void loadCharacter(GameMemory* memory, char loadCharacter) {
 	unsigned bitmapSizeInPixel = newCharacter.width * newCharacter.height;
 	memory->permanentMemoryOffset += bitmapSizeInPixel;
 
-	memcpy(newCharacter.bitmap, face->glyph->bitmap.buffer,
-			bitmapSizeInPixel);
-	/*for (unsigned i = 0; i < bitmapSizeInPixel; i++) {
-		((uint32_t*) newCharacter.bitmap)[i] =
-				(face->glyph->bitmap.buffer)[i];
-	} */
+	memcpy(newCharacter.bitmap, face->glyph->bitmap.buffer, bitmapSizeInPixel);
 	characterMap[loadCharacter - ' '] = newCharacter;
 }
 

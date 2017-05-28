@@ -51,7 +51,7 @@ void drawBuffer(HDC deviceContext, OffscreenBuffer *buffer)
 	
 	if (result == 0)
 	{
-		std::cout << "DIBits failed." << std::endl;
+        debugString("DBits failed.");
 	}
 }
 
@@ -163,18 +163,6 @@ void handleKeyStroke(Input *input, WPARAM keyCode, LPARAM flags)
 
 }
 
-void drawSomething(OffscreenBuffer *buffer)
-{
-	for (unsigned y = 0; y < buffer->height; ++y)
-	{
-		for (unsigned x = 0; x < buffer->width; ++x)
-		{
-			//AARRGGBB
-			((int *)buffer->content)[buffer->width * y + x] = (255 << 16); 
-		}
-	}
-}
-
 File readFile(std::string filename)
 {
     File result = {};
@@ -222,7 +210,7 @@ void freeFile(File *file)
     file->size = 0;
 }
 
-uint64_t getClockCounter(uint64_t frequency)
+uint64_t getClockCounter()
 {
     LARGE_INTEGER queryResult;
     QueryPerformanceCounter(&queryResult);
@@ -232,13 +220,25 @@ uint64_t getClockCounter(uint64_t frequency)
     return value;
 }
 
+void sleep(float time, uint64_t frequency)
+{
+    float timePassed = 0.0f;
+
+    uint64_t startClock = getClockCounter();
+
+    while (timePassed < time)
+    {
+        timePassed = (getClockCounter() - startClock) / (float)(frequency);
+    }
+}
+
 int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 {
 	// flush stdout and stderr to console
 	setvbuf(stdout, NULL, _IONBF, 0);
 	setvbuf(stderr, NULL, _IONBF, 0);
 	
-    const float targetFrameTime = 1.0f / 120.0f;
+    const float targetFrameTime = 1.0f / 60.0f;
     INT desiredSchedulerMS = 1;
     timeBeginPeriod(desiredSchedulerMS);
 
@@ -255,20 +255,17 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
     memory.temporary = (char *)VirtualAlloc(0, memory.permanentMemorySize + memory.temporaryMemorySize, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
     memory.permanent = (char *)memory.temporary + memory.temporaryMemorySize;
 
-    //memory.temporary = (char *)malloc(memory.temporaryMemorySize);
-    //memory.permanent = (char *)malloc(memory.permanentMemorySize);
-
 	HWND windowHandle = openWindow(instance, show, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     Input input[2] = { };
     Input *oldInput = &input[0];
     Input *newInput = &input[1];
 	
-    uint64_t lastCounter = getClockCounter(performanceCountFrequency);
+    uint64_t lastCounter = getClockCounter();
 
 	while (isRunning)
 	{
-        uint64_t loopStartCount = getClockCounter(performanceCountFrequency);
+        uint64_t loopStartCount = getClockCounter();
         *newInput = *oldInput;
 
 		MSG message;
@@ -314,23 +311,23 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
         oldInput = newInput;
         newInput = tmp;
 
-        uint64_t workCounter = getClockCounter(performanceCountFrequency);
+        uint64_t workCounter = getClockCounter();
         float secondsElapsed = (workCounter - lastCounter) / (float)performanceCountFrequency;
     
-        /*if (secondsElapsed < targetFrameTime)
+        if (secondsElapsed < targetFrameTime)
         {
-            Sleep(1000.0f * (targetFrameTime - secondsElapsed));
+            sleep(targetFrameTime - secondsElapsed, performanceCountFrequency);
         }
         else
         {
             debugString("Missed :");
-        }  */
+        }  
 
         uint64_t prevLastCounter = lastCounter;
-        lastCounter = getClockCounter(performanceCountFrequency);
+        lastCounter = getClockCounter();
 
         float timePassed = (lastCounter - prevLastCounter) / (float)performanceCountFrequency;
-        //debugString("Frametime: " + std::to_string(1.f / timePassed) + '\n');
+        debugString("Frametime: " + std::to_string(1.f / timePassed) + '\n');
     }
 	
 	return 0;

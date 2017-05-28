@@ -142,7 +142,7 @@ void renderTextureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 				currentBufferPixel++;
 				currentTexturePixel++;
 			} else {
-				uint8_t bufferA = *(uint8_t *) currentBufferPixel;
+				uint8_t bufferA = *currentBufferPixel8;
 
 				float textureAlpha = textureA / 255.0f;
 				float bufferAlpha = bufferA / 255.0f;

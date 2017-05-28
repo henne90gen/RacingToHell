@@ -213,6 +213,8 @@ void handleMouseEvent(Input* input, XButtonEvent event) {
 }
 
 void correctTiming(timespec startTime, bool consoleOutput) {
+	static long timeCounter = 0;
+
 	timespec endTime = { };
 	clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
 	if (endTime.tv_nsec < startTime.tv_nsec) {
@@ -225,23 +227,24 @@ void correctTiming(timespec startTime, bool consoleOutput) {
 		sleepTime.tv_sec = (targetFrameTime - nanoSecondsElapsed)
 				/ 1000000000.0f;
 		sleepTime.tv_nsec = targetFrameTime - nanoSecondsElapsed;
-		nanosleep(&sleepTime, NULL);
+//		nanosleep(&sleepTime, NULL);
 	}
 
-	clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
-	float milliSecondsElapsed = (endTime.tv_nsec - startTime.tv_nsec)
-			/ 1000000.0f;
+	timeCounter += nanoSecondsElapsed;
+	if (timeCounter > 100000000) {
+		timeCounter = 0;
 
-	std::stringstream ss;
-	ss << WINDOW_TITLE << ": " << std::to_string(milliSecondsElapsed);
-	ss << "ms, " << std::to_string(1.0f / milliSecondsElapsed * 1000.0f);
-	ss << " FPS";
-	XStoreName(graphics.display, graphics.window, ss.str().c_str());
-	XFlush(graphics.display);
+		std::stringstream ss;
+		ss << WINDOW_TITLE << ": " << std::to_string(nanoSecondsElapsed / 1000000.0f);
+		ss << "ms, " << std::to_string(1000000000.0f / nanoSecondsElapsed);
+		ss << " FPS";
+		XStoreName(graphics.display, graphics.window, ss.str().c_str());
+		XFlush(graphics.display);
 
-	if (consoleOutput) {
-		printf("Frametime: %fms, Framerate: %f\n", milliSecondsElapsed,
-				1.0f / milliSecondsElapsed * 1000.0f);
+		if (consoleOutput) {
+			printf("Frametime: %fms, Framerate: %f\n", nanoSecondsElapsed / 1000000.0f,
+					1000000000.0f / nanoSecondsElapsed);
+		}
 	}
 }
 

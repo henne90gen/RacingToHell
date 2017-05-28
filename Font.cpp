@@ -1,6 +1,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include "RacingToHell.h"
+#include "Font.h"
 
 // FIXME compile version 2.8 of the freetype library for windows:
 // https://stackoverflow.com/questions/6207176/compiling-freetype-to-dll-as-opposed-to-static-library
@@ -10,6 +11,8 @@ namespace font {
 FT_Library fontLibrary;
 FT_Face face;
 
+Character characterMap[100];
+
 void setFontSize(unsigned fontSizeInPixel) {
 	int error = FT_Set_Pixel_Sizes(face, 0, fontSizeInPixel * 10);
 	if (error) {
@@ -18,7 +21,43 @@ void setFontSize(unsigned fontSizeInPixel) {
 	}
 }
 
-void loadFont(std::string fontFileName) {
+void loadCharacter(GameMemory* memory, char loadCharacter) {
+	int glyphIndex = FT_Get_Char_Index(face, loadCharacter);
+	int error = FT_Load_Glyph(face, glyphIndex, FT_LOAD_DEFAULT);
+	if (error) {
+		fprintf(stderr, "Couldn't load glyph for '%c'.", loadCharacter);
+		exit(1);
+	}
+	if (face->glyph->format != FT_GLYPH_FORMAT_BITMAP) {
+		error = FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL);
+		if (error) {
+			fprintf(stderr, "Couldn't render character '%c' as bitmap.",
+					loadCharacter);
+			exit(1);
+		}
+	}
+
+	int bytesPerPixel = 4;
+
+	Character newCharacter = { };
+	newCharacter.value = loadCharacter;
+	newCharacter.width = face->glyph->bitmap.width / bytesPerPixel;
+	newCharacter.height = face->glyph->bitmap.rows / bytesPerPixel;
+	newCharacter.bitmap = memory->permanent + memory->permanentMemoryOffset;
+
+	unsigned bitmapSizeInPixel = newCharacter.width * newCharacter.height;
+	memory->permanentMemoryOffset += bitmapSizeInPixel * bytesPerPixel;
+
+	memcpy(newCharacter.bitmap, face->glyph->bitmap.buffer,
+			bitmapSizeInPixel * bytesPerPixel);
+//	for (unsigned i = 0; i < bitmapSizeInPixel; i++) {
+//		((uint32_t*) newCharacter.bitmap)[i] =
+//				((uint32_t *) face->glyph->bitmap.buffer)[i];
+//	}
+	characterMap[loadCharacter - ' '] = newCharacter;
+}
+
+void loadFont(GameMemory* memory, std::string fontFileName) {
 	int error;
 	error = FT_Init_FreeType(&fontLibrary);
 	if (error) {
@@ -28,57 +67,45 @@ void loadFont(std::string fontFileName) {
 
 	error = FT_New_Face(fontLibrary, "./res/font/arial.ttf", 0, &face);
 	if (error) {
-		fprintf(stderr, "Couldn't load font %s.", fontFileName);
+		fprintf(stderr, "Couldn't load font %s.", fontFileName.c_str());
 		exit(1);
 	}
 
 	setFontSize(20);
+
+	for (char currentChar = ' '; currentChar < '~'; currentChar++) {
+		loadCharacter(memory, currentChar);
+	}
+}
+
+Character getCharacter(char character) {
+	return characterMap[character - ' '];
 }
 
 void renderText(VideoBuffer* buffer, std::string text, int posX, int posY) {
-	int error;
-	char character;
-
+	Character character;
 	for (unsigned i = 0; i < text.size(); i++) {
-		character = text[i];
-		int glyphIndex = FT_Get_Char_Index(face, character);
-		error = FT_Load_Glyph(face, glyphIndex, FT_LOAD_DEFAULT);
-		if (error) {
-			fprintf(stderr, "Couldn't load glyph for '%c'.", character);
-			exit(1);
-		}
-		if (face->glyph->format != FT_GLYPH_FORMAT_BITMAP) {
-			error = FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL);
-			if (error) {
-				fprintf(stderr, "Couldn't render character '%c' as bitmap.",
-						character);
-				exit(1);
-			}
-		}
+		character = getCharacter(text[i]);
 
-		int bytesPerPixel = 4;
-		for (int y = face->glyph->bitmap.rows / bytesPerPixel - 1; y >= 0;
-				y--) {
-			int yIndex = posY - (face->glyph->bitmap.rows / bytesPerPixel - y);
+		for (int y = character.height - 1; y >= 0; y--) {
+			int yIndex = posY - (character.height - y);
 			if (yIndex >= (int) buffer->height || yIndex < 0) {
 				continue;
 			}
 
-			for (unsigned x = 0; x < face->glyph->bitmap.width / bytesPerPixel;
-					x++) {
-
+			for (unsigned x = 0; x < character.width; x++) {
 				int xIndex = posX + x;
 				if (xIndex >= (int) buffer->width || xIndex < 0) {
 					continue;
 				}
 
-				int bufferIndex = yIndex * buffer->width + (posX + x);
-				int glyphIndex = y * face->glyph->bitmap.width + x;
+				int bufferIndex = yIndex * buffer->width + (xIndex);
+				int glyphIndex = y * character.width * 4 + x;
 				((uint32_t*) buffer->content)[bufferIndex] |=
-						((uint32_t *) face->glyph->bitmap.buffer)[glyphIndex];
+						((uint32_t *) character.bitmap)[glyphIndex];
 			}
 		}
-		posX += face->glyph->bitmap.width / bytesPerPixel + 10;
+		posX += character.width + 10;
 	}
 }
 

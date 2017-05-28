@@ -283,7 +283,7 @@ void updateAndRenderRoad(VideoBuffer *buffer) {
 void renderDebugInformation(VideoBuffer *buffer, Input *input) {
 	std::string text = "Player 1: " + std::to_string(gameState.player.x) + ", "
 			+ std::to_string(gameState.player.y);
-	font::renderText(buffer, "ABC", 300, 300, 10);
+	font::renderText(buffer, "A", 300, 300, 10);
 
 //	font::renderText(buffer, text, 0, 50, 10);
 //	font::renderText(buffer, text, 0, 50, 10);

@@ -46,7 +46,7 @@ void loadCharacter(GameMemory* memory, char loadCharacter) {
 	newCharacter.bitmap = memory->permanent + memory->permanentMemoryOffset;
 
 	unsigned bitmapSizeInPixel = newCharacter.width * newCharacter.height;
-	memory->permanentMemoryOffset += bitmapSizeInPixel * bytesPerPixel;
+	memory->permanentMemoryOffset += bitmapSizeInPixel;
 
 	memcpy(newCharacter.bitmap, face->glyph->bitmap.buffer,
 			bitmapSizeInPixel);
@@ -102,7 +102,7 @@ void renderText(VideoBuffer* buffer, std::string text, int posX, int posY) {
 				int bufferIndex = yIndex * buffer->width + (xIndex);
 				int glyphIndex = y * character.width + x;
 				((uint32_t*) buffer->content)[bufferIndex] |=
-						((uint32_t *) character.bitmap)[glyphIndex];
+						(character.bitmap)[glyphIndex];
 			}
 		}
 		posX += character.width + 10;

@@ -230,6 +230,11 @@ void correctTiming(timespec startTime, bool consoleOutput) {
 	clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
 	float milliSecondsElapsed = (endTime.tv_nsec - startTime.tv_nsec)
 			/ 1000000.0f;
+
+//	std::string windowText = WINDOW_TITLE + " " + std::to_string(1);
+//	XStoreName(graphics.display, graphics.window, windowText.c_str());
+//	XFlush(graphics.display);
+
 	if (consoleOutput) {
 		printf("Frametime: %fms, Framerate: %f\n", milliSecondsElapsed,
 				1.0f / milliSecondsElapsed * 1000.0f);

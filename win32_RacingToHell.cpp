@@ -320,14 +320,14 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
         }
         else
         {
-            debugString("Missed");
+            debugString("Missed :");
         } 
 
         uint64_t prevLastCounter = lastCounter;
         lastCounter = getClockCounter(performanceCountFrequency);
 
         float timePassed = (lastCounter - prevLastCounter) / (float)performanceCountFrequency;
-        //debugString("Frametime: " + std::to_string(1.f / timePassed) + '\n');
+        debugString("Frametime: " + std::to_string(1.f / timePassed) + '\n');
     }
 	
 	return 0;

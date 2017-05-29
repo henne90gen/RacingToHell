@@ -35,6 +35,10 @@ struct Player {
 	uint32_t speed;
 };
 
+struct Bullet {
+	float x, y, dx, dy;
+};
+
 struct Resources {
 	Texture roadTextures[4];
 
@@ -46,12 +50,14 @@ struct Resources {
 
 #pragma pack(push)
 struct GameState {
-	Player player;
+	uint32_t frameCounter;
+	uint32_t roadPosition;
 	uint8_t level;
 	uint8_t difficulty;
-	uint32_t roadPosition;
-	unsigned explosionIndex;
-	uint32_t frameCounter;
+	Player player;
+
+	std::vector<Bullet> aiBullets;
+	std::vector<Bullet> playerBullets;
 
 	Resources resources;
 };

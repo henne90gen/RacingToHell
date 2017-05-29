@@ -105,6 +105,20 @@ GameState* getGameState(GameMemory* memory) {
 	return (GameState *) (memory->permanent);
 }
 
+void spawnBullet(GameState *gameState, float x, float y, float dx, float dy, bool playerBullet) {
+	Bullet bullet = {};
+	bullet.x =x;
+	bullet.y = y;
+	bullet.dx = dx;
+	bullet.dy = dy;
+
+	if (playerBullet) {
+		gameState->playerBullets.push_back(bullet);
+	} else {
+		gameState->aiBullets.push_back(bullet);
+	}
+}
+
 void updateAndRenderPlayer(VideoBuffer *buffer, Input *input,
 		GameState *gameState) {
 	// TODO change this to vector math
@@ -121,18 +135,22 @@ void updateAndRenderPlayer(VideoBuffer *buffer, Input *input,
 		gameState->player.x += gameState->player.speed;
 	}
 
+	if (input->shootKey) {
+		spawnBullet();
+	}
+
 	Texture *texture =
 			&gameState->resources.playerCarTextures[gameState->player.carIndex];
 	// checking left and right
 	if (gameState->player.x < texture->width / 2) {
-//		gameState->player.x = texture->width / 2;
+		gameState->player.x = texture->width / 2;
 	} else if (gameState->player.x > WINDOW_WIDTH - texture->width / 2) {
 		gameState->player.x = WINDOW_WIDTH - texture->width / 2;
 	}
 
 	// checking top and bottom
 	if (gameState->player.y < texture->height / 2) {
-//		gameState->player.y = texture->height / 2;
+		gameState->player.y = texture->height / 2;
 	} else if (gameState->player.y > WINDOW_HEIGHT - texture->height / 2) {
 		gameState->player.y = WINDOW_HEIGHT - texture->height / 2;
 	}
@@ -153,7 +171,4 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	updateAndRenderRoad(buffer, gameState);
 
 	updateAndRenderPlayer(buffer, input, gameState);
-
-	render::textureAlpha(buffer, &gameState->resources.playerCarTextures[0],
-			100, -1);
 }

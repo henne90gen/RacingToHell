@@ -2,7 +2,7 @@
 ###TODOs
 
 - render
-    - alpha texture disappears if y is below 0
+    - draw circle
 - font
     - save baseline
     - save kerning?

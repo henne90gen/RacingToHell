@@ -61,7 +61,7 @@ void loadFont(GameMemory* memory, std::string fontFileName) {
 	for (unsigned fontSizeIndex = 0;
 			fontSizeIndex < sizeof(availableFontSizes) / 4; fontSizeIndex++) {
 		int fontSize = getFontSize(fontSizeIndex);
-		int error = FT_Set_Char_Size(face, 0, fontSize * 64, 300, 300);
+		int error = FT_Set_Char_Size(face, 0, fontSize * 64, WINDOW_WIDTH, WINDOW_HEIGHT);
 		if (error) {
 			std::string message = "Couldn't set pixel size to "
 					+ std::to_string(fontSize) + ".";

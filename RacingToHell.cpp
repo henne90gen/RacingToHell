@@ -109,8 +109,6 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 
 	updateAndRenderRoad(buffer, gameState);
 
-	render::explosion(buffer, gameState, 0, 0, &gameState->explosionIndex);
-
 	render::debugInformation(buffer, input, gameState);
 }
 

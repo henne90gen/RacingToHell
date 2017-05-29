@@ -1,20 +1,27 @@
 
-TODOs:
-	- player control
-		- mouse cursor
-		- car movement
-		- shooting
-	- enemies
-		- spawning
-		- movement
-		- shooting
-	- bosses
-		- spawning
-		- movement
-		- shooting
-		- phases
+###TODOs
 
-IDEAs:
-	- powerups
-	- slow motion (everything moves slower)
-	- 'fast' motion (everything except the player is slower)
+- font
+    - save baseline
+    - save kerning?
+- sound
+- player control
+- mouse cursor
+    - car movement
+    - shooting
+- enemies
+    - spawning
+    - movement
+    - shooting
+- bosses
+    - spawning
+    - movement
+    - shooting
+    - phases
+
+
+###IDEAs
+
+- powerups
+- slow motion (everything moves slower)
+- 'fast' motion (everything except the player is slower)

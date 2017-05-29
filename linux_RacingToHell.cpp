@@ -82,7 +82,11 @@ GraphicsData initGraphicsData(GameMemory *memory) {
 	// set icon
 	Atom iconAtom = XInternAtom(graphics.display, "_NET_WM_ICON", 0);
 	File file = readFile("./res/icon.bmp");
-	Texture texture = readBmpIntoMemory(file, memory);
+	GameMemory bmpMemory = { };
+	char bmpBuffer[48*48*4];
+	bmpMemory.permanent = bmpBuffer;
+	bmpMemory.permanentMemorySize = sizeof(bmpBuffer);
+	Texture texture = readBmpIntoMemory(file, &bmpMemory);
 	int propsize = 2 + (texture.width * texture.height);
 	long *propdata = (long*) malloc(propsize * sizeof(long));
 

@@ -30,8 +30,8 @@ void loadTextures(GameMemory *memory, GameState *gameState) {
 void init(GameMemory *memory) {
 	memory->isInitialized = true;
 
-	GameState *gameState = (GameState *) memory->permanent;
-	memory->permanentMemoryOffset += sizeof(GameState);
+	GameState *gameState = (GameState *) reservePermanentMemory(memory,
+			sizeof(GameState));
 
 	*gameState = {};
 	gameState->player = {};

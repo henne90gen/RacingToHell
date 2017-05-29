@@ -1,4 +1,13 @@
+void abort(std::string message) {
+	fprintf(stderr, message.c_str());
+	exit(1);
+}
+
 char *reservePermanentMemory(GameMemory *memory, size_t size) {
+	if (memory->permanentMemoryOffset + size > memory->permanentMemorySize) {
+		abort("Out of memory!");
+	}
+
 	char *Result = memory->permanent + memory->permanentMemoryOffset;
 
 	memory->permanentMemoryOffset += size;
@@ -6,10 +15,6 @@ char *reservePermanentMemory(GameMemory *memory, size_t size) {
 	return Result;
 }
 
-void abort(std::string message) {
-	fprintf(stderr, message.c_str());
-	exit(1);
-}
 
 void importPixelData(void* input, void* output, unsigned width,
 		unsigned height) {

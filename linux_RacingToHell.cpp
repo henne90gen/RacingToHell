@@ -126,7 +126,6 @@ GraphicsData initGraphicsData(GameMemory *memory) {
 	graphics.gc = XDefaultGC(graphics.display, screen);
 
 	XFlush(graphics.display);
-
 	return graphics;
 }
 

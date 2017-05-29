@@ -82,7 +82,11 @@ GraphicsData initGraphicsData(GameMemory *memory) {
 	// set icon
 	Atom iconAtom = XInternAtom(graphics.display, "_NET_WM_ICON", 0);
 	File file = readFile("./res/icon.bmp");
-	Texture texture = readBmpIntoMemory(file, memory);
+	GameMemory bmpMemory = { };
+	char bmpBuffer[48 * 48 * 4];
+	bmpMemory.permanent = bmpBuffer;
+	bmpMemory.permanentMemorySize = sizeof(bmpBuffer);
+	Texture texture = readBmpIntoMemory(file, &bmpMemory);
 	int propsize = 2 + (texture.width * texture.height);
 	long *propdata = (long*) malloc(propsize * sizeof(long));
 
@@ -122,7 +126,6 @@ GraphicsData initGraphicsData(GameMemory *memory) {
 	graphics.gc = XDefaultGC(graphics.display, screen);
 
 	XFlush(graphics.display);
-
 	return graphics;
 }
 
@@ -211,8 +214,6 @@ void handleMouseEvent(Input* input, XButtonEvent event) {
 }
 
 void correctTiming(timespec startTime, bool consoleOutput) {
-	static long timeCounter = 0;
-
 	timespec endTime = { };
 	clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
 	if (endTime.tv_nsec < startTime.tv_nsec) {
@@ -225,26 +226,27 @@ void correctTiming(timespec startTime, bool consoleOutput) {
 		sleepTime.tv_sec = (targetFrameTime - nanoSecondsElapsed)
 				/ 1000000000.0f;
 		sleepTime.tv_nsec = targetFrameTime - nanoSecondsElapsed;
-//		nanosleep(&sleepTime, NULL);
+		nanosleep(&sleepTime, NULL);
 	}
 
-	timeCounter += nanoSecondsElapsed;
-	if (timeCounter > 100000000) {
-		timeCounter = 0;
+	clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
+	if (endTime.tv_nsec < startTime.tv_nsec) {
+		return;
+	}
+	nanoSecondsElapsed = endTime.tv_nsec - startTime.tv_nsec;
 
-		std::stringstream ss;
-		ss << WINDOW_TITLE << ": "
-				<< std::to_string(nanoSecondsElapsed / 1000000.0f);
-		ss << "ms, " << std::to_string(1000000000.0f / nanoSecondsElapsed);
-		ss << " FPS";
-		XStoreName(graphics.display, graphics.window, ss.str().c_str());
-		XFlush(graphics.display);
+	std::stringstream ss;
+	ss << WINDOW_TITLE << ": "
+			<< std::to_string(nanoSecondsElapsed / 1000000.0f);
+	ss << "ms, " << std::to_string(1000000000.0f / nanoSecondsElapsed);
+	ss << " FPS";
+	XStoreName(graphics.display, graphics.window, ss.str().c_str());
+	XFlush(graphics.display);
 
-		if (consoleOutput) {
-			printf("Frametime: %fms, Framerate: %f\n",
-					nanoSecondsElapsed / 1000000.0f,
-					1000000000.0f / nanoSecondsElapsed);
-		}
+	if (consoleOutput) {
+		printf("Frametime: %fms, Framerate: %f\n",
+				nanoSecondsElapsed / 1000000.0f,
+				1000000000.0f / nanoSecondsElapsed);
 	}
 }
 

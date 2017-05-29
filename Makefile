@@ -18,7 +18,7 @@ endif
 
 GCC_FLAGS := -Wall -g -O0
 
-SOURCE_FILES := Font.cpp  RacingToHell.cpp 
+SOURCE_FILES := Renderer.cpp Font.cpp  RacingToHell.cpp 
 
 all:
 	g++ $(GCC_FLAGS) $(GCC_INCLUDES) $(PLATFORM_FLAGS) $(PLATFORM_FILE) $(SOURCE_FILES) -o RacingToHell$(EXTENSION) $(GCC_LINKER)

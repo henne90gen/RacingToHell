@@ -18,8 +18,8 @@ void explosion(VideoBuffer *buffer, GameState *gameState, int x, int y,
 }
 
 void debugInformation(VideoBuffer *buffer, Input *input, GameState *gameState) {
-	std::string text = "Player 1: " + std::to_string(gameState->player.x) + ", "
-			+ std::to_string(gameState->player.y);
+	std::string text = "Player 1: " + std::to_string(gameState->player.position.x) + ", "
+			+ std::to_string(gameState->player.position.y);
 	font::renderText(buffer, text, 20, 100, 5);
 }
 

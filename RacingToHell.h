@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include "platform.h"
+#include "Math.h"
 
 struct VideoBuffer {
 
@@ -30,7 +31,7 @@ struct Input {
 };
 
 struct Player {
-	float x, y;
+    Math::Vector2f position;
 	uint8_t health, carIndex;
 	uint32_t speed;
 };

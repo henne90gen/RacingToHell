@@ -257,7 +257,6 @@ void init(GameMemory *memory) {
     font::loadFont(memory, "./res/font/arial.ttf");
 
     loadTextures(memory, gameState);
-
 }
 
 int getRoadSpeed(GameState *gameState) {
@@ -292,42 +291,22 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	if (!memory->isInitialized) {
 		init(memory);
 	}
-//	printf("%d\n", counter++);
-//	printf("RoadPosition: %d\n", gameState.roadPosition);
 
     GameState *gameState = (GameState *)(memory->permanent);
 
-	updateAndRenderRoad(buffer, gameState);
+    updateAndRenderRoad(buffer, gameState);
 
-	renderDebugInformation(buffer, input, gameState);
-    /*
-    renderTextureAlpha(buffer, &cars, -20, 780);
-    renderTextureAlpha(buffer, &cars, -20, -20);
-    renderTextureAlpha(buffer, &cars, 580, 780);
-    renderTextureAlpha(buffer, &cars, 580, -20);
-    renderTextureAlpha(buffer, &cars, 0, 400);
-    renderTextureAlpha(buffer, &cars, 0, 500);
+    renderDebugInformation(buffer, input, gameState);
 
-    renderTextureAlpha(buffer, &cars, 100, 0);
-    renderTextureAlpha(buffer, &cars, 100, 100);
-    renderTextureAlpha(buffer, &cars, 100, 200);
-    renderTextureAlpha(buffer, &cars, 100, 300);
-    renderTextureAlpha(buffer, &cars, 100, 400);
-    renderTextureAlpha(buffer, &cars, 100, 500);
+//	printf("%d\n", counter++);
+//	printf("RoadPosition: %d\n", gameState.roadPosition);
 
-    renderTextureAlpha(buffer, &cars, 200, 0);
-    renderTextureAlpha(buffer, &cars, 200, 100);
-    renderTextureAlpha(buffer, &cars, 200, 200);
-    renderTextureAlpha(buffer, &cars, 200, 300);
-    renderTextureAlpha(buffer, &cars, 200, 400);
-    renderTextureAlpha(buffer, &cars, 200, 500);
-
-    renderTextureAlpha(buffer, &cars, 300, 0);
-    renderTextureAlpha(buffer, &cars, 300, 100);
-    renderTextureAlpha(buffer, &cars, 300, 200);
-    renderTextureAlpha(buffer, &cars, 300, 300);
-    renderTextureAlpha(buffer, &cars, 300, 400);
-    renderTextureAlpha(buffer, &cars, 300, 500); */
+    
+    renderTextureAlpha(buffer, &gameState->resources.car, 100, -10);
+    renderTextureAlpha(buffer, &gameState->resources.car, -20, -20);
+    renderTextureAlpha(buffer, &gameState->resources.car, 580, 780);
+    renderTextureAlpha(buffer, &gameState->resources.car, 580, -20);
+  
 }
 
 void abort(std::string message) {

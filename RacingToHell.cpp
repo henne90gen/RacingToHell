@@ -153,5 +153,7 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	updateAndRenderRoad(buffer, gameState);
 
 	updateAndRenderPlayer(buffer, input, gameState);
-}
 
+	render::textureAlpha(buffer, &gameState->resources.playerCarTextures[0],
+			100, -1);
+}

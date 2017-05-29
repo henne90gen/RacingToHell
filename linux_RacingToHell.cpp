@@ -13,6 +13,7 @@
 
 #include "platform.h"
 #include "RacingToHell.h"
+#include "Math.h"
 
 #define KeyW 25
 #define KeyA 38
@@ -283,8 +284,10 @@ int main() {
 				handleMouseEvent(newInput, event.xbutton);
 			}
 			if (event.type == MotionNotify) {
-				newInput->mouseX = event.xmotion.x;
-				newInput->mouseY = event.xmotion.y;
+				Math::Vector2f mousePosition = {};
+				mousePosition.x = event.xmotion.x;
+				mousePosition.y = event.xmotion.y;
+				newInput->mousePosition = mousePosition;
 			}
 		}
 

@@ -15,21 +15,21 @@ char *reservePermanentMemory(GameMemory *memory, size_t size) {
 	return Result;
 }
 
-void importPixelData(void* input, void* output, unsigned inputWidth,
-		unsigned inputHeight, int offsetX, int offsetY, unsigned outputWidth,
-		unsigned outputHeight) {
+void importPixelData(void* src, void* dest, unsigned srcWidth,
+		unsigned srcHeight, int offsetX, int offsetY, unsigned destWidth,
+		unsigned destHeight) {
 
-	for (unsigned y = 0; y < outputHeight; y++) {
-		for (unsigned x = 0; x < outputWidth; x++) {
-			int inputIndex = (inputHeight - y - 1) * inputWidth + x;
-			int outputIndex = (y + offsetY) * outputWidth + (x + offsetX);
-			uint32_t color = ((uint32_t*) (input))[inputIndex];
+	for (unsigned y = 0; y < destHeight; y++) {
+		for (unsigned x = 0; x < destWidth; x++) {
+			int srcIndex = (srcHeight - (y + offsetY) - 1) * srcWidth + x + offsetX;
+			int destIndex = y * destWidth + x;
+			uint32_t color = ((uint32_t*) (src))[srcIndex];
 			uint8_t r = (color & 0xff000000) >> 24;
 			uint8_t g = (color & 0x00ff0000) >> 16;
 			uint8_t b = (color & 0x0000ff00) >> 8;
 			uint8_t a = color & 0x000000ff;
 			color = (a << 24) + (r << 16) + (g << 8) + b;
-			((uint32_t*) (output))[outputIndex] = color;
+			((uint32_t*) (dest))[destIndex] = color;
 		}
 	}
 }

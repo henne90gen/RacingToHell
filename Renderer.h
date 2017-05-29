@@ -3,6 +3,8 @@
 
 namespace render {
 
+void explosion(VideoBuffer *buffer, GameState *gameState, int x, int y, unsigned *explosionIndex);
+
 void debugInformation(VideoBuffer *buffer, Input *input,
 		GameState *gameState);
 

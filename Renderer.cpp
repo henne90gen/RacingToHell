@@ -3,8 +3,21 @@
 
 namespace render {
 
-void debugInformation(VideoBuffer *buffer, Input *input,
-		GameState *gameState) {
+void explosion(VideoBuffer *buffer, GameState *gameState, int x, int y,
+		unsigned *explosionIndex) {
+	if (gameState->frameCounter % 3 == 0) {
+		std::size_t explosionSize = sizeof(gameState->resources.explosion);
+		explosionSize /= sizeof(Texture);
+		explosionSize--;
+		if ((*explosionIndex)++ >= explosionSize) {
+			*explosionIndex = 0;
+		}
+	}
+	render::textureAlpha(buffer,
+			&gameState->resources.explosion[*explosionIndex], x, y);
+}
+
+void debugInformation(VideoBuffer *buffer, Input *input, GameState *gameState) {
 	std::string text = "Player 1: " + std::to_string(gameState->player.x) + ", "
 			+ std::to_string(gameState->player.y);
 	font::renderText(buffer, text, 20, 100, 5);

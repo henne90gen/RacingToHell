@@ -39,7 +39,7 @@ void loadTextures(GameMemory *memory, GameState *gameState) {
 	}
 
 	File explosionFile = readFile("./res/textures/explosion.bmp");
-	for (int y = 0; y < 8; y++) {
+	for (int y = 0; y < 9; y++) {
 		for (int x = 0; x < 9; x++) {
 			int offsetX = x * 100;
 			int offsetY = y * 100;
@@ -85,11 +85,11 @@ void updateAndRenderRoad(VideoBuffer *buffer, GameState *gameState) {
 	gameState->roadPosition += getRoadSpeed(gameState);
 	if (gameState->roadPosition >= 800) {
 		gameState->roadPosition = 0;
-		printf("Setting to 0\n");
 	}
-	printf("RoadPosition: %d\n", gameState->roadPosition);
-	render::backgroundTexture(buffer, getCurrentRoad(gameState), gameState->roadPosition);
-	render::backgroundTexture(buffer, getCurrentRoad(gameState), gameState->roadPosition - 800);
+	render::backgroundTexture(buffer, getCurrentRoad(gameState),
+			gameState->roadPosition);
+	render::backgroundTexture(buffer, getCurrentRoad(gameState),
+			gameState->roadPosition - 800);
 }
 
 GameState* getGameState(GameMemory* memory) {
@@ -107,15 +107,7 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 
 	updateAndRenderRoad(buffer, gameState);
 
-//	if (gameState->frameCounter % 3 == 0) {
-//		if (gameState->explosionIndex++
-//				>= sizeof(gameState->resources.explosion) / sizeof(Texture)-1) {
-//			gameState->explosionIndex = 0;
-//		}
-//		printf("ExplosionIndex: %d\n", gameState->explosionIndex);
-//	}
-//	render::texture(buffer,
-//			&gameState->resources.explosion[gameState->explosionIndex], 0, 0);
+	render::explosion(buffer, gameState, 0, 0, &gameState->explosionIndex);
 
 	render::debugInformation(buffer, input, gameState);
 }

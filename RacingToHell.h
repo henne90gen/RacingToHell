@@ -40,7 +40,7 @@ struct Resources {
 	Texture playerCarTextures[6];
 	Texture trafficCarTextures[7];
 
-	Texture explosion[9 * 8];
+	Texture explosion[9 * 9];
 };
 
 #pragma pack(push)
@@ -49,7 +49,7 @@ struct GameState {
 	uint8_t level;
 	uint8_t difficulty;
 	uint32_t roadPosition;
-	uint8_t explosionIndex;
+	unsigned explosionIndex;
 	uint32_t frameCounter;
 
 	Resources resources;

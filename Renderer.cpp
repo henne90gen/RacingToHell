@@ -96,7 +96,6 @@ void backgroundTexture(VideoBuffer *buffer, Texture* texture, int offsetY) {
 	}
 }
 
-// FIXME no rendering happens if y is negative
 void textureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 		int offsetY) {
 	int32_t *currentBufferPixel = (int32_t *) buffer->content
@@ -105,7 +104,7 @@ void textureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 
 	int32_t nextLine = buffer->width - texture->width;
 
-	for (unsigned y = 0; y < texture->height; ++y) {
+	for (int y = 0; y < (int)texture->height; ++y) {
 		if (offsetY + y < 0) {
 			currentBufferPixel += buffer->width;
 			currentTexturePixel += texture->width;
@@ -114,7 +113,7 @@ void textureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 			break;
 		}
 
-		for (unsigned x = 0; x < texture->width; ++x) {
+		for (int x = 0; x < (int)texture->width; ++x) {
 			if (offsetX + x < 0 || offsetX + x >= buffer->width) {
 				currentBufferPixel++;
 				currentTexturePixel++;

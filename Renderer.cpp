@@ -104,7 +104,7 @@ void textureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 
 	int32_t nextLine = buffer->width - texture->width;
 
-	for (int y = 0; y < texture->height; ++y) {
+	for (unsigned y = 0; y < texture->height; ++y) {
 		if (offsetY + y < 0) {
 			currentBufferPixel += buffer->width;
 			currentTexturePixel += texture->width;
@@ -113,7 +113,7 @@ void textureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 			break;
 		}
 
-		for (int x = 0; x < texture->width; ++x) {
+		for (unsigned x = 0; x < texture->width; ++x) {
 			if (offsetX + x < 0 || offsetX + x >= buffer->width) {
 				currentBufferPixel++;
 				currentTexturePixel++;

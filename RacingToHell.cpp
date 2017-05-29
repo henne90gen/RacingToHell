@@ -45,8 +45,10 @@ void loadTextures(GameMemory *memory, GameState *gameState) {
 			int offsetY = y * 100;
 			int width = 100;
 			int height = 100;
+			bool output = y == 8 && x == 8;
 			gameState->resources.explosion[y * 9 + x] = readBmpIntoMemory(
-					explosionFile, memory, offsetX, offsetY, width, height);
+					explosionFile, memory, offsetX, offsetY, width, height,
+					output);
 		}
 	}
 	freeFile(&explosionFile);

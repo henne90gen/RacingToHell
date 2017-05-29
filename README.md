@@ -1,5 +1,5 @@
 
-###TODOs
+### TODOs
 
 - render
     - draw circle
@@ -22,7 +22,7 @@
     - phases
 
 
-###IDEAs
+### IDEAs
 
 - powerups
 - slow motion (everything moves slower)

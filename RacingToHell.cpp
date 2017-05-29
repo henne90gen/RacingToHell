@@ -14,17 +14,42 @@ void loadTextures(GameMemory *memory, GameState *gameState) {
 				+ ".bmp";
 		File file = readFile(filename);
 		gameState->resources.roadTextures[i] = readBmpIntoMemory(file, memory);
-		gameState->resources.roadTextures[i].y = -800;
 		freeFile(&file);
 	}
 	for (int i = 0; i < 4; i++) {
 		//printf("Texture %d: %d\n", i, roads[i].width * roads[i].height);
 	}
 
-	std::string carSprites = "./res/textures/cars/playercar2.bmp";
-	File carFile = readFile(carSprites);
-	gameState->resources.car = readBmpIntoMemory(carFile, memory);
-	freeFile(&carFile);
+	for (unsigned i = 0; i < 6; i++) {
+		std::string carSprites = "./res/textures/cars/player"
+				+ std::to_string(i) + ".bmp";
+		File carFile = readFile(carSprites);
+		gameState->resources.playerCarTextures[i] = readBmpIntoMemory(carFile,
+				memory);
+		freeFile(&carFile);
+	}
+
+	for (unsigned i = 0; i < 7; i++) {
+		std::string carSprites = "./res/textures/cars/traffic"
+				+ std::to_string(i) + ".bmp";
+		File carFile = readFile(carSprites);
+		gameState->resources.trafficCarTextures[i] = readBmpIntoMemory(carFile,
+				memory);
+		freeFile(&carFile);
+	}
+
+	File explosionFile = readFile("./res/textures/explosion.bmp");
+	for (int y = 0; y < 8; y++) {
+		for (int x = 0; x < 9; x++) {
+			int offsetX = x * 100;
+			int offsetY = y * 100;
+			int width = 100;
+			int height = 100;
+			gameState->resources.explosion[y * 9 + x] = readBmpIntoMemory(
+					explosionFile, memory, offsetX, offsetY, width, height);
+		}
+	}
+	freeFile(&explosionFile);
 }
 
 void init(GameMemory *memory) {
@@ -39,6 +64,8 @@ void init(GameMemory *memory) {
 	gameState->level = 0;
 	gameState->difficulty = 0;
 	gameState->roadPosition = 0;
+	gameState->explosionIndex = 0;
+	gameState->frameCounter = 0;
 
 	font::loadFont(memory, "./res/font/arial.ttf");
 
@@ -58,12 +85,11 @@ void updateAndRenderRoad(VideoBuffer *buffer, GameState *gameState) {
 	gameState->roadPosition += getRoadSpeed(gameState);
 	if (gameState->roadPosition >= 800) {
 		gameState->roadPosition = 0;
+		printf("Setting to 0\n");
 	}
-	Texture* road = getCurrentRoad(gameState);
-	road->y = gameState->roadPosition;
-	render::backgroundTexture(buffer, getCurrentRoad(gameState));
-	road->y -= 799;
-	render::backgroundTexture(buffer, getCurrentRoad(gameState));
+	printf("RoadPosition: %d\n", gameState->roadPosition);
+	render::backgroundTexture(buffer, getCurrentRoad(gameState), gameState->roadPosition);
+	render::backgroundTexture(buffer, getCurrentRoad(gameState), gameState->roadPosition - 800);
 }
 
 GameState* getGameState(GameMemory* memory) {
@@ -75,42 +101,22 @@ GameState* getGameState(GameMemory* memory) {
 
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	GameState *gameState = getGameState(memory);
-
-//	printf("%d\n", counter++);
-//	printf("RoadPosition: %d\n", gameState.roadPosition);
+	gameState->frameCounter++;
 
 	render::clearScreen(buffer, 0);
 
 	updateAndRenderRoad(buffer, gameState);
 
+//	if (gameState->frameCounter % 3 == 0) {
+//		if (gameState->explosionIndex++
+//				>= sizeof(gameState->resources.explosion) / sizeof(Texture)-1) {
+//			gameState->explosionIndex = 0;
+//		}
+//		printf("ExplosionIndex: %d\n", gameState->explosionIndex);
+//	}
+//	render::texture(buffer,
+//			&gameState->resources.explosion[gameState->explosionIndex], 0, 0);
+
 	render::debugInformation(buffer, input, gameState);
-	/*
-	 renderTextureAlpha(buffer, &cars, -20, 780);
-	 renderTextureAlpha(buffer, &cars, -20, -20);
-	 renderTextureAlpha(buffer, &cars, 580, 780);
-	 renderTextureAlpha(buffer, &cars, 580, -20);
-	 renderTextureAlpha(buffer, &cars, 0, 400);
-	 renderTextureAlpha(buffer, &cars, 0, 500);
-
-	 renderTextureAlpha(buffer, &cars, 100, 0);
-	 renderTextureAlpha(buffer, &cars, 100, 100);
-	 renderTextureAlpha(buffer, &cars, 100, 200);
-	 renderTextureAlpha(buffer, &cars, 100, 300);
-	 renderTextureAlpha(buffer, &cars, 100, 400);
-	 renderTextureAlpha(buffer, &cars, 100, 500);
-
-	 renderTextureAlpha(buffer, &cars, 200, 0);
-	 renderTextureAlpha(buffer, &cars, 200, 100);
-	 renderTextureAlpha(buffer, &cars, 200, 200);
-	 renderTextureAlpha(buffer, &cars, 200, 300);
-	 renderTextureAlpha(buffer, &cars, 200, 400);
-	 renderTextureAlpha(buffer, &cars, 200, 500);
-
-	 renderTextureAlpha(buffer, &cars, 300, 0);
-	 renderTextureAlpha(buffer, &cars, 300, 100);
-	 renderTextureAlpha(buffer, &cars, 300, 200);
-	 renderTextureAlpha(buffer, &cars, 300, 300);
-	 renderTextureAlpha(buffer, &cars, 300, 400);
-	 renderTextureAlpha(buffer, &cars, 300, 500); */
 }
 

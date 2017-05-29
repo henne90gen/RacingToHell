@@ -15,13 +15,14 @@ char *reservePermanentMemory(GameMemory *memory, size_t size) {
 	return Result;
 }
 
+void importPixelData(void* input, void* output, unsigned inputWidth,
+		unsigned inputHeight, int offsetX, int offsetY, unsigned outputWidth,
+		unsigned outputHeight) {
 
-void importPixelData(void* input, void* output, unsigned width,
-		unsigned height) {
-	for (unsigned y = 0; y < height; y++) {
-		for (unsigned x = 0; x < width; x++) {
-			int inputIndex = (height - y - 1) * width + x;
-			int outputIndex = y * width + x;
+	for (unsigned y = 0; y < outputHeight; y++) {
+		for (unsigned x = 0; x < outputWidth; x++) {
+			int inputIndex = (inputHeight - y - 1) * inputWidth + x;
+			int outputIndex = (y + offsetY) * outputWidth + (x + offsetX);
 			uint32_t color = ((uint32_t*) (input))[inputIndex];
 			uint8_t r = (color & 0xff000000) >> 24;
 			uint8_t g = (color & 0x00ff0000) >> 16;
@@ -33,7 +34,8 @@ void importPixelData(void* input, void* output, unsigned width,
 	}
 }
 
-Texture readBmpIntoMemory(File file, GameMemory *memory) {
+Texture readBmpIntoMemory(File file, GameMemory *memory, int offsetX,
+		int offsetY, int width, int height) {
 	if (((char*) file.content)[0] != 'B' || (file.content)[1] != 'M') {
 		abort(file.name + " is not a bitmap file.");
 	}
@@ -44,19 +46,27 @@ Texture readBmpIntoMemory(File file, GameMemory *memory) {
 		abort("Image must have 32-bit of color depth.");
 	}
 
+	if (width == -1 || height == -1) {
+		width = header.width;
+		height = header.height;
+	}
+
 	Texture texture = { };
-	texture.x = 0;
-	texture.y = 0;
-	texture.width = header.width;
-	texture.height = header.height;
+	texture.width = width;
+	texture.height = height;
 	texture.bytesPerPixel = header.bitsPerPixel / 8;
 	texture.content = reservePermanentMemory(memory,
 			texture.width * texture.height * texture.bytesPerPixel);
 
 	importPixelData(file.content + header.size + fileHeaderSize,
-			texture.content, texture.width, texture.height);
+			texture.content, header.width, header.height, offsetX, offsetY,
+			texture.width, texture.height);
 	printf("Successfully loaded %s.\n", file.name.c_str());
 	return texture;
+}
+
+Texture readBmpIntoMemory(File file, GameMemory *memory) {
+	return readBmpIntoMemory(file, memory, 0, 0, -1, -1);
 }
 
 void testInput(Input* input) {

@@ -8,9 +8,9 @@ void debugInformation(VideoBuffer *buffer, Input *input,
 
 void textureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 		int offsetY);
-void backgroundTexture(VideoBuffer *buffer, Texture* texture);
+void backgroundTexture(VideoBuffer *buffer, Texture* texture, int offsetY);
 
-void texture(VideoBuffer *buffer, Texture* texture);
+void texture(VideoBuffer *buffer, Texture* texture, int offsetX, int offsetY);
 
 void clearScreen(VideoBuffer *buffer, int color);
 

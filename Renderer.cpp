@@ -19,31 +19,31 @@ void clearScreen(VideoBuffer *buffer, int color) {
 	}
 }
 
-void texture(VideoBuffer *buffer, Texture* texture) {
+void texture(VideoBuffer *buffer, Texture* texture, int offsetX, int offsetY) {
 	unsigned startY = 0;
-	if (texture->y < 0) {
-		startY = 0 - texture->y;
+	if (offsetY < 0) {
+		startY = 0 - offsetY;
 		printf("setting new startY");
-	} else if (texture->y >= (int) buffer->height) {
+	} else if (offsetY >= (int) buffer->height) {
 		return;
 	}
 
 	unsigned startX = 0;
-	if (texture->x < 0) {
-		startX = 0 - texture->x;
-	} else if (texture->x >= (int) buffer->width) {
+	if (offsetX < 0) {
+		startX = 0 - offsetX;
+	} else if (offsetX >= (int) buffer->width) {
 		return;
 	}
 
 	for (unsigned y = startY; y < texture->height; y++) {
-		if (texture->y + y >= buffer->height) {
+		if (offsetY + y >= buffer->height) {
 			continue;
 		}
 		for (unsigned x = startX; x < texture->width; x++) {
-			if (texture->x + x >= buffer->width) {
+			if (offsetX + x >= buffer->width) {
 				continue;
 			}
-			int bufferIndex = buffer->width * (texture->y + y) + texture->x + x;
+			int bufferIndex = buffer->width * (offsetY + y) + offsetX + x;
 			int textureIndex = y * texture->width + x;
 			((int*) buffer->content)[bufferIndex] =
 					((int*) (texture->content))[textureIndex];
@@ -55,24 +55,24 @@ void texture(VideoBuffer *buffer, Texture* texture) {
 #define MAX(a, b) ((a > b) ? a : b)
 #define ABS(a) ((a < 0) ? -a : a)
 
-void backgroundTexture(VideoBuffer *buffer, Texture* texture) {
-	if (texture->y < -(int32_t) texture->height
-			|| texture->y > (int32_t) texture->height) {
+void backgroundTexture(VideoBuffer *buffer, Texture* texture, int offsetY) {
+	if (offsetY < -(int32_t) texture->height
+			|| offsetY > (int32_t) texture->height) {
 		return;
 	}
 
 	uint32_t *currentTexturePixel = (uint32_t *) texture->content
-			- MIN(texture->y * (int32_t )texture->width, 0);
+			- MIN(offsetY * (int32_t )texture->width, 0);
 	uint32_t *currentBufferPixel = (uint32_t *) buffer->content
-			+ MAX(0, texture->y * (int32_t )buffer->width);
+			+ MAX(0, offsetY * (int32_t )buffer->width);
 
 	uint32_t nextLine = buffer->width - texture->width;
 	unsigned yMax = 0;
 
-	if (texture->y > 0) {
-		yMax = buffer->height - texture->y;
-	} else if (texture->y < 0) {
-		yMax = texture->height - ABS(texture->y);
+	if (offsetY >= 0) {
+		yMax = buffer->height - offsetY;
+	} else if (offsetY < 0) {
+		yMax = texture->height - ABS(offsetY);
 	}
 
 	for (unsigned y = 0; y < yMax; ++y) {

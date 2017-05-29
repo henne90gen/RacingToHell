@@ -1,12 +1,14 @@
 
 ###TODOs
 
+- render
+    - alpha texture disappears if y is below 0
 - font
     - save baseline
     - save kerning?
 - sound
 - player control
-- mouse cursor
+    - mouse cursor
     - car movement
     - shooting
 - enemies

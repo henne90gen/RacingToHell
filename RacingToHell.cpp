@@ -62,6 +62,9 @@ void init(GameMemory *memory) {
 
 	*gameState = {};
 	gameState->player = {};
+	gameState->player.x = WINDOW_WIDTH / 2;
+	gameState->player.y = WINDOW_HEIGHT / 2;
+	gameState->player.speed = 10;
 
 	gameState->level = 0;
 	gameState->difficulty = 0;
@@ -101,14 +104,53 @@ GameState* getGameState(GameMemory* memory) {
 	return (GameState *) (memory->permanent);
 }
 
+void updateAndRenderPlayer(VideoBuffer *buffer, Input *input,
+		GameState *gameState) {
+	// TODO change this to vector math
+	if (input->downKey) {
+		gameState->player.y += gameState->player.speed;
+	}
+	if (input->upKey) {
+		gameState->player.y -= gameState->player.speed;
+	}
+	if (input->leftKey) {
+		gameState->player.x -= gameState->player.speed;
+	}
+	if (input->rightKey) {
+		gameState->player.x += gameState->player.speed;
+	}
+
+	Texture *texture =
+			&gameState->resources.playerCarTextures[gameState->player.carIndex];
+	// checking left and right
+	if (gameState->player.x < texture->width / 2) {
+//		gameState->player.x = texture->width / 2;
+	} else if (gameState->player.x > WINDOW_WIDTH - texture->width / 2) {
+		gameState->player.x = WINDOW_WIDTH - texture->width / 2;
+	}
+
+	// checking top and bottom
+	if (gameState->player.y < texture->height / 2) {
+//		gameState->player.y = texture->height / 2;
+	} else if (gameState->player.y > WINDOW_HEIGHT - texture->height / 2) {
+		gameState->player.y = WINDOW_HEIGHT - texture->height / 2;
+	}
+
+	int x = gameState->player.x - texture->width / 2;
+	int y = gameState->player.y - texture->height / 2;
+	render::textureAlpha(buffer, texture, x, y);
+}
+
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	GameState *gameState = getGameState(memory);
 	gameState->frameCounter++;
+
+	testInput(input);
 
 	render::clearScreen(buffer, 0);
 
 	updateAndRenderRoad(buffer, gameState);
 
-	render::debugInformation(buffer, input, gameState);
+	updateAndRenderPlayer(buffer, input, gameState);
 }
 

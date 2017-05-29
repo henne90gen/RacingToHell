@@ -96,6 +96,7 @@ void backgroundTexture(VideoBuffer *buffer, Texture* texture, int offsetY) {
 	}
 }
 
+// FIXME no rendering happens if y is negative (move player car to top of screen)
 void textureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 		int offsetY) {
 	int32_t *currentBufferPixel = (int32_t *) buffer->content

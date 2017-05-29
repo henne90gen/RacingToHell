@@ -31,7 +31,8 @@ struct Input {
 
 struct Player {
 	float x, y;
-	uint8_t health;
+	uint8_t health, carIndex;
+	uint32_t speed;
 };
 
 struct Resources {

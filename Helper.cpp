@@ -72,7 +72,7 @@ Texture readBmpIntoMemory(File file, GameMemory *memory) {
 }
 
 void testInput(Input* input) {
-	printf("(%d|%d)\n", input->mouseX, input->mouseY);
+//	printf("(%d|%d)\n", input->mouseX, input->mouseY);
 	if (input->upKey) {
 		printf("Going up!\n");
 	}

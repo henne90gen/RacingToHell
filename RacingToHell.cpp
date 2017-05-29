@@ -1,10 +1,12 @@
 #include <math.h>
 #include <sstream>
 #include <string.h>
+
 #include "RacingToHell.h"
 #include "platform.h"
 #include "Renderer.h"
 #include "Font.h"
+#include "Math.h"
 
 #include "Helper.cpp"
 
@@ -62,14 +64,13 @@ void init(GameMemory *memory) {
 
 	*gameState = {};
 	gameState->player = {};
-	gameState->player.x = WINDOW_WIDTH / 2;
-	gameState->player.y = WINDOW_HEIGHT / 2;
+	gameState->player.position.x = (float)(WINDOW_WIDTH / 2);
+	gameState->player.position.y = (float)(WINDOW_HEIGHT / 2);
 	gameState->player.speed = 10;
 
 	gameState->level = 0;
 	gameState->difficulty = 0;
 	gameState->roadPosition = 0;
-	gameState->explosionIndex = 0;
 	gameState->frameCounter = 0;
 
 	font::loadFont(memory, "./res/font/arial.ttf");
@@ -123,16 +124,16 @@ void updateAndRenderPlayer(VideoBuffer *buffer, Input *input,
 		GameState *gameState) {
 	// TODO change this to vector math
 	if (input->downKey) {
-		gameState->player.y += gameState->player.speed;
+		gameState->player.position.y += gameState->player.speed;
 	}
 	if (input->upKey) {
-		gameState->player.y -= gameState->player.speed;
+		gameState->player.position.y -= gameState->player.speed;
 	}
 	if (input->leftKey) {
-		gameState->player.x -= gameState->player.speed;
+		gameState->player.position.x -= gameState->player.speed;
 	}
 	if (input->rightKey) {
-		gameState->player.x += gameState->player.speed;
+		gameState->player.position.x += gameState->player.speed;
 	}
 
 	if (input->shootKey) {
@@ -142,21 +143,21 @@ void updateAndRenderPlayer(VideoBuffer *buffer, Input *input,
 	Texture *texture =
 			&gameState->resources.playerCarTextures[gameState->player.carIndex];
 	// checking left and right
-	if (gameState->player.x < texture->width / 2) {
-		gameState->player.x = texture->width / 2;
-	} else if (gameState->player.x > WINDOW_WIDTH - texture->width / 2) {
-		gameState->player.x = WINDOW_WIDTH - texture->width / 2;
+	if (gameState->player.position.x < texture->width / 2) {
+		gameState->player.position.x = texture->width / 2;
+	} else if (gameState->player.position.x > WINDOW_WIDTH - texture->width / 2) {
+		gameState->player.position.x = WINDOW_WIDTH - texture->width / 2;
 	}
 
 	// checking top and bottom
-	if (gameState->player.y < texture->height / 2) {
-		gameState->player.y = texture->height / 2;
-	} else if (gameState->player.y > WINDOW_HEIGHT - texture->height / 2) {
-		gameState->player.y = WINDOW_HEIGHT - texture->height / 2;
+	if (gameState->player.position.y < texture->height / 2) {
+		gameState->player.position.y = texture->height / 2;
+	} else if (gameState->player.position.y > WINDOW_HEIGHT - texture->height / 2) {
+		gameState->player.position.y = WINDOW_HEIGHT - texture->height / 2;
 	}
 
-	int x = gameState->player.x - texture->width / 2;
-	int y = gameState->player.y - texture->height / 2;
+	int x = gameState->player.position.x - texture->width / 2;
+	int y = gameState->player.position.y - texture->height / 2;
 	render::textureAlpha(buffer, texture, x, y);
 }
 

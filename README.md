@@ -1,8 +1,18 @@
 
 TODOs:
 	- player control
+		- mouse cursor
+		- car movement
+		- shooting
 	- enemies
+		- spawning
+		- movement
+		- shooting
 	- bosses
+		- spawning
+		- movement
+		- shooting
+		- phases
 
 IDEAs:
 	- powerups

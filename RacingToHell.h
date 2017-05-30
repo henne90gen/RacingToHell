@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <vector>
 #include "platform.h"
 #include "Math.h"
 
@@ -22,18 +23,21 @@ struct GameFont {
 };
 
 struct Input {
-
 	// TODO think about coordinate system for screen
-	unsigned mouseX, mouseY;
+	Math::Vector2f mousePosition;
 	bool upKey, downKey, leftKey, rightKey;
 	bool pauseKey;
 	bool shootKey;
 };
 
 struct Player {
-    Math::Vector2f position;
+	Math::Vector2f position;
 	uint8_t health, carIndex;
 	uint32_t speed;
+};
+
+struct Bullet {
+	Math::Vector2f position, velocity;
 };
 
 struct Resources {
@@ -56,12 +60,14 @@ struct SoundOutputBuffer
 struct GameState {
     float tSine = 0.0f;
 
-	Player player;
+	uint32_t frameCounter;
+	uint32_t roadPosition;
 	uint8_t level;
 	uint8_t difficulty;
-	uint32_t roadPosition;
-	unsigned explosionIndex;
-	uint32_t frameCounter;
+	Player player;
+
+	std::vector<Bullet> aiBullets;
+	std::vector<Bullet> playerBullets;
 
 	Resources resources;
 };

@@ -1,8 +1,8 @@
 
-###TODOs
+### TODOs
 
 - render
-    - alpha texture disappears if y is below 0
+    - draw circle
 - font
     - save baseline
     - save kerning?
@@ -22,7 +22,7 @@
     - phases
 
 
-###IDEAs
+### IDEAs
 
 - powerups
 - slow motion (everything moves slower)

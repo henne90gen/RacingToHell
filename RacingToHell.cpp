@@ -65,14 +65,13 @@ void init(GameMemory *memory) {
 
 	*gameState = {};
 	gameState->player = {};
-	gameState->player.position.x = (float)(WINDOW_WIDTH / 2);
-	gameState->player.position.y = (float)(WINDOW_HEIGHT / 2);
+	gameState->player.position.x = (float) (WINDOW_WIDTH / 2);
+	gameState->player.position.y = (float) (WINDOW_HEIGHT / 2);
 	gameState->player.speed = 10;
 
 	gameState->level = 0;
 	gameState->difficulty = 0;
 	gameState->roadPosition = 0;
-	gameState->explosionIndex = 0;
 	gameState->frameCounter = 0;
 
 	font::loadFont(memory, "./res/font/arial.ttf");
@@ -110,20 +109,50 @@ GameState* getGameState(GameMemory* memory) {
 	return (GameState *) (memory->permanent);
 }
 
+void spawnBullet(GameState *gameState, Math::Vector2f position,
+		Math::Vector2f velocity, bool playerBullet) {
+	printf("Shooting bullet.\n");
+	Bullet bullet = { };
+	bullet.position = position;
+	bullet.velocity = velocity;
+
+	if (playerBullet) {
+		gameState->playerBullets.push_back(bullet);
+	} else {
+		gameState->aiBullets.push_back(bullet);
+	}
+}
+
 void updateAndRenderPlayer(VideoBuffer *buffer, Input *input,
 		GameState *gameState) {
-	// TODO change this to vector math
+	int x = 0;
+	int y = 0;
 	if (input->downKey) {
-		gameState->player.position.y += gameState->player.speed;
+		y += gameState->player.speed;
 	}
 	if (input->upKey) {
-		gameState->player.position.y -= gameState->player.speed;
+		y -= gameState->player.speed;
 	}
 	if (input->leftKey) {
-		gameState->player.position.x -= gameState->player.speed;
+		x -= gameState->player.speed;
 	}
 	if (input->rightKey) {
-		gameState->player.position.x += gameState->player.speed;
+		x += gameState->player.speed;
+	}
+
+	if (x || y) {
+		Math::Vector2f movement = { };
+		movement.x = x;
+		movement.y = y;
+		movement = Math::normalize(movement);
+		movement = movement * gameState->player.speed;
+		gameState->player.position = gameState->player.position + movement;
+	}
+
+	if (input->shootKey) {
+		Math::Vector2f velocity = input->mousePosition
+				- gameState->player.position;
+		spawnBullet(gameState, gameState->player.position, velocity, true);
 	}
 
 	Texture *texture =
@@ -131,20 +160,22 @@ void updateAndRenderPlayer(VideoBuffer *buffer, Input *input,
 	// checking left and right
 	if (gameState->player.position.x < texture->width / 2) {
 		gameState->player.position.x = texture->width / 2;
-	} else if (gameState->player.position.x > WINDOW_WIDTH - texture->width / 2) {
+	} else if (gameState->player.position.x
+			> WINDOW_WIDTH - texture->width / 2) {
 		gameState->player.position.x = WINDOW_WIDTH - texture->width / 2;
 	}
 
 	// checking top and bottom
 	if (gameState->player.position.y < texture->height / 2) {
 		gameState->player.position.y = texture->height / 2;
-	} else if (gameState->player.position.y > WINDOW_HEIGHT - texture->height / 2) {
+	} else if (gameState->player.position.y
+			> WINDOW_HEIGHT - texture->height / 2) {
 		gameState->player.position.y = WINDOW_HEIGHT - texture->height / 2;
 	}
 
-	int x = gameState->player.position.x - texture->width / 2;
-	int y = gameState->player.position.y - texture->height / 2;
-	render::textureAlpha(buffer, texture, x, y);
+	int textureX = gameState->player.position.x - texture->width / 2;
+	int textureY = gameState->player.position.y - texture->height / 2;
+	render::textureAlpha(buffer, texture, textureX, textureY);
 }
 
 void outputSound(GameState *state, SoundOutputBuffer *buffer, int toneHz)
@@ -187,4 +218,6 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	updateAndRenderRoad(buffer, gameState);
 
 	updateAndRenderPlayer(buffer, input, gameState);
+
+	render::debugInformation(buffer, input, gameState);
 }

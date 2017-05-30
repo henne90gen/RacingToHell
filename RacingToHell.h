@@ -45,8 +45,17 @@ struct Resources {
 	Texture explosion[9 * 9];
 };
 
+struct SoundOutputBuffer
+{
+    int16_t *samples;
+    int sampleCount;
+    int samplesPerSecond;
+};
+
 #pragma pack(push)
 struct GameState {
+    float tSine = 0.0f;
+
 	Player player;
 	uint8_t level;
 	uint8_t difficulty;
@@ -76,6 +85,7 @@ struct BitmapHeader {
 
 Texture readBmpIntoMemory(File file, GameMemory *memory);
 
+void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBUffer);
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory);
 
 void abort(std::string message);

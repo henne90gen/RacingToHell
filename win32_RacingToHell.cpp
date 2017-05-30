@@ -2,12 +2,14 @@
 #include <stdlib.h>
 #include <iostream>
 #include <string>
+#include <dsound.h>
 
 #include "RacingToHell.h"
 #include "win32_RacingToHell.h"
 
 static bool isRunning = true;
 static OffscreenBuffer buffer;
+static LPDIRECTSOUNDBUFFER secondaryBuffer;
 
 void debugString(std::string s)
 {
@@ -53,6 +55,143 @@ void drawBuffer(HDC deviceContext, OffscreenBuffer *buffer)
 	{
         debugString("DBits failed.");
 	}
+}
+
+typedef HRESULT _DirectSoundCreate_(LPCGUID pcGuidDevice, LPDIRECTSOUND *ppDS, LPUNKNOWN pUnkOuter);
+
+void initDSound(HWND window, uint32_t samplesPerSecond, int32_t bufferSize)
+{
+    //Bibliothek laden
+    HMODULE DSoundLibrary = LoadLibraryA("dsound.dll");
+
+    if (DSoundLibrary)
+    {
+        //DirectSound Objekt 
+        _DirectSoundCreate_ *directSoundCreate = (_DirectSoundCreate_ *)GetProcAddress(DSoundLibrary, "DirectSoundCreate");
+
+        LPDIRECTSOUND directSound;
+        if (directSoundCreate && SUCCEEDED(directSoundCreate(0, &directSound, 0)))
+        {
+            WAVEFORMATEX waveFormat = {};
+            waveFormat.wFormatTag = WAVE_FORMAT_PCM;
+            waveFormat.nChannels = 2;
+            waveFormat.nSamplesPerSec = samplesPerSecond;
+            waveFormat.wBitsPerSample = 16;
+            waveFormat.nBlockAlign = waveFormat.nChannels * waveFormat.wBitsPerSample / 8;
+            waveFormat.nAvgBytesPerSec = waveFormat.nSamplesPerSec * waveFormat.nBlockAlign;
+            waveFormat.cbSize = 0;
+
+            if (SUCCEEDED(directSound->SetCooperativeLevel(window, DSSCL_PRIORITY)))
+            {
+                //Primärbuffer "erstellen"
+                DSBUFFERDESC bufferDescription = {};
+
+                bufferDescription.dwSize = sizeof(bufferDescription);
+                bufferDescription.dwFlags = DSBCAPS_PRIMARYBUFFER;
+
+                LPDIRECTSOUNDBUFFER primaryBuffer;
+                if (SUCCEEDED(directSound->CreateSoundBuffer(&bufferDescription, &primaryBuffer, 0)))
+                {
+                    if (SUCCEEDED(primaryBuffer->SetFormat(&waveFormat)))
+                    {
+                        debugString("Primaerbuffer wurde gesetzt\n");
+                    }
+                    else
+                    {
+                        abort("Primärbufferformat konnte nicht gesetzt werden.");
+                    }
+                }
+                else
+                {
+                    abort("Primärbuffer konnte nicht erstellt werden.");
+                }
+            }
+            else
+            {
+                abort("directSound->SetCooperativeLevel fehlgeschlagen.");
+            }
+
+            //Sekundärbuffer "erstellen"
+            DSBUFFERDESC bufferDescription = {};
+
+            bufferDescription.dwSize = sizeof(bufferDescription);
+            bufferDescription.dwFlags = DSBCAPS_GETCURRENTPOSITION2;
+            bufferDescription.dwBufferBytes = bufferSize;
+            bufferDescription.lpwfxFormat = &waveFormat;
+
+            if (SUCCEEDED(directSound->CreateSoundBuffer(&bufferDescription, &secondaryBuffer, 0)))
+            {
+                debugString("Sekundärbuffer wurde gesetzt\n");
+            }
+
+            //Sound abspielen
+        }
+        else
+        {
+            abort("Soundbibliothek konnte nicht geladen werden.");
+        }
+    }
+}
+
+void fillSoundBuffer(SoundOutput *soundOutput, DWORD byteToLock, DWORD bytesToWrite, SoundOutputBuffer *source)
+{
+    VOID *region1;
+    DWORD region1Size;
+    VOID *region2;
+    DWORD region2Size;
+
+    if (SUCCEEDED(secondaryBuffer->Lock(byteToLock, bytesToWrite, &region1, &region1Size, &region2, &region2Size, 0)))
+    {
+        DWORD region1SampleCount = region1Size / soundOutput->bytesPerSample;
+        int16_t *destSample = (int16_t *)region1;
+        int16_t *sourceSample = source->samples;
+
+        for (DWORD sampleIndex = 0; sampleIndex < region1SampleCount; sampleIndex++)
+        {
+            *destSample++ = *sourceSample++;
+            *destSample++ = *sourceSample++;
+
+            ++soundOutput->runningSampleIndex;
+        }
+
+        destSample = (int16_t *)region2;
+        DWORD region2SampleCount = region2Size / soundOutput->bytesPerSample;
+
+        for (DWORD sampleIndex = 0; sampleIndex < region2SampleCount; sampleIndex++)
+        {
+            *destSample++ = *sourceSample++;
+            *destSample++ = *sourceSample++;
+
+            ++soundOutput->runningSampleIndex;
+        }
+
+        secondaryBuffer->Unlock(region1, region1Size, region2, region2Size);
+    }
+}
+
+void clearSoundBuffer(SoundOutput *soundOutput)
+{
+    VOID *region1;
+    DWORD region1Size;
+    VOID *region2;
+    DWORD region2Size;
+
+    if (SUCCEEDED(secondaryBuffer->Lock(0, soundOutput->secondaryBufferSize, &region1, &region1Size, &region2, &region2Size, 0)))
+    {
+        uint8_t *destSample = (uint8_t *)region1;
+        for (DWORD byteIndex = 0; byteIndex < region1Size; byteIndex++)
+        {
+            *destSample++ = 0;
+        }
+
+        destSample = (uint8_t *)region2;
+        for (DWORD byteIndex = 0; byteIndex < region2Size; byteIndex++)
+        {
+            *destSample++ = 0;
+        }
+
+        secondaryBuffer->Unlock(region1, region1Size, region2, region2Size);
+    }
 }
 
 LRESULT CALLBACK WndProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam)
@@ -256,10 +395,24 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 
 	HWND windowHandle = openWindow(instance, show, WINDOW_WIDTH, WINDOW_HEIGHT);
 
+    SoundOutput soundOutput;
+    soundOutput.safetyBytes = (soundOutput.samplesPerSecond * soundOutput.bytesPerSample) * targetFrameTime;
+
+    initDSound(windowHandle, soundOutput.samplesPerSecond, soundOutput.secondaryBufferSize);
+    clearSoundBuffer(&soundOutput);
+    secondaryBuffer->Play(0, 0, DSBPLAY_LOOPING);
+
+    int16_t *samples = (int16_t *)VirtualAlloc(0, soundOutput.secondaryBufferSize, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+
+    bool soundIsValid = false;
+    DWORD audioLatencyBytes = 0;
+    float audioLatencySeconds = 0.0f;
+
     Input input[2] = { };
     Input *oldInput = &input[0];
     Input *newInput = &input[1];
 	
+    uint64_t flipWallClock = getClockCounter();
     uint64_t lastCounter = getClockCounter();
 
 	while (isRunning)
@@ -302,6 +455,101 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 		
 		updateAndRender(&vBuffer, newInput, &memory);
 		
+        uint64_t audioWallClock = getClockCounter();
+        float fromBeginToAudioSeconds = (audioWallClock - flipWallClock) / (float)performanceCountFrequency;
+
+        DWORD playCursor, writeCursor;
+
+        if (secondaryBuffer->GetCurrentPosition(&playCursor, &writeCursor) == DS_OK)
+        {
+            DWORD byteToLock = 0, targetCursor = 0, bytesToWrite = 0;
+
+            if (!soundIsValid)
+            {
+                soundOutput.runningSampleIndex = writeCursor / soundOutput.bytesPerSample;
+                soundIsValid = true;
+            }
+
+            byteToLock = (soundOutput.runningSampleIndex * soundOutput.bytesPerSample) % soundOutput.secondaryBufferSize;
+
+            DWORD expectedSoundBytesPerFrame = (soundOutput.samplesPerSecond * soundOutput.bytesPerSample) * targetFrameTime;
+
+            float secondsLeftUntilFlip = (targetFrameTime - fromBeginToAudioSeconds);
+            DWORD expectedBytesUntilFlip = (DWORD)(secondsLeftUntilFlip / (float)targetFrameTime * (float)expectedSoundBytesPerFrame);
+
+            DWORD expectedFrameBoundaryByte = playCursor + expectedBytesUntilFlip;
+
+            DWORD safeWriteCursor = writeCursor;
+
+            if (safeWriteCursor < playCursor)
+                safeWriteCursor += soundOutput.secondaryBufferSize;
+
+            if (safeWriteCursor < playCursor)
+            {
+                abort("safeWriteCursor < playCursor");
+            }
+
+            safeWriteCursor += soundOutput.safetyBytes;
+
+            bool latentAudio = safeWriteCursor >= expectedFrameBoundaryByte;
+
+            if (latentAudio)
+            {
+                targetCursor = writeCursor + expectedSoundBytesPerFrame + soundOutput.safetyBytes;
+            }
+            else
+            {
+                targetCursor = (expectedFrameBoundaryByte + expectedSoundBytesPerFrame);
+            }
+
+            targetCursor %= soundOutput.secondaryBufferSize;
+
+            if (byteToLock > targetCursor)
+            {
+                bytesToWrite = (soundOutput.secondaryBufferSize - byteToLock) + targetCursor;
+            }
+            else
+            {
+                bytesToWrite = targetCursor - byteToLock;
+            }
+
+            SoundOutputBuffer soundBuffer = {};
+            soundBuffer.samplesPerSecond = soundOutput.samplesPerSecond;
+            soundBuffer.sampleCount = bytesToWrite / soundOutput.bytesPerSample;
+            soundBuffer.samples = samples;
+
+            getSoundSamples(&memory, &soundBuffer);
+
+            /*debug_marker *marker = &debugTimeMarker[debugMarkerIndex];
+            marker->outputPlayCursor = playCursor;
+            marker->outputWriteCursor = writeCursor;
+            marker->outputLocation = byteToLock;
+            marker->outputByteCount = bytesToWrite;
+            marker->expectedFlipCursor = expectedFrameBoundaryByte; */
+
+            audioLatencyBytes = 0;
+            if (writeCursor > playCursor)
+            {
+                audioLatencyBytes = writeCursor - playCursor;
+            }
+            else
+            {
+                audioLatencyBytes = writeCursor + (soundOutput.secondaryBufferSize - playCursor);
+            }
+
+            audioLatencySeconds = ((float)audioLatencyBytes / (float)soundOutput.bytesPerSample) / (float)soundOutput.samplesPerSecond;
+
+            /*	char buffer[256];
+            sprintf(buffer, "BTL %d TC %d BTW %d PC %d WC %d DELTA = %d\n", byteToLock, targetCursor, bytesToWrite, playCursor, writeCursor, audioLatencyBytes);
+            OutputDebugStringA(buffer); */
+
+            fillSoundBuffer(&soundOutput, byteToLock, bytesToWrite, &soundBuffer);
+        }
+        else
+        {
+            soundIsValid = false;
+        }
+
 		HDC deviceContext = GetDC(windowHandle);
 		drawBuffer(deviceContext, &buffer);
 		ReleaseDC(windowHandle, deviceContext);

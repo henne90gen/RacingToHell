@@ -2,6 +2,8 @@
 
 #include <math.h>
 
+#define PI 3.141592654f
+
 namespace Math
 {
     struct Vector2f

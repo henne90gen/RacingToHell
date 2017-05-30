@@ -7,6 +7,7 @@
 #include "Renderer.h"
 #include "Font.h"
 #include "Math.h"
+#include "Sound.h"
 
 #include "Helper.cpp"
 
@@ -76,6 +77,8 @@ void init(GameMemory *memory) {
 
 	font::loadFont(memory, "./res/font/arial.ttf");
 
+    Sound::loadWAV(memory, "./res/sound/shotAI.wav");
+
 	loadTextures(memory, gameState);
 }
 
@@ -142,6 +145,35 @@ void updateAndRenderPlayer(VideoBuffer *buffer, Input *input,
 	int x = gameState->player.position.x - texture->width / 2;
 	int y = gameState->player.position.y - texture->height / 2;
 	render::textureAlpha(buffer, texture, x, y);
+}
+
+void outputSound(GameState *state, SoundOutputBuffer *buffer, int toneHz)
+{
+    int16_t toneVolume = 4000;
+    int wavePeriod = buffer->samplesPerSecond / toneHz;
+    int16_t *sampleOut = buffer->samples;
+    for (int sampleIndex = 0; sampleIndex < buffer->sampleCount; sampleIndex++)
+    {
+        float sineValue = sinf(state->tSine);
+        uint16_t sampleValue = (uint16_t)(sineValue * toneVolume);
+        *sampleOut++ = sampleValue;
+        *sampleOut++ = sampleValue;
+        state->tSine += 2.0f * PI * 1.0f / (float)wavePeriod;
+        if (state->tSine > 2.0f * PI)
+            state->tSine -= 2.0f * PI;
+    }
+}
+
+void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer)
+{
+    if (!memory->isInitialized)
+    {
+        return;
+    }
+
+    GameState *gameState = (GameState*)memory->permanent;
+
+    outputSound(gameState, soundBuffer, 400);
 }
 
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {

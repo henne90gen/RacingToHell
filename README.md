@@ -2,7 +2,7 @@
 ### TODOs
 
 - render
-    - draw circle
+    - ~~draw circle~~
 - font
     - save baseline
     - save kerning?
@@ -10,13 +10,17 @@
     - linux support
 - player control
     - mouse cursor
-    - car movement
+    - ~~car movement~~
     - shooting
-        -timing
+        - timing
 - enemies
-    - spawning
-    - movement
-    - shooting
+    - ~~spawning~~
+    - ~~movement~~
+    - ~~shooting~~
+    - collision
+- bullets
+    - ~~spawning~~
+    - collision
 - bosses
     - spawning
     - movement

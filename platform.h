@@ -5,6 +5,8 @@
 #define WINDOW_WIDTH 600
 #define WINDOW_HEIGHT 800
 #define WINDOW_TITLE "Racing to Hell"
+#define NUM_PLAYER_TEXTURES 6
+#define NUM_TRAFFIC_TEXTURES 7
 
 struct File {
 	char* content;

@@ -11,6 +11,8 @@
 
 #include "Helper.cpp"
 
+void spawnTrafficCar(GameState* gameState);
+
 void loadTextures(GameMemory *memory, GameState *gameState) {
 	for (int i = 0; i < 4; i++) {
 		std::string filename = "./res/textures/roads/road" + std::to_string(i)
@@ -23,7 +25,7 @@ void loadTextures(GameMemory *memory, GameState *gameState) {
 		//printf("Texture %d: %d\n", i, roads[i].width * roads[i].height);
 	}
 
-	for (unsigned i = 0; i < 6; i++) {
+	for (unsigned i = 0; i < NUM_PLAYER_TEXTURES; i++) {
 		std::string carSprites = "./res/textures/cars/player"
 				+ std::to_string(i) + ".bmp";
 		File carFile = readFile(carSprites);
@@ -32,7 +34,7 @@ void loadTextures(GameMemory *memory, GameState *gameState) {
 		freeFile(&carFile);
 	}
 
-	for (unsigned i = 0; i < 7; i++) {
+	for (unsigned i = 0; i < NUM_TRAFFIC_TEXTURES; i++) {
 		std::string carSprites = "./res/textures/cars/traffic"
 				+ std::to_string(i) + ".bmp";
 		File carFile = readFile(carSprites);
@@ -58,6 +60,8 @@ void loadTextures(GameMemory *memory, GameState *gameState) {
 }
 
 void init(GameMemory *memory) {
+	srand(time(0));
+
 	memory->isInitialized = true;
 
 	GameState *gameState = (GameState *) reservePermanentMemory(memory,
@@ -73,12 +77,15 @@ void init(GameMemory *memory) {
 	gameState->difficulty = 0;
 	gameState->roadPosition = 0;
 	gameState->frameCounter = 0;
+	gameState->trafficFrequency = 50;
 
 	font::loadFont(memory, "./res/font/arial.ttf");
 
 	Sound::loadWAV(memory, "./res/sound/shotAI.wav");
 
 	loadTextures(memory, gameState);
+
+	spawnTrafficCar(gameState);
 }
 
 int getRoadSpeed(GameState *gameState) {
@@ -234,14 +241,50 @@ void outputSound(GameState *state, SoundOutputBuffer *buffer, int toneHz) {
 }
 
 void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer) {
-	if (!memory->isInitialized) {
-		return;
-	}
-
-	// FIXME we could use getGameState here
-	GameState *gameState = (GameState*) memory->permanent;
+	GameState *gameState = getGameState(memory);
 
 	outputSound(gameState, soundBuffer, 400);
+}
+
+void spawnTrafficCar(GameState* gameState) {
+	TrafficCar car = { };
+	car.carIndex = std::rand() % NUM_TRAFFIC_TEXTURES;
+	// minus 20 is half of the texture
+	float x = (std::rand() % 4) * (WINDOW_WIDTH / 4) + WINDOW_WIDTH / 8 - 20;
+	car.position = (Math::Vector2f ) { x, -80 };
+	car.speed = 5;
+	if (gameState->lastTrafficCarIndex + 1
+			< sizeof(gameState->traffic) / sizeof(TrafficCar)) {
+		gameState->lastTrafficCarIndex++;
+		gameState->traffic[gameState->lastTrafficCarIndex] = car;
+	}
+}
+
+void updateAndRenderTraffic(VideoBuffer* buffer, GameState *gameState) {
+	if (gameState->frameCounter % gameState->trafficFrequency == 0) {
+		spawnTrafficCar(gameState);
+	}
+
+	for (int i = 0; i < gameState->lastTrafficCarIndex + 1; i++) {
+		TrafficCar *car = &gameState->traffic[i];
+		car->position = car->position
+				+ (Math::Vector2f ) { 0, (float) car->speed };
+
+		if (car->position.y > WINDOW_HEIGHT) {
+			gameState->traffic[i] =
+					gameState->traffic[gameState->lastTrafficCarIndex];
+			gameState->lastTrafficCarIndex--;
+			i--;
+			if (i < 0) {
+				break;
+			}
+			continue;
+		}
+
+		render::textureAlpha(buffer,
+				&gameState->resources.trafficCarTextures[car->carIndex],
+				car->position.x, car->position.y);
+	}
 }
 
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
@@ -249,6 +292,8 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	gameState->frameCounter++;
 
 	updateAndRenderRoad(buffer, gameState);
+
+	updateAndRenderTraffic(buffer, gameState);
 
 	updateAndRenderPlayer(buffer, input, gameState);
 

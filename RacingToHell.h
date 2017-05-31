@@ -10,7 +10,6 @@ struct VideoBuffer {
 	void* content;
 };
 
-#pragma pack(8)
 struct Texture {
 
 	uint32_t width, height;
@@ -18,7 +17,6 @@ struct Texture {
 	void* content;
 };
 
-#pragma pack(8)
 struct GameFont {
 	size_t size;
 	void* content;
@@ -32,20 +30,23 @@ struct Input {
 	bool shootKey;
 };
 
-#pragma pack(8)
 struct Player {
 	Math::Vector2f position;
 	uint8_t health, carIndex;
-	uint32_t speed;
+	uint8_t speed;
 };
 
-#pragma pack(8)
+struct TrafficCar {
+	Math::Vector2f position;
+	uint8_t health, carIndex;
+	uint8_t speed;
+};
+
 struct Bullet {
 	Math::Vector2f position, velocity;
 	uint32_t color;
 };
 
-#pragma pack(8)
 struct Resources {
 	Texture roadTextures[4];
 
@@ -55,16 +56,14 @@ struct Resources {
 	Texture explosion[9 * 9];
 };
 
-struct SoundOutputBuffer
-{
-    int16_t *samples;
-    int sampleCount;
-    int samplesPerSecond;
+struct SoundOutputBuffer {
+	int16_t *samples;
+	int sampleCount;
+	int samplesPerSecond;
 };
 
-#pragma pack(8)
 struct GameState {
-    float tSine = 0.0f;
+	float tSine = 0.0f;
 
 	uint32_t frameCounter;
 	uint32_t roadPosition;
@@ -72,10 +71,14 @@ struct GameState {
 	uint8_t difficulty;
 	Player player;
 
+	uint32_t trafficFrequency;
+	int32_t lastTrafficCarIndex = -1;
+	TrafficCar traffic[200];
+
 	int32_t lastPlayerBulletIndex = -1;
 	Bullet playerBullets[100];
 //	Bullet aiBullets[1000];
-//	int32_t lastAIIndex;
+//	int32_t lastAIBulletIndex;
 
 	Resources resources;
 };

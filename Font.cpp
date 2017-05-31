@@ -12,7 +12,7 @@ FT_Library fontLibrary;
 FT_Face face;
 
 Character characterMap[3][100];
-unsigned availableFontSizes[] = { 5, 10, 20 };
+unsigned availableFontSizes[] = { 7, 10, 20 };
 
 void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 	int glyphIndex = FT_Get_Char_Index(face, loadCharacter);
@@ -61,7 +61,8 @@ void loadFont(GameMemory* memory, std::string fontFileName) {
 	for (unsigned fontSizeIndex = 0;
 			fontSizeIndex < sizeof(availableFontSizes) / 4; fontSizeIndex++) {
 		int fontSize = getFontSize(fontSizeIndex);
-		int error = FT_Set_Char_Size(face, 0, fontSize * 64, WINDOW_WIDTH, WINDOW_HEIGHT);
+//		int error = FT_Set_Char_Size(face, 0, fontSize * 64, WINDOW_WIDTH, WINDOW_HEIGHT);
+		int error = FT_Set_Pixel_Sizes(face, fontSize*2, 0);
 		if (error) {
 			std::string message = "Couldn't set pixel size to "
 					+ std::to_string(fontSize) + ".";

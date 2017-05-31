@@ -50,7 +50,7 @@ void debugInformation(VideoBuffer *buffer, Input *input, GameState *gameState) {
 	std::string text = "Player 1: "
 			+ std::to_string(gameState->player.position.x) + ", "
 			+ std::to_string(gameState->player.position.y);
-	font::renderText(buffer, text, 20, 100, 5);
+	font::renderText(buffer, text, 20, 100, 7);
 }
 
 void clearScreen(VideoBuffer *buffer, int color) {

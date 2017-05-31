@@ -77,7 +77,10 @@ void init(GameMemory *memory) {
 	gameState->difficulty = 0;
 	gameState->roadPosition = 0;
 	gameState->frameCounter = 0;
+
 	gameState->trafficFrequency = 50;
+	gameState->bulletFrequency = 50;
+	gameState->bulletSpeed = 7;
 
 	font::loadFont(memory, "./res/font/arial.ttf");
 
@@ -125,8 +128,16 @@ void spawnBullet(GameState *gameState, Math::Vector2f position,
 	if (playerBullet) {
 		int arrSize = sizeof(gameState->playerBullets) / sizeof(Bullet);
 		if (gameState->lastPlayerBulletIndex + 1 < arrSize) {
+
+			bullet.color = (255 << 24) + (255 << 16);
 			gameState->lastPlayerBulletIndex++;
 			gameState->playerBullets[gameState->lastPlayerBulletIndex] = bullet;
+		}
+	} else {
+		int arrSize = sizeof(gameState->aiBullets) / sizeof(Bullet);
+		if (gameState->lastAIBulletIndex + 1 < arrSize) {
+			gameState->lastAIBulletIndex++;
+			gameState->aiBullets[gameState->lastAIBulletIndex] = bullet;
 		}
 	}
 }
@@ -210,6 +221,29 @@ bool updateAndRenderBullet(VideoBuffer* buffer, Bullet &bullet) {
 }
 
 void updateAndRenderBullets(VideoBuffer* buffer, GameState* gameState) {
+	if (gameState->frameCounter % gameState->bulletFrequency == 0) {
+		int carIndex = std::rand() % gameState->lastTrafficCarIndex;
+		TrafficCar car = gameState->traffic[carIndex];
+		Math::Vector2f position = { car.position.x, car.position.y };
+
+		Math::Vector2f velocity = gameState->player.position - car.position;
+		velocity = velocity * (1.0f / Math::length(velocity));
+		velocity = velocity * gameState->bulletSpeed;
+		spawnBullet(gameState, position, velocity, false);
+	}
+
+	for (int i = 0; i < gameState->lastAIBulletIndex + 1; i++) {
+		if (updateAndRenderBullet(buffer, gameState->aiBullets[i])) {
+			Bullet bullet = gameState->aiBullets[gameState->lastAIBulletIndex];
+			gameState->aiBullets[i] = bullet;
+			gameState->lastAIBulletIndex--;
+			i--;
+			if (i < 0) {
+				break;
+			}
+		}
+	}
+
 	for (int i = 0; i < gameState->lastPlayerBulletIndex + 1; i++) {
 		if (updateAndRenderBullet(buffer, gameState->playerBullets[i])) {
 			Bullet bullet =
@@ -249,12 +283,12 @@ void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer) {
 void spawnTrafficCar(GameState* gameState) {
 	TrafficCar car = { };
 	car.carIndex = std::rand() % NUM_TRAFFIC_TEXTURES;
-	// minus 20 is half of the texture
-	float x = (std::rand() % 4) * (WINDOW_WIDTH / 4) + WINDOW_WIDTH / 8 - 20;
+	float x = (std::rand() % 4) * (WINDOW_WIDTH / 4) + WINDOW_WIDTH / 8;
 	car.position = (Math::Vector2f ) { x, -80 };
 	car.speed = 5;
-	if (gameState->lastTrafficCarIndex + 1
-			< sizeof(gameState->traffic) / sizeof(TrafficCar)) {
+
+	unsigned arrSize = sizeof(gameState->traffic) / sizeof(TrafficCar);
+	if (gameState->lastTrafficCarIndex + 1 < (int) arrSize) {
 		gameState->lastTrafficCarIndex++;
 		gameState->traffic[gameState->lastTrafficCarIndex] = car;
 	}
@@ -281,9 +315,11 @@ void updateAndRenderTraffic(VideoBuffer* buffer, GameState *gameState) {
 			continue;
 		}
 
-		render::textureAlpha(buffer,
-				&gameState->resources.trafficCarTextures[car->carIndex],
-				car->position.x, car->position.y);
+		Texture *texture =
+				&gameState->resources.trafficCarTextures[car->carIndex];
+		int x = car->position.x - texture->width / 2;
+		int y = car->position.y - texture->height / 2;
+		render::textureAlpha(buffer, texture, x, y);
 	}
 }
 

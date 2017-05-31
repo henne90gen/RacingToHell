@@ -72,13 +72,17 @@ struct GameState {
 	Player player;
 
 	uint32_t trafficFrequency;
+	uint32_t bulletFrequency;
+	uint8_t bulletSpeed;
+
 	int32_t lastTrafficCarIndex = -1;
 	TrafficCar traffic[200];
 
 	int32_t lastPlayerBulletIndex = -1;
 	Bullet playerBullets[100];
-//	Bullet aiBullets[1000];
-//	int32_t lastAIBulletIndex;
+
+	int32_t lastAIBulletIndex = -1;
+	Bullet aiBullets[1000];
 
 	Resources resources;
 };

@@ -4,7 +4,8 @@
 
 namespace render {
 
-void circle(VideoBuffer* buffer, int x, int y, unsigned radius, uint32_t color) {
+void circle(VideoBuffer* buffer, int x, int y, unsigned radius,
+		uint32_t color) {
 	if (x + radius < 0 || x - (int) radius > WINDOW_WIDTH) {
 		return;
 	}
@@ -27,7 +28,7 @@ void circle(VideoBuffer* buffer, int x, int y, unsigned radius, uint32_t color) 
 				continue;
 			}
 			((uint32_t*) buffer->content)[(y + i) * buffer->width + (x + j)] =
-					(255 << 24);
+					color;
 		}
 	}
 }

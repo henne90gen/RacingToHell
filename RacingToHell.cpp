@@ -7,6 +7,7 @@
 #include "Renderer.h"
 #include "Font.h"
 #include "Math.h"
+#include "Sound.h"
 
 #include "Helper.cpp"
 
@@ -75,6 +76,8 @@ void init(GameMemory *memory) {
 
 	font::loadFont(memory, "./res/font/arial.ttf");
 
+	Sound::loadWAV(memory, "./res/sound/shotAI.wav");
+
 	loadTextures(memory, gameState);
 }
 
@@ -114,17 +117,9 @@ void spawnBullet(GameState *gameState, Math::Vector2f position,
 
 	if (playerBullet) {
 		int arrSize = sizeof(gameState->playerBullets) / sizeof(Bullet);
-		if (gameState->lastPlayerIndex + 1 < arrSize) {
-//			if (gameState->lastPlayerIndex < -1
-//					|| gameState->lastPlayerIndex > 100) {
-//				abort("Fail 3");
-//			}
-			gameState->lastPlayerIndex++;
-			gameState->playerBullets[gameState->lastPlayerIndex] = bullet;
-//			if (gameState->lastPlayerIndex < -1
-//					|| gameState->lastPlayerIndex > 100) {
-//				abort("Fail 3");
-//			}
+		if (gameState->lastPlayerBulletIndex + 1 < arrSize) {
+			gameState->lastPlayerBulletIndex++;
+			gameState->playerBullets[gameState->lastPlayerBulletIndex] = bullet;
 		}
 	}
 }
@@ -209,7 +204,7 @@ bool updateAndRenderBullet(VideoBuffer* buffer, Bullet &bullet) {
 }
 
 void updateAndRenderBullets(VideoBuffer* buffer, GameState* gameState) {
-	for (int i = 0; i < gameState->lastPlayerIndex + 1; i++) {
+	for (int i = 0; i < gameState->lastPlayerBulletIndex + 1; i++) {
 		gameState->playerBullets[i].position =
 				gameState->playerBullets[i].position
 						+ gameState->playerBullets[i].velocity;
@@ -226,9 +221,10 @@ void updateAndRenderBullets(VideoBuffer* buffer, GameState* gameState) {
 		}
 
 		if (remove) {
-			Bullet bullet = gameState->playerBullets[gameState->lastPlayerIndex];
+			Bullet bullet =
+					gameState->playerBullets[gameState->lastPlayerBulletIndex];
 			gameState->playerBullets[i] = bullet;
-			gameState->lastPlayerIndex--;
+			gameState->lastPlayerBulletIndex--;
 			i--;
 			if (i < 0) {
 				break;
@@ -242,8 +238,35 @@ void updateAndRenderBullets(VideoBuffer* buffer, GameState* gameState) {
 	}
 }
 
+void outputSound(GameState *state, SoundOutputBuffer *buffer, int toneHz) {
+	int16_t toneVolume = 4000;
+	int wavePeriod = buffer->samplesPerSecond / toneHz;
+	int16_t *sampleOut = buffer->samples;
+	for (int sampleIndex = 0; sampleIndex < buffer->sampleCount;
+			sampleIndex++) {
+		float sineValue = sinf(state->tSine);
+		uint16_t sampleValue = (uint16_t) (sineValue * toneVolume);
+		*sampleOut++ = sampleValue;
+		*sampleOut++ = sampleValue;
+		state->tSine += 2.0f * PI * 1.0f / (float) wavePeriod;
+		if (state->tSine > 2.0f * PI)
+			state->tSine -= 2.0f * PI;
+	}
+}
+
+void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer) {
+	if (!memory->isInitialized) {
+		return;
+	}
+
+	GameState *gameState = (GameState*) memory->permanent;
+
+	outputSound(gameState, soundBuffer, 400);
+}
+
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	GameState *gameState = getGameState(memory);
+	gameState->frameCounter++;
 
 	updateAndRenderRoad(buffer, gameState);
 

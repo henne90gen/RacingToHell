@@ -54,17 +54,26 @@ struct Resources {
 	Texture explosion[9 * 9];
 };
 
+struct SoundOutputBuffer
+{
+    int16_t *samples;
+    int sampleCount;
+    int samplesPerSecond;
+};
+
 #pragma pack(8)
 struct GameState {
+    float tSine = 0.0f;
+
 	uint32_t frameCounter;
 	uint32_t roadPosition;
 	uint8_t level;
 	uint8_t difficulty;
 	Player player;
 
-//	Bullet aiBullets[1000];
-	int32_t lastPlayerIndex = -1;
+	int32_t lastPlayerBulletIndex = -1;
 	Bullet playerBullets[100];
+//	Bullet aiBullets[1000];
 //	int32_t lastAIIndex;
 
 	Resources resources;
@@ -87,6 +96,7 @@ struct BitmapHeader {
 
 Texture readBmpIntoMemory(File file, GameMemory *memory);
 
+void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBUffer);
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory);
 
 void abort(std::string message);

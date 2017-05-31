@@ -42,6 +42,7 @@ struct Player {
 #pragma pack(8)
 struct Bullet {
 	Math::Vector2f position, velocity;
+	uint32_t color;
 };
 
 #pragma pack(8)

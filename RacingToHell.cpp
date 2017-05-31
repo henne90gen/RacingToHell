@@ -198,29 +198,13 @@ bool updateAndRenderBullet(VideoBuffer* buffer, Bullet &bullet) {
 	int x = bullet.position.x;
 	int y = bullet.position.y;
 	int r = 10;
-	render::circle(buffer, x, y, r);
-
+	render::circle(buffer, x, y, r, bullet.color);
 	return false;
 }
 
 void updateAndRenderBullets(VideoBuffer* buffer, GameState* gameState) {
 	for (int i = 0; i < gameState->lastPlayerBulletIndex + 1; i++) {
-		gameState->playerBullets[i].position =
-				gameState->playerBullets[i].position
-						+ gameState->playerBullets[i].velocity;
-		bool remove = false;
-		if (gameState->playerBullets[i].position.x < 0) {
-			remove = true;
-		} else if (gameState->playerBullets[i].position.x > WINDOW_WIDTH) {
-			remove = true;
-		}
-		if (gameState->playerBullets[i].position.y < 0) {
-			remove = true;
-		} else if (gameState->playerBullets[i].position.y > WINDOW_HEIGHT) {
-			remove = true;
-		}
-
-		if (remove) {
+		if (updateAndRenderBullet(buffer, gameState->playerBullets[i])) {
 			Bullet bullet =
 					gameState->playerBullets[gameState->lastPlayerBulletIndex];
 			gameState->playerBullets[i] = bullet;
@@ -229,11 +213,6 @@ void updateAndRenderBullets(VideoBuffer* buffer, GameState* gameState) {
 			if (i < 0) {
 				break;
 			}
-		} else {
-			int x = gameState->playerBullets[i].position.x;
-			int y = gameState->playerBullets[i].position.y;
-			int r = 10;
-			render::circle(buffer, x, y, r);
 		}
 	}
 }
@@ -259,6 +238,7 @@ void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer) {
 		return;
 	}
 
+	// FIXME we could use getGameState here
 	GameState *gameState = (GameState*) memory->permanent;
 
 	outputSound(gameState, soundBuffer, 400);
@@ -273,13 +253,6 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	updateAndRenderPlayer(buffer, input, gameState);
 
 	updateAndRenderBullets(buffer, gameState);
-
-//	Math::Vector2f position = {100, 100};
-//	Math::Vector2f velocity = {1, 1};
-//	spawnBullet(gameState, position, velocity, true);
-
-	render::circle(buffer, 100, WINDOW_HEIGHT, 10);
-	render::circle(buffer, 0, 100, 10);
 
 	render::debugInformation(buffer, input, gameState);
 }

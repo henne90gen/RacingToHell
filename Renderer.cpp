@@ -4,12 +4,11 @@
 
 namespace render {
 
-// FIXME circles tend to disappear at the edges instead of being rendered partially
-void circle(VideoBuffer* buffer, int x, int y, unsigned radius) {
-	if (x + radius < 0 || x - radius > WINDOW_WIDTH) {
+void circle(VideoBuffer* buffer, int x, int y, unsigned radius, uint32_t color) {
+	if (x + radius < 0 || x - (int) radius > WINDOW_WIDTH) {
 		return;
 	}
-	if (y + radius < 0 || y - radius > WINDOW_HEIGHT) {
+	if (y + radius < 0 || y - (int) radius > WINDOW_HEIGHT) {
 		return;
 	}
 
@@ -20,16 +19,15 @@ void circle(VideoBuffer* buffer, int x, int y, unsigned radius) {
 			continue;
 		}
 		float angle = asin(i / (float) radius);
-		int xMin = x + abs(cos(angle) * (float) radius) * -1;
-		int xMax = x + abs(cos(angle) * (float) radius);
-		for (int j = xMin; j < xMax; j++) {
-			if (j >= WINDOW_WIDTH) {
+		int xRange = abs(cos(angle) * (float) radius);
+		for (int j = -1 * xRange; j < xRange; j++) {
+			if (x + j >= WINDOW_WIDTH) {
 				break;
-			} else if (j < 0) {
+			} else if (x + j < 0) {
 				continue;
 			}
-			((uint32_t*) buffer->content)[(y + i) * buffer->width + j] = (255
-					<< 24);
+			((uint32_t*) buffer->content)[(y + i) * buffer->width + (x + j)] =
+					(255 << 24);
 		}
 	}
 }

@@ -1,7 +1,38 @@
 #include "Renderer.h"
 #include "Font.h"
+#include "platform.h"
 
 namespace render {
+
+// FIXME circles tend to disappear at the edges instead of being rendered partially
+void circle(VideoBuffer* buffer, int x, int y, unsigned radius) {
+	if (x + radius < 0 || x - radius > WINDOW_WIDTH) {
+		return;
+	}
+	if (y + radius < 0 || y - radius > WINDOW_HEIGHT) {
+		return;
+	}
+
+	for (int i = -1 * (int) radius; i < (int) radius; i++) {
+		if (y + i >= WINDOW_HEIGHT) {
+			break;
+		} else if (y + i < 0) {
+			continue;
+		}
+		float angle = asin(i / (float) radius);
+		int xMin = x + abs(cos(angle) * (float) radius) * -1;
+		int xMax = x + abs(cos(angle) * (float) radius);
+		for (int j = xMin; j < xMax; j++) {
+			if (j >= WINDOW_WIDTH) {
+				break;
+			} else if (j < 0) {
+				continue;
+			}
+			((uint32_t*) buffer->content)[(y + i) * buffer->width + j] = (255
+					<< 24);
+		}
+	}
+}
 
 void explosion(VideoBuffer *buffer, GameState *gameState, int x, int y,
 		unsigned *explosionIndex) {
@@ -18,7 +49,8 @@ void explosion(VideoBuffer *buffer, GameState *gameState, int x, int y,
 }
 
 void debugInformation(VideoBuffer *buffer, Input *input, GameState *gameState) {
-	std::string text = "Player 1: " + std::to_string(gameState->player.position.x) + ", "
+	std::string text = "Player 1: "
+			+ std::to_string(gameState->player.position.x) + ", "
 			+ std::to_string(gameState->player.position.y);
 	font::renderText(buffer, text, 20, 100, 5);
 }
@@ -104,7 +136,7 @@ void textureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 
 	int32_t nextLine = buffer->width - texture->width;
 
-	for (int y = 0; y < (int)texture->height; ++y) {
+	for (int y = 0; y < (int) texture->height; ++y) {
 		if (offsetY + y < 0) {
 			currentBufferPixel += buffer->width;
 			currentTexturePixel += texture->width;
@@ -113,7 +145,7 @@ void textureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 			break;
 		}
 
-		for (int x = 0; x < (int)texture->width; ++x) {
+		for (int x = 0; x < (int) texture->width; ++x) {
 			if (offsetX + x < 0 || offsetX + x >= buffer->width) {
 				currentBufferPixel++;
 				currentTexturePixel++;
@@ -172,7 +204,5 @@ void textureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 		currentBufferPixel += nextLine;
 	}
 }
-
-
 
 }

@@ -108,15 +108,24 @@ GameState* getGameState(GameMemory* memory) {
 
 void spawnBullet(GameState *gameState, Math::Vector2f position,
 		Math::Vector2f velocity, bool playerBullet) {
-	printf("Shooting bullet.\n");
 	Bullet bullet = { };
 	bullet.position = position;
 	bullet.velocity = velocity;
 
 	if (playerBullet) {
-		gameState->playerBullets.push_back(bullet);
-	} else {
-		gameState->aiBullets.push_back(bullet);
+		int arrSize = sizeof(gameState->playerBullets) / sizeof(Bullet);
+		if (gameState->lastPlayerIndex + 1 < arrSize) {
+//			if (gameState->lastPlayerIndex < -1
+//					|| gameState->lastPlayerIndex > 100) {
+//				abort("Fail 3");
+//			}
+			gameState->lastPlayerIndex++;
+			gameState->playerBullets[gameState->lastPlayerIndex] = bullet;
+//			if (gameState->lastPlayerIndex < -1
+//					|| gameState->lastPlayerIndex > 100) {
+//				abort("Fail 3");
+//			}
+		}
 	}
 }
 
@@ -149,6 +158,8 @@ void updateAndRenderPlayer(VideoBuffer *buffer, Input *input,
 	if (input->shootKey) {
 		Math::Vector2f velocity = input->mousePosition
 				- gameState->player.position;
+		velocity = velocity * (1.0 / Math::length(velocity));
+		velocity = velocity * 5;
 		spawnBullet(gameState, gameState->player.position, velocity, true);
 	}
 
@@ -175,17 +186,77 @@ void updateAndRenderPlayer(VideoBuffer *buffer, Input *input,
 	render::textureAlpha(buffer, texture, textureX, textureY);
 }
 
+bool updateAndRenderBullet(VideoBuffer* buffer, Bullet &bullet) {
+	bullet.position = bullet.position + bullet.velocity;
+
+	if (bullet.position.x < 0) {
+		return true;
+	} else if (bullet.position.x > WINDOW_WIDTH) {
+		return true;
+	}
+	if (bullet.position.y < 0) {
+		return true;
+	} else if (bullet.position.y > WINDOW_HEIGHT) {
+		return true;
+	}
+
+	int x = bullet.position.x;
+	int y = bullet.position.y;
+	int r = 10;
+	render::circle(buffer, x, y, r);
+
+	return false;
+}
+
+void updateAndRenderBullets(VideoBuffer* buffer, GameState* gameState) {
+	for (int i = 0; i < gameState->lastPlayerIndex + 1; i++) {
+		gameState->playerBullets[i].position =
+				gameState->playerBullets[i].position
+						+ gameState->playerBullets[i].velocity;
+		bool remove = false;
+		if (gameState->playerBullets[i].position.x < 0) {
+			remove = true;
+		} else if (gameState->playerBullets[i].position.x > WINDOW_WIDTH) {
+			remove = true;
+		}
+		if (gameState->playerBullets[i].position.y < 0) {
+			remove = true;
+		} else if (gameState->playerBullets[i].position.y > WINDOW_HEIGHT) {
+			remove = true;
+		}
+
+		if (remove) {
+			Bullet bullet = gameState->playerBullets[gameState->lastPlayerIndex];
+			gameState->playerBullets[i] = bullet;
+			gameState->lastPlayerIndex--;
+			i--;
+			if (i < 0) {
+				break;
+			}
+		} else {
+			int x = gameState->playerBullets[i].position.x;
+			int y = gameState->playerBullets[i].position.y;
+			int r = 10;
+			render::circle(buffer, x, y, r);
+		}
+	}
+}
+
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	GameState *gameState = getGameState(memory);
-	gameState->frameCounter++;
-
-	testInput(input);
-
-	render::clearScreen(buffer, 0);
 
 	updateAndRenderRoad(buffer, gameState);
 
 	updateAndRenderPlayer(buffer, input, gameState);
+
+	updateAndRenderBullets(buffer, gameState);
+
+//	Math::Vector2f position = {100, 100};
+//	Math::Vector2f velocity = {1, 1};
+//	spawnBullet(gameState, position, velocity, true);
+
+	render::circle(buffer, 100, WINDOW_HEIGHT, 10);
+	render::circle(buffer, 0, 100, 10);
 
 	render::debugInformation(buffer, input, gameState);
 }

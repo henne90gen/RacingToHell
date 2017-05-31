@@ -10,6 +10,7 @@ struct VideoBuffer {
 	void* content;
 };
 
+#pragma pack(8)
 struct Texture {
 
 	uint32_t width, height;
@@ -17,6 +18,7 @@ struct Texture {
 	void* content;
 };
 
+#pragma pack(8)
 struct GameFont {
 	size_t size;
 	void* content;
@@ -30,16 +32,19 @@ struct Input {
 	bool shootKey;
 };
 
+#pragma pack(8)
 struct Player {
 	Math::Vector2f position;
 	uint8_t health, carIndex;
 	uint32_t speed;
 };
 
+#pragma pack(8)
 struct Bullet {
 	Math::Vector2f position, velocity;
 };
 
+#pragma pack(8)
 struct Resources {
 	Texture roadTextures[4];
 
@@ -49,7 +54,7 @@ struct Resources {
 	Texture explosion[9 * 9];
 };
 
-#pragma pack(push)
+#pragma pack(8)
 struct GameState {
 	uint32_t frameCounter;
 	uint32_t roadPosition;
@@ -57,14 +62,15 @@ struct GameState {
 	uint8_t difficulty;
 	Player player;
 
-	std::vector<Bullet> aiBullets;
-	std::vector<Bullet> playerBullets;
+//	Bullet aiBullets[1000];
+	int32_t lastPlayerIndex = -1;
+	Bullet playerBullets[100];
+//	int32_t lastAIIndex;
 
 	Resources resources;
 };
-#pragma pack(pop)
 
-#pragma pack(push)
+#pragma pack(8)
 struct BitmapHeader {
 	uint32_t size; /* Size of this header in bytes */
 	uint32_t width; /* Image width in pixels */
@@ -78,7 +84,6 @@ struct BitmapHeader {
 	uint32_t colorsUsed; /* Number of colors in the image */
 	uint32_t colorsImportant; /* Minimum number of important colors */
 };
-#pragma pack(pop)
 
 Texture readBmpIntoMemory(File file, GameMemory *memory);
 

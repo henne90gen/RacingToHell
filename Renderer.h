@@ -3,6 +3,8 @@
 
 namespace render {
 
+void circle(VideoBuffer* buffer, int x, int y, unsigned radius);
+
 void explosion(VideoBuffer *buffer, GameState *gameState, int x, int y, unsigned *explosionIndex);
 
 void debugInformation(VideoBuffer *buffer, Input *input,

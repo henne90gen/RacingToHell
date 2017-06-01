@@ -11,6 +11,7 @@
 - player control
     - mouse cursor
     - ~~car movement~~
+    - collision
     - shooting
         - timing
 - enemies
@@ -20,7 +21,9 @@
     - collision
 - bullets
     - ~~spawning~~
-    - collision
+    - ~~collision~~
+    - damage
+    - shape
 - bosses
     - spawning
     - movement

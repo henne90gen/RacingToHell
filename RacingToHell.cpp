@@ -129,13 +129,15 @@ void spawnBullet(GameState *gameState, Math::Vector2f position,
 		int arrSize = sizeof(gameState->playerBullets) / sizeof(Bullet);
 		if (gameState->lastPlayerBulletIndex + 1 < arrSize) {
 
-			bullet.color = (255 << 24) + (255 << 16);
+			bullet.color = (255 << 24) + 255;
 			gameState->lastPlayerBulletIndex++;
 			gameState->playerBullets[gameState->lastPlayerBulletIndex] = bullet;
 		}
 	} else {
 		int arrSize = sizeof(gameState->aiBullets) / sizeof(Bullet);
 		if (gameState->lastAIBulletIndex + 1 < arrSize) {
+
+			bullet.color = (255 << 24) + (255 << 8);
 			gameState->lastAIBulletIndex++;
 			gameState->aiBullets[gameState->lastAIBulletIndex] = bullet;
 		}
@@ -199,7 +201,21 @@ void updateAndRenderPlayer(VideoBuffer *buffer, Input *input,
 	render::textureAlpha(buffer, texture, textureX, textureY);
 }
 
-bool updateAndRenderBullet(VideoBuffer* buffer, Bullet &bullet) {
+/**
+ * rectX, rectY specify the top left position of the rectangle
+ */
+bool rectangleCollision(float rectX, float rectY, unsigned width,
+		unsigned height, float posX, float posY) {
+	if (posX > rectX && posX < rectX + width) {
+		if (posY > rectY && posY < rectY + height) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool updateAndRenderBullet(VideoBuffer* buffer, GameState* gameState,
+		Bullet &bullet, bool playerBullet) {
 	bullet.position = bullet.position + bullet.velocity;
 
 	if (bullet.position.x < 0) {
@@ -213,9 +229,37 @@ bool updateAndRenderBullet(VideoBuffer* buffer, Bullet &bullet) {
 		return true;
 	}
 
-	int x = bullet.position.x;
-	int y = bullet.position.y;
+	float x = bullet.position.x;
+	float y = bullet.position.y;
 	int r = 10;
+
+	if (playerBullet) {
+		for (int i = 0; i < gameState->lastTrafficCarIndex + 1; i++) {
+			TrafficCar car = gameState->traffic[i];
+			Texture trafficTexture =
+					gameState->resources.trafficCarTextures[car.carIndex];
+			unsigned width = trafficTexture.width + r * 2;
+			unsigned height = trafficTexture.height + r * 2;
+			float playerX = car.position.x - trafficTexture.width / 2;
+			float playerY = car.position.y - trafficTexture.height / 2;
+			if (rectangleCollision(playerX, playerY, width, height, x, y)) {
+				// TODO car should take damage
+				return true;
+			}
+		}
+	} else {
+		Texture playerTexture =
+				gameState->resources.playerCarTextures[gameState->player.carIndex];
+		unsigned width = playerTexture.width + r * 2;
+		unsigned height = playerTexture.height + r * 2;
+		float playerX = gameState->player.position.x - playerTexture.width / 2;
+		float playerY = gameState->player.position.y - playerTexture.height / 2;
+		if (rectangleCollision(playerX, playerY, width, height, x, y)) {
+			// TODO player should take damage
+			return true;
+		}
+	}
+
 	render::circle(buffer, x, y, r, bullet.color);
 	return false;
 }
@@ -233,7 +277,8 @@ void updateAndRenderBullets(VideoBuffer* buffer, GameState* gameState) {
 	}
 
 	for (int i = 0; i < gameState->lastAIBulletIndex + 1; i++) {
-		if (updateAndRenderBullet(buffer, gameState->aiBullets[i])) {
+		if (updateAndRenderBullet(buffer, gameState, gameState->aiBullets[i],
+				false)) {
 			Bullet bullet = gameState->aiBullets[gameState->lastAIBulletIndex];
 			gameState->aiBullets[i] = bullet;
 			gameState->lastAIBulletIndex--;
@@ -245,7 +290,8 @@ void updateAndRenderBullets(VideoBuffer* buffer, GameState* gameState) {
 	}
 
 	for (int i = 0; i < gameState->lastPlayerBulletIndex + 1; i++) {
-		if (updateAndRenderBullet(buffer, gameState->playerBullets[i])) {
+		if (updateAndRenderBullet(buffer, gameState,
+				gameState->playerBullets[i], true)) {
 			Bullet bullet =
 					gameState->playerBullets[gameState->lastPlayerBulletIndex];
 			gameState->playerBullets[i] = bullet;
@@ -304,7 +350,9 @@ void updateAndRenderTraffic(VideoBuffer* buffer, GameState *gameState) {
 		car->position = car->position
 				+ (Math::Vector2f ) { 0, (float) car->speed };
 
-		if (car->position.y > WINDOW_HEIGHT) {
+		Texture *texture =
+				&gameState->resources.trafficCarTextures[car->carIndex];
+		if (car->position.y - texture->height > WINDOW_HEIGHT) {
 			gameState->traffic[i] =
 					gameState->traffic[gameState->lastTrafficCarIndex];
 			gameState->lastTrafficCarIndex--;
@@ -315,8 +363,6 @@ void updateAndRenderTraffic(VideoBuffer* buffer, GameState *gameState) {
 			continue;
 		}
 
-		Texture *texture =
-				&gameState->resources.trafficCarTextures[car->carIndex];
 		int x = car->position.x - texture->width / 2;
 		int y = car->position.y - texture->height / 2;
 		render::textureAlpha(buffer, texture, x, y);

@@ -15,7 +15,7 @@ script:
   - sudo ln -s /usr/bin/g++-6 /usr/local/bin/g++
   - gcc -v && g++ -v && cmake --version
 # Execute build
-  - make gcc
+  - make all
 # TODO Compress resources and executable into zip archive
 #  - zip -r RacingToHellLinux.zip bin && mv RacingToHellLinux.zip ../
 deploy:

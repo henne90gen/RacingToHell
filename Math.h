@@ -6,8 +6,7 @@
 
 namespace Math {
 struct Vector2f {
-	float x = 0.0f;
-	float y = 0.0f;
+    float x, y;
 };
 
 Vector2f operator+(const Vector2f &v1, const Vector2f &v2);

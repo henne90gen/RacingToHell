@@ -1,8 +1,11 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <time.h>
+
 #include "platform.h"
 #include "Math.h"
+#include "Sound.h"
 
 struct VideoBuffer {
 
@@ -64,6 +67,8 @@ struct SoundOutputBuffer {
 
 struct GameState {
 	float tSine = 0.0f;
+    Sound::LoadedSound loadedSound;
+    uint32_t soundSampleIndex = 0;
 
 	uint32_t frameCounter;
 	uint32_t roadPosition;
@@ -87,7 +92,7 @@ struct GameState {
 	Resources resources;
 };
 
-#pragma pack(8)
+#pragma pack(push)
 struct BitmapHeader {
 	uint32_t size; /* Size of this header in bytes */
 	uint32_t width; /* Image width in pixels */
@@ -101,6 +106,7 @@ struct BitmapHeader {
 	uint32_t colorsUsed; /* Number of colors in the image */
 	uint32_t colorsImportant; /* Minimum number of important colors */
 };
+#pragma pack(pop)
 
 Texture readBmpIntoMemory(File file, GameMemory *memory);
 

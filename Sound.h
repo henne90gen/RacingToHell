@@ -1,10 +1,16 @@
 #pragma once
 
 #include "platform.h"
-#include "RacingToHell.h"
 
 namespace Sound
 {
+    struct LoadedSound 
+    {
+        uint32_t sampleCount;
+        uint32_t channelCount;
+        int16_t *samples[2];
+    };
+
 #pragma pack(push)
     struct WaveHeader
     {
@@ -44,5 +50,5 @@ namespace Sound
         WAVE_CHUNKID_WAVE = RIFF_CODE('W', 'A', 'V', 'E')
     };
 
-    void loadWAV(GameMemory *memory, std::string path);
+    LoadedSound loadWAV(GameMemory *memory, std::string path);
 }

@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "RacingToHell.h"
+
 #include "platform.h"
 #include "Renderer.h"
 #include "Font.h"
@@ -84,7 +85,7 @@ void init(GameMemory *memory) {
 
 	font::loadFont(memory, "./res/font/arial.ttf");
 
-	Sound::loadWAV(memory, "./res/sound/shotAI.wav");
+	gameState->loadedSound = Sound::loadWAV(memory, "./res/sound/gameOver.wav");
 
 	loadTextures(memory, gameState);
 
@@ -269,7 +270,7 @@ void updateAndRenderBullets(VideoBuffer* buffer, GameState* gameState) {
 		int carIndex = std::rand() % gameState->lastTrafficCarIndex;
 		TrafficCar car = gameState->traffic[carIndex];
 		Math::Vector2f position = { car.position.x, car.position.y };
-
+        
 		Math::Vector2f velocity = gameState->player.position - car.position;
 		velocity = velocity * (1.0f / Math::length(velocity));
 		velocity = velocity * gameState->bulletSpeed;
@@ -302,23 +303,37 @@ void updateAndRenderBullets(VideoBuffer* buffer, GameState* gameState) {
 			}
 		}
 	}
+} 
+
+void outputSound(GameState *state, SoundOutputBuffer *buffer, int toneHz) { 
+    int16_t *sampleOut = buffer->samples;
+    
+    for (int sampleIndex = 0; sampleIndex < buffer->sampleCount;
+			sampleIndex++) {
+        int16_t sampleValue = state->loadedSound.samples[0][(state->soundSampleIndex + sampleIndex) % state->loadedSound.sampleCount];
+        
+        *sampleOut++ = sampleValue;
+        *sampleOut++ = sampleValue;
+    }
+
+    state->soundSampleIndex += buffer->sampleCount;
 }
 
-void outputSound(GameState *state, SoundOutputBuffer *buffer, int toneHz) {
-	int16_t toneVolume = 4000;
-	int wavePeriod = buffer->samplesPerSecond / toneHz;
-	int16_t *sampleOut = buffer->samples;
-	for (int sampleIndex = 0; sampleIndex < buffer->sampleCount;
-			sampleIndex++) {
-		float sineValue = sinf(state->tSine);
-		uint16_t sampleValue = (uint16_t) (sineValue * toneVolume);
-		*sampleOut++ = sampleValue;
-		*sampleOut++ = sampleValue;
-		state->tSine += 2.0f * PI * 1.0f / (float) wavePeriod;
-		if (state->tSine > 2.0f * PI)
-			state->tSine -= 2.0f * PI;
-	}
-}
+/*void outputSound(GameState *state, SoundOutputBuffer *buffer, int toneHz) {
+    int16_t toneVolume = 4000;
+    int wavePeriod = buffer->samplesPerSecond / toneHz;
+    int16_t *sampleOut = buffer->samples;
+    for (int sampleIndex = 0; sampleIndex < buffer->sampleCount;
+        sampleIndex++) {
+        float sineValue = sinf(state->tSine);
+        uint16_t sampleValue = (uint16_t)(sineValue * toneVolume);
+        *sampleOut++ = sampleValue;
+        *sampleOut++ = sampleValue;
+        state->tSine += 2.0f * PI * 1.0f / (float)wavePeriod;
+        if (state->tSine > 2.0f * PI)
+            state->tSine -= 2.0f * PI;
+    }
+} */
 
 void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer) {
 	GameState *gameState = getGameState(memory);
@@ -330,7 +345,7 @@ void spawnTrafficCar(GameState* gameState) {
 	TrafficCar car = { };
 	car.carIndex = std::rand() % NUM_TRAFFIC_TEXTURES;
 	float x = (std::rand() % 4) * (WINDOW_WIDTH / 4) + WINDOW_WIDTH / 8;
-	car.position = (Math::Vector2f ) { x, -80 };
+	car.position = { x, -80 };
 	car.speed = 5;
 
 	unsigned arrSize = sizeof(gameState->traffic) / sizeof(TrafficCar);
@@ -347,8 +362,7 @@ void updateAndRenderTraffic(VideoBuffer* buffer, GameState *gameState) {
 
 	for (int i = 0; i < gameState->lastTrafficCarIndex + 1; i++) {
 		TrafficCar *car = &gameState->traffic[i];
-		car->position = car->position
-				+ (Math::Vector2f ) { 0, (float) car->speed };
+		car->position = { car->position.x, ((float) car->speed) + car->position.y };
 
 		Texture *texture =
 				&gameState->resources.trafficCarTextures[car->carIndex];

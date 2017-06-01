@@ -396,7 +396,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 	HWND windowHandle = openWindow(instance, show, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     SoundOutput soundOutput;
-    soundOutput.safetyBytes = (soundOutput.samplesPerSecond * soundOutput.bytesPerSample) * targetFrameTime;
+    soundOutput.safetyBytes = (soundOutput.samplesPerSecond * soundOutput.bytesPerSample) * targetFrameTime * 2;
 
     initDSound(windowHandle, soundOutput.samplesPerSecond, soundOutput.secondaryBufferSize);
     clearSoundBuffer(&soundOutput);
@@ -442,9 +442,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
         GetCursorPos(&mousePosition);
         ScreenToClient(windowHandle, &mousePosition);
 
-        newInput->mouseX = mousePosition.x;
-        newInput->mouseY = mousePosition.y;
-
+        newInput->mousePosition = { (float)mousePosition.x, (float)mousePosition.y };
         newInput->shootKey = (bool)(GetKeyState(VK_LBUTTON) & (1 << 15));
 		
 		VideoBuffer vBuffer;

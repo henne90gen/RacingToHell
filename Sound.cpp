@@ -1,4 +1,5 @@
 #include "Sound.h"
+#include "RacingToHell.h"
 
 namespace Sound {
 struct RiffIterator {
@@ -43,13 +44,8 @@ uint32_t getChunkDataSize(RiffIterator iter) {
 	return chunk->size;
 }
 
-struct LoadedSound {
-	uint32_t sampleCount;
-	uint32_t channelCount;
-	uint16_t *samples[2];
-};
 
-void loadWAV(GameMemory *memory, std::string path) {
+LoadedSound loadWAV(GameMemory *memory, std::string path) {
 	LoadedSound result;
 
 	File file = readFile(path);
@@ -60,7 +56,7 @@ void loadWAV(GameMemory *memory, std::string path) {
 
 	WaveHeader *header = (WaveHeader *) (file.content);
 	uint32_t sampleDataSize;
-	uint16_t *sampleData;
+	int16_t *sampleData;
 
 	if (header->riffId != WAVE_CHUNKID_RIFF
 			|| header->waveId != WAVE_CHUNKID_WAVE) {
@@ -71,22 +67,20 @@ void loadWAV(GameMemory *memory, std::string path) {
 			(uint8_t *) (header + 1) + header->chunkSize - 4); isValid(iter);
 			iter = nextChunk(iter)) {
 		switch (getType(iter)) {
-		case (WAVE_CHUNKID_FMT): {
-			WaveFormat *format = (WaveFormat *) getChunkData(iter);
-			result.channelCount = format->numChannels;
-		}
-			break;
+		    case (WAVE_CHUNKID_FMT): {
+			    WaveFormat *format = (WaveFormat *) getChunkData(iter);
+			    result.channelCount = format->numChannels;
+		    } break;
 
-		case (WAVE_CHUNKID_DATA): {
-			sampleData = (uint16_t*) getChunkData(iter);
-			sampleDataSize = getChunkDataSize(iter);
-		}
-			break;
+    		case (WAVE_CHUNKID_DATA): {
+    			sampleData = (int16_t*) getChunkData(iter);
+    			sampleDataSize = getChunkDataSize(iter);
+    		} break;
 		}
 	}
 
 	result.sampleCount = sampleDataSize
-			/ (result.channelCount * sizeof(uint16_t));
+			/ (result.channelCount * sizeof(int16_t));
 
 	if (result.channelCount == 1) {
 		result.samples[0] = sampleData;
@@ -97,7 +91,7 @@ void loadWAV(GameMemory *memory, std::string path) {
 
 		for (uint32_t sampleIndex = 0; sampleIndex < result.sampleCount;
 				++sampleIndex) {
-			uint16_t source = sampleData[2 * sampleIndex];
+			int16_t source = sampleData[2 * sampleIndex];
 			sampleData[2 * sampleIndex] = sampleData[sampleIndex];
 			sampleData[sampleIndex] = source;
 		}
@@ -105,6 +99,8 @@ void loadWAV(GameMemory *memory, std::string path) {
 		abort("Mehr als 2 Channeles werden nicht unterstuezt.");
 	}
 
-	freeFile(&file); //?
+	freeFile(&file); 
+
+    return result;
 }
 }

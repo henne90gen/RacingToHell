@@ -61,7 +61,7 @@ build_script:
   - cd ..
 
 after_build:
-  - 7z a RacingToHellWindows.zip build/bin
+  - 7z a RacingToHellWindows.zip ./
 
 #---------------------------------#
 #       tests configuration       #

@@ -1,5 +1,5 @@
 void abort(std::string message) {
-	fprintf(stderr, message.c_str());
+	fprintf(stderr, (message + "\n").c_str());
 	exit(1);
 }
 

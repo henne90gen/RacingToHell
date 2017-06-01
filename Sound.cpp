@@ -44,7 +44,6 @@ uint32_t getChunkDataSize(RiffIterator iter) {
 	return chunk->size;
 }
 
-
 LoadedSound loadWAV(GameMemory *memory, std::string path) {
 	LoadedSound result;
 
@@ -67,15 +66,17 @@ LoadedSound loadWAV(GameMemory *memory, std::string path) {
 			(uint8_t *) (header + 1) + header->chunkSize - 4); isValid(iter);
 			iter = nextChunk(iter)) {
 		switch (getType(iter)) {
-		    case (WAVE_CHUNKID_FMT): {
-			    WaveFormat *format = (WaveFormat *) getChunkData(iter);
-			    result.channelCount = format->numChannels;
-		    } break;
+		case (WAVE_CHUNKID_FMT): {
+			WaveFormat *format = (WaveFormat *) getChunkData(iter);
+			result.channelCount = format->numChannels;
+		}
+			break;
 
-    		case (WAVE_CHUNKID_DATA): {
-    			sampleData = (int16_t*) getChunkData(iter);
-    			sampleDataSize = getChunkDataSize(iter);
-    		} break;
+		case (WAVE_CHUNKID_DATA): {
+			sampleData = (int16_t*) getChunkData(iter);
+			sampleDataSize = getChunkDataSize(iter);
+		}
+			break;
 		}
 	}
 
@@ -96,11 +97,11 @@ LoadedSound loadWAV(GameMemory *memory, std::string path) {
 			sampleData[sampleIndex] = source;
 		}
 	} else {
-		abort("Mehr als 2 Channeles werden nicht unterstuezt.");
+		abort("More than two channels aren't supported.");
 	}
 
-	freeFile(&file); 
+	freeFile(&file);
 
-    return result;
+	return result;
 }
 }

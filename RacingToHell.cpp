@@ -129,7 +129,6 @@ void spawnBullet(GameState *gameState, Math::Vector2f position,
 	if (playerBullet) {
 		int arrSize = sizeof(gameState->playerBullets) / sizeof(Bullet);
 		if (gameState->lastPlayerBulletIndex + 1 < arrSize) {
-
 			bullet.color = (255 << 24) + 255;
 			gameState->lastPlayerBulletIndex++;
 			gameState->playerBullets[gameState->lastPlayerBulletIndex] = bullet;
@@ -137,7 +136,6 @@ void spawnBullet(GameState *gameState, Math::Vector2f position,
 	} else {
 		int arrSize = sizeof(gameState->aiBullets) / sizeof(Bullet);
 		if (gameState->lastAIBulletIndex + 1 < arrSize) {
-
 			bullet.color = (255 << 24) + (255 << 8);
 			gameState->lastAIBulletIndex++;
 			gameState->aiBullets[gameState->lastAIBulletIndex] = bullet;
@@ -284,9 +282,6 @@ void updateAndRenderBullets(VideoBuffer* buffer, GameState* gameState) {
 			gameState->aiBullets[i] = bullet;
 			gameState->lastAIBulletIndex--;
 			i--;
-			if (i < 0) {
-				break;
-			}
 		}
 	}
 
@@ -298,9 +293,6 @@ void updateAndRenderBullets(VideoBuffer* buffer, GameState* gameState) {
 			gameState->playerBullets[i] = bullet;
 			gameState->lastPlayerBulletIndex--;
 			i--;
-			if (i < 0) {
-				break;
-			}
 		}
 	}
 } 
@@ -371,9 +363,6 @@ void updateAndRenderTraffic(VideoBuffer* buffer, GameState *gameState) {
 					gameState->traffic[gameState->lastTrafficCarIndex];
 			gameState->lastTrafficCarIndex--;
 			i--;
-			if (i < 0) {
-				break;
-			}
 			continue;
 		}
 

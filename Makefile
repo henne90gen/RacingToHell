@@ -9,10 +9,10 @@ ifeq ($(OS), Windows_NT)
 	GCC_INCLUDES := -I./include -L./
 else
 	PLATFORM_FILE := linux_RacingToHell.cpp
-	PLATFORM_FLAGS := -L/usr/X11R6/lib -lX11
+	PLATFORM_FLAGS := -L/usr/X11R6/lib
 	EXTENSION := .out
 	CLEAN_CMD := rm -f *$(EXTENSION)
-	GCC_LINKER := -lfreetype
+	GCC_LINKER := -lfreetype -lX11 -lasound
 	GCC_INCLUDES := -I./include
 endif
 

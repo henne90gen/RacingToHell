@@ -1,6 +1,5 @@
-#include <bits/types/struct_timespec.h>
+#include <time.h>
 #include <stdlib.h>
-#include <sys/time.h>
 #include <X11/cursorfont.h>
 #include <X11/X.h>
 #include <X11/Xlib.h>
@@ -52,17 +51,17 @@ static AudioData audio;
 AudioData initAudioData() {
 	AudioData audio = { };
 
-	audio.stream = SND_PCM_STREAM_PLAYBACK;
-	char *pcm_name;
-	pcm_name = strdup("plughw:0,0");
-	if (snd_pcm_open(&audio.pcm_handle, pcm_name, audio.stream, 0) < 0) {
-		abort("Error opening PCM device " + std::string(pcm_name));
-	}
-
-	snd_pcm_hw_params_alloca(&audio.hwparams);
-	if (snd_pcm_hw_params_any(audio.pcm_handle, audio.hwparams) < 0) {
-		abort("Cannot configure this PCM device.");
-	}
+//	audio.stream = SND_PCM_STREAM_PLAYBACK;
+//	char *pcm_name;
+//	pcm_name = strdup("plughw:0,0");
+//	if (snd_pcm_open(&audio.pcm_handle, pcm_name, audio.stream, 0) < 0) {
+//		abort("Error opening PCM device " + std::string(pcm_name));
+//	}
+//
+//	snd_pcm_hw_params_alloca(&audio.hwparams);
+//	if (snd_pcm_hw_params_any(audio.pcm_handle, audio.hwparams) < 0) {
+//		abort("Cannot configure this PCM device.");
+//	}
 
 	return audio;
 }

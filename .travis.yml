@@ -9,6 +9,7 @@ addons:
     packages:
       - gcc-6
       - g++-6
+      - libasound2-dev
 script:
 # Linking the new compiler versions
   - sudo ln -s /usr/bin/gcc-6 /usr/local/bin/gcc

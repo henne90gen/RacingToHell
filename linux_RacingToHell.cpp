@@ -1,6 +1,5 @@
-#include <bits/types/struct_timespec.h>
+#include <time.h>
 #include <stdlib.h>
-#include <sys/time.h>
 #include <X11/cursorfont.h>
 #include <X11/X.h>
 #include <X11/Xlib.h>
@@ -10,6 +9,7 @@
 #include <ctime>
 #include <string>
 #include <sstream>
+#include <alsa/asoundlib.h>
 
 #include "platform.h"
 #include "RacingToHell.h"
@@ -35,13 +35,38 @@ struct GraphicsData {
 	VideoBuffer videoBuffer;
 };
 
+struct AudioData {
+	snd_pcm_t *pcm_handle;
+	snd_pcm_stream_t stream;
+	snd_pcm_hw_params_t *hwparams;
+};
+
 long int EVENTS_MASK = KeyPressMask | KeyReleaseMask | ButtonPressMask
 		| ButtonReleaseMask | PointerMotionMask;
 static bool isRunning;
-static GraphicsData graphics;
-Pixmap icon_pixmap;
 
-GraphicsData initGraphicsData(GameMemory *memory) {
+static GraphicsData graphics;
+static AudioData audio;
+
+AudioData initAudioData() {
+	AudioData audio = { };
+
+//	audio.stream = SND_PCM_STREAM_PLAYBACK;
+//	char *pcm_name;
+//	pcm_name = strdup("plughw:0,0");
+//	if (snd_pcm_open(&audio.pcm_handle, pcm_name, audio.stream, 0) < 0) {
+//		abort("Error opening PCM device " + std::string(pcm_name));
+//	}
+//
+//	snd_pcm_hw_params_alloca(&audio.hwparams);
+//	if (snd_pcm_hw_params_any(audio.pcm_handle, audio.hwparams) < 0) {
+//		abort("Cannot configure this PCM device.");
+//	}
+
+	return audio;
+}
+
+GraphicsData initGraphicsData() {
 	GraphicsData graphics = { };
 	graphics.display = XOpenDisplay(NULL);
 	if (!graphics.display) {
@@ -113,8 +138,6 @@ GraphicsData initGraphicsData(GameMemory *memory) {
 	XDefineCursor(graphics.display, graphics.window,
 			XCreateFontCursor(graphics.display, XC_arrow));
 
-	XMapWindow(graphics.display, graphics.window);
-
 	Atom wmDeleteWindow = XInternAtom(graphics.display, "WM_DELETE_WINDOW", 0);
 	XSetWMProtocols(graphics.display, graphics.window, &wmDeleteWindow, 1);
 
@@ -126,6 +149,7 @@ GraphicsData initGraphicsData(GameMemory *memory) {
 			graphics.videoBuffer.width, graphics.videoBuffer.height, depth);
 	graphics.gc = XDefaultGC(graphics.display, screen);
 
+	XMapWindow(graphics.display, graphics.window);
 	XFlush(graphics.display);
 	return graphics;
 }
@@ -258,7 +282,9 @@ int main() {
 	memory.temporary = (char*) malloc(memory.temporaryMemorySize);
 	memory.permanent = (char*) malloc(memory.permanentMemorySize);
 
-	graphics = initGraphicsData(&memory);
+	graphics = initGraphicsData();
+	audio = initAudioData();
+
 	isRunning = true;
 
 	Input input[2] = { };
@@ -284,7 +310,7 @@ int main() {
 				handleMouseEvent(newInput, event.xbutton);
 			}
 			if (event.type == MotionNotify) {
-				Math::Vector2f mousePosition = {};
+				Math::Vector2f mousePosition = { };
 				mousePosition.x = event.xmotion.x;
 				mousePosition.y = event.xmotion.y;
 				newInput->mousePosition = mousePosition;

@@ -30,7 +30,8 @@ struct Input {
 	Math::Vector2f mousePosition;
 	bool upKey, downKey, leftKey, rightKey;
 	bool pauseKey;
-	bool shootKey;
+	bool shootKeyPressed;
+    bool shootKeyClicked;
 };
 
 struct Player {

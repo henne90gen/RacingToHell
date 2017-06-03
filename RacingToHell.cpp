@@ -146,11 +146,6 @@ void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer) {
         uint32_t samplesToMix = soundBuffer->sampleCount;
         int32_t samplesRemainingInInput = currentSound->loadedSound.sampleCount - currentSound->samplesPlayed;
 
-        if (samplesRemainingInInput < 0)
-        {
-            int x = 0;
-        }
-
         if (samplesToMix > samplesRemainingInInput)
         {
             samplesToMix = samplesRemainingInInput;
@@ -160,18 +155,18 @@ void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer) {
         {
             float sampleValue = currentSound->loadedSound.samples[0][sampleIndex];
 
-            *dest0++ = volume0 * sampleValue;
-            *dest1++ = volume1 * sampleValue;
+            *dest0++ += volume0 * sampleValue;
+            *dest1++ += volume1 * sampleValue;
         }
 
         currentSound->samplesPlayed += samplesToMix;
         if (currentSound->samplesPlayed >= currentSound->loadedSound.sampleCount)
         {
-            gameState->playingSounds[soundIndex] = gameState->playingSounds[gameState->lastPlayingSound];
+            *currentSound = gameState->playingSounds[gameState->lastPlayingSound];
             --gameState->lastPlayingSound;
 
             --soundIndex;
-        }
+        } 
     }
 
     {
@@ -233,11 +228,11 @@ void spawnBullet(GameState *gameState, Math::Vector2f position,
 
     if (playerBullet)
     {
-        outputSound(gameState, &gameState->resources.playerShot, 1.0f, 1.0f);
+        outputSound(gameState, &gameState->resources.playerShot, 0.1f, 0.1f);
     }
     else
     {
-        outputSound(gameState, &gameState->resources.AIShot, 1.0f, 1.0f);
+        outputSound(gameState, &gameState->resources.AIShot, 0.1f, 0.1f);
     }
 }
 
@@ -267,7 +262,7 @@ void updateAndRenderPlayer(VideoBuffer *buffer, Input *input,
 		gameState->player.position = gameState->player.position + movement;
 	}
 
-	if (input->shootKey) {
+	if (input->shootKeyClicked) {
 		Math::Vector2f velocity = input->mousePosition
 				- gameState->player.position;
 		velocity = velocity * (1.0 / Math::length(velocity));

@@ -413,6 +413,9 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
     uint64_t flipWallClock = getClockCounter();
     uint64_t lastCounter = getClockCounter();
 
+    bool LButtonWasPressed = false;
+    bool RButtonWasPressed = false;
+
 	while (isRunning)
 	{
         uint64_t loopStartCount = getClockCounter();
@@ -440,9 +443,16 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
         GetCursorPos(&mousePosition);
         ScreenToClient(windowHandle, &mousePosition);
 
+        bool LButtonPressed = (bool)(GetKeyState(VK_LBUTTON) & (1 << 15));
+        bool RButtonPressed = (bool)(GetKeyState(VK_RBUTTON) & (1 << 15));
+
         newInput->mousePosition = { (float)mousePosition.x, (float)mousePosition.y };
-        newInput->shootKey = (bool)(GetKeyState(VK_LBUTTON) & (1 << 15));
+        newInput->shootKeyPressed = LButtonPressed || RButtonPressed;
+        newInput->shootKeyClicked = (LButtonPressed && !LButtonWasPressed) || (RButtonPressed && !RButtonWasPressed);
 		
+        LButtonWasPressed = LButtonPressed;
+        RButtonWasPressed = RButtonPressed;
+
 		VideoBuffer vBuffer;
 		vBuffer.width = buffer.width;
 		vBuffer.height = buffer.height;

@@ -103,7 +103,7 @@ void testInput(Input* input) {
 	if (input->rightKey) {
 		printf("Going right!\n");
 	}
-	if (input->shootKey) {
+	if (input->shootKeyPressed) {
 		printf("Shooting!\n");
 	}
 }

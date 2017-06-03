@@ -209,7 +209,7 @@ void handleKeyEvent(Display* display, Input* input, XKeyEvent event) {
 		input->rightKey = keyPressed;
 		break;
 	case KeySpace:
-		input->shootKey = keyPressed;
+		input->shootKeyPressed = keyPressed;
 		break;
 	}
 }
@@ -224,12 +224,12 @@ void handleMouseEvent(Input* input, XButtonEvent event) {
 
 	switch (event.button) {
 	case MouseLeft:
-		input->shootKey = buttonPressed;
+		input->shootKeyPressed = buttonPressed;
 		break;
 	case MouseMiddle:
 		break;
 	case MouseRight:
-		input->shootKey = buttonPressed;
+		input->shootKeyPressed = buttonPressed;
 		break;
 	case MouseScrollUp:
 		break;

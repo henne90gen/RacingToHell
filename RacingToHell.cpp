@@ -371,9 +371,6 @@ void updateAndRenderTraffic(VideoBuffer* buffer, GameState *gameState) {
 					gameState->traffic[gameState->lastTrafficCarIndex];
 			gameState->lastTrafficCarIndex--;
 			i--;
-			if (i < 0) {
-				break;
-			}
 			continue;
 		}
 

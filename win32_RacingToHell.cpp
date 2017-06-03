@@ -376,7 +376,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 	setvbuf(stdout, NULL, _IONBF, 0);
 	setvbuf(stderr, NULL, _IONBF, 0);
 	
-    const float targetFrameTime = 1.0f / 60.0f;
+    const float targetFrameTime = 1.0f / 60.f;
     INT desiredSchedulerMS = 1;
     timeBeginPeriod(desiredSchedulerMS);
 

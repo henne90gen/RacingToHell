@@ -57,6 +57,9 @@ struct Resources {
 	Texture trafficCarTextures[7];
 
 	Texture explosion[9 * 9];
+
+    Sound::LoadedSound AIShot;
+    Sound::LoadedSound playerShot;
 };
 
 struct SoundOutputBuffer {
@@ -65,10 +68,17 @@ struct SoundOutputBuffer {
 	int samplesPerSecond;
 };
 
-struct GameState {
-	float tSine = 0.0f;
+struct PlayingSound
+{
+    float volume[2];
+    uint32_t samplesPlayed;
+
     Sound::LoadedSound loadedSound;
-    uint32_t soundSampleIndex = 0;
+};
+
+struct GameState {
+    PlayingSound playingSounds[256];
+    int lastPlayingSound = -1;
 
 	uint32_t frameCounter;
 	uint32_t roadPosition;

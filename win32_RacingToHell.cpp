@@ -135,10 +135,8 @@ void initDSound(HWND window, uint32_t samplesPerSecond, int32_t bufferSize)
 
 void fillSoundBuffer(SoundOutput *soundOutput, DWORD byteToLock, DWORD bytesToWrite, SoundOutputBuffer *source)
 {
-    VOID *region1;
-    DWORD region1Size;
-    VOID *region2;
-    DWORD region2Size;
+    VOID *region1, *region2;
+    DWORD region1Size, region2Size;
 
     if (SUCCEEDED(secondaryBuffer->Lock(byteToLock, bytesToWrite, &region1, &region1Size, &region2, &region2Size, 0)))
     {
@@ -548,6 +546,21 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
             soundIsValid = false;
         }
 
+        uint64_t workCounter = getClockCounter();
+        float secondsElapsed = (workCounter - lastCounter) / (float)performanceCountFrequency;
+
+        if (secondsElapsed < targetFrameTime)
+        {
+            sleep(targetFrameTime - secondsElapsed, performanceCountFrequency);
+        }
+        else
+        {
+            debugString("Missed :");
+        }
+
+        uint64_t prevLastCounter = lastCounter;
+        lastCounter = getClockCounter();
+
 		HDC deviceContext = GetDC(windowHandle);
 		drawBuffer(deviceContext, &buffer);
 		ReleaseDC(windowHandle, deviceContext);
@@ -556,20 +569,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
         oldInput = newInput;
         newInput = tmp;
 
-        uint64_t workCounter = getClockCounter();
-        float secondsElapsed = (workCounter - lastCounter) / (float)performanceCountFrequency;
-    
-        if (secondsElapsed < targetFrameTime)
-        {
-            sleep(targetFrameTime - secondsElapsed, performanceCountFrequency);
-        }
-        else
-        {
-            debugString("Missed :");
-        }  
-
-        uint64_t prevLastCounter = lastCounter;
-        lastCounter = getClockCounter();
+        flipWallClock = getClockCounter();
 
         float timePassed = (lastCounter - prevLastCounter) / (float)performanceCountFrequency;
         debugString("Frametime: " + std::to_string(1.f / timePassed) + '\n');

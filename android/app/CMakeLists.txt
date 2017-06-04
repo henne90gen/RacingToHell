@@ -20,7 +20,7 @@ add_library( # Sets the name of the library.
              ../../src/Font.cpp
              ../../src/Sound.cpp
              ../../src/RacingToHell.cpp
-             ../../src/Math.cpp
+             ../../src/MyMath.cpp
              ../../src/Renderer.cpp
              ../../src/Memory.cpp
              src/main/cpp/OpenGL.cpp

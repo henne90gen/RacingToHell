@@ -13,7 +13,6 @@
 
 #include "platform.h"
 #include "RacingToHell.h"
-#include "Math.h"
 
 #define KeyW 25
 #define KeyA 38

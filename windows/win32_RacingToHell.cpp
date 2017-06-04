@@ -16,6 +16,12 @@ void debugString(std::string s)
     OutputDebugString(s.c_str());
 }
 
+void abort(std::string message)
+{
+    debugString(message);
+    exit(1);
+}
+
 void resizeOffscreenBuffer(OffscreenBuffer *buffer, unsigned width, unsigned height)
 {
 	if (buffer->content)

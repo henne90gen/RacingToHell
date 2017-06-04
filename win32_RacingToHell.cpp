@@ -295,8 +295,6 @@ void handleKeyStroke(Input *input, WPARAM keyCode, LPARAM flags)
             } break;
         }
     }
-
-
 }
 
 File readFile(std::string filename)

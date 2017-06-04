@@ -2,7 +2,7 @@
 #include <time.h>
 
 #include "platform.h"
-#include "Math.h"
+#include "MyMath.h"
 #include "Memory.h"
 #include "Sound.h"
 #include "Renderer.h"

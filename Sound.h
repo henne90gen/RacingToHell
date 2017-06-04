@@ -2,6 +2,8 @@
 
 #include "platform.h"
 
+struct GameState;
+
 namespace Sound
 {
     struct LoadedSound 
@@ -51,4 +53,5 @@ namespace Sound
     };
 
     LoadedSound loadWAV(GameMemory *memory, std::string path);
+    void output(GameState *state, LoadedSound *loadedSound, float volumeLeft, float volumeRight);
 }

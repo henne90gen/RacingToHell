@@ -1,8 +1,7 @@
 #include "Renderer.h"
-#include "Font.h"
-#include "platform.h"
+#include "RacingToHell.h"
 
-namespace render {
+namespace Render {
 
 void circle(VideoBuffer* buffer, int x, int y, unsigned radius,
 		uint32_t color) {
@@ -43,7 +42,7 @@ void explosion(VideoBuffer *buffer, GameState *gameState, int x, int y,
 			*explosionIndex = 0;
 		}
 	}
-	render::textureAlpha(buffer,
+	textureAlpha(buffer,
 			&gameState->resources.explosion[*explosionIndex], x, y);
 }
 
@@ -51,7 +50,7 @@ void debugInformation(VideoBuffer *buffer, Input *input, GameState *gameState) {
 	std::string text = "Player 1: "
 			+ std::to_string(gameState->player.position.x) + ", "
 			+ std::to_string(gameState->player.position.y);
-	font::renderText(buffer, text, 20, 100, 7);
+	Font::renderText(buffer, text, 20, 100, 7);
 }
 
 void clearScreen(VideoBuffer *buffer, int color) {

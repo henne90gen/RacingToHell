@@ -1,10 +1,12 @@
 #pragma once
 
+#include "RacingToHell.h"
+
 #define FontSize14 0
 #define FontSize18 1
 #define FontSize24 2
 
-namespace font {
+namespace Font {
 
 struct Character {
 	char value;

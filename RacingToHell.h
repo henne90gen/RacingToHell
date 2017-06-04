@@ -1,11 +1,11 @@
 #pragma once
-#include <iostream>
-#include <vector>
 #include <time.h>
 
 #include "platform.h"
 #include "Math.h"
+#include "Memory.h"
 #include "Sound.h"
+#include "Renderer.h"
 
 struct VideoBuffer {
 
@@ -51,18 +51,6 @@ struct Bullet {
 	uint32_t color;
 };
 
-struct Resources {
-	Texture roadTextures[4];
-
-	Texture playerCarTextures[6];
-	Texture trafficCarTextures[7];
-
-	Texture explosion[9 * 9];
-
-    Sound::LoadedSound AIShot;
-    Sound::LoadedSound playerShot;
-};
-
 struct SoundOutputBuffer {
 	int16_t *samples;
 	int sampleCount;
@@ -75,6 +63,18 @@ struct PlayingSound
     uint32_t samplesPlayed;
 
     Sound::LoadedSound loadedSound;
+};
+
+struct Resources {
+    Texture roadTextures[4];
+
+    Texture playerCarTextures[6];
+    Texture trafficCarTextures[7];
+
+    Texture explosion[9 * 9];
+
+    Sound::LoadedSound AIShot;
+    Sound::LoadedSound playerShot;
 };
 
 struct GameState {
@@ -118,6 +118,8 @@ struct BitmapHeader {
 	uint32_t colorsImportant; /* Minimum number of important colors */
 };
 #pragma pack(pop)
+
+#include "Font.h"
 
 Texture readBmpIntoMemory(File file, GameMemory *memory);
 

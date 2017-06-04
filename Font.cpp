@@ -1,12 +1,8 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
-#include "RacingToHell.h"
 #include "Font.h"
 
-// FIXME compile version 2.8 of the freetype library for windows:
-// https://stackoverflow.com/questions/6207176/compiling-freetype-to-dll-as-opposed-to-static-library
-
-namespace font {
+namespace Font {
 
 FT_Library fontLibrary;
 FT_Face face;
@@ -33,10 +29,10 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 	newCharacter.value = loadCharacter;
 	newCharacter.width = face->glyph->bitmap.width;
 	newCharacter.height = face->glyph->bitmap.rows;
-	newCharacter.bitmap = memory->permanent + memory->permanentMemoryOffset;
 
-	unsigned bitmapSizeInPixel = newCharacter.width * newCharacter.height;
-	memory->permanentMemoryOffset += bitmapSizeInPixel;
+    unsigned bitmapSizeInPixel = newCharacter.width * newCharacter.height;
+
+    newCharacter.bitmap = reservePermanentMemory(memory, bitmapSizeInPixel);
 
 	memcpy(newCharacter.bitmap, face->glyph->bitmap.buffer, bitmapSizeInPixel);
 	characterMap[fontSize][loadCharacter - ' '] = newCharacter;

@@ -1,18 +1,13 @@
-#include <math.h>
-#include <sstream>
-#include <string.h>
-
 #include "RacingToHell.h"
-
-#include "platform.h"
-#include "Renderer.h"
-#include "Font.h"
-#include "Math.h"
-#include "Sound.h"
 
 #include "Helper.cpp"
 
 void spawnTrafficCar(GameState* gameState);
+
+void abort(std::string message) {
+    fprintf(stderr, (message + "\n").c_str());
+    exit(1);
+}
 
 void loadTextures(GameMemory *memory, GameState *gameState) {
 	for (int i = 0; i < 4; i++) {
@@ -83,7 +78,7 @@ void init(GameMemory *memory) {
 	gameState->bulletFrequency = 50;
 	gameState->bulletSpeed = 7;
 
-	font::loadFont(memory, "./res/font/arial.ttf");
+	Font::loadFont(memory, "./res/font/arial.ttf");
 
 	gameState->resources.AIShot = Sound::loadWAV(memory, "./res/sound/shotAI.wav");
     gameState->resources.playerShot = Sound::loadWAV(memory, "./res/sound/shotPlayer.wav");
@@ -99,21 +94,6 @@ GameState* getGameState(GameMemory* memory) {
     }
 
     return (GameState *)(memory->permanent);
-}
-
-void outputSound(GameState *state, Sound::LoadedSound *loadedSound, float volumeLeft, float volumeRight)
-{
-    if (state->lastPlayingSound + 1 >= sizeof(state->playingSounds) / sizeof(state->playingSounds[0]))
-    {
-        return;
-    }
-
-    ++state->lastPlayingSound;
-
-    state->playingSounds[state->lastPlayingSound].volume[0] = volumeLeft;
-    state->playingSounds[state->lastPlayingSound].volume[1] = volumeLeft;
-    state->playingSounds[state->lastPlayingSound].loadedSound = *loadedSound;
-    state->playingSounds[state->lastPlayingSound].samplesPlayed = 0;
 }
 
 void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer) {
@@ -198,9 +178,9 @@ void updateAndRenderRoad(VideoBuffer *buffer, GameState *gameState) {
 	if (gameState->roadPosition >= 800) {
 		gameState->roadPosition = 0;
 	}
-	render::backgroundTexture(buffer, getCurrentRoad(gameState),
+	Render::backgroundTexture(buffer, getCurrentRoad(gameState),
 			gameState->roadPosition);
-	render::backgroundTexture(buffer, getCurrentRoad(gameState),
+	Render::backgroundTexture(buffer, getCurrentRoad(gameState),
 			gameState->roadPosition - 800);
 }
 
@@ -228,11 +208,11 @@ void spawnBullet(GameState *gameState, Math::Vector2f position,
 
     if (playerBullet)
     {
-        outputSound(gameState, &gameState->resources.playerShot, 0.1f, 0.1f);
+        Sound::output(gameState, &gameState->resources.playerShot, 0.1f, 0.1f);
     }
     else
     {
-        outputSound(gameState, &gameState->resources.AIShot, 0.1f, 0.1f);
+        Sound::output(gameState, &gameState->resources.AIShot, 0.1f, 0.1f);
     }
 }
 
@@ -290,7 +270,7 @@ void updateAndRenderPlayer(VideoBuffer *buffer, Input *input,
 
 	int textureX = gameState->player.position.x - texture->width / 2;
 	int textureY = gameState->player.position.y - texture->height / 2;
-	render::textureAlpha(buffer, texture, textureX, textureY);
+	Render::textureAlpha(buffer, texture, textureX, textureY);
 }
 
 /**
@@ -352,7 +332,7 @@ bool updateAndRenderBullet(VideoBuffer* buffer, GameState* gameState,
 		}
 	}
 
-	render::circle(buffer, x, y, r, bullet.color);
+	Render::circle(buffer, x, y, r, bullet.color);
 	return false;
 }
 
@@ -425,7 +405,7 @@ void updateAndRenderTraffic(VideoBuffer* buffer, GameState *gameState) {
 
 		int x = car->position.x - texture->width / 2;
 		int y = car->position.y - texture->height / 2;
-		render::textureAlpha(buffer, texture, x, y);
+		Render::textureAlpha(buffer, texture, x, y);
 	}
 }
 
@@ -441,5 +421,5 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 
 	updateAndRenderBullets(buffer, gameState);
 
-	render::debugInformation(buffer, input, gameState);
+	Render::debugInformation(buffer, input, gameState);
 }

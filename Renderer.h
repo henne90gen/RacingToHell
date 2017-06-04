@@ -1,7 +1,13 @@
 #pragma once
-#include "RacingToHell.h"
 
-namespace render {
+#include "platform.h"
+
+struct VideoBuffer;
+struct GameState;
+struct Texture;
+struct Input;
+
+namespace Render {
 
 void circle(VideoBuffer* buffer, int x, int y, unsigned radius, uint32_t color);
 

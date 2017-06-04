@@ -49,7 +49,8 @@ void loadFont(GameMemory* memory, std::string fontFileName) {
 		abort("Couldn't initialize font library.");
 	}
 
-	error = FT_New_Face(fontLibrary, "./res/font/arial.ttf", 0, &face);
+    File fontFile = readFile(fontFileName);
+	error = FT_New_Memory_Face(fontLibrary, (const FT_Byte *) fontFile.content, fontFile.size, 0, &face);
 	if (error) {
 		abort("Couldn't load font " + fontFileName + ".");
 	}

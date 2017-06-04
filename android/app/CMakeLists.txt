@@ -22,6 +22,8 @@ add_library( # Sets the name of the library.
              ../../src/RacingToHell.cpp
              ../../src/Math.cpp
              ../../src/Renderer.cpp
+             ../../src/Memory.cpp
+             src/main/cpp/OpenGL.cpp
              src/main/cpp/android_RacingToHell.cpp )
 
 add_subdirectory(libs/freetype-2.8)

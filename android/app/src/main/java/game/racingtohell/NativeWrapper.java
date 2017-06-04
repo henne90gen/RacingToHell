@@ -10,8 +10,6 @@ public class NativeWrapper {
 
     public static native void init_asset_manager(AssetManager assetManager);
 
-    public static native void on_surface_created();
-
     public static native void on_surface_changed(int width, int height);
 
     public static native void on_draw_frame();

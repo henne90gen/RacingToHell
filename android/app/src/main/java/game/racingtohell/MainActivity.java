@@ -9,7 +9,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
 
+// OpenGL android code was taken from:
+// http://www.learnopengles.com/calling-opengl-from-android-using-the-ndk/
 public class MainActivity extends Activity {
+
     private GLSurfaceView glSurfaceView;
     private boolean rendererSet;
 

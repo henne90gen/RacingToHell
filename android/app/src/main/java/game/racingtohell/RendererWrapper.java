@@ -8,7 +8,6 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class RendererWrapper implements GLSurfaceView.Renderer {
 
-
     private final Context context;
 
     public RendererWrapper(Context context) {
@@ -18,7 +17,6 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         NativeWrapper.init_asset_manager(context.getAssets());
-        NativeWrapper.on_surface_created();
     }
 
     @Override

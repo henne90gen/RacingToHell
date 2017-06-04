@@ -1,5 +1,5 @@
 ifeq ($(OS), Windows_NT)
-	PLATFORM_FILE := win32_RacingToHell.cpp
+	PLATFORM_FILE := win/win32_RacingToHell.cpp
 	PLATFORM_FLAGS := -mwindows
 	EXTENSION := .exe
 	CLEAN_CMD := del *$(EXTENSION)
@@ -8,26 +8,19 @@ ifeq ($(OS), Windows_NT)
 	GCC_LINKER := -lwinmm -luser32 -lgdi32 -lwinfreetype
 	GCC_INCLUDES := -I./include -L./
 else
-	PLATFORM_FILE := linux_RacingToHell.cpp
+	PLATFORM_FILE := linux/linux_RacingToHell.cpp
 	PLATFORM_FLAGS := -L/usr/X11R6/lib
 	EXTENSION := .out
 	CLEAN_CMD := rm -f *$(EXTENSION)
 	GCC_LINKER := -lfreetype -lX11 -lasound
-	GCC_INCLUDES := -I./include
+	GCC_INCLUDES := -Iinclude -Isrc
 endif
 
 GCC_FLAGS := -Wall -g -O0
 
-SOURCE_FILES := Memory.cpp Sound.cpp Math.cpp Renderer.cpp Font.cpp RacingToHell.cpp 
+SOURCE_FILES := src/Memory.cpp src/Sound.cpp src/Math.cpp src/Renderer.cpp src/Font.cpp src/RacingToHell.cpp
 
-all:
-	g++ $(GCC_FLAGS) $(GCC_INCLUDES) $(PLATFORM_FLAGS) $(PLATFORM_FILE) $(SOURCE_FILES) -o RacingToHell$(EXTENSION) $(GCC_LINKER)
+include linux/Makefile windows/Makefile
 
-optimized:
-	g++ -O3 $(PLATFORM_FLAGS) $(PLATFORM_FILE) $(SOURCE_FILES) -o RacingToHell$(EXTENSION) $(GCC_LINKER)
-
-cl:
-	cl $(CL_FLAGS) freetype28.lib $(SOURCE_FILES) $(PLATFORM_FILE) /Febin\RacingToHell$(EXTENSION) -link $(CL_LINKER)
-    
 clean:
 	$(CLEAN_CMD)

@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <cstdlib>
 #include "RacingToHell.h"
 
 #include "Helper.cpp"
@@ -51,7 +53,7 @@ void loadTextures(GameMemory *memory, GameState *gameState) {
 }
 
 void init(GameMemory *memory) {
-	srand(time(0));
+	std::srand(time(0));
 
 	memory->isInitialized = true;
 
@@ -76,9 +78,9 @@ void init(GameMemory *memory) {
 	Text::loadFont(memory, "./res/font/arial.ttf");
 
 	gameState->resources.AIShot = Sound::loadWAV(memory, "./res/sound/shotAI.wav");
-    gameState->resources.playerShot = Sound::loadWAV(memory, "./res/sound/shotPlayer.wav");
-    gameState->resources.Level1Music = Sound::loadWAV(memory, "./res/sound/music/level1.wav");
-    Sound::output(gameState, &gameState->resources.Level1Music, 0.1f, 0.1f, Sound::PLAY_LOOP);
+//    gameState->resources.playerShot = Sound::loadWAV(memory, "./res/sound/shotPlayer.wav");
+//    gameState->resources.Level1Music = Sound::loadWAV(memory, "./res/sound/music/level1.wav");
+//    Sound::output(gameState, &gameState->resources.Level1Music, 0.1f, 0.1f, Sound::PLAY_LOOP);
 
 	loadTextures(memory, gameState);
 

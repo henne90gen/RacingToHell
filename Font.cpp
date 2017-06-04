@@ -153,7 +153,7 @@ void renderCharacterAlpha(VideoBuffer *buffer, char c, int offsetX,
                 currentTexturePixel++;
                 *currentBufferPixel++ = (255 << 24) | characterColor;
             }
-            else if (textureValue < 255) {
+            else if (textureValue == 0) {
                 currentBufferPixel++;
                 currentTexturePixel++;
             }

@@ -82,6 +82,8 @@ void init(GameMemory *memory) {
 
 	gameState->resources.AIShot = Sound::loadWAV(memory, "./res/sound/shotAI.wav");
     gameState->resources.playerShot = Sound::loadWAV(memory, "./res/sound/shotPlayer.wav");
+    gameState->resources.Level1Music = Sound::loadWAV(memory, "./res/sound/music/level1.wav");
+    Sound::output(gameState, &gameState->resources.Level1Music, 0.1f, 0.1f, Sound::PLAY_LOOP);
 
 	loadTextures(memory, gameState);
 
@@ -94,74 +96,6 @@ GameState* getGameState(GameMemory* memory) {
     }
 
     return (GameState *)(memory->permanent);
-}
-
-void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer) {
-    GameState *gameState = getGameState(memory);
-
-    float *realChannel0 = (float *)reserverTemporaryMemory(memory, sizeof(float) * soundBuffer->sampleCount);
-    float *realChannel1 = (float *)reserverTemporaryMemory(memory, sizeof(float) * soundBuffer->sampleCount);
-
-    {
-        float *dest0 = realChannel0;
-        float *dest1 = realChannel1;
-
-        for (int sampleIndex = 0; sampleIndex < soundBuffer->sampleCount; ++sampleIndex)
-        {
-            *dest0++ = 0.0f;
-            *dest1++ = 0.0f;
-        }
-    }
-
-    for (int soundIndex = 0; soundIndex <= gameState->lastPlayingSound; ++soundIndex)
-    {
-        PlayingSound *currentSound = gameState->playingSounds + soundIndex;
-
-        float *dest0 = realChannel0;
-        float *dest1 = realChannel1;
-
-        float volume0 = currentSound->volume[0];
-        float volume1 = currentSound->volume[1];
-
-        uint32_t samplesToMix = soundBuffer->sampleCount;
-        int32_t samplesRemainingInInput = currentSound->loadedSound.sampleCount - currentSound->samplesPlayed;
-
-        if (samplesToMix > samplesRemainingInInput)
-        {
-            samplesToMix = samplesRemainingInInput;
-        }
-
-        for (int sampleIndex = currentSound->samplesPlayed; sampleIndex < currentSound->samplesPlayed + samplesToMix; ++sampleIndex)
-        {
-            float sampleValue = currentSound->loadedSound.samples[0][sampleIndex];
-
-            *dest0++ += volume0 * sampleValue;
-            *dest1++ += volume1 * sampleValue;
-        }
-
-        currentSound->samplesPlayed += samplesToMix;
-        if (currentSound->samplesPlayed >= currentSound->loadedSound.sampleCount)
-        {
-            *currentSound = gameState->playingSounds[gameState->lastPlayingSound];
-            --gameState->lastPlayingSound;
-
-            --soundIndex;
-        } 
-    }
-
-    {
-        float *source0 = realChannel0;
-        float *source1 = realChannel1;
-
-        int16_t *sampleOut = soundBuffer->samples;
-        for (int sampleIndex = 0; sampleIndex < soundBuffer->sampleCount; ++sampleIndex)
-        {
-            *sampleOut++ = (int16_t)(*source0++ + 0.5f);
-            *sampleOut++ = (int16_t)(*source1++ + 0.5f);
-        }
-    }
-
-    freeTemporaryMemory(memory);
 }
 
 int getRoadSpeed(GameState *gameState) {
@@ -208,11 +142,11 @@ void spawnBullet(GameState *gameState, Math::Vector2f position,
 
     if (playerBullet)
     {
-        Sound::output(gameState, &gameState->resources.playerShot, 0.1f, 0.1f);
+        Sound::output(gameState, &gameState->resources.playerShot, 0.1f, 0.1f, Sound::PLAY_ONCE);
     }
     else
     {
-        Sound::output(gameState, &gameState->resources.AIShot, 0.1f, 0.1f);
+        Sound::output(gameState, &gameState->resources.AIShot, 0.1f, 0.1f, Sound::PLAY_ONCE);
     }
 }
 
@@ -422,4 +356,6 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	updateAndRenderBullets(buffer, gameState);
 
 	Render::debugInformation(buffer, input, gameState);
+
+    Font::renderCharacterAlpha(buffer, 'a', 10, 10, 255, 0, 0, 20);
 }

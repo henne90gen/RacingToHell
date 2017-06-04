@@ -20,6 +20,9 @@ struct Character {
  */
 void renderText(VideoBuffer* buffer, std::string text, int x, int y, unsigned fontSize);
 
+void renderCharacterAlpha(VideoBuffer *buffer, char c, int offsetX,
+    int offsetY, uint8_t r, uint8_t g, uint8_t b, unsigned fontSize);
+
 int* getAvailableFontSizes(int* amount);
 
 void loadFont(GameMemory* memory, std::string fontFileName);

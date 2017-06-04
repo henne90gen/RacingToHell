@@ -3,6 +3,7 @@
 #include "platform.h"
 
 struct GameState;
+struct SoundOutputBuffer;
 
 namespace Sound
 {
@@ -11,6 +12,17 @@ namespace Sound
         uint32_t sampleCount;
         uint32_t channelCount;
         int16_t *samples[2];
+    };
+
+    enum Mode { PLAY_ONCE, PLAY_LOOP };
+
+    struct PlayingSound
+    {
+        float volume[2];
+        uint32_t samplesPlayed;
+        Mode mode;
+
+        LoadedSound loadedSound;
     };
 
 #pragma pack(push)
@@ -53,5 +65,6 @@ namespace Sound
     };
 
     LoadedSound loadWAV(GameMemory *memory, std::string path);
-    void output(GameState *state, LoadedSound *loadedSound, float volumeLeft, float volumeRight);
+    void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer);
+    void output(GameState *state, LoadedSound *loadedSound, float volumeLeft, float volumeRight, Mode mode);
 }

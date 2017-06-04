@@ -387,14 +387,14 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 
     GameMemory memory;
     memory.temporaryMemorySize = 10 * 1024 * 1024;
-    memory.permanentMemorySize = 100 * 1024 * 1024;
+    memory.permanentMemorySize = 300 * 1024 * 1024;
     memory.temporary = (char *)VirtualAlloc(0, memory.permanentMemorySize + memory.temporaryMemorySize, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
     memory.permanent = (char *)memory.temporary + memory.temporaryMemorySize;
 
 	HWND windowHandle = openWindow(instance, show, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     SoundOutput soundOutput;
-    soundOutput.safetyBytes = (soundOutput.samplesPerSecond * soundOutput.bytesPerSample) * targetFrameTime * 2;
+    soundOutput.safetyBytes = (soundOutput.samplesPerSecond * soundOutput.bytesPerSample) * targetFrameTime;
 
     initDSound(windowHandle, soundOutput.samplesPerSecond, soundOutput.secondaryBufferSize);
     clearSoundBuffer(&soundOutput);
@@ -524,7 +524,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
             soundBuffer.sampleCount = bytesToWrite / soundOutput.bytesPerSample;
             soundBuffer.samples = samples;
 
-            getSoundSamples(&memory, &soundBuffer);
+            Sound::getSoundSamples(&memory, &soundBuffer);
 
             /*debug_marker *marker = &debugTimeMarker[debugMarkerIndex];
             marker->outputPlayCursor = playCursor;

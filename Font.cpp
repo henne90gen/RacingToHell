@@ -115,4 +115,92 @@ void renderText(VideoBuffer* buffer, std::string text, int posX, int posY,
 	}
 }
 
+void renderCharacterAlpha(VideoBuffer *buffer, char c, int offsetX,
+    int offsetY, uint8_t r, uint8_t g, uint8_t b, unsigned fontSize) {
+    uint32_t characterColor = (r << 16) | (g << 8) | (b);
+
+    int fontSizeIndex = getFontSizeIndex(fontSize);
+    Character character = getCharacter(c, fontSizeIndex);
+   
+    int32_t *currentBufferPixel = (int32_t *)buffer->content
+        + offsetY * (int)buffer->width + offsetX;
+    uint8_t *currentTexturePixel = (uint8_t *)character.bitmap;
+
+    int32_t nextLine = buffer->width - character.width;
+
+    for (int y = 0; y < (int)character.height; ++y) {
+        if (offsetY + y < 0) {
+            currentBufferPixel += buffer->width;
+            currentTexturePixel += character.width;
+            continue;
+        }
+        else if (offsetY + y >= buffer->height) {
+            break;
+        }
+
+        for (int x = 0; x < (int)character.width; ++x) {
+            if (offsetX + x < 0 || offsetX + x >= buffer->width) {
+                currentBufferPixel++;
+                currentTexturePixel++;
+                continue;
+            }
+
+            uint8_t *currentBufferPixel8 = (uint8_t *)currentBufferPixel;
+
+            uint8_t textureValue = *currentTexturePixel++;
+
+            if (textureValue == 255) {
+                currentTexturePixel++;
+                *currentBufferPixel++ = (255 << 24) | characterColor;
+            }
+            else if (textureValue < 255) {
+                currentBufferPixel++;
+                currentTexturePixel++;
+            }
+            else {
+                uint8_t bufferA = *currentBufferPixel8;
+
+                float textureAlpha = textureValue / 255.0f;
+                float bufferAlpha = bufferA / 255.0f;
+
+                float resultAlpha = textureAlpha
+                    + bufferAlpha * (1.0f - textureAlpha);
+
+                if (resultAlpha == 0.0f) {
+                    *currentBufferPixel = 0;
+                }
+                else {
+                    float newB = ((bufferAlpha * (1.0f - textureAlpha)
+                        * *currentBufferPixel8) + (textureAlpha * b))
+                        / resultAlpha;
+                    *currentBufferPixel8++ = (uint8_t)newB;
+
+                    float newG = ((bufferAlpha * (1.0f - textureAlpha)
+                        * *currentBufferPixel8) + (textureAlpha * g))
+                        / resultAlpha;
+                    *currentBufferPixel8++ = (uint8_t)newG;
+
+                    float newR = ((bufferAlpha * (1.0f - textureAlpha)
+                        * *currentBufferPixel8) + (textureAlpha * r))
+                        / resultAlpha;
+                    *currentBufferPixel8++ = (uint8_t)newR;
+
+                    float newA = resultAlpha * 255.0f;
+                    *currentBufferPixel8++ = (uint8_t)newA;
+                }
+
+                currentBufferPixel++;
+                currentTexturePixel++;
+            }
+        }
+
+        currentBufferPixel += nextLine;
+    }
+}
+
+void renderTextAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
+    int offsetY) {
+    
+}
+
 }

@@ -105,7 +105,7 @@ namespace Sound {
 	    return result;
     }
 
-    void output(GameState *state, Sound::LoadedSound *loadedSound, float volumeLeft, float volumeRight)
+    void output(GameState *state, Sound::LoadedSound *loadedSound, float volumeLeft, float volumeRight, Mode mode)
     {
         if (state->lastPlayingSound + 1 >= sizeof(state->playingSounds) / sizeof(state->playingSounds[0]))
         {
@@ -118,5 +118,76 @@ namespace Sound {
         state->playingSounds[state->lastPlayingSound].volume[1] = volumeLeft;
         state->playingSounds[state->lastPlayingSound].loadedSound = *loadedSound;
         state->playingSounds[state->lastPlayingSound].samplesPlayed = 0;
+        state->playingSounds[state->lastPlayingSound].mode = mode;
+    }
+
+    void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer) {
+        GameState *gameState = getGameState(memory);
+
+        float *realChannel0 = (float *)reserverTemporaryMemory(memory, sizeof(float) * soundBuffer->sampleCount);
+        float *realChannel1 = (float *)reserverTemporaryMemory(memory, sizeof(float) * soundBuffer->sampleCount);
+
+        {
+            float *dest0 = realChannel0;
+            float *dest1 = realChannel1;
+
+            for (int sampleIndex = 0; sampleIndex < soundBuffer->sampleCount; ++sampleIndex)
+            {
+                *dest0++ = 0.0f;
+                *dest1++ = 0.0f;
+            }
+        }
+
+        for (int soundIndex = 0; soundIndex <= gameState->lastPlayingSound; ++soundIndex)
+        {
+            Sound::PlayingSound *currentSound = gameState->playingSounds + soundIndex;
+
+            float *dest0 = realChannel0;
+            float *dest1 = realChannel1;
+
+            float volume0 = currentSound->volume[0];
+            float volume1 = currentSound->volume[1];
+
+            uint32_t samplesToMix = soundBuffer->sampleCount;
+            int32_t samplesRemainingInInput = currentSound->loadedSound.sampleCount - currentSound->samplesPlayed;
+
+            if (currentSound->mode == PLAY_ONCE && samplesToMix > samplesRemainingInInput)
+            {
+                samplesToMix = samplesRemainingInInput;
+            }
+
+            for (int sampleIndex = currentSound->samplesPlayed; sampleIndex < currentSound->samplesPlayed + samplesToMix; ++sampleIndex)
+            {
+                float sampleValue = currentSound->loadedSound.samples[0][sampleIndex % currentSound->loadedSound.sampleCount];
+
+                *dest0++ += volume0 * sampleValue;
+                *dest1++ += volume1 * sampleValue;
+            }
+
+            currentSound->samplesPlayed += samplesToMix;
+
+
+            if (currentSound->mode == PLAY_ONCE && currentSound->samplesPlayed >= currentSound->loadedSound.sampleCount)
+            {
+                *currentSound = gameState->playingSounds[gameState->lastPlayingSound];
+                --gameState->lastPlayingSound;
+
+                --soundIndex;
+            }
+        }
+
+        {
+            float *source0 = realChannel0;
+            float *source1 = realChannel1;
+
+            int16_t *sampleOut = soundBuffer->samples;
+            for (int sampleIndex = 0; sampleIndex < soundBuffer->sampleCount; ++sampleIndex)
+            {
+                *sampleOut++ = (int16_t)(*source0++ + 0.5f);
+                *sampleOut++ = (int16_t)(*source1++ + 0.5f);
+            }
+        }
+
+        freeTemporaryMemory(memory);
     }
 }

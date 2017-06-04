@@ -57,14 +57,6 @@ struct SoundOutputBuffer {
 	int samplesPerSecond;
 };
 
-struct PlayingSound
-{
-    float volume[2];
-    uint32_t samplesPlayed;
-
-    Sound::LoadedSound loadedSound;
-};
-
 struct Resources {
     Texture roadTextures[4];
 
@@ -75,10 +67,12 @@ struct Resources {
 
     Sound::LoadedSound AIShot;
     Sound::LoadedSound playerShot;
+
+    Sound::LoadedSound Level1Music;
 };
 
 struct GameState {
-    PlayingSound playingSounds[256];
+    Sound::PlayingSound playingSounds[256];
     int lastPlayingSound = -1;
 
 	uint32_t frameCounter;
@@ -123,7 +117,7 @@ struct BitmapHeader {
 
 Texture readBmpIntoMemory(File file, GameMemory *memory);
 
-void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBUffer);
+GameState* getGameState(GameMemory* memory);
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory);
 
 void abort(std::string message);

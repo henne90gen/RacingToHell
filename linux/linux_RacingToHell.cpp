@@ -229,7 +229,9 @@ void correctTiming(timespec startTime, bool consoleOutput) {
 		return;
 	}
 	long nanoSecondsElapsed = endTime.tv_nsec - startTime.tv_nsec;
-	const float targetFrameTime = 1000000000.0f / 60.0f;
+
+	// INFO OpenGL runs at exactly 60 FPS, no sleep necessary
+	//	const float targetFrameTime = 1000000000.0f / 60.0f;
 //	if (nanoSecondsElapsed < targetFrameTime) {
 //		timespec sleepTime = { };
 //		sleepTime.tv_sec = (targetFrameTime - nanoSecondsElapsed)
@@ -237,12 +239,11 @@ void correctTiming(timespec startTime, bool consoleOutput) {
 //		sleepTime.tv_nsec = targetFrameTime - nanoSecondsElapsed;
 ////		nanosleep(&sleepTime, NULL);
 //	}
-
-	clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
-	if (endTime.tv_nsec < startTime.tv_nsec) {
-		return;
-	}
-	nanoSecondsElapsed = endTime.tv_nsec - startTime.tv_nsec;
+//	clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
+//	if (endTime.tv_nsec < startTime.tv_nsec) {
+//		return;
+//	}
+//	nanoSecondsElapsed = endTime.tv_nsec - startTime.tv_nsec;
 
 	std::stringstream ss;
 	ss << WINDOW_TITLE << ": "
@@ -464,12 +465,6 @@ int main() {
 		swapBuffers(&graphics.videoBuffer);
 
 		glXSwapBuffers(graphics.display, graphics.window);
-//		XPutImage(graphics.display, graphics.pixmap, graphics.gc,
-//				graphics.image, 0, 0, 0, 0, graphics.videoBuffer.width,
-//				graphics.videoBuffer.height);
-//		XCopyArea(graphics.display, graphics.pixmap, graphics.window,
-//				graphics.gc, 0, 0, graphics.videoBuffer.width,
-//				graphics.videoBuffer.height, 0, 0);
 		XSync(graphics.display, false);
 
 		Input *tmp = oldInput;

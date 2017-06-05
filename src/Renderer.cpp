@@ -42,8 +42,8 @@ void explosion(VideoBuffer *buffer, GameState *gameState, int x, int y,
 			*explosionIndex = 0;
 		}
 	}
-	textureAlpha(buffer,
-			&gameState->resources.explosion[*explosionIndex], x, y);
+	textureAlpha(buffer, &gameState->resources.explosion[*explosionIndex], x,
+			y);
 }
 
 void debugInformation(VideoBuffer *buffer, Input *input, GameState *gameState) {
@@ -139,12 +139,12 @@ void textureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 			currentBufferPixel += buffer->width;
 			currentTexturePixel += texture->width;
 			continue;
-		} else if (offsetY + y >= buffer->height) {
+		} else if (offsetY + y >= (int) buffer->height) {
 			break;
 		}
 
 		for (int x = 0; x < (int) texture->width; ++x) {
-			if (offsetX + x < 0 || offsetX + x >= buffer->width) {
+			if (offsetX + x < 0 || offsetX + x >= (int) buffer->width) {
 				currentBufferPixel++;
 				currentTexturePixel++;
 				continue;

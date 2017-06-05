@@ -29,7 +29,6 @@ setTexturePixels(GLuint texture_object_id, VideoBuffer *videoBuffer) {
     glGenerateMipmap(GL_TEXTURE_2D);
 
     glBindTexture(GL_TEXTURE_2D, 0);
-
 }
 
 GLuint compileShader(const GLenum type, const GLchar *source, const GLint length) {

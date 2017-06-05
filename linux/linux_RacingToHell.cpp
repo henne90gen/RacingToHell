@@ -147,8 +147,8 @@ GraphicsData initGraphicsData() {
 	Atom wmDeleteWindow = XInternAtom(graphics.display, "WM_DELETE_WINDOW", 0);
 	XSetWMProtocols(graphics.display, graphics.window, &wmDeleteWindow, 1);
 
-	graphics.image = XCreateImage(graphics.display,
-			XDefaultVisual(graphics.display, screen), depth, ZPixmap, 0,
+	Visual *visual = XDefaultVisual(graphics.display, screen);
+	graphics.image = XCreateImage(graphics.display, visual, depth, ZPixmap, 0,
 			(char *) graphics.videoBuffer.content, graphics.videoBuffer.width,
 			graphics.videoBuffer.height, 32, 0);
 	graphics.pixmap = XCreatePixmap(graphics.display, graphics.window,

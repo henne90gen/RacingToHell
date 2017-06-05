@@ -9,10 +9,29 @@
 #include <ctime>
 #include <string>
 #include <sstream>
+#include <vector>
+#include <GL/glew.h>
+#include <GL/gl.h>
+#include <GL/glx.h>
+#include <GL/glu.h>
 #include <alsa/asoundlib.h>
 
 #include "platform.h"
 #include "RacingToHell.h"
+
+#define BUFFER_OFFSET(i) ((void*)(i))
+
+// position X, Y, texture S, T
+static const float rect[] = { -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
+		1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f };
+
+static GLuint texture;
+static GLuint buffer;
+static GLuint program;
+
+static GLint a_position_location;
+static GLint a_texture_coordinates_location;
+static GLint u_texture_unit_location;
 
 #define KeyW 25
 #define KeyA 38
@@ -28,9 +47,11 @@
 struct GraphicsData {
 	Display* display;
 	Window window;
-	GC gc;
-	Pixmap pixmap;
-	XImage* image;
+	XVisualInfo *vi;
+	Colormap cmap;
+	XSetWindowAttributes swa;
+	GLXContext glc;
+	XWindowAttributes gwa;
 	VideoBuffer videoBuffer;
 };
 
@@ -40,9 +61,11 @@ struct AudioData {
 	snd_pcm_hw_params_t *hwparams;
 };
 
-long int EVENTS_MASK = KeyPressMask | KeyReleaseMask | ButtonPressMask
+long int EVENT_MASK = KeyPressMask | KeyReleaseMask | ButtonPressMask
 		| ButtonReleaseMask | PointerMotionMask;
 static bool isRunning;
+
+GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
 
 static GraphicsData graphics;
 static AudioData audio;
@@ -72,6 +95,8 @@ AudioData initAudioData() {
 	return audio;
 }
 
+void setupOpenGL(VideoBuffer *videoBuffer);
+
 GraphicsData initGraphicsData() {
 	GraphicsData graphics = { };
 	graphics.display = XOpenDisplay(NULL);
@@ -87,16 +112,31 @@ GraphicsData initGraphicsData() {
 			videoBuffer.bytesPerPixel * videoBuffer.width * videoBuffer.height);
 	graphics.videoBuffer = videoBuffer;
 
-	int screen = DefaultScreen(graphics.display);
-	int depth = DefaultDepth(graphics.display, screen);
-	int x = 0;
-	int y = 0;
-	int border_width = 0;
-	graphics.window = XCreateSimpleWindow(graphics.display,
-			RootWindow(graphics.display, screen), x, y, videoBuffer.width,
-			videoBuffer.height, border_width,
-			BlackPixel(graphics.display, screen),
-			WhitePixel(graphics.display, screen));
+	Window root = DefaultRootWindow(graphics.display);
+	graphics.vi = glXChooseVisual(graphics.display, 0, att);
+	if (!graphics.vi) {
+		abort("No appropriate visual found.");
+	}
+	graphics.cmap = XCreateColormap(graphics.display, root, graphics.vi->visual,
+	AllocNone);
+
+	graphics.swa.colormap = graphics.cmap;
+	graphics.swa.event_mask = EVENT_MASK;
+	graphics.window = XCreateWindow(graphics.display, root, 0, 0, 600, 800, 0,
+			graphics.vi->depth, InputOutput, graphics.vi->visual,
+			CWColormap | CWEventMask, &graphics.swa);
+
+	graphics.glc = glXCreateContext(graphics.display, graphics.vi, NULL,
+	GL_TRUE);
+	glXMakeCurrent(graphics.display, graphics.window, graphics.glc);
+	glEnable(GL_DEPTH_TEST);
+
+	XGetWindowAttributes(graphics.display, graphics.window, &graphics.gwa);
+	glViewport(0, 0, graphics.gwa.width, graphics.gwa.height);
+
+	if (glewInit() != GLEW_OK) {
+		abort("Failed to initialize GLEW.");
+	}
 
 	// set window title
 	XStoreName(graphics.display, graphics.window, WINDOW_TITLE);
@@ -131,14 +171,20 @@ GraphicsData initGraphicsData() {
 				(uint32_t*) ((uint8_t*) texture.content
 						+ y * (texture.width * 4));
 		for (unsigned x = 0; x < texture.width; ++x) {
-			*dst++ = *src++;
+			uint32_t color = *src++;
+			uint8_t alpha = (color & 0xff000000) >> 24;
+			uint8_t red = (color & 0x000000ff);
+			uint8_t green = (color & 0x0000ff00) >> 8;
+			uint8_t blue = (color & 0x00ff0000) >> 16;
+			color = (alpha << 24) + (red << 16) + (green << 8) + blue;
+			*dst++ = color;
 		}
 	}
 	XChangeProperty(graphics.display, graphics.window, iconAtom, XA_CARDINAL,
 			32, PropModeReplace, (unsigned char *) propdata, propsize);
 
 	// subscribe to events
-	XSelectInput(graphics.display, graphics.window, EVENTS_MASK);
+	XSelectInput(graphics.display, graphics.window, EVENT_MASK);
 
 	// change cursor
 	XDefineCursor(graphics.display, graphics.window,
@@ -147,16 +193,11 @@ GraphicsData initGraphicsData() {
 	Atom wmDeleteWindow = XInternAtom(graphics.display, "WM_DELETE_WINDOW", 0);
 	XSetWMProtocols(graphics.display, graphics.window, &wmDeleteWindow, 1);
 
-	Visual *visual = XDefaultVisual(graphics.display, screen);
-	graphics.image = XCreateImage(graphics.display, visual, depth, ZPixmap, 0,
-			(char *) graphics.videoBuffer.content, graphics.videoBuffer.width,
-			graphics.videoBuffer.height, 32, 0);
-	graphics.pixmap = XCreatePixmap(graphics.display, graphics.window,
-			graphics.videoBuffer.width, graphics.videoBuffer.height, depth);
-	graphics.gc = XDefaultGC(graphics.display, screen);
-
 	XMapWindow(graphics.display, graphics.window);
 	XFlush(graphics.display);
+
+	setupOpenGL(&videoBuffer);
+
 	return graphics;
 }
 
@@ -286,6 +327,156 @@ void correctTiming(timespec startTime, bool consoleOutput) {
 	}
 }
 
+void setTexturePixels(GLuint texture_object_id, VideoBuffer *videoBuffer) {
+	glBindTexture(GL_TEXTURE_2D, texture_object_id);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+	GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, videoBuffer->width,
+			videoBuffer->height, 0, GL_RGBA,
+			GL_UNSIGNED_BYTE, videoBuffer->content);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+GLuint loadTexture(VideoBuffer *videoBuffer) {
+	GLuint texture_object_id;
+	glGenTextures(1, &texture_object_id);
+
+	setTexturePixels(texture_object_id, videoBuffer);
+	return texture_object_id;
+}
+
+GLuint compileShader(const GLenum type, const GLchar *source,
+		const GLint length) {
+	GLuint shader_object_id = glCreateShader(type);
+	GLint compile_status;
+
+	glShaderSource(shader_object_id, 1, (const GLchar **) &source, &length);
+	glCompileShader(shader_object_id);
+	glGetShaderiv(shader_object_id, GL_COMPILE_STATUS, &compile_status);
+
+	if (compile_status == GL_FALSE) {
+		int infoLogLength;
+		glGetShaderiv(shader_object_id, GL_INFO_LOG_LENGTH, &infoLogLength);
+		if (infoLogLength > 0) {
+			std::vector<char> VertexShaderErrorMessage(infoLogLength + 1);
+			glGetShaderInfoLog(shader_object_id, infoLogLength, NULL,
+					&VertexShaderErrorMessage[0]);
+			printf("%s\n", &VertexShaderErrorMessage[0]);
+		}
+		std::string message = "Failed to compile shader. "
+				+ std::to_string(type) + "\n" + std::string(source);
+		abort(message);
+	}
+
+	return shader_object_id;
+}
+
+GLuint linkProgram(const GLuint vertex_shader, const GLuint fragment_shader) {
+	GLuint program_object_id = glCreateProgram();
+	GLint link_status;
+
+	glAttachShader(program_object_id, vertex_shader);
+	glAttachShader(program_object_id, fragment_shader);
+	glLinkProgram(program_object_id);
+	glGetProgramiv(program_object_id, GL_LINK_STATUS, &link_status);
+
+	if (link_status == GL_FALSE) {
+		abort("Couldn't link shader program.");
+	}
+
+	return program_object_id;
+}
+
+GLuint buildProgram() {
+
+	// FIXME don't hard code the shaders
+	const GLchar *vertex_shader_source =
+			"attribute vec4 a_Position;attribute vec2 a_TextureCoordinates;varying vec2 v_TextureCoordinates;void main() {v_TextureCoordinates = a_TextureCoordinates;gl_Position = a_Position;}";
+	const GLint vertex_shader_source_length = 179;
+	const GLchar *fragment_shader_source =
+			"uniform sampler2D u_TextureUnit;varying vec2 v_TextureCoordinates;void main() {gl_FragColor = texture2D(u_TextureUnit, v_TextureCoordinates);}";
+	const GLint fragment_shader_source_length = 166;
+
+	GLuint vertex_shader = compileShader(GL_VERTEX_SHADER, vertex_shader_source,
+			vertex_shader_source_length);
+	GLuint fragment_shader = compileShader(GL_FRAGMENT_SHADER,
+			fragment_shader_source, fragment_shader_source_length);
+	return linkProgram(vertex_shader, fragment_shader);
+}
+
+GLuint buildProgram(const GLchar *vertex_shader_source,
+		const GLint vertex_shader_source_length,
+		const GLchar *fragment_shader_source,
+		const GLint fragment_shader_source_length) {
+
+	GLuint vertex_shader = compileShader(
+	GL_VERTEX_SHADER, vertex_shader_source, vertex_shader_source_length);
+	GLuint fragment_shader = compileShader(
+	GL_FRAGMENT_SHADER, fragment_shader_source, fragment_shader_source_length);
+	return linkProgram(vertex_shader, fragment_shader);
+}
+
+GLuint buildProgramFromAssets(const char *vertex_shader_path,
+		const char *fragment_shader_path) {
+	const File vertex_shader_source = readFile(vertex_shader_path);
+	const File fragment_shader_source = readFile(fragment_shader_path);
+	const GLuint program_object_id = buildProgram(vertex_shader_source.content,
+			vertex_shader_source.size, fragment_shader_source.content,
+			fragment_shader_source.size);
+
+	return program_object_id;
+}
+
+GLuint createVertexBufferObject(const GLsizeiptr size, const GLvoid *data,
+		const GLenum usage) {
+	GLuint vbo_object;
+	glGenBuffers(1, &vbo_object);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_object);
+	glBufferData(GL_ARRAY_BUFFER, size, data, usage);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	return vbo_object;
+}
+
+void setupOpenGL(VideoBuffer *videoBuffer) {
+	texture = loadTexture(videoBuffer);
+	buffer = createVertexBufferObject(sizeof(rect), rect, GL_STATIC_DRAW);
+
+	program = buildProgram();
+
+	a_position_location = glGetAttribLocation(program, "a_Position");
+	a_texture_coordinates_location = glGetAttribLocation(program,
+			"a_TextureCoordinates");
+	u_texture_unit_location = glGetUniformLocation(program, "u_TextureUnit");
+}
+
+void swapBuffers(VideoBuffer *videoBuffer) {
+	setTexturePixels(texture, videoBuffer);
+
+	glUseProgram(program);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glUniform1i(u_texture_unit_location, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glVertexAttribPointer(a_position_location, 2, GL_FLOAT, GL_FALSE,
+			4 * sizeof(GL_FLOAT), BUFFER_OFFSET(0));
+	glVertexAttribPointer(a_texture_coordinates_location, 2, GL_FLOAT, GL_FALSE,
+			4 * sizeof(GL_FLOAT), BUFFER_OFFSET(2 * sizeof(GL_FLOAT)));
+	glEnableVertexAttribArray(a_position_location);
+	glEnableVertexAttribArray(a_texture_coordinates_location);
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
 int main() {
 	GameMemory memory;
 	memory.temporaryMemorySize = 10 * 1024 * 1024;
@@ -335,12 +526,18 @@ int main() {
 		updateAndRender(&graphics.videoBuffer, newInput, &memory);
 
 		// swapping buffer
-		XPutImage(graphics.display, graphics.pixmap, graphics.gc,
-				graphics.image, 0, 0, 0, 0, graphics.videoBuffer.width,
-				graphics.videoBuffer.height);
-		XCopyArea(graphics.display, graphics.pixmap, graphics.window,
-				graphics.gc, 0, 0, graphics.videoBuffer.width,
-				graphics.videoBuffer.height, 0, 0);
+		glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		swapBuffers(&graphics.videoBuffer);
+
+		glXSwapBuffers(graphics.display, graphics.window);
+//		XPutImage(graphics.display, graphics.pixmap, graphics.gc,
+//				graphics.image, 0, 0, 0, 0, graphics.videoBuffer.width,
+//				graphics.videoBuffer.height);
+//		XCopyArea(graphics.display, graphics.pixmap, graphics.window,
+//				graphics.gc, 0, 0, graphics.videoBuffer.width,
+//				graphics.videoBuffer.height, 0, 0);
 		XSync(graphics.display, false);
 
 		Input *tmp = oldInput;

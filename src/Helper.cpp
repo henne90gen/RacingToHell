@@ -1,4 +1,3 @@
-
 void importPixelData(void* src, void* dest, unsigned srcWidth,
 		unsigned srcHeight, int offsetX, int offsetY, unsigned destWidth,
 		unsigned destHeight) {
@@ -9,11 +8,11 @@ void importPixelData(void* src, void* dest, unsigned srcWidth,
 					+ offsetX;
 			int destIndex = y * destWidth + x;
 			uint32_t color = ((uint32_t*) (src))[srcIndex];
-			uint8_t r = (color & 0xff000000) >> 24;
-			uint8_t g = (color & 0x00ff0000) >> 16;
-			uint8_t b = (color & 0x0000ff00) >> 8;
-			uint8_t a = color & 0x000000ff;
-			color = (a << 24) + (r << 16) + (g << 8) + b;
+			uint8_t red = (color & 0xff000000) >> 24;
+			uint8_t green = (color & 0x00ff0000) >> 16;
+			uint8_t blue = (color & 0x0000ff00) >> 8;
+			uint8_t alpha = color & 0x000000ff;
+			color = (alpha << 24) + (blue << 16) + (green << 8) + red;
 			((uint32_t*) (dest))[destIndex] = color;
 		}
 	}

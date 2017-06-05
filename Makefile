@@ -12,7 +12,7 @@ else
 	PLATFORM_FLAGS := -L/usr/X11R6/lib
 	EXTENSION := .out
 	CLEAN_CMD := rm -f *$(EXTENSION)
-	GCC_LINKER := -lfreetype -lX11 -lasound
+	GCC_LINKER := -lfreetype -lX11 -lasound -lGL -lGLU -lGLEW
 	GCC_INCLUDES := -Iinclude -Isrc
 endif
 

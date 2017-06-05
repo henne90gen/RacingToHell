@@ -83,7 +83,7 @@ struct GameState {
 
 	uint32_t trafficFrequency;
 	uint32_t bulletFrequency;
-	uint8_t bulletSpeed;
+	float bulletSpeed;
 
 	int32_t lastTrafficCarIndex = -1;
 	TrafficCar traffic[200];

@@ -4,95 +4,14 @@
 
 #include "Helper.cpp"
 
-void spawnTrafficCar(GameState* gameState);
-
-void loadTextures(GameMemory *memory, GameState *gameState) {
-	for (int i = 0; i < 4; i++) {
-		std::string filename = "./res/textures/roads/road" + std::to_string(i)
-				+ ".bmp";
-		File file = readFile(filename);
-		gameState->resources.roadTextures[i] = readBmpIntoMemory(file, memory);
-		freeFile(&file);
-	}
-	for (int i = 0; i < 4; i++) {
-		//printf("Texture %d: %d\n", i, roads[i].width * roads[i].height);
-	}
-
-	for (unsigned i = 0; i < NUM_PLAYER_TEXTURES; i++) {
-		std::string carSprites = "./res/textures/cars/player"
-				+ std::to_string(i) + ".bmp";
-		File carFile = readFile(carSprites);
-		gameState->resources.playerCarTextures[i] = readBmpIntoMemory(carFile,
-				memory);
-		freeFile(&carFile);
-	}
-
-	for (unsigned i = 0; i < NUM_TRAFFIC_TEXTURES; i++) {
-		std::string carSprites = "./res/textures/cars/traffic"
-				+ std::to_string(i) + ".bmp";
-		File carFile = readFile(carSprites);
-		gameState->resources.trafficCarTextures[i] = readBmpIntoMemory(carFile,
-				memory);
-		freeFile(&carFile);
-	}
-
-	File explosionFile = readFile("./res/textures/explosion.bmp");
-	for (int y = 0; y < 9; y++) {
-		for (int x = 0; x < 9; x++) {
-			int offsetX = x * 100;
-			int offsetY = y * 100;
-			int width = 100;
-			int height = 100;
-			bool output = y == 8 && x == 8;
-			gameState->resources.explosion[y * 9 + x] = readBmpIntoMemory(
-					explosionFile, memory, offsetX, offsetY, width, height,
-					output);
-		}
-	}
-	freeFile(&explosionFile);
-}
-
-void init(GameMemory *memory) {
-	std::srand(time(0));
-
-	memory->isInitialized = true;
-
-	GameState *gameState = (GameState *) reservePermanentMemory(memory,
-			sizeof(GameState));
-
-	*gameState = {};
-	gameState->player = {};
-	gameState->player.position.x = (float) (WINDOW_WIDTH / 2);
-	gameState->player.position.y = (float) (WINDOW_HEIGHT / 2);
-	gameState->player.speed = 10;
-
-	gameState->level = 0;
-	gameState->difficulty = 0;
-	gameState->roadPosition = 0;
-	gameState->frameCounter = 0;
-
-	gameState->trafficFrequency = 50;
-	gameState->bulletFrequency = 50;
-	gameState->bulletSpeed = 7;
-
-	Text::loadFont(memory, "./res/font/arial.ttf");
-
-	gameState->resources.AIShot = Sound::loadWAV(memory, "./res/sound/shotAI.wav");
-//    gameState->resources.playerShot = Sound::loadWAV(memory, "./res/sound/shotPlayer.wav");
-//    gameState->resources.Level1Music = Sound::loadWAV(memory, "./res/sound/music/level1.wav");
-//    Sound::output(gameState, &gameState->resources.Level1Music, 0.1f, 0.1f, Sound::PLAY_LOOP);
-
-	loadTextures(memory, gameState);
-
-	spawnTrafficCar(gameState);
-}
+#include "Init.cpp"
 
 GameState* getGameState(GameMemory* memory) {
-    if (!memory->isInitialized) {
-        init(memory);
-    }
+	if (!memory->isInitialized) {
+		init(memory);
+	}
 
-    return (GameState *)(memory->permanent);
+	return (GameState *) (memory->permanent);
 }
 
 int getRoadSpeed(GameState *gameState) {
@@ -117,6 +36,11 @@ void updateAndRenderRoad(VideoBuffer *buffer, GameState *gameState) {
 
 void spawnBullet(GameState *gameState, Math::Vector2f position,
 		Math::Vector2f velocity, bool playerBullet) {
+
+	velocity = velocity * (1.0 / Math::length(velocity));
+	// FIXME balance bullet speed
+	velocity = velocity * gameState->bulletSpeed;
+
 	Bullet bullet = { };
 	bullet.position = position;
 	bullet.velocity = velocity;
@@ -137,14 +61,13 @@ void spawnBullet(GameState *gameState, Math::Vector2f position,
 		}
 	}
 
-    if (playerBullet)
-    {
-        Sound::output(gameState, &gameState->resources.playerShot, 0.1f, 0.1f, Sound::PLAY_ONCE);
-    }
-    else
-    {
-        Sound::output(gameState, &gameState->resources.AIShot, 0.1f, 0.1f, Sound::PLAY_ONCE);
-    }
+	if (playerBullet) {
+		Sound::output(gameState, &gameState->resources.playerShot, 0.1f, 0.1f,
+				Sound::PLAY_ONCE);
+	} else {
+		Sound::output(gameState, &gameState->resources.AIShot, 0.1f, 0.1f,
+				Sound::PLAY_ONCE);
+	}
 }
 
 void updateAndRenderPlayer(VideoBuffer *buffer, Input *input,
@@ -176,8 +99,6 @@ void updateAndRenderPlayer(VideoBuffer *buffer, Input *input,
 	if (input->shootKeyClicked) {
 		Math::Vector2f velocity = input->mousePosition
 				- gameState->player.position;
-		velocity = velocity * (1.0 / Math::length(velocity));
-		velocity = velocity * 5;
 		spawnBullet(gameState, gameState->player.position, velocity, true);
 	}
 
@@ -268,17 +189,6 @@ bool updateAndRenderBullet(VideoBuffer* buffer, GameState* gameState,
 }
 
 void updateAndRenderBullets(VideoBuffer* buffer, GameState* gameState) {
-	if (gameState->frameCounter % gameState->bulletFrequency == 0) {
-		int carIndex = std::rand() % gameState->lastTrafficCarIndex;
-		TrafficCar car = gameState->traffic[carIndex];
-		Math::Vector2f position = { car.position.x, car.position.y };
-
-		Math::Vector2f velocity = gameState->player.position - car.position;
-		velocity = velocity * (1.0f / Math::length(velocity));
-		velocity = velocity * gameState->bulletSpeed;
-		spawnBullet(gameState, position, velocity, false);
-	}
-
 	for (int i = 0; i < gameState->lastAIBulletIndex + 1; i++) {
 		if (updateAndRenderBullet(buffer, gameState, gameState->aiBullets[i],
 				false)) {
@@ -305,7 +215,7 @@ void spawnTrafficCar(GameState* gameState) {
 	TrafficCar car = { };
 	car.carIndex = std::rand() % NUM_TRAFFIC_TEXTURES;
 	float x = (std::rand() % 4) * (WINDOW_WIDTH / 4) + WINDOW_WIDTH / 8;
-	car.position = { x, -80 };
+	car.position = {x, -80};
 	car.speed = 5;
 
 	unsigned arrSize = sizeof(gameState->traffic) / sizeof(TrafficCar);
@@ -320,9 +230,22 @@ void updateAndRenderTraffic(VideoBuffer* buffer, GameState *gameState) {
 		spawnTrafficCar(gameState);
 	}
 
+	if (gameState->frameCounter % gameState->bulletFrequency == 0
+			&& gameState->lastTrafficCarIndex >= 0) {
+		// FIXME maybe choose the car that is furthest away from the player
+		int carIndex = 0;
+		if (gameState->lastTrafficCarIndex > 0) {
+			carIndex = std::rand() % gameState->lastTrafficCarIndex;
+		}
+		TrafficCar car = gameState->traffic[carIndex];
+		Math::Vector2f position = { car.position.x, car.position.y };
+		Math::Vector2f velocity = gameState->player.position - car.position;
+		spawnBullet(gameState, position, velocity, false);
+	}
+
 	for (int i = 0; i < gameState->lastTrafficCarIndex + 1; i++) {
 		TrafficCar *car = &gameState->traffic[i];
-		car->position = { car->position.x, ((float) car->speed) + car->position.y };
+		car->position = {car->position.x, ((float) car->speed) + car->position.y};
 
 		Texture *texture =
 				&gameState->resources.trafficCarTextures[car->carIndex];
@@ -354,5 +277,5 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 
 	Render::debugInformation(buffer, input, gameState);
 
-    Text::renderCharacterAlpha(buffer, 'a', 10, 10, 255, 0, 0, 20);
+	Text::renderCharacterAlpha(buffer, 'a', 10, 10, 255, 0, 0, 20);
 }

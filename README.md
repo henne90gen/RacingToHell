@@ -3,6 +3,7 @@
 
 - render
     - ~~draw circle~~
+    - use OpenGL to display pixel buffer
 - font
     - save baseline
     - save kerning?

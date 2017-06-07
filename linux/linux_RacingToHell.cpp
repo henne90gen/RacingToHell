@@ -523,10 +523,20 @@ void swapVideoBuffers(VideoBuffer *videoBuffer) {
 
 void swapSoundBuffers(GameMemory *memory) {
 	snd_pcm_sframes_t delay, avail;
-	snd_pcm_avail_delay(audio.pcm_handle, &avail, &delay);
+	int error = snd_pcm_avail_delay(audio.pcm_handle, &avail, &delay);
+	if (error < 0) {
+		// audio will cut out eventually, if we don't recover
+		snd_pcm_recover(audio.pcm_handle, error, true);
+	}
+
 	int32_t samplesToFill = 0;
 	int32_t expectedSamplesPerFrame = ((float) audio.samples_per_second / 60.0f);
 	int32_t samplesInBuffer = audio.buffer_size_in_samples - avail;
+
+	if (samplesInBuffer < 0) {
+		abort("SamplesInBuffer below 0: " + samplesInBuffer);
+	}
+
 	int32_t sampleAdjustment = (samplesInBuffer - (audio.period_size * 4)) / 2;
 	if (audio.buffer_size_in_samples == avail) {
 		// NOTE: initial fill on startup and after an underrun
@@ -538,25 +548,33 @@ void swapSoundBuffers(GameMemory *memory) {
 		}
 	}
 
-	SoundOutputBuffer sound_buffer = { };
-	sound_buffer.samplesPerSecond = audio.samples_per_second;
-	sound_buffer.sampleCount = (((samplesToFill)+(7))&~(7));
-	sound_buffer.samples = audio.buffer;
+	if (samplesToFill < 0) {
+		abort("SamplesToFill below 0: " + samplesToFill);
+	}
 
-	Sound::getSoundSamples(memory, &sound_buffer);
+	SoundOutputBuffer soundBuffer = { };
+	soundBuffer.samplesPerSecond = audio.samples_per_second;
+	soundBuffer.sampleCount = (((samplesToFill) + (7)) & ~(7));
+	soundBuffer.samples = audio.buffer;
 
-#define SOUND_DEBUG 0
+	if (soundBuffer.sampleCount < 0) {
+		abort("SampleCount below 0: " + soundBuffer.sampleCount);
+	}
+
+	Sound::getSoundSamples(memory, &soundBuffer);
+
+#define SOUND_DEBUG 1
 #if SOUND_DEBUG
 	// NOTE: "delay" is the delay of the soundcard hardware
 	printf("samples in buffer before write: %ld delay in samples: %ld\n", (audio.buffer_size_in_samples - avail), delay);
 #endif
 	int32_t writtenSamples = snd_pcm_writei(audio.pcm_handle, audio.buffer,
-			sound_buffer.sampleCount);
+			soundBuffer.sampleCount);
 	if (writtenSamples < 0) {
-		writtenSamples = snd_pcm_recover(audio.pcm_handle, writtenSamples, 0);
-	} else if (writtenSamples != sound_buffer.sampleCount) {
+		writtenSamples = snd_pcm_recover(audio.pcm_handle, writtenSamples, true);
+	} else if (writtenSamples != soundBuffer.sampleCount) {
 		printf("only wrote %d of %d samples\n", writtenSamples,
-				sound_buffer.sampleCount);
+				soundBuffer.sampleCount);
 	}
 
 #if SOUND_DEBUG

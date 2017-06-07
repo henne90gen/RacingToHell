@@ -1,27 +1,133 @@
 #include "linux_RacingToHell.h"
 
 AudioData initAudioData() {
+	// FIXME make error messages more descriptive
+	printf("Loading audio context.\n");
+
 	AudioData audio = { };
 
-//	audio.stream = SND_PCM_STREAM_PLAYBACK;
-//	char *pcm_name;
-//	pcm_name = strdup("plughw:0,0");
-//	int error;
-//	if ((error = snd_pcm_open(&audio.pcm_handle, pcm_name, audio.stream, 0))
-//			< 0) {
-//		std::string errorMsg = "Error opening PCM device "
-//				+ std::string(pcm_name) + " "
-//				+ std::string(snd_strerror(error));
-//		abort(errorMsg);
-//	}
+	audio.samples_per_second = 48000;
+	audio.channels = 2;
+	audio.bytes_per_sample = sizeof(int16_t) * audio.channels;
+	audio.buffer_size_in_samples = audio.samples_per_second;
+	audio.buffer_size_in_bytes = audio.buffer_size_in_samples
+			* audio.bytes_per_sample;
+	audio.safety_samples =
+			(uint32_t) (((float) audio.samples_per_second / 60.0f) / 3.0f);
+
+	char *pcm_name;
+	pcm_name = strdup("default");
+	int error;
+	if ((error = snd_pcm_open(&audio.pcm_handle, pcm_name,
+			SND_PCM_STREAM_PLAYBACK, 0)) < 0) {
+		std::string errorMsg = "Error opening PCM device "
+				+ std::string(pcm_name) + " "
+				+ std::string(snd_strerror(error));
+		abort(errorMsg);
+	}
+
+	snd_pcm_hw_params_alloca(&audio.hw_params);
+
+	if ((error = snd_pcm_hw_params_any(audio.pcm_handle, audio.hw_params))
+			< 0) {
+		std::string errorMsg = "Cannot configure PCM device. "
+				+ std::string(snd_strerror(error));
+		abort(errorMsg);
+	}
+
+	if ((error = snd_pcm_hw_params_set_access(audio.pcm_handle, audio.hw_params,
+			SND_PCM_ACCESS_RW_INTERLEAVED)) < 0) {
+		std::string errorMsg = "Cannot set access type. "
+				+ std::string(snd_strerror(error));
+		abort(errorMsg);
+	}
+
+	if ((error = snd_pcm_hw_params_set_format(audio.pcm_handle, audio.hw_params,
+			SND_PCM_FORMAT_S16_LE)) < 0) {
+		std::string errorMsg = "Cannot set sample format. "
+				+ std::string(snd_strerror(error));
+		abort(errorMsg);
+	}
+
+	if ((error = snd_pcm_hw_params_set_channels(audio.pcm_handle,
+			audio.hw_params, audio.channels)) < 0) {
+		std::string errorMsg = "Cannot set channel count. "
+				+ std::string(snd_strerror(error));
+		abort(errorMsg);
+	}
+
+	if ((error = snd_pcm_hw_params_set_rate(audio.pcm_handle, audio.hw_params,
+			audio.samples_per_second, 0)) < 0) {
+		std::string errorMsg = "Cannot set sample rate. "
+				+ std::string(snd_strerror(error));
+		abort(errorMsg);
+	}
+
+	if ((error = snd_pcm_hw_params_set_buffer_size(audio.pcm_handle,
+			audio.hw_params, audio.buffer_size_in_samples)) < 0) {
+		std::string errorMsg = "Cannot set buffer size. "
+				+ std::string(snd_strerror(error));
+		abort(errorMsg);
+	}
+
+	if ((error = snd_pcm_hw_params(audio.pcm_handle, audio.hw_params)) < 0) {
+		std::string errorMsg = "Cannot set hardware parameters. "
+				+ std::string(snd_strerror(error));
+		abort(errorMsg);
+	}
+
+	printf("PCM name: %s\n", snd_pcm_name(audio.pcm_handle));
+	printf("PCM state: %s\n",
+			snd_pcm_state_name(snd_pcm_state(audio.pcm_handle)));
+
+	snd_pcm_hw_params_get_channels(audio.hw_params, &audio.channels);
+	printf("Channels: %i\n", audio.channels);
+
+	printf("Rate: %i\n", audio.samples_per_second);
+
+	if ((error = snd_pcm_hw_params_get_period_size(audio.hw_params,
+			&audio.period_size, 0)) < 0) {
+		std::string errorMsg = "Couldn't get period size. "
+				+ std::string(snd_strerror(error));
+		abort(errorMsg);
+	}
+
+	printf("Period size: %i\n", audio.period_size);
+
+	int32_t maxPossibleOverrun = 2 * 8 * sizeof(int16_t);
+	audio.buffer = (int16_t *) malloc(
+			audio.buffer_size_in_bytes + maxPossibleOverrun);
+
+	// Example on how to output sound
+	// Outputs a sine wave
+//	float sinebuff[48] = { 0, 4276, 8480, 12539, 16383, 19947, 23169, 25995,
+//			28377, 30272, 31650, 32486, 32767, 32486, 31650, 30272, 28377,
+//			25995, 23169, 19947, 16383, 12539, 8480, 4276, 0, -4276, -8480,
+//			-12539, -16383, -19947, -23169, -25995, -28377, -30272, -31650,
+//			-32486, -32767, -32486, -31650, -30272, -28377, -25995, -23169,
+//			-19947, -16383, -12539, -8480, -4276 };
+//	unsigned phase = 0;
+//	int seconds = 1;
+//	for (int loops = (seconds * 1000000) / audio.period_time; loops > 0;
+//			loops--) {
 //
-//	snd_pcm_hw_params_alloca(&audio.hwparams);
-//	if ((error = snd_pcm_hw_params_any(audio.pcm_handle, audio.hwparams)) < 0) {
-//		std::string errorMsg = "Cannot configure this PCM device. "
-//				+ std::string(snd_strerror(error));
-//		abort(errorMsg);
+//		for (unsigned i = 0; i < audio.buff_size; i++) {
+//			audio.buffer[i] = sinebuff[phase % 48];
+//			phase = (phase + 1) % 4800;
+//		}
+//
+//		if ((error = snd_pcm_writei(audio.pcm_handle, audio.buffer,
+//				audio.frames)) == -EPIPE) {
+//			printf("Underrun occurred.\n");
+//			snd_pcm_prepare(audio.pcm_handle);
+//		} else if (error < 0) {
+//			std::string errorMsg = "Can't write to PCM device. "
+//					+ std::string(snd_strerror(error));
+//			abort(errorMsg);
+//		}
 //	}
 
+	printf("Successfully loaded audio context.\n");
 	return audio;
 }
 
@@ -48,7 +154,7 @@ GraphicsData initGraphicsData() {
 		abort("No appropriate visual found.");
 	}
 	graphics.cmap = XCreateColormap(graphics.display, root, graphics.vi->visual,
-			AllocNone);
+	AllocNone);
 
 	graphics.swa.colormap = graphics.cmap;
 	graphics.swa.event_mask = EVENT_MASK;
@@ -110,8 +216,8 @@ GraphicsData initGraphicsData() {
 			*dst++ = color;
 		}
 	}
-	XChangeProperty(graphics.display, graphics.window, iconAtom, XA_CARDINAL,
-			32, PropModeReplace, (unsigned char *) propdata, propsize);
+	XChangeProperty(graphics.display, graphics.window, iconAtom,
+	XA_CARDINAL, 32, PropModeReplace, (unsigned char *) propdata, propsize);
 
 	// subscribe to events
 	XSelectInput(graphics.display, graphics.window, EVENT_MASK);
@@ -274,7 +380,7 @@ void setTexturePixels(GLuint texture_object_id, VideoBuffer *videoBuffer) {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-GLuint loadTexture(VideoBuffer *videoBuffer) {
+GLuint loadTexture(VideoBuffer * videoBuffer) {
 	GLuint texture_object_id;
 	glGenTextures(1, &texture_object_id);
 
@@ -388,7 +494,9 @@ void setupOpenGL(VideoBuffer *videoBuffer) {
 	u_texture_unit_location = glGetUniformLocation(program, "u_TextureUnit");
 }
 
-void swapBuffers(VideoBuffer *videoBuffer) {
+void swapVideoBuffers(VideoBuffer *videoBuffer) {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	setTexturePixels(texture, videoBuffer);
 
 	glUseProgram(program);
@@ -408,6 +516,53 @@ void swapBuffers(VideoBuffer *videoBuffer) {
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glXSwapBuffers(graphics.display, graphics.window);
+	XSync(graphics.display, false);
+}
+
+void swapSoundBuffers(GameMemory *memory) {
+	snd_pcm_sframes_t delay, avail;
+	snd_pcm_avail_delay(audio.pcm_handle, &avail, &delay);
+	int32_t samplesToFill = 0;
+	int32_t expectedSamplesPerFrame = ((float) audio.samples_per_second / 60.0f);
+	int32_t samplesInBuffer = audio.buffer_size_in_samples - avail;
+	int32_t sampleAdjustment = (samplesInBuffer - (audio.period_size * 4)) / 2;
+	if (audio.buffer_size_in_samples == avail) {
+		// NOTE: initial fill on startup and after an underrun
+		samplesToFill = (expectedSamplesPerFrame * 2) + audio.safety_samples;
+	} else {
+		samplesToFill = expectedSamplesPerFrame - sampleAdjustment;
+		if (samplesToFill < 0) {
+			samplesToFill = 0;
+		}
+	}
+
+	SoundOutputBuffer sound_buffer = { };
+	sound_buffer.samplesPerSecond = audio.samples_per_second;
+	sound_buffer.sampleCount = (((samplesToFill)+(7))&~(7));
+	sound_buffer.samples = audio.buffer;
+
+	Sound::getSoundSamples(memory, &sound_buffer);
+
+#define SOUND_DEBUG 0
+#if SOUND_DEBUG
+	// NOTE: "delay" is the delay of the soundcard hardware
+	printf("samples in buffer before write: %ld delay in samples: %ld\n", (audio.buffer_size_in_samples - avail), delay);
+#endif
+	int32_t writtenSamples = snd_pcm_writei(audio.pcm_handle, audio.buffer,
+			sound_buffer.sampleCount);
+	if (writtenSamples < 0) {
+		writtenSamples = snd_pcm_recover(audio.pcm_handle, writtenSamples, 0);
+	} else if (writtenSamples != sound_buffer.sampleCount) {
+		printf("only wrote %d of %d samples\n", writtenSamples,
+				sound_buffer.sampleCount);
+	}
+
+#if SOUND_DEBUG
+	snd_pcm_avail_delay(audio.pcm_handle, &avail, &delay);
+	printf("samples in buffer after write: %ld delay in samples: %ld written samples: %d\n", (audio.buffer_size_in_samples - avail + writtenSamples), delay, writtenSamples);
+#endif
 }
 
 int main() {
@@ -458,14 +613,9 @@ int main() {
 
 		updateAndRender(&graphics.videoBuffer, newInput, &memory);
 
-		// swapping buffer
-		glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		swapSoundBuffers(&memory);
 
-		swapBuffers(&graphics.videoBuffer);
-
-		glXSwapBuffers(graphics.display, graphics.window);
-		XSync(graphics.display, false);
+		swapVideoBuffers(&graphics.videoBuffer);
 
 		Input *tmp = oldInput;
 		oldInput = newInput;
@@ -473,6 +623,11 @@ int main() {
 
 		correctTiming(startTime, false);
 	}
+
+	// Clean up audio
+	snd_pcm_drain(audio.pcm_handle);
+	snd_pcm_close(audio.pcm_handle);
+	free(audio.buffer);
 
 	XCloseDisplay(graphics.display);
 	return 0;

@@ -62,11 +62,11 @@ void spawnBullet(GameState *gameState, Math::Vector2f position,
 	}
 
 	if (playerBullet) {
-		Sound::output(gameState, &gameState->resources.playerShot, 0.1f, 0.1f,
-				Sound::PLAY_ONCE);
+//		Sound::output(gameState, &gameState->resources.playerShot, 0.1f, 0.1f,
+//				Sound::PLAY_ONCE);
 	} else {
-		Sound::output(gameState, &gameState->resources.AIShot, 0.1f, 0.1f,
-				Sound::PLAY_ONCE);
+//		Sound::output(gameState, &gameState->resources.AIShot, 0.1f, 0.1f,
+//				Sound::PLAY_ONCE);
 	}
 }
 

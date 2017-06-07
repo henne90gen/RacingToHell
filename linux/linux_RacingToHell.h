@@ -60,12 +60,17 @@ struct GraphicsData {
 struct AudioData {
 	snd_pcm_t *pcm_handle;
 	snd_pcm_hw_params_t *hw_params;
-	snd_pcm_uframes_t frames = 800;
-	unsigned sample_rate = 48000;
-	unsigned channels = 2;
-	unsigned period_time;
-	unsigned buff_size;
 	int16_t *buffer;
+
+	// taken from xcb_handmade
+	int samples_per_second;
+	uint32_t running_sample_index;
+	int bytes_per_sample;
+	uint32_t buffer_size_in_samples;
+	uint32_t buffer_size_in_bytes;
+	uint32_t safety_samples;
+	uint32_t channels;
+	uint64_t period_size;
 };
 
 long int EVENT_MASK = KeyPressMask | KeyReleaseMask | ButtonPressMask

@@ -6,11 +6,20 @@ AudioData initAudioData() {
 
 	AudioData audio = { };
 
+	audio.samples_per_second = 48000;
+	audio.channels = 2;
+	audio.bytes_per_sample = sizeof(int16_t) * audio.channels;
+	audio.buffer_size_in_samples = audio.samples_per_second;
+	audio.buffer_size_in_bytes = audio.buffer_size_in_samples
+			* audio.bytes_per_sample;
+	audio.safety_samples =
+			(uint32_t) (((float) audio.samples_per_second / 60.0f) / 3.0f);
+
 	char *pcm_name;
 	pcm_name = strdup("default");
 	int error;
 	if ((error = snd_pcm_open(&audio.pcm_handle, pcm_name,
-			SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK)) < 0) {
+			SND_PCM_STREAM_PLAYBACK, 0)) < 0) {
 		std::string errorMsg = "Error opening PCM device "
 				+ std::string(pcm_name) + " "
 				+ std::string(snd_strerror(error));
@@ -47,9 +56,16 @@ AudioData initAudioData() {
 		abort(errorMsg);
 	}
 
-	if ((error = snd_pcm_hw_params_set_rate_near(audio.pcm_handle,
-			audio.hw_params, &audio.sample_rate, 0)) < 0) {
+	if ((error = snd_pcm_hw_params_set_rate(audio.pcm_handle, audio.hw_params,
+			audio.samples_per_second, 0)) < 0) {
 		std::string errorMsg = "Cannot set sample rate. "
+				+ std::string(snd_strerror(error));
+		abort(errorMsg);
+	}
+
+	if ((error = snd_pcm_hw_params_set_buffer_size(audio.pcm_handle,
+			audio.hw_params, audio.buffer_size_in_samples)) < 0) {
+		std::string errorMsg = "Cannot set buffer size. "
 				+ std::string(snd_strerror(error));
 		abort(errorMsg);
 	}
@@ -67,34 +83,20 @@ AudioData initAudioData() {
 	snd_pcm_hw_params_get_channels(audio.hw_params, &audio.channels);
 	printf("Channels: %i\n", audio.channels);
 
-	snd_pcm_hw_params_get_rate(audio.hw_params, &audio.sample_rate, 0);
-	printf("Rate: %i\n", audio.sample_rate);
-
-	if ((error = snd_pcm_hw_params_set_period_size(audio.pcm_handle,
-			audio.hw_params, audio.frames, 0)) < 0) {
-		std::string errorMsg = "Couldn't set period size. "
-				+ std::string(snd_strerror(error));
-		abort(errorMsg);
-	}
+	printf("Rate: %i\n", audio.samples_per_second);
 
 	if ((error = snd_pcm_hw_params_get_period_size(audio.hw_params,
-			&audio.frames, 0)) < 0) {
+			&audio.period_size, 0)) < 0) {
 		std::string errorMsg = "Couldn't get period size. "
 				+ std::string(snd_strerror(error));
 		abort(errorMsg);
 	}
 
-	printf("Period size: %i\n", audio.frames);
+	printf("Period size: %i\n", audio.period_size);
 
-	if ((error = snd_pcm_hw_params_get_period_time(audio.hw_params,
-			&audio.period_time, NULL)) < 0) {
-		std::string errorMsg = "Couldn't get period time. "
-				+ std::string(snd_strerror(error));
-		abort(errorMsg);
-	}
-
-	audio.buff_size = audio.frames * audio.channels;
-	audio.buffer = (int16_t *) malloc(audio.buff_size * 2); // 2 bytes per sample
+	int32_t maxPossibleOverrun = 2 * 8 * sizeof(int16_t);
+	audio.buffer = (int16_t *) malloc(
+			audio.buffer_size_in_bytes + maxPossibleOverrun);
 
 	// Example on how to output sound
 	// Outputs a sine wave
@@ -520,23 +522,47 @@ void swapVideoBuffers(VideoBuffer *videoBuffer) {
 }
 
 void swapSoundBuffers(GameMemory *memory) {
-	SoundOutputBuffer soundBuffer = { };
-	soundBuffer.samplesPerSecond = audio.sample_rate;
-	soundBuffer.sampleCount = audio.buff_size / audio.channels;
-	soundBuffer.samples = audio.buffer;
-
-	Sound::getSoundSamples(memory, &soundBuffer);
-
-	int error;
-	error = snd_pcm_writei(audio.pcm_handle, audio.buffer, audio.frames);
-	if (error == -EPIPE) {
-		printf("Underrun occurred.\n");
-		snd_pcm_prepare(audio.pcm_handle);
-	} else if (error < 0) {
-		std::string errorMsg = "Can't write to PCM device. "
-				+ std::string(snd_strerror(error));
-		abort(errorMsg);
+	snd_pcm_sframes_t delay, avail;
+	snd_pcm_avail_delay(audio.pcm_handle, &avail, &delay);
+	int32_t samplesToFill = 0;
+	int32_t expectedSamplesPerFrame = ((float) audio.samples_per_second / 60.0f);
+	int32_t samplesInBuffer = audio.buffer_size_in_samples - avail;
+	int32_t sampleAdjustment = (samplesInBuffer - (audio.period_size * 4)) / 2;
+	if (audio.buffer_size_in_samples == avail) {
+		// NOTE: initial fill on startup and after an underrun
+		samplesToFill = (expectedSamplesPerFrame * 2) + audio.safety_samples;
+	} else {
+		samplesToFill = expectedSamplesPerFrame - sampleAdjustment;
+		if (samplesToFill < 0) {
+			samplesToFill = 0;
+		}
 	}
+
+	SoundOutputBuffer sound_buffer = { };
+	sound_buffer.samplesPerSecond = audio.samples_per_second;
+	sound_buffer.sampleCount = (((samplesToFill)+(7))&~(7));
+	sound_buffer.samples = audio.buffer;
+
+	Sound::getSoundSamples(memory, &sound_buffer);
+
+#define SOUND_DEBUG 0
+#if SOUND_DEBUG
+	// NOTE: "delay" is the delay of the soundcard hardware
+	printf("samples in buffer before write: %ld delay in samples: %ld\n", (audio.buffer_size_in_samples - avail), delay);
+#endif
+	int32_t writtenSamples = snd_pcm_writei(audio.pcm_handle, audio.buffer,
+			sound_buffer.sampleCount);
+	if (writtenSamples < 0) {
+		writtenSamples = snd_pcm_recover(audio.pcm_handle, writtenSamples, 0);
+	} else if (writtenSamples != sound_buffer.sampleCount) {
+		printf("only wrote %d of %d samples\n", writtenSamples,
+				sound_buffer.sampleCount);
+	}
+
+#if SOUND_DEBUG
+	snd_pcm_avail_delay(audio.pcm_handle, &avail, &delay);
+	printf("samples in buffer after write: %ld delay in samples: %ld written samples: %d\n", (audio.buffer_size_in_samples - avail + writtenSamples), delay, writtenSamples);
+#endif
 }
 
 int main() {

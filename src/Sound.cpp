@@ -84,17 +84,26 @@ LoadedSound loadWAV(GameMemory *memory, std::string path) {
 			/ (result.channelCount * sizeof(int16_t));
 
 	if (result.channelCount == 1) {
-		result.samples[0] = sampleData;
+		result.samples[0] = (int16_t*) reservePermanentMemory(memory, result.sampleCount);
 		result.samples[1] = 0;
+
+		for (uint32_t sampleIndex = 0; sampleIndex < result.sampleCount;
+				++sampleIndex) {
+			result.samples[0][sampleIndex] = sampleData[sampleIndex];
+		}
 	} else if (result.channelCount == 2) {
-		result.samples[0] = sampleData;
-		result.samples[1] = sampleData + result.sampleCount;
+		result.samples[0] = (int16_t*) reservePermanentMemory(memory,
+				result.sampleCount);
+		result.samples[1] = (int16_t*) reservePermanentMemory(memory,
+				result.sampleCount);
 
 		for (uint32_t sampleIndex = 0; sampleIndex < result.sampleCount;
 				++sampleIndex) {
 			int16_t source = sampleData[2 * sampleIndex];
-			sampleData[2 * sampleIndex] = sampleData[sampleIndex];
-			sampleData[sampleIndex] = source;
+			result.samples[0][sampleIndex] = source;
+
+			source = sampleData[2 * sampleIndex + 1];
+			result.samples[1][sampleIndex] = source;
 		}
 	} else {
 		abort("More than two channels aren't supported.");
@@ -163,8 +172,8 @@ void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer) {
 		for (int sampleIndex = currentSound->samplesPlayed;
 				sampleIndex < currentSound->samplesPlayed + samplesToMix;
 				++sampleIndex) {
-			float sampleValue = currentSound->loadedSound.samples[0][sampleIndex
-					% currentSound->loadedSound.sampleCount];
+			int index = sampleIndex % currentSound->loadedSound.sampleCount;
+			float sampleValue = currentSound->loadedSound.samples[0][index];
 
 			*dest0++ += volume0 * sampleValue;
 			*dest1++ += volume1 * sampleValue;

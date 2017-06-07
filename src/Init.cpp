@@ -72,8 +72,8 @@ void init(GameMemory *memory) {
 			"./res/sound/shotPlayer.wav");
 	gameState->resources.Level1Music = Sound::loadWAV(memory,
 			"./res/sound/music/level1.wav");
-	Sound::output(gameState, &gameState->resources.Level1Music, 0.1f, 0.1f,
-			Sound::PLAY_LOOP);
+//	Sound::output(gameState, &gameState->resources.Level1Music, 0.1f, 0.1f,
+//			Sound::PLAY_LOOP);
 
 	loadTextures(memory, gameState);
 }

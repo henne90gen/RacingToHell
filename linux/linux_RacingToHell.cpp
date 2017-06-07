@@ -70,12 +70,21 @@ AudioData initAudioData() {
 	snd_pcm_hw_params_get_rate(audio.hw_params, &audio.sample_rate, 0);
 	printf("Rate: %i\n", audio.sample_rate);
 
+	if ((error = snd_pcm_hw_params_set_period_size(audio.pcm_handle,
+			audio.hw_params, audio.frames, 0)) < 0) {
+		std::string errorMsg = "Couldn't set period size. "
+				+ std::string(snd_strerror(error));
+		abort(errorMsg);
+	}
+
 	if ((error = snd_pcm_hw_params_get_period_size(audio.hw_params,
 			&audio.frames, 0)) < 0) {
 		std::string errorMsg = "Couldn't get period size. "
 				+ std::string(snd_strerror(error));
 		abort(errorMsg);
 	}
+
+	printf("Period size: %i\n", audio.frames);
 
 	if ((error = snd_pcm_hw_params_get_period_time(audio.hw_params,
 			&audio.period_time, NULL)) < 0) {
@@ -84,8 +93,8 @@ AudioData initAudioData() {
 		abort(errorMsg);
 	}
 
-	audio.buff_size = audio.frames * audio.channels * 2; // 2 bytes per sample
-	audio.buffer = (int16_t *) malloc(audio.buff_size);
+	audio.buff_size = audio.frames * audio.channels;
+	audio.buffer = (int16_t *) malloc(audio.buff_size * 2); // 2 bytes per sample
 
 	// Example on how to output sound
 	// Outputs a sine wave
@@ -483,7 +492,7 @@ void setupOpenGL(VideoBuffer *videoBuffer) {
 	u_texture_unit_location = glGetUniformLocation(program, "u_TextureUnit");
 }
 
-void swapBuffers(VideoBuffer *videoBuffer) {
+void swapVideoBuffers(VideoBuffer *videoBuffer) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	setTexturePixels(texture, videoBuffer);
@@ -513,14 +522,14 @@ void swapBuffers(VideoBuffer *videoBuffer) {
 void swapSoundBuffers(GameMemory *memory) {
 	SoundOutputBuffer soundBuffer = { };
 	soundBuffer.samplesPerSecond = audio.sample_rate;
-	soundBuffer.sampleCount = audio.buff_size;
+	soundBuffer.sampleCount = audio.buff_size / audio.channels;
 	soundBuffer.samples = audio.buffer;
 
 	Sound::getSoundSamples(memory, &soundBuffer);
 
 	int error;
-	if ((error = snd_pcm_writei(audio.pcm_handle, audio.buffer, audio.frames))
-			== -EPIPE) {
+	error = snd_pcm_writei(audio.pcm_handle, audio.buffer, audio.frames);
+	if (error == -EPIPE) {
 		printf("Underrun occurred.\n");
 		snd_pcm_prepare(audio.pcm_handle);
 	} else if (error < 0) {
@@ -580,8 +589,7 @@ int main() {
 
 		swapSoundBuffers(&memory);
 
-		// swapping buffer
-		swapBuffers(&graphics.videoBuffer);
+		swapVideoBuffers(&graphics.videoBuffer);
 
 		Input *tmp = oldInput;
 		oldInput = newInput;

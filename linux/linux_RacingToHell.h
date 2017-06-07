@@ -60,7 +60,7 @@ struct GraphicsData {
 struct AudioData {
 	snd_pcm_t *pcm_handle;
 	snd_pcm_hw_params_t *hw_params;
-	snd_pcm_uframes_t frames;
+	snd_pcm_uframes_t frames = 800;
 	unsigned sample_rate = 48000;
 	unsigned channels = 2;
 	unsigned period_time;

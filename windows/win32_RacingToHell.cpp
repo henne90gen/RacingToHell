@@ -4,6 +4,9 @@
 #include <string>
 #include <dsound.h>
 
+#include <gl/GL.h>
+#include <gl/GLU.h>
+
 #include "RacingToHell.h"
 #include "win32_RacingToHell.h"
 
@@ -47,20 +50,23 @@ void resizeOffscreenBuffer(OffscreenBuffer *buffer, unsigned width, unsigned hei
 
 void drawBuffer(HDC deviceContext, OffscreenBuffer *buffer)
 {
-	int result = StretchDIBits(
-		deviceContext,
-		0, 0, buffer->width, buffer->height,
-		0, 0, buffer->width, buffer->height,
-		buffer->content,
-		&buffer->info,
-		DIB_RGB_COLORS,
-		SRCCOPY
-	);
-	
-	if (result == 0)
-	{
+    /*if (!StretchDIBits(
+        deviceContext,
+        0, 0, buffer->width, buffer->height,
+        0, 0, buffer->width, buffer->height,
+        buffer->content,
+        &buffer->info,
+        DIB_RGB_COLORS,
+        SRCCOPY
+    ))
+    {
         debugString("DBits failed.");
-	}
+    } */
+	
+    glViewport(0, 0, buffer->width, buffer->height);
+    glClearColor(0, 0, 0, 0);
+    glClear(GL_COLOR_BUFFER_BIT);
+    SwapBuffers(deviceContext);
 }
 
 typedef HRESULT _DirectSoundCreate_(LPCGUID pcGuidDevice, LPDIRECTSOUND *ppDS, LPUNKNOWN pUnkOuter);
@@ -260,6 +266,61 @@ HWND openWindow(HINSTANCE instance, int show, unsigned width, unsigned height)
 	return windowHandle;
 }
 
+HGLRC createOpenGLContext(HWND windowHandle)
+{
+    HDC deviceContext = GetDC(windowHandle);
+
+    PIXELFORMATDESCRIPTOR descrptor =
+    {
+        sizeof(PIXELFORMATDESCRIPTOR),
+        1,
+        PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,    //Flags
+        PFD_TYPE_RGBA,            //The kind of framebuffer. RGBA or palette.
+        32,                        //Colordepth of the framebuffer.
+        0, 0, 0, 0, 0, 0,
+        0,
+        0,
+        0,
+        0, 0, 0, 0,
+        24,                        //Number of bits for the depthbuffer
+        8,                        //Number of bits for the stencilbuffer
+        0,                        //Number of Aux buffers in the framebuffer.
+        PFD_MAIN_PLANE,
+        0,
+        0, 0, 0
+    };
+
+    int pixelFormat = ChoosePixelFormat(deviceContext, &descrptor);
+
+    if (!SetPixelFormat(deviceContext, pixelFormat, &descrptor))
+    {
+        abort("Konnte Pixelformat nicht setzen.");
+    }
+
+    HGLRC openglContext = wglCreateContext(deviceContext);
+    wglMakeCurrent(deviceContext, openglContext);
+
+    ReleaseDC(windowHandle, deviceContext);
+
+    return openglContext;
+}
+
+void deleteOpenglContext(HDC deviceContext, HGLRC openGLContext)
+{
+    wglMakeCurrent(deviceContext, NULL);
+
+    wglDeleteContext(openGLContext);
+}
+
+/*int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
+{
+    HWND windowHandle = openWindow(instance, show, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+    HGLRC openglContext = createOpenGLContext(windowHandle);
+
+    return 0;
+} */
+
 void handleKeyStroke(Input *input, WPARAM keyCode, LPARAM flags)
 {
 	if (keyCode == VK_ESCAPE)
@@ -372,6 +433,8 @@ void sleep(float time, uint64_t frequency)
     }
 }
 
+
+#if 1
 int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 {
 	// flush stdout and stderr to console
@@ -396,6 +459,8 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
     memory.permanent = (char *)memory.temporary + memory.temporaryMemorySize;
 
 	HWND windowHandle = openWindow(instance, show, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+    createOpenGLContext(windowHandle);
 
     SoundOutput soundOutput;
     soundOutput.safetyBytes = (soundOutput.samplesPerSecond * soundOutput.bytesPerSample) * targetFrameTime;
@@ -591,3 +656,4 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 	
 	return 0;
 }
+#endif 

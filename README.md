@@ -1,10 +1,10 @@
-#RacingToHell
+# RacingToHell
 
 [![Build Status](https://travis-ci.org/henne90gen/RacingToHell.svg?branch=master)](https://travis-ci.org/henne90gen/RacingToHell) [![Build status](https://ci.appveyor.com/api/projects/status/y3sk6m09nwjqwjl7?svg=true)](https://ci.appveyor.com/project/henne90gen/racingtohell)
 
-##Compiling the source code
+## Compiling the source code
 
-###Linux
+### Linux
 
 1.  Download and install CMake and all the [libraries](http://www.sfml-dev.org/tutorials/2.4/compile-with-cmake.php#installing-dependencies) required for SFML
 1.  Clone the repository:
@@ -25,7 +25,7 @@ Notes:
 -   Clion will automatically detect the relevant CMakeLists.txt and create a "cmake-build-debug" directory
     -   You can change the name of the default build directory under: `File -> Settings -> Build, Execution, Deployment -> CMake -> Generation path`
 
-###Windows
+### Windows
 
 (TODO update windows build instructions to include building tests)
 

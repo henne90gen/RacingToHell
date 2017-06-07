@@ -84,7 +84,8 @@ LoadedSound loadWAV(GameMemory *memory, std::string path) {
 			/ (result.channelCount * sizeof(int16_t));
 
 	if (result.channelCount == 1) {
-		result.samples[0] = (int16_t*) reservePermanentMemory(memory, result.sampleCount);
+		result.samples[0] = (int16_t*) reservePermanentMemory(memory,
+				result.sampleCount);
 		result.samples[1] = 0;
 
 		for (uint32_t sampleIndex = 0; sampleIndex < result.sampleCount;
@@ -99,9 +100,11 @@ LoadedSound loadWAV(GameMemory *memory, std::string path) {
 
 		for (uint32_t sampleIndex = 0; sampleIndex < result.sampleCount;
 				++sampleIndex) {
+
 			int16_t source = sampleData[2 * sampleIndex];
 			result.samples[0][sampleIndex] = source;
 
+			// FIXME right channel is not being loaded correctly
 			source = sampleData[2 * sampleIndex + 1];
 			result.samples[1][sampleIndex] = source;
 		}
@@ -169,14 +172,28 @@ void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer) {
 			samplesToMix = samplesRemainingInInput;
 		}
 
-		for (int sampleIndex = currentSound->samplesPlayed;
-				sampleIndex < currentSound->samplesPlayed + samplesToMix;
-				++sampleIndex) {
-			int index = sampleIndex % currentSound->loadedSound.sampleCount;
-			float sampleValue = currentSound->loadedSound.samples[0][index];
+		if (currentSound->loadedSound.channelCount == 1) {
+			for (int sampleIndex = currentSound->samplesPlayed;
+					sampleIndex < currentSound->samplesPlayed + samplesToMix;
+					++sampleIndex) {
+				int index = sampleIndex % currentSound->loadedSound.sampleCount;
+				float sampleValue = currentSound->loadedSound.samples[0][index];
 
-			*dest0++ += volume0 * sampleValue;
-			*dest1++ += volume1 * sampleValue;
+				*dest0++ += volume0 * sampleValue;
+				*dest1++ += volume1 * sampleValue;
+			}
+		} else {
+			for (int sampleIndex = currentSound->samplesPlayed;
+					sampleIndex < currentSound->samplesPlayed + samplesToMix;
+					++sampleIndex) {
+				int index = sampleIndex % currentSound->loadedSound.sampleCount;
+				float sampleValue0 = currentSound->loadedSound.samples[0][index];
+				float sampleValue1 = currentSound->loadedSound.samples[1][index];
+
+				// FIXME using left channel for both sides, not good
+				*dest0++ += volume0 * sampleValue0;
+				*dest1++ += volume1 * sampleValue0;
+			}
 		}
 
 		currentSound->samplesPlayed += samplesToMix;
@@ -187,7 +204,6 @@ void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer) {
 			*currentSound =
 					gameState->playingSounds[gameState->lastPlayingSound];
 			--gameState->lastPlayingSound;
-
 			--soundIndex;
 		}
 	}

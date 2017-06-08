@@ -44,8 +44,8 @@ build_script:
 #  Reset environment for after_build
   - set PATH=%OLD_PATH%
 
-after_build:
-  - 7z a RacingToHellWindows.zip ./
+#after_build:
+#  - 7z a RacingToHellWindows.zip ./
 
 #---------------------------------#
 #       tests configuration       #

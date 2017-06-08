@@ -84,22 +84,22 @@ LoadedSound loadWAV(GameMemory *memory, std::string path) {
 			/ (result.channelCount * sizeof(int16_t));
 
 	if (result.channelCount == 1) {
-		result.samples[0] = (int16_t*) reservePermanentMemory(memory,
-				result.sampleCount);
-		result.samples[1] = 0;
+        result.samples[0] = (int16_t*)reservePermanentMemory(memory,
+            result.sampleCount * sizeof(int16_t));
 
 		for (uint32_t sampleIndex = 0; sampleIndex < result.sampleCount;
 				++sampleIndex) {
 			result.samples[0][sampleIndex] = sampleData[sampleIndex];
 		}
 	} else if (result.channelCount == 2) {
-		result.samples[0] = (int16_t*) reservePermanentMemory(memory,
-				result.sampleCount);
-		result.samples[1] = (int16_t*) reservePermanentMemory(memory,
-				result.sampleCount);
+        result.samples[0] = (int16_t*)reservePermanentMemory(memory,
+            result.sampleCount * sizeof(int16_t));
+        result.samples[1] = (int16_t*)reservePermanentMemory(memory,
+            result.sampleCount * sizeof(int16_t));
 
-		for (uint32_t sampleIndex = 0; sampleIndex < result.sampleCount / 2;
+		for (uint32_t sampleIndex = 0; sampleIndex < result.sampleCount;
 				++sampleIndex) {
+
 			int16_t source = sampleData[2 * sampleIndex];
 			result.samples[0][sampleIndex] = source;
 
@@ -180,7 +180,7 @@ void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer) {
 				*dest0++ += volume0 * sampleValue;
 				*dest1++ += volume1 * sampleValue;
 			}
-		} else {
+		} else { 
 			for (int sampleIndex = currentSound->samplesPlayed;
 					sampleIndex < currentSound->samplesPlayed + samplesToMix;
 					++sampleIndex) {
@@ -189,7 +189,7 @@ void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer) {
 				float sampleValue1 = currentSound->loadedSound.samples[1][index];
 
 				*dest0++ += volume0 * sampleValue0;
-				*dest1++ += volume1 * sampleValue1;
+                *dest1++ += volume1 * sampleValue1;
 			}
 		}
 

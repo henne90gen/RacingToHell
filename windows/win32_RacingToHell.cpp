@@ -64,8 +64,64 @@ void drawBuffer(HDC deviceContext, OffscreenBuffer *buffer)
     } */
 	
     glViewport(0, 0, buffer->width, buffer->height);
-    glClearColor(0, 0, 0, 0);
+
+    GLuint textureHandle = 0;
+    static bool init = false;
+
+    if (!init)
+    {
+        glGenTextures(1, &textureHandle);
+        init = true;
+    }
+
+    glBindTexture(GL_TEXTURE_2D, textureHandle);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, buffer->width, buffer->height, 0,
+        GL_RGBA, GL_UNSIGNED_BYTE, buffer->content);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+    glEnable(GL_TEXTURE_2D);
+
+    glClearColor(1.0f, 0, 1.0f, 0);
     glClear(GL_COLOR_BUFFER_BIT);
+    
+    glMatrixMode(GL_TEXTURE);
+    glLoadIdentity();
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    glBegin(GL_TRIANGLES);
+    
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex2i(-1.0f, -1.0f);
+
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex2i(1.0f, -1.0f);
+
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex2i(1.0f, 1.0f);
+
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex2i(-1.0f, -1.0f);
+
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex2i(1.0f, 1.0f);
+
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex2i(-1.0f, 1.0f);
+
+    glEnd();
+
     SwapBuffers(deviceContext);
 }
 
@@ -311,15 +367,6 @@ void deleteOpenglContext(HDC deviceContext, HGLRC openGLContext)
 
     wglDeleteContext(openGLContext);
 }
-
-/*int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
-{
-    HWND windowHandle = openWindow(instance, show, WINDOW_WIDTH, WINDOW_HEIGHT);
-
-    HGLRC openglContext = createOpenGLContext(windowHandle);
-
-    return 0;
-} */
 
 void handleKeyStroke(Input *input, WPARAM keyCode, LPARAM flags)
 {

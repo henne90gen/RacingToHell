@@ -60,17 +60,18 @@ void init(GameMemory *memory) {
 	gameState->roadPosition = 0;
 	gameState->frameCounter = 0;
 
+	// TODO balance spawn rates
 	gameState->trafficFrequency = 50;
 	gameState->bulletFrequency = 50;
+	gameState->itemFrequency = 50;
 	gameState->bulletSpeed = 7.5f;
 
 	Text::loadFont(memory, "./res/font/arial.ttf");
 
-
 	gameState->resources.AIShot = Sound::loadWAV(memory,
 			"./res/sound/shotAI.wav");
-    gameState->resources.playerShot = Sound::loadWAV(memory,
-        "./res/sound/shotPlayer.wav");
+	gameState->resources.playerShot = Sound::loadWAV(memory,
+			"./res/sound/shotPlayer.wav");
 	gameState->resources.Level1Music = Sound::loadWAV(memory,
 			"./res/sound/music/level1.wav");
 	Sound::output(gameState, &gameState->resources.Level1Music, 0.1f, 0.1f,
@@ -78,6 +79,7 @@ void init(GameMemory *memory) {
 
 	loadTextures(memory, gameState);
 
+	// FIXME remove this
 	spawnTrafficCar(gameState);
 }
 

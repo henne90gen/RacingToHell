@@ -7,6 +7,7 @@
 #define WINDOW_TITLE "Racing to Hell"
 #define NUM_PLAYER_TEXTURES 6
 #define NUM_TRAFFIC_TEXTURES 7
+#define NUM_ITEM_TEXTURES 2
 
 struct File {
 	char* content;

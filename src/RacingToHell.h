@@ -42,7 +42,7 @@ struct Car {
 
 struct Item {
 	Math::Vector2f position;
-
+	uint8_t effect, itemIndex, speed;
 };
 
 struct Bullet {
@@ -83,6 +83,7 @@ struct GameState {
 
 	uint32_t trafficFrequency;
 	uint32_t bulletFrequency;
+	uint32_t itemFrequency;
 	float bulletSpeed;
 
 	int32_t lastItemIndex = -1;

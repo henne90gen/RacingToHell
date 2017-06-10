@@ -25,6 +25,16 @@ void loadTextures(GameMemory *memory, GameState *gameState) {
 		freeFile(&carFile);
 	}
 
+	// Loading Toolbox with index 0
+	File toolFile = readFile("./res/textures/toolbox.bmp");
+	gameState->resources.itemTextures[0] = readBmpIntoMemory(toolFile, memory);
+	freeFile(&toolFile);
+
+	// Loading Canister with index 1
+	File canFile = readFile("./res/textures/canister.bmp");
+	gameState->resources.itemTextures[1] = readBmpIntoMemory(canFile, memory);
+	freeFile(&canFile);
+
 	File explosionFile = readFile("./res/textures/explosion.bmp");
 	for (int y = 0; y < 9; y++) {
 		for (int x = 0; x < 9; x++) {

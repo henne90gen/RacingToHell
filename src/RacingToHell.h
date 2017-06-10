@@ -32,7 +32,7 @@ struct Input {
 	bool upKey, downKey, leftKey, rightKey;
 	bool pauseKey;
 	bool shootKeyPressed;
-    bool shootKeyClicked;
+	bool shootKeyClicked;
 };
 
 struct Car {
@@ -57,22 +57,22 @@ struct SoundOutputBuffer {
 };
 
 struct Resources {
-    Texture roadTextures[4];
+	Texture roadTextures[4];
+	Texture playerCarTextures[6];
+	Texture trafficCarTextures[7];
+	Texture itemTextures[2];
 
-    Texture playerCarTextures[6];
-    Texture trafficCarTextures[7];
+	Texture explosion[9 * 9];
 
-    Texture explosion[9 * 9];
+	Sound::LoadedSound AIShot;
+	Sound::LoadedSound playerShot;
 
-    Sound::LoadedSound AIShot;
-    Sound::LoadedSound playerShot;
-
-    Sound::LoadedSound Level1Music;
+	Sound::LoadedSound Level1Music;
 };
 
 struct GameState {
-    Sound::PlayingSound playingSounds[256];
-    int lastPlayingSound = -1;
+	Sound::PlayingSound playingSounds[256];
+	int lastPlayingSound = -1;
 
 	uint32_t frameCounter;
 	uint32_t roadPosition;

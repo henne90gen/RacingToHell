@@ -307,10 +307,10 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState) {
 		Item *item = &gameState->items[i];
 		item->position = {item->position.x, (float)(item->position.y + item->speed)};
 
-		Math::Rectangle rect = { };
-		rect.position = item->position;
-		rect.width = 50;
-		rect.height = 50;
+		Texture *texture = &gameState->resources.itemTextures[item->itemIndex];
+
+		Math::Rectangle rect = getBoundingBox(item->position, texture->width,
+				texture->height);
 
 		Texture *playerTexture =
 				&gameState->resources.playerCarTextures[gameState->player.carIndex];
@@ -330,7 +330,9 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState) {
 			continue;
 		}
 
-		Render::rectangle(buffer, rect, 0xff00ffff);
+		int x = item->position.x - texture->width / 2;
+		int y = item->position.y - texture->height / 2;
+		Render::textureAlpha(buffer, texture, x, y);
 	}
 }
 

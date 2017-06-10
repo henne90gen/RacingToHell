@@ -1,14 +1,27 @@
 /**
  * position - center of the model in question
- * rectPos - top, left corner of the bounding box
- * width, height - width and height of the bounding box
+ * texture - used for width and height of the rectangle
  */
-void getBoundingBox(Math::Vector2f position,
-		Texture *texture, Math::Rectangle *rect) {
-	rect->width = texture->width;
-	rect->height = texture->height;
-	rect->position.x = position.x - rect->width / 2;
-	rect->position.y = position.y - rect->height / 2;
+Math::Rectangle getBoundingBox(Math::Vector2f position, unsigned width,
+		unsigned height) {
+	Math::Rectangle rect = { };
+	rect.width = width;
+	rect.height = height;
+	rect.position.x = position.x - rect.width / 2;
+	rect.position.y = position.y - rect.height / 2;
+	return rect;
+}
+
+/**
+ * This adds rect2 to rect1
+ * Use the result and the position of rect2 for collision detection
+ */
+Math::Rectangle getCollisionBox(Math::Rectangle rect1, Math::Rectangle rect2) {
+	rect1.width += rect2.width;
+	rect1.height += rect2.height;
+	rect1.position.x -= rect2.width / 2;
+	rect1.position.y -= rect2.height / 2;
+	return rect1;
 }
 
 void importPixelData(void* src, void* dest, unsigned srcWidth,

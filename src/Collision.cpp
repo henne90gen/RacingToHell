@@ -14,11 +14,4 @@ bool rectangle(Math::Rectangle rect, Math::Vector2f pos) {
 	return false;
 }
 
-bool rectangle(Math::Rectangle rect1, Math::Rectangle rect2) {
-//	width1 += width2;
-//	height1 += height2;
-//	return rectangle(rect1, width1, height1, rect2);
-	return false;
-}
-
 }

@@ -145,17 +145,22 @@ bool updateAndRenderBullet(VideoBuffer* buffer, GameState* gameState,
 		return true;
 	}
 
+	Math::Rectangle bulletRect = getBoundingBox(bullet.position,
+			bullet.radius * 2, bullet.radius * 2);
+
 	if (playerBullet) {
 		for (int i = 0; i < gameState->lastTrafficCarIndex + 1; i++) {
 			TrafficCar car = gameState->traffic[i];
 			Texture trafficTexture =
 					gameState->resources.trafficCarTextures[car.carIndex];
-			Math::Rectangle trafficRect = { };
-			trafficRect.width = trafficTexture.width + bullet.radius * 2;
-			trafficRect.height = trafficTexture.height + bullet.radius * 2;
-			trafficRect.position.x = car.position.x - trafficTexture.width / 2;
-			trafficRect.position.y = car.position.y - trafficTexture.height / 2;
-			if (Collision::rectangle(trafficRect, bullet.position)) {
+			Math::Rectangle trafficRect = getBoundingBox(car.position,
+					trafficTexture.width, trafficTexture.height);
+			Math::Rectangle collisionBox = getCollisionBox(trafficRect,
+					bulletRect);
+
+			Render::rectangle(buffer, collisionBox, 0xff000040);
+
+			if (Collision::rectangle(collisionBox, bullet.position)) {
 				// TODO car should take damage
 				return true;
 			}
@@ -163,17 +168,12 @@ bool updateAndRenderBullet(VideoBuffer* buffer, GameState* gameState,
 	} else {
 		Texture playerTexture =
 				gameState->resources.playerCarTextures[gameState->player.carIndex];
-		Math::Rectangle playerRect = { };
-		playerRect.width = playerTexture.width + bullet.radius * 2;
-		playerRect.height = playerTexture.height + bullet.radius * 2;
-		playerRect.position.x = gameState->player.position.x
-				- playerTexture.width / 2 - bullet.radius;
-		playerRect.position.y = gameState->player.position.y
-				- playerTexture.height / 2 - bullet.radius;
+		Math::Rectangle playerRect = getBoundingBox(gameState->player.position,
+				playerTexture.width, playerTexture.height);
+		Math::Rectangle collisionBox = getCollisionBox(playerRect, bulletRect);
+		Render::rectangle(buffer, collisionBox, 0xff000040);
 
-		Render::rectangle(buffer, playerRect, 0xff000040);
-
-		if (Collision::rectangle(playerRect, bullet.position)) {
+		if (Collision::rectangle(collisionBox, bullet.position)) {
 			// TODO player should take damage
 			return true;
 		}
@@ -245,15 +245,17 @@ void updateAndRenderTraffic(VideoBuffer* buffer, GameState *gameState) {
 
 		Texture *texture =
 				&gameState->resources.trafficCarTextures[car->carIndex];
-		Math::Rectangle carRect = { };
-		getBoundingBox(car->position, texture, &carRect);
+		Math::Rectangle carRect = getBoundingBox(car->position, texture->width,
+				texture->height);
 
 		Texture *playerTexture =
 				&gameState->resources.playerCarTextures[gameState->player.carIndex];
-		Math::Rectangle playerRect = { };
-		getBoundingBox(gameState->player.position, playerTexture, &playerRect);
+		Math::Rectangle playerRect = getBoundingBox(gameState->player.position,
+				playerTexture->width, playerTexture->height);
 
-		if (Collision::rectangle(carRect, playerRect)) {
+		Math::Rectangle collisionBox = getCollisionBox(playerRect, carRect);
+
+		if (Collision::rectangle(collisionBox, car->position)) {
 			printf("Traffic player collision!\n");
 		}
 

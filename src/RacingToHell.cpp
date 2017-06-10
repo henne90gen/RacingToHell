@@ -1,3 +1,6 @@
+// Debug flags:
+#define COLLISION_DEBUG 1
+
 #include <stdlib.h>
 #include <cstdlib>
 #include "RacingToHell.h"
@@ -38,8 +41,6 @@ void updateAndRenderRoad(VideoBuffer *buffer, GameState *gameState) {
 void spawnBullet(GameState *gameState, Math::Vector2f position,
 		Math::Vector2f velocity, bool playerBullet) {
 
-	printf("Spawning bullet\n");
-
 	velocity = velocity * (1.0 / Math::length(velocity));
 	// FIXME balance bullet speed
 	velocity = velocity * gameState->bulletSpeed;
@@ -75,8 +76,7 @@ void spawnBullet(GameState *gameState, Math::Vector2f position,
 	}
 }
 
-void updateAndRenderPlayer(VideoBuffer *buffer, Input *input,
-		GameState *gameState) {
+void updatePlayer(Input *input, GameState *gameState) {
 	int x = 0;
 	int y = 0;
 	if (input->downKey) {
@@ -93,7 +93,7 @@ void updateAndRenderPlayer(VideoBuffer *buffer, Input *input,
 	}
 
 	if (x || y) {
-		Math::Vector2f movement = { };
+		Math::Vector2f movement = {};
 		movement.x = x;
 		movement.y = y;
 		movement = Math::normalize(movement);
@@ -103,12 +103,12 @@ void updateAndRenderPlayer(VideoBuffer *buffer, Input *input,
 
 	if (input->shootKeyClicked) {
 		Math::Vector2f velocity = input->mousePosition
-				- gameState->player.position;
+		- gameState->player.position;
 		spawnBullet(gameState, gameState->player.position, velocity, true);
 	}
 
 	Texture *texture =
-			&gameState->resources.playerCarTextures[gameState->player.carIndex];
+	&gameState->resources.playerCarTextures[gameState->player.carIndex];
 	// checking left and right
 	if (gameState->player.position.x < texture->width / 2) {
 		gameState->player.position.x = texture->width / 2;
@@ -124,9 +124,14 @@ void updateAndRenderPlayer(VideoBuffer *buffer, Input *input,
 			> WINDOW_HEIGHT - texture->height / 2) {
 		gameState->player.position.y = WINDOW_HEIGHT - texture->height / 2;
 	}
+}
+void renderPlayer(VideoBuffer *buffer, GameState *gameState) {
+	Texture *texture =
+	&gameState->resources.playerCarTextures[gameState->player.carIndex];
 
 	int textureX = gameState->player.position.x - texture->width / 2;
 	int textureY = gameState->player.position.y - texture->height / 2;
+
 	Render::textureAlpha(buffer, texture, textureX, textureY);
 }
 
@@ -150,16 +155,16 @@ bool updateAndRenderBullet(VideoBuffer* buffer, GameState* gameState,
 
 	if (playerBullet) {
 		for (int i = 0; i < gameState->lastTrafficCarIndex + 1; i++) {
-			TrafficCar car = gameState->traffic[i];
+			Car car = gameState->traffic[i];
 			Texture trafficTexture =
-					gameState->resources.trafficCarTextures[car.carIndex];
+			gameState->resources.trafficCarTextures[car.carIndex];
 			Math::Rectangle trafficRect = getBoundingBox(car.position,
 					trafficTexture.width, trafficTexture.height);
 			Math::Rectangle collisionBox = getCollisionBox(trafficRect,
 					bulletRect);
-
+#if COLLISION_DEBUG
 			Render::rectangle(buffer, collisionBox, 0xff000040);
-
+#endif
 			if (Collision::rectangle(collisionBox, bullet.position)) {
 				// TODO car should take damage
 				return true;
@@ -167,12 +172,14 @@ bool updateAndRenderBullet(VideoBuffer* buffer, GameState* gameState,
 		}
 	} else {
 		Texture playerTexture =
-				gameState->resources.playerCarTextures[gameState->player.carIndex];
+		gameState->resources.playerCarTextures[gameState->player.carIndex];
 		Math::Rectangle playerRect = getBoundingBox(gameState->player.position,
 				playerTexture.width, playerTexture.height);
 		Math::Rectangle collisionBox = getCollisionBox(playerRect, bulletRect);
-		Render::rectangle(buffer, collisionBox, 0xff000040);
 
+#if COLLISION_DEBUG
+		Render::rectangle(buffer, collisionBox, 0xff000040);
+#endif
 		if (Collision::rectangle(collisionBox, bullet.position)) {
 			// TODO player should take damage
 			return true;
@@ -186,7 +193,7 @@ bool updateAndRenderBullet(VideoBuffer* buffer, GameState* gameState,
 void updateAndRenderBullets(VideoBuffer* buffer, GameState* gameState) {
 	for (int i = 0; i < gameState->lastAIBulletIndex + 1; i++) {
 		if (updateAndRenderBullet(buffer, gameState, gameState->aiBullets[i],
-				false)) {
+						false)) {
 			Bullet bullet = gameState->aiBullets[gameState->lastAIBulletIndex];
 			gameState->aiBullets[i] = bullet;
 			gameState->lastAIBulletIndex--;
@@ -196,9 +203,9 @@ void updateAndRenderBullets(VideoBuffer* buffer, GameState* gameState) {
 
 	for (int i = 0; i < gameState->lastPlayerBulletIndex + 1; i++) {
 		if (updateAndRenderBullet(buffer, gameState,
-				gameState->playerBullets[i], true)) {
+						gameState->playerBullets[i], true)) {
 			Bullet bullet =
-					gameState->playerBullets[gameState->lastPlayerBulletIndex];
+			gameState->playerBullets[gameState->lastPlayerBulletIndex];
 			gameState->playerBullets[i] = bullet;
 			gameState->lastPlayerBulletIndex--;
 			i--;
@@ -207,14 +214,14 @@ void updateAndRenderBullets(VideoBuffer* buffer, GameState* gameState) {
 }
 
 void spawnTrafficCar(GameState* gameState) {
-	TrafficCar car = { };
+	Car car = {};
 	car.carIndex = std::rand() % NUM_TRAFFIC_TEXTURES;
 	float x = (std::rand() % 4) * (WINDOW_WIDTH / 4) + WINDOW_WIDTH / 8;
 	// FIXME set position back to -80 and enable speed again
 	car.position = {x, 180};
 //	car.speed = 5;
 
-	unsigned arrSize = sizeof(gameState->traffic) / sizeof(TrafficCar);
+	unsigned arrSize = sizeof(gameState->traffic) / sizeof(Car);
 	if (gameState->lastTrafficCarIndex + 1 < (int) arrSize) {
 		gameState->lastTrafficCarIndex++;
 		gameState->traffic[gameState->lastTrafficCarIndex] = car;
@@ -233,35 +240,39 @@ void updateAndRenderTraffic(VideoBuffer* buffer, GameState *gameState) {
 		if (gameState->lastTrafficCarIndex > 0) {
 			carIndex = std::rand() % gameState->lastTrafficCarIndex;
 		}
-		TrafficCar car = gameState->traffic[carIndex];
-		Math::Vector2f position = { car.position.x, car.position.y };
+		Car car = gameState->traffic[carIndex];
+		Math::Vector2f position = {car.position.x, car.position.y};
 		Math::Vector2f velocity = gameState->player.position - car.position;
 		spawnBullet(gameState, position, velocity, false);
 	}
 
 	for (int i = 0; i < gameState->lastTrafficCarIndex + 1; i++) {
-		TrafficCar *car = &gameState->traffic[i];
+		Car *car = &gameState->traffic[i];
 		car->position = {car->position.x, ((float) car->speed) + car->position.y};
 
 		Texture *texture =
-				&gameState->resources.trafficCarTextures[car->carIndex];
+		&gameState->resources.trafficCarTextures[car->carIndex];
 		Math::Rectangle carRect = getBoundingBox(car->position, texture->width,
 				texture->height);
 
 		Texture *playerTexture =
-				&gameState->resources.playerCarTextures[gameState->player.carIndex];
+		&gameState->resources.playerCarTextures[gameState->player.carIndex];
 		Math::Rectangle playerRect = getBoundingBox(gameState->player.position,
 				playerTexture->width, playerTexture->height);
 
 		Math::Rectangle collisionBox = getCollisionBox(playerRect, carRect);
 
+#if COLLISION_DEBUG
+		Render::rectangle(buffer, collisionBox, 0x0000ff40);
+#endif
+
 		if (Collision::rectangle(collisionBox, car->position)) {
-			printf("Traffic player collision!\n");
+			// TODO Game over!
 		}
 
 		if (car->position.y - texture->height > WINDOW_HEIGHT) {
 			gameState->traffic[i] =
-					gameState->traffic[gameState->lastTrafficCarIndex];
+			gameState->traffic[gameState->lastTrafficCarIndex];
 			gameState->lastTrafficCarIndex--;
 			i--;
 			continue;
@@ -273,19 +284,28 @@ void updateAndRenderTraffic(VideoBuffer* buffer, GameState *gameState) {
 	}
 }
 
+void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState) {
+
+}
+
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	GameState *gameState = getGameState(memory);
 	gameState->frameCounter++;
 
 	updateAndRenderRoad(buffer, gameState);
 
+	updateAndRenderItems(buffer, gameState);
+
+	// update player before doing collision detection with traffic
+	updatePlayer(input, gameState);
+
 	updateAndRenderTraffic(buffer, gameState);
 
-	updateAndRenderPlayer(buffer, input, gameState);
+	// render player after traffic, so he is always on top
+	renderPlayer(buffer, gameState);
 
 	updateAndRenderBullets(buffer, gameState);
 
 //	Render::debugInformation(buffer, input, gameState);
-
 //	Text::renderCharacterAlpha(buffer, 'a', 10, 10, 255, 0, 0, 20);
 }

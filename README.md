@@ -6,7 +6,7 @@
 
 - render
     - ~~draw circle~~
-    - use OpenGL to display pixel buffer
+    - ~~use OpenGL to display pixel buffer~~
 - font
     - save baseline
     - save kerning?
@@ -15,19 +15,23 @@
 - player control
     - mouse cursor
     - ~~car movement~~
-    - collision
+    - ~~collision~~
     - shooting
         - timing
 - enemies
     - ~~spawning~~
     - ~~movement~~
     - ~~shooting~~
-    - collision
+    - ~~collision~~
 - bullets
     - ~~spawning~~
     - ~~collision~~
     - damage
     - shape
+- items
+    - render
+    - collision
+    - effect
 - bosses
     - spawning
     - movement

@@ -35,16 +35,14 @@ struct Input {
     bool shootKeyClicked;
 };
 
-struct Player {
+struct Car {
 	Math::Vector2f position;
-	uint8_t health, carIndex;
-	uint8_t speed;
+	uint8_t health, carIndex, speed;
 };
 
-struct TrafficCar {
+struct Item {
 	Math::Vector2f position;
-	uint8_t health, carIndex;
-	uint8_t speed;
+
 };
 
 struct Bullet {
@@ -80,14 +78,18 @@ struct GameState {
 	uint32_t roadPosition;
 	uint8_t level;
 	uint8_t difficulty;
-	Player player;
+
+	Car player;
 
 	uint32_t trafficFrequency;
 	uint32_t bulletFrequency;
 	float bulletSpeed;
 
+	int32_t lastItemIndex = -1;
+	Item items[200];
+
 	int32_t lastTrafficCarIndex = -1;
-	TrafficCar traffic[200];
+	Car traffic[200];
 
 	int32_t lastPlayerBulletIndex = -1;
 	Bullet playerBullets[100];

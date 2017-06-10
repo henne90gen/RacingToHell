@@ -92,40 +92,11 @@ AudioData initAudioData() {
 		abort(errorMsg);
 	}
 
-	printf("Period size: %i\n", audio.period_size);
+	printf("Period size: %li\n", audio.period_size);
 
 	int32_t maxPossibleOverrun = 2 * 8 * sizeof(int16_t);
 	audio.buffer = (int16_t *) malloc(
 			audio.buffer_size_in_bytes + maxPossibleOverrun);
-
-	// Example on how to output sound
-	// Outputs a sine wave
-//	float sinebuff[48] = { 0, 4276, 8480, 12539, 16383, 19947, 23169, 25995,
-//			28377, 30272, 31650, 32486, 32767, 32486, 31650, 30272, 28377,
-//			25995, 23169, 19947, 16383, 12539, 8480, 4276, 0, -4276, -8480,
-//			-12539, -16383, -19947, -23169, -25995, -28377, -30272, -31650,
-//			-32486, -32767, -32486, -31650, -30272, -28377, -25995, -23169,
-//			-19947, -16383, -12539, -8480, -4276 };
-//	unsigned phase = 0;
-//	int seconds = 1;
-//	for (int loops = (seconds * 1000000) / audio.period_time; loops > 0;
-//			loops--) {
-//
-//		for (unsigned i = 0; i < audio.buff_size; i++) {
-//			audio.buffer[i] = sinebuff[phase % 48];
-//			phase = (phase + 1) % 4800;
-//		}
-//
-//		if ((error = snd_pcm_writei(audio.pcm_handle, audio.buffer,
-//				audio.frames)) == -EPIPE) {
-//			printf("Underrun occurred.\n");
-//			snd_pcm_prepare(audio.pcm_handle);
-//		} else if (error < 0) {
-//			std::string errorMsg = "Can't write to PCM device. "
-//					+ std::string(snd_strerror(error));
-//			abort(errorMsg);
-//		}
-//	}
 
 	printf("Successfully loaded audio context.\n");
 	return audio;
@@ -522,6 +493,7 @@ void swapVideoBuffers(VideoBuffer *videoBuffer) {
 }
 
 void swapSoundBuffers(GameMemory *memory) {
+	// this implementation is from https://github.com/nxsy/xcb_handmade
 	snd_pcm_sframes_t delay, avail;
 	int error = snd_pcm_avail_delay(audio.pcm_handle, &avail, &delay);
 	if (error < 0) {
@@ -563,15 +535,17 @@ void swapSoundBuffers(GameMemory *memory) {
 
 	Sound::getSoundSamples(memory, &soundBuffer);
 
-#define SOUND_DEBUG 1
+#define SOUND_DEBUG 0
 #if SOUND_DEBUG
 	// NOTE: "delay" is the delay of the soundcard hardware
 	printf("samples in buffer before write: %ld delay in samples: %ld\n", (audio.buffer_size_in_samples - avail), delay);
 #endif
+
 	int32_t writtenSamples = snd_pcm_writei(audio.pcm_handle, audio.buffer,
 			soundBuffer.sampleCount);
 	if (writtenSamples < 0) {
-		writtenSamples = snd_pcm_recover(audio.pcm_handle, writtenSamples, true);
+		writtenSamples = snd_pcm_recover(audio.pcm_handle, writtenSamples,
+				true);
 	} else if (writtenSamples != soundBuffer.sampleCount) {
 		printf("only wrote %d of %d samples\n", writtenSamples,
 				soundBuffer.sampleCount);
@@ -631,7 +605,9 @@ int main() {
 
 		updateAndRender(&graphics.videoBuffer, newInput, &memory);
 
+#if ENABLE_SOUND
 		swapSoundBuffers(&memory);
+#endif
 
 		swapVideoBuffers(&graphics.videoBuffer);
 

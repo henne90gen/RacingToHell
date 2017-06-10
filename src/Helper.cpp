@@ -1,3 +1,16 @@
+/**
+ * position - center of the model in question
+ * rectPos - top, left corner of the bounding box
+ * width, height - width and height of the bounding box
+ */
+void getBoundingBox(Math::Vector2f position,
+		Texture *texture, Math::Rectangle *rect) {
+	rect->width = texture->width;
+	rect->height = texture->height;
+	rect->position.x = position.x - rect->width / 2;
+	rect->position.y = position.y - rect->height / 2;
+}
+
 void importPixelData(void* src, void* dest, unsigned srcWidth,
 		unsigned srcHeight, int offsetX, int offsetY, unsigned destWidth,
 		unsigned destHeight) {

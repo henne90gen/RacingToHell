@@ -11,7 +11,7 @@
     - save baseline
     - save kerning?
 - sound
-    - linux support
+    - ~~linux support~~
 - player control
     - mouse cursor
     - ~~car movement~~

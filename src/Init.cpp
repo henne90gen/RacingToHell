@@ -77,5 +77,7 @@ void init(GameMemory *memory) {
 			Sound::PLAY_LOOP);
 
 	loadTextures(memory, gameState);
+
+	spawnTrafficCar(gameState);
 }
 

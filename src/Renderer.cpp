@@ -3,8 +3,87 @@
 
 namespace Render {
 
-void circle(VideoBuffer* buffer, int x, int y, unsigned radius,
+void rectangle(VideoBuffer * buffer, Math::Rectangle rect, uint32_t color) {
+	int offsetX = rect.position.x;
+	int offsetY = rect.position.y;
+	unsigned width = rect.width;
+	unsigned height = rect.height;
+
+	int32_t *currentBufferPixel = (int32_t *) buffer->content
+			+ offsetY * (int) buffer->width + offsetX;
+
+	int32_t nextLine = buffer->width - width;
+
+	for (int y = 0; y < (int) height; ++y) {
+		if (offsetY + y < 0) {
+			currentBufferPixel += buffer->width;
+			continue;
+		} else if (offsetY + y >= (int) buffer->height) {
+			break;
+		}
+
+		for (int x = 0; x < (int) width; ++x) {
+			if (offsetX + x < 0 || offsetX + x >= (int) buffer->width) {
+				currentBufferPixel++;
+				continue;
+			}
+
+			uint8_t *currentBufferPixel8 = (uint8_t *) currentBufferPixel;
+
+			uint8_t textureB = (color & 0xff000000) >> 24;
+			uint8_t textureG = (color & 0x00ff0000) >> 16;
+			uint8_t textureR = (color & 0x0000ff00) >> 8;
+			uint8_t textureA = color & 0x000000ff;
+
+			if (textureA == 255) {
+				color = (textureB << 24) + (textureG << 16) + (textureR << 8) + textureA;
+				*currentBufferPixel++ = color;
+			} else if (textureA == 0) {
+				currentBufferPixel++;
+			} else {
+				uint8_t bufferA = *currentBufferPixel8;
+
+				float textureAlpha = textureA / 255.0f;
+				float bufferAlpha = bufferA / 255.0f;
+
+				float resultAlpha = textureAlpha
+						+ bufferAlpha * (1.0f - textureAlpha);
+
+				if (resultAlpha == 0.0f) {
+					*currentBufferPixel = 0;
+				} else {
+					float newB = ((bufferAlpha * (1.0f - textureAlpha)
+							* *currentBufferPixel8) + (textureAlpha * textureB))
+							/ resultAlpha;
+					*currentBufferPixel8++ = (uint8_t) newB;
+
+					float newG = ((bufferAlpha * (1.0f - textureAlpha)
+							* *currentBufferPixel8) + (textureAlpha * textureG))
+							/ resultAlpha;
+					*currentBufferPixel8++ = (uint8_t) newG;
+
+					float newR = ((bufferAlpha * (1.0f - textureAlpha)
+							* *currentBufferPixel8) + (textureAlpha * textureR))
+							/ resultAlpha;
+					*currentBufferPixel8++ = (uint8_t) newR;
+
+					float newA = resultAlpha * 255.0f;
+					*currentBufferPixel8++ = (uint8_t) newA;
+				}
+
+				currentBufferPixel++;
+			}
+		}
+		currentBufferPixel += nextLine;
+	}
+}
+
+void circle(VideoBuffer* buffer, Math::Vector2f pos, unsigned radius,
 		uint32_t color) {
+	// prevent array index issues
+	int x = pos.x;
+	int y = pos.y;
+
 	if (x + radius < 0 || x - (int) radius > WINDOW_WIDTH) {
 		return;
 	}

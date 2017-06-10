@@ -1,6 +1,7 @@
 #pragma once
 
 #include "platform.h"
+#include "MyMath.h"
 
 struct VideoBuffer;
 struct GameState;
@@ -9,7 +10,9 @@ struct Input;
 
 namespace Render {
 
-void circle(VideoBuffer* buffer, int x, int y, unsigned radius, uint32_t color);
+void rectangle(VideoBuffer * buffer, Math::Rectangle rect, uint32_t color);
+
+void circle(VideoBuffer* buffer, Math::Vector2f pos, unsigned radius, uint32_t color);
 
 void explosion(VideoBuffer *buffer, GameState *gameState, int x, int y, unsigned *explosionIndex);
 

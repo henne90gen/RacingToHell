@@ -18,7 +18,9 @@ endif
 
 GCC_FLAGS := -Wall -g -O0
 
-SOURCE_FILES := src/Memory.cpp src/Sound.cpp src/MyMath.cpp src/Renderer.cpp src/Font.cpp src/RacingToHell.cpp
+ENABLE_SOUND := 0
+
+SOURCE_FILES := src/Collision.cpp src/Memory.cpp src/Sound.cpp src/MyMath.cpp src/Renderer.cpp src/Font.cpp src/RacingToHell.cpp
 
 include linux/Makefile windows/Makefile
 

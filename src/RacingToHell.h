@@ -6,6 +6,7 @@
 #include "Memory.h"
 #include "Sound.h"
 #include "Renderer.h"
+#include "Collision.h"
 
 struct VideoBuffer {
 
@@ -48,7 +49,7 @@ struct TrafficCar {
 
 struct Bullet {
 	Math::Vector2f position, velocity;
-	uint32_t color;
+	uint32_t color, radius;
 };
 
 struct SoundOutputBuffer {

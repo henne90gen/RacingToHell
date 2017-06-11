@@ -3,6 +3,14 @@
 
 namespace Render {
 
+void healthBar(VideoBuffer *buffer, Math::Vector2f position, uint8_t health, uint32_t color) {
+	Math::Rectangle healthBar = { };
+	healthBar.position = {position.x - health / 2, (float) position.y};
+	healthBar.width = health;
+	healthBar.height = 8;
+	Render::rectangle(buffer, healthBar, 0xff0000ff);
+}
+
 void rectangle(VideoBuffer * buffer, Math::Rectangle rect, uint32_t color) {
 	int offsetX = rect.position.x;
 	int offsetY = rect.position.y;
@@ -36,7 +44,8 @@ void rectangle(VideoBuffer * buffer, Math::Rectangle rect, uint32_t color) {
 			uint8_t textureA = color & 0x000000ff;
 
 			if (textureA == 255) {
-				color = (textureB << 24) + (textureG << 16) + (textureR << 8) + textureA;
+				color = (textureB << 24) + (textureG << 16) + (textureR << 8)
+						+ textureA;
 				*currentBufferPixel++ = color;
 			} else if (textureA == 0) {
 				currentBufferPixel++;

@@ -10,6 +10,8 @@ struct Input;
 
 namespace Render {
 
+void healthBar(VideoBuffer *buffer, Math::Vector2f position, uint8_t health, uint32_t color);
+
 void rectangle(VideoBuffer * buffer, Math::Rectangle rect, uint32_t color);
 
 void circle(VideoBuffer* buffer, Math::Vector2f pos, unsigned radius, uint32_t color);

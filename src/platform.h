@@ -8,6 +8,11 @@
 #define NUM_PLAYER_TEXTURES 6
 #define NUM_TRAFFIC_TEXTURES 7
 #define NUM_ITEM_TEXTURES 2
+#define TOOLBOX_ID 0
+#define CANISTER_ID 1
+
+// Debug flags:
+#define COLLISION_DEBUG 0
 
 struct File {
 	char* content;

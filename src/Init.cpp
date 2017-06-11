@@ -27,12 +27,14 @@ void loadTextures(GameMemory *memory, GameState *gameState) {
 
 	// Loading Toolbox with index 0
 	File toolFile = readFile("./res/textures/toolbox.bmp");
-	gameState->resources.itemTextures[0] = readBmpIntoMemory(toolFile, memory);
+	gameState->resources.itemTextures[TOOLBOX_ID] = readBmpIntoMemory(toolFile,
+			memory);
 	freeFile(&toolFile);
 
 	// Loading Canister with index 1
 	File canFile = readFile("./res/textures/canister.bmp");
-	gameState->resources.itemTextures[1] = readBmpIntoMemory(canFile, memory);
+	gameState->resources.itemTextures[CANISTER_ID] = readBmpIntoMemory(canFile,
+			memory);
 	freeFile(&canFile);
 
 	File explosionFile = readFile("./res/textures/explosion.bmp");
@@ -64,6 +66,7 @@ void init(GameMemory *memory) {
 	gameState->player.position.x = (float) (WINDOW_WIDTH / 2);
 	gameState->player.position.y = (float) (WINDOW_HEIGHT / 2);
 	gameState->player.speed = 10;
+	gameState->player.health = 75;
 
 	gameState->level = 0;
 	gameState->difficulty = 0;

@@ -1,6 +1,3 @@
-// Debug flags:
-#define COLLISION_DEBUG 0
-
 #include <stdlib.h>
 #include <cstdlib>
 #include "RacingToHell.h"
@@ -136,10 +133,14 @@ void renderPlayer(VideoBuffer *buffer, GameState *gameState) {
 	int textureY = gameState->player.position.y - texture->height / 2;
 
 	Render::textureAlpha(buffer, texture, textureX, textureY);
+
+	Render::healthBar(buffer,
+			{ gameState->player.position.x, (float) textureY - 13 },
+			gameState->player.health, 0xff0000ff);
 }
 
 bool updateAndRenderBullet(VideoBuffer* buffer, GameState* gameState,
-		Bullet &bullet, bool playerBullet) {
+		Bullet &bullet, bool isPlayerBullet) {
 	bullet.position = bullet.position + bullet.velocity;
 
 	if (bullet.position.x < 0) {
@@ -156,12 +157,13 @@ bool updateAndRenderBullet(VideoBuffer* buffer, GameState* gameState,
 	Math::Rectangle bulletRect = getBoundingBox(bullet.position,
 			bullet.radius * 2, bullet.radius * 2);
 
-	if (playerBullet) {
+	if (isPlayerBullet) {
 		for (int i = 0; i < gameState->lastTrafficCarIndex + 1; i++) {
 			Car *car = &gameState->traffic[i];
 			Texture trafficTexture =
 					gameState->resources.trafficCarTextures[car->carIndex];
 
+			// decreases the size of the collision box
 			int bufferZone = 17;
 			Math::Rectangle trafficRect = getBoundingBox(car->position,
 					trafficTexture.width - bufferZone,
@@ -175,6 +177,7 @@ bool updateAndRenderBullet(VideoBuffer* buffer, GameState* gameState,
 #endif
 
 			if (Collision::rectangle(collisionBox, bullet.position)) {
+				// FIXME balance damage
 				car->health -= 1;
 				return true;
 			}
@@ -190,7 +193,8 @@ bool updateAndRenderBullet(VideoBuffer* buffer, GameState* gameState,
 #endif
 
 		if (Collision::rectangle(collisionBox, bullet.position)) {
-			// TODO player should take damage
+			// FIXME balance damage
+			gameState->player.health -= 1;
 			return true;
 		}
 	}
@@ -226,10 +230,9 @@ void spawnTrafficCar(GameState* gameState) {
 	Car car = { };
 	car.carIndex = std::rand() % NUM_TRAFFIC_TEXTURES;
 	float x = (std::rand() % 4) * (WINDOW_WIDTH / 4) + WINDOW_WIDTH / 8;
-	// FIXME set position back to -80 and enable speed again
-	car.position = {x, 180};
-//	car.speed = 5;
-	car.health = 100;
+	car.position = {x, -80};
+	car.speed = 5;
+	car.health = 75;
 
 	unsigned arrSize = sizeof(gameState->traffic) / sizeof(Car);
 	if (gameState->lastTrafficCarIndex + 1 < (int) arrSize) {
@@ -240,7 +243,7 @@ void spawnTrafficCar(GameState* gameState) {
 
 void updateAndRenderTraffic(VideoBuffer* buffer, GameState *gameState) {
 	if (gameState->frameCounter % gameState->trafficFrequency == 0) {
-//		spawnTrafficCar(gameState);
+		spawnTrafficCar(gameState);
 	}
 
 	if (gameState->frameCounter % gameState->bulletFrequency == 0
@@ -264,13 +267,12 @@ void updateAndRenderTraffic(VideoBuffer* buffer, GameState *gameState) {
 				&gameState->resources.trafficCarTextures[car->carIndex];
 
 		if (car->health <= 0) {
-			car->health = 100;
 			// TODO should we show an explosion?
-//			gameState->traffic[i] =
-//					gameState->traffic[gameState->lastTrafficCarIndex];
-//			gameState->lastTrafficCarIndex--;
-//			i--;
-//			continue;
+			gameState->traffic[i] =
+					gameState->traffic[gameState->lastTrafficCarIndex];
+			gameState->lastTrafficCarIndex--;
+			i--;
+			continue;
 		}
 
 		if (car->position.y - texture->height / 2 > WINDOW_HEIGHT) {
@@ -301,11 +303,9 @@ void updateAndRenderTraffic(VideoBuffer* buffer, GameState *gameState) {
 		int x = car->position.x - texture->width / 2;
 		int y = car->position.y - texture->height / 2;
 		Render::textureAlpha(buffer, texture, x, y);
-		Math::Rectangle healthBar = { };
-		healthBar.position = {car->position.x - car->health / 2, (float) y};
-		healthBar.width = car->health;
-		healthBar.height = 8;
-		Render::rectangle(buffer, healthBar, 0xff0000ff);
+
+		Render::healthBar(buffer, { car->position.x, (float) y - 13 },
+				car->health, 0xff0000ff);
 	}
 }
 
@@ -334,6 +334,7 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState) {
 
 		Texture *texture = &gameState->resources.itemTextures[item->itemIndex];
 
+		// decreases the size of the collision box
 		int bufferZone = 10;
 		Math::Rectangle rect = getBoundingBox(item->position,
 				texture->width - bufferZone, texture->height - bufferZone);
@@ -349,6 +350,13 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState) {
 #endif
 
 		if (Collision::rectangle(collisionRect, gameState->player.position)) {
+			switch (item->itemIndex) {
+			case TOOLBOX_ID:
+				gameState->player.health += 10;
+				break;
+			case CANISTER_ID:
+				break;
+			}
 			gameState->items[i] = gameState->items[gameState->lastItemIndex];
 			gameState->lastItemIndex--;
 			i--;

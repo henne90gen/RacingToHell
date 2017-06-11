@@ -27,12 +27,17 @@ struct GameFont {
 };
 
 struct Input {
-	// TODO think about coordinate system for screen
 	Math::Vector2f mousePosition;
 	bool upKey, downKey, leftKey, rightKey;
 	bool pauseKey;
 	bool shootKeyPressed;
 	bool shootKeyClicked;
+};
+
+struct Player {
+	Math::Vector2f position;
+	uint8_t carIndex;
+	int32_t speed, health, maxHealth, energy, maxEnergy;
 };
 
 struct Car {
@@ -80,7 +85,7 @@ struct GameState {
 	uint8_t level;
 	uint8_t difficulty;
 
-	Car player;
+	Player player;
 
 	uint32_t trafficFrequency;
 	uint32_t bulletFrequency;

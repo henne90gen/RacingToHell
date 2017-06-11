@@ -39,6 +39,7 @@
     - movement
     - shooting
     - phases
+- game over
 
 
 ### IDEAs

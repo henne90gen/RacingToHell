@@ -3,12 +3,12 @@
 
 namespace Render {
 
-void healthBar(VideoBuffer *buffer, Math::Vector2f position, uint8_t health, uint32_t color) {
+void bar(VideoBuffer *buffer, Math::Vector2f position, uint8_t length, uint32_t color) {
 	Math::Rectangle healthBar = { };
-	healthBar.position = {position.x - health / 2, (float) position.y};
-	healthBar.width = health;
+	healthBar.position = {position.x - length / 2, (float) position.y};
+	healthBar.width = length;
 	healthBar.height = 8;
-	Render::rectangle(buffer, healthBar, 0xff0000ff);
+	Render::rectangle(buffer, healthBar, color);
 }
 
 void rectangle(VideoBuffer * buffer, Math::Rectangle rect, uint32_t color) {

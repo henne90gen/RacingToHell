@@ -67,6 +67,9 @@ void init(GameMemory *memory) {
 	gameState->player.position.y = (float) (WINDOW_HEIGHT / 2);
 	gameState->player.speed = 10;
 	gameState->player.health = 75;
+	gameState->player.maxHealth = 75;
+	gameState->player.energy = 75;
+	gameState->player.maxEnergy = 75;
 
 	gameState->level = 0;
 	gameState->difficulty = 0;

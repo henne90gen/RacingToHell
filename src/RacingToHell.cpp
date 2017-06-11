@@ -93,6 +93,7 @@ void updatePlayer(Input *input, GameState *gameState) {
 		x += gameState->player.speed;
 	}
 
+	// movement
 	if (x || y) {
 		Math::Vector2f movement = { };
 		movement.x = x;
@@ -102,10 +103,26 @@ void updatePlayer(Input *input, GameState *gameState) {
 		gameState->player.position = gameState->player.position + movement;
 	}
 
-	if (input->shootKeyClicked) {
+	// energy
+	gameState->player.energy -= 1;
+	if (gameState->player.energy <= 0) {
+		// TODO Game over
+		gameState->player.energy = 100;
+	}
+
+	// health
+	if (gameState->player.health <= 0) {
+		// TODO Game over
+		gameState->player.health = 100;
+	}
+
+	if (input->shootKeyClicked
+			&& gameState->player.energy >= 15/*FIXME make this a variable*/) {
 		Math::Vector2f velocity = input->mousePosition
 				- gameState->player.position;
 		spawnBullet(gameState, gameState->player.position, velocity, true);
+		// FIXME make this a variable
+		gameState->player.energy -= 10;
 	}
 
 	Texture *texture = getPlayerTexture(gameState);
@@ -134,9 +151,10 @@ void renderPlayer(VideoBuffer *buffer, GameState *gameState) {
 
 	Render::textureAlpha(buffer, texture, textureX, textureY);
 
-	Render::healthBar(buffer,
-			{ gameState->player.position.x, (float) textureY - 13 },
+	Render::bar(buffer, { gameState->player.position.x, (float) textureY - 23 },
 			gameState->player.health, 0xff0000ff);
+	Render::bar(buffer, { gameState->player.position.x, (float) textureY - 13 },
+			gameState->player.energy, 0x0000fffe);
 }
 
 bool updateAndRenderBullet(VideoBuffer* buffer, GameState* gameState,
@@ -304,8 +322,8 @@ void updateAndRenderTraffic(VideoBuffer* buffer, GameState *gameState) {
 		int y = car->position.y - texture->height / 2;
 		Render::textureAlpha(buffer, texture, x, y);
 
-		Render::healthBar(buffer, { car->position.x, (float) y - 13 },
-				car->health, 0xff0000ff);
+		Render::bar(buffer, { car->position.x, (float) y - 13 }, car->health,
+				0xff0000ff);
 	}
 }
 
@@ -355,6 +373,7 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState) {
 				gameState->player.health += 10;
 				break;
 			case CANISTER_ID:
+				gameState->player.energy += 10;
 				break;
 			}
 			gameState->items[i] = gameState->items[gameState->lastItemIndex];

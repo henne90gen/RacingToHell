@@ -1,5 +1,5 @@
 // Debug flags:
-#define COLLISION_DEBUG 1
+#define COLLISION_DEBUG 0
 
 #include <stdlib.h>
 #include <cstdlib>
@@ -161,8 +161,12 @@ bool updateAndRenderBullet(VideoBuffer* buffer, GameState* gameState,
 			Car *car = &gameState->traffic[i];
 			Texture trafficTexture =
 					gameState->resources.trafficCarTextures[car->carIndex];
+
+			int bufferZone = 17;
 			Math::Rectangle trafficRect = getBoundingBox(car->position,
-					trafficTexture.width, trafficTexture.height);
+					trafficTexture.width - bufferZone,
+					trafficTexture.height - bufferZone);
+
 			Math::Rectangle collisionBox = getCollisionBox(trafficRect,
 					bulletRect);
 
@@ -260,12 +264,13 @@ void updateAndRenderTraffic(VideoBuffer* buffer, GameState *gameState) {
 				&gameState->resources.trafficCarTextures[car->carIndex];
 
 		if (car->health <= 0) {
+			car->health = 100;
 			// TODO should we show an explosion?
-			gameState->traffic[i] =
-					gameState->traffic[gameState->lastTrafficCarIndex];
-			gameState->lastTrafficCarIndex--;
-			i--;
-			continue;
+//			gameState->traffic[i] =
+//					gameState->traffic[gameState->lastTrafficCarIndex];
+//			gameState->lastTrafficCarIndex--;
+//			i--;
+//			continue;
 		}
 
 		if (car->position.y - texture->height / 2 > WINDOW_HEIGHT) {
@@ -329,8 +334,9 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState) {
 
 		Texture *texture = &gameState->resources.itemTextures[item->itemIndex];
 
-		Math::Rectangle rect = getBoundingBox(item->position, texture->width,
-				texture->height);
+		int bufferZone = 10;
+		Math::Rectangle rect = getBoundingBox(item->position,
+				texture->width - bufferZone, texture->height - bufferZone);
 
 		Texture *playerTexture = getPlayerTexture(gameState);
 		Math::Rectangle playerRect = getBoundingBox(gameState->player.position,

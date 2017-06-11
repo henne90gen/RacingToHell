@@ -28,9 +28,11 @@
     - ~~collision~~
     - damage
     - shape
+    - hit sound
 - items
-    - render
-    - collision
+    - ~~render~~
+    - ~~collision~~
+    - pickup sound
     - effect
 - bosses
     - spawning

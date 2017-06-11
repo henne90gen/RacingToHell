@@ -1,0 +1,9 @@
+normal_build:
+  script:
+    - make all
+  stage: build
+
+optimized_build:
+  script:
+    - make optimized
+  stage: build

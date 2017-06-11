@@ -37,7 +37,8 @@ struct Input {
 
 struct Car {
 	Math::Vector2f position;
-	uint8_t health, carIndex, speed;
+	uint8_t carIndex;
+	int8_t health, speed;
 };
 
 struct Item {

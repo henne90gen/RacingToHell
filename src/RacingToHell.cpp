@@ -27,6 +27,10 @@ Texture* getCurrentRoad(GameState *gameState) {
 	return &gameState->resources.roadTextures[gameState->level % 4];
 }
 
+Texture* getPlayerTexture(GameState *gameState) {
+	return &gameState->resources.playerCarTextures[gameState->player.carIndex];
+}
+
 void updateAndRenderRoad(VideoBuffer *buffer, GameState *gameState) {
 	gameState->roadPosition += getRoadSpeed(gameState);
 	if (gameState->roadPosition >= 800) {
@@ -107,8 +111,7 @@ void updatePlayer(Input *input, GameState *gameState) {
 		spawnBullet(gameState, gameState->player.position, velocity, true);
 	}
 
-	Texture *texture =
-			&gameState->resources.playerCarTextures[gameState->player.carIndex];
+	Texture *texture = getPlayerTexture(gameState);
 	// checking left and right
 	if (gameState->player.position.x < texture->width / 2) {
 		gameState->player.position.x = texture->width / 2;
@@ -125,9 +128,9 @@ void updatePlayer(Input *input, GameState *gameState) {
 		gameState->player.position.y = WINDOW_HEIGHT - texture->height / 2;
 	}
 }
+
 void renderPlayer(VideoBuffer *buffer, GameState *gameState) {
-	Texture *texture =
-			&gameState->resources.playerCarTextures[gameState->player.carIndex];
+	Texture *texture = getPlayerTexture(gameState);
 
 	int textureX = gameState->player.position.x - texture->width / 2;
 	int textureY = gameState->player.position.y - texture->height / 2;
@@ -155,31 +158,33 @@ bool updateAndRenderBullet(VideoBuffer* buffer, GameState* gameState,
 
 	if (playerBullet) {
 		for (int i = 0; i < gameState->lastTrafficCarIndex + 1; i++) {
-			Car car = gameState->traffic[i];
+			Car *car = &gameState->traffic[i];
 			Texture trafficTexture =
-					gameState->resources.trafficCarTextures[car.carIndex];
-			Math::Rectangle trafficRect = getBoundingBox(car.position,
+					gameState->resources.trafficCarTextures[car->carIndex];
+			Math::Rectangle trafficRect = getBoundingBox(car->position,
 					trafficTexture.width, trafficTexture.height);
 			Math::Rectangle collisionBox = getCollisionBox(trafficRect,
 					bulletRect);
+
 #if COLLISION_DEBUG
 			Render::rectangle(buffer, collisionBox, 0xff000040);
 #endif
+
 			if (Collision::rectangle(collisionBox, bullet.position)) {
-				// TODO car should take damage
+				car->health -= 1;
 				return true;
 			}
 		}
 	} else {
-		Texture playerTexture =
-				gameState->resources.playerCarTextures[gameState->player.carIndex];
+		Texture *playerTexture = getPlayerTexture(gameState);
 		Math::Rectangle playerRect = getBoundingBox(gameState->player.position,
-				playerTexture.width, playerTexture.height);
+				playerTexture->width, playerTexture->height);
 		Math::Rectangle collisionBox = getCollisionBox(playerRect, bulletRect);
 
 #if COLLISION_DEBUG
 		Render::rectangle(buffer, collisionBox, 0xff000040);
 #endif
+
 		if (Collision::rectangle(collisionBox, bullet.position)) {
 			// TODO player should take damage
 			return true;
@@ -220,6 +225,7 @@ void spawnTrafficCar(GameState* gameState) {
 	// FIXME set position back to -80 and enable speed again
 	car.position = {x, 180};
 //	car.speed = 5;
+	car.health = 100;
 
 	unsigned arrSize = sizeof(gameState->traffic) / sizeof(Car);
 	if (gameState->lastTrafficCarIndex + 1 < (int) arrSize) {
@@ -252,11 +258,28 @@ void updateAndRenderTraffic(VideoBuffer* buffer, GameState *gameState) {
 
 		Texture *texture =
 				&gameState->resources.trafficCarTextures[car->carIndex];
+
+		if (car->health <= 0) {
+			// TODO should we show an explosion?
+			gameState->traffic[i] =
+					gameState->traffic[gameState->lastTrafficCarIndex];
+			gameState->lastTrafficCarIndex--;
+			i--;
+			continue;
+		}
+
+		if (car->position.y - texture->height / 2 > WINDOW_HEIGHT) {
+			gameState->traffic[i] =
+					gameState->traffic[gameState->lastTrafficCarIndex];
+			gameState->lastTrafficCarIndex--;
+			i--;
+			continue;
+		}
+
 		Math::Rectangle carRect = getBoundingBox(car->position, texture->width,
 				texture->height);
 
-		Texture *playerTexture =
-				&gameState->resources.playerCarTextures[gameState->player.carIndex];
+		Texture *playerTexture = getPlayerTexture(gameState);
 		Math::Rectangle playerRect = getBoundingBox(gameState->player.position,
 				playerTexture->width, playerTexture->height);
 
@@ -270,17 +293,14 @@ void updateAndRenderTraffic(VideoBuffer* buffer, GameState *gameState) {
 			// TODO Game over!
 		}
 
-		if (car->position.y - texture->height > WINDOW_HEIGHT) {
-			gameState->traffic[i] =
-					gameState->traffic[gameState->lastTrafficCarIndex];
-			gameState->lastTrafficCarIndex--;
-			i--;
-			continue;
-		}
-
 		int x = car->position.x - texture->width / 2;
 		int y = car->position.y - texture->height / 2;
 		Render::textureAlpha(buffer, texture, x, y);
+		Math::Rectangle healthBar = { };
+		healthBar.position = {car->position.x - car->health / 2, (float) y};
+		healthBar.width = car->health;
+		healthBar.height = 8;
+		Render::rectangle(buffer, healthBar, 0xff0000ff);
 	}
 }
 
@@ -289,7 +309,7 @@ void spawnItem(GameState *gameState) {
 	item.itemIndex = std::rand() % NUM_ITEM_TEXTURES;
 	float x = (std::rand() % 4) * (WINDOW_WIDTH / 4) + WINDOW_WIDTH / 8;
 	item.position = {x, -80};
-	item.speed = 5;
+	item.speed = getRoadSpeed(gameState);
 
 	unsigned arrSize = sizeof(gameState->items) / sizeof(Item);
 	if (gameState->lastItemIndex + 1 < (int) arrSize) {
@@ -312,8 +332,7 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState) {
 		Math::Rectangle rect = getBoundingBox(item->position, texture->width,
 				texture->height);
 
-		Texture *playerTexture =
-				&gameState->resources.playerCarTextures[gameState->player.carIndex];
+		Texture *playerTexture = getPlayerTexture(gameState);
 		Math::Rectangle playerRect = getBoundingBox(gameState->player.position,
 				playerTexture->width, playerTexture->height);
 
@@ -324,6 +343,13 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState) {
 #endif
 
 		if (Collision::rectangle(collisionRect, gameState->player.position)) {
+			gameState->items[i] = gameState->items[gameState->lastItemIndex];
+			gameState->lastItemIndex--;
+			i--;
+			continue;
+		}
+
+		if (item->position.y - texture->height / 2 > WINDOW_HEIGHT) {
 			gameState->items[i] = gameState->items[gameState->lastItemIndex];
 			gameState->lastItemIndex--;
 			i--;

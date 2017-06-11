@@ -3,7 +3,7 @@
 namespace Collision {
 
 /**
- * rectX, rectY specify the top left position of the rectangle
+ * Possibly make the collision more forgiving (make rectangle smaller)
  */
 bool rectangle(Math::Rectangle rect, Math::Vector2f pos) {
 	if (pos.x > rect.position.x && pos.x < rect.position.x + rect.width) {

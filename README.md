@@ -45,5 +45,8 @@
 ### IDEAs
 
 - powerups
+    - destroy cars in radius
+    - remove all bullets
 - slow motion (everything moves slower)
 - 'fast' motion (everything except the player is slower)
+- pot hole

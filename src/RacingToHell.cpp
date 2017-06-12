@@ -395,6 +395,19 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState) {
 	}
 }
 
+void updateAndRenderTimer(VideoBuffer *buffer, GameState* gameState) {
+	gameState->levelTime += 1.0f;
+	if (gameState->levelTime >= WINDOW_WIDTH) {
+		gameState->levelTime = 0;
+	}
+
+	Math::Rectangle rect = { };
+	rect.position = {0, 0};
+	rect.height = 10;
+	rect.width = gameState->levelTime;
+	Render::rectangle(buffer, rect, 0xfffffff0);
+}
+
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	GameState *gameState = getGameState(memory);
 	gameState->frameCounter++;
@@ -412,6 +425,8 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	renderPlayer(buffer, gameState);
 
 	updateAndRenderBullets(buffer, gameState);
+
+	updateAndRenderTimer(buffer, gameState);
 
 //	Render::debugInformation(buffer, input, gameState);
 //	Text::renderCharacterAlpha(buffer, 'a', 10, 10, 255, 0, 0, 20);

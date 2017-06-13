@@ -423,10 +423,10 @@ GLuint buildProgram(const GLchar *vertex_shader_source,
 		const GLchar *fragment_shader_source,
 		const GLint fragment_shader_source_length) {
 
-	GLuint vertex_shader = compileShader(
-	GL_VERTEX_SHADER, vertex_shader_source, vertex_shader_source_length);
-	GLuint fragment_shader = compileShader(
-	GL_FRAGMENT_SHADER, fragment_shader_source, fragment_shader_source_length);
+	GLuint vertex_shader = compileShader(GL_VERTEX_SHADER, vertex_shader_source,
+			vertex_shader_source_length);
+	GLuint fragment_shader = compileShader(GL_FRAGMENT_SHADER,
+			fragment_shader_source, fragment_shader_source_length);
 	return linkProgram(vertex_shader, fragment_shader);
 }
 

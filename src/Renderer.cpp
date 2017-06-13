@@ -3,7 +3,61 @@
 
 namespace Render {
 
-void bar(VideoBuffer *buffer, Math::Vector2f position, uint8_t length, uint32_t color) {
+void blendColor(uint32_t color, uint32_t* currentBufferPixel) {
+	uint8_t *currentBufferPixel8 = (uint8_t *) currentBufferPixel;
+	uint8_t *currentColorPointer8 = (uint8_t *) &color;
+
+	uint8_t colorR = *currentColorPointer8++;
+	uint8_t colorG = *currentColorPointer8++;
+	uint8_t colorB = *currentColorPointer8++;
+	uint8_t colorA = *currentColorPointer8++;
+
+	if (color == 0x80010203) {
+		int x = 10;
+	}
+
+	if (colorA == 255) {
+		*currentBufferPixel = color;
+	} else if (colorA != 0) {
+		uint8_t bufferA = *currentBufferPixel8;
+
+		float textureAlpha = colorA / 255.0f;
+		float bufferAlpha = bufferA / 255.0f;
+
+		float resultAlpha = textureAlpha + bufferAlpha * (1.0f - textureAlpha);
+
+		if (resultAlpha == 0.0f) {
+			*currentBufferPixel = 0;
+		} else {
+			float newR = ((bufferAlpha * (1.0f - textureAlpha)
+					* *currentBufferPixel8) + (textureAlpha * colorR))
+					/ resultAlpha;
+			*currentBufferPixel8++ = (uint8_t) newR;
+
+			float newG = ((bufferAlpha * (1.0f - textureAlpha)
+					* *currentBufferPixel8) + (textureAlpha * colorG))
+					/ resultAlpha;
+			*currentBufferPixel8++ = (uint8_t) newG;
+
+			float newB = ((bufferAlpha * (1.0f - textureAlpha)
+					* *currentBufferPixel8) + (textureAlpha * colorB))
+					/ resultAlpha;
+			*currentBufferPixel8++ = (uint8_t) newB;
+
+			float newA = resultAlpha * 255.0f;
+			*currentBufferPixel8++ = (uint8_t) newA;
+		}
+	}
+}
+
+void switchPoint(Math::Vector2f *point1, Math::Vector2f *point2) {
+	Math::Vector2f tmp = *point1;
+	*point1 = *point2;
+	*point2 = tmp;
+}
+
+void bar(VideoBuffer *buffer, Math::Vector2f position, uint8_t length,
+		uint32_t color) {
 	Math::Rectangle healthBar = { };
 	healthBar.position = {position.x - length / 2, (float) position.y};
 	healthBar.width = length;
@@ -11,16 +65,92 @@ void bar(VideoBuffer *buffer, Math::Vector2f position, uint8_t length, uint32_t 
 	Render::rectangle(buffer, healthBar, color);
 }
 
-void rectangle(VideoBuffer * buffer, Math::Rectangle rect, uint32_t color) {
+// render bottom flat triangle
+void triangleBottom(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1,
+		Math::Vector2f point2, Math::Vector2f point3) {
+
+	if (point2.x > point3.x) {
+		switchPoint(&point2, &point3);
+	}
+
+	float invslope1 = (point2.x - point1.x) / (point2.y - point1.y);
+	float invslope2 = (point3.x - point1.x) / (point3.y - point1.y);
+
+	float curx1 = point1.x;
+	float curx2 = point1.x;
+
+	for (int scanlineY = point1.y; scanlineY <= point2.y; scanlineY++) {
+		for (int x = curx1; x < curx2; x++) {
+			uint32_t *currentBufferPixel = ((uint32_t *) buffer->content)
+					+ (scanlineY * (int) buffer->width + x);
+			blendColor(color, currentBufferPixel);
+		}
+		curx1 += invslope1;
+		curx2 += invslope2;
+	}
+}
+
+// render top flat triangle
+void triangleTop(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1,
+		Math::Vector2f point2, Math::Vector2f point3) {
+
+	if (point1.x > point2.x) {
+		switchPoint(&point1, &point2);
+	}
+
+	float invslope1 = (point3.x - point1.x) / (point3.y - point1.y);
+	float invslope2 = (point3.x - point2.x) / (point3.y - point2.y);
+
+	float curx1 = point3.x;
+	float curx2 = point3.x;
+
+	for (int scanlineY = point3.y; scanlineY > point1.y; scanlineY--) {
+		for (int x = curx1; x < curx2; x++) {
+			uint32_t *currentBufferPixel = (uint32_t *) buffer->content
+					+ scanlineY * (int) buffer->width + x;
+			blendColor(color, currentBufferPixel);
+		}
+		curx1 -= invslope1;
+		curx2 -= invslope2;
+	}
+}
+
+void triangle(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1,
+		Math::Vector2f point2, Math::Vector2f point3) {
+	if (point1.y > point2.y) {
+		switchPoint(&point1, &point2);
+	}
+	if (point2.y > point3.y) {
+		switchPoint(&point2, &point3);
+	}
+	if (point1.y > point2.y) {
+		switchPoint(&point1, &point2);
+	}
+
+	if (point2.y == point3.y) {
+		triangleBottom(buffer, color, point1, point2, point3);
+	} else if (point1.y == point2.y) {
+		triangleTop(buffer, color, point1, point2, point3);
+	} else {
+		float x = point1.x
+				+ ((point2.y - point1.y) / (point3.y - point1.y))
+						* (point3.x - point1.x);
+		Math::Vector2f point4 = Math::Vector2f { x, point2.y };
+		triangleBottom(buffer, color, point1, point2, point4);
+		triangleTop(buffer, color, point2, point4, point3);
+	}
+}
+
+void rectangle(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color) {
 	int offsetX = rect.position.x;
 	int offsetY = rect.position.y;
 	unsigned width = rect.width;
 	unsigned height = rect.height;
 
-	int32_t *currentBufferPixel = (int32_t *) buffer->content
+	uint32_t *currentBufferPixel = (uint32_t *) buffer->content
 			+ offsetY * (int) buffer->width + offsetX;
 
-	int32_t nextLine = buffer->width - width;
+	uint32_t nextLine = buffer->width - width;
 
 	for (int y = 0; y < (int) height; ++y) {
 		if (offsetY + y < 0) {
@@ -35,53 +165,8 @@ void rectangle(VideoBuffer * buffer, Math::Rectangle rect, uint32_t color) {
 				currentBufferPixel++;
 				continue;
 			}
+			blendColor(color, currentBufferPixel++);
 
-			uint8_t *currentBufferPixel8 = (uint8_t *) currentBufferPixel;
-
-			uint8_t textureB = (color & 0xff000000) >> 24;
-			uint8_t textureG = (color & 0x00ff0000) >> 16;
-			uint8_t textureR = (color & 0x0000ff00) >> 8;
-			uint8_t textureA = color & 0x000000ff;
-
-			if (textureA == 255) {
-				color = (textureB << 24) + (textureG << 16) + (textureR << 8)
-						+ textureA;
-				*currentBufferPixel++ = color;
-			} else if (textureA == 0) {
-				currentBufferPixel++;
-			} else {
-				uint8_t bufferA = *currentBufferPixel8;
-
-				float textureAlpha = textureA / 255.0f;
-				float bufferAlpha = bufferA / 255.0f;
-
-				float resultAlpha = textureAlpha
-						+ bufferAlpha * (1.0f - textureAlpha);
-
-				if (resultAlpha == 0.0f) {
-					*currentBufferPixel = 0;
-				} else {
-					float newB = ((bufferAlpha * (1.0f - textureAlpha)
-							* *currentBufferPixel8) + (textureAlpha * textureB))
-							/ resultAlpha;
-					*currentBufferPixel8++ = (uint8_t) newB;
-
-					float newG = ((bufferAlpha * (1.0f - textureAlpha)
-							* *currentBufferPixel8) + (textureAlpha * textureG))
-							/ resultAlpha;
-					*currentBufferPixel8++ = (uint8_t) newG;
-
-					float newR = ((bufferAlpha * (1.0f - textureAlpha)
-							* *currentBufferPixel8) + (textureAlpha * textureR))
-							/ resultAlpha;
-					*currentBufferPixel8++ = (uint8_t) newR;
-
-					float newA = resultAlpha * 255.0f;
-					*currentBufferPixel8++ = (uint8_t) newA;
-				}
-
-				currentBufferPixel++;
-			}
 		}
 		currentBufferPixel += nextLine;
 	}
@@ -89,7 +174,7 @@ void rectangle(VideoBuffer * buffer, Math::Rectangle rect, uint32_t color) {
 
 void circle(VideoBuffer* buffer, Math::Vector2f pos, unsigned radius,
 		uint32_t color) {
-	// prevent array index issues
+// prevent array index issues
 	int x = pos.x;
 	int y = pos.y;
 
@@ -141,7 +226,7 @@ void debugInformation(VideoBuffer *buffer, Input *input, GameState *gameState) {
 	Text::renderText(buffer, text, 20, 100, 7);
 }
 
-void clearScreen(VideoBuffer *buffer, int color) {
+void clearScreen(VideoBuffer *buffer, uint32_t color) {
 	for (unsigned int y = 0; y < buffer->height; y++) {
 		for (unsigned int x = 0; x < buffer->width; x++) {
 			((uint32_t*) buffer->content)[y * buffer->width + x] = color
@@ -216,11 +301,11 @@ void backgroundTexture(VideoBuffer *buffer, Texture* texture, int offsetY) {
 
 void textureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 		int offsetY) {
-	int32_t *currentBufferPixel = (int32_t *) buffer->content
+	uint32_t *currentBufferPixel = (uint32_t *) buffer->content
 			+ offsetY * (int) buffer->width + offsetX;
-	int32_t *currentTexturePixel = (int32_t *) texture->content;
+	uint32_t *currentTexturePixel = (uint32_t *) texture->content;
 
-	int32_t nextLine = buffer->width - texture->width;
+	uint32_t nextLine = buffer->width - texture->width;
 
 	for (int y = 0; y < (int) texture->height; ++y) {
 		if (offsetY + y < 0) {
@@ -238,55 +323,10 @@ void textureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 				continue;
 			}
 
-			uint8_t *currentBufferPixel8 = (uint8_t *) currentBufferPixel;
-			uint8_t *currentTexturePixel8 = (uint8_t *) currentTexturePixel;
-
-			uint8_t textureB = *currentTexturePixel8++;
-			uint8_t textureG = *currentTexturePixel8++;
-			uint8_t textureR = *currentTexturePixel8++;
-			uint8_t textureA = *currentTexturePixel8++;
-
-			if (textureA == 255) {
-				*currentBufferPixel++ = *currentTexturePixel++;
-			} else if (textureA == 0) {
-				currentBufferPixel++;
-				currentTexturePixel++;
-			} else {
-				uint8_t bufferA = *currentBufferPixel8;
-
-				float textureAlpha = textureA / 255.0f;
-				float bufferAlpha = bufferA / 255.0f;
-
-				float resultAlpha = textureAlpha
-						+ bufferAlpha * (1.0f - textureAlpha);
-
-				if (resultAlpha == 0.0f) {
-					*currentBufferPixel = 0;
-				} else {
-					float newB = ((bufferAlpha * (1.0f - textureAlpha)
-							* *currentBufferPixel8) + (textureAlpha * textureB))
-							/ resultAlpha;
-					*currentBufferPixel8++ = (uint8_t) newB;
-
-					float newG = ((bufferAlpha * (1.0f - textureAlpha)
-							* *currentBufferPixel8) + (textureAlpha * textureG))
-							/ resultAlpha;
-					*currentBufferPixel8++ = (uint8_t) newG;
-
-					float newR = ((bufferAlpha * (1.0f - textureAlpha)
-							* *currentBufferPixel8) + (textureAlpha * textureR))
-							/ resultAlpha;
-					*currentBufferPixel8++ = (uint8_t) newR;
-
-					float newA = resultAlpha * 255.0f;
-					*currentBufferPixel8++ = (uint8_t) newA;
-				}
-
-				currentBufferPixel++;
-				currentTexturePixel++;
-			}
+			blendColor(*currentTexturePixel, currentBufferPixel);
+			currentBufferPixel++;
+			currentTexturePixel++;
 		}
-
 		currentBufferPixel += nextLine;
 	}
 }

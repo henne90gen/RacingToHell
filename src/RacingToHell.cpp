@@ -396,7 +396,7 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState) {
 }
 
 void updateAndRenderTimer(VideoBuffer *buffer, GameState* gameState) {
-	gameState->levelTime += 1.0f;
+	gameState->levelTime += 1.0f / 60.0f;
 	if (gameState->levelTime >= WINDOW_WIDTH) {
 		gameState->levelTime = 0;
 	}
@@ -404,7 +404,7 @@ void updateAndRenderTimer(VideoBuffer *buffer, GameState* gameState) {
 	Math::Rectangle rect = { };
 	rect.position = {0, 0};
 	rect.height = 10;
-	rect.width = gameState->levelTime;
+	rect.width = gameState->levelTime * WINDOW_WIDTH / gameState->maxLevelTime;
 	Render::rectangle(buffer, rect, 0xfffffff0);
 }
 

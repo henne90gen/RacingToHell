@@ -28,7 +28,7 @@ public class MainActivity extends Activity {
                 configurationInfo.reqGlEsVersion >= 0x20000 || isProbablyEmulator();
 
         if (supportsEs2) {
-            glSurfaceView = new GLSurfaceView(this);
+            glSurfaceView = new GLSurfaceViewWrapper(this);
 
             if (isProbablyEmulator()) {
                 // Avoids crashes on startup with some emulator images.

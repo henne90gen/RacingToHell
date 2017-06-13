@@ -83,7 +83,7 @@ struct GameState {
 	uint32_t frameCounter;
 	uint32_t roadPosition;
 	uint8_t level;
-	float levelTime;
+	float levelTime, maxLevelTime;
 	uint8_t difficulty;
 
 	Player player;

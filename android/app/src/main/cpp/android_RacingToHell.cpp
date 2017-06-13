@@ -13,7 +13,10 @@
 static AAssetManager *asset_manager;
 static GameMemory memory;
 static VideoBuffer videoBuffer;
+static Input gameInput = {};
 static bool initialized = false;
+static bool inputHappened = false;
+static int realWindowWidth, realWindowHeight;
 
 extern "C"
 JNIEXPORT void JNICALL
@@ -36,7 +39,54 @@ Java_game_racingtohell_NativeWrapper_on_1surface_1changed(JNIEnv *env UNUSED, jc
         initialized = true;
     }
 
+    realWindowWidth = width;
+    realWindowHeight = height;
     setupOpenGL(&videoBuffer);
+}
+
+bool inControlCircle(float x, float y) {
+    return x > WINDOW_WIDTH / 2 && y > WINDOW_HEIGHT / 4 * 3;
+}
+
+float getAngleInControlCircle(float x, float y) {
+    Math::Vector2f midPoint = {WINDOW_WIDTH / 4 * 3, WINDOW_HEIGHT / 8 * 7};
+    Math::Vector2f diff = midPoint - (Math::Vector2f) {x, y};
+    return atan2(diff.y, diff.x);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_game_racingtohell_NativeWrapper_on_1touch_1event(JNIEnv *env UNUSED, jclass clazz UNUSED,
+                                                      jfloat x, jfloat y, jboolean pressed) {
+    // Scaling x and y to game-coordinates
+    x = x * WINDOW_WIDTH / realWindowWidth;
+    y = y * WINDOW_HEIGHT / realWindowHeight;
+
+    // FIXME decide what parameters we need for this
+    LOGI("%f | %f", x, y);
+
+    if (inControlCircle(x, y)) {
+        gameInput.leftKey = 0;
+        gameInput.rightKey = 0;
+        gameInput.upKey = 0;
+        gameInput.downKey = 0;
+
+        float angle = getAngleInControlCircle(x, y);
+        LOGI("Angle: %f", angle);
+
+        // 0 on the left
+        // top is positive
+        // bottom is negative
+        if ((angle < PI / 4 && angle > 0) || (angle > -PI / 4 && angle < 0)) {
+            gameInput.leftKey = pressed;
+        } else if (angle > PI / 4 && angle < PI / 4 * 3) {
+            gameInput.upKey = pressed;
+        } else if (angle > PI / 4 * 3 || angle < -PI / 4 * 3) {
+            gameInput.rightKey = pressed;
+        } else if (angle < -PI / 4 && angle > -PI / 4 * 3) {
+            gameInput.downKey = pressed;
+        }
+    }
 }
 
 extern "C"
@@ -44,8 +94,7 @@ JNIEXPORT void JNICALL
 Java_game_racingtohell_NativeWrapper_on_1draw_1frame(JNIEnv *env UNUSED, jclass clazz UNUSED) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    Input input = {};
-    updateAndRender(&videoBuffer, &input, &memory);
+    updateAndRender(&videoBuffer, &gameInput, &memory);
 
     swapBuffers(&videoBuffer);
 }

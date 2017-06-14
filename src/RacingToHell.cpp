@@ -418,7 +418,7 @@ void renderControls(VideoBuffer* buffer) {
 	rect.position = point1;
 	rect.width = WINDOW_WIDTH / 2;
 	rect.height = WINDOW_HEIGHT / 4;
-//	Render::rectangle(buffer, rect, 0x50ffffff);
+	Render::rectangle(buffer, rect, 0x50ffffff);
 
 	float gapHalf = 2;
 
@@ -447,6 +447,15 @@ void renderControls(VideoBuffer* buffer) {
 			gapHalf });
 }
 
+void renderUI(VideoBuffer* buffer, GameState *gameState)
+{
+    Math::Rectangle energyBar;
+    energyBar.height = 40;
+    energyBar.width = 100 * gameState->player.energy / 100.0f;
+    energyBar.position = { 0, (float)(WINDOW_HEIGHT - energyBar.height) };
+    Render::rectangle(buffer, energyBar, 0xFFA51795);
+}
+
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	GameState *gameState = getGameState(memory);
 	gameState->frameCounter++;
@@ -468,6 +477,8 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	updateAndRenderTimer(buffer, gameState);
 
     renderControls(buffer);
+
+    renderUI(buffer, gameState);
 
 //	Render::debugInformation(buffer, input, gameState);
 //	Text::renderCharacterAlpha(buffer, 'a', 10, 10, 255, 0, 0, 20);

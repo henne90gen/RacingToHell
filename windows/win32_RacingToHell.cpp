@@ -50,7 +50,7 @@ void resizeOffscreenBuffer(OffscreenBuffer *buffer, unsigned width, unsigned hei
 
 void drawBuffer(HDC deviceContext, OffscreenBuffer *buffer)
 {
-   /*if (!StretchDIBits(
+  /* if (!StretchDIBits(
         deviceContext,
         0, 0, buffer->width, buffer->height,
         0, 0, buffer->width, buffer->height,

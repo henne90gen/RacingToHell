@@ -274,6 +274,8 @@ void handleKeyEvent(Display* display, Input* input, XKeyEvent event) {
 }
 
 void handleMouseEvent(Input* input, XButtonEvent event) {
+	static bool wasPressed = false;
+
 	bool buttonPressed = event.type == ButtonPress;
 	if (buttonPressed) {
 		printf("Mouse button %d pressed!\n", event.button);
@@ -284,19 +286,21 @@ void handleMouseEvent(Input* input, XButtonEvent event) {
 	switch (event.button) {
 	case MouseLeft:
 		input->shootKeyPressed = buttonPressed;
-		input->shootKeyClicked = buttonPressed;
+		input->shootKeyClicked = buttonPressed && !wasPressed;
 		break;
 	case MouseMiddle:
 		break;
 	case MouseRight:
 		input->shootKeyPressed = buttonPressed;
-		input->shootKeyClicked = buttonPressed;
+		input->shootKeyClicked = buttonPressed && !wasPressed;
 		break;
 	case MouseScrollUp:
 		break;
 	case MouseScrollDown:
 		break;
 	}
+
+	wasPressed = buttonPressed;
 }
 
 void correctTiming(timespec startTime, bool consoleOutput) {
@@ -307,20 +311,19 @@ void correctTiming(timespec startTime, bool consoleOutput) {
 	}
 	long nanoSecondsElapsed = endTime.tv_nsec - startTime.tv_nsec;
 
-	// INFO OpenGL runs at exactly 60 FPS, no sleep necessary
-	//	const float targetFrameTime = 1000000000.0f / 60.0f;
-//	if (nanoSecondsElapsed < targetFrameTime) {
-//		timespec sleepTime = { };
-//		sleepTime.tv_sec = (targetFrameTime - nanoSecondsElapsed)
-//				/ 1000000000.0f;
-//		sleepTime.tv_nsec = targetFrameTime - nanoSecondsElapsed;
-////		nanosleep(&sleepTime, NULL);
-//	}
-//	clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
-//	if (endTime.tv_nsec < startTime.tv_nsec) {
-//		return;
-//	}
-//	nanoSecondsElapsed = endTime.tv_nsec - startTime.tv_nsec;
+	const float targetFrameTime = 1000000000.0f / 60.0f;
+	if (nanoSecondsElapsed < targetFrameTime) {
+		timespec sleepTime = { };
+		sleepTime.tv_sec = (targetFrameTime - nanoSecondsElapsed)
+				/ 1000000000.0f;
+		sleepTime.tv_nsec = targetFrameTime - nanoSecondsElapsed;
+		nanosleep(&sleepTime, NULL);
+	}
+	clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
+	if (endTime.tv_nsec < startTime.tv_nsec) {
+		return;
+	}
+	nanoSecondsElapsed = endTime.tv_nsec - startTime.tv_nsec;
 
 	std::stringstream ss;
 	ss << WINDOW_TITLE << ": "

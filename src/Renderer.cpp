@@ -12,10 +12,6 @@ void blendColor(uint32_t color, uint32_t* currentBufferPixel) {
 	uint8_t colorB = *currentColorPointer8++;
 	uint8_t colorA = *currentColorPointer8++;
 
-	if (color == 0x80010203) {
-		int x = 10;
-	}
-
 	if (colorA == 255) {
 		*currentBufferPixel = color;
 	} else if (colorA != 0) {

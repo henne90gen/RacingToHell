@@ -62,21 +62,15 @@ Java_game_racingtohell_NativeWrapper_on_1touch_1event(JNIEnv *env UNUSED, jclass
     x = x * WINDOW_WIDTH / realWindowWidth;
     y = y * WINDOW_HEIGHT / realWindowHeight;
 
-    // FIXME decide what parameters we need for this
-    LOGI("%f | %f", x, y);
+    gameInput.leftKey = 0;
+    gameInput.rightKey = 0;
+    gameInput.upKey = 0;
+    gameInput.downKey = 0;
+    gameInput.shootKeyClicked = 0;
+    gameInput.shootKeyPressed = 0;
 
     if (inControlCircle(x, y)) {
-        gameInput.leftKey = 0;
-        gameInput.rightKey = 0;
-        gameInput.upKey = 0;
-        gameInput.downKey = 0;
-
         float angle = getAngleInControlCircle(x, y);
-        LOGI("Angle: %f", angle);
-
-        // 0 on the left
-        // top is positive
-        // bottom is negative
         if ((angle < PI / 4 && angle > 0) || (angle > -PI / 4 && angle < 0)) {
             gameInput.leftKey = pressed;
         } else if (angle > PI / 4 && angle < PI / 4 * 3) {
@@ -86,7 +80,45 @@ Java_game_racingtohell_NativeWrapper_on_1touch_1event(JNIEnv *env UNUSED, jclass
         } else if (angle < -PI / 4 && angle > -PI / 4 * 3) {
             gameInput.downKey = pressed;
         }
+    } else {
+        gameInput.shootKeyClicked = pressed;
+        gameInput.shootKeyPressed = pressed;
+        gameInput.mousePosition = Math::Vector2f {x, y};
     }
+}
+
+void renderControls(VideoBuffer *buffer) {
+    uint32_t color = 0x800000ff;
+    Math::Vector2f point1 = {WINDOW_WIDTH / 2, WINDOW_HEIGHT / 4 * 3};
+    Math::Vector2f point2 = {WINDOW_WIDTH / 2, WINDOW_HEIGHT};
+    Math::Vector2f point3 = {WINDOW_WIDTH / 4 * 3, WINDOW_HEIGHT / 8 * 7};
+
+    Math::Rectangle rect = {};
+    rect.position = point1;
+    rect.width = WINDOW_WIDTH / 2;
+    rect.height = WINDOW_HEIGHT / 4;
+    Render::rectangle(buffer, rect, 0x50ffffff);
+
+    float gapHalf = 2;
+
+    // left
+    Render::triangle(buffer, color, point1 + Math::Vector2f {0, gapHalf},
+                     point2 - Math::Vector2f {0, gapHalf}, point3 - Math::Vector2f {gapHalf, 0});
+
+    // top
+    point1 = Math::Vector2f {WINDOW_WIDTH / 2 + gapHalf, WINDOW_HEIGHT / 4 * 3};
+    point2 = Math::Vector2f {WINDOW_WIDTH - gapHalf, WINDOW_HEIGHT / 4 * 3};
+    Render::triangle(buffer, color, point1, point2, point3 - Math::Vector2f {0, gapHalf});
+
+    // right
+    point1 = Math::Vector2f {WINDOW_WIDTH, WINDOW_HEIGHT / 4 * 3 + gapHalf};
+    point2 = Math::Vector2f {WINDOW_WIDTH, WINDOW_HEIGHT - gapHalf};
+    Render::triangle(buffer, color, point1, point2, point3 + Math::Vector2f {gapHalf, 0});
+
+    // bottom
+    point1 = Math::Vector2f {WINDOW_WIDTH / 2 + gapHalf, WINDOW_HEIGHT};
+    point2 = Math::Vector2f {WINDOW_WIDTH - gapHalf, WINDOW_HEIGHT};
+    Render::triangle(buffer, color, point1, point2, point3 + Math::Vector2f {0, gapHalf});
 }
 
 extern "C"
@@ -94,7 +126,11 @@ JNIEXPORT void JNICALL
 Java_game_racingtohell_NativeWrapper_on_1draw_1frame(JNIEnv *env UNUSED, jclass clazz UNUSED) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+//    LOGI("Updating.");
+
     updateAndRender(&videoBuffer, &gameInput, &memory);
+
+//    renderControls(&videoBuffer);
 
     swapBuffers(&videoBuffer);
 }

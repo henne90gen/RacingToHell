@@ -8,7 +8,7 @@ optimized_build:
     - make optimized
   stage: build
 
-android:
-  script:
-    - sh ./android/gradlew build
-  stage: build
+#android:
+#  script:
+#    - sh ./android/gradlew build
+#  stage: build

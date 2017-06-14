@@ -418,7 +418,7 @@ void renderControls(VideoBuffer* buffer) {
 	rect.position = point1;
 	rect.width = WINDOW_WIDTH / 2;
 	rect.height = WINDOW_HEIGHT / 4;
-	Render::rectangle(buffer, rect, 0x50ffffff);
+//	Render::rectangle(buffer, rect, 0x50ffffff);
 
 	float gapHalf = 2;
 
@@ -445,7 +445,6 @@ void renderControls(VideoBuffer* buffer) {
 	point2 = Math::Vector2f { WINDOW_WIDTH - gapHalf, WINDOW_HEIGHT };
 	Render::triangle(buffer, color, point1, point2, point3 + Math::Vector2f { 0,
 			gapHalf });
-
 }
 
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
@@ -469,7 +468,6 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	updateAndRenderTimer(buffer, gameState);
 
     renderControls(buffer);
-
 
 //	Render::debugInformation(buffer, input, gameState);
 //	Text::renderCharacterAlpha(buffer, 'a', 10, 10, 255, 0, 0, 20);

@@ -418,7 +418,7 @@ void renderControls(VideoBuffer* buffer) {
 	rect.position = point1;
 	rect.width = WINDOW_WIDTH / 2;
 	rect.height = WINDOW_HEIGHT / 4;
-//	Render::rectangle(buffer, rect, 0x50ffffff);
+	Render::rectangle(buffer, rect, 0x50ffffff);
 
 	float gapHalf = 2;
 

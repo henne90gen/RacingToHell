@@ -1,22 +1,4 @@
-#include <jni.h>
-#include <android/log.h>
-#include <GLES2/gl2.h>
-#include <android/asset_manager_jni.h>
-#include <stdlib.h>
-#include "RacingToHell.h"
-#include "OpenGL.h"
-
-#define UNUSED  __attribute__((unused))
-#define LOG_TAG "RacingToHell"
-#define LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-
-static AAssetManager *asset_manager;
-static GameMemory memory;
-static VideoBuffer videoBuffer;
-static Input gameInput = {};
-static bool initialized = false;
-static bool inputHappened = false;
-static int realWindowWidth, realWindowHeight;
+#include "android_RacingToHell.h"
 
 extern "C"
 JNIEXPORT void JNICALL
@@ -87,38 +69,33 @@ Java_game_racingtohell_NativeWrapper_on_1touch_1event(JNIEnv *env UNUSED, jclass
     }
 }
 
-void renderControls(VideoBuffer *buffer) {
-    uint32_t color = 0x800000ff;
-    Math::Vector2f point1 = {WINDOW_WIDTH / 2, WINDOW_HEIGHT / 4 * 3};
-    Math::Vector2f point2 = {WINDOW_WIDTH / 2, WINDOW_HEIGHT};
-    Math::Vector2f point3 = {WINDOW_WIDTH / 4 * 3, WINDOW_HEIGHT / 8 * 7};
+void drawTriangle(GLfloat vertices[]) {
+    static GLuint triangleProgram = buildTriangleProgram();
+    glUseProgram(triangleProgram);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, vertices);
+    glEnableVertexAttribArray(0);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+}
 
-    Math::Rectangle rect = {};
-    rect.position = point1;
-    rect.width = WINDOW_WIDTH / 2;
-    rect.height = WINDOW_HEIGHT / 4;
-    Render::rectangle(buffer, rect, 0x50ffffff);
+void renderControls() {
+    // TODO refine triangles
+    GLfloat topTriangle[] = {0.0f, -0.5f, 0.0f,
+                             1.0f, -0.5f, 0.0f,
+                             0.5f, -0.75f, 0.0f};
+    GLfloat rightTriangle[] = {1.0f, -0.5f, 0.0f,
+                               1.0f, -1.0f, 0.0f,
+                               0.5f, -0.75f, 0.0f};
+    GLfloat bottomTriangle[] = {1.0f, -1.0f, 0.0f,
+                                0.0f, -1.0f, 0.0f,
+                                0.5f, -0.75f, 0.0f};
+    GLfloat leftTriangle[] = {0.0f, -1.0f, 0.0f,
+                              0.0f, -0.5f, 0.0f,
+                              0.5f, -0.75f, 0.0f};
 
-    float gapHalf = 2;
-
-    // left
-    Render::triangle(buffer, color, point1 + Math::Vector2f {0, gapHalf},
-                     point2 - Math::Vector2f {0, gapHalf}, point3 - Math::Vector2f {gapHalf, 0});
-
-    // top
-    point1 = Math::Vector2f {WINDOW_WIDTH / 2 + gapHalf, WINDOW_HEIGHT / 4 * 3};
-    point2 = Math::Vector2f {WINDOW_WIDTH - gapHalf, WINDOW_HEIGHT / 4 * 3};
-    Render::triangle(buffer, color, point1, point2, point3 - Math::Vector2f {0, gapHalf});
-
-    // right
-    point1 = Math::Vector2f {WINDOW_WIDTH, WINDOW_HEIGHT / 4 * 3 + gapHalf};
-    point2 = Math::Vector2f {WINDOW_WIDTH, WINDOW_HEIGHT - gapHalf};
-    Render::triangle(buffer, color, point1, point2, point3 + Math::Vector2f {gapHalf, 0});
-
-    // bottom
-    point1 = Math::Vector2f {WINDOW_WIDTH / 2 + gapHalf, WINDOW_HEIGHT};
-    point2 = Math::Vector2f {WINDOW_WIDTH - gapHalf, WINDOW_HEIGHT};
-    Render::triangle(buffer, color, point1, point2, point3 + Math::Vector2f {0, gapHalf});
+    drawTriangle(topTriangle);
+    drawTriangle(rightTriangle);
+    drawTriangle(bottomTriangle);
+    drawTriangle(leftTriangle);
 }
 
 extern "C"
@@ -130,9 +107,9 @@ Java_game_racingtohell_NativeWrapper_on_1draw_1frame(JNIEnv *env UNUSED, jclass 
 
     updateAndRender(&videoBuffer, &gameInput, &memory);
 
-//    renderControls(&videoBuffer);
-
     swapBuffers(&videoBuffer);
+    renderControls();
+
 }
 
 extern "C"

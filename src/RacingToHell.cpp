@@ -476,8 +476,6 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 
 	updateAndRenderTimer(buffer, gameState);
 
-    renderControls(buffer);
-
     renderUI(buffer, gameState);
 
 //	Render::debugInformation(buffer, input, gameState);

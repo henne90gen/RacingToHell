@@ -50,7 +50,7 @@ void resizeOffscreenBuffer(OffscreenBuffer *buffer, unsigned width, unsigned hei
 
 void drawBuffer(HDC deviceContext, OffscreenBuffer *buffer)
 {
-    /*if (!StretchDIBits(
+   /*if (!StretchDIBits(
         deviceContext,
         0, 0, buffer->width, buffer->height,
         0, 0, buffer->width, buffer->height,
@@ -102,27 +102,27 @@ void drawBuffer(HDC deviceContext, OffscreenBuffer *buffer)
 
     glBegin(GL_TRIANGLES);
     
-    glTexCoord2f(0.0f, 0.0f);
+    glTexCoord2f(0.0f, 1.0f);
     glVertex2i(-1.0f, -1.0f);
 
-    glTexCoord2f(1.0f, 0.0f);
+    glTexCoord2f(1.0f, 1.0f);
     glVertex2i(1.0f, -1.0f);
 
-    glTexCoord2f(1.0f, 1.0f);
-    glVertex2i(1.0f, 1.0f);
-
-    glTexCoord2f(0.0f, 0.0f);
-    glVertex2i(-1.0f, -1.0f);
-
-    glTexCoord2f(1.0f, 1.0f);
+    glTexCoord2f(1.0f, 0.0f);
     glVertex2i(1.0f, 1.0f);
 
     glTexCoord2f(0.0f, 1.0f);
-    glVertex2i(-1.0f, 1.0f);
+    glVertex2i(-1.0f, -1.0f);
 
-    glEnd();
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex2i(1.0f, 1.0f);
 
-    SwapBuffers(deviceContext);
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex2i(-1.0f, 1.0f); 
+
+    glEnd(); 
+
+    SwapBuffers(deviceContext); 
 }
 
 typedef HRESULT _DirectSoundCreate_(LPCGUID pcGuidDevice, LPDIRECTSOUND *ppDS, LPUNKNOWN pUnkOuter);

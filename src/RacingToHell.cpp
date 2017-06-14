@@ -396,8 +396,8 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState) {
 }
 
 void updateAndRenderTimer(VideoBuffer *buffer, GameState* gameState) {
-	gameState->levelTime += 1.0f / 60.0f;
-	if (gameState->levelTime >= WINDOW_WIDTH) {
+	gameState->levelTime += 10.0f / 60.0f;
+	if (gameState->levelTime >= gameState->maxLevelTime) {
 		gameState->levelTime = 0;
 	}
 
@@ -466,6 +466,8 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	updateAndRenderBullets(buffer, gameState);
 
 	updateAndRenderTimer(buffer, gameState);
+
+    renderControls(buffer);
 
 //	Render::debugInformation(buffer, input, gameState);
 //	Text::renderCharacterAlpha(buffer, 'a', 10, 10, 255, 0, 0, 20);

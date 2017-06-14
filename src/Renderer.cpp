@@ -111,6 +111,7 @@ void triangleTop(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1,
 	}
 }
 
+// FIXME gap appears when not rendering just top or bottom flat triangle
 void triangle(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1,
 		Math::Vector2f point2, Math::Vector2f point3) {
 	if (point1.y > point2.y) {

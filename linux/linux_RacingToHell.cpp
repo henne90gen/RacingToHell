@@ -274,11 +274,11 @@ void handleKeyEvent(Display* display, Input* input, XKeyEvent event) {
 }
 
 void handleMouseEvent(Input* input, XButtonEvent event) {
-	static bool wasPressed = false;
 
 	bool buttonPressed = event.type == ButtonPress;
+
 	if (buttonPressed) {
-		printf("Mouse button %d pressed!\n", event.button);
+		printf("Mouse button %d pressed! %d\n", event.button, wasLeftMousePressed);
 	} else {
 		printf("Mouse button %d released!\n", event.button);
 	}
@@ -286,13 +286,15 @@ void handleMouseEvent(Input* input, XButtonEvent event) {
 	switch (event.button) {
 	case MouseLeft:
 		input->shootKeyPressed = buttonPressed;
-		input->shootKeyClicked = buttonPressed && !wasPressed;
+		input->shootKeyClicked = buttonPressed && !wasLeftMousePressed;
+		wasLeftMousePressed = buttonPressed;
 		break;
 	case MouseMiddle:
 		break;
 	case MouseRight:
 		input->shootKeyPressed = buttonPressed;
-		input->shootKeyClicked = buttonPressed && !wasPressed;
+		input->shootKeyClicked = buttonPressed && !wasRightMousePressed;
+		wasRightMousePressed = buttonPressed;
 		break;
 	case MouseScrollUp:
 		break;
@@ -300,7 +302,6 @@ void handleMouseEvent(Input* input, XButtonEvent event) {
 		break;
 	}
 
-	wasPressed = buttonPressed;
 }
 
 void correctTiming(timespec startTime, bool consoleOutput) {
@@ -582,6 +583,7 @@ int main() {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &startTime);
 		*newInput = *oldInput;
 
+		bool mouseEvent = false;
 		while (XEventsQueued(graphics.display, QueuedAfterReading)) {
 			XNextEvent(graphics.display, &event);
 			if (event.type == ClientMessage) {
@@ -593,6 +595,7 @@ int main() {
 			}
 			if (event.type == ButtonPress || event.type == ButtonRelease) {
 				handleMouseEvent(newInput, event.xbutton);
+				mouseEvent = true;
 			}
 			if (event.type == MotionNotify) {
 				Math::Vector2f mousePosition = { };
@@ -604,6 +607,11 @@ int main() {
 
 		if (!isRunning) {
 			break;
+		}
+
+		if (!mouseEvent) {
+			newInput->shootKeyPressed = wasLeftMousePressed || wasRightMousePressed;
+			newInput->shootKeyClicked = false;
 		}
 
 		updateAndRender(&graphics.videoBuffer, newInput, &memory);

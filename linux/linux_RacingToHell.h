@@ -41,8 +41,8 @@ static GLint u_texture_unit_location;
 #define KeyD 40
 #define KeySpace 65
 #define MouseLeft Button1
+#define MouseMiddle Button2
 #define MouseRight Button3
-#define MouseMiddle Button2 // FIXME is this really mouse middle?
 #define MouseScrollUp Button4
 #define MouseScrollDown Button5
 
@@ -75,9 +75,11 @@ struct AudioData {
 
 long int EVENT_MASK = KeyPressMask | KeyReleaseMask | ButtonPressMask
 		| ButtonReleaseMask | PointerMotionMask;
-static bool isRunning;
 
 GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
 
+static bool isRunning;
+bool wasLeftMousePressed = false;
+bool wasRightMousePressed = false;
 static GraphicsData graphics;
 static AudioData audio;

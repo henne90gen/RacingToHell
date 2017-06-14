@@ -79,7 +79,7 @@ void triangleBottom(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1,
 	float curx1 = point1.x;
 	float curx2 = point1.x;
 
-	for (int scanlineY = point1.y; scanlineY <= point2.y; scanlineY++) {
+	for (int scanlineY = point1.y; scanlineY <= point2.y - 1; scanlineY++) {
 		for (int x = curx1; x < curx2; x++) {
 			uint32_t *currentBufferPixel = ((uint32_t *) buffer->content)
 					+ (scanlineY * (int) buffer->width + x);

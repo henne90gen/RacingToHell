@@ -12,7 +12,9 @@
 #define CANISTER_ID 1
 
 // Debug flags:
-#define COLLISION_DEBUG 0
+#define COLLISION_DEBUG 1
+#define SOUND_DEBUG 0
+#define SOUND_ENABLE 0
 
 struct File {
 	char* content;
@@ -21,15 +23,14 @@ struct File {
 	std::string name;
 };
 
-struct GameMemory
-{
-    bool isInitialized = false;
+struct GameMemory {
+	bool isInitialized = false;
 
-    size_t temporaryMemorySize = 0, permanentMemorySize = 0;
-    char *temporary, *permanent;
+	size_t temporaryMemorySize = 0, permanentMemorySize = 0;
+	char *temporary, *permanent;
 
-    size_t permanentMemoryOffset = 0;
-    size_t temporaryMemoryOffset = 0;
+	size_t permanentMemoryOffset = 0;
+	size_t temporaryMemoryOffset = 0;
 };
 
 void abort(std::string message);

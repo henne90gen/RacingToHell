@@ -616,7 +616,7 @@ int main() {
 
 		updateAndRender(&graphics.videoBuffer, newInput, &memory);
 
-#if ENABLE_SOUND
+#if SOUND_ENABLE
 		swapSoundBuffers(&memory);
 #endif
 

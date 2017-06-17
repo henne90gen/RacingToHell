@@ -1,3 +1,11 @@
+// FIXME do we really want to use templates here or is there a more performant way of doing it?
+template<typename T> void removeElement(T arr[], int *lastIndex,
+		int *iteratorIndex) {
+	arr[*iteratorIndex] = arr[*lastIndex];
+	(*lastIndex)--;
+	(*iteratorIndex)--;
+}
+
 /**
  * position - center of the model in question
  * texture - used for width and height of the rectangle

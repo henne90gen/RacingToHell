@@ -59,7 +59,7 @@ LoadedSound loadWAV(GameMemory *memory, std::string path) {
 
 	if (header->riffId != WAVE_CHUNKID_RIFF
 			|| header->waveId != WAVE_CHUNKID_WAVE) {
-		abort("Ungueltiger Header");
+		abort("Invalid WAV header");
 	}
 
 	for (RiffIterator iter = parseChunkAt(header + 1,

@@ -151,10 +151,10 @@ void renderPlayer(VideoBuffer *buffer, GameState *gameState) {
 
 	Render::textureAlpha(buffer, texture, textureX, textureY);
 
-	Render::bar(buffer, { gameState->player.position.x, (float) textureY - 23 },
-			gameState->player.health, 0xff0000ff);
-	Render::bar(buffer, { gameState->player.position.x, (float) textureY - 13 },
-			gameState->player.energy, 0x0000fffe);
+//	Render::bar(buffer, { gameState->player.position.x, (float) textureY - 23 },
+//			gameState->player.health, 0xff0000ff);
+//	Render::bar(buffer, { gameState->player.position.x, (float) textureY - 13 },
+//			gameState->player.energy, 0xff00ff00);
 }
 
 bool updateAndRenderBullet(VideoBuffer* buffer, GameState* gameState,
@@ -191,7 +191,7 @@ bool updateAndRenderBullet(VideoBuffer* buffer, GameState* gameState,
 					bulletRect);
 
 #if COLLISION_DEBUG
-			Render::rectangle(buffer, collisionBox, 0xff000040);
+			Render::rectangle(buffer, collisionBox, 0x40ff0000);
 #endif
 
 			if (Collision::rectangle(collisionBox, bullet.position)) {
@@ -207,7 +207,7 @@ bool updateAndRenderBullet(VideoBuffer* buffer, GameState* gameState,
 		Math::Rectangle collisionBox = getCollisionBox(playerRect, bulletRect);
 
 #if COLLISION_DEBUG
-		Render::rectangle(buffer, collisionBox, 0xff000040);
+		Render::rectangle(buffer, collisionBox, 0x40ff0000);
 #endif
 
 		if (Collision::rectangle(collisionBox, bullet.position)) {
@@ -225,21 +225,16 @@ void updateAndRenderBullets(VideoBuffer* buffer, GameState* gameState) {
 	for (int i = 0; i < gameState->lastAIBulletIndex + 1; i++) {
 		if (updateAndRenderBullet(buffer, gameState, gameState->aiBullets[i],
 				false)) {
-			Bullet bullet = gameState->aiBullets[gameState->lastAIBulletIndex];
-			gameState->aiBullets[i] = bullet;
-			gameState->lastAIBulletIndex--;
-			i--;
+			removeElement(gameState->aiBullets, &gameState->lastAIBulletIndex,
+					&i);
 		}
 	}
 
 	for (int i = 0; i < gameState->lastPlayerBulletIndex + 1; i++) {
 		if (updateAndRenderBullet(buffer, gameState,
 				gameState->playerBullets[i], true)) {
-			Bullet bullet =
-					gameState->playerBullets[gameState->lastPlayerBulletIndex];
-			gameState->playerBullets[i] = bullet;
-			gameState->lastPlayerBulletIndex--;
-			i--;
+			removeElement(gameState->playerBullets,
+					&gameState->lastPlayerBulletIndex, &i);
 		}
 	}
 }
@@ -250,7 +245,7 @@ void spawnTrafficCar(GameState* gameState) {
 	float x = (std::rand() % 4) * (WINDOW_WIDTH / 4) + WINDOW_WIDTH / 8;
 	car.position = {x, -80};
 	car.speed = 5;
-	car.health = 75;
+	car.health = 5;
 
 	unsigned arrSize = sizeof(gameState->traffic) / sizeof(Car);
 	if (gameState->lastTrafficCarIndex + 1 < (int) arrSize) {
@@ -286,18 +281,14 @@ void updateAndRenderTraffic(VideoBuffer* buffer, GameState *gameState) {
 
 		if (car->health <= 0) {
 			// TODO should we show an explosion?
-			gameState->traffic[i] =
-					gameState->traffic[gameState->lastTrafficCarIndex];
-			gameState->lastTrafficCarIndex--;
-			i--;
+			removeElement(gameState->traffic, &gameState->lastTrafficCarIndex,
+					&i);
 			continue;
 		}
 
 		if (car->position.y - texture->height / 2 > WINDOW_HEIGHT) {
-			gameState->traffic[i] =
-					gameState->traffic[gameState->lastTrafficCarIndex];
-			gameState->lastTrafficCarIndex--;
-			i--;
+			removeElement(gameState->traffic, &gameState->lastTrafficCarIndex,
+					&i);
 			continue;
 		}
 
@@ -311,7 +302,7 @@ void updateAndRenderTraffic(VideoBuffer* buffer, GameState *gameState) {
 		Math::Rectangle collisionBox = getCollisionBox(carRect, playerRect);
 
 #if COLLISION_DEBUG
-		Render::rectangle(buffer, collisionBox, 0x0000ff40);
+		Render::rectangle(buffer, collisionBox, 0x4000ff00);
 #endif
 
 		if (Collision::rectangle(collisionBox, gameState->player.position)) {
@@ -376,16 +367,12 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState) {
 				gameState->player.energy += 10;
 				break;
 			}
-			gameState->items[i] = gameState->items[gameState->lastItemIndex];
-			gameState->lastItemIndex--;
-			i--;
+			removeElement(gameState->items, &gameState->lastItemIndex, &i);
 			continue;
 		}
 
 		if (item->position.y - texture->height / 2 > WINDOW_HEIGHT) {
-			gameState->items[i] = gameState->items[gameState->lastItemIndex];
-			gameState->lastItemIndex--;
-			i--;
+			removeElement(gameState->items, &gameState->lastItemIndex, &i);
 			continue;
 		}
 
@@ -405,7 +392,7 @@ void updateAndRenderTimer(VideoBuffer *buffer, GameState* gameState) {
 	rect.position = {0, 0};
 	rect.height = 10;
 	rect.width = gameState->levelTime * WINDOW_WIDTH / gameState->maxLevelTime;
-	Render::rectangle(buffer, rect, 0xfffffff0);
+	Render::rectangle(buffer, rect, 0x80ffffff);
 }
 
 void renderControls(VideoBuffer* buffer) {
@@ -447,13 +434,21 @@ void renderControls(VideoBuffer* buffer) {
 			gapHalf });
 }
 
-void renderUI(VideoBuffer* buffer, GameState *gameState)
-{
-    Math::Rectangle energyBar;
-    energyBar.height = 40;
-    energyBar.width = 100 * gameState->player.energy / 100.0f;
-    energyBar.position = { 0, (float)(WINDOW_HEIGHT - energyBar.height) };
-    Render::rectangle(buffer, energyBar, 0xFFA51795);
+void updateAndRenderUI(VideoBuffer* buffer, GameState *gameState) {
+	updateAndRenderTimer(buffer, gameState);
+
+	Math::Rectangle energyBar;
+	energyBar.height = 20;
+	energyBar.width = gameState->player.maxEnergy * gameState->player.energy
+			/ 100.0f;
+	energyBar.position = {0, (float)(WINDOW_HEIGHT - energyBar.height)};
+	Render::rectangle(buffer, energyBar, 0xFFA51795);
+
+	energyBar.height = 20;
+	energyBar.width = gameState->player.maxHealth * gameState->player.health
+			/ 100.0f;
+	energyBar.position = {0, (float)(WINDOW_HEIGHT - energyBar.height -20)};
+	Render::rectangle(buffer, energyBar, 0xFFA51795);
 }
 
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
@@ -474,9 +469,7 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 
 	updateAndRenderBullets(buffer, gameState);
 
-	updateAndRenderTimer(buffer, gameState);
-
-    renderUI(buffer, gameState);
+	updateAndRenderUI(buffer, gameState);
 
 //	Render::debugInformation(buffer, input, gameState);
 //	Text::renderCharacterAlpha(buffer, 'a', 10, 10, 255, 0, 0, 20);

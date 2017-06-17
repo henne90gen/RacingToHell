@@ -7,6 +7,7 @@
 #include "Sound.h"
 #include "Renderer.h"
 #include "Collision.h"
+#include "Font.h"
 
 struct VideoBuffer {
 
@@ -123,8 +124,6 @@ struct BitmapHeader {
 	uint32_t colorsImportant; /* Minimum number of important colors */
 };
 #pragma pack(pop)
-
-#include "Font.h"
 
 Texture readBmpIntoMemory(File file, GameMemory *memory);
 

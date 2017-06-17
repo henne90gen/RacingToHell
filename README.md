@@ -16,8 +16,8 @@
     - mouse cursor
     - ~~car movement~~
     - ~~collision~~
-    - shooting
-        - timing
+    - ~~shooting~~
+        - ~~timing~~
 - enemies
     - ~~spawning~~
     - ~~movement~~
@@ -39,7 +39,8 @@
     - movement
     - shooting
     - phases
-- game over
+- menues
+    - game over
 
 
 ### IDEAs

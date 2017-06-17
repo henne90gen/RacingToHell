@@ -8,6 +8,7 @@
 #include "Renderer.h"
 #include "Collision.h"
 #include "Font.h"
+#include "Menu.h"
 
 struct VideoBuffer {
 
@@ -77,11 +78,18 @@ struct Resources {
 	Sound::LoadedSound Level1Music;
 };
 
+enum MenuState {
+	MAIN, OPTIONS, GAME_OVER
+};
+
 struct GameState {
 	Sound::PlayingSound playingSounds[256];
 	int lastPlayingSound = -1;
 
 	uint32_t frameCounter;
+	MenuState menu;
+	bool isInMenu;
+	bool isRoadMoving;
 	uint32_t roadPosition;
 	uint8_t level;
 	float levelTime, maxLevelTime;
@@ -131,3 +139,6 @@ GameState* getGameState(GameMemory* memory);
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory);
 
 void abort(std::string message);
+
+void updateAndRenderRoad(VideoBuffer *buffer, GameState *gameState);
+void renderPlayer(VideoBuffer *buffer, GameState *gameState);

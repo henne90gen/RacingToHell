@@ -71,10 +71,13 @@ void init(GameMemory *memory) {
 	gameState->player.energy = 75;
 	gameState->player.maxEnergy = 75;
 
+	gameState->menu = MAIN;
+	gameState->isInMenu = false;
 	gameState->level = 0;
 	gameState->levelTime = 0;
 	gameState->maxLevelTime = 60;
 	gameState->difficulty = 0;
+	gameState->isRoadMoving = true;
 	gameState->roadPosition = 0;
 	gameState->frameCounter = 0;
 

@@ -29,10 +29,13 @@ Texture* getPlayerTexture(GameState *gameState) {
 }
 
 void updateAndRenderRoad(VideoBuffer *buffer, GameState *gameState) {
-	gameState->roadPosition += getRoadSpeed(gameState);
-	if (gameState->roadPosition >= 800) {
-		gameState->roadPosition = 0;
+	if (gameState->isRoadMoving) {
+		gameState->roadPosition += getRoadSpeed(gameState);
+		if (gameState->roadPosition >= 800) {
+			gameState->roadPosition = 0;
+		}
 	}
+
 	Render::backgroundTexture(buffer, getCurrentRoad(gameState),
 			gameState->roadPosition);
 	Render::backgroundTexture(buffer, getCurrentRoad(gameState),
@@ -245,7 +248,7 @@ void spawnTrafficCar(GameState* gameState) {
 	float x = (std::rand() % 4) * (WINDOW_WIDTH / 4) + WINDOW_WIDTH / 8;
 	car.position = {x, -80};
 	car.speed = 5;
-	car.health = 5;
+	car.health = 75;
 
 	unsigned arrSize = sizeof(gameState->traffic) / sizeof(Car);
 	if (gameState->lastTrafficCarIndex + 1 < (int) arrSize) {
@@ -395,45 +398,6 @@ void updateAndRenderTimer(VideoBuffer *buffer, GameState* gameState) {
 	Render::rectangle(buffer, rect, 0x80ffffff);
 }
 
-void renderControls(VideoBuffer* buffer) {
-	uint32_t color = 0x800000ff;
-	Math::Vector2f point1 = { WINDOW_WIDTH / 2, WINDOW_HEIGHT / 4 * 3 };
-	Math::Vector2f point2 = { WINDOW_WIDTH / 2, WINDOW_HEIGHT };
-	Math::Vector2f point3 = { WINDOW_WIDTH / 4 * 3, WINDOW_HEIGHT / 8 * 7 };
-
-	Math::Rectangle rect = { };
-	rect.position = point1;
-	rect.width = WINDOW_WIDTH / 2;
-	rect.height = WINDOW_HEIGHT / 4;
-	Render::rectangle(buffer, rect, 0x50ffffff);
-
-	float gapHalf = 2;
-
-	// left
-	Render::triangle(buffer, color, point1 + Math::Vector2f { 0, gapHalf },
-			point2 - Math::Vector2f { 0, gapHalf }, point3 - Math::Vector2f {
-					gapHalf, 0 });
-
-	// top
-	point1 =
-			Math::Vector2f { WINDOW_WIDTH / 2 + gapHalf, WINDOW_HEIGHT / 4 * 3 };
-	point2 = Math::Vector2f { WINDOW_WIDTH - gapHalf, WINDOW_HEIGHT / 4 * 3 };
-	Render::triangle(buffer, color, point1, point2, point3 - Math::Vector2f { 0,
-			gapHalf });
-
-	// right
-	point1 = Math::Vector2f { WINDOW_WIDTH, WINDOW_HEIGHT / 4 * 3 + gapHalf };
-	point2 = Math::Vector2f { WINDOW_WIDTH, WINDOW_HEIGHT - gapHalf };
-	Render::triangle(buffer, color, point1, point2, point3 + Math::Vector2f {
-			gapHalf, 0 });
-
-	// bottom
-	point1 = Math::Vector2f { WINDOW_WIDTH / 2 + gapHalf, WINDOW_HEIGHT };
-	point2 = Math::Vector2f { WINDOW_WIDTH - gapHalf, WINDOW_HEIGHT };
-	Render::triangle(buffer, color, point1, point2, point3 + Math::Vector2f { 0,
-			gapHalf });
-}
-
 void updateAndRenderUI(VideoBuffer* buffer, GameState *gameState) {
 	updateAndRenderTimer(buffer, gameState);
 
@@ -451,10 +415,8 @@ void updateAndRenderUI(VideoBuffer* buffer, GameState *gameState) {
 	Render::rectangle(buffer, energyBar, 0xFFA51795);
 }
 
-void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
-	GameState *gameState = getGameState(memory);
-	gameState->frameCounter++;
-
+void updateAndRenderGame(VideoBuffer *buffer, Input *input, GameMemory *memory,
+		GameState *gameState) {
 	updateAndRenderRoad(buffer, gameState);
 
 	// update player before doing any collision detection
@@ -470,7 +432,15 @@ void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	updateAndRenderBullets(buffer, gameState);
 
 	updateAndRenderUI(buffer, gameState);
+}
 
-//	Render::debugInformation(buffer, input, gameState);
-//	Text::renderCharacterAlpha(buffer, 'a', 10, 10, 255, 0, 0, 20);
+void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
+	GameState *gameState = getGameState(memory);
+	gameState->frameCounter++;
+
+	if (gameState->isInMenu) {
+		updateAndRenderMenu(buffer, input, gameState);
+	} else {
+		updateAndRenderGame(buffer, input, memory, gameState);
+	}
 }

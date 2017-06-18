@@ -458,7 +458,11 @@ void updateAndRenderGame(VideoBuffer *buffer, Input *input, GameMemory *memory,
 	updateAndRenderUI(buffer, gameState, update);
 }
 
+
+
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
+	checkInputForClicks(input);
+
 	GameState *gameState = getGameState(memory);
 	gameState->frameCounter++;
 

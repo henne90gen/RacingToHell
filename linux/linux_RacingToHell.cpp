@@ -561,27 +561,6 @@ void swapSoundBuffers(GameMemory *memory) {
 #endif
 }
 
-void checkInputForClicks(Input *input) {
-	static bool up, down, left, right, enter, escape;
-	input->upKeyClicked = input->upKeyPressed && !up;
-	up = input->upKeyPressed;
-
-	input->downKeyClicked = input->downKeyPressed && !down;
-	down = input->downKeyPressed;
-
-	input->leftKeyClicked = input->leftKeyPressed && !left;
-	left = input->leftKeyPressed;
-
-	input->rightKeyClicked = input->rightKeyPressed && !right;
-	right = input->rightKeyPressed;
-
-	input->enterKeyClicked = input->enterKeyPressed && !enter;
-	enter = input->enterKeyPressed;
-
-	input->escapeKeyClicked = input->escapeKeyPressed && !escape;
-	escape = input->escapeKeyPressed;
-}
-
 int main() {
 	GameMemory memory;
 	memory.temporaryMemorySize = 10 * 1024 * 1024;
@@ -639,8 +618,6 @@ int main() {
 					|| wasRightMousePressed;
 			newInput->shootKeyClicked = false;
 		}
-
-		checkInputForClicks(newInput);
 
 		updateAndRender(&graphics.videoBuffer, newInput, &memory);
 

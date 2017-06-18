@@ -251,51 +251,51 @@ void exitGame() {
 	isRunning = false;
 }
 
-void handleKeyEvent(Display* display, Input* input, XKeyEvent event) {
+void handleKeyEvent(Display* display, Input* input, XKeyEvent event,
+		KeyDown *wasKeyDown) {
 	bool keyPressed = event.type == KeyPress;
-
-//	printf("Key: %d\n", event.keycode);
 
 	switch (event.keycode) {
 	case KeyF1:
 		exitGame();
 		break;
 	case KeyW:
-		input->upKey = keyPressed;
+		input->upKeyPressed = keyPressed;
 		break;
 	case KeyA:
-		input->leftKey = keyPressed;
+		input->leftKeyPressed = keyPressed;
 		break;
 	case KeyS:
-		input->downKey = keyPressed;
+		input->downKeyPressed = keyPressed;
 		break;
 	case KeyD:
-		input->rightKey = keyPressed;
+		input->rightKeyPressed = keyPressed;
 		break;
 	case KeyEscape:
-		input->escapeKey = keyPressed;
+		input->escapeKeyPressed = keyPressed;
 		break;
 	case KeyEnter:
-		input->enterKey = keyPressed;
+		input->enterKeyPressed = keyPressed;
 		break;
 	}
 }
 
-void handleMouseEvent(Input* input, XButtonEvent event) {
+void handleMouseEvent(Input* input, XButtonEvent event,
+		bool *wasLeftMousePressed, bool *wasRightMousePressed) {
 	bool buttonPressed = event.type == ButtonPress;
 
 	switch (event.button) {
 	case MouseLeft:
 		input->shootKeyPressed = buttonPressed;
-		input->shootKeyClicked = buttonPressed && !wasLeftMousePressed;
-		wasLeftMousePressed = buttonPressed;
+		input->shootKeyClicked = buttonPressed && !*wasLeftMousePressed;
+		*wasLeftMousePressed = buttonPressed;
 		break;
 	case MouseMiddle:
 		break;
 	case MouseRight:
 		input->shootKeyPressed = buttonPressed;
-		input->shootKeyClicked = buttonPressed && !wasRightMousePressed;
-		wasRightMousePressed = buttonPressed;
+		input->shootKeyClicked = buttonPressed && !*wasRightMousePressed;
+		*wasRightMousePressed = buttonPressed;
 		break;
 	case MouseScrollUp:
 		break;
@@ -561,6 +561,27 @@ void swapSoundBuffers(GameMemory *memory) {
 #endif
 }
 
+void checkInputForClicks(Input *input) {
+	static bool up, down, left, right, enter, escape;
+	input->upKeyClicked = input->upKeyPressed && !up;
+	up = input->upKeyPressed;
+
+	input->downKeyClicked = input->downKeyPressed && !down;
+	down = input->downKeyPressed;
+
+	input->leftKeyClicked = input->leftKeyPressed && !left;
+	left = input->leftKeyPressed;
+
+	input->rightKeyClicked = input->rightKeyPressed && !right;
+	right = input->rightKeyPressed;
+
+	input->enterKeyClicked = input->enterKeyPressed && !enter;
+	enter = input->enterKeyPressed;
+
+	input->escapeKeyClicked = input->escapeKeyPressed && !escape;
+	escape = input->escapeKeyPressed;
+}
+
 int main() {
 	GameMemory memory;
 	memory.temporaryMemorySize = 10 * 1024 * 1024;
@@ -572,6 +593,9 @@ int main() {
 	audio = initAudioData();
 
 	isRunning = true;
+	bool wasLeftMousePressed = false;
+	bool wasRightMousePressed = false;
+	KeyDown wasKeyDown = { };
 
 	Input input[2] = { };
 	Input *oldInput = &input[0];
@@ -590,10 +614,12 @@ int main() {
 				exitGame();
 			}
 			if (event.type == KeyPress || event.type == KeyRelease) {
-				handleKeyEvent(graphics.display, newInput, event.xkey);
+				handleKeyEvent(graphics.display, newInput, event.xkey,
+						&wasKeyDown);
 			}
 			if (event.type == ButtonPress || event.type == ButtonRelease) {
-				handleMouseEvent(newInput, event.xbutton);
+				handleMouseEvent(newInput, event.xbutton, &wasLeftMousePressed,
+						&wasRightMousePressed);
 				mouseEvent = true;
 			}
 			if (event.type == MotionNotify) {
@@ -613,6 +639,8 @@ int main() {
 					|| wasRightMousePressed;
 			newInput->shootKeyClicked = false;
 		}
+
+		checkInputForClicks(newInput);
 
 		updateAndRender(&graphics.videoBuffer, newInput, &memory);
 

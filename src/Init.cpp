@@ -1,3 +1,5 @@
+Menu getMainMenu();
+
 void loadTextures(GameMemory *memory, GameState *gameState) {
 	for (int i = 0; i < 4; i++) {
 		std::string filename = "./res/textures/roads/road" + std::to_string(i)
@@ -53,14 +55,7 @@ void loadTextures(GameMemory *memory, GameState *gameState) {
 	freeFile(&explosionFile);
 }
 
-void init(GameMemory *memory) {
-	std::srand(time(0));
-	memory->isInitialized = true;
-
-	GameState *gameState = (GameState *) reservePermanentMemory(memory,
-			sizeof(GameState));
-
-	*gameState = {};
+void resetGameState(GameState *gameState) {
 	gameState->player = {};
 	gameState->player.position.x = (float) (WINDOW_WIDTH / 2);
 	gameState->player.position.y = (float) (WINDOW_HEIGHT / 2);
@@ -83,6 +78,24 @@ void init(GameMemory *memory) {
 	gameState->bulletFrequency = 50;
 	gameState->itemFrequency = 50;
 	gameState->bulletSpeed = 7.5f;
+
+	gameState->lastAIBulletIndex = -1;
+	gameState->lastItemIndex = -1;
+	gameState->lastPlayerBulletIndex = -1;
+	gameState->lastTrafficCarIndex = -1;
+
+	// FIXME what is lastPlayingSound?
+}
+
+void init(GameMemory *memory) {
+	std::srand(time(0));
+	memory->isInitialized = true;
+
+	GameState *gameState = (GameState *) reservePermanentMemory(memory,
+			sizeof(GameState));
+
+	*gameState = {};
+	resetGameState(gameState);
 
 	Text::loadFont(memory, "./res/font/arial.ttf");
 

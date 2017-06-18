@@ -30,8 +30,10 @@ struct GameFont {
 struct Input {
 	Math::Vector2f mousePosition;
 	// TODO convert these into a bit mask (optimization)
-	bool upKey, downKey, leftKey, rightKey;
-	bool enterKey, escapeKey;
+	bool upKeyPressed, downKeyPressed, leftKeyPressed, rightKeyPressed;
+	bool upKeyClicked, downKeyClicked, leftKeyClicked, rightKeyClicked;
+	bool enterKeyPressed, escapeKeyPressed;
+	bool enterKeyClicked, escapeKeyClicked;
 	bool shootKeyPressed, shootKeyClicked;
 };
 

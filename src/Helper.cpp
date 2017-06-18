@@ -89,25 +89,6 @@ Texture readBmpIntoMemory(File file, GameMemory *memory) {
 	return readBmpIntoMemory(file, memory, 0, 0, -1, -1);
 }
 
-void testInput(Input* input) {
-//	printf("(%d|%d)\n", input->mouseX, input->mouseY);
-	if (input->upKey) {
-		printf("Going up!\n");
-	}
-	if (input->downKey) {
-		printf("Going down!\n");
-	}
-	if (input->leftKey) {
-		printf("Going left!\n");
-	}
-	if (input->rightKey) {
-		printf("Going right!\n");
-	}
-	if (input->shootKeyPressed) {
-		printf("Shooting!\n");
-	}
-}
-
 // Do not use this. It's incredibly inefficient!
 void renderControls(VideoBuffer* buffer) {
 	uint32_t color = 0x800000ff;

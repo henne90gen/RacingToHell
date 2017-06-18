@@ -4,9 +4,9 @@
 
 void spawnTrafficCar(GameState *gameState);
 
-#include "Menu.cpp"
 #include "Helper.cpp"
 #include "Init.cpp"
+#include "Menu.cpp"
 
 GameState* getGameState(GameMemory* memory) {
 	if (!memory->isInitialized) {
@@ -85,16 +85,16 @@ void spawnBullet(GameState *gameState, Math::Vector2f position,
 void updatePlayer(Input *input, GameState *gameState) {
 	int x = 0;
 	int y = 0;
-	if (input->downKey) {
+	if (input->downKeyPressed) {
 		y += gameState->player.speed;
 	}
-	if (input->upKey) {
+	if (input->upKeyPressed) {
 		y -= gameState->player.speed;
 	}
-	if (input->leftKey) {
+	if (input->leftKeyPressed) {
 		x -= gameState->player.speed;
 	}
-	if (input->rightKey) {
+	if (input->rightKeyPressed) {
 		x += gameState->player.speed;
 	}
 
@@ -268,7 +268,8 @@ void spawnTrafficCar(GameState* gameState) {
 
 void updateAndRenderTraffic(VideoBuffer* buffer, GameState *gameState,
 		bool shouldUpdate) {
-	if (shouldUpdate && gameState->frameCounter % gameState->trafficFrequency == 0) {
+	if (shouldUpdate
+			&& gameState->frameCounter % gameState->trafficFrequency == 0) {
 		spawnTrafficCar(gameState);
 	}
 
@@ -350,7 +351,8 @@ void spawnItem(GameState *gameState) {
 
 void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState,
 		bool shouldUpdate) {
-	if (shouldUpdate && gameState->frameCounter % gameState->itemFrequency == 0) {
+	if (shouldUpdate
+			&& gameState->frameCounter % gameState->itemFrequency == 0) {
 		spawnItem(gameState);
 	}
 
@@ -456,18 +458,12 @@ void updateAndRenderGame(VideoBuffer *buffer, Input *input, GameMemory *memory,
 	updateAndRenderUI(buffer, gameState, update);
 }
 
-// FIXME make this non-global
-static bool wasEscapeKeyPressed = false;
-
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory) {
 	GameState *gameState = getGameState(memory);
 	gameState->frameCounter++;
 
-	if (input->escapeKey && !wasEscapeKeyPressed) {
-		wasEscapeKeyPressed = true;
+	if (input->escapeKeyClicked) {
 		handleMenuEscape(gameState);
-	} else if (!input->escapeKey) {
-		wasEscapeKeyPressed = false;
 	}
 
 	updateAndRenderGame(buffer, input, memory, gameState,

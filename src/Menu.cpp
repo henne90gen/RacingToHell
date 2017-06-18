@@ -53,11 +53,6 @@ Menu getPauseMenu() {
 	offsetY += 50;
 
 	addMenuItem(&pause.items[pause.numberMenuItems++], { offsetX, offsetY },
-			"Credits");
-
-	offsetY += 50;
-
-	addMenuItem(&pause.items[pause.numberMenuItems++], { offsetX, offsetY },
 			"Main Menu");
 
 	offsetY += 50;
@@ -84,6 +79,21 @@ Menu getOptionsMenu(bool mainMenu) {
 			"Back");
 
 	return options;
+}
+
+Menu getCreditsMenu() {
+	Menu credits = { };
+
+	credits.state = CREDITS;
+
+	credits.currentMenuItem = 0;
+
+	float offsetX = 20;
+	float offsetY = 100;
+	addMenuItem(&credits.items[credits.numberMenuItems++], { offsetX, offsetY },
+			"Back");
+
+	return credits;
 }
 
 Menu getGameMenu() {
@@ -126,7 +136,7 @@ void handleMenuEnter(GameState *gameState) {
 			gameState->currentMenu = getOptionsMenu(true);
 			break;
 		case 2:
-			// gameState->currentMenu = getCreditsMenu();
+			gameState->currentMenu = getCreditsMenu();
 			break;
 		case 3:
 			exitGame();
@@ -142,12 +152,9 @@ void handleMenuEnter(GameState *gameState) {
 			gameState->currentMenu = getOptionsMenu(false);
 			break;
 		case 2:
-			// gameState->currentMenu = getCreditsMenu();
+			resetGameState(gameState);
 			break;
 		case 3:
-			gameState->currentMenu = getMainMenu();
-			break;
-		case 4:
 			exitGame();
 			break;
 		}
@@ -160,8 +167,25 @@ void handleMenuEnter(GameState *gameState) {
 		}
 		break;
 	case OPTIONS_PAUSE:
+		switch (gameState->currentMenu.currentMenuItem) {
+		case 0:
+			gameState->currentMenu = getPauseMenu();
+			break;
+		}
+		break;
 	case GAME_OVER:
+		switch (gameState->currentMenu.currentMenuItem) {
+		case 0:
+			gameState->currentMenu = getMainMenu();
+			break;
+		}
+		break;
 	case CREDITS:
+		switch (gameState->currentMenu.currentMenuItem) {
+		case 0:
+			gameState->currentMenu = getMainMenu();
+			break;
+		}
 		break;
 	}
 }
@@ -185,41 +209,29 @@ void changeMenuSelection(GameState *gameState, int direction) {
 	}
 }
 
-// FIXME make this non-global
-static bool wasEnterKeyPressed = false;
-static bool wasUpKeyPressed = false;
-static bool wasDownKeyPressed = false;
-
 void updateAndRenderMenu(VideoBuffer *buffer, Input *input,
 		GameState *gameState) {
 
-	if (input->enterKey && !wasEnterKeyPressed) {
-		wasEnterKeyPressed = true;
+	if (input->enterKeyClicked) {
 		handleMenuEnter(gameState);
-	} else if (!input->enterKey) {
-		wasEnterKeyPressed = false;
 	}
 
-	if (input->upKey && !wasUpKeyPressed) {
-		wasUpKeyPressed = true;
+	if (input->upKeyClicked) {
 		changeMenuSelection(gameState, -1);
-	} else if (!input->upKey) {
-		wasUpKeyPressed = false;
 	}
 
-	if (input->downKey && !wasDownKeyPressed) {
-		wasDownKeyPressed = true;
+	if (input->downKeyClicked) {
 		changeMenuSelection(gameState, 1);
-	} else if (!input->downKey) {
-		wasDownKeyPressed = false;
 	}
 
+	// Menu backdrop
 	Math::Rectangle rect = { };
 	rect.position = {10, 60};
 	rect.width = WINDOW_WIDTH / 2 - 10;
 	rect.height = gameState->currentMenu.numberMenuItems * 50;
 	Render::rectangle(buffer, rect, 0x80202020);
 
+	// Menu items
 	for (unsigned i = 0; i < gameState->currentMenu.numberMenuItems; i++) {
 		bool highlight = i == (unsigned) gameState->currentMenu.currentMenuItem;
 		renderMenuItem(buffer, gameState->currentMenu.items[i], highlight);

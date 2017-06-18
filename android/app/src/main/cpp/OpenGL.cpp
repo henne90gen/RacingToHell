@@ -117,6 +117,9 @@ void setupOpenGL(VideoBuffer *videoBuffer) {
     a_position_location = glGetAttribLocation(program, "a_Position");
     a_texture_coordinates_location = glGetAttribLocation(program, "a_TextureCoordinates");
     u_texture_unit_location = glGetUniformLocation(program, "u_TextureUnit");
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void swapBuffers(VideoBuffer *videoBuffer) {

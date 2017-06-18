@@ -35,15 +35,20 @@ static GLint a_position_location;
 static GLint a_texture_coordinates_location;
 static GLint u_texture_unit_location;
 
-#define KeyW 25
-#define KeyA 38
-#define KeyS 39
-#define KeyD 40
-#define KeySpace 65
-#define MouseLeft Button1
-#define MouseMiddle Button2
-#define MouseRight Button3
-#define MouseScrollUp Button4
+// Giving keys more descriptive names
+#define KeyEscape 9
+#define KeyEnter 36
+#define KeyW	 25
+#define KeyA	 38
+#define KeyS	 39
+#define KeyD	 40
+#define KeyF1	 67
+
+// Giving mouse buttons more descriptive names
+#define MouseLeft       Button1
+#define MouseMiddle     Button2
+#define MouseRight      Button3
+#define MouseScrollUp   Button4
 #define MouseScrollDown Button5
 
 struct GraphicsData {

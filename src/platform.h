@@ -36,3 +36,4 @@ struct GameMemory {
 void abort(std::string message);
 File readFile(std::string fileName);
 void freeFile(File *file);
+void exitGame();

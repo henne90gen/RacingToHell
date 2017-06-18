@@ -53,6 +53,7 @@ Java_game_racingtohell_NativeWrapper_on_1touch_1event(JNIEnv *env UNUSED, jclass
 
     if (inControlCircle(x, y)) {
         float angle = getAngleInControlCircle(x, y);
+        // TODO enable top-left, top-right etc.
         if ((angle < PI / 4 && angle > 0) || (angle > -PI / 4 && angle < 0)) {
             gameInput.leftKey = pressed;
         } else if (angle > PI / 4 && angle < PI / 4 * 3) {

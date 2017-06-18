@@ -8,7 +8,6 @@
 #include "Renderer.h"
 #include "Collision.h"
 #include "Font.h"
-#include "Menu.h"
 
 struct VideoBuffer {
 
@@ -30,10 +29,10 @@ struct GameFont {
 
 struct Input {
 	Math::Vector2f mousePosition;
+	// TODO convert these into a bit mask (optimization)
 	bool upKey, downKey, leftKey, rightKey;
-	bool pauseKey;
-	bool shootKeyPressed;
-	bool shootKeyClicked;
+	bool enterKey, escapeKey;
+	bool shootKeyPressed, shootKeyClicked;
 };
 
 struct Player {
@@ -79,7 +78,19 @@ struct Resources {
 };
 
 enum MenuState {
-	MAIN, OPTIONS, GAME_OVER
+	GAME, MAIN, OPTIONS_MAIN, GAME_OVER, PAUSE, OPTIONS_PAUSE, CREDITS
+};
+
+struct MenuItem {
+	Math::Vector2f position;
+	char text[50];
+};
+
+struct Menu {
+	MenuState state;
+	MenuItem items[20];
+	uint8_t numberMenuItems;
+	int8_t currentMenuItem;
 };
 
 struct GameState {
@@ -87,9 +98,7 @@ struct GameState {
 	int lastPlayingSound = -1;
 
 	uint32_t frameCounter;
-	MenuState menu;
-	bool isInMenu;
-	bool isRoadMoving;
+	Menu currentMenu;
 	uint32_t roadPosition;
 	uint8_t level;
 	float levelTime, maxLevelTime;

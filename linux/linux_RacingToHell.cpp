@@ -246,15 +246,20 @@ void freeFile(File *file) {
 	file->size = 0;
 }
 
-void handleKeyEvent(Display* display, Input* input, XKeyEvent event) {
-	if (event.keycode == 9) { // Escape pressed
-		printf("Exiting\n");
-		isRunning = false;
-		return;
-	}
+void exitGame() {
+	printf("Exiting\n");
+	isRunning = false;
+}
 
+void handleKeyEvent(Display* display, Input* input, XKeyEvent event) {
 	bool keyPressed = event.type == KeyPress;
+
+//	printf("Key: %d\n", event.keycode);
+
 	switch (event.keycode) {
+	case KeyF1:
+		exitGame();
+		break;
 	case KeyW:
 		input->upKey = keyPressed;
 		break;
@@ -267,21 +272,17 @@ void handleKeyEvent(Display* display, Input* input, XKeyEvent event) {
 	case KeyD:
 		input->rightKey = keyPressed;
 		break;
-	case KeySpace:
-		input->shootKeyPressed = keyPressed;
+	case KeyEscape:
+		input->escapeKey = keyPressed;
+		break;
+	case KeyEnter:
+		input->enterKey = keyPressed;
 		break;
 	}
 }
 
 void handleMouseEvent(Input* input, XButtonEvent event) {
-
 	bool buttonPressed = event.type == ButtonPress;
-
-	if (buttonPressed) {
-		printf("Mouse button %d pressed! %d\n", event.button, wasLeftMousePressed);
-	} else {
-		printf("Mouse button %d released!\n", event.button);
-	}
 
 	switch (event.button) {
 	case MouseLeft:
@@ -406,7 +407,6 @@ GLuint linkProgram(const GLuint vertex_shader, const GLuint fragment_shader) {
 }
 
 GLuint buildProgram() {
-
 	// FIXME don't hard code the shaders
 	const GLchar *vertex_shader_source =
 			"attribute vec4 a_Position;attribute vec2 a_TextureCoordinates;varying vec2 v_TextureCoordinates;void main() {v_TextureCoordinates = a_TextureCoordinates;gl_Position = a_Position;}";
@@ -587,8 +587,7 @@ int main() {
 		while (XEventsQueued(graphics.display, QueuedAfterReading)) {
 			XNextEvent(graphics.display, &event);
 			if (event.type == ClientMessage) {
-				printf("Exiting\n");
-				isRunning = false;
+				exitGame();
 			}
 			if (event.type == KeyPress || event.type == KeyRelease) {
 				handleKeyEvent(graphics.display, newInput, event.xkey);
@@ -610,7 +609,8 @@ int main() {
 		}
 
 		if (!mouseEvent) {
-			newInput->shootKeyPressed = wasLeftMousePressed || wasRightMousePressed;
+			newInput->shootKeyPressed = wasLeftMousePressed
+					|| wasRightMousePressed;
 			newInput->shootKeyClicked = false;
 		}
 

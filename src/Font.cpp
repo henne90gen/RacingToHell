@@ -87,8 +87,10 @@ int getFontSizeIndex(unsigned fontSize) {
 	return -1;
 }
 
-void renderText(VideoBuffer* buffer, std::string text, int posX, int posY,
+void renderText(VideoBuffer* buffer, std::string text, Math::Vector2f position,
 		unsigned fontSize) {
+	int posX = position.x;
+	int posY = position.y;
 	Character character;
 	int fontSizeIndex = getFontSizeIndex(fontSize);
 	for (unsigned i = 0; i < text.size(); i++) {

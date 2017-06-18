@@ -18,7 +18,7 @@ struct Character {
  * Renders the given text at position (x|y), which is the bottom left corner of the text.
  * Method will crash if fontSize is not one of the available font sizes.
  */
-void renderText(VideoBuffer* buffer, std::string text, int x, int y, unsigned fontSize);
+void renderText(VideoBuffer* buffer, std::string text, Math::Vector2f position, unsigned fontSize);
 
 void renderCharacterAlpha(VideoBuffer *buffer, char c, int offsetX,
     int offsetY, uint8_t r, uint8_t g, uint8_t b, unsigned fontSize);

@@ -1,3 +1,5 @@
+#include "GameMenu.h"
+
 void addMenuItem(MenuItem *item, Math::Vector2f position, std::string text) {
 	*item = {};
 	item->position = position;

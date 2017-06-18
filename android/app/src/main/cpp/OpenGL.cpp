@@ -101,7 +101,7 @@ GLuint buildTriangleProgram() {
     // FIXME do alpha blending in the fragment shader
     const GLchar *vertex_shader_source = "attribute vec4 vPosition;void main(){gl_Position = vPosition;}";
     const GLint vertex_shader_source_length = 63;
-    const GLchar *fragment_shader_source = "precision mediump float;void main(){gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);}";
+    const GLchar *fragment_shader_source = "precision mediump float;void main(){gl_FragColor = vec4(1.0, 0.0, 0.0, 0.5);}";
     const GLint fragment_shader_source_length = 77;
 
     return buildProgram(vertex_shader_source, vertex_shader_source_length,

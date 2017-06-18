@@ -1,13 +1,14 @@
 #pragma once
 #include <time.h>
 
-#include "platform.h"
+#include "Platform.h"
 #include "MyMath.h"
 #include "Memory.h"
 #include "Sound.h"
 #include "Renderer.h"
 #include "Collision.h"
 #include "Font.h"
+#include "GameMenu.h"
 
 struct VideoBuffer {
 
@@ -147,9 +148,8 @@ struct BitmapHeader {
 Texture readBmpIntoMemory(File file, GameMemory *memory);
 
 GameState* getGameState(GameMemory* memory);
+void resetGameState(GameState *gameState);
+
 void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory);
 
 void abort(std::string message);
-
-void updateAndRenderRoad(VideoBuffer *buffer, GameState *gameState);
-void renderPlayer(VideoBuffer *buffer, GameState *gameState);

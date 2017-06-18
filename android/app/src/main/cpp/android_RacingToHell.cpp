@@ -44,10 +44,10 @@ Java_game_racingtohell_NativeWrapper_on_1touch_1event(JNIEnv *env UNUSED, jclass
     x = x * WINDOW_WIDTH / realWindowWidth;
     y = y * WINDOW_HEIGHT / realWindowHeight;
 
-    gameInput.leftKey = 0;
-    gameInput.rightKey = 0;
-    gameInput.upKey = 0;
-    gameInput.downKey = 0;
+    gameInput.leftKeyPressed = 0;
+    gameInput.rightKeyPressed = 0;
+    gameInput.upKeyPressed = 0;
+    gameInput.downKeyPressed = 0;
     gameInput.shootKeyClicked = 0;
     gameInput.shootKeyPressed = 0;
 
@@ -55,17 +55,19 @@ Java_game_racingtohell_NativeWrapper_on_1touch_1event(JNIEnv *env UNUSED, jclass
         float angle = getAngleInControlCircle(x, y);
         // TODO enable top-left, top-right etc.
         if ((angle < PI / 4 && angle > 0) || (angle > -PI / 4 && angle < 0)) {
-            gameInput.leftKey = pressed;
+            gameInput.leftKeyPressed = pressed;
         } else if (angle > PI / 4 && angle < PI / 4 * 3) {
-            gameInput.upKey = pressed;
+            gameInput.upKeyPressed = pressed;
         } else if (angle > PI / 4 * 3 || angle < -PI / 4 * 3) {
-            gameInput.rightKey = pressed;
+            gameInput.rightKeyPressed = pressed;
         } else if (angle < -PI / 4 && angle > -PI / 4 * 3) {
-            gameInput.downKey = pressed;
+            gameInput.downKeyPressed = pressed;
         }
     } else {
         gameInput.shootKeyClicked = pressed;
         gameInput.shootKeyPressed = pressed;
+        gameInput.enterKeyClicked = pressed;
+        gameInput.enterKeyPressed = pressed;
         gameInput.mousePosition = Math::Vector2f {x, y};
     }
 }
@@ -104,13 +106,10 @@ JNIEXPORT void JNICALL
 Java_game_racingtohell_NativeWrapper_on_1draw_1frame(JNIEnv *env UNUSED, jclass clazz UNUSED) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-//    LOGI("Updating.");
-
     updateAndRender(&videoBuffer, &gameInput, &memory);
 
     swapBuffers(&videoBuffer);
     renderControls();
-
 }
 
 extern "C"
@@ -146,7 +145,6 @@ File readFile(std::string fileName) {
     file.fileHandle = asset;
 
     return file;
-
 }
 
 void freeFile(File *file) {
@@ -155,4 +153,8 @@ void freeFile(File *file) {
     }
 
     file->size = 0;
+}
+
+void exitGame() {
+    exit(0);
 }

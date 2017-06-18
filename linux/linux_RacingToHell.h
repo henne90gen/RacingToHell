@@ -18,7 +18,7 @@
 #include <GL/glu.h>
 #include <alsa/asoundlib.h>
 
-#include "platform.h"
+#include "../src/Platform.h"
 #include "RacingToHell.h"
 
 #define BUFFER_OFFSET(i) ((void*)(i))

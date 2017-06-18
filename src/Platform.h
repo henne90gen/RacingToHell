@@ -12,7 +12,7 @@
 #define CANISTER_ID 1
 
 // Debug flags:
-#define COLLISION_DEBUG 1
+#define COLLISION_DEBUG 0
 #define SOUND_DEBUG 0
 #define SOUND_ENABLE 0
 

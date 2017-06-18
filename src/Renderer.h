@@ -1,7 +1,7 @@
 #pragma once
 
-#include "platform.h"
 #include "MyMath.h"
+#include "Platform.h"
 
 struct VideoBuffer;
 struct GameState;

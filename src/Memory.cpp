@@ -12,7 +12,7 @@ char *reservePermanentMemory(GameMemory *memory, size_t size) {
     return Result;
 }
 
-char *reserverTemporaryMemory(GameMemory *memory, size_t size)
+char *reserveTemporaryMemory(GameMemory *memory, size_t size)
 {
     if (memory->temporaryMemoryOffset + size > memory->temporaryMemorySize) {
         abort("Out of temporary memory!");

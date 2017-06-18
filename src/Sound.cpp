@@ -134,9 +134,9 @@ void output(GameState *state, Sound::LoadedSound *loadedSound, float volumeLeft,
 void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer) {
 	GameState *gameState = getGameState(memory);
 
-	float *realChannel0 = (float *) reserverTemporaryMemory(memory,
+	float *realChannel0 = (float *) reserveTemporaryMemory(memory,
 			sizeof(float) * soundBuffer->sampleCount);
-	float *realChannel1 = (float *) reserverTemporaryMemory(memory,
+	float *realChannel1 = (float *) reserveTemporaryMemory(memory,
 			sizeof(float) * soundBuffer->sampleCount);
 
 	{

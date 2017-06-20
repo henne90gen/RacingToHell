@@ -17,6 +17,8 @@
 #include <GL/glx.h>
 #include <GL/glu.h>
 #include <alsa/asoundlib.h>
+#include <dlfcn.h>
+#include <sys/stat.h>
 
 #include "../src/Platform.h"
 #include "RacingToHell.h"

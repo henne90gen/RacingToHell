@@ -159,38 +159,38 @@ GraphicsData initGraphicsData() {
 	XSetClassHint(graphics.display, graphics.window, classHint);
 
 	// set icon
-	Atom iconAtom = XInternAtom(graphics.display, "_NET_WM_ICON", 0);
-	File file = readFile("./res/icon.bmp");
-	GameMemory bmpMemory = { };
-	char bmpBuffer[48 * 48 * 4];
-	bmpMemory.permanent = bmpBuffer;
-	bmpMemory.permanentMemorySize = sizeof(bmpBuffer);
-	Texture texture = readBmpIntoMemory(file, &bmpMemory);
-	int propsize = 2 + (texture.width * texture.height);
-	long *propdata = (long*) malloc(propsize * sizeof(long));
+//	Atom iconAtom = XInternAtom(graphics.display, "_NET_WM_ICON", 0);
+//	File file = readFile("./res/icon.bmp");
+//	GameMemory bmpMemory = { };
+//	char bmpBuffer[48 * 48 * 4];
+//	bmpMemory.permanent = bmpBuffer;
+//	bmpMemory.permanentMemorySize = sizeof(bmpBuffer);
+//	Texture texture = readBmpIntoMemory(file, &bmpMemory);
+//	int propsize = 2 + (texture.width * texture.height);
+//	long *propdata = (long*) malloc(propsize * sizeof(long));
+//
+//	propdata[0] = texture.width;
+//	propdata[1] = texture.height;
+//	uint32_t *src;
+//	long *dst = &propdata[2];
+//	for (unsigned y = 0; y < texture.height; ++y) {
+//		src =
+//				(uint32_t*) ((uint8_t*) texture.content
+//						+ y * (texture.width * 4));
+//		for (unsigned x = 0; x < texture.width; ++x) {
+//			uint32_t color = *src++;
+//			uint8_t alpha = (color & 0xff000000) >> 24;
+//			uint8_t red = (color & 0x000000ff);
+//			uint8_t green = (color & 0x0000ff00) >> 8;
+//			uint8_t blue = (color & 0x00ff0000) >> 16;
+//			color = (alpha << 24) + (red << 16) + (green << 8) + blue;
+//			*dst++ = color;
+//		}
+//	}
+//	XChangeProperty(graphics.display, graphics.window, iconAtom,
+//	XA_CARDINAL, 32, PropModeReplace, (unsigned char *) propdata, propsize);
 
-	propdata[0] = texture.width;
-	propdata[1] = texture.height;
-	uint32_t *src;
-	long *dst = &propdata[2];
-	for (unsigned y = 0; y < texture.height; ++y) {
-		src =
-				(uint32_t*) ((uint8_t*) texture.content
-						+ y * (texture.width * 4));
-		for (unsigned x = 0; x < texture.width; ++x) {
-			uint32_t color = *src++;
-			uint8_t alpha = (color & 0xff000000) >> 24;
-			uint8_t red = (color & 0x000000ff);
-			uint8_t green = (color & 0x0000ff00) >> 8;
-			uint8_t blue = (color & 0x00ff0000) >> 16;
-			color = (alpha << 24) + (red << 16) + (green << 8) + blue;
-			*dst++ = color;
-		}
-	}
-	XChangeProperty(graphics.display, graphics.window, iconAtom,
-	XA_CARDINAL, 32, PropModeReplace, (unsigned char *) propdata, propsize);
-
-	// subscribe to events
+// subscribe to events
 	XSelectInput(graphics.display, graphics.window, EVENT_MASK);
 
 	// change cursor
@@ -537,7 +537,7 @@ void swapSoundBuffers(GameMemory *memory) {
 		abort("SampleCount below 0: " + soundBuffer.sampleCount);
 	}
 
-	Sound::getSoundSamples(memory, &soundBuffer);
+//	Sound::getSoundSamples(memory, &soundBuffer);
 
 #define SOUND_DEBUG 0
 #if SOUND_DEBUG
@@ -561,6 +561,73 @@ void swapSoundBuffers(GameMemory *memory) {
 #endif
 }
 
+struct linux_game_code {
+	void *libraryHandle;
+	time_t libraryMTime;
+
+	update_and_render* updateAndRender;
+	read_bmp_into_memory* readBmpIntoMemory;
+};
+
+void writeFile(File *file, std::string newName) {
+	printf("Writing %s\n", newName.c_str());
+	FILE *f_dst = fopen(newName.c_str(), "wb");
+	if (f_dst == NULL) {
+		printf("ERROR - Failed to open file for writing\n");
+		exit(1);
+	}
+
+	if (fwrite((void *) file->content, 1, file->size, f_dst) != file->size) {
+		printf("ERROR - Failed to write %i bytes to file\n", file->size);
+		exit(1);
+	}
+
+	fclose(f_dst);
+	f_dst = NULL;
+}
+
+linux_game_code loadGameCode() {
+	printf("Loading GameCode.\n");
+	linux_game_code result = { };
+	result.updateAndRender = updateAndRenderStub;
+	result.readBmpIntoMemory = readBmpIntoMemoryStub;
+
+	struct stat statbuf = { };
+	uint32_t stat_result = stat("./librth.so", &statbuf);
+	if (stat_result != 0) {
+		abort("Failed to stat game code.");
+	}
+	result.libraryMTime = statbuf.st_mtime;
+
+	result.libraryHandle = dlopen("./librth.so", RTLD_NOW);
+	if (result.libraryHandle) {
+		result.updateAndRender = (update_and_render *) dlsym(
+				result.libraryHandle, "updateAndRender");
+		result.readBmpIntoMemory = (read_bmp_into_memory *) dlsym(
+				result.libraryHandle, "readBmpIntoMemory");
+		if (!result.updateAndRender /*|| !result.readBmpIntoMemory*/) {
+			abort("Couldn't load game functions.");
+		}
+	} else {
+		abort("Couldn't load library. " + std::string(dlerror()));
+	}
+	return result;
+}
+
+void unloadGameCode(linux_game_code *code) {
+	printf("Unloading GameCode.\n");
+
+//	rename("./librth_temp.so", "./librth_old.so");
+	if (code->libraryHandle) {
+		dlclose(code->libraryHandle);
+		code->libraryHandle = 0;
+	}
+	code->updateAndRender = updateAndRenderStub;
+	code->readBmpIntoMemory = readBmpIntoMemoryStub;
+}
+
+static linux_game_code game;
+
 int main() {
 	GameMemory memory;
 	memory.temporaryMemorySize = 10 * 1024 * 1024;
@@ -570,6 +637,7 @@ int main() {
 
 	graphics = initGraphicsData();
 	audio = initAudioData();
+	game = loadGameCode();
 
 	isRunning = true;
 	bool wasLeftMousePressed = false;
@@ -584,6 +652,7 @@ int main() {
 	while (isRunning) {
 		timespec startTime = { };
 		clock_gettime(CLOCK_MONOTONIC_RAW, &startTime);
+
 		*newInput = *oldInput;
 
 		bool mouseEvent = false;
@@ -619,11 +688,26 @@ int main() {
 			newInput->shootKeyClicked = false;
 		}
 
-		updateAndRender(&graphics.videoBuffer, newInput, &memory);
+		game.updateAndRender(&graphics.videoBuffer, newInput, &memory);
 
 #if SOUND_ENABLE
 		swapSoundBuffers(&memory);
 #endif
+
+		struct stat library_statbuf = { };
+		stat("./librth.so", &library_statbuf);
+
+		bool ExecutableNeedsToBeReloaded = (library_statbuf.st_mtime
+				!= game.libraryMTime);
+		if (ExecutableNeedsToBeReloaded) {
+			unloadGameCode(&game);
+			game = loadGameCode();
+			//			for (uint32_t LoadTryIndex = 0;
+//					!game.is_valid && (LoadTryIndex < 100);
+//					++LoadTryIndex) {
+//				game = loadGameCode();
+//			}
+		}
 
 		swapVideoBuffers(&graphics.videoBuffer);
 

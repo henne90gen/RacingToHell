@@ -145,11 +145,15 @@ struct BitmapHeader {
 };
 #pragma pack(pop)
 
-Texture readBmpIntoMemory(File file, GameMemory *memory);
+#define READ_BMP_INTO_MEMORY(name) Texture name(File file, GameMemory *memory)
+typedef READ_BMP_INTO_MEMORY(read_bmp_into_memory);
+READ_BMP_INTO_MEMORY(readBmpIntoMemoryStub) { return {}; }
 
 GameState* getGameState(GameMemory* memory);
 void resetGameState(GameState *gameState);
 
-void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory);
+#define UPDATE_AND_RENDER(name) void name(VideoBuffer *buffer, Input *input, GameMemory *memory)
+typedef UPDATE_AND_RENDER(update_and_render);
+UPDATE_AND_RENDER(updateAndRenderStub) {}
 
 void abort(std::string message);

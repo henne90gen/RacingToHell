@@ -85,7 +85,7 @@ Texture readBmpIntoMemory(File file, GameMemory *memory, int offsetX,
 	return texture;
 }
 
-Texture readBmpIntoMemory(File file, GameMemory *memory) {
+Texture readBmpIntoMemory(File file, GameMemory* memory) {
 	return readBmpIntoMemory(file, memory, 0, 0, -1, -1);
 }
 

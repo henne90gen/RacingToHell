@@ -8,7 +8,6 @@
 // forward declarations
 struct VideoBuffer;
 struct GameState;
-struct Texture;
 struct Input;
 
 // color is always a 32 bit integer in the following form
@@ -23,6 +22,13 @@ struct Input;
 // uint8_t textureA = *currentColorPointer8++;
 
 namespace Render {
+
+struct Texture {
+
+	uint32_t width, height;
+	uint8_t bytesPerPixel;
+	void* content;
+};
 
 void bar(VideoBuffer *buffer, Math::Vector2f position, uint8_t length, uint32_t color);
 

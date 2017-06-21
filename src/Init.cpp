@@ -58,12 +58,12 @@ void resetGameState(GameState *gameState) {
 	gameState->player.position.x = (float) (WINDOW_WIDTH / 2);
 	gameState->player.position.y = (float) (WINDOW_HEIGHT / 2);
 	gameState->player.speed = 10;
-	gameState->player.health = 75;
-	gameState->player.maxHealth = 75;
-	gameState->player.energy = 75;
-	gameState->player.maxEnergy = 75;
+	gameState->player.health = 10;
+	gameState->player.maxHealth = 100;
+	gameState->player.energy = 1000;
+	gameState->player.maxEnergy = 1000;
 
-	gameState->currentMenu = getMainMenu();
+	loadMainMenu(&gameState->currentMenu);
 	gameState->level = 0;
 	gameState->levelTime = 0;
 	gameState->maxLevelTime = 60;

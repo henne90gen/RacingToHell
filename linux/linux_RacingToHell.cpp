@@ -713,11 +713,6 @@ int main() {
 		if (ExecutableNeedsToBeReloaded) {
 			unloadGameCode(&game);
 			game = loadGameCode();
-			//			for (uint32_t LoadTryIndex = 0;
-//					!game.is_valid && (LoadTryIndex < 100);
-//					++LoadTryIndex) {
-//				game = loadGameCode();
-//			}
 		}
 
 		swapVideoBuffers(&graphics.videoBuffer);

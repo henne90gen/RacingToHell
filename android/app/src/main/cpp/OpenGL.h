@@ -1,7 +1,6 @@
 #pragma once
 
-#include <RacingToHell.h>
-#include <GLES2/gl2.h>
+#include "android_RacingToHell.h"
 
 #define BUFFER_OFFSET(i) ((void*)(i))
 
@@ -15,6 +14,8 @@ static GLuint texture;
 static GLuint buffer;
 static GLuint program;
 
+//static GLuint triangleProgram;
+
 static GLint a_position_location;
 static GLint a_texture_coordinates_location;
 static GLint u_texture_unit_location;
@@ -26,6 +27,8 @@ GLuint createVertexBufferObject(const GLsizeiptr size, const GLvoid *data, const
 GLuint buildProgramFromAssets(const char *vertex_shader_path, const char *fragment_shader_path);
 
 GLuint buildProgram();
+
+GLuint buildTriangleProgram();
 
 GLuint buildProgram(const GLchar *vertex_shader_source, const GLint vertex_shader_source_length,
                     const GLchar *fragment_shader_source,

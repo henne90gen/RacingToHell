@@ -1,12 +1,14 @@
 #pragma once
 #include <time.h>
 
-#include "platform.h"
+#include "Platform.h"
 #include "MyMath.h"
 #include "Memory.h"
 #include "Sound.h"
 #include "Renderer.h"
 #include "Collision.h"
+#include "Font.h"
+#include "GameMenu.h"
 
 struct VideoBuffer {
 
@@ -28,10 +30,12 @@ struct GameFont {
 
 struct Input {
 	Math::Vector2f mousePosition;
-	bool upKey, downKey, leftKey, rightKey;
-	bool pauseKey;
-	bool shootKeyPressed;
-	bool shootKeyClicked;
+	// TODO convert these into a bit mask (optimization)
+	bool upKeyPressed, downKeyPressed, leftKeyPressed, rightKeyPressed;
+	bool upKeyClicked, downKeyClicked, leftKeyClicked, rightKeyClicked;
+	bool enterKeyPressed, escapeKeyPressed;
+	bool enterKeyClicked, escapeKeyClicked;
+	bool shootKeyPressed, shootKeyClicked;
 };
 
 struct Player {
@@ -48,7 +52,7 @@ struct Car {
 
 struct Item {
 	Math::Vector2f position;
-	uint8_t effect, itemIndex, speed;
+	uint8_t effect, itemIndex;
 };
 
 struct Bullet {
@@ -76,11 +80,28 @@ struct Resources {
 	Sound::LoadedSound Level1Music;
 };
 
+enum MenuState {
+	GAME, MAIN, OPTIONS_MAIN, GAME_OVER, PAUSE, OPTIONS_PAUSE, CREDITS
+};
+
+struct MenuItem {
+	Math::Vector2f position;
+	char text[50];
+};
+
+struct Menu {
+	MenuState state;
+	MenuItem items[20];
+	uint8_t numberMenuItems;
+	int8_t currentMenuItem;
+};
+
 struct GameState {
 	Sound::PlayingSound playingSounds[256];
 	int lastPlayingSound = -1;
 
 	uint32_t frameCounter;
+	Menu currentMenu;
 	uint32_t roadPosition;
 	uint8_t level;
 	float levelTime, maxLevelTime;
@@ -124,11 +145,13 @@ struct BitmapHeader {
 };
 #pragma pack(pop)
 
-#include "Font.h"
-
-Texture readBmpIntoMemory(File file, GameMemory *memory);
+#define READ_BMP_INTO_MEMORY(name) Texture name(File file, GameMemory *memory)
+typedef READ_BMP_INTO_MEMORY(read_bmp_into_memory);
+READ_BMP_INTO_MEMORY(readBmpIntoMemoryStub) { return {}; }
 
 GameState* getGameState(GameMemory* memory);
-void updateAndRender(VideoBuffer *buffer, Input *input, GameMemory *memory);
+void resetGameState(GameState *gameState);
 
-void abort(std::string message);
+#define UPDATE_AND_RENDER(name) void name(VideoBuffer *buffer, Input *input, GameMemory *memory)
+typedef UPDATE_AND_RENDER(update_and_render);
+UPDATE_AND_RENDER(updateAndRenderStub) {}

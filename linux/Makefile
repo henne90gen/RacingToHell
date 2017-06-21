@@ -1,10 +1,9 @@
-ifeq ($(OS), Windows_NT)
-else
+game_code:
+	g++ -shared -Wall -fpic -Iinclude src/RacingToHell.cpp -o librth.so.new
+	mv -f librth.so.new librth.so
 
-all:
-	g++ -D ENABLE_SOUND=$(ENABLE_SOUND) $(GCC_FLAGS) $(GCC_INCLUDES) $(PLATFORM_FLAGS) $(PLATFORM_FILE) $(SOURCE_FILES) -o RacingToHell$(EXTENSION) $(GCC_LINKER)
+all: game_code
+	g++ $(GCC_FLAGS) $(GCC_INCLUDES) $(PLATFORM_FLAGS) $(PLATFORM_FILE) -o RacingToHell$(EXTENSION) $(GCC_LINKER)
 
-optimized:
-	g++ -O3 $(GCC_INCLUDES) $(PLATFORM_FLAGS) $(PLATFORM_FILE) $(SOURCE_FILES) -o RacingToHell$(EXTENSION) $(GCC_LINKER)
-
-endif
+optimized: game_code
+	g++ -O3 $(GCC_INCLUDES) $(PLATFORM_FLAGS) $(PLATFORM_FILE) -o RacingToHell$(EXTENSION) $(GCC_LINKER)

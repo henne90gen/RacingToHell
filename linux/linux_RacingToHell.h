@@ -17,8 +17,10 @@
 #include <GL/glx.h>
 #include <GL/glu.h>
 #include <alsa/asoundlib.h>
+#include <dlfcn.h>
+#include <sys/stat.h>
 
-#include "platform.h"
+#include "Platform.h"
 #include "RacingToHell.h"
 
 #define BUFFER_OFFSET(i) ((void*)(i))
@@ -35,16 +37,26 @@ static GLint a_position_location;
 static GLint a_texture_coordinates_location;
 static GLint u_texture_unit_location;
 
-#define KeyW 25
-#define KeyA 38
-#define KeyS 39
-#define KeyD 40
-#define KeySpace 65
-#define MouseLeft Button1
-#define MouseRight Button3
-#define MouseMiddle Button2 // FIXME is this really mouse middle?
-#define MouseScrollUp Button4
+// Giving keys more descriptive names
+#define KeyEscape 9
+#define KeyEnter 36
+#define KeyW	 25
+#define KeyA	 38
+#define KeyS	 39
+#define KeyD	 40
+#define KeyF1	 67
+
+// Giving mouse buttons more descriptive names
+#define MouseLeft       Button1
+#define MouseMiddle     Button2
+#define MouseRight      Button3
+#define MouseScrollUp   Button4
 #define MouseScrollDown Button5
+
+struct KeyDown {
+	bool upKey, downKey, leftKey, rightKey;
+	bool enterKey, escapeKey;
+};
 
 struct GraphicsData {
 	Display* display;
@@ -75,9 +87,9 @@ struct AudioData {
 
 long int EVENT_MASK = KeyPressMask | KeyReleaseMask | ButtonPressMask
 		| ButtonReleaseMask | PointerMotionMask;
-static bool isRunning;
 
 GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
 
+static bool isRunning;
 static GraphicsData graphics;
 static AudioData audio;

@@ -1,4 +1,3 @@
-#include <platform.h>
 #include "OpenGL.h"
 
 GLuint loadTexture(
@@ -62,11 +61,8 @@ GLuint buildProgram() {
     const GLchar *fragment_shader_source = "precision mediump float;uniform sampler2D u_TextureUnit;varying vec2 v_TextureCoordinates;void main() {gl_FragColor = texture2D(u_TextureUnit, v_TextureCoordinates);}";
     const GLint fragment_shader_source_length = 166;
 
-    GLuint vertex_shader = compileShader(
-            GL_VERTEX_SHADER, vertex_shader_source, vertex_shader_source_length);
-    GLuint fragment_shader = compileShader(
-            GL_FRAGMENT_SHADER, fragment_shader_source, fragment_shader_source_length);
-    return linkProgram(vertex_shader, fragment_shader);
+    return buildProgram(vertex_shader_source, vertex_shader_source_length, fragment_shader_source,
+                        fragment_shader_source_length);
 }
 
 GLuint buildProgram(const GLchar *vertex_shader_source, const GLint vertex_shader_source_length,
@@ -84,11 +80,9 @@ GLuint buildProgram(const GLchar *vertex_shader_source, const GLint vertex_shade
 GLuint buildProgramFromAssets(const char *vertex_shader_path, const char *fragment_shader_path) {
     const File vertex_shader_source = readFile(vertex_shader_path);
     const File fragment_shader_source = readFile(fragment_shader_path);
-    const GLuint program_object_id = buildProgram(
+    return buildProgram(
             vertex_shader_source.content, vertex_shader_source.size,
             fragment_shader_source.content, fragment_shader_source.size);
-
-    return program_object_id;
 }
 
 GLuint createVertexBufferObject(const GLsizeiptr size, const GLvoid *data, const GLenum usage) {
@@ -102,6 +96,18 @@ GLuint createVertexBufferObject(const GLsizeiptr size, const GLvoid *data, const
     return vbo_object;
 }
 
+GLuint buildTriangleProgram() {
+    // FIXME don't hard code the shaders
+    // FIXME do alpha blending in the fragment shader
+    const GLchar *vertex_shader_source = "attribute vec4 vPosition;void main(){gl_Position = vPosition;}";
+    const GLint vertex_shader_source_length = 63;
+    const GLchar *fragment_shader_source = "precision mediump float;void main(){gl_FragColor = vec4(1.0, 0.0, 0.0, 0.5);}";
+    const GLint fragment_shader_source_length = 77;
+
+    return buildProgram(vertex_shader_source, vertex_shader_source_length,
+                        fragment_shader_source, fragment_shader_source_length);
+}
+
 void setupOpenGL(VideoBuffer *videoBuffer) {
     texture = loadTexture(videoBuffer->width, videoBuffer->height, GL_RGBA, videoBuffer->content);
     buffer = createVertexBufferObject(sizeof(rect), rect, GL_STATIC_DRAW);
@@ -111,6 +117,9 @@ void setupOpenGL(VideoBuffer *videoBuffer) {
     a_position_location = glGetAttribLocation(program, "a_Position");
     a_texture_coordinates_location = glGetAttribLocation(program, "a_TextureCoordinates");
     u_texture_unit_location = glGetUniformLocation(program, "u_TextureUnit");
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void swapBuffers(VideoBuffer *videoBuffer) {

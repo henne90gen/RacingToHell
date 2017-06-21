@@ -159,38 +159,38 @@ GraphicsData initGraphicsData() {
 	XSetClassHint(graphics.display, graphics.window, classHint);
 
 	// set icon
-	Atom iconAtom = XInternAtom(graphics.display, "_NET_WM_ICON", 0);
-	File file = readFile("./res/icon.bmp");
-	GameMemory bmpMemory = { };
-	char bmpBuffer[48 * 48 * 4];
-	bmpMemory.permanent = bmpBuffer;
-	bmpMemory.permanentMemorySize = sizeof(bmpBuffer);
-	Texture texture = readBmpIntoMemory(file, &bmpMemory);
-	int propsize = 2 + (texture.width * texture.height);
-	long *propdata = (long*) malloc(propsize * sizeof(long));
+//	Atom iconAtom = XInternAtom(graphics.display, "_NET_WM_ICON", 0);
+//	File file = readFile("./res/icon.bmp");
+//	GameMemory bmpMemory = { };
+//	char bmpBuffer[48 * 48 * 4];
+//	bmpMemory.permanent = bmpBuffer;
+//	bmpMemory.permanentMemorySize = sizeof(bmpBuffer);
+//	Texture texture = readBmpIntoMemory(file, &bmpMemory);
+//	int propsize = 2 + (texture.width * texture.height);
+//	long *propdata = (long*) malloc(propsize * sizeof(long));
+//
+//	propdata[0] = texture.width;
+//	propdata[1] = texture.height;
+//	uint32_t *src;
+//	long *dst = &propdata[2];
+//	for (unsigned y = 0; y < texture.height; ++y) {
+//		src =
+//				(uint32_t*) ((uint8_t*) texture.content
+//						+ y * (texture.width * 4));
+//		for (unsigned x = 0; x < texture.width; ++x) {
+//			uint32_t color = *src++;
+//			uint8_t alpha = (color & 0xff000000) >> 24;
+//			uint8_t red = (color & 0x000000ff);
+//			uint8_t green = (color & 0x0000ff00) >> 8;
+//			uint8_t blue = (color & 0x00ff0000) >> 16;
+//			color = (alpha << 24) + (red << 16) + (green << 8) + blue;
+//			*dst++ = color;
+//		}
+//	}
+//	XChangeProperty(graphics.display, graphics.window, iconAtom,
+//	XA_CARDINAL, 32, PropModeReplace, (unsigned char *) propdata, propsize);
 
-	propdata[0] = texture.width;
-	propdata[1] = texture.height;
-	uint32_t *src;
-	long *dst = &propdata[2];
-	for (unsigned y = 0; y < texture.height; ++y) {
-		src =
-				(uint32_t*) ((uint8_t*) texture.content
-						+ y * (texture.width * 4));
-		for (unsigned x = 0; x < texture.width; ++x) {
-			uint32_t color = *src++;
-			uint8_t alpha = (color & 0xff000000) >> 24;
-			uint8_t red = (color & 0x000000ff);
-			uint8_t green = (color & 0x0000ff00) >> 8;
-			uint8_t blue = (color & 0x00ff0000) >> 16;
-			color = (alpha << 24) + (red << 16) + (green << 8) + blue;
-			*dst++ = color;
-		}
-	}
-	XChangeProperty(graphics.display, graphics.window, iconAtom,
-	XA_CARDINAL, 32, PropModeReplace, (unsigned char *) propdata, propsize);
-
-	// subscribe to events
+// subscribe to events
 	XSelectInput(graphics.display, graphics.window, EVENT_MASK);
 
 	// change cursor
@@ -208,7 +208,7 @@ GraphicsData initGraphicsData() {
 	return graphics;
 }
 
-void abort(std::string message) {
+ABORT(abort) {
 	fprintf(stderr, "%s", (message + "\n").c_str());
 	exit(1);
 }
@@ -238,6 +238,24 @@ File readFile(std::string fileName) {
 	return file;
 }
 
+void writeFile(File *file, std::string name) {
+	printf("Writing %s\n", name.c_str());
+
+	FILE *fHandle = fopen(name.c_str(), "wb");
+	if (fHandle == NULL) {
+		abort("ERROR - Failed to open file for writing\n");
+	}
+
+	if (fwrite((void *) file->content, 1, file->size, fHandle) != file->size) {
+		abort(
+				"ERROR - Failed to write " + std::to_string(file->size)
+						+ " bytes to file\n");
+	}
+
+	fclose(fHandle);
+	fHandle = NULL;
+}
+
 void freeFile(File *file) {
 	if (file->content) {
 		free(file->content);
@@ -246,53 +264,56 @@ void freeFile(File *file) {
 	file->size = 0;
 }
 
-void handleKeyEvent(Display* display, Input* input, XKeyEvent event) {
-	if (event.keycode == 9) { // Escape pressed
-		printf("Exiting\n");
-		isRunning = false;
-		return;
-	}
+void exitGame() {
+	printf("Exiting\n");
+	isRunning = false;
+}
 
+void handleKeyEvent(Display* display, Input* input, XKeyEvent event,
+		KeyDown *wasKeyDown) {
 	bool keyPressed = event.type == KeyPress;
+
 	switch (event.keycode) {
+	case KeyF1:
+		exitGame();
+		break;
 	case KeyW:
-		input->upKey = keyPressed;
+		input->upKeyPressed = keyPressed;
 		break;
 	case KeyA:
-		input->leftKey = keyPressed;
+		input->leftKeyPressed = keyPressed;
 		break;
 	case KeyS:
-		input->downKey = keyPressed;
+		input->downKeyPressed = keyPressed;
 		break;
 	case KeyD:
-		input->rightKey = keyPressed;
+		input->rightKeyPressed = keyPressed;
 		break;
-	case KeySpace:
-		input->shootKeyPressed = keyPressed;
+	case KeyEscape:
+		input->escapeKeyPressed = keyPressed;
+		break;
+	case KeyEnter:
+		input->enterKeyPressed = keyPressed;
 		break;
 	}
 }
 
-void handleMouseEvent(Input* input, XButtonEvent event) {
-	static bool wasPressed = false;
-
+void handleMouseEvent(Input* input, XButtonEvent event,
+		bool *wasLeftMousePressed, bool *wasRightMousePressed) {
 	bool buttonPressed = event.type == ButtonPress;
-	if (buttonPressed) {
-		printf("Mouse button %d pressed!\n", event.button);
-	} else {
-		printf("Mouse button %d released!\n", event.button);
-	}
 
 	switch (event.button) {
 	case MouseLeft:
 		input->shootKeyPressed = buttonPressed;
-		input->shootKeyClicked = buttonPressed && !wasPressed;
+		input->shootKeyClicked = buttonPressed && !*wasLeftMousePressed;
+		*wasLeftMousePressed = buttonPressed;
 		break;
 	case MouseMiddle:
 		break;
 	case MouseRight:
 		input->shootKeyPressed = buttonPressed;
-		input->shootKeyClicked = buttonPressed && !wasPressed;
+		input->shootKeyClicked = buttonPressed && !*wasRightMousePressed;
+		*wasRightMousePressed = buttonPressed;
 		break;
 	case MouseScrollUp:
 		break;
@@ -300,7 +321,6 @@ void handleMouseEvent(Input* input, XButtonEvent event) {
 		break;
 	}
 
-	wasPressed = buttonPressed;
 }
 
 void correctTiming(timespec startTime, bool consoleOutput) {
@@ -405,7 +425,6 @@ GLuint linkProgram(const GLuint vertex_shader, const GLuint fragment_shader) {
 }
 
 GLuint buildProgram() {
-
 	// FIXME don't hard code the shaders
 	const GLchar *vertex_shader_source =
 			"attribute vec4 a_Position;attribute vec2 a_TextureCoordinates;varying vec2 v_TextureCoordinates;void main() {v_TextureCoordinates = a_TextureCoordinates;gl_Position = a_Position;}";
@@ -536,7 +555,7 @@ void swapSoundBuffers(GameMemory *memory) {
 		abort("SampleCount below 0: " + soundBuffer.sampleCount);
 	}
 
-	Sound::getSoundSamples(memory, &soundBuffer);
+//	Sound::getSoundSamples(memory, &soundBuffer);
 
 #define SOUND_DEBUG 0
 #if SOUND_DEBUG
@@ -560,17 +579,81 @@ void swapSoundBuffers(GameMemory *memory) {
 #endif
 }
 
-int main() {
-	GameMemory memory;
+struct linux_game_code {
+	void *libraryHandle;
+	time_t libraryMTime;
+
+	update_and_render* updateAndRender;
+	read_bmp_into_memory* readBmpIntoMemory;
+};
+
+linux_game_code loadGameCode() {
+	printf("Loading GameCode.\n");
+	linux_game_code result = { };
+	result.updateAndRender = updateAndRenderStub;
+	result.readBmpIntoMemory = readBmpIntoMemoryStub;
+
+	struct stat statbuf = { };
+	uint32_t stat_result = stat("./librth.so", &statbuf);
+	if (stat_result != 0) {
+		abort("Failed to stat game code.");
+	}
+	result.libraryMTime = statbuf.st_mtime;
+
+	result.libraryHandle = dlopen("./librth.so", RTLD_NOW);
+	if (result.libraryHandle) {
+		result.updateAndRender = (update_and_render *) dlsym(
+				result.libraryHandle, "updateAndRender");
+		result.readBmpIntoMemory = (read_bmp_into_memory *) dlsym(
+				result.libraryHandle, "readBmpIntoMemory");
+		if (!result.updateAndRender /*|| !result.readBmpIntoMemory*/) {
+			abort("Couldn't load game functions.");
+		}
+	} else {
+		abort("Couldn't load library. " + std::string(dlerror()));
+	}
+	return result;
+}
+
+void unloadGameCode(linux_game_code *code) {
+	printf("Unloading GameCode.\n");
+
+//	rename("./librth_temp.so", "./librth_old.so");
+	if (code->libraryHandle) {
+		dlclose(code->libraryHandle);
+		code->libraryHandle = 0;
+	}
+	code->updateAndRender = updateAndRenderStub;
+	code->readBmpIntoMemory = readBmpIntoMemoryStub;
+}
+
+GameMemory initGameMemory() {
+	GameMemory memory = { };
+
+	memory.abort = abort;
+	memory.readFile = readFile;
+	memory.freeFile = freeFile;
+	memory.exitGame = exitGame;
+
 	memory.temporaryMemorySize = 10 * 1024 * 1024;
 	memory.permanentMemorySize = 100 * 1024 * 1024;
 	memory.temporary = (char*) malloc(memory.temporaryMemorySize);
 	memory.permanent = (char*) malloc(memory.permanentMemorySize);
 
+	return memory;
+}
+
+int main() {
+	GameMemory memory = initGameMemory();
+
 	graphics = initGraphicsData();
 	audio = initAudioData();
+	linux_game_code game = loadGameCode();
 
 	isRunning = true;
+	bool wasLeftMousePressed = false;
+	bool wasRightMousePressed = false;
+	KeyDown wasKeyDown = { };
 
 	Input input[2] = { };
 	Input *oldInput = &input[0];
@@ -580,19 +663,23 @@ int main() {
 	while (isRunning) {
 		timespec startTime = { };
 		clock_gettime(CLOCK_MONOTONIC_RAW, &startTime);
+
 		*newInput = *oldInput;
 
+		bool mouseEvent = false;
 		while (XEventsQueued(graphics.display, QueuedAfterReading)) {
 			XNextEvent(graphics.display, &event);
 			if (event.type == ClientMessage) {
-				printf("Exiting\n");
-				isRunning = false;
+				exitGame();
 			}
 			if (event.type == KeyPress || event.type == KeyRelease) {
-				handleKeyEvent(graphics.display, newInput, event.xkey);
+				handleKeyEvent(graphics.display, newInput, event.xkey,
+						&wasKeyDown);
 			}
 			if (event.type == ButtonPress || event.type == ButtonRelease) {
-				handleMouseEvent(newInput, event.xbutton);
+				handleMouseEvent(newInput, event.xbutton, &wasLeftMousePressed,
+						&wasRightMousePressed);
+				mouseEvent = true;
 			}
 			if (event.type == MotionNotify) {
 				Math::Vector2f mousePosition = { };
@@ -606,11 +693,32 @@ int main() {
 			break;
 		}
 
-		updateAndRender(&graphics.videoBuffer, newInput, &memory);
+		if (!mouseEvent) {
+			newInput->shootKeyPressed = wasLeftMousePressed
+					|| wasRightMousePressed;
+			newInput->shootKeyClicked = false;
+		}
 
-#if ENABLE_SOUND
+		game.updateAndRender(&graphics.videoBuffer, newInput, &memory);
+
+#if SOUND_ENABLE
 		swapSoundBuffers(&memory);
 #endif
+
+		struct stat library_statbuf = { };
+		stat("./librth.so", &library_statbuf);
+
+		bool ExecutableNeedsToBeReloaded = (library_statbuf.st_mtime
+				!= game.libraryMTime);
+		if (ExecutableNeedsToBeReloaded) {
+			unloadGameCode(&game);
+			game = loadGameCode();
+			//			for (uint32_t LoadTryIndex = 0;
+//					!game.is_valid && (LoadTryIndex < 100);
+//					++LoadTryIndex) {
+//				game = loadGameCode();
+//			}
+		}
 
 		swapVideoBuffers(&graphics.videoBuffer);
 

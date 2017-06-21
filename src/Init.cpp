@@ -2,42 +2,42 @@ void loadTextures(GameMemory *memory, GameState *gameState) {
 	for (int i = 0; i < 4; i++) {
 		std::string filename = "./res/textures/roads/road" + std::to_string(i)
 				+ ".bmp";
-		File file = readFile(filename);
+		File file = memory->readFile(filename);
 		gameState->resources.roadTextures[i] = readBmpIntoMemory(file, memory);
-		freeFile(&file);
+		memory->freeFile(&file);
 	}
 
 	for (unsigned i = 0; i < NUM_PLAYER_TEXTURES; i++) {
 		std::string carSprites = "./res/textures/cars/player"
 				+ std::to_string(i) + ".bmp";
-		File carFile = readFile(carSprites);
+		File carFile = memory->readFile(carSprites);
 		gameState->resources.playerCarTextures[i] = readBmpIntoMemory(carFile,
 				memory);
-		freeFile(&carFile);
+		memory->freeFile(&carFile);
 	}
 
 	for (unsigned i = 0; i < NUM_TRAFFIC_TEXTURES; i++) {
 		std::string carSprites = "./res/textures/cars/traffic"
 				+ std::to_string(i) + ".bmp";
-		File carFile = readFile(carSprites);
+		File carFile = memory->readFile(carSprites);
 		gameState->resources.trafficCarTextures[i] = readBmpIntoMemory(carFile,
 				memory);
-		freeFile(&carFile);
+		memory->freeFile(&carFile);
 	}
 
 	// Loading Toolbox with index 0
-	File toolFile = readFile("./res/textures/toolbox.bmp");
+	File toolFile = memory->readFile("./res/textures/toolbox.bmp");
 	gameState->resources.itemTextures[TOOLBOX_ID] = readBmpIntoMemory(toolFile,
 			memory);
-	freeFile(&toolFile);
+	memory->freeFile(&toolFile);
 
 	// Loading Canister with index 1
-	File canFile = readFile("./res/textures/canister.bmp");
+	File canFile = memory->readFile("./res/textures/canister.bmp");
 	gameState->resources.itemTextures[CANISTER_ID] = readBmpIntoMemory(canFile,
 			memory);
-	freeFile(&canFile);
+	memory->freeFile(&canFile);
 
-	File explosionFile = readFile("./res/textures/explosion.bmp");
+	File explosionFile = memory->readFile("./res/textures/explosion.bmp");
 	for (int y = 0; y < 9; y++) {
 		for (int x = 0; x < 9; x++) {
 			int offsetX = x * 100;
@@ -50,18 +50,10 @@ void loadTextures(GameMemory *memory, GameState *gameState) {
 					output);
 		}
 	}
-	freeFile(&explosionFile);
+	memory->freeFile(&explosionFile);
 }
 
-void init(GameMemory *memory) {
-	std::srand(time(0));
-
-	memory->isInitialized = true;
-
-	GameState *gameState = (GameState *) reservePermanentMemory(memory,
-			sizeof(GameState));
-
-	*gameState = {};
+void resetGameState(GameState *gameState) {
 	gameState->player = {};
 	gameState->player.position.x = (float) (WINDOW_WIDTH / 2);
 	gameState->player.position.y = (float) (WINDOW_HEIGHT / 2);
@@ -71,6 +63,7 @@ void init(GameMemory *memory) {
 	gameState->player.energy = 75;
 	gameState->player.maxEnergy = 75;
 
+	gameState->currentMenu = getMainMenu();
 	gameState->level = 0;
 	gameState->levelTime = 0;
 	gameState->maxLevelTime = 60;
@@ -84,6 +77,24 @@ void init(GameMemory *memory) {
 	gameState->itemFrequency = 50;
 	gameState->bulletSpeed = 7.5f;
 
+	gameState->lastAIBulletIndex = -1;
+	gameState->lastItemIndex = -1;
+	gameState->lastPlayerBulletIndex = -1;
+	gameState->lastTrafficCarIndex = -1;
+
+	// FIXME what is lastPlayingSound?
+}
+
+void init(GameMemory *memory) {
+	std::srand(time(0));
+	memory->isInitialized = true;
+
+	GameState *gameState = (GameState *) reservePermanentMemory(memory,
+			sizeof(GameState));
+
+	*gameState = {};
+	resetGameState(gameState);
+
 	Text::loadFont(memory, "./res/font/arial.ttf");
 
 	gameState->resources.AIShot = Sound::loadWAV(memory,
@@ -96,8 +107,5 @@ void init(GameMemory *memory) {
 			Sound::PLAY_LOOP);
 
 	loadTextures(memory, gameState);
-
-	// FIXME remove this
-	spawnTrafficCar(gameState);
 }
 

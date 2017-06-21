@@ -111,6 +111,7 @@ void triangleTop(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1,
 	}
 }
 
+// FIXME gap appears when not rendering just top or bottom flat triangle
 void triangle(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1,
 		Math::Vector2f point2, Math::Vector2f point3) {
 	if (point1.y > point2.y) {
@@ -215,11 +216,11 @@ void explosion(VideoBuffer *buffer, GameState *gameState, int x, int y,
 			y);
 }
 
-void debugInformation(VideoBuffer *buffer, Input *input, GameState *gameState) {
+void debugInformation(GameMemory *memory, VideoBuffer *buffer, Input *input, GameState *gameState) {
 	std::string text = "Player 1: "
 			+ std::to_string(gameState->player.position.x) + ", "
 			+ std::to_string(gameState->player.position.y);
-	Text::renderText(buffer, text, 20, 100, 7);
+	Text::renderText(memory, buffer, text, {20, 100}, 7);
 }
 
 void clearScreen(VideoBuffer *buffer, uint32_t color) {
@@ -328,3 +329,4 @@ void textureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 }
 
 }
+

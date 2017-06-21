@@ -5,12 +5,12 @@ namespace Render {
 
 void blendColor(uint32_t color, uint32_t* currentBufferPixel) {
 	uint8_t *currentBufferPixel8 = (uint8_t *) currentBufferPixel;
-	uint8_t *currentColorPointer8 = (uint8_t *) &color;
+    uint8_t *currentColorPixel8 = (uint8_t *)&color;
 
-	uint8_t colorR = *currentColorPointer8++;
-	uint8_t colorG = *currentColorPointer8++;
-	uint8_t colorB = *currentColorPointer8++;
-	uint8_t colorA = *currentColorPointer8++;
+    uint8_t colorR = *currentColorPixel8++;
+    uint8_t colorG = *currentColorPixel8++;
+    uint8_t colorB = *currentColorPixel8++;
+    uint8_t colorA = *currentColorPixel8++; 
 
 	if (colorA == 255) {
 		*currentBufferPixel = color;
@@ -18,30 +18,30 @@ void blendColor(uint32_t color, uint32_t* currentBufferPixel) {
 		uint8_t bufferA = *currentBufferPixel8;
 
 		float textureAlpha = colorA / 255.0f;
-		float bufferAlpha = bufferA / 255.0f;
+		float bufferAlpha = (bufferA / 255.0f) * (1.0f - textureAlpha);
 
-		float resultAlpha = textureAlpha + bufferAlpha * (1.0f - textureAlpha);
+		float resultAlpha = textureAlpha + bufferAlpha;
 
 		if (resultAlpha == 0.0f) {
 			*currentBufferPixel = 0;
 		} else {
-			float newR = ((bufferAlpha * (1.0f - textureAlpha)
+			float newR = ((bufferAlpha 
 					* *currentBufferPixel8) + (textureAlpha * colorR))
 					/ resultAlpha;
 			*currentBufferPixel8++ = (uint8_t) newR;
 
-			float newG = ((bufferAlpha * (1.0f - textureAlpha)
+			float newG = ((bufferAlpha 
 					* *currentBufferPixel8) + (textureAlpha * colorG))
 					/ resultAlpha;
 			*currentBufferPixel8++ = (uint8_t) newG;
 
-			float newB = ((bufferAlpha * (1.0f - textureAlpha)
+			float newB = ((bufferAlpha
 					* *currentBufferPixel8) + (textureAlpha * colorB))
 					/ resultAlpha;
 			*currentBufferPixel8++ = (uint8_t) newB;
 
 			float newA = resultAlpha * 255.0f;
-			*currentBufferPixel8++ = (uint8_t) newA;
+			*currentBufferPixel8++ = (uint8_t) newA; 
 		}
 	}
 }

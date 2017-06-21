@@ -50,7 +50,7 @@ void resizeOffscreenBuffer(OffscreenBuffer *buffer, unsigned width, unsigned hei
 
 void drawBuffer(HDC deviceContext, OffscreenBuffer *buffer)
 {
-  /* if (!StretchDIBits(
+   if (!StretchDIBits(
         deviceContext,
         0, 0, buffer->width, buffer->height,
         0, 0, buffer->width, buffer->height,
@@ -61,9 +61,9 @@ void drawBuffer(HDC deviceContext, OffscreenBuffer *buffer)
     ))
     {
         debugString("DBits failed.");
-    } */
+    } 
 	
-    glViewport(0, 0, buffer->width, buffer->height);
+    /*glViewport(0, 0, buffer->width, buffer->height);
 
     GLuint textureHandle = 0;
     static bool init = false;
@@ -122,7 +122,7 @@ void drawBuffer(HDC deviceContext, OffscreenBuffer *buffer)
 
     glEnd(); 
 
-    SwapBuffers(deviceContext); 
+    SwapBuffers(deviceContext); */
 }
 
 typedef HRESULT _DirectSoundCreate_(LPCGUID pcGuidDevice, LPDIRECTSOUND *ppDS, LPUNKNOWN pUnkOuter);
@@ -484,6 +484,9 @@ void sleep(float time, uint64_t frequency)
 #if 1
 int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 {
+    float debugFrameTimes[256];
+    unsigned currentFrameTimePosition = 0;
+
 	// flush stdout and stderr to console
 	setvbuf(stdout, NULL, _IONBF, 0);
 	setvbuf(stderr, NULL, _IONBF, 0);
@@ -677,7 +680,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 
         if (secondsElapsed < targetFrameTime)
         {
-            sleep(targetFrameTime - secondsElapsed, performanceCountFrequency);
+            //sleep(targetFrameTime - secondsElapsed, performanceCountFrequency);
         }
         else
         {
@@ -698,7 +701,21 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
         flipWallClock = getClockCounter();
 
         float timePassed = (lastCounter - prevLastCounter) / (float)performanceCountFrequency;
-        debugString("Frametime: " + std::to_string(1.f / timePassed) + '\n');
+
+        debugFrameTimes[currentFrameTimePosition] = timePassed;
+        currentFrameTimePosition = (currentFrameTimePosition + 1) % 256;
+
+        float avgframetime = 0.0f;
+
+        for (unsigned int i = 0; i < 256; i++)
+        {
+            avgframetime += debugFrameTimes[i];
+        }
+
+
+        avgframetime /= 256.0f;
+
+        debugString("Avg: " + std::to_string(1.f / avgframetime) + '\n');
     }
 	
 	return 0;

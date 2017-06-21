@@ -19,10 +19,15 @@ void debugString(std::string s)
     OutputDebugString(s.c_str());
 }
 
-void abort(std::string message)
+ABORT(abort)
 {
     debugString(message);
     exit(1);
+}
+
+EXIT_GAME(exitGame)
+{
+    exit(0);
 }
 
 void resizeOffscreenBuffer(OffscreenBuffer *buffer, unsigned width, unsigned height)
@@ -47,6 +52,106 @@ void resizeOffscreenBuffer(OffscreenBuffer *buffer, unsigned width, unsigned hei
 	
 	buffer->content = VirtualAlloc(0, size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 }
+
+inline FILETIME getLastWriteTime(char *filename)
+{
+    FILETIME lastWriteTime = {};
+    WIN32_FILE_ATTRIBUTE_DATA data;
+
+    if (GetFileAttributesExA(filename, GetFileExInfoStandard, &data))
+    {
+        lastWriteTime = data.ftLastWriteTime;
+    }
+
+    return lastWriteTime;
+}
+
+void catStrings(size_t sourceACount, char *sourceA, size_t sourceBCount, char *sourceB, size_t destCount, char *dest)
+{
+    for (int i = 0; i < sourceACount; ++i)
+    {
+        *dest++ = *sourceA++;
+    }
+
+    for (int i = 0; i < sourceBCount; ++i)
+    {
+        *dest++ = *sourceB++;
+    }
+
+    *dest++ = 0;
+}
+
+int stringLength(char *string)
+{
+    int length = 0;
+
+    while (*string++)
+    {
+        ++length;
+    }
+
+    return length;
+}
+
+void buildExePathFilename(ExeFilename *exeFileName, char *filename, int destcount, char *dest)
+{
+    char sourceGameCodeDLlFilename[] = "handmade.dll";
+    char sourceGameCodeDLLFullPath[MAX_PATH];
+    catStrings(exeFileName->onePastLastExeFilenameSash - exeFileName->filename, exeFileName->filename, stringLength(filename), filename, destcount, dest);
+}
+
+void getExeFilename(ExeFilename *exeFileName)
+{
+    DWORD sizeOfFilename = GetModuleFileNameA(0, exeFileName->filename, sizeof(exeFileName->filename));
+    exeFileName->onePastLastExeFilenameSash = exeFileName->filename;
+    for (char *scan = exeFileName->filename; *scan; ++scan)
+    {
+        if (*scan == '\\')
+        {
+            exeFileName->onePastLastExeFilenameSash = scan + 1;
+        }
+    }
+
+}
+
+GameCode loadGameCode(char *sourceDLLName, char *tempDLLName)
+{
+    GameCode result = {};
+
+    result.lastWriteTime = getLastWriteTime(sourceDLLName);
+
+    CopyFile(sourceDLLName, tempDLLName, FALSE);
+    result.gameCodeDLL = LoadLibraryA(tempDLLName);
+
+    if (result.gameCodeDLL)
+    {
+        //result.getSoundSamples = (_GetSoundSamples_ *)GetProcAddress(result.gameCodeDLL, "game_getSoundSamples");
+        result.updateAndRender = (update_and_render *)GetProcAddress(result.gameCodeDLL, "updateAndRender");
+
+        result.isValid = result.updateAndRender;//result.getSoundSamples && result.updateAndRender;
+    }
+
+    if (!result.isValid)
+    {
+        //result.getSoundSamples = 0;
+        result.updateAndRender = 0;
+    }
+
+    return result;
+}
+
+void unloadGameCode(GameCode *code)
+{
+    if (code->gameCodeDLL)
+    {
+        FreeLibrary(code->gameCodeDLL);
+        code->gameCodeDLL = 0;
+    }
+    code->isValid = false;
+    //code->getSoundSamples = 0;
+    code->updateAndRender = 0;
+}
+
 
 void drawBuffer(HDC deviceContext, OffscreenBuffer *buffer)
 {
@@ -370,7 +475,7 @@ void deleteOpenglContext(HDC deviceContext, HGLRC openGLContext)
 
 void handleKeyStroke(Input *input, WPARAM keyCode, LPARAM flags)
 {
-	if (keyCode == VK_ESCAPE)
+	if (keyCode == VK_F1)
 	{
 		isRunning = false;
         return;
@@ -385,37 +490,42 @@ void handleKeyStroke(Input *input, WPARAM keyCode, LPARAM flags)
         {
             case ('W'):
             {
-                input->upKey = isKeyDown;
+                input->upKeyPressed = isKeyDown;
             } break;
         
             case ('A'):
             {
-                input->leftKey = isKeyDown;
+                input->leftKeyPressed = isKeyDown;
             } break;
 
             case ('S'):
             {
-                input->downKey = isKeyDown;
+                input->downKeyPressed = isKeyDown;
             } break;
 
             case ('D'):
             {
-                input->rightKey = isKeyDown;
+                input->rightKeyPressed = isKeyDown;
             } break;
 
-            case (VK_SPACE):
+            case (VK_ESCAPE):
             {
-                input->pauseKey = isKeyDown;
+                input->escapeKeyPressed = isKeyDown;
+            } break;
+
+            case (VK_RETURN):
+            {
+                input->enterKeyPressed = isKeyDown;
             } break;
         }
     }
 }
 
-File readFile(std::string filename)
+READ_FILE(readFile)
 {
     File result = {};
 
-    HANDLE fileHandle = CreateFileA(filename.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+    HANDLE fileHandle = CreateFileA(fileName.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
 
     if (fileHandle != INVALID_HANDLE_VALUE)
     {
@@ -443,12 +553,12 @@ File readFile(std::string filename)
         }
     }
 
-    result.name = filename;
+    result.name = fileName;
 
     return result;
 }
 
-void freeFile(File *file)
+FREE_FILE(freeFile)
 {
     if (file->content)
     {
@@ -487,6 +597,17 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
     float debugFrameTimes[256];
     unsigned currentFrameTimePosition = 0;
 
+    ExeFilename exeFilename = {};
+
+    getExeFilename(&exeFilename);
+
+    char sourceGameCodeDLLFullPath[MAX_PATH];
+    char tempGameCodeDLLFullPath[MAX_PATH];
+    buildExePathFilename(&exeFilename, "RacingToHell.dll", sizeof(sourceGameCodeDLLFullPath), sourceGameCodeDLLFullPath);
+    buildExePathFilename(&exeFilename, "RacingToHell-tmp.dll", sizeof(tempGameCodeDLLFullPath), tempGameCodeDLLFullPath);
+
+    GameCode gameCode = loadGameCode(sourceGameCodeDLLFullPath, tempGameCodeDLLFullPath);
+
 	// flush stdout and stderr to console
 	setvbuf(stdout, NULL, _IONBF, 0);
 	setvbuf(stderr, NULL, _IONBF, 0);
@@ -507,6 +628,11 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
     memory.permanentMemorySize = 300 * 1024 * 1024;
     memory.temporary = (char *)VirtualAlloc(0, memory.permanentMemorySize + memory.temporaryMemorySize, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
     memory.permanent = (char *)memory.temporary + memory.temporaryMemorySize;
+
+    memory.abort = abort;
+    memory.readFile = readFile;
+    memory.freeFile = freeFile;
+    memory.exitGame = exitGame;
 
 	HWND windowHandle = openWindow(instance, show, WINDOW_WIDTH, WINDOW_HEIGHT);
 
@@ -537,6 +663,14 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 
 	while (isRunning)
 	{
+        FILETIME newDLLWriteTime = getLastWriteTime(sourceGameCodeDLLFullPath);
+
+        if (CompareFileTime(&newDLLWriteTime, &gameCode.lastWriteTime) != 0)
+        {
+            unloadGameCode(&gameCode);
+            gameCode = loadGameCode(sourceGameCodeDLLFullPath, tempGameCodeDLLFullPath);
+        }
+
         uint64_t loopStartCount = getClockCounter();
         *newInput = *oldInput;
 
@@ -578,7 +712,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 		vBuffer.bytesPerPixel = buffer.bytesPerPixel;
 		vBuffer.content = buffer.content;
 		
-		updateAndRender(&vBuffer, newInput, &memory);
+		gameCode.updateAndRender(&vBuffer, newInput, &memory);
 		
         uint64_t audioWallClock = getClockCounter();
         float fromBeginToAudioSeconds = (audioWallClock - flipWallClock) / (float)performanceCountFrequency;
@@ -643,7 +777,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
             soundBuffer.sampleCount = bytesToWrite / soundOutput.bytesPerSample;
             soundBuffer.samples = samples;
 
-            Sound::getSoundSamples(&memory, &soundBuffer);
+            //Sound::getSoundSamples(&memory, &soundBuffer);
 
             /*debug_marker *marker = &debugTimeMarker[debugMarkerIndex];
             marker->outputPlayCursor = playCursor;

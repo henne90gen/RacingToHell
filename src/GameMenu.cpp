@@ -104,6 +104,23 @@ Menu getGameMenu() {
 	return game;
 }
 
+Menu getGameOverMenu() {
+	Menu over = { };
+	over.state = GAME_OVER;
+	over.currentMenuItem = 0;
+
+	float offsetX = 20;
+	float offsetY = 100;
+	addMenuItem(&over.items[over.numberMenuItems++], { offsetX, offsetY },
+			"Submit Score");
+
+	offsetY += 50;
+	addMenuItem(&over.items[over.numberMenuItems++], { offsetX, offsetY },
+			"Back");
+
+	return over;
+}
+
 void handleMenuEscape(GameMemory *memory, GameState *gameState) {
 	switch (gameState->currentMenu.state) {
 	case GAME:
@@ -178,6 +195,9 @@ void handleMenuEnter(GameMemory *memory, GameState *gameState) {
 	case GAME_OVER:
 		switch (gameState->currentMenu.currentMenuItem) {
 		case 0:
+			// TODO submit score
+			break;
+		case 1:
 			gameState->currentMenu = getMainMenu();
 			break;
 		}
@@ -192,7 +212,8 @@ void handleMenuEnter(GameMemory *memory, GameState *gameState) {
 	}
 }
 
-void renderMenuItem(GameMemory *memory, VideoBuffer *buffer, MenuItem item, bool highlight) {
+void renderMenuItem(GameMemory *memory, VideoBuffer *buffer, MenuItem item,
+		bool highlight) {
 	Math::Vector2f position = item.position;
 	if (highlight) {
 		position = position + (Math::Vector2f { 20, 0 });
@@ -236,6 +257,7 @@ void updateAndRenderMenu(GameMemory *memory, VideoBuffer *buffer, Input *input,
 	// Menu items
 	for (unsigned i = 0; i < gameState->currentMenu.numberMenuItems; i++) {
 		bool highlight = i == (unsigned) gameState->currentMenu.currentMenuItem;
-		renderMenuItem(memory, buffer, gameState->currentMenu.items[i], highlight);
+		renderMenuItem(memory, buffer, gameState->currentMenu.items[i],
+				highlight);
 	}
 }

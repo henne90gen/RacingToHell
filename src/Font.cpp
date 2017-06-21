@@ -138,12 +138,12 @@ void renderCharacterAlpha(GameMemory *memory, VideoBuffer *buffer, char c,
 			currentBufferPixel += buffer->width;
 			currentTexturePixel += character.width;
 			continue;
-		} else if (offsetY + y >= buffer->height) {
+		} else if (offsetY + y >= (int) buffer->height) {
 			break;
 		}
 
 		for (int x = 0; x < (int) character.width; ++x) {
-			if (offsetX + x < 0 || offsetX + x >= buffer->width) {
+			if (offsetX + x < 0 || offsetX + x >= (int) buffer->width) {
 				currentBufferPixel++;
 				currentTexturePixel++;
 				continue;

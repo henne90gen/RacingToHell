@@ -40,6 +40,11 @@
     - shooting
     - phases
 - menues
+	- ~~main~~
+	- options
+		- volume
+		- controls?
+	- ~~pause~~
     - game over
 
 

@@ -7,3 +7,5 @@ bin
 *.out
 *.o
 *.exe
+librth.so
+rth.dll

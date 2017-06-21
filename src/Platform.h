@@ -23,8 +23,29 @@ struct File {
 	std::string name;
 };
 
+#define ABORT(name) void name(std::string message)
+typedef ABORT(abort_);
+ABORT(abort);
+
+#define READ_FILE(name) File name(std::string fileName)
+typedef READ_FILE(read_file);
+READ_FILE(readFile);
+
+#define FREE_FILE(name) void name(File *file)
+typedef FREE_FILE(free_file);
+FREE_FILE(freeFile);
+
+#define EXIT_GAME(name) void name()
+typedef EXIT_GAME(exit_game);
+EXIT_GAME(exitGame);
+
 struct GameMemory {
 	bool isInitialized = false;
+
+	abort_ *abort;
+	read_file *readFile;
+	free_file *freeFile;
+	exit_game *exitGame;
 
 	size_t temporaryMemorySize = 0, permanentMemorySize = 0;
 	char *temporary, *permanent;
@@ -32,8 +53,3 @@ struct GameMemory {
 	size_t permanentMemoryOffset = 0;
 	size_t temporaryMemoryOffset = 0;
 };
-
-void abort(std::string message);
-File readFile(std::string fileName);
-void freeFile(File *file);
-void exitGame();

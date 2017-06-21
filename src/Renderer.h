@@ -1,8 +1,11 @@
 #pragma once
 
-#include "MyMath.h"
 #include "Platform.h"
+#include "RacingToHell.h"
+#include "MyMath.h"
+#include "Font.h"
 
+// forward declarations
 struct VideoBuffer;
 struct GameState;
 struct Texture;
@@ -31,11 +34,12 @@ void circle(VideoBuffer* buffer, Math::Vector2f pos, unsigned radius, uint32_t c
 
 void explosion(VideoBuffer *buffer, GameState *gameState, int x, int y, unsigned *explosionIndex);
 
-void debugInformation(VideoBuffer *buffer, Input *input,
+void debugInformation(GameMemory *memory, VideoBuffer *buffer, Input *input,
 		GameState *gameState);
 
 void textureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 		int offsetY);
+
 void backgroundTexture(VideoBuffer *buffer, Texture* texture, int offsetY);
 
 void texture(VideoBuffer *buffer, Texture* texture, int offsetX, int offsetY);

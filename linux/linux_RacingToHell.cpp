@@ -208,7 +208,7 @@ GraphicsData initGraphicsData() {
 	return graphics;
 }
 
-void abort(std::string message) {
+ABORT(abort) {
 	fprintf(stderr, "%s", (message + "\n").c_str());
 	exit(1);
 }
@@ -236,6 +236,24 @@ File readFile(std::string fileName) {
 	file.content = content;
 
 	return file;
+}
+
+void writeFile(File *file, std::string name) {
+	printf("Writing %s\n", name.c_str());
+
+	FILE *fHandle = fopen(name.c_str(), "wb");
+	if (fHandle == NULL) {
+		abort("ERROR - Failed to open file for writing\n");
+	}
+
+	if (fwrite((void *) file->content, 1, file->size, fHandle) != file->size) {
+		abort(
+				"ERROR - Failed to write " + std::to_string(file->size)
+						+ " bytes to file\n");
+	}
+
+	fclose(fHandle);
+	fHandle = NULL;
 }
 
 void freeFile(File *file) {
@@ -569,23 +587,6 @@ struct linux_game_code {
 	read_bmp_into_memory* readBmpIntoMemory;
 };
 
-void writeFile(File *file, std::string newName) {
-	printf("Writing %s\n", newName.c_str());
-	FILE *f_dst = fopen(newName.c_str(), "wb");
-	if (f_dst == NULL) {
-		printf("ERROR - Failed to open file for writing\n");
-		exit(1);
-	}
-
-	if (fwrite((void *) file->content, 1, file->size, f_dst) != file->size) {
-		printf("ERROR - Failed to write %i bytes to file\n", file->size);
-		exit(1);
-	}
-
-	fclose(f_dst);
-	f_dst = NULL;
-}
-
 linux_game_code loadGameCode() {
 	printf("Loading GameCode.\n");
 	linux_game_code result = { };
@@ -626,18 +627,28 @@ void unloadGameCode(linux_game_code *code) {
 	code->readBmpIntoMemory = readBmpIntoMemoryStub;
 }
 
-static linux_game_code game;
+GameMemory initGameMemory() {
+	GameMemory memory = { };
 
-int main() {
-	GameMemory memory;
+	memory.abort = abort;
+	memory.readFile = readFile;
+	memory.freeFile = freeFile;
+	memory.exitGame = exitGame;
+
 	memory.temporaryMemorySize = 10 * 1024 * 1024;
 	memory.permanentMemorySize = 100 * 1024 * 1024;
 	memory.temporary = (char*) malloc(memory.temporaryMemorySize);
 	memory.permanent = (char*) malloc(memory.permanentMemorySize);
 
+	return memory;
+}
+
+int main() {
+	GameMemory memory = initGameMemory();
+
 	graphics = initGraphicsData();
 	audio = initAudioData();
-	game = loadGameCode();
+	linux_game_code game = loadGameCode();
 
 	isRunning = true;
 	bool wasLeftMousePressed = false;

@@ -5,7 +5,7 @@ all: library
 	g++ $(GCC_FLAGS) $(GCC_INCLUDES) $(PLATFORM_FLAGS) $(PLATFORM_FILE) -o RacingToHell$(EXTENSION) $(GCC_LINKER)
 
 library:
-	g++ -shared -Wall -Werror -fpic src/RacingToHell.cpp -o librth.so.new
+	g++ -shared -Wall -fpic -Iinclude src/RacingToHell.cpp -o librth.so.new
 	mv -f librth.so.new librth.so
 
 optimized:

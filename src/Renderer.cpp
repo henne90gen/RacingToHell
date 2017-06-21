@@ -216,11 +216,11 @@ void explosion(VideoBuffer *buffer, GameState *gameState, int x, int y,
 			y);
 }
 
-void debugInformation(VideoBuffer *buffer, Input *input, GameState *gameState) {
+void debugInformation(GameMemory *memory, VideoBuffer *buffer, Input *input, GameState *gameState) {
 	std::string text = "Player 1: "
 			+ std::to_string(gameState->player.position.x) + ", "
 			+ std::to_string(gameState->player.position.y);
-	Text::renderText(buffer, text, {20, 100}, 7);
+	Text::renderText(memory, buffer, text, {20, 100}, 7);
 }
 
 void clearScreen(VideoBuffer *buffer, uint32_t color) {
@@ -329,3 +329,4 @@ void textureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 }
 
 }
+

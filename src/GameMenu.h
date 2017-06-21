@@ -1,7 +1,7 @@
 #pragma once
 #include "RacingToHell.h"
 
-void handleMenuEscape(GameState* gameState);
+void handleMenuEscape(GameMemory *memory, GameState* gameState);
 
-void updateAndRenderMenu(VideoBuffer *buffer, Input *input,
+void updateAndRenderMenu(GameMemory *memory, VideoBuffer *buffer, Input *input,
 		GameState* gameState);

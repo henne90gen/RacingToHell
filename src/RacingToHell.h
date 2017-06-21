@@ -52,7 +52,7 @@ struct Car {
 
 struct Item {
 	Math::Vector2f position;
-	uint8_t effect, itemIndex, speed;
+	uint8_t effect, itemIndex;
 };
 
 struct Bullet {
@@ -155,5 +155,3 @@ void resetGameState(GameState *gameState);
 #define UPDATE_AND_RENDER(name) void name(VideoBuffer *buffer, Input *input, GameMemory *memory)
 typedef UPDATE_AND_RENDER(update_and_render);
 UPDATE_AND_RENDER(updateAndRenderStub) {}
-
-void abort(std::string message);

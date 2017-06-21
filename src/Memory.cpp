@@ -2,7 +2,7 @@
 
 char *reservePermanentMemory(GameMemory *memory, size_t size) {
     if (memory->permanentMemoryOffset + size > memory->permanentMemorySize) {
-        abort("Out of permanent memory!");
+    	memory->abort("Out of permanent memory!");
     }
 
     char *Result = memory->permanent + memory->permanentMemoryOffset;
@@ -15,7 +15,7 @@ char *reservePermanentMemory(GameMemory *memory, size_t size) {
 char *reserveTemporaryMemory(GameMemory *memory, size_t size)
 {
     if (memory->temporaryMemoryOffset + size > memory->temporaryMemorySize) {
-        abort("Out of temporary memory!");
+    	memory->abort("Out of temporary memory!");
     }
 
     char *Result = memory->temporary + memory->temporaryMemoryOffset;

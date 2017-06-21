@@ -104,7 +104,7 @@ Menu getGameMenu() {
 	return game;
 }
 
-void handleMenuEscape(GameState *gameState) {
+void handleMenuEscape(GameMemory *memory, GameState *gameState) {
 	switch (gameState->currentMenu.state) {
 	case GAME:
 	case OPTIONS_PAUSE:
@@ -119,12 +119,12 @@ void handleMenuEscape(GameState *gameState) {
 		gameState->currentMenu = getMainMenu();
 		break;
 	case MAIN:
-		exitGame();
+		memory->exitGame();
 		break;
 	}
 }
 
-void handleMenuEnter(GameState *gameState) {
+void handleMenuEnter(GameMemory *memory, GameState *gameState) {
 	switch (gameState->currentMenu.state) {
 	case GAME:
 		// do nothing
@@ -141,7 +141,7 @@ void handleMenuEnter(GameState *gameState) {
 			gameState->currentMenu = getCreditsMenu();
 			break;
 		case 3:
-			exitGame();
+			memory->exitGame();
 			break;
 		}
 		break;
@@ -157,7 +157,7 @@ void handleMenuEnter(GameState *gameState) {
 			resetGameState(gameState);
 			break;
 		case 3:
-			exitGame();
+			memory->exitGame();
 			break;
 		}
 		break;
@@ -192,12 +192,12 @@ void handleMenuEnter(GameState *gameState) {
 	}
 }
 
-void renderMenuItem(VideoBuffer *buffer, MenuItem item, bool highlight) {
+void renderMenuItem(GameMemory *memory, VideoBuffer *buffer, MenuItem item, bool highlight) {
 	Math::Vector2f position = item.position;
 	if (highlight) {
 		position = position + (Math::Vector2f { 20, 0 });
 	}
-	Text::renderText(buffer, std::string(item.text), position, 20);
+	Text::renderText(memory, buffer, std::string(item.text), position, 20);
 }
 
 void changeMenuSelection(GameState *gameState, int direction) {
@@ -211,11 +211,11 @@ void changeMenuSelection(GameState *gameState, int direction) {
 	}
 }
 
-void updateAndRenderMenu(VideoBuffer *buffer, Input *input,
+void updateAndRenderMenu(GameMemory *memory, VideoBuffer *buffer, Input *input,
 		GameState *gameState) {
 
 	if (input->enterKeyClicked) {
-		handleMenuEnter(gameState);
+		handleMenuEnter(memory, gameState);
 	}
 
 	if (input->upKeyClicked) {
@@ -236,6 +236,6 @@ void updateAndRenderMenu(VideoBuffer *buffer, Input *input,
 	// Menu items
 	for (unsigned i = 0; i < gameState->currentMenu.numberMenuItems; i++) {
 		bool highlight = i == (unsigned) gameState->currentMenu.currentMenuItem;
-		renderMenuItem(buffer, gameState->currentMenu.items[i], highlight);
+		renderMenuItem(memory, buffer, gameState->currentMenu.items[i], highlight);
 	}
 }

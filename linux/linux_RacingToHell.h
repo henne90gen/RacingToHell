@@ -20,7 +20,7 @@
 #include <dlfcn.h>
 #include <sys/stat.h>
 
-#include "../src/Platform.h"
+#include "Platform.h"
 #include "RacingToHell.h"
 
 #define BUFFER_OFFSET(i) ((void*)(i))

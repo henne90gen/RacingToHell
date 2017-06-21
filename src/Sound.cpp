@@ -47,10 +47,10 @@ uint32_t getChunkDataSize(RiffIterator iter) {
 LoadedSound loadWAV(GameMemory *memory, std::string path) {
 	LoadedSound result;
 
-	File file = readFile(path);
+	File file = memory->readFile(path);
 
 	if (file.content == NULL) {
-		abort(path + " konnte nicht geladen werden.");
+		memory->abort(path + " konnte nicht geladen werden.");
 	}
 
 	WaveHeader *header = (WaveHeader *) (file.content);
@@ -59,7 +59,7 @@ LoadedSound loadWAV(GameMemory *memory, std::string path) {
 
 	if (header->riffId != WAVE_CHUNKID_RIFF
 			|| header->waveId != WAVE_CHUNKID_WAVE) {
-		abort("Invalid WAV header");
+		memory->abort("Invalid WAV header");
 	}
 
 	for (RiffIterator iter = parseChunkAt(header + 1,
@@ -84,18 +84,18 @@ LoadedSound loadWAV(GameMemory *memory, std::string path) {
 			/ (result.channelCount * sizeof(int16_t));
 
 	if (result.channelCount == 1) {
-        result.samples[0] = (int16_t*)reservePermanentMemory(memory,
-            result.sampleCount * sizeof(int16_t));
+		result.samples[0] = (int16_t*) reservePermanentMemory(memory,
+				result.sampleCount * sizeof(int16_t));
 
 		for (uint32_t sampleIndex = 0; sampleIndex < result.sampleCount;
 				++sampleIndex) {
 			result.samples[0][sampleIndex] = sampleData[sampleIndex];
 		}
 	} else if (result.channelCount == 2) {
-        result.samples[0] = (int16_t*)reservePermanentMemory(memory,
-            result.sampleCount * sizeof(int16_t));
-        result.samples[1] = (int16_t*)reservePermanentMemory(memory,
-            result.sampleCount * sizeof(int16_t));
+		result.samples[0] = (int16_t*) reservePermanentMemory(memory,
+				result.sampleCount * sizeof(int16_t));
+		result.samples[1] = (int16_t*) reservePermanentMemory(memory,
+				result.sampleCount * sizeof(int16_t));
 
 		for (uint32_t sampleIndex = 0; sampleIndex < result.sampleCount;
 				++sampleIndex) {
@@ -107,10 +107,10 @@ LoadedSound loadWAV(GameMemory *memory, std::string path) {
 			result.samples[1][sampleIndex] = source;
 		}
 	} else {
-		abort("More than two channels aren't supported.");
+		memory->abort("More than two channels aren't supported.");
 	}
 
-	freeFile(&file);
+	memory->freeFile(&file);
 
 	return result;
 }
@@ -180,7 +180,7 @@ void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer) {
 				*dest0++ += volume0 * sampleValue;
 				*dest1++ += volume1 * sampleValue;
 			}
-		} else { 
+		} else {
 			for (int sampleIndex = currentSound->samplesPlayed;
 					sampleIndex < currentSound->samplesPlayed + samplesToMix;
 					++sampleIndex) {
@@ -189,7 +189,7 @@ void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer) {
 				float sampleValue1 = currentSound->loadedSound.samples[1][index];
 
 				*dest0++ += volume0 * sampleValue0;
-                *dest1++ += volume1 * sampleValue1;
+				*dest1++ += volume1 * sampleValue1;
 			}
 		}
 

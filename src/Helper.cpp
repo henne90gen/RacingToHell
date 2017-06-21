@@ -55,13 +55,13 @@ void importPixelData(void* src, void* dest, unsigned srcWidth,
 Texture readBmpIntoMemory(File file, GameMemory *memory, int offsetX,
 		int offsetY, int width, int height, bool output = 1) {
 	if (((char*) file.content)[0] != 'B' || (file.content)[1] != 'M') {
-		abort(file.name + " is not a bitmap file.");
+		memory->abort(file.name + " is not a bitmap file.");
 	}
 	int fileHeaderSize = 14;
 	BitmapHeader header = *((BitmapHeader*) (file.content + fileHeaderSize));
 
 	if (header.bitsPerPixel != 32) {
-		abort("Image must have 32-bit of color depth.");
+		memory->abort("Image must have 32-bit of color depth.");
 	}
 
 	if (width == -1 || height == -1) {

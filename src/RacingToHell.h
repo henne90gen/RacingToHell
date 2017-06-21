@@ -16,18 +16,6 @@ struct VideoBuffer {
 	void* content;
 };
 
-struct Texture {
-
-	uint32_t width, height;
-	uint8_t bytesPerPixel;
-	void* content;
-};
-
-struct GameFont {
-	size_t size;
-	void* content;
-};
-
 struct Input {
 	Math::Vector2f mousePosition;
 	// TODO convert these into a bit mask (optimization)
@@ -67,12 +55,14 @@ struct SoundOutputBuffer {
 };
 
 struct Resources {
-	Texture roadTextures[4];
-	Texture playerCarTextures[6];
-	Texture trafficCarTextures[7];
-	Texture itemTextures[2];
+	Render::Texture roadTextures[4];
+	Render::Texture playerCarTextures[6];
+	Render::Texture trafficCarTextures[7];
+	Render::Texture itemTextures[2];
+	Render::Texture explosion[9 * 9];
 
-	Texture explosion[9 * 9];
+	Text::Character characterMap[3][100];
+	unsigned availableFontSizes[3] = { 7, 10, 20 };
 
 	Sound::LoadedSound AIShot;
 	Sound::LoadedSound playerShot;
@@ -145,13 +135,16 @@ struct BitmapHeader {
 };
 #pragma pack(pop)
 
-#define READ_BMP_INTO_MEMORY(name) Texture name(File file, GameMemory *memory)
+#define READ_BMP_INTO_MEMORY(name) Render::Texture name(File file, GameMemory *memory)
 typedef READ_BMP_INTO_MEMORY(read_bmp_into_memory);
-READ_BMP_INTO_MEMORY(readBmpIntoMemoryStub) { return {}; }
+READ_BMP_INTO_MEMORY(readBmpIntoMemoryStub) {
+	return {};
+}
 
 GameState* getGameState(GameMemory* memory);
 void resetGameState(GameState *gameState);
 
 #define UPDATE_AND_RENDER(name) void name(VideoBuffer *buffer, Input *input, GameMemory *memory)
 typedef UPDATE_AND_RENDER(update_and_render);
-UPDATE_AND_RENDER(updateAndRenderStub) {}
+UPDATE_AND_RENDER(updateAndRenderStub) {
+}

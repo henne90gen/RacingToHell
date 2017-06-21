@@ -23,11 +23,11 @@ float getRoadSpeed(GameState *gameState) {
 	return (float) (gameState->level) * 0.5f + 3.0f;
 }
 
-Texture *getCurrentRoad(GameState *gameState) {
+Render::Texture *getCurrentRoad(GameState *gameState) {
 	return &gameState->resources.roadTextures[gameState->level % 4];
 }
 
-Texture *getPlayerTexture(GameState *gameState) {
+Render::Texture *getPlayerTexture(GameState *gameState) {
 	return &gameState->resources.playerCarTextures[gameState->player.carIndex];
 }
 
@@ -113,14 +113,14 @@ void updatePlayer(Input *input, GameState *gameState) {
 	// energy
 	gameState->player.energy -= 1;
 	if (gameState->player.energy <= 0) {
-		// TODO Game over
-		gameState->player.energy = 100;
+		// TODO play a nice animation before doing a game over
+		gameOver(gameState);
 	}
 
 	// health
 	if (gameState->player.health <= 0) {
-		// TODO Game over
-		gameState->player.health = 100;
+		// TODO play the explosion before going game over
+		gameOver(gameState);
 	}
 
 	// shooting
@@ -133,7 +133,7 @@ void updatePlayer(Input *input, GameState *gameState) {
 		gameState->player.energy -= 10;
 	}
 
-	Texture *texture = getPlayerTexture(gameState);
+	Render::Texture *texture = getPlayerTexture(gameState);
 	// checking left and right
 	if (gameState->player.position.x < texture->width / 2) {
 		gameState->player.position.x = texture->width / 2;
@@ -152,17 +152,12 @@ void updatePlayer(Input *input, GameState *gameState) {
 }
 
 void renderPlayer(VideoBuffer *buffer, GameState *gameState) {
-	Texture *texture = getPlayerTexture(gameState);
+	Render::Texture *texture = getPlayerTexture(gameState);
 
 	int textureX = gameState->player.position.x - texture->width / 2;
 	int textureY = gameState->player.position.y - texture->height / 2;
 
 	Render::textureAlpha(buffer, texture, textureX, textureY);
-
-//	Render::bar(buffer, { gameState->player.position.x, (float) textureY - 23 },
-//			gameState->player.health, 0xff0000ff);
-//	Render::bar(buffer, { gameState->player.position.x, (float) textureY - 13 },
-//			gameState->player.energy, 0xff00ff00);
 }
 
 bool updateAndRenderBullet(VideoBuffer *buffer, GameState *gameState,
@@ -188,7 +183,7 @@ bool updateAndRenderBullet(VideoBuffer *buffer, GameState *gameState,
 		if (isPlayerBullet) {
 			for (int i = 0; i < gameState->lastTrafficCarIndex + 1; i++) {
 				Car *car = &gameState->traffic[i];
-				Texture trafficTexture =
+				Render::Texture trafficTexture =
 						gameState->resources.trafficCarTextures[car->carIndex];
 
 				// decreases the size of the collision box
@@ -211,7 +206,7 @@ bool updateAndRenderBullet(VideoBuffer *buffer, GameState *gameState,
 				}
 			}
 		} else {
-			Texture *playerTexture = getPlayerTexture(gameState);
+			Render::Texture *playerTexture = getPlayerTexture(gameState);
 			Math::Rectangle playerRect = getBoundingBox(
 					gameState->player.position, playerTexture->width,
 					playerTexture->height);
@@ -224,7 +219,7 @@ bool updateAndRenderBullet(VideoBuffer *buffer, GameState *gameState,
 
 			if (Collision::rectangle(collisionBox, bullet.position)) {
 				// FIXME balance damage
-				gameState->player.health -= 1;
+//				gameState->player.health -= 1;
 				return true;
 			}
 		}
@@ -291,7 +286,7 @@ void updateAndRenderTraffic(VideoBuffer *buffer, GameState *gameState,
 
 	for (int i = 0; i < gameState->lastTrafficCarIndex + 1; i++) {
 		Car *car = &gameState->traffic[i];
-		Texture *texture =
+		Render::Texture *texture =
 				&gameState->resources.trafficCarTextures[car->carIndex];
 
 		if (shouldUpdate) {
@@ -313,7 +308,7 @@ void updateAndRenderTraffic(VideoBuffer *buffer, GameState *gameState,
 			Math::Rectangle carRect = getBoundingBox(car->position, texture->width,
 					texture->height);
 
-			Texture *playerTexture = getPlayerTexture(gameState);
+			Render::Texture *playerTexture = getPlayerTexture(gameState);
 			Math::Rectangle playerRect = getBoundingBox(gameState->player.position,
 					playerTexture->width,
 					playerTexture->height);
@@ -325,7 +320,7 @@ void updateAndRenderTraffic(VideoBuffer *buffer, GameState *gameState,
 #endif
 
 			if (Collision::rectangle(collisionBox, gameState->player.position)) {
-				// TODO Game over!
+				gameOver(gameState);
 			}
 		}
 
@@ -360,7 +355,7 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState,
 
 	for (int i = 0; i < gameState->lastItemIndex + 1; i++) {
 		Item *item = &gameState->items[i];
-		Texture *texture = &gameState->resources.itemTextures[item->itemIndex];
+		Render::Texture *texture = &gameState->resources.itemTextures[item->itemIndex];
 
 		if (shouldUpdate) {
 			item->position = {item->position.x, (float) (item->position.y + getRoadSpeed(gameState))};
@@ -371,7 +366,7 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState,
 					texture->width - bufferZone,
 					texture->height - bufferZone);
 
-			Texture *playerTexture = getPlayerTexture(gameState);
+			Render::Texture *playerTexture = getPlayerTexture(gameState);
 			Math::Rectangle playerRect = getBoundingBox(gameState->player.position,
 					playerTexture->width,
 					playerTexture->height);
@@ -383,12 +378,22 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState,
 #endif
 
 			if (Collision::rectangle(collisionRect, gameState->player.position)) {
+				// TODO balance item effects
 				switch (item->itemIndex) {
 					case TOOLBOX_ID:
-					gameState->player.health += 10;
+					// TODO test: percentage of maxHealth vs absolute value
+					gameState->player.health += 5;
+					if (gameState->player.health > gameState->player.maxHealth) {
+						gameState->player.health = gameState->player.maxHealth;
+					}
 					break;
 					case CANISTER_ID:
-					gameState->player.energy += 10;
+					// TODO test: percentage of maxEnergy vs absolute value
+					gameState->player.energy += 100;
+
+					if (gameState->player.energy > gameState->player.maxEnergy) {
+						gameState->player.energy = gameState->player.maxEnergy;
+					}
 					break;
 				}
 				removeElement(gameState->items, &gameState->lastItemIndex, &i);
@@ -427,18 +432,24 @@ void updateAndRenderUI(VideoBuffer *buffer, GameState *gameState,
 		bool shouldUpdate) {
 	updateAndRenderTimer(buffer, gameState, shouldUpdate);
 
-	Math::Rectangle energyBar;
-	energyBar.height = 20;
-	energyBar.width = gameState->player.maxEnergy * gameState->player.energy
-			/ 100.0f;
-	energyBar.position = {0, (float) (WINDOW_HEIGHT - energyBar.height)};
-	Render::rectangle(buffer, energyBar, 0xFFA51795);
+	static int widthWhenFull = 250;
+	static uint32_t energyColor = 0xFFA51795;
+	static uint32_t healthColor = 0xFFA51795;
 
-	energyBar.height = 20;
-	energyBar.width = gameState->player.maxHealth * gameState->player.health
-			/ 100.0f;
-	energyBar.position = {0, (float) (WINDOW_HEIGHT - energyBar.height - 20)};
-	Render::rectangle(buffer, energyBar, 0xFFA51795);
+	Math::Rectangle bar;
+	bar.height = 20;
+
+	// energy
+	bar.width = gameState->player.energy * widthWhenFull
+			/ gameState->player.maxEnergy;
+	bar.position = {0, (float) (WINDOW_HEIGHT - bar.height)};
+	Render::rectangle(buffer, bar, energyColor);
+
+	// health
+	bar.width = gameState->player.health * widthWhenFull
+			/ gameState->player.maxHealth;
+	bar.position = {0, (float) (WINDOW_HEIGHT - bar.height * 2)};
+	Render::rectangle(buffer, bar, healthColor);
 }
 
 void updateAndRenderGame(VideoBuffer *buffer, Input *input, GameMemory *memory,

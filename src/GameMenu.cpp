@@ -8,132 +8,123 @@ void addMenuItem(MenuItem *item, Math::Vector2f position, std::string text) {
 	}
 }
 
-Menu getMainMenu() {
-	Menu main = { };
-	main.state = MAIN;
-	main.currentMenuItem = 0;
+void loadMainMenu(Menu *menu) {
+	*menu = {};
+	menu->state = MAIN;
+	menu->currentMenuItem = 0;
+	menu->numberMenuItems = 0;
 
 	float offsetX = 20;
 	float offsetY = 100;
-	addMenuItem(&main.items[main.numberMenuItems++], { offsetX, offsetY },
+	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
 			"New Game");
 
 	offsetY += 50;
 
-	addMenuItem(&main.items[main.numberMenuItems++], { offsetX, offsetY },
+	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
 			"Options");
 
 	offsetY += 50;
 
-	addMenuItem(&main.items[main.numberMenuItems++], { offsetX, offsetY },
+	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
 			"Credits");
 
 	offsetY += 50;
 
-	addMenuItem(&main.items[main.numberMenuItems++], { offsetX, offsetY },
+	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
 			"Quit");
-
-	return main;
 }
 
-Menu getPauseMenu() {
-	Menu pause = { };
-
-	pause.state = PAUSE;
-	pause.currentMenuItem = 0;
+void loadPauseMenu(Menu *menu) {
+	*menu = {};
+	menu->state = PAUSE;
+	menu->currentMenuItem = 0;
 
 	float offsetX = 20;
 	float offsetY = 100;
-	addMenuItem(&pause.items[pause.numberMenuItems++], { offsetX, offsetY },
+	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
 			"Resume");
 
 	offsetY += 50;
 
-	addMenuItem(&pause.items[pause.numberMenuItems++], { offsetX, offsetY },
+	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
 			"Options");
 
 	offsetY += 50;
 
-	addMenuItem(&pause.items[pause.numberMenuItems++], { offsetX, offsetY },
+	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
 			"Main Menu");
 
 	offsetY += 50;
 
-	addMenuItem(&pause.items[pause.numberMenuItems++], { offsetX, offsetY },
+	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
 			"Quit");
-
-	return pause;
 }
 
-Menu getOptionsMenu(bool mainMenu) {
-	Menu options = { };
-
+void loadOptionsMenu(Menu *menu, bool mainMenu) {
+	*menu = {};
 	if (mainMenu) {
-		options.state = OPTIONS_MAIN;
+		menu->state = OPTIONS_MAIN;
 	} else {
-		options.state = OPTIONS_PAUSE;
+		menu->state = OPTIONS_PAUSE;
 	}
-	options.currentMenuItem = 0;
+	menu->currentMenuItem = 0;
 
 	float offsetX = 20;
 	float offsetY = 100;
-	addMenuItem(&options.items[options.numberMenuItems++], { offsetX, offsetY },
+	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
 			"Back");
-
-	return options;
 }
 
-Menu getCreditsMenu() {
-	Menu credits = { };
+void loadCreditsMenu(Menu *menu) {
+	*menu = {};
+	menu->state = CREDITS;
 
-	credits.state = CREDITS;
-
-	credits.currentMenuItem = 0;
+	menu->currentMenuItem = 0;
 
 	float offsetX = 20;
 	float offsetY = 100;
-	addMenuItem(&credits.items[credits.numberMenuItems++], { offsetX, offsetY },
+	addMenuItem(&menu->items[menu->numberMenuItems++], { offsetX, offsetY },
 			"Back");
-
-	return credits;
 }
 
-Menu getGameMenu() {
-	Menu game = { };
-	game.state = GAME;
-	return game;
+void loadGameMenu(Menu *menu) {
+	*menu = {};
+	menu->state = GAME;
 }
 
-Menu getGameOverMenu() {
-	Menu over = { };
-	over.state = GAME_OVER;
-	over.currentMenuItem = 0;
+void loadGameOverMenu(Menu *menu) {
+	*menu = {};
+	menu->state = GAME_OVER;
+	menu->currentMenuItem = 0;
 
 	float offsetX = 20;
 	float offsetY = 100;
-	addMenuItem(&over.items[over.numberMenuItems++], { offsetX, offsetY },
+	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
 			"Submit Score");
 
 	offsetY += 50;
-	addMenuItem(&over.items[over.numberMenuItems++], { offsetX, offsetY },
+	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
 			"Back");
+}
 
-	return over;
+void gameOver(GameState *gameState) {
+	loadGameOverMenu(&gameState->currentMenu);
 }
 
 void handleMenuEscape(GameMemory *memory, GameState *gameState) {
 	switch (gameState->currentMenu.state) {
 	case GAME:
 	case OPTIONS_PAUSE:
-		gameState->currentMenu = getPauseMenu();
+		loadPauseMenu(&gameState->currentMenu);
 		break;
 	case PAUSE:
-		gameState->currentMenu = getGameMenu();
+		loadGameMenu(&gameState->currentMenu);
 		break;
 	case OPTIONS_MAIN:
 	case GAME_OVER:
 	case CREDITS:
-		gameState->currentMenu = getMainMenu();
+		loadMainMenu(&gameState->currentMenu);
 		break;
 	case MAIN:
 		memory->exitGame();
@@ -149,13 +140,13 @@ void handleMenuEnter(GameMemory *memory, GameState *gameState) {
 	case MAIN:
 		switch (gameState->currentMenu.currentMenuItem) {
 		case 0:
-			gameState->currentMenu = getGameMenu();
+			loadGameMenu(&gameState->currentMenu);
 			break;
 		case 1:
-			gameState->currentMenu = getOptionsMenu(true);
+			loadOptionsMenu(&gameState->currentMenu, true);
 			break;
 		case 2:
-			gameState->currentMenu = getCreditsMenu();
+			loadCreditsMenu(&gameState->currentMenu);
 			break;
 		case 3:
 			memory->exitGame();
@@ -165,10 +156,10 @@ void handleMenuEnter(GameMemory *memory, GameState *gameState) {
 	case PAUSE:
 		switch (gameState->currentMenu.currentMenuItem) {
 		case 0:
-			gameState->currentMenu = getGameMenu();
+			loadGameMenu(&gameState->currentMenu);
 			break;
 		case 1:
-			gameState->currentMenu = getOptionsMenu(false);
+			loadOptionsMenu(&gameState->currentMenu, false);
 			break;
 		case 2:
 			resetGameState(gameState);
@@ -181,14 +172,14 @@ void handleMenuEnter(GameMemory *memory, GameState *gameState) {
 	case OPTIONS_MAIN:
 		switch (gameState->currentMenu.currentMenuItem) {
 		case 0:
-			gameState->currentMenu = getMainMenu();
+			loadMainMenu(&gameState->currentMenu);
 			break;
 		}
 		break;
 	case OPTIONS_PAUSE:
 		switch (gameState->currentMenu.currentMenuItem) {
 		case 0:
-			gameState->currentMenu = getPauseMenu();
+			loadPauseMenu(&gameState->currentMenu);
 			break;
 		}
 		break;
@@ -198,14 +189,15 @@ void handleMenuEnter(GameMemory *memory, GameState *gameState) {
 			// TODO submit score
 			break;
 		case 1:
-			gameState->currentMenu = getMainMenu();
+			resetGameState(gameState);
+			loadMainMenu(&gameState->currentMenu);
 			break;
 		}
 		break;
 	case CREDITS:
 		switch (gameState->currentMenu.currentMenuItem) {
 		case 0:
-			gameState->currentMenu = getMainMenu();
+			loadMainMenu(&gameState->currentMenu);
 			break;
 		}
 		break;
@@ -221,7 +213,7 @@ void renderMenuItem(GameMemory *memory, VideoBuffer *buffer, MenuItem item,
 	Text::renderText(memory, buffer, std::string(item.text), position, 20);
 }
 
-void changeMenuSelection(GameState *gameState, int direction) {
+void changeMenuSelectionChange(GameState *gameState, int direction) {
 	gameState->currentMenu.currentMenuItem += direction;
 	if (gameState->currentMenu.currentMenuItem
 			>= gameState->currentMenu.numberMenuItems) {
@@ -240,16 +232,17 @@ void updateAndRenderMenu(GameMemory *memory, VideoBuffer *buffer, Input *input,
 	}
 
 	if (input->upKeyClicked) {
-		changeMenuSelection(gameState, -1);
+		changeMenuSelectionChange(gameState, -1);
 	}
 
 	if (input->downKeyClicked) {
-		changeMenuSelection(gameState, 1);
+		changeMenuSelectionChange(gameState, 1);
 	}
 
 	// Menu backdrop
 	Math::Rectangle rect = { };
-	rect.position = {10, 60};
+	rect.position = gameState->currentMenu.items[0].position
+			- (Math::Vector2f ) { 10, 40 };
 	rect.width = WINDOW_WIDTH / 2 - 10;
 	rect.height = gameState->currentMenu.numberMenuItems * 50;
 	Render::rectangle(buffer, rect, 0x80202020);

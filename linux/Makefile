@@ -1,5 +1,5 @@
 game_code:
-	g++ -shared -Wall -fpic -Iinclude src/RacingToHell.cpp -o librth.so.new
+	g++ $(GCC_FLAGS) -shared  -fpic -Iinclude src/RacingToHell.cpp -o librth.so.new
 	mv -f librth.so.new librth.so
 
 all: game_code

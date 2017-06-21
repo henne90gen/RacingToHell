@@ -7,9 +7,6 @@ namespace Text {
 FT_Library fontLibrary;
 FT_Face face;
 
-Character characterMap[3][100];
-unsigned availableFontSizes[] = { 7, 10, 20 };
-
 void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 	int glyphIndex = FT_Get_Char_Index(face, loadCharacter);
 	int error = FT_Load_Glyph(face, glyphIndex, FT_LOAD_DEFAULT);
@@ -36,11 +33,12 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 	newCharacter.bitmap = reservePermanentMemory(memory, bitmapSizeInPixel);
 
 	memcpy(newCharacter.bitmap, face->glyph->bitmap.buffer, bitmapSizeInPixel);
-	characterMap[fontSize][loadCharacter - ' '] = newCharacter;
+	GameState *gameState = getGameState(memory);
+	gameState->resources.characterMap[fontSize][loadCharacter - ' '] = newCharacter;
 }
 
-int getFontSize(int fontSizeIndex) {
-	return availableFontSizes[fontSizeIndex];
+int getFontSize(GameState *gameState, int fontSizeIndex) {
+	return gameState->resources.availableFontSizes[fontSizeIndex];
 }
 
 void loadFont(GameMemory* memory, std::string fontFileName) {
@@ -57,9 +55,11 @@ void loadFont(GameMemory* memory, std::string fontFileName) {
 		memory->abort("Couldn't load font " + fontFileName + ".");
 	}
 
+	GameState *gameState = getGameState(memory);
+
 	for (unsigned fontSizeIndex = 0;
-			fontSizeIndex < sizeof(availableFontSizes) / 4; fontSizeIndex++) {
-		int fontSize = getFontSize(fontSizeIndex);
+			fontSizeIndex < sizeof(gameState->resources.availableFontSizes) / 4; fontSizeIndex++) {
+		int fontSize = getFontSize(gameState, fontSizeIndex);
 //		int error = FT_Set_Char_Size(face, 0, fontSize * 64, WINDOW_WIDTH, WINDOW_HEIGHT);
 		int error = FT_Set_Pixel_Sizes(face, fontSize * 2, 0);
 		if (error) {
@@ -74,13 +74,16 @@ void loadFont(GameMemory* memory, std::string fontFileName) {
 	}
 }
 
-Character getCharacter(char character, int fontSizeIndex) {
-	return characterMap[fontSizeIndex][character - ' '];
+Character *getCharacter(GameState *gameState, char character,
+		int fontSizeIndex) {
+	return &gameState->resources.characterMap[fontSizeIndex][character - ' '];
 }
 
 int getFontSizeIndex(GameMemory *memory, unsigned fontSize) {
-	for (unsigned i = 0; i < sizeof(availableFontSizes) / 4; i++) {
-		if (availableFontSizes[i] == fontSize) {
+	GameState *gameState = getGameState(memory);
+	for (unsigned i = 0;
+			i < sizeof(gameState->resources.availableFontSizes) / 4; i++) {
+		if (gameState->resources.availableFontSizes[i] == fontSize) {
 			return i;
 		}
 	}
@@ -90,59 +93,61 @@ int getFontSizeIndex(GameMemory *memory, unsigned fontSize) {
 
 void renderText(GameMemory *memory, VideoBuffer* buffer, std::string text,
 		Math::Vector2f position, unsigned fontSize) {
+	GameState *gameState = getGameState(memory);
 	int posX = position.x;
 	int posY = position.y;
-	Character character;
+	Character *character;
 	int fontSizeIndex = getFontSizeIndex(memory, fontSize);
 	for (unsigned i = 0; i < text.size(); i++) {
-		character = getCharacter(text[i], fontSizeIndex);
+		character = getCharacter(gameState, text[i], fontSizeIndex);
 
-		for (int y = character.height - 1; y >= 0; y--) {
-			int yIndex = posY - (character.height - y);
+		for (int y = character->height - 1; y >= 0; y--) {
+			int yIndex = posY - (character->height - y);
 			if (yIndex >= (int) buffer->height || yIndex < 0) {
 				continue;
 			}
 
-			for (unsigned x = 0; x < character.width; x++) {
+			for (unsigned x = 0; x < character->width; x++) {
 				int xIndex = posX + x;
 				if (xIndex >= (int) buffer->width || xIndex < 0) {
 					continue;
 				}
 
 				int bufferIndex = yIndex * buffer->width + (xIndex);
-				int glyphIndex = y * character.width + x;
+				int glyphIndex = y * character->width + x;
 				((uint32_t*) buffer->content)[bufferIndex] |=
-						character.bitmap[glyphIndex];
+						character->bitmap[glyphIndex];
 			}
 		}
-		posX += character.width + 10;
+		posX += character->width + 10;
 	}
 }
 
 void renderCharacterAlpha(GameMemory *memory, VideoBuffer *buffer, char c,
 		int offsetX, int offsetY, uint8_t r, uint8_t g, uint8_t b,
 		unsigned fontSize) {
-	uint32_t characterColor = (r << 16) | (g << 8) | (b);
+	GameState *gameState = getGameState(memory);
 
+	uint32_t characterColor = (r << 16) | (g << 8) | (b);
 	int fontSizeIndex = getFontSizeIndex(memory, fontSize);
-	Character character = getCharacter(c, fontSizeIndex);
+	Character *character = getCharacter(gameState, c, fontSizeIndex);
 
 	int32_t *currentBufferPixel = (int32_t *) buffer->content
 			+ offsetY * (int) buffer->width + offsetX;
-	uint8_t *currentTexturePixel = (uint8_t *) character.bitmap;
+	uint8_t *currentTexturePixel = (uint8_t *) character->bitmap;
 
-	int32_t nextLine = buffer->width - character.width;
+	int32_t nextLine = buffer->width - character->width;
 
-	for (int y = 0; y < (int) character.height; ++y) {
+	for (int y = 0; y < (int) character->height; ++y) {
 		if (offsetY + y < 0) {
 			currentBufferPixel += buffer->width;
-			currentTexturePixel += character.width;
+			currentTexturePixel += character->width;
 			continue;
 		} else if (offsetY + y >= (int) buffer->height) {
 			break;
 		}
 
-		for (int x = 0; x < (int) character.width; ++x) {
+		for (int x = 0; x < (int) character->width; ++x) {
 			if (offsetX + x < 0 || offsetX + x >= (int) buffer->width) {
 				currentBufferPixel++;
 				currentTexturePixel++;
@@ -199,7 +204,7 @@ void renderCharacterAlpha(GameMemory *memory, VideoBuffer *buffer, char c,
 	}
 }
 
-void renderTextAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
+void renderTextAlpha(VideoBuffer *buffer, Render::Texture* texture, int offsetX,
 		int offsetY) {
 
 }

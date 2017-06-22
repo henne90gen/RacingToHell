@@ -23,12 +23,6 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 		}
 	}
 
-    bool useKerning = FT_HAS_KERNING(face);
-
-    int glyphIndexA = FT_Get_Char_Index(face, 'A');
-    FT_Vector kerning;
-    FT_Get_Kerning(face, glyphIndexA, glyphIndex, FT_KERNING_DEFAULT, &kerning);
-
 	Character newCharacter = { };
 	newCharacter.value = loadCharacter;
 	newCharacter.width = face->glyph->bitmap.width;

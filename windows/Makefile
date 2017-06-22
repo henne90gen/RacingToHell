@@ -5,4 +5,6 @@ optimized:
 	g++ -O3 -mwindows $(PLATFORM_FILE) $(SOURCE_FILES) -o RacingToHell${EXTENSION} $(GCC_LINKER)
 
 cl:
-	cl $(CL_FLAGS) freetype28.lib $(SOURCE_FILES) $(PLATFORM_FILE) /Febin\RacingToHell${EXTENSION} -link $(CL_LINKER)
+	windows\build
+    
+#cl $(CL_FLAGS) freetype28.lib $(SOURCE_FILES) $(PLATFORM_FILE) /Febin\RacingToHell${EXTENSION} -link $(CL_LINKER)

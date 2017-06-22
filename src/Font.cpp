@@ -23,10 +23,17 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 		}
 	}
 
+    bool useKerning = FT_HAS_KERNING(face);
+
+    int glyphIndexA = FT_Get_Char_Index(face, 'A');
+    FT_Vector kerning;
+    FT_Get_Kerning(face, glyphIndexA, glyphIndex, FT_KERNING_DEFAULT, &kerning);
+
 	Character newCharacter = { };
 	newCharacter.value = loadCharacter;
 	newCharacter.width = face->glyph->bitmap.width;
 	newCharacter.height = face->glyph->bitmap.rows;
+    newCharacter.bearingY = -face->glyph->bitmap_top;
 
 	unsigned bitmapSizeInPixel = newCharacter.width * newCharacter.height;
 
@@ -143,6 +150,8 @@ void renderTextColored(GameMemory *memory, VideoBuffer* buffer, std::string text
 
 void renderCharacterAlpha(GameMemory *memory, VideoBuffer *buffer, Character *character,
 		int offsetX, int offsetY, uint8_t r, uint8_t g, uint8_t b) {
+    offsetY += character->bearingY;
+    
     uint32_t characterColor = (r) | (g << 8) | (b << 16);
 
     uint32_t *currentBufferPixel = (uint32_t *)buffer->content

@@ -12,7 +12,7 @@ namespace Text {
 
 struct Character {
 	char value;
-	unsigned width, height;
+	unsigned width, height, bearingY;
 	char* bitmap;
 };
 

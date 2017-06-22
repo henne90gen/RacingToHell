@@ -243,7 +243,7 @@ void updateAndRenderMenu(GameMemory *memory, VideoBuffer *buffer, Input *input,
 	// Menu backdrop
 	Math::Rectangle rect = { };
 	rect.position = gameState->currentMenu.items[0].position
-			- (Math::Vector2f ({ 10, 10 }));
+			- (Math::Vector2f ({ 10, 40 }));
 	rect.width = WINDOW_WIDTH / 2 - 10;
 	rect.height = gameState->currentMenu.numberMenuItems * 50;
 	Render::rectangle(buffer, rect, 0x80202020);

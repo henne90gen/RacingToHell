@@ -14,8 +14,7 @@ GameState *getGameState(GameMemory *memory) {
 	if (!memory->isInitialized) {
 		init(memory);
 	}
-
-	return (GameState *) (memory->permanent);
+    return (GameState *) (memory->permanent);
 }
 
 float getRoadSpeed(GameState *gameState) {

@@ -86,6 +86,7 @@ void resetGameState(GameState *gameState) {
 }
 
 void init(GameMemory *memory) {
+
 	std::srand(time(0));
 	memory->isInitialized = true;
 

@@ -590,8 +590,6 @@ struct linux_game_code {
 linux_game_code loadGameCode() {
 	printf("Loading GameCode.\n");
 	linux_game_code result = { };
-	result.updateAndRender = updateAndRenderStub;
-	result.readBmpIntoMemory = readBmpIntoMemoryStub;
 
 	struct stat statbuf = { };
 	uint32_t stat_result = stat("./librth.so", &statbuf);
@@ -618,13 +616,10 @@ linux_game_code loadGameCode() {
 void unloadGameCode(linux_game_code *code) {
 	printf("Unloading GameCode.\n");
 
-//	rename("./librth_temp.so", "./librth_old.so");
 	if (code->libraryHandle) {
 		dlclose(code->libraryHandle);
 		code->libraryHandle = 0;
 	}
-	code->updateAndRender = updateAndRenderStub;
-	code->readBmpIntoMemory = readBmpIntoMemoryStub;
 }
 
 GameMemory initGameMemory() {

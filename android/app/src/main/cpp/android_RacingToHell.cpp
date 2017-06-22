@@ -1,12 +1,18 @@
 #include "android_RacingToHell.h"
 
+#include "RacingToHell.cpp"
+
 extern "C"
 JNIEXPORT void JNICALL
 Java_game_racingtohell_NativeWrapper_on_1surface_1changed(JNIEnv *env UNUSED, jclass clazz UNUSED,
                                                           jint width, jint height) {
-    LOGI("Surface changed");
     if (!initialized) {
+        LOGI("Initializing Game");
         memory = {};
+        memory.abort = abort;
+        memory.exitGame = exitGame;
+        memory.readFile = readFile;
+        memory.freeFile = freeFile;
         memory.temporaryMemorySize = 10 * 1024 * 1024;
         memory.permanentMemorySize = 100 * 1024 * 1024;
         memory.temporary = (char *) malloc(memory.temporaryMemorySize);

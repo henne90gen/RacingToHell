@@ -109,6 +109,7 @@ GLuint buildTriangleProgram() {
 }
 
 void setupOpenGL(VideoBuffer *videoBuffer) {
+    LOGI("Setting up OpenGL");
     texture = loadTexture(videoBuffer->width, videoBuffer->height, GL_RGBA, videoBuffer->content);
     buffer = createVertexBufferObject(sizeof(rect), rect, GL_STATIC_DRAW);
 

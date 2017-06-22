@@ -210,7 +210,8 @@ void renderMenuItem(GameMemory *memory, VideoBuffer *buffer, MenuItem item,
 	if (highlight) {
 		position = position + (Math::Vector2f { 20, 0 });
 	}
-	Text::renderText(memory, buffer, std::string(item.text), position, 20);
+	//Text::renderText(memory, buffer, std::string(item.text), position, 20);
+    Text::renderTextColored(memory, buffer, std::string(item.text), position, 20, 255, 0, 0);
 }
 
 void changeMenuSelectionChange(GameState *gameState, int direction) {
@@ -242,7 +243,7 @@ void updateAndRenderMenu(GameMemory *memory, VideoBuffer *buffer, Input *input,
 	// Menu backdrop
 	Math::Rectangle rect = { };
 	rect.position = gameState->currentMenu.items[0].position
-			- (Math::Vector2f ) { 10, 40 };
+			- (Math::Vector2f ({ 10, 10 }));
 	rect.width = WINDOW_WIDTH / 2 - 10;
 	rect.height = gameState->currentMenu.numberMenuItems * 50;
 	Render::rectangle(buffer, rect, 0x80202020);

@@ -123,86 +123,61 @@ void renderText(GameMemory *memory, VideoBuffer* buffer, std::string text,
 	}
 }
 
-void renderCharacterAlpha(GameMemory *memory, VideoBuffer *buffer, char c,
-		int offsetX, int offsetY, uint8_t r, uint8_t g, uint8_t b,
-		unsigned fontSize) {
-	GameState *gameState = getGameState(memory);
+void renderTextColored(GameMemory *memory, VideoBuffer* buffer, std::string text,
+    Math::Vector2f position, unsigned fontSize, uint8_t r, uint8_t g, uint8_t b)
+{
+    GameState *gameState = getGameState(memory);
 
-	uint32_t characterColor = (r << 16) | (g << 8) | (b);
-	int fontSizeIndex = getFontSizeIndex(memory, fontSize);
-	Character *character = getCharacter(gameState, c, fontSizeIndex);
+    int currentX = position.x;
+    int fontSizeIndex = getFontSizeIndex(memory, fontSize);
 
-	int32_t *currentBufferPixel = (int32_t *) buffer->content
-			+ offsetY * (int) buffer->width + offsetX;
-	uint8_t *currentTexturePixel = (uint8_t *) character->bitmap;
+    for (unsigned characterIndex = 0; characterIndex < text.size(); ++characterIndex)
+    {
+        Character *character = getCharacter(gameState, text[characterIndex], fontSizeIndex);
 
-	int32_t nextLine = buffer->width - character->width;
-
-	for (int y = 0; y < (int) character->height; ++y) {
-		if (offsetY + y < 0) {
-			currentBufferPixel += buffer->width;
-			currentTexturePixel += character->width;
-			continue;
-		} else if (offsetY + y >= (int) buffer->height) {
-			break;
-		}
-
-		for (int x = 0; x < (int) character->width; ++x) {
-			if (offsetX + x < 0 || offsetX + x >= (int) buffer->width) {
-				currentBufferPixel++;
-				currentTexturePixel++;
-				continue;
-			}
-
-			uint8_t *currentBufferPixel8 = (uint8_t *) currentBufferPixel;
-
-			uint8_t textureValue = *currentTexturePixel++;
-
-			if (textureValue == 255) {
-				currentTexturePixel++;
-				*currentBufferPixel++ = (255 << 24) | characterColor;
-			} else if (textureValue == 0) {
-				currentBufferPixel++;
-				currentTexturePixel++;
-			} else {
-				uint8_t bufferA = *currentBufferPixel8;
-
-				float textureAlpha = textureValue / 255.0f;
-				float bufferAlpha = bufferA / 255.0f;
-
-				float resultAlpha = textureAlpha
-						+ bufferAlpha * (1.0f - textureAlpha);
-
-				if (resultAlpha == 0.0f) {
-					*currentBufferPixel = 0;
-				} else {
-					float newB = ((bufferAlpha * (1.0f - textureAlpha)
-							* *currentBufferPixel8) + (textureAlpha * b))
-							/ resultAlpha;
-					*currentBufferPixel8++ = (uint8_t) newB;
-
-					float newG = ((bufferAlpha * (1.0f - textureAlpha)
-							* *currentBufferPixel8) + (textureAlpha * g))
-							/ resultAlpha;
-					*currentBufferPixel8++ = (uint8_t) newG;
-
-					float newR = ((bufferAlpha * (1.0f - textureAlpha)
-							* *currentBufferPixel8) + (textureAlpha * r))
-							/ resultAlpha;
-					*currentBufferPixel8++ = (uint8_t) newR;
-
-					float newA = resultAlpha * 255.0f;
-					*currentBufferPixel8++ = (uint8_t) newA;
-				}
-
-				currentBufferPixel++;
-				currentTexturePixel++;
-			}
-		}
-
-		currentBufferPixel += nextLine;
-	}
+        renderCharacterAlpha(memory, buffer, character, currentX, position.y, r, g, b);
+    
+        currentX += character->width + 10;
+    }
 }
+
+void renderCharacterAlpha(GameMemory *memory, VideoBuffer *buffer, Character *character,
+		int offsetX, int offsetY, uint8_t r, uint8_t g, uint8_t b) {
+    uint32_t characterColor = (r) | (g << 8) | (b << 16);
+
+    uint32_t *currentBufferPixel = (uint32_t *)buffer->content
+        + offsetY * (int)buffer->width + offsetX;
+    uint8_t *currentTexturePixel = (uint8_t *)character->bitmap;
+
+    uint32_t nextLine = buffer->width - character->width;
+
+    for (int y = 0; y < (int)character->height; ++y) {
+        if (offsetY + y < 0) {
+            currentBufferPixel += buffer->width;
+            currentTexturePixel += character->width;
+            continue;
+        }
+        else if (offsetY + y >= (int)buffer->height) {
+            break;
+        }
+
+        for (int x = 0; x < (int)character->width; ++x) {
+            if (offsetX + x < 0 || offsetX + x >= (int)buffer->width) {
+                currentBufferPixel++;
+                currentTexturePixel++;
+                continue;
+            }
+
+            Render::blendColor(characterColor | (*currentTexturePixel << 24), currentBufferPixel);
+            currentBufferPixel++;
+            currentTexturePixel++;
+        }
+
+        currentBufferPixel += nextLine;
+    }
+}
+
+
 
 void renderTextAlpha(VideoBuffer *buffer, Render::Texture* texture, int offsetX,
 		int offsetY) {

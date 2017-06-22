@@ -3,8 +3,8 @@
 #include "MyMath.cpp"
 #include "Memory.cpp"
 #include "Collision.cpp"
-#include "Font.cpp"
 #include "Renderer.cpp"
+#include "Font.cpp"
 #include "Sound.cpp"
 #include "GameMenu.cpp"
 #include "Helper.cpp"
@@ -489,4 +489,7 @@ UPDATE_AND_RENDER(updateAndRender) {
 	if (gameState->currentMenu.state != GAME) {
 		updateAndRenderMenu(memory, buffer, input, gameState);
 	}
+
+    Text::renderTextColored(memory, buffer, std::string("Test"), Math::Vector2f({ 0, 0 }), 20, 255, 255, 255);
+    //Text::renderCharacterAlpha(memory, buffer, 'a', 100, 200, 255, 255, 255, 20);
 }

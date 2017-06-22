@@ -23,9 +23,11 @@ struct Character {
 void renderText(GameMemory *memory, VideoBuffer* buffer, std::string text,
 		Math::Vector2f position, unsigned fontSize);
 
-void renderCharacterAlpha(GameMemory *memory, VideoBuffer *buffer, char c,
-		int offsetX, int offsetY, uint8_t r, uint8_t g, uint8_t b,
-		unsigned fontSize);
+void renderCharacterAlpha(GameMemory *memory, VideoBuffer *buffer, Character *character,
+		int offsetX, int offsetY, uint8_t r, uint8_t g, uint8_t b);
+
+void renderTextColored(GameMemory *memory, VideoBuffer* buffer, std::string text,
+    Math::Vector2f position, unsigned fontSize, uint8_t r, uint8_t g, uint8_t b);
 
 int* getAvailableFontSizes(int* amount);
 

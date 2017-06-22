@@ -155,6 +155,8 @@ void unloadGameCode(GameCode *code)
 
 void drawBuffer(HDC deviceContext, OffscreenBuffer *buffer)
 {
+
+#if 0
    if (!StretchDIBits(
         deviceContext,
         0, 0, buffer->width, buffer->height,
@@ -167,8 +169,8 @@ void drawBuffer(HDC deviceContext, OffscreenBuffer *buffer)
     {
         debugString("DBits failed.");
     } 
-	
-    /*glViewport(0, 0, buffer->width, buffer->height);
+#else	
+    glViewport(0, 0, buffer->width, buffer->height);
 
     GLuint textureHandle = 0;
     static bool init = false;
@@ -227,7 +229,8 @@ void drawBuffer(HDC deviceContext, OffscreenBuffer *buffer)
 
     glEnd(); 
 
-    SwapBuffers(deviceContext); */
+    SwapBuffers(deviceContext); 
+#endif 
 }
 
 typedef HRESULT _DirectSoundCreate_(LPCGUID pcGuidDevice, LPDIRECTSOUND *ppDS, LPUNKNOWN pUnkOuter);

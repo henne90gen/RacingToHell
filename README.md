@@ -46,6 +46,8 @@
 		- controls?
 	- ~~pause~~
     - game over
+    - volume checkbox/slider instead of options menu
+    - 'New Game' menu to select car and difficulty
 
 
 ### IDEAs

@@ -55,11 +55,6 @@ static GLint u_texture_unit_location;
 #define MouseScrollUp   Button4
 #define MouseScrollDown Button5
 
-struct KeyDown {
-	bool upKey, downKey, leftKey, rightKey;
-	bool enterKey, escapeKey;
-};
-
 struct GraphicsData {
 	Display* display;
 	Window window;

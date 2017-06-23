@@ -500,7 +500,6 @@ void swapSoundBuffers(GameMemory *memory) {
 
 	gameCode.getSoundSamples(memory, &soundBuffer);
 
-#define SOUND_DEBUG 0
 #if SOUND_DEBUG
 	// NOTE: "delay" is the delay of the soundcard hardware
 	printf("samples in buffer before write: %ld delay in samples: %ld\n", (audio.buffer_size_in_samples - avail), delay);

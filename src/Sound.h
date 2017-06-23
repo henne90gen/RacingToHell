@@ -3,7 +3,7 @@
 #include "Platform.h"
 
 struct GameState;
-struct SoundOutputBuffer;
+struct SoundBuffer;
 
 namespace Sound {
 struct LoadedSound {
@@ -60,7 +60,7 @@ enum {
 };
 
 LoadedSound loadWAV(GameMemory *memory, std::string path);
-void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer);
+void getSoundSamples(GameMemory *memory, SoundBuffer *soundBuffer);
 void output(GameState *state, LoadedSound *loadedSound, float volumeLeft,
 		float volumeRight, Mode mode);
 }

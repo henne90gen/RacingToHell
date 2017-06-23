@@ -16,6 +16,8 @@
 #include <GL/gl.h>
 #include <GL/glx.h>
 #include <GL/glu.h>
+#include <GL/glext.h>
+#include <GL/glxext.h>
 #include <alsa/asoundlib.h>
 #include <dlfcn.h>
 #include <sys/stat.h>
@@ -85,6 +87,14 @@ struct AudioData {
 	uint64_t period_size;
 };
 
+struct GameCode {
+	void *libraryHandle;
+	time_t libraryMTime;
+
+	update_and_render* updateAndRender;
+	get_sound_samples* getSoundSamples;
+};
+
 long int EVENT_MASK = KeyPressMask | KeyReleaseMask | ButtonPressMask
 		| ButtonReleaseMask | PointerMotionMask;
 
@@ -93,3 +103,5 @@ GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
 static bool isRunning;
 static GraphicsData graphics;
 static AudioData audio;
+static GameCode gameCode;
+

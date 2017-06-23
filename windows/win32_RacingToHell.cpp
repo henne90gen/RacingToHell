@@ -152,10 +152,30 @@ void unloadGameCode(GameCode *code)
     code->updateAndRender = 0;
 }
 
+void setVSync(bool sync)
+{
+    // Function pointer for the wgl extention function we need to enable/disable
+    // vsync
+    typedef BOOL(APIENTRY *PFNWGLSWAPINTERVALPROC)(int);
+    PFNWGLSWAPINTERVALPROC wglSwapIntervalEXT = 0;
+
+    const char *extensions = (char*)glGetString(GL_EXTENSIONS);
+
+    if (!extensions || strstr(extensions, "WGL_EXT_swap_control") == 0)
+    {
+        return;
+    }
+    else
+    {
+        wglSwapIntervalEXT = (PFNWGLSWAPINTERVALPROC)wglGetProcAddress("wglSwapIntervalEXT");
+
+        if (wglSwapIntervalEXT)
+            wglSwapIntervalEXT(sync);
+    }
+}
 
 void drawBuffer(HDC deviceContext, OffscreenBuffer *buffer)
 {
-
 #if 0
    if (!StretchDIBits(
         deviceContext,
@@ -178,6 +198,7 @@ void drawBuffer(HDC deviceContext, OffscreenBuffer *buffer)
     if (!init)
     {
         glGenTextures(1, &textureHandle);
+        setVSync(false);
         init = true;
     }
 
@@ -597,7 +618,7 @@ void sleep(float time, uint64_t frequency)
 #if 1
 int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 {
-    float debugFrameTimes[256];
+    float debugFrameTimes[256] = {};
     unsigned currentFrameTimePosition = 0;
 
     ExeFilename exeFilename = {};
@@ -849,10 +870,12 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
             avgframetime += debugFrameTimes[i];
         }
 
-
         avgframetime /= 256.0f;
 
-        debugString("Avg: " + std::to_string(1.f / avgframetime) + '\n');
+        if (currentFrameTimePosition == 0)
+        {
+            debugString("Avg frametime: " + std::to_string(avgframetime) + " Avg FPS:" + std::to_string(1.f / avgframetime) + '\n');
+        }
     }
 	
 	return 0;

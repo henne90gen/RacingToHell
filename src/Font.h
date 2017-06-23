@@ -10,9 +10,13 @@ struct VideoBuffer;
 
 namespace Text {
 
+const char minChar = ' ';
+const char maxChar = '~';
+
 struct Character {
 	char value;
-	unsigned width, height, bearingY;
+    unsigned width, height, bearingY, advanceX;
+    int kerning[maxChar - minChar];
 	char* bitmap;
 };
 

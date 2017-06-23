@@ -8,12 +8,13 @@ FT_Library fontLibrary;
 FT_Face face;
 
 void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
-	int glyphIndex = FT_Get_Char_Index(face, loadCharacter);
-	int error = FT_Load_Glyph(face, glyphIndex, FT_LOAD_DEFAULT);
+	int currentGlyphIndex = FT_Get_Char_Index(face, loadCharacter);
+	int error = FT_Load_Glyph(face, currentGlyphIndex, FT_LOAD_DEFAULT);
 	if (error) {
 		memory->abort(
 				"Couldn't load glyph for " + std::to_string(loadCharacter));
 	}
+
 	if (face->glyph->format != FT_GLYPH_FORMAT_BITMAP) {
 		error = FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL);
 		if (error) {
@@ -28,6 +29,17 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 	newCharacter.width = face->glyph->bitmap.width;
 	newCharacter.height = face->glyph->bitmap.rows;
     newCharacter.bearingY = -face->glyph->bitmap_top;
+    newCharacter.advanceX = face->glyph->advance.x >> 6;
+
+    for (char nextChar = minChar; nextChar < maxChar; nextChar++)
+    {
+        int nextGlyphIndex = FT_Get_Char_Index(face, nextChar);
+
+        FT_Vector kerning;
+        FT_Get_Kerning(face, currentGlyphIndex, nextGlyphIndex, FT_KERNING_DEFAULT, &kerning);
+
+        newCharacter.kerning[nextChar - minChar] = kerning.x >> 6;
+    }
 
 	unsigned bitmapSizeInPixel = newCharacter.width * newCharacter.height;
 
@@ -35,7 +47,7 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 
 	memcpy(newCharacter.bitmap, face->glyph->bitmap.buffer, bitmapSizeInPixel);
 	GameState *gameState = getGameState(memory);
-	gameState->resources.characterMap[fontSize][loadCharacter - ' '] = newCharacter;
+	gameState->resources.characterMap[fontSize][loadCharacter - minChar] = newCharacter;
 }
 
 int getFontSize(GameState *gameState, int fontSizeIndex) {
@@ -69,7 +81,7 @@ void loadFont(GameMemory* memory, std::string fontFileName) {
 			memory->abort(message);
 		}
 
-		for (char currentChar = ' '; currentChar < '~'; currentChar++) {
+		for (char currentChar = minChar; currentChar < maxChar; currentChar++) {
 			loadCharacter(memory, currentChar, fontSizeIndex);
 		}
 	}
@@ -138,7 +150,7 @@ void renderTextColored(GameMemory *memory, VideoBuffer* buffer, std::string text
 
         renderCharacterAlpha(memory, buffer, character, currentX, position.y, r, g, b);
     
-        currentX += character->width + 10;
+        currentX += character->advanceX + ((characterIndex < text.size() - 1) ? character->kerning[characterIndex + 1] : 0);
     }
 }
 

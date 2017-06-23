@@ -14,7 +14,7 @@ GameState *getGameState(GameMemory *memory) {
 	if (!memory->isInitialized) {
 		init(memory);
 	}
-    return (GameState *) (memory->permanent);
+	return (GameState *) (memory->permanent);
 }
 
 float getRoadSpeed(GameState *gameState) {
@@ -354,7 +354,8 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState,
 
 	for (int i = 0; i < gameState->lastItemIndex + 1; i++) {
 		Item *item = &gameState->items[i];
-		Render::Texture *texture = &gameState->resources.itemTextures[item->itemIndex];
+		Render::Texture *texture =
+				&gameState->resources.itemTextures[item->itemIndex];
 
 		if (shouldUpdate) {
 			item->position = {item->position.x, (float) (item->position.y + getRoadSpeed(gameState))};
@@ -389,7 +390,6 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState,
 					case CANISTER_ID:
 					// TODO test: percentage of maxEnergy vs absolute value
 					gameState->player.energy += 100;
-
 					if (gameState->player.energy > gameState->player.maxEnergy) {
 						gameState->player.energy = gameState->player.maxEnergy;
 					}
@@ -489,6 +489,7 @@ UPDATE_AND_RENDER(updateAndRender) {
 		updateAndRenderMenu(memory, buffer, input, gameState);
 	}
 
-    Text::renderTextColored(memory, buffer, std::string("Test"), Math::Vector2f({ 0, 0 }), 20, 255, 255, 255);
-    //Text::renderCharacterAlpha(memory, buffer, 'a', 100, 200, 255, 255, 255, 20);
+	Text::renderText(memory, buffer, std::string("Test"),
+			Math::Vector2f( { 0, 0 }), 20, 255, 255, 255);
+	//Text::renderCharacterAlpha(memory, buffer, 'a', 100, 200, 255, 255, 255, 20);
 }

@@ -120,7 +120,7 @@ void renderText(GameMemory *memory, VideoBuffer* buffer, std::string text,
 		renderCharacter(memory, buffer, character, currentX, position.y, r,
 				g, b);
 
-        currentX += character->advanceX + ((characterIndex < text.size() - 1) ? character->kerning[characterIndex + 1] : 0);
+        currentX += 2 + character->advanceX + ((characterIndex < text.size() - 1) ? character->kerning[characterIndex + 1] : 0);
 	}
 }
 

@@ -134,7 +134,7 @@ void output(GameState *state, Sound::LoadedSound *loadedSound, float volumeLeft,
 } // END namespace Sound
 
 extern "C"
-void getSoundSamples(GameMemory *memory, SoundBuffer *soundBuffer) {
+GET_SOUND_SAMPLES(getSoundSamples) {
 	GameState *gameState = getGameState(memory);
 
 	float *realChannel0 = (float *) reserveTemporaryMemory(memory,

@@ -4,14 +4,14 @@
 
 struct VideoBuffer;
 
-#define FontSize14 0
-#define FontSize18 1
-#define FontSize24 2
-
 namespace Text {
 
 const char minChar = ' ';
 const char maxChar = '~';
+
+enum FontSize {
+	Small, Medium, Big
+};
 
 struct Character {
 	char value;

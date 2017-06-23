@@ -28,25 +28,26 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 	newCharacter.value = loadCharacter;
 	newCharacter.width = face->glyph->bitmap.width;
 	newCharacter.height = face->glyph->bitmap.rows;
-    newCharacter.bearingY = -face->glyph->bitmap_top;
-    newCharacter.advanceX = face->glyph->advance.x >> 6;
+	newCharacter.bearingY = -face->glyph->bitmap_top;
+	newCharacter.advanceX = face->glyph->advance.x >> 6;
 
-    for (char nextChar = minChar; nextChar < maxChar; nextChar++)
-    {
-        int nextGlyphIndex = FT_Get_Char_Index(face, nextChar);
+	for (char nextChar = minChar; nextChar < maxChar; nextChar++) {
+		int nextGlyphIndex = FT_Get_Char_Index(face, nextChar);
 
-        FT_Vector kerning;
-        FT_Get_Kerning(face, currentGlyphIndex, nextGlyphIndex, FT_KERNING_DEFAULT, &kerning);
+		FT_Vector kerning;
+		FT_Get_Kerning(face, currentGlyphIndex, nextGlyphIndex,
+				FT_KERNING_DEFAULT, &kerning);
 
-        newCharacter.kerning[nextChar - minChar] = kerning.x >> 6;
-    }
+		newCharacter.kerning[nextChar - minChar] = kerning.x >> 6;
+	}
 	unsigned bitmapSizeInPixel = newCharacter.width * newCharacter.height;
 
 	newCharacter.bitmap = reservePermanentMemory(memory, bitmapSizeInPixel);
 
 	memcpy(newCharacter.bitmap, face->glyph->bitmap.buffer, bitmapSizeInPixel);
 	GameState *gameState = getGameState(memory);
-	gameState->resources.characterMap[fontSize][loadCharacter - minChar] = newCharacter;
+	gameState->resources.characterMap[fontSize][loadCharacter - minChar] =
+			newCharacter;
 }
 
 int getFontSize(GameState *gameState, int fontSizeIndex) {
@@ -88,39 +89,33 @@ void loadFont(GameMemory* memory, std::string fontFileName) {
 }
 
 Character *getCharacter(GameState *gameState, char character,
-		int fontSizeIndex) {
+		unsigned fontSizeIndex) {
 	return &gameState->resources.characterMap[fontSizeIndex][character - ' '];
 }
 
-int getFontSizeIndex(GameMemory *memory, unsigned fontSize) {
-	GameState *gameState = getGameState(memory);
-	for (unsigned i = 0;
-			i < sizeof(gameState->resources.availableFontSizes) / 4; i++) {
-		if (gameState->resources.availableFontSizes[i] == fontSize) {
-			return i;
-		}
-	}
-	memory->abort("Font size " + std::to_string(fontSize) + " not available.");
-	return -1;
-}
-
+/**
+ * Renders the given text with the given color to the screen.
+ * Position is the bottom left corner of the text.
+ * fontSizeID needs to be one of the following: FontSizeSmall, FontSizeMedium or FontSizeBig.
+ */
 void renderText(GameMemory *memory, VideoBuffer* buffer, std::string text,
-		Math::Vector2f position, unsigned fontSize, uint8_t r, uint8_t g,
+		Math::Vector2f position, FontSize fontSize, uint8_t r, uint8_t g,
 		uint8_t b) {
 	GameState *gameState = getGameState(memory);
 
 	int currentX = position.x;
-	int fontSizeIndex = getFontSizeIndex(memory, fontSize);
 
 	for (unsigned characterIndex = 0; characterIndex < text.size();
 			++characterIndex) {
 		Character *character = getCharacter(gameState, text[characterIndex],
-				fontSizeIndex);
+				fontSize);
 
-		renderCharacter(memory, buffer, character, currentX, position.y, r,
-				g, b);
+		renderCharacter(memory, buffer, character, currentX, position.y, r, g,
+				b);
 
-        currentX += 2 + character->advanceX + ((characterIndex < text.size() - 1) ? character->kerning[characterIndex + 1] : 0);
+		currentX += 2 + character->advanceX
+				+ ((characterIndex < text.size() - 1) ?
+						character->kerning[characterIndex + 1] : 0);
 	}
 }
 
@@ -135,33 +130,32 @@ void renderCharacter(GameMemory *memory, VideoBuffer *buffer,
 			+ offsetY * (int) buffer->width + offsetX;
 	uint8_t *currentTexturePixel = (uint8_t *) character->bitmap;
 
-    uint32_t nextLine = buffer->width - character->width;
+	uint32_t nextLine = buffer->width - character->width;
 
-    for (int y = 0; y < (int)character->height; ++y) {
-        if (offsetY + y < 0) {
-            currentBufferPixel += buffer->width;
-            currentTexturePixel += character->width;
-            continue;
-        }
-        else if (offsetY + y >= (int)buffer->height) {
-            break;
-        }
+	for (int y = 0; y < (int) character->height; ++y) {
+		if (offsetY + y < 0) {
+			currentBufferPixel += buffer->width;
+			currentTexturePixel += character->width;
+			continue;
+		} else if (offsetY + y >= (int) buffer->height) {
+			break;
+		}
 
-        for (int x = 0; x < (int)character->width; ++x) {
-            if (offsetX + x < 0 || offsetX + x >= (int)buffer->width) {
-                currentBufferPixel++;
-                currentTexturePixel++;
-                continue;
-            }
+		for (int x = 0; x < (int) character->width; ++x) {
+			if (offsetX + x < 0 || offsetX + x >= (int) buffer->width) {
+				currentBufferPixel++;
+				currentTexturePixel++;
+				continue;
+			}
 
-            Render::blendColor(characterColor | (*currentTexturePixel << 24), currentBufferPixel);
-            currentBufferPixel++;
-            currentTexturePixel++;
-        }
+			Render::blendColor(characterColor | (*currentTexturePixel << 24),
+					currentBufferPixel);
+			currentBufferPixel++;
+			currentTexturePixel++;
+		}
 
-        currentBufferPixel += nextLine;
-    }
+		currentBufferPixel += nextLine;
+	}
 }
-
 
 }

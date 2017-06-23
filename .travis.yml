@@ -18,12 +18,15 @@ addons:
     - libxext-dev
     - libxi-dev
     - libglew-dev
+    - doxygen
 script:
 - sudo ln -s /usr/bin/gcc-6 /usr/local/bin/gcc
 - sudo ln -s /usr/bin/g++-6 /usr/local/bin/g++
 - gcc -v && g++ -v
 - make all
-- zip -r RacingToHellLinux.zip ./
+- doxygen doxy.conf
+- zip -r doc.zip ./doc/
+#- zip -r RacingToHellLinux.zip ./
 deploy:
   provider: releases
   api_key:
@@ -31,5 +34,12 @@ deploy:
   skip_cleanup: true
   file:
   - RacingToHellLinux.zip
-  true:
+  on:
     tags: true
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  local_dir: doc/html
+  on:
+    branch: remake

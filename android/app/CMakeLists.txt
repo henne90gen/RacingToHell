@@ -17,14 +17,6 @@ add_library( # Sets the name of the library.
              SHARED
 
              # Provides a relative path to your source file(s).
-             ../../src/Font.cpp
-             ../../src/Sound.cpp
-             ../../src/RacingToHell.cpp
-             ../../src/MyMath.cpp
-             ../../src/Renderer.cpp
-             ../../src/Memory.cpp
-             ../../src/Collision.cpp
-             ../../src/GameMenu.cpp
              src/main/cpp/OpenGL.cpp
              src/main/cpp/android_RacingToHell.cpp )
 

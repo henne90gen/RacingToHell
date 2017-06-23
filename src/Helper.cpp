@@ -53,7 +53,7 @@ void importPixelData(void* src, void* dest, unsigned srcWidth,
 }
 
 Render::Texture readBmpIntoMemory(File file, GameMemory *memory, int offsetX,
-		int offsetY, int width, int height, bool output = 1) {
+		int offsetY, int width, int height) {
 	if (((char*) file.content)[0] != 'B' || (file.content)[1] != 'M') {
 		memory->abort(file.name + " is not a bitmap file.");
 	}
@@ -79,9 +79,6 @@ Render::Texture readBmpIntoMemory(File file, GameMemory *memory, int offsetX,
 	importPixelData(file.content + header.size + fileHeaderSize,
 			texture.content, header.width, header.height, offsetX, offsetY,
 			texture.width, texture.height);
-	if (output) {
-		printf("Successfully loaded %s.\n", file.name.c_str());
-	}
 	return texture;
 }
 

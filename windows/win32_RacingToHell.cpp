@@ -125,15 +125,15 @@ GameCode loadGameCode(char *sourceDLLName, char *tempDLLName)
 
     if (result.gameCodeDLL)
     {
-        //result.getSoundSamples = (_GetSoundSamples_ *)GetProcAddress(result.gameCodeDLL, "game_getSoundSamples");
+        result.getSoundSamples = (get_sound_samples *)GetProcAddress(result.gameCodeDLL, "getSoundSamples");
         result.updateAndRender = (update_and_render *)GetProcAddress(result.gameCodeDLL, "updateAndRender");
 
-        result.isValid = result.updateAndRender;//result.getSoundSamples && result.updateAndRender;
+        result.isValid = result.getSoundSamples && result.updateAndRender;
     }
 
     if (!result.isValid)
     {
-        //result.getSoundSamples = 0;
+        result.getSoundSamples = 0;
         result.updateAndRender = 0;
     }
 
@@ -148,7 +148,7 @@ void unloadGameCode(GameCode *code)
         code->gameCodeDLL = 0;
     }
     code->isValid = false;
-    //code->getSoundSamples = 0;
+    code->getSoundSamples = 0;
     code->updateAndRender = 0;
 }
 
@@ -330,7 +330,7 @@ void initDSound(HWND window, uint32_t samplesPerSecond, int32_t bufferSize)
     }
 }
 
-void fillSoundBuffer(SoundOutput *soundOutput, DWORD byteToLock, DWORD bytesToWrite, SoundOutputBuffer *source)
+void fillSoundBuffer(SoundOutput *soundOutput, DWORD byteToLock, DWORD bytesToWrite, SoundBuffer *source)
 {
     VOID *region1, *region2;
     DWORD region1Size, region2Size;
@@ -796,12 +796,12 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
                 bytesToWrite = targetCursor - byteToLock;
             }
 
-            SoundOutputBuffer soundBuffer = {};
+            SoundBuffer soundBuffer = {};
             soundBuffer.samplesPerSecond = soundOutput.samplesPerSecond;
             soundBuffer.sampleCount = bytesToWrite / soundOutput.bytesPerSample;
             soundBuffer.samples = samples;
 
-            //Sound::getSoundSamples(&memory, &soundBuffer);
+            gameCode.getSoundSamples(&memory, &soundBuffer);
 
             /*debug_marker *marker = &debugTimeMarker[debugMarkerIndex];
             marker->outputPlayCursor = playCursor;

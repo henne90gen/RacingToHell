@@ -31,6 +31,10 @@ ABORT(abort);
 typedef READ_FILE(read_file);
 READ_FILE(readFile);
 
+#define WRITE_FILE(name) bool name(File *file, std::string fileName)
+typedef WRITE_FILE(write_file);
+WRITE_FILE(writeFile);
+
 #define FREE_FILE(name) void name(File *file)
 typedef FREE_FILE(free_file);
 FREE_FILE(freeFile);

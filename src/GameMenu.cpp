@@ -210,8 +210,8 @@ void renderMenuItem(GameMemory *memory, VideoBuffer *buffer, MenuItem item,
 	if (highlight) {
 		position = position + (Math::Vector2f { 20, 0 });
 	}
-	//Text::renderText(memory, buffer, std::string(item.text), position, 20);
-    Text::renderTextColored(memory, buffer, std::string(item.text), position, 20, 255, 0, 0);
+//	Text::renderText(memory, buffer, std::string(item.text), position, 20);
+    Text::renderText(memory, buffer, std::string(item.text), position, 20, 255, 255, 0);
 }
 
 void changeMenuSelectionChange(GameState *gameState, int direction) {

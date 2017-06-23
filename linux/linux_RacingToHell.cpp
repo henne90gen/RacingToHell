@@ -1,7 +1,10 @@
 #include "linux_RacingToHell.h"
+#include "OpenGL.cpp"
 
+/**
+ * Initializes the audio context
+ */
 AudioData initAudioData() {
-	// FIXME make error messages more descriptive
 	printf("Loading audio context.\n");
 
 	AudioData audio = { };
@@ -104,6 +107,40 @@ AudioData initAudioData() {
 
 void setupOpenGL(VideoBuffer *videoBuffer);
 
+void setVSync(bool sync) {
+//	/*const char* extensions = */glXQueryExtensionsString(graphics.display,
+//			XDefaultScreen(graphics.display));
+//	const char* extensions = (const char*) glGetString(GL_EXTENSIONS);
+//	abort(extensions);
+//	if (strstr(extensions, "swap_control") != NULL) {
+//		abort("Hello world.");
+//	}
+//
+//	if (glewIsSupported("GL_ARB_shading_language_100")) {
+//		printf("Supporting shading language\n");
+//	}
+//	if (glewIsSupported("GLX_EXT_swap_control")) {
+//		abort("Supporting VSync control");
+//	}
+//	typedef BOOL (APIENTRY *PFNGLXSWAPINTERVALEXTPROC)( int );
+//	PFNGLXSWAPINTERVALEXTPROC glXSwapIntervalEXT = 0;
+//	const char *extensions = (char*) glGetString( GL_EXTENSIONS);
+//
+//	if (glXQueryExtensionsString(graphics.display, (int)"GLX_EXT_swap_control") == 0) {
+//		return;
+//	} else {
+//		glXSwapIntervalEXT = (PFNGLXSWAPINTERVALEXTPROC) glXGetProcAddress(
+//				(const GLubyte*) "glXSwapIntervalEXT");
+//
+//		if (glXSwapIntervalEXT) {
+//			glXSwapIntervalEXT(graphics.display, sync);
+//		}
+//	}
+}
+
+/**
+ * Opens a window and initializes the graphics context
+ */
 GraphicsData initGraphicsData() {
 	GraphicsData graphics = { };
 	graphics.display = XOpenDisplay(NULL);
@@ -136,14 +173,15 @@ GraphicsData initGraphicsData() {
 	graphics.glc = glXCreateContext(graphics.display, graphics.vi, NULL,
 	GL_TRUE);
 	glXMakeCurrent(graphics.display, graphics.window, graphics.glc);
+	if (glewInit() != GLEW_OK) {
+		abort("Failed to initialize GLEW.");
+	}
+
+	setVSync(0);
 	glEnable(GL_DEPTH_TEST);
 
 	XGetWindowAttributes(graphics.display, graphics.window, &graphics.gwa);
 	glViewport(0, 0, graphics.gwa.width, graphics.gwa.height);
-
-	if (glewInit() != GLEW_OK) {
-		abort("Failed to initialize GLEW.");
-	}
 
 	// set window title
 	XStoreName(graphics.display, graphics.window, WINDOW_TITLE);
@@ -159,6 +197,7 @@ GraphicsData initGraphicsData() {
 	XSetClassHint(graphics.display, graphics.window, classHint);
 
 	// set icon
+	// FIXME enable icon
 //	Atom iconAtom = XInternAtom(graphics.display, "_NET_WM_ICON", 0);
 //	File file = readFile("./res/icon.bmp");
 //	GameMemory bmpMemory = { };
@@ -208,12 +247,19 @@ GraphicsData initGraphicsData() {
 	return graphics;
 }
 
+/**
+ * Exits the game on error
+ */
 ABORT(abort) {
 	fprintf(stderr, "%s", (message + "\n").c_str());
 	exit(1);
 }
 
-File readFile(std::string fileName) {
+/**
+ * Reads an entire file into memory
+ * This might be a very expensive operation, if the file is very large
+ */
+READ_FILE(readFile) {
 	printf("Reading %s\n", fileName.c_str());
 
 	FILE *fileHandle = fopen(fileName.c_str(), "rb");
@@ -238,25 +284,32 @@ File readFile(std::string fileName) {
 	return file;
 }
 
-void writeFile(File *file, std::string name) {
-	printf("Writing %s\n", name.c_str());
+/**
+ * Writes an entire file to disk
+ */
+WRITE_FILE(writeFile) {
+	printf("Writing %s\n", fileName.c_str());
 
-	FILE *fHandle = fopen(name.c_str(), "wb");
+	FILE *fHandle = fopen(fileName.c_str(), "wb");
 	if (fHandle == NULL) {
-		abort("ERROR - Failed to open file for writing\n");
+		printf("ERROR - Failed to open file for writing\n");
+		return false;
 	}
 
 	if (fwrite((void *) file->content, 1, file->size, fHandle) != file->size) {
-		abort(
-				"ERROR - Failed to write " + std::to_string(file->size)
-						+ " bytes to file\n");
+		printf("ERROR - Failed to write %lu bytes to file\n", file->size);
+		return false;
 	}
 
 	fclose(fHandle);
 	fHandle = NULL;
+	return true;
 }
 
-void freeFile(File *file) {
+/**
+ * Releases the memory that was allocated for the given file
+ */
+FREE_FILE(freeFile) {
 	if (file->content) {
 		free(file->content);
 	}
@@ -264,13 +317,18 @@ void freeFile(File *file) {
 	file->size = 0;
 }
 
-void exitGame() {
+/**
+ * Ends the game gracefully
+ */
+EXIT_GAME(exitGame) {
 	printf("Exiting\n");
 	isRunning = false;
 }
 
-void handleKeyEvent(Display* display, Input* input, XKeyEvent event,
-		KeyDown *wasKeyDown) {
+/**
+ * Uses the native key event to fill the platform independent input struct
+ */
+void handleKeyEvent(Input* input, XKeyEvent event) {
 	bool keyPressed = event.type == KeyPress;
 
 	switch (event.keycode) {
@@ -298,6 +356,9 @@ void handleKeyEvent(Display* display, Input* input, XKeyEvent event,
 	}
 }
 
+/**
+ * Uses the native mouse event to fill the platform independent input struct
+ */
 void handleMouseEvent(Input* input, XButtonEvent event,
 		bool *wasLeftMousePressed, bool *wasRightMousePressed) {
 	bool buttonPressed = event.type == ButtonPress;
@@ -323,6 +384,9 @@ void handleMouseEvent(Input* input, XButtonEvent event,
 
 }
 
+/**
+ * Puts the processor to sleep if we were faster than 16.7ms
+ */
 void correctTiming(timespec startTime, bool consoleOutput) {
 	timespec endTime = { };
 	clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
@@ -360,133 +424,9 @@ void correctTiming(timespec startTime, bool consoleOutput) {
 	}
 }
 
-void setTexturePixels(GLuint texture_object_id, VideoBuffer *videoBuffer) {
-	glBindTexture(GL_TEXTURE_2D, texture_object_id);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-	GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, videoBuffer->width,
-			videoBuffer->height, 0, GL_RGBA,
-			GL_UNSIGNED_BYTE, videoBuffer->content);
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-GLuint loadTexture(VideoBuffer * videoBuffer) {
-	GLuint texture_object_id;
-	glGenTextures(1, &texture_object_id);
-
-	setTexturePixels(texture_object_id, videoBuffer);
-	return texture_object_id;
-}
-
-GLuint compileShader(const GLenum type, const GLchar *source,
-		const GLint length) {
-	GLuint shader_object_id = glCreateShader(type);
-	GLint compile_status;
-
-	glShaderSource(shader_object_id, 1, (const GLchar **) &source, &length);
-	glCompileShader(shader_object_id);
-	glGetShaderiv(shader_object_id, GL_COMPILE_STATUS, &compile_status);
-
-	if (compile_status == GL_FALSE) {
-		int infoLogLength;
-		glGetShaderiv(shader_object_id, GL_INFO_LOG_LENGTH, &infoLogLength);
-		if (infoLogLength > 0) {
-			std::vector<char> VertexShaderErrorMessage(infoLogLength + 1);
-			glGetShaderInfoLog(shader_object_id, infoLogLength, NULL,
-					&VertexShaderErrorMessage[0]);
-			printf("%s\n", &VertexShaderErrorMessage[0]);
-		}
-		std::string message = "Failed to compile shader. "
-				+ std::to_string(type) + "\n" + std::string(source);
-		abort(message);
-	}
-
-	return shader_object_id;
-}
-
-GLuint linkProgram(const GLuint vertex_shader, const GLuint fragment_shader) {
-	GLuint program_object_id = glCreateProgram();
-	GLint link_status;
-
-	glAttachShader(program_object_id, vertex_shader);
-	glAttachShader(program_object_id, fragment_shader);
-	glLinkProgram(program_object_id);
-	glGetProgramiv(program_object_id, GL_LINK_STATUS, &link_status);
-
-	if (link_status == GL_FALSE) {
-		abort("Couldn't link shader program.");
-	}
-
-	return program_object_id;
-}
-
-GLuint buildProgram() {
-	// FIXME don't hard code the shaders
-	const GLchar *vertex_shader_source =
-			"attribute vec4 a_Position;attribute vec2 a_TextureCoordinates;varying vec2 v_TextureCoordinates;void main() {v_TextureCoordinates = a_TextureCoordinates;gl_Position = a_Position;}";
-	const GLint vertex_shader_source_length = 179;
-	const GLchar *fragment_shader_source =
-			"uniform sampler2D u_TextureUnit;varying vec2 v_TextureCoordinates;void main() {gl_FragColor = texture2D(u_TextureUnit, v_TextureCoordinates);}";
-	const GLint fragment_shader_source_length = 166;
-
-	GLuint vertex_shader = compileShader(GL_VERTEX_SHADER, vertex_shader_source,
-			vertex_shader_source_length);
-	GLuint fragment_shader = compileShader(GL_FRAGMENT_SHADER,
-			fragment_shader_source, fragment_shader_source_length);
-	return linkProgram(vertex_shader, fragment_shader);
-}
-
-GLuint buildProgram(const GLchar *vertex_shader_source,
-		const GLint vertex_shader_source_length,
-		const GLchar *fragment_shader_source,
-		const GLint fragment_shader_source_length) {
-
-	GLuint vertex_shader = compileShader(GL_VERTEX_SHADER, vertex_shader_source,
-			vertex_shader_source_length);
-	GLuint fragment_shader = compileShader(GL_FRAGMENT_SHADER,
-			fragment_shader_source, fragment_shader_source_length);
-	return linkProgram(vertex_shader, fragment_shader);
-}
-
-GLuint buildProgramFromAssets(const char *vertex_shader_path,
-		const char *fragment_shader_path) {
-	const File vertex_shader_source = readFile(vertex_shader_path);
-	const File fragment_shader_source = readFile(fragment_shader_path);
-	const GLuint program_object_id = buildProgram(vertex_shader_source.content,
-			vertex_shader_source.size, fragment_shader_source.content,
-			fragment_shader_source.size);
-
-	return program_object_id;
-}
-
-GLuint createVertexBufferObject(const GLsizeiptr size, const GLvoid *data,
-		const GLenum usage) {
-	GLuint vbo_object;
-	glGenBuffers(1, &vbo_object);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_object);
-	glBufferData(GL_ARRAY_BUFFER, size, data, usage);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	return vbo_object;
-}
-
-void setupOpenGL(VideoBuffer *videoBuffer) {
-	texture = loadTexture(videoBuffer);
-	buffer = createVertexBufferObject(sizeof(rect), rect, GL_STATIC_DRAW);
-
-	program = buildProgram();
-
-	a_position_location = glGetAttribLocation(program, "a_Position");
-	a_texture_coordinates_location = glGetAttribLocation(program,
-			"a_TextureCoordinates");
-	u_texture_unit_location = glGetUniformLocation(program, "u_TextureUnit");
-}
-
+/**
+ * Draws the current video buffer to the screen
+ */
 void swapVideoBuffers(VideoBuffer *videoBuffer) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -501,8 +441,8 @@ void swapVideoBuffers(VideoBuffer *videoBuffer) {
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glVertexAttribPointer(a_position_location, 2, GL_FLOAT, GL_FALSE,
 			4 * sizeof(GL_FLOAT), BUFFER_OFFSET(0));
-	glVertexAttribPointer(a_texture_coordinates_location, 2, GL_FLOAT, GL_FALSE,
-			4 * sizeof(GL_FLOAT), BUFFER_OFFSET(2 * sizeof(GL_FLOAT)));
+	glVertexAttribPointer(a_texture_coordinates_location, 2, GL_FLOAT,
+	GL_FALSE, 4 * sizeof(GL_FLOAT), BUFFER_OFFSET(2 * sizeof(GL_FLOAT)));
 	glEnableVertexAttribArray(a_position_location);
 	glEnableVertexAttribArray(a_texture_coordinates_location);
 
@@ -514,6 +454,9 @@ void swapVideoBuffers(VideoBuffer *videoBuffer) {
 	XSync(graphics.display, false);
 }
 
+/**
+ * Feeds ALSA the next interval that needs to be played
+ */
 void swapSoundBuffers(GameMemory *memory) {
 	// this implementation is from https://github.com/nxsy/xcb_handmade
 	snd_pcm_sframes_t delay, avail;
@@ -546,7 +489,7 @@ void swapSoundBuffers(GameMemory *memory) {
 		abort("SamplesToFill below 0: " + samplesToFill);
 	}
 
-	SoundOutputBuffer soundBuffer = { };
+	SoundBuffer soundBuffer = { };
 	soundBuffer.samplesPerSecond = audio.samples_per_second;
 	soundBuffer.sampleCount = (((samplesToFill) + (7)) & ~(7));
 	soundBuffer.samples = audio.buffer;
@@ -555,9 +498,8 @@ void swapSoundBuffers(GameMemory *memory) {
 		abort("SampleCount below 0: " + soundBuffer.sampleCount);
 	}
 
-//	Sound::getSoundSamples(memory, &soundBuffer);
+	gameCode.getSoundSamples(memory, &soundBuffer);
 
-#define SOUND_DEBUG 0
 #if SOUND_DEBUG
 	// NOTE: "delay" is the delay of the soundcard hardware
 	printf("samples in buffer before write: %ld delay in samples: %ld\n", (audio.buffer_size_in_samples - avail), delay);
@@ -579,24 +521,17 @@ void swapSoundBuffers(GameMemory *memory) {
 #endif
 }
 
-struct linux_game_code {
-	void *libraryHandle;
-	time_t libraryMTime;
-
-	update_and_render* updateAndRender;
-	read_bmp_into_memory* readBmpIntoMemory;
-};
-
-linux_game_code loadGameCode() {
+/**
+ * Loads the game code library and fetches the required methods from it
+ */
+GameCode loadGameCode() {
 	printf("Loading GameCode.\n");
-	linux_game_code result = { };
-	result.updateAndRender = updateAndRenderStub;
-	result.readBmpIntoMemory = readBmpIntoMemoryStub;
+	GameCode result = { };
 
 	struct stat statbuf = { };
 	uint32_t stat_result = stat("./librth.so", &statbuf);
 	if (stat_result != 0) {
-		abort("Failed to stat game code.");
+		abort("Failed to read modification time of game code library.");
 	}
 	result.libraryMTime = statbuf.st_mtime;
 
@@ -604,10 +539,13 @@ linux_game_code loadGameCode() {
 	if (result.libraryHandle) {
 		result.updateAndRender = (update_and_render *) dlsym(
 				result.libraryHandle, "updateAndRender");
-		result.readBmpIntoMemory = (read_bmp_into_memory *) dlsym(
-				result.libraryHandle, "readBmpIntoMemory");
-		if (!result.updateAndRender /*|| !result.readBmpIntoMemory*/) {
-			abort("Couldn't load game functions.");
+		result.getSoundSamples = (get_sound_samples *) dlsym(
+				result.libraryHandle, "getSoundSamples");
+		if (!result.updateAndRender) {
+			abort("Couldn't load 'updateAndRender' game function.");
+		}
+		if (!result.getSoundSamples) {
+			abort("Couldn't load 'getSoundSamples' game function.");
 		}
 	} else {
 		abort("Couldn't load library. " + std::string(dlerror()));
@@ -615,18 +553,21 @@ linux_game_code loadGameCode() {
 	return result;
 }
 
-void unloadGameCode(linux_game_code *code) {
+/**
+ * Unloads the game code library
+ */
+void unloadGameCode(GameCode *code) {
 	printf("Unloading GameCode.\n");
 
-//	rename("./librth_temp.so", "./librth_old.so");
 	if (code->libraryHandle) {
 		dlclose(code->libraryHandle);
 		code->libraryHandle = 0;
 	}
-	code->updateAndRender = updateAndRenderStub;
-	code->readBmpIntoMemory = readBmpIntoMemoryStub;
 }
 
+/**
+ * Allocates the game memory
+ */
 GameMemory initGameMemory() {
 	GameMemory memory = { };
 
@@ -648,12 +589,11 @@ int main() {
 
 	graphics = initGraphicsData();
 	audio = initAudioData();
-	linux_game_code game = loadGameCode();
+	gameCode = loadGameCode();
 
 	isRunning = true;
 	bool wasLeftMousePressed = false;
 	bool wasRightMousePressed = false;
-	KeyDown wasKeyDown = { };
 
 	Input input[2] = { };
 	Input *oldInput = &input[0];
@@ -673,8 +613,7 @@ int main() {
 				exitGame();
 			}
 			if (event.type == KeyPress || event.type == KeyRelease) {
-				handleKeyEvent(graphics.display, newInput, event.xkey,
-						&wasKeyDown);
+				handleKeyEvent(newInput, event.xkey);
 			}
 			if (event.type == ButtonPress || event.type == ButtonRelease) {
 				handleMouseEvent(newInput, event.xbutton, &wasLeftMousePressed,
@@ -699,7 +638,7 @@ int main() {
 			newInput->shootKeyClicked = false;
 		}
 
-		game.updateAndRender(&graphics.videoBuffer, newInput, &memory);
+		gameCode.updateAndRender(&graphics.videoBuffer, newInput, &memory);
 
 #if SOUND_ENABLE
 		swapSoundBuffers(&memory);
@@ -709,10 +648,10 @@ int main() {
 		stat("./librth.so", &library_statbuf);
 
 		bool ExecutableNeedsToBeReloaded = (library_statbuf.st_mtime
-				!= game.libraryMTime);
+				!= gameCode.libraryMTime);
 		if (ExecutableNeedsToBeReloaded) {
-			unloadGameCode(&game);
-			game = loadGameCode();
+			unloadGameCode(&gameCode);
+			gameCode = loadGameCode();
 		}
 
 		swapVideoBuffers(&graphics.videoBuffer);
@@ -723,6 +662,8 @@ int main() {
 
 		correctTiming(startTime, false);
 	}
+
+	// FIXME maybe free game memory as well?
 
 	// Clean up audio
 	snd_pcm_drain(audio.pcm_handle);

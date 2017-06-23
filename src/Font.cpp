@@ -40,7 +40,6 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 
         newCharacter.kerning[nextChar - minChar] = kerning.x >> 6;
     }
-
 	unsigned bitmapSizeInPixel = newCharacter.width * newCharacter.height;
 
 	newCharacter.bitmap = reservePermanentMemory(memory, bitmapSizeInPixel);
@@ -71,7 +70,8 @@ void loadFont(GameMemory* memory, std::string fontFileName) {
 	GameState *gameState = getGameState(memory);
 
 	for (unsigned fontSizeIndex = 0;
-			fontSizeIndex < sizeof(gameState->resources.availableFontSizes) / 4; fontSizeIndex++) {
+			fontSizeIndex < sizeof(gameState->resources.availableFontSizes) / 4;
+			fontSizeIndex++) {
 		int fontSize = getFontSize(gameState, fontSizeIndex);
 //		int error = FT_Set_Char_Size(face, 0, fontSize * 64, WINDOW_WIDTH, WINDOW_HEIGHT);
 		int error = FT_Set_Pixel_Sizes(face, fontSize * 2, 0);
@@ -105,64 +105,35 @@ int getFontSizeIndex(GameMemory *memory, unsigned fontSize) {
 }
 
 void renderText(GameMemory *memory, VideoBuffer* buffer, std::string text,
-		Math::Vector2f position, unsigned fontSize) {
+		Math::Vector2f position, unsigned fontSize, uint8_t r, uint8_t g,
+		uint8_t b) {
 	GameState *gameState = getGameState(memory);
-	int posX = position.x;
-	int posY = position.y;
-	Character *character;
+
+	int currentX = position.x;
 	int fontSizeIndex = getFontSizeIndex(memory, fontSize);
-	for (unsigned i = 0; i < text.size(); i++) {
-		character = getCharacter(gameState, text[i], fontSizeIndex);
 
-		for (int y = character->height - 1; y >= 0; y--) {
-			int yIndex = posY - (character->height - y);
-			if (yIndex >= (int) buffer->height || yIndex < 0) {
-				continue;
-			}
+	for (unsigned characterIndex = 0; characterIndex < text.size();
+			++characterIndex) {
+		Character *character = getCharacter(gameState, text[characterIndex],
+				fontSizeIndex);
 
-			for (unsigned x = 0; x < character->width; x++) {
-				int xIndex = posX + x;
-				if (xIndex >= (int) buffer->width || xIndex < 0) {
-					continue;
-				}
+		renderCharacter(memory, buffer, character, currentX, position.y, r,
+				g, b);
 
-				int bufferIndex = yIndex * buffer->width + (xIndex);
-				int glyphIndex = y * character->width + x;
-				((uint32_t*) buffer->content)[bufferIndex] |=
-						character->bitmap[glyphIndex];
-			}
-		}
-		posX += character->width + 10;
+        currentX += character->advanceX + ((characterIndex < text.size() - 1) ? character->kerning[characterIndex + 1] : 0);
 	}
 }
 
-void renderTextColored(GameMemory *memory, VideoBuffer* buffer, std::string text,
-    Math::Vector2f position, unsigned fontSize, uint8_t r, uint8_t g, uint8_t b)
-{
-    GameState *gameState = getGameState(memory);
+void renderCharacter(GameMemory *memory, VideoBuffer *buffer,
+		Character *character, int offsetX, int offsetY, uint8_t r, uint8_t g,
+		uint8_t b) {
+	offsetY += character->bearingY;
 
-    int currentX = position.x;
-    int fontSizeIndex = getFontSizeIndex(memory, fontSize);
+	uint32_t characterColor = (r) | (g << 8) | (b << 16);
 
-    for (unsigned characterIndex = 0; characterIndex < text.size(); ++characterIndex)
-    {
-        Character *character = getCharacter(gameState, text[characterIndex], fontSizeIndex);
-
-        renderCharacterAlpha(memory, buffer, character, currentX, position.y, r, g, b);
-    
-        currentX += character->advanceX + ((characterIndex < text.size() - 1) ? character->kerning[characterIndex + 1] : 0);
-    }
-}
-
-void renderCharacterAlpha(GameMemory *memory, VideoBuffer *buffer, Character *character,
-		int offsetX, int offsetY, uint8_t r, uint8_t g, uint8_t b) {
-    offsetY += character->bearingY;
-    
-    uint32_t characterColor = (r) | (g << 8) | (b << 16);
-
-    uint32_t *currentBufferPixel = (uint32_t *)buffer->content
-        + offsetY * (int)buffer->width + offsetX;
-    uint8_t *currentTexturePixel = (uint8_t *)character->bitmap;
+	uint32_t *currentBufferPixel = (uint32_t *) buffer->content
+			+ offsetY * (int) buffer->width + offsetX;
+	uint8_t *currentTexturePixel = (uint8_t *) character->bitmap;
 
     uint32_t nextLine = buffer->width - character->width;
 
@@ -192,11 +163,5 @@ void renderCharacterAlpha(GameMemory *memory, VideoBuffer *buffer, Character *ch
     }
 }
 
-
-
-void renderTextAlpha(VideoBuffer *buffer, Render::Texture* texture, int offsetX,
-		int offsetY) {
-
-}
 
 }

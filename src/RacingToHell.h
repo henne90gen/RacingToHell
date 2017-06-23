@@ -1,5 +1,6 @@
 #pragma once
-#include <time.h>
+#include <time.h> // needed for android build
+#include <cstdlib> // needed for android build
 
 #include "Platform.h"
 #include "MyMath.h"
@@ -11,9 +12,14 @@
 #include "GameMenu.h"
 
 struct VideoBuffer {
-
 	uint32_t width, height, bytesPerPixel;
 	void* content;
+};
+
+struct SoundBuffer {
+	int16_t *samples;
+	int sampleCount;
+	int samplesPerSecond;
 };
 
 struct Input {
@@ -46,12 +52,6 @@ struct Item {
 struct Bullet {
 	Math::Vector2f position, velocity;
 	uint32_t color, radius;
-};
-
-struct SoundOutputBuffer {
-	int16_t *samples;
-	int sampleCount;
-	int samplesPerSecond;
 };
 
 struct Resources {
@@ -135,16 +135,11 @@ struct BitmapHeader {
 };
 #pragma pack(pop)
 
-#define READ_BMP_INTO_MEMORY(name) Render::Texture name(File file, GameMemory *memory)
-typedef READ_BMP_INTO_MEMORY(read_bmp_into_memory);
-READ_BMP_INTO_MEMORY(readBmpIntoMemoryStub) {
-	return {};
-}
-
 GameState* getGameState(GameMemory* memory);
 void resetGameState(GameState *gameState);
 
 #define UPDATE_AND_RENDER(name) void name(VideoBuffer *buffer, Input *input, GameMemory *memory)
 typedef UPDATE_AND_RENDER(update_and_render);
-UPDATE_AND_RENDER(updateAndRenderStub) {
-}
+
+#define GET_SOUND_SAMPLES(name) void name(GameMemory *memory, SoundBuffer *soundBuffer)
+typedef GET_SOUND_SAMPLES(get_sound_samples);

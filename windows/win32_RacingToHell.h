@@ -28,6 +28,6 @@ struct GameCode
 
     FILETIME lastWriteTime;
 
-    //_GetSoundSamples_ *getSoundSamples;
+    get_sound_samples *getSoundSamples;
     update_and_render *updateAndRender;
 };

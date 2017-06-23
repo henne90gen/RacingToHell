@@ -10,27 +10,41 @@
 #include "Helper.cpp"
 #include "Init.cpp"
 
+/**
+ * Retrieves the GameState from memory
+ */
 GameState *getGameState(GameMemory *memory) {
 	if (!memory->isInitialized) {
 		init(memory);
 	}
-
 	return (GameState *) (memory->permanent);
 }
 
+/**
+ * Calculates the current road speed from level (and soon difficulty)
+ */
 float getRoadSpeed(GameState *gameState) {
 	// FIXME balance road speed
 	return (float) (gameState->level) * 0.5f + 3.0f;
 }
 
+/**
+ * Retrieves a pointer to the current road texture
+ */
 Render::Texture *getCurrentRoad(GameState *gameState) {
 	return &gameState->resources.roadTextures[gameState->level % 4];
 }
 
+/**
+ * Retrieves a pointer to the current player car texture
+ */
 Render::Texture *getPlayerTexture(GameState *gameState) {
 	return &gameState->resources.playerCarTextures[gameState->player.carIndex];
 }
 
+/**
+ * Updates and renders the road in the background
+ */
 void updateAndRenderRoad(VideoBuffer *buffer, GameState *gameState,
 		bool shouldUpdate) {
 	if (shouldUpdate) {
@@ -46,6 +60,9 @@ void updateAndRenderRoad(VideoBuffer *buffer, GameState *gameState,
 			gameState->roadPosition - 800);
 }
 
+/**
+ * Spawns a bullet at the location of a randomly chosen car
+ */
 void spawnBullet(GameState *gameState, Math::Vector2f position,
 		Math::Vector2f velocity, bool playerBullet) {
 
@@ -84,6 +101,14 @@ void spawnBullet(GameState *gameState, Math::Vector2f position,
 	}
 }
 
+/**
+ * Updates the following aspects of the player:
+ * 		- health
+ * 		- energy
+ * 		- position according to input
+ * 		- keeping him on screen
+ * 		- shooting
+ */
 void updatePlayer(Input *input, GameState *gameState) {
 	int x = 0;
 	int y = 0;
@@ -151,6 +176,9 @@ void updatePlayer(Input *input, GameState *gameState) {
 	}
 }
 
+/**
+ * Renders the player to the video buffer
+ */
 void renderPlayer(VideoBuffer *buffer, GameState *gameState) {
 	Render::Texture *texture = getPlayerTexture(gameState);
 
@@ -160,6 +188,10 @@ void renderPlayer(VideoBuffer *buffer, GameState *gameState) {
 	Render::textureAlpha(buffer, texture, textureX, textureY);
 }
 
+/**
+ * Updates and renders a single bullet
+ * Checks for collisions with other cars or the player
+ */
 bool updateAndRenderBullet(VideoBuffer *buffer, GameState *gameState,
 		Bullet &bullet, bool isPlayerBullet, bool shouldUpdate) {
 
@@ -229,6 +261,9 @@ bool updateAndRenderBullet(VideoBuffer *buffer, GameState *gameState,
 	return false;
 }
 
+/**
+ * Updates and renders all bullets (player and AI)
+ */
 void updateAndRenderBullets(VideoBuffer *buffer, GameState *gameState,
 		bool shouldUpdate) {
 	for (int i = 0; i < gameState->lastAIBulletIndex + 1; i++) {
@@ -248,6 +283,9 @@ void updateAndRenderBullets(VideoBuffer *buffer, GameState *gameState,
 	}
 }
 
+/**
+ * Spawns a new car on one of the four lanes
+ */
 void spawnTrafficCar(GameState *gameState) {
 	Car car = { };
 	car.carIndex = std::rand() % NUM_TRAFFIC_TEXTURES;
@@ -263,6 +301,10 @@ void spawnTrafficCar(GameState *gameState) {
 	}
 }
 
+/**
+ * Updates and renders all cars
+ * Checks for collision between one of the cars and the player
+ */
 void updateAndRenderTraffic(VideoBuffer *buffer, GameState *gameState,
 		bool shouldUpdate) {
 	if (shouldUpdate
@@ -333,6 +375,9 @@ void updateAndRenderTraffic(VideoBuffer *buffer, GameState *gameState,
 	}
 }
 
+/**
+ * Spawns a random item on one of the four lanes
+ */
 void spawnItem(GameState *gameState) {
 	Item item = { };
 	item.itemIndex = std::rand() % NUM_ITEM_TEXTURES;
@@ -346,6 +391,10 @@ void spawnItem(GameState *gameState) {
 	}
 }
 
+/**
+ * Updates and renders all items
+ * Checks for collision with player and handles pickup effects
+ */
 void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState,
 		bool shouldUpdate) {
 	if (shouldUpdate
@@ -355,7 +404,8 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState,
 
 	for (int i = 0; i < gameState->lastItemIndex + 1; i++) {
 		Item *item = &gameState->items[i];
-		Render::Texture *texture = &gameState->resources.itemTextures[item->itemIndex];
+		Render::Texture *texture =
+				&gameState->resources.itemTextures[item->itemIndex];
 
 		if (shouldUpdate) {
 			item->position = {item->position.x, (float) (item->position.y + getRoadSpeed(gameState))};
@@ -390,7 +440,6 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState,
 					case CANISTER_ID:
 					// TODO test: percentage of maxEnergy vs absolute value
 					gameState->player.energy += 100;
-
 					if (gameState->player.energy > gameState->player.maxEnergy) {
 						gameState->player.energy = gameState->player.maxEnergy;
 					}
@@ -412,6 +461,9 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState,
 	}
 }
 
+/**
+ * Updates and renders the timer at the top of the screen
+ */
 void updateAndRenderTimer(VideoBuffer *buffer, GameState *gameState,
 		bool shouldUpdate) {
 	if (shouldUpdate) {
@@ -428,11 +480,15 @@ void updateAndRenderTimer(VideoBuffer *buffer, GameState *gameState,
 	Render::rectangle(buffer, rect, 0x80ffffff);
 }
 
+/**
+ * Updates and renders the UI with player health, player energy and timer
+ */
 void updateAndRenderUI(VideoBuffer *buffer, GameState *gameState,
 		bool shouldUpdate) {
 	updateAndRenderTimer(buffer, gameState, shouldUpdate);
 
 	static int widthWhenFull = 250;
+	// FIXME find some better colors
 	static uint32_t energyColor = 0xFFA51795;
 	static uint32_t healthColor = 0xFFA51795;
 
@@ -452,6 +508,9 @@ void updateAndRenderUI(VideoBuffer *buffer, GameState *gameState,
 	Render::rectangle(buffer, bar, healthColor);
 }
 
+/**
+ * Updates and renders the game with all its entities
+ */
 void updateAndRenderGame(VideoBuffer *buffer, Input *input, GameMemory *memory,
 		GameState *gameState, bool update) {
 	updateAndRenderRoad(buffer, gameState, update);
@@ -470,7 +529,9 @@ void updateAndRenderGame(VideoBuffer *buffer, Input *input, GameMemory *memory,
 
 	updateAndRenderBullets(buffer, gameState, update);
 
-	updateAndRenderUI(buffer, gameState, update);
+	if (gameState->currentMenu.state != MAIN) {
+		updateAndRenderUI(buffer, gameState, update);
+	}
 }
 
 extern "C"
@@ -489,7 +550,4 @@ UPDATE_AND_RENDER(updateAndRender) {
 	if (gameState->currentMenu.state != GAME) {
 		updateAndRenderMenu(memory, buffer, input, gameState);
 	}
-
-    Text::renderTextColored(memory, buffer, std::string("Test"), Math::Vector2f({ 0, 0 }), 20, 255, 255, 255);
-    //Text::renderCharacterAlpha(memory, buffer, 'a', 100, 200, 255, 255, 255, 20);
 }

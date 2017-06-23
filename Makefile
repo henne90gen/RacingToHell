@@ -13,7 +13,7 @@ else
 	PLATFORM_FLAGS := -L/usr/X11R6/lib
 	EXTENSION := .out
 	CLEAN_CMD := rm -f *$(EXTENSION)
-	GCC_LINKER := -ldl -lfreetype -lX11 -lasound -lGL -lGLU -lGLEW
+	GCC_LINKER := -ldl -lfreetype -lX11 -lasound -lGLEW -lGLU -lGL
 	GCC_INCLUDES := -Iinclude -Isrc -L.
 	include linux/Makefile
 endif

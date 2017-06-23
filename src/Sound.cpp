@@ -118,7 +118,8 @@ LoadedSound loadWAV(GameMemory *memory, std::string path) {
 void output(GameState *state, Sound::LoadedSound *loadedSound, float volumeLeft,
 		float volumeRight, Mode mode) {
 	if (state->lastPlayingSound + 1
-			>= (float) sizeof(state->playingSounds) / sizeof(state->playingSounds[0])) {
+			>= (float) sizeof(state->playingSounds)
+					/ sizeof(state->playingSounds[0])) {
 		return;
 	}
 
@@ -130,8 +131,10 @@ void output(GameState *state, Sound::LoadedSound *loadedSound, float volumeLeft,
 	state->playingSounds[state->lastPlayingSound].samplesPlayed = 0;
 	state->playingSounds[state->lastPlayingSound].mode = mode;
 }
+} // END namespace Sound
 
-void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer) {
+extern "C"
+void getSoundSamples(GameMemory *memory, SoundBuffer *soundBuffer) {
 	GameState *gameState = getGameState(memory);
 
 	float *realChannel0 = (float *) reserveTemporaryMemory(memory,
@@ -165,7 +168,7 @@ void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer) {
 		int32_t samplesRemainingInInput = currentSound->loadedSound.sampleCount
 				- currentSound->samplesPlayed;
 
-		if (currentSound->mode == PLAY_ONCE
+		if (currentSound->mode == Sound::PLAY_ONCE
 				&& samplesToMix > samplesRemainingInInput) {
 			samplesToMix = samplesRemainingInInput;
 		}
@@ -195,7 +198,7 @@ void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer) {
 
 		currentSound->samplesPlayed += samplesToMix;
 
-		if (currentSound->mode == PLAY_ONCE
+		if (currentSound->mode == Sound::PLAY_ONCE
 				&& currentSound->samplesPlayed
 						>= currentSound->loadedSound.sampleCount) {
 			*currentSound =
@@ -218,5 +221,4 @@ void getSoundSamples(GameMemory *memory, SoundOutputBuffer *soundBuffer) {
 	}
 
 	freeTemporaryMemory(memory);
-}
 }

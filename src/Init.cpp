@@ -1,4 +1,21 @@
-void loadTextures(GameMemory *memory, GameState *gameState) {
+/**
+ * Loads all audio clips that are going to be used into memory
+ */
+void loadAudioClips(GameMemory* memory) {
+	GameState *gameState = getGameState(memory);
+	gameState->resources.AIShot = Sound::loadWAV(memory,
+			"./res/sound/shotAI.wav");
+	gameState->resources.playerShot = Sound::loadWAV(memory,
+			"./res/sound/shotPlayer.wav");
+	gameState->resources.Level1Music = Sound::loadWAV(memory,
+			"./res/sound/music/level1.wav");
+}
+
+/**
+ * Loads all textures that are going to be used into memory
+ */
+void loadTextures(GameMemory *memory) {
+	GameState *gameState = getGameState(memory);
 	for (int i = 0; i < 4; i++) {
 		std::string filename = "./res/textures/roads/road" + std::to_string(i)
 				+ ".bmp";
@@ -25,13 +42,11 @@ void loadTextures(GameMemory *memory, GameState *gameState) {
 		memory->freeFile(&carFile);
 	}
 
-	// Loading Toolbox with index 0
 	File toolFile = memory->readFile("./res/textures/toolbox.bmp");
 	gameState->resources.itemTextures[TOOLBOX_ID] = readBmpIntoMemory(toolFile,
 			memory);
 	memory->freeFile(&toolFile);
 
-	// Loading Canister with index 1
 	File canFile = memory->readFile("./res/textures/canister.bmp");
 	gameState->resources.itemTextures[CANISTER_ID] = readBmpIntoMemory(canFile,
 			memory);
@@ -44,22 +59,26 @@ void loadTextures(GameMemory *memory, GameState *gameState) {
 			int offsetY = y * 100;
 			int width = 100;
 			int height = 100;
-			bool output = y == 8 && x == 8;
 			gameState->resources.explosion[y * 9 + x] = readBmpIntoMemory(
-					explosionFile, memory, offsetX, offsetY, width, height,
-					output);
+					explosionFile, memory, offsetX, offsetY, width, height);
 		}
 	}
 	memory->freeFile(&explosionFile);
 }
 
+/**
+ * Resets everything in the GameState to their initial values
+ */
 void resetGameState(GameState *gameState) {
 	gameState->player = {};
 	gameState->player.position.x = (float) (WINDOW_WIDTH / 2);
 	gameState->player.position.y = (float) (WINDOW_HEIGHT / 2);
+	// TODO balance speed
 	gameState->player.speed = 10;
+	// TODO balance health
 	gameState->player.health = 10;
 	gameState->player.maxHealth = 100;
+	// TODO balance energy
 	gameState->player.energy = 1000;
 	gameState->player.maxEnergy = 1000;
 
@@ -85,6 +104,9 @@ void resetGameState(GameState *gameState) {
 	// FIXME what is lastPlayingSound?
 }
 
+/**
+ * Initialize the game memory appropriately
+ */
 void init(GameMemory *memory) {
 	std::srand(time(0));
 	memory->isInitialized = true;
@@ -97,15 +119,11 @@ void init(GameMemory *memory) {
 
 	Text::loadFont(memory, "./res/font/arial.ttf");
 
-	gameState->resources.AIShot = Sound::loadWAV(memory,
-			"./res/sound/shotAI.wav");
-	gameState->resources.playerShot = Sound::loadWAV(memory,
-			"./res/sound/shotPlayer.wav");
-	gameState->resources.Level1Music = Sound::loadWAV(memory,
-			"./res/sound/music/level1.wav");
+	loadAudioClips(memory);
+
+	loadTextures(memory);
+
 	Sound::output(gameState, &gameState->resources.Level1Music, 0.1f, 0.1f,
 			Sound::PLAY_LOOP);
-
-	loadTextures(memory, gameState);
 }
 

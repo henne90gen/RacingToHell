@@ -61,7 +61,9 @@ void bar(VideoBuffer *buffer, Math::Vector2f position, uint8_t length,
 	Render::rectangle(buffer, healthBar, color);
 }
 
-// render bottom flat triangle
+/**
+ * point2 and point3 are on the same height and point1 is above the two
+ */
 void triangleBottom(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1,
 		Math::Vector2f point2, Math::Vector2f point3) {
 
@@ -86,7 +88,9 @@ void triangleBottom(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1,
 	}
 }
 
-// render top flat triangle
+/**
+ *
+ */
 void triangleTop(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1,
 		Math::Vector2f point2, Math::Vector2f point3) {
 

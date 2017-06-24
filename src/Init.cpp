@@ -71,10 +71,10 @@ void loadTextures(GameMemory *memory) {
  */
 void resetGameState(GameState *gameState) {
 	gameState->player = {};
-	gameState->player.position.x = (float) (WINDOW_WIDTH / 2);
-	gameState->player.position.y = (float) (WINDOW_HEIGHT / 2);
+	gameState->player.position.x = 200;
+	gameState->player.position.y = 600;
 	// TODO balance speed
-	gameState->player.speed = 10;
+	gameState->player.speed = 0;
 	// TODO balance health
 	gameState->player.health = 10;
 	gameState->player.maxHealth = 100;
@@ -82,11 +82,11 @@ void resetGameState(GameState *gameState) {
 	gameState->player.energy = 1000;
 	gameState->player.maxEnergy = 1000;
 
-	loadMainMenu(&gameState->currentMenu);
+	loadMainMenu(gameState);
 	gameState->level = 0;
 	gameState->levelTime = 0;
 	gameState->maxLevelTime = 60;
-	gameState->difficulty = 0;
+	gameState->difficulty = 1;
 	gameState->roadPosition = 0;
 	gameState->frameCounter = 0;
 

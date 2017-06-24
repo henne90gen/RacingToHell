@@ -24,12 +24,8 @@ void renderCharacter(GameMemory *memory, VideoBuffer *buffer,
 		Character *character, int offsetX, int offsetY, uint8_t r, uint8_t g,
 		uint8_t b);
 
-/**
- * Renders the given text at position (x|y), which is the bottom left corner of the text.
- * Method will crash if fontSize is not one of the available font sizes.
- */
 void renderText(GameMemory *memory, VideoBuffer* buffer, std::string text,
-		Math::Vector2f position, unsigned fontSize, uint8_t r, uint8_t g,
+		Math::Vector2f position, FontSize fontSize, uint8_t r, uint8_t g,
 		uint8_t b);
 
 int* getAvailableFontSizes(int* amount);

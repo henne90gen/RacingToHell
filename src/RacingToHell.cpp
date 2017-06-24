@@ -20,6 +20,12 @@ GameState *getGameState(GameMemory *memory) {
 	return (GameState *) (memory->permanent);
 }
 
+Math::Vector2f getPlayerDimensions(GameState *gameState) {
+	Render::Texture *playerText =
+			&gameState->resources.playerCarTextures[gameState->player.carIndex];
+	return {(float)playerText->width, (float)playerText->height};
+}
+
 /**
  * Calculates the current road speed from level (and soon difficulty)
  */
@@ -524,12 +530,16 @@ void updateAndRenderGame(VideoBuffer *buffer, Input *input, GameMemory *memory,
 
 	updateAndRenderTraffic(buffer, gameState, update);
 
-	// render player after traffic, so he is always on top
-	renderPlayer(buffer, gameState);
+	if (/*gameState->currentMenu.state != MAIN
+	 &&*/gameState->currentMenu.state != CREDITS) {
+		// render player after traffic, so he is always on top
+		renderPlayer(buffer, gameState);
+	}
 
 	updateAndRenderBullets(buffer, gameState, update);
 
-	if (gameState->currentMenu.state != MAIN) {
+	if (gameState->currentMenu.state != MAIN
+			&& gameState->currentMenu.state != CREDITS) {
 		updateAndRenderUI(buffer, gameState, update);
 	}
 }

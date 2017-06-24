@@ -1,8 +1,5 @@
 #include "GameMenu.h"
 
-/**
- * Adds a menu item to the supplied menu
- */
 void addMenuItem(MenuItem *item, Math::Vector2f position, std::string text) {
 	*item = {};
 	item->position = position;
@@ -11,117 +8,83 @@ void addMenuItem(MenuItem *item, Math::Vector2f position, std::string text) {
 	}
 }
 
-/**
- * Sets the main menu as the current menu
- */
-void loadMainMenu(Menu *menu) {
+void loadMainMenu(GameState *gameState) {
+	gameState->player.speed = 0;
+
+	Menu *menu = &gameState->currentMenu;
 	*menu = {};
 	menu->state = MAIN;
-	menu->currentMenuItem = 0;
-	menu->numberMenuItems = 0;
 
-	float offsetX = 20;
-	float offsetY = 100;
-	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
-			"New Game");
+	Math::Vector2f offset = { 50, 100 };
 
-	offsetY += 50;
+	addMenuItem(&menu->items[menu->numberMenuItems++], offset, "Start Game");
 
-	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
-			"Options");
+	offset.y += menu->lineSpacing;
+	addMenuItem(&menu->items[menu->numberMenuItems++], offset, "Next car");
 
-	offsetY += 50;
+	offset.y += menu->lineSpacing;
+	addMenuItem(&menu->items[menu->numberMenuItems++], offset, ""); // empty slot for difficulty
 
-	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
-			"Credits");
+	offset.y += menu->lineSpacing;
+	addMenuItem(&menu->items[menu->numberMenuItems++], offset, "Credits");
 
-	offsetY += 50;
-
-	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
-			"Quit");
+	offset.y += menu->lineSpacing;
+	addMenuItem(&menu->items[menu->numberMenuItems++], offset, "Quit");
 }
 
-/**
- * Sets the pause menu as the current menu
- */
 void loadPauseMenu(Menu *menu) {
 	*menu = {};
 	menu->state = PAUSE;
 	menu->currentMenuItem = 0;
 
-	float offsetX = 20;
+	float offsetX = 50;
 	float offsetY = 100;
 	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
 			"Resume");
 
-	offsetY += 50;
-
-	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
-			"Options");
-
-	offsetY += 50;
+	offsetY += menu->lineSpacing;
 
 	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
 			"Main Menu");
 
-	offsetY += 50;
+	offsetY += menu->lineSpacing;
 
 	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
 			"Quit");
 }
 
-void loadOptionsMenu(Menu *menu, bool mainMenu) {
-	*menu = {};
-	if (mainMenu) {
-		menu->state = OPTIONS_MAIN;
-	} else {
-		menu->state = OPTIONS_PAUSE;
-	}
-	menu->currentMenuItem = 0;
-
-	float offsetX = 20;
-	float offsetY = 100;
-	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
-			"Back");
-}
-
-/**
- * Sets the credits menu as the current menu
- */
 void loadCreditsMenu(Menu *menu) {
 	*menu = {};
 	menu->state = CREDITS;
 
 	menu->currentMenuItem = 0;
 
-	float offsetX = 20;
+	float offsetX = 50;
 	float offsetY = 100;
 	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
 			"Back");
 }
 
 /**
- * Sets a dummy menu as the current menu for when the game is running
+ * Dummy menu state for when the game is actually running
  */
-void loadGameMenu(Menu *menu) {
-	*menu = {};
-	menu->state = GAME;
+void loadGameMenu(GameState *gameState) {
+	gameState->currentMenu = {};
+	gameState->currentMenu.state = GAME;
+	gameState->player.speed = PLAYER_SPEED;
 }
 
-/**
- * Sets the game over menu as the current menu
- */
 void loadGameOverMenu(Menu *menu) {
 	*menu = {};
 	menu->state = GAME_OVER;
 	menu->currentMenuItem = 0;
 
-	float offsetX = 20;
+	float offsetX = 50;
 	float offsetY = 100;
 	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
 			"Submit Score");
 
-	offsetY += 50;
+	offsetY += menu->lineSpacing;
 	addMenuItem(&menu->items[menu->numberMenuItems++], {offsetX, offsetY},
 			"Back");
 }
@@ -133,41 +96,21 @@ void gameOver(GameState *gameState) {
 	loadGameOverMenu(&gameState->currentMenu);
 }
 
-/**
- * Process escape key being pressed
- */
-void handleMenuEscape(GameMemory *memory, GameState *gameState) {
-	switch (gameState->currentMenu.state) {
-	case GAME:
-	case OPTIONS_PAUSE:
-		loadPauseMenu(&gameState->currentMenu);
-		break;
-	case PAUSE:
-		loadGameMenu(&gameState->currentMenu);
-		break;
-	case OPTIONS_MAIN:
-	case GAME_OVER:
-	case CREDITS:
-		loadMainMenu(&gameState->currentMenu);
-		break;
-	case MAIN:
-		memory->exitGame();
-		break;
-	}
-}
-
 void handleMenuEnterMain(GameMemory *memory, GameState *gameState) {
 	switch (gameState->currentMenu.currentMenuItem) {
 	case 0:
-		loadGameMenu(&gameState->currentMenu);
+		loadGameMenu(gameState);
 		break;
 	case 1:
-		loadOptionsMenu(&gameState->currentMenu, true);
+		// TODO change car selection
 		break;
 	case 2:
-		loadCreditsMenu(&gameState->currentMenu);
+		// TODO change difficulty
 		break;
 	case 3:
+		loadCreditsMenu(&gameState->currentMenu);
+		break;
+	case 4:
 		memory->exitGame();
 		break;
 	}
@@ -176,15 +119,12 @@ void handleMenuEnterMain(GameMemory *memory, GameState *gameState) {
 void handleMenuEnterPause(GameMemory *memory, GameState *gameState) {
 	switch (gameState->currentMenu.currentMenuItem) {
 	case 0:
-		loadGameMenu(&gameState->currentMenu);
+		loadGameMenu(gameState);
 		break;
 	case 1:
-		loadOptionsMenu(&gameState->currentMenu, false);
-		break;
-	case 2:
 		resetGameState(gameState);
 		break;
-	case 3:
+	case 2:
 		memory->exitGame();
 		break;
 	}
@@ -197,7 +137,7 @@ void handleMenuEnterGameOver(GameMemory *memory, GameState *gameState) {
 		break;
 	case 1:
 		resetGameState(gameState);
-		loadMainMenu(&gameState->currentMenu);
+//		loadMainMenu(gameState));
 		break;
 	}
 }
@@ -217,29 +157,36 @@ void handleMenuEnter(GameMemory *memory, GameState *gameState) {
 	case PAUSE:
 		handleMenuEnterPause(memory, gameState);
 		break;
-	case OPTIONS_MAIN:
-		switch (gameState->currentMenu.currentMenuItem) {
-		case 0:
-			loadMainMenu(&gameState->currentMenu);
-			break;
-		}
-		break;
-	case OPTIONS_PAUSE:
-		switch (gameState->currentMenu.currentMenuItem) {
-		case 0:
-			loadPauseMenu(&gameState->currentMenu);
-			break;
-		}
-		break;
 	case GAME_OVER:
 		handleMenuEnterGameOver(memory, gameState);
 		break;
 	case CREDITS:
 		switch (gameState->currentMenu.currentMenuItem) {
 		case 0:
-			loadMainMenu(&gameState->currentMenu);
+			loadMainMenu(gameState);
 			break;
 		}
+		break;
+	}
+}
+
+/**
+ * Process escape key being pressed
+ */
+void handleMenuEscape(GameMemory *memory, GameState *gameState) {
+	switch (gameState->currentMenu.state) {
+	case GAME:
+		loadPauseMenu(&gameState->currentMenu);
+		break;
+	case PAUSE:
+		loadGameMenu(gameState);
+		break;
+	case GAME_OVER:
+	case CREDITS:
+		loadMainMenu(gameState);
+		break;
+	case MAIN:
+		memory->exitGame();
 		break;
 	}
 }
@@ -260,7 +207,7 @@ void renderMenuItem(GameMemory *memory, VideoBuffer *buffer, MenuItem item,
 /**
  * Changes current menu item selection by 'direction'
  */
-void changeMenuSelection(GameState *gameState, int direction) {
+void changeMenuItemSelection(GameState *gameState, int direction) {
 	gameState->currentMenu.currentMenuItem += direction;
 	if (gameState->currentMenu.currentMenuItem
 			>= gameState->currentMenu.numberMenuItems) {
@@ -269,6 +216,71 @@ void changeMenuSelection(GameState *gameState, int direction) {
 		gameState->currentMenu.currentMenuItem =
 				gameState->currentMenu.numberMenuItems - 1;
 	}
+}
+
+void changeSettingsSelection(GameState *gameState, int direction) {
+	if (gameState->currentMenu.currentMenuItem == 1) { // Car setting
+		gameState->player.speed = PLAYER_SPEED;
+		gameState->player.nextCarIndex += direction;
+		if (gameState->player.nextCarIndex < 0) {
+			gameState->player.nextCarIndex = NUM_PLAYER_TEXTURES - 1;
+		} else if (gameState->player.nextCarIndex >= NUM_PLAYER_TEXTURES) {
+			gameState->player.nextCarIndex = 0;
+		}
+	} else if (gameState->currentMenu.currentMenuItem == 2) { // Difficulty setting
+		gameState->difficulty += direction;
+		if (gameState->difficulty < 0) {
+			gameState->difficulty = NUM_DIFFICULTIES - 1;
+		} else if (gameState->difficulty >= NUM_DIFFICULTIES) {
+			gameState->difficulty = 0;
+		}
+	}
+}
+
+void renderDifficulty(GameMemory *memory, VideoBuffer *buffer, bool highlight) {
+	std::string difficultyString = "Easy Normal Hard Hell";
+
+	Math::Vector2f textPos = { 50, 225 };
+	if (highlight) {
+		textPos.x += 20;
+	}
+	Text::renderText(memory, buffer, difficultyString, textPos,
+			Text::FontSize::Big, 255, 255, 255);
+
+	GameState *gameState = getGameState(memory);
+
+	switch (gameState->difficulty) {
+	case 0:
+		textPos.x += 10;
+		break;
+	case 1:
+		textPos.x += 173 - 50;
+		break;
+	case 2:
+		textPos.x += 325 - 50;
+		break;
+	case 3:
+		textPos.x += 433 - 50;
+		break;
+	}
+
+	int triangleWidthHalf = 10;
+	textPos.y += 10;
+	Math::Vector2f point1 = { textPos.x, textPos.y };
+	textPos.y += 13;
+	Math::Vector2f point2 = { textPos.x - triangleWidthHalf, textPos.y };
+	Math::Vector2f point3 = { textPos.x + triangleWidthHalf, textPos.y };
+	Render::triangleBottom(buffer, 0xffffffff, point1, point2, point3);
+}
+
+void renderMenuBackdrop(VideoBuffer *buffer, GameState *gameState) {
+	Math::Rectangle rect = { };
+	rect.position = gameState->currentMenu.items[0].position
+			- (Math::Vector2f( { 20, 50 }));
+	rect.width = WINDOW_WIDTH - 60;
+	rect.height = gameState->currentMenu.numberMenuItems
+			* gameState->currentMenu.lineSpacing;
+	Render::rectangle(buffer, rect, 0x80202020);
 }
 
 /**
@@ -282,20 +294,35 @@ void updateAndRenderMenu(GameMemory *memory, VideoBuffer *buffer, Input *input,
 	}
 
 	if (input->upKeyClicked) {
-		changeMenuSelection(gameState, -1);
+		changeMenuItemSelection(gameState, -1);
 	}
 
 	if (input->downKeyClicked) {
-		changeMenuSelection(gameState, 1);
+		changeMenuItemSelection(gameState, 1);
 	}
 
-	// Menu backdrop
-	Math::Rectangle rect = { };
-	rect.position = gameState->currentMenu.items[0].position
-			- (Math::Vector2f( { 10, 40 }));
-	rect.width = WINDOW_WIDTH / 2 - 10;
-	rect.height = gameState->currentMenu.numberMenuItems * 50;
-	Render::rectangle(buffer, rect, 0x80202020);
+	renderMenuBackdrop(buffer, gameState);
+
+	if (gameState->currentMenu.state == MAIN) {
+		if (input->leftKeyClicked) {
+			changeSettingsSelection(gameState, -1);
+		}
+		if (input->rightKeyClicked) {
+			changeSettingsSelection(gameState, 1);
+		}
+		bool highlight = 2 == (unsigned) gameState->currentMenu.currentMenuItem;
+		renderDifficulty(memory, buffer, highlight);
+		gameState->player.position = gameState->player.position
+				+ (Math::Vector2f ) { 0, (float) gameState->player.speed };
+		if (gameState->player.position.y
+				>= WINDOW_HEIGHT + getPlayerDimensions(gameState).y / 2) {
+			gameState->player.speed = -PLAYER_SPEED;
+			gameState->player.carIndex = gameState->player.nextCarIndex;
+		}
+		if (gameState->player.position.y <= 600) {
+			gameState->player.speed = 0;
+		}
+	}
 
 	// Menu items
 	for (unsigned i = 0; i < gameState->currentMenu.numberMenuItems; i++) {

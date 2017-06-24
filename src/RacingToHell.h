@@ -11,6 +11,8 @@
 #include "Font.h"
 #include "GameMenu.h"
 
+#define PLAYER_SPEED 10
+
 struct VideoBuffer {
 	uint32_t width, height, bytesPerPixel;
 	void* content;
@@ -34,7 +36,7 @@ struct Input {
 
 struct Player {
 	Math::Vector2f position;
-	uint8_t carIndex;
+	int8_t carIndex, nextCarIndex;
 	int32_t speed, health, maxHealth, energy, maxEnergy;
 };
 
@@ -71,7 +73,7 @@ struct Resources {
 };
 
 enum MenuState {
-	GAME, MAIN, OPTIONS_MAIN, GAME_OVER, PAUSE, OPTIONS_PAUSE, CREDITS
+	GAME, MAIN, GAME_OVER, PAUSE, CREDITS
 };
 
 struct MenuItem {
@@ -82,8 +84,9 @@ struct MenuItem {
 struct Menu {
 	MenuState state;
 	MenuItem items[20];
-	uint8_t numberMenuItems;
-	int8_t currentMenuItem;
+	uint8_t numberMenuItems = 0;
+	int8_t currentMenuItem = 0;
+	int lineSpacing = 70;
 };
 
 struct GameState {
@@ -95,7 +98,7 @@ struct GameState {
 	uint32_t roadPosition;
 	uint8_t level;
 	float levelTime, maxLevelTime;
-	uint8_t difficulty;
+	int8_t difficulty;
 
 	Player player;
 
@@ -137,6 +140,7 @@ struct BitmapHeader {
 
 GameState* getGameState(GameMemory* memory);
 void resetGameState(GameState *gameState);
+Math::Vector2f getPlayerDimensions(GameState *gameState);
 
 #define UPDATE_AND_RENDER(name) void name(VideoBuffer *buffer, Input *input, GameMemory *memory)
 typedef UPDATE_AND_RENDER(update_and_render);

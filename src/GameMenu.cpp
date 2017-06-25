@@ -19,13 +19,13 @@ void loadMainMenu(GameState *gameState) {
 
 	addMenuItem(&menu->items[menu->numberMenuItems++], offset, "Start Game");
 
-	offset.y += menu->lineSpacing;
-	addMenuItem(&menu->items[menu->numberMenuItems++], offset, "Next car");
+	offset.y += menu->lineSpacing - 10;
+	addMenuItem(&menu->items[menu->numberMenuItems++], offset, "  Car");
 
 	offset.y += menu->lineSpacing;
 	addMenuItem(&menu->items[menu->numberMenuItems++], offset, ""); // empty slot for difficulty
 
-	offset.y += menu->lineSpacing;
+	offset.y += menu->lineSpacing + 10;
 	addMenuItem(&menu->items[menu->numberMenuItems++], offset, "Credits");
 
 	offset.y += menu->lineSpacing;
@@ -237,10 +237,29 @@ void changeSettingsSelection(GameState *gameState, int direction) {
 	}
 }
 
+void renderCarSelection(GameMemory *memory, VideoBuffer *buffer,
+		bool highlight) {
+	float offsetX = 50;
+	if (highlight) {
+		offsetX += 20;
+	}
+	Math::Vector2f point1 = { offsetX + 12, 132 };
+	Math::Vector2f point2 = { offsetX + 12, 158 };
+	Math::Vector2f point3 = { offsetX, 145 };
+	Render::triangle(buffer, 0xffffffff, point1, point2, point3);
+
+	offsetX += 107;
+	point1 = {offsetX, 131};
+	point2 = {offsetX, 159};
+	point3 = {offsetX + 12, 145};
+	Render::triangle(buffer, 0xffffffff, point1, point2, point3);
+
+}
+
 void renderDifficulty(GameMemory *memory, VideoBuffer *buffer, bool highlight) {
 	std::string difficultyString = "Easy Normal Hard Hell";
 
-	Math::Vector2f textPos = { 50, 225 };
+	Math::Vector2f textPos = { 50, 227 };
 	if (highlight) {
 		textPos.x += 20;
 	}
@@ -254,13 +273,13 @@ void renderDifficulty(GameMemory *memory, VideoBuffer *buffer, bool highlight) {
 		textPos.x += 10;
 		break;
 	case 1:
-		textPos.x += 173 - 50;
+		textPos.x += 123;
 		break;
 	case 2:
-		textPos.x += 325 - 50;
+		textPos.x += 275;
 		break;
 	case 3:
-		textPos.x += 433 - 50;
+		textPos.x += 383;
 		break;
 	}
 
@@ -270,7 +289,7 @@ void renderDifficulty(GameMemory *memory, VideoBuffer *buffer, bool highlight) {
 	textPos.y += 13;
 	Math::Vector2f point2 = { textPos.x - triangleWidthHalf, textPos.y };
 	Math::Vector2f point3 = { textPos.x + triangleWidthHalf, textPos.y };
-	Render::triangleBottom(buffer, 0xffffffff, point1, point2, point3);
+	Render::triangle(buffer, 0xffffffff, point1, point2, point3);
 }
 
 void renderMenuBackdrop(VideoBuffer *buffer, GameState *gameState) {
@@ -310,8 +329,16 @@ void updateAndRenderMenu(GameMemory *memory, VideoBuffer *buffer, Input *input,
 		if (input->rightKeyClicked) {
 			changeSettingsSelection(gameState, 1);
 		}
-		bool highlight = 2 == (unsigned) gameState->currentMenu.currentMenuItem;
-		renderDifficulty(memory, buffer, highlight);
+
+		bool highlightCarSelect = 1
+				== (unsigned) gameState->currentMenu.currentMenuItem;
+		renderCarSelection(memory, buffer, highlightCarSelect);
+
+		bool highlightDifficulty = 2
+				== (unsigned) gameState->currentMenu.currentMenuItem;
+		renderDifficulty(memory, buffer, highlightDifficulty);
+
+		// update the car position and the speed
 		gameState->player.position = gameState->player.position
 				+ (Math::Vector2f ) { 0, (float) gameState->player.speed };
 		if (gameState->player.position.y

@@ -23,9 +23,6 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 	newCharacter.bearingY = -face->glyph->bitmap_top;
 	newCharacter.advanceX = face->glyph->advance.x >> 6;
 
-	printf("Char: %c, Advance: %i, CharWidth: %i\n", loadCharacter,
-			newCharacter.advanceX, newCharacter.width);
-
 	for (char nextChar = minChar; nextChar < maxChar; nextChar++) {
 		int nextGlyphIndex = FT_Get_Char_Index(face, nextChar);
 
@@ -34,10 +31,6 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 				FT_KERNING_DEFAULT, &kerning);
 
 		newCharacter.kerning[nextChar - minChar] = kerning.x >> 6;
-		if (kerning.x != 0) {
-			printf("nextChar: %c, ", nextChar);
-			printf("kerning.x: %li\n", kerning.x >> 6);
-		}
 	}
 	unsigned bitmapSizeInPixel = newCharacter.width * newCharacter.height;
 

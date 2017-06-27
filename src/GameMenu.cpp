@@ -413,7 +413,6 @@ void updateAndRenderMenus(GameMemory *memory, VideoBuffer *buffer, Input *input)
         {
             case MenuType::MAIN:
             {
-                memory->exitGame();
             } break;
 
             case MenuType::DIFFICULTY:

@@ -81,7 +81,6 @@ enum class MenuType {
 };
 
 struct MenuItem {
-	//Math::Vector2f position;
 	char text[50];
 };
 

@@ -7,9 +7,11 @@
 - render
     - ~~draw circle~~
     - ~~use OpenGL to display pixel buffer~~
+    - partial bitmap
+    - gradient
 - font
     - save baseline
-    - save kerning?
+    - ~~save kerning~~
 - sound
     - ~~linux support~~
 - player control
@@ -40,14 +42,14 @@
     - shooting
     - phases
 - menues
-	- ~~main~~
+	- main
+	    - difficulty selection
+	    - gamemode selection
 	- options
 		- volume
-		- controls?
 	- ~~pause~~
     - game over
     - volume checkbox/slider instead of options menu
-    - 'New Game' menu to select car and difficulty
 
 
 ### IDEAs

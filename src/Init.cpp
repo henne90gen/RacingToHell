@@ -71,7 +71,7 @@ void loadTextures(GameMemory *memory) {
  */
 void resetGameState(GameState *gameState) {
 	gameState->player = {};
-	gameState->player.position.x = 200;
+	gameState->player.position.x = 100;
 	gameState->player.position.y = 600;
 	// TODO balance speed
 	gameState->player.speed = 0;

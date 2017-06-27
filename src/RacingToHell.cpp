@@ -530,16 +530,16 @@ void updateAndRenderGame(VideoBuffer *buffer, Input *input, GameMemory *memory,
 
 	updateAndRenderTraffic(buffer, gameState, update);
 
-	if (/*gameState->currentMenu.state != MAIN
-	 &&*/gameState->currentMenu.state != CREDITS) {
+	if (/*gameState->mainMenu.state != MAIN
+	 &&*/gameState->menuState != MenuState::CREDITS) {
 		// render player after traffic, so he is always on top
 		renderPlayer(buffer, gameState);
 	}
 
 	updateAndRenderBullets(buffer, gameState, update);
 
-	if (gameState->currentMenu.state != MAIN
-			&& gameState->currentMenu.state != CREDITS) {
+	if (gameState->menuState != MenuState::MAIN
+			&& gameState->menuState != MenuState::CREDITS) {
 		updateAndRenderUI(buffer, gameState, update);
 	}
 }
@@ -555,9 +555,10 @@ UPDATE_AND_RENDER(updateAndRender) {
 		handleMenuEscape(memory, gameState);
 	}
 
-	updateAndRenderGame(buffer, input, memory, gameState,
-			gameState->currentMenu.state == GAME);
-	if (gameState->currentMenu.state != GAME) {
-		updateAndRenderMenu(memory, buffer, input, gameState);
-	}
+    updateAndRenderGame(buffer, input, memory, gameState,
+			gameState->menuState == MenuState::GAME);
+	
+    if (gameState->menuState != MenuState::GAME) {
+        updateAndRenderMenus(memory, buffer, input);
+    }
 }

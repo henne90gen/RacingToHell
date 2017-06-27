@@ -1,4 +1,5 @@
 #include <Windows.h>
+#include <xmmintrin.h>
 #include <stdlib.h>
 #include <iostream>
 #include <string>

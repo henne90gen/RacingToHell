@@ -72,29 +72,39 @@ struct Resources {
 	Sound::LoadedSound Level1Music;
 };
 
-enum MenuState {
+enum class MenuState {
 	GAME, MAIN, GAME_OVER, PAUSE, CREDITS
 };
 
+enum class MenuType {
+    MAIN, DIFFICULTY, GAMEMODE, PAUSE, CREDITS
+};
+
 struct MenuItem {
-	Math::Vector2f position;
+	//Math::Vector2f position;
 	char text[50];
 };
 
 struct Menu {
-	MenuState state;
+    bool isVisible = false;
 	MenuItem items[20];
 	uint8_t numberMenuItems = 0;
 	int8_t currentMenuItem = 0;
-	int lineSpacing = 70;
+    Math::Vector2f position;
+	int lineSpacing = 55;
 };
 
 struct GameState {
 	Sound::PlayingSound playingSounds[256];
 	int lastPlayingSound = -1;
 
+    MenuState menuState = MenuState::MAIN;
+
+    unsigned menuCount = 5;
+    Menu menus[5];
+    MenuType activeMenu = MenuType::MAIN;
+
 	uint32_t frameCounter;
-	Menu currentMenu;
 	uint32_t roadPosition;
 	uint8_t level;
 	float levelTime, maxLevelTime;

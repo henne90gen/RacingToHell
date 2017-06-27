@@ -69,6 +69,7 @@ void loadTextures(GameMemory *memory) {
 /**
  * Resets everything in the GameState to their initial values
  */
+
 void resetGameState(GameState *gameState) {
 	gameState->player = {};
 	gameState->player.position.x = 100;
@@ -82,7 +83,6 @@ void resetGameState(GameState *gameState) {
 	gameState->player.energy = 1000;
 	gameState->player.maxEnergy = 1000;
 
-	loadMainMenu(gameState);
 	gameState->level = 0;
 	gameState->levelTime = 0;
 	gameState->maxLevelTime = 60;
@@ -116,6 +116,11 @@ void init(GameMemory *memory) {
 
 	*gameState = {};
 	resetGameState(gameState);
+
+    loadMainMenu(gameState);
+    loadDifficultyMenu(gameState);
+    loadPauseMenu(gameState);
+    loadCreditsMenu(gameState);
 
 	Text::loadFont(memory, "./res/font/arial.ttf");
 

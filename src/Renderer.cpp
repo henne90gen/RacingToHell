@@ -25,6 +25,35 @@ void blendColor(uint32_t color, uint32_t* currentBufferPixel) {
 		if (resultAlpha == 0.0f) {
 			*currentBufferPixel = 0;
 		} else {
+#if 0
+            float colorValues[4] = { (float)colorR, (float)colorG, (float)colorB, (float)colorA };
+            float bufferValues[4] = {(float)(*currentBufferPixel8), (float)(*(currentBufferPixel8 + 1)) , (float)(*(currentBufferPixel8 + 2)) , (float)(*(currentBufferPixel8 + 3)) };
+            
+            __m128 *colorSSE = (__m128 *)colorValues;
+            __m128 *bufferSSE = (__m128 *)bufferValues;
+
+            __m128 bufferAlphaSSE = _mm_set1_ps(bufferAlpha);
+            __m128 textureAlphaSSE = _mm_set1_ps(textureAlpha);
+            __m128 resultAlphaSSE = _mm_set1_ps(resultAlpha);
+            __m128 oneOverResultAlphaSSE = _mm_rcp_ps(resultAlphaSSE);
+
+            __m128 textureAlphaColorSSE = _mm_mul_ps(textureAlphaSSE, *colorSSE);
+            __m128 bufferAlphaBufferValueSSE = _mm_mul_ps(*bufferSSE, bufferAlphaSSE);
+            __m128 sumSSE = _mm_add_ps(textureAlphaColorSSE, bufferAlphaBufferValueSSE);
+
+            float result[4];
+            __m128 *resultSSE = (__m128 *)result;
+
+            *resultSSE = _mm_mul_ps(sumSSE, oneOverResultAlphaSSE);
+            
+            uint32_t newA = (uint32_t)(resultAlpha * 255.0f);
+
+            //uint32_t resultColor = ((uint32_t)resultValues[0]) | ((uint32_t)resultValues[1]) << 8 | ((uint32_t)resultValues[2]) << 16 | newA << 24; 
+            *currentBufferPixel8++ = newA;
+            *currentBufferPixel8++ = (uint32_t)result[2];
+            *currentBufferPixel8++ = (uint32_t)result[1];
+            *currentBufferPixel8++ = (uint32_t)result[0];
+#else
 			float newR = ((bufferAlpha 
 					* *currentBufferPixel8) + (textureAlpha * colorR))
 					/ resultAlpha;
@@ -42,6 +71,7 @@ void blendColor(uint32_t color, uint32_t* currentBufferPixel) {
 
 			float newA = resultAlpha * 255.0f;
 			*currentBufferPixel8++ = (uint8_t) newA; 
+#endif
 		}
 	}
 }

@@ -15,13 +15,15 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 				"Couldn't load glyph for " + std::to_string(loadCharacter));
 	}
 
+    bool useKerning = FT_HAS_KERNING(face);;
+
 	Character newCharacter = { };
 	newCharacter.value = loadCharacter;
 	newCharacter.width = face->glyph->bitmap.width;
 	newCharacter.height = face->glyph->bitmap.rows;
 	newCharacter.bearingX = face->glyph->bitmap_left;
 	newCharacter.bearingY = -face->glyph->bitmap_top;
-	newCharacter.advanceX = face->glyph->advance.x >> 6;
+    newCharacter.advanceX = useKerning ? face->glyph->advance.x >> 6 : 0;
 
 	for (char nextChar = minChar; nextChar < maxChar; nextChar++) {
 		int nextGlyphIndex = FT_Get_Char_Index(face, nextChar);

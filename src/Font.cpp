@@ -24,12 +24,14 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 		}
 	}
 
+    bool useKerning = FT_HAS_KERNING(face);;
+
 	Character newCharacter = { };
 	newCharacter.value = loadCharacter;
 	newCharacter.width = face->glyph->bitmap.width;
 	newCharacter.height = face->glyph->bitmap.rows;
 	newCharacter.bearingY = -face->glyph->bitmap_top;
-	newCharacter.advanceX = face->glyph->advance.x >> 6;
+    newCharacter.advanceX = useKerning ? face->glyph->advance.x >> 6 : 0;
 
 	for (char nextChar = minChar; nextChar < maxChar; nextChar++) {
 		int nextGlyphIndex = FT_Get_Char_Index(face, nextChar);
@@ -113,7 +115,7 @@ void renderText(GameMemory *memory, VideoBuffer* buffer, std::string text,
 		renderCharacter(memory, buffer, character, currentX, position.y, r, g,
 				b);
 
-		currentX += 2 + character->advanceX
+		currentX += character->advanceX
 				+ ((characterIndex < text.size() - 1) ?
 						character->kerning[characterIndex + 1] : 0);
 	}

@@ -313,7 +313,7 @@ void updateAndRenderMenu(GameMemory *memory, VideoBuffer *buffer, Input *input,
 		bool highlight = 2 == (unsigned) gameState->currentMenu.currentMenuItem;
 		renderDifficulty(memory, buffer, highlight);
 		gameState->player.position = gameState->player.position
-				+ (Math::Vector2f ) { 0, (float) gameState->player.speed };
+				+ Math::Vector2f({ 0, (float) gameState->player.speed });
 		if (gameState->player.position.y
 				>= WINDOW_HEIGHT + getPlayerDimensions(gameState).y / 2) {
 			gameState->player.speed = -PLAYER_SPEED;

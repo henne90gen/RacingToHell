@@ -15,6 +15,8 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 				"Couldn't load glyph for " + std::to_string(loadCharacter));
 	}
 
+    bool useKerning = FT_HAS_KERNING(face);;
+
 	Character newCharacter = { };
 	newCharacter.value = loadCharacter;
 	newCharacter.width = face->glyph->bitmap.width;

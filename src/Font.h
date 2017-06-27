@@ -15,7 +15,7 @@ enum FontSize {
 
 struct Character {
 	char value;
-    unsigned width, height, bearingY, advanceX;
+    unsigned width, height, bearingX, bearingY, advanceX;
     int kerning[maxChar - minChar];
 	char* bitmap;
 };

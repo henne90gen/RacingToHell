@@ -9,29 +9,22 @@ FT_Face face;
 
 void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 	int currentGlyphIndex = FT_Get_Char_Index(face, loadCharacter);
-	int error = FT_Load_Glyph(face, currentGlyphIndex, FT_LOAD_DEFAULT);
+	int error = FT_Load_Glyph(face, currentGlyphIndex, FT_LOAD_RENDER);
 	if (error) {
 		memory->abort(
 				"Couldn't load glyph for " + std::to_string(loadCharacter));
 	}
 
-	if (face->glyph->format != FT_GLYPH_FORMAT_BITMAP) {
-		error = FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL);
-		if (error) {
-			memory->abort(
-					"Couldn't render character " + std::to_string(loadCharacter)
-							+ " as bitmap.");
-		}
-	}
-
-    bool useKerning = FT_HAS_KERNING(face);;
-
 	Character newCharacter = { };
 	newCharacter.value = loadCharacter;
 	newCharacter.width = face->glyph->bitmap.width;
 	newCharacter.height = face->glyph->bitmap.rows;
+	newCharacter.bearingX = face->glyph->bitmap_left;
 	newCharacter.bearingY = -face->glyph->bitmap_top;
     newCharacter.advanceX = useKerning ? face->glyph->advance.x >> 6 : 0;
+
+	printf("Char: %c, Advance: %i, CharWidth: %i\n", loadCharacter,
+			newCharacter.advanceX, newCharacter.width);
 
 	for (char nextChar = minChar; nextChar < maxChar; nextChar++) {
 		int nextGlyphIndex = FT_Get_Char_Index(face, nextChar);
@@ -41,6 +34,10 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 				FT_KERNING_DEFAULT, &kerning);
 
 		newCharacter.kerning[nextChar - minChar] = kerning.x >> 6;
+		if (kerning.x != 0) {
+			printf("nextChar: %c, ", nextChar);
+			printf("kerning.x: %li\n", kerning.x >> 6);
+		}
 	}
 	unsigned bitmapSizeInPixel = newCharacter.width * newCharacter.height;
 
@@ -76,7 +73,7 @@ void loadFont(GameMemory* memory, std::string fontFileName) {
 			fontSizeIndex < sizeof(gameState->resources.availableFontSizes) / 4;
 			fontSizeIndex++) {
 		int fontSize = getFontSize(gameState, fontSizeIndex);
-//		int error = FT_Set_Char_Size(face, 0, fontSize * 64, WINDOW_WIDTH, WINDOW_HEIGHT);
+//		int error = FT_Set_Char_Size(face, 0, fontSize*32, WINDOW_WIDTH, WINDOW_HEIGHT);
 		int error = FT_Set_Pixel_Sizes(face, fontSize * 2, 0);
 		if (error) {
 			std::string message = "Couldn't set pixel size to "
@@ -92,7 +89,7 @@ void loadFont(GameMemory* memory, std::string fontFileName) {
 
 Character *getCharacter(GameState *gameState, char character,
 		unsigned fontSizeIndex) {
-	return &gameState->resources.characterMap[fontSizeIndex][character - ' '];
+	return &gameState->resources.characterMap[fontSizeIndex][character - minChar];
 }
 
 /**
@@ -112,12 +109,13 @@ void renderText(GameMemory *memory, VideoBuffer* buffer, std::string text,
 		Character *character = getCharacter(gameState, text[characterIndex],
 				fontSize);
 
-		renderCharacter(memory, buffer, character, currentX, position.y, r, g,
-				b);
+		renderCharacter(memory, buffer, character,
+				currentX + character->bearingX, position.y, r, g, b);
 
-		currentX += character->advanceX
-				+ ((characterIndex < text.size() - 1) ?
-						character->kerning[characterIndex + 1] : 0);
+		if (characterIndex < text.size() - 1) {
+			currentX += character->advanceX
+					+ character->kerning[text[characterIndex + 1] - minChar];
+		}
 	}
 }
 

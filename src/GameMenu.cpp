@@ -228,7 +228,6 @@ void handleMenuEscape(GameMemory *memory, GameState *gameState) {
         gameState->activeMenu = MenuType::MAIN;
 		break;
 	case  MenuState::MAIN:
-		memory->exitGame();
 		break;
 	} 
 } 
@@ -414,7 +413,7 @@ void updateAndRenderMenus(GameMemory *memory, VideoBuffer *buffer, Input *input)
         {
             case MenuType::MAIN:
             {
-                
+                memory->exitGame();
             } break;
 
             case MenuType::DIFFICULTY:

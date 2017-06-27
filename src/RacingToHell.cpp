@@ -551,14 +551,16 @@ UPDATE_AND_RENDER(updateAndRender) {
 	GameState *gameState = getGameState(memory);
 	gameState->frameCounter++;
 
-	if (input->escapeKeyClicked) {
-		handleMenuEscape(memory, gameState);
+	updateAndRenderGame(buffer, input, memory, gameState,
+			gameState->menuState == MenuState::GAME);
+
+	if (gameState->menuState != MenuState::GAME) {
+		updateAndRenderMenus(memory, buffer, input);
 	}
 
-    updateAndRenderGame(buffer, input, memory, gameState,
-			gameState->menuState == MenuState::GAME);
-	
-    if (gameState->menuState != MenuState::GAME) {
-        updateAndRenderMenus(memory, buffer, input);
-    }
+	if (input->escapeKeyClicked && gameState->menuState == MenuState::GAME) {
+		getMenuByType(gameState, MenuType::PAUSE_MENU)->isVisible = true;
+		gameState->menuState = MenuState::PAUSE;
+		gameState->activeMenu = MenuType::PAUSE_MENU;
+	}
 }

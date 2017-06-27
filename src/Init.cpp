@@ -119,8 +119,10 @@ void init(GameMemory *memory) {
 
     loadMainMenu(gameState);
     loadDifficultyMenu(gameState);
+    loadGamemodeMenu(gameState);
     loadPauseMenu(gameState);
     loadCreditsMenu(gameState);
+    loadGameOverMenu(gameState);
 
 	Text::loadFont(memory, "./res/font/arial.ttf");
 

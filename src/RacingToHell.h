@@ -77,7 +77,12 @@ enum class MenuState {
 };
 
 enum class MenuType {
-    MAIN, DIFFICULTY, GAMEMODE, PAUSE, CREDITS
+	MAIN_MENU,
+	MAIN_DIFFICULTY,
+	MAIN_GAMEMODE,
+	PAUSE_MENU,
+	CREDITS_MENU,
+	GAME_OVER_MENU
 };
 
 struct MenuItem {
@@ -85,11 +90,11 @@ struct MenuItem {
 };
 
 struct Menu {
-    bool isVisible = false;
+	bool isVisible = false;
 	MenuItem items[20];
 	uint8_t numberMenuItems = 0;
 	int8_t currentMenuItem = 0;
-    Math::Vector2f position;
+	Math::Vector2f position;
 	int lineSpacing = 55;
 };
 
@@ -97,11 +102,11 @@ struct GameState {
 	Sound::PlayingSound playingSounds[256];
 	int lastPlayingSound = -1;
 
-    MenuState menuState = MenuState::MAIN;
+	MenuState menuState = MenuState::MAIN;
 
-    unsigned menuCount = 5;
-    Menu menus[5];
-    MenuType activeMenu = MenuType::MAIN;
+	unsigned menuCount = 6;
+	Menu menus[6];
+	MenuType activeMenu = MenuType::MAIN_MENU;
 
 	uint32_t frameCounter;
 	uint32_t roadPosition;

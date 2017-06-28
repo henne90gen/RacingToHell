@@ -19,7 +19,7 @@ Menu *getMenuByType(GameState *gameState, MenuType type) {
 void loadMainMenu(GameState *gameState) {
 	gameState->player.speed = 0;
 
-	Menu *menu = getMenuByType(gameState, MenuType::MAIN);
+	Menu *menu = getMenuByType(gameState, MenuType::MAIN_MENU);
 	*menu = {};
 	menu->position = Math::Vector2f( { 20, 50 });
 	menu->isVisible = true;
@@ -27,14 +27,14 @@ void loadMainMenu(GameState *gameState) {
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Start Game");
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Multiplayer");
 	addMenuItem(&menu->items[menu->numberMenuItems++], "  Car");
-	addMenuItem(&menu->items[menu->numberMenuItems++], "Difficulty"); // empty slot for difficulty
+	addMenuItem(&menu->items[menu->numberMenuItems++], "Difficulty");
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Game mode");
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Credits");
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Quit");
 }
 
 void loadDifficultyMenu(GameState *gameState) {
-	Menu *menu = getMenuByType(gameState, MenuType::DIFFICULTY);
+	Menu *menu = getMenuByType(gameState, MenuType::MAIN_DIFFICULTY);
 	*menu = {};
 	menu->position = Math::Vector2f( { 320, 50 });
 
@@ -44,92 +44,83 @@ void loadDifficultyMenu(GameState *gameState) {
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Extreme");
 }
 
+void loadGamemodeMenu(GameState *gameState) {
+	Menu *menu = getMenuByType(gameState, MenuType::MAIN_GAMEMODE);
+	*menu = {};
+	menu->position = Math::Vector2f( { 320, 50 });
+
+	addMenuItem(&menu->items[menu->numberMenuItems++], "Some");
+	addMenuItem(&menu->items[menu->numberMenuItems++], "Game");
+	addMenuItem(&menu->items[menu->numberMenuItems++], "Mode");
+}
+
 void loadPauseMenu(GameState *gameState) {
-	Menu *menu = getMenuByType(gameState, MenuType::PAUSE);
-	menu->currentMenuItem = 0;
+	Menu *menu = getMenuByType(gameState, MenuType::PAUSE_MENU);
+	menu->position = Math::Vector2f( { 20, 50 });
 
-	float offsetY = 100;
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Resume");
-
-	offsetY += menu->lineSpacing;
-
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Main Menu");
-
-	offsetY += menu->lineSpacing;
-
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Quit");
 }
 
 void loadCreditsMenu(GameState *gameState) {
-	Menu *menu = getMenuByType(gameState, MenuType::CREDITS);
-
-	menu->currentMenuItem = 0;
+	Menu *menu = getMenuByType(gameState, MenuType::CREDITS_MENU);
+	menu->position = Math::Vector2f( { 20, 50 });
 
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Back");
 }
 
-/**
- * Dummy menu state for when the game is actually running
- */
-void loadGameMenu(GameState *gameState) {
-	//gameState->mainMenu = {};
-	gameState->player.speed = PLAYER_SPEED;
-}
+void loadGameOverMenu(GameState *gameState) {
+	Menu *menu = getMenuByType(gameState, MenuType::GAME_OVER_MENU);
+	menu->position = Math::Vector2f( { 20, 50 });
 
-void loadGameOverMenu(Menu *menu) {
-	*menu = {};
-	menu->currentMenuItem = 0;
-
-	float offsetY = 100;
-	addMenuItem(&menu->items[menu->numberMenuItems++],
-			"Submit Score");
-
-	offsetY += menu->lineSpacing;
-	addMenuItem(&menu->items[menu->numberMenuItems++],
-			"Back");
+	addMenuItem(&menu->items[menu->numberMenuItems++], "Submit Score");
+	addMenuItem(&menu->items[menu->numberMenuItems++], "Back");
 }
 
 /**
  * Switch to the game over screen
  */
 void gameOver(GameState *gameState) {
-	//loadGameOverMenu(&gameState->mainMenu);
+	getMenuByType(gameState, MenuType::GAME_OVER_MENU)->isVisible = true;
+	gameState->menuState = MenuState::GAME_OVER;
+	gameState->activeMenu = MenuType::GAME_OVER_MENU;
 }
 
 void handleMenuEnterMain(GameMemory *memory) {
 	GameState *gameState = getGameState(memory);
 
-	switch (getMenuByType(gameState, MenuType::MAIN)->currentMenuItem) {
-	case 0: //Start Game
-		getMenuByType(gameState, MenuType::MAIN)->isVisible = false;
+	switch (getMenuByType(gameState, MenuType::MAIN_MENU)->currentMenuItem) {
+	case 0: // Start Game
+		getMenuByType(gameState, MenuType::MAIN_MENU)->isVisible = false;
 		gameState->menuState = MenuState::GAME;
+		gameState->player.speed = PLAYER_SPEED;
 		break;
-	case 1: //Multiplayer
-		// TODO change car selection
+	case 1: // Multiplayer
 		break;
-	case 2: //Car
-		// TODO change difficulty
+	case 2: // Car
 		break;
-	case 3: //Difficulty
-		getMenuByType(gameState, MenuType::DIFFICULTY)->isVisible = true;
-		gameState->activeMenu = MenuType::DIFFICULTY;
+	case 3: // Difficulty
+		getMenuByType(gameState, MenuType::MAIN_DIFFICULTY)->isVisible = true;
+		gameState->activeMenu = MenuType::MAIN_DIFFICULTY;
 		break;
 	case 4: //Game mode
-
+		getMenuByType(gameState, MenuType::MAIN_GAMEMODE)->isVisible = true;
+		gameState->activeMenu = MenuType::MAIN_GAMEMODE;
 		break;
-	case 5: //Creadits
+	case 5: // Credits
 		gameState->menuState = MenuState::CREDITS;
-		getMenuByType(gameState, MenuType::CREDITS)->isVisible = true;
-		getMenuByType(gameState, MenuType::MAIN)->isVisible = false;
-		gameState->activeMenu = MenuType::CREDITS;
+		getMenuByType(gameState, MenuType::CREDITS_MENU)->isVisible = true;
+		getMenuByType(gameState, MenuType::MAIN_MENU)->isVisible = false;
+		gameState->activeMenu = MenuType::CREDITS_MENU;
 		break;
-	case 6: //Quit
+	case 6: // Quit
 		memory->exitGame();
 		break;
 	}
 }
 
-//TODO: Implement method;
+//TODO: Implement method
 void handleMenuEnterDifficulty() {
 	return;
 }
@@ -137,16 +128,16 @@ void handleMenuEnterDifficulty() {
 void handleMenuEnterPause(GameMemory *memory) {
 	GameState *gameState = getGameState(memory);
 
-	getMenuByType(gameState, MenuType::PAUSE)->isVisible = false;
+	getMenuByType(gameState, MenuType::PAUSE_MENU)->isVisible = false;
 
-	switch (getMenuByType(gameState, MenuType::PAUSE)->currentMenuItem) {
+	switch (getMenuByType(gameState, MenuType::PAUSE_MENU)->currentMenuItem) {
 	case 0: //Resume
 		gameState->menuState = MenuState::GAME;
 		break;
 	case 1: //Main Menu
 		resetGameState(gameState);
-		gameState->activeMenu = MenuType::MAIN;
-		getMenuByType(gameState, MenuType::MAIN)->isVisible = true;
+		gameState->activeMenu = MenuType::MAIN_MENU;
+		getMenuByType(gameState, MenuType::MAIN_MENU)->isVisible = true;
 		gameState->menuState = MenuState::MAIN;
 		break;
 	case 2:
@@ -196,36 +187,10 @@ void handleMenuEnterPause(GameMemory *memory) {
  } */
 
 /**
- * Process escape key being pressed
- */
-void handleMenuEscape(GameMemory *memory, GameState *gameState) {
-	switch (gameState->menuState) {
-	case MenuState::PAUSE:
-
-		break;
-	case MenuState::GAME:
-		gameState->menuState = MenuState::PAUSE;
-		getMenuByType(gameState, MenuType::PAUSE)->isVisible = true;
-		gameState->activeMenu = MenuType::PAUSE;
-		break;
-	case MenuState::GAME_OVER:
-	case MenuState::CREDITS:
-		gameState->menuState = MenuState::MAIN;
-		getMenuByType(gameState, MenuType::MAIN)->isVisible = true;
-		getMenuByType(gameState, MenuType::CREDITS)->isVisible = false;
-		gameState->activeMenu = MenuType::MAIN;
-		break;
-	case MenuState::MAIN:
-		break;
-	}
-}
-
-/**
  * Renders a single menu item to screen
  */
 void renderMenuItem(GameMemory *memory, VideoBuffer *buffer, MenuItem item,
 		Math::Vector2f position, bool highlight) {
-	//Math::Vector2f position = item.position;
 	if (highlight) {
 		position = position + (Math::Vector2f { 20, 0 });
 	}
@@ -293,8 +258,8 @@ void updateMenu(GameMemory *memory, Input *input, Menu *menu) {
 	}
 
 	GameState *gameState = getGameState(memory);
-	if (gameState->activeMenu == MenuType::MAIN) {
-		if (menu->currentMenuItem == 2) { // car selected
+	if (gameState->activeMenu == MenuType::MAIN_MENU) {
+		if (menu->currentMenuItem == 2) { // Car selected
 			if (input->leftKeyClicked) {
 				changeCarSelection(gameState, -1);
 			}
@@ -343,10 +308,11 @@ void renderMenu(GameMemory *memory, VideoBuffer *buffer, Menu *menu) {
 		bool highlightCarSelect = 2
 				== gameState->menus[activeMenuInt].currentMenuItem;
 		Math::Vector2f carSelPos =
-				gameState->menus[(int) MenuType::MAIN].position;
+				gameState->menus[(int) MenuType::MAIN_MENU].position;
 		carSelPos = carSelPos + Math::Vector2f({ 20, 133 });
 		renderCarSelection(memory, buffer, carSelPos,
-				gameState->activeMenu == MenuType::MAIN && highlightCarSelect);
+				gameState->activeMenu == MenuType::MAIN_MENU
+						&& highlightCarSelect);
 	}
 }
 
@@ -362,35 +328,47 @@ void updateAndRenderMenus(GameMemory *memory, VideoBuffer *buffer,
 
 	if (input->enterKeyClicked) {
 		switch (gameState->activeMenu) {
-		case MenuType::MAIN: {
+		case MenuType::MAIN_MENU:
 			handleMenuEnterMain(memory);
-		}
 			break;
-
-		case MenuType::DIFFICULTY: {
+		case MenuType::MAIN_DIFFICULTY:
 			handleMenuEnterDifficulty();
-		}
 			break;
-
-		case MenuType::PAUSE: {
+		case MenuType::PAUSE_MENU:
 			handleMenuEnterPause(memory);
-		}
 			break;
 		}
 	}
 
 	if (input->escapeKeyClicked) {
-		switch (gameState->activeMenu) {
-		case MenuType::MAIN: {
-		}
-			break;
+			switch (gameState->activeMenu) {
+			case MenuType::MAIN_MENU:
+				memory->exitGame();
+				break;
+			case MenuType::MAIN_DIFFICULTY:
+				gameState->activeMenu = MenuType::MAIN_MENU;
+				getMenuByType(gameState, MenuType::MAIN_DIFFICULTY)->isVisible =
+						false;
+				break;
+			case MenuType::MAIN_GAMEMODE:
+				gameState->activeMenu = MenuType::MAIN_MENU;
+				getMenuByType(gameState, MenuType::MAIN_GAMEMODE)->isVisible =
+						false;
+				break;
+			case MenuType::CREDITS_MENU:
+				gameState->activeMenu = MenuType::MAIN_MENU;
+				gameState->menuState = MenuState::MAIN;
+				getMenuByType(gameState, MenuType::CREDITS_MENU)->isVisible =
+						false;
+				getMenuByType(gameState, MenuType::MAIN_MENU)->isVisible = true;
+				break;
+			case MenuType::PAUSE_MENU:
+				gameState->menuState = MenuState::GAME;
+				getMenuByType(gameState, MenuType::PAUSE_MENU)->isVisible =
+						false;
+				break;
 
-		case MenuType::DIFFICULTY: {
-			gameState->activeMenu = MenuType::MAIN;
-			getMenuByType(gameState, MenuType::DIFFICULTY)->isVisible = false;
-		}
-			break;
-		}
+			}
 	}
 
 	// Render

@@ -322,7 +322,7 @@ void renderMenu(GameMemory *memory, VideoBuffer *buffer, Menu *menu) {
 		return;
 	}
 
-	renderMenuBackdrop(buffer, menu);
+	//renderMenuBackdrop(buffer, menu);
 
 	// Menu items
 	Math::Vector2f currentPosition = menu->position
@@ -344,7 +344,7 @@ void renderMenu(GameMemory *memory, VideoBuffer *buffer, Menu *menu) {
 				== gameState->menus[activeMenuInt].currentMenuItem;
 		Math::Vector2f carSelPos =
 				gameState->menus[(int) MenuType::MAIN].position;
-		carSelPos = carSelPos + (Math::Vector2f ) { 20, 133 };
+		carSelPos = carSelPos + Math::Vector2f({ 20, 133 });
 		renderCarSelection(memory, buffer, carSelPos,
 				gameState->activeMenu == MenuType::MAIN && highlightCarSelect);
 	}

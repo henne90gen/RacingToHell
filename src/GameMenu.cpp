@@ -287,7 +287,7 @@ void renderMenu(GameMemory *memory, VideoBuffer *buffer, Menu *menu) {
 		return;
 	}
 
-	//renderMenuBackdrop(buffer, menu);
+	renderMenuBackdrop(buffer, menu);
 
 	// Menu items
 	Math::Vector2f currentPosition = menu->position

@@ -101,6 +101,7 @@ void resetGameState(GameState *gameState) {
 	gameState->lastPlayerBulletIndex = -1;
 	gameState->lastTrafficCarIndex = -1;
 
+	loadMenu(gameState, MenuState::MAIN);
 	// FIXME what is lastPlayingSound?
 }
 
@@ -116,13 +117,6 @@ void init(GameMemory *memory) {
 
 	*gameState = {};
 	resetGameState(gameState);
-
-    loadMainMenu(gameState);
-    loadDifficultyMenu(gameState);
-    loadGamemodeMenu(gameState);
-    loadPauseMenu(gameState);
-    loadCreditsMenu(gameState);
-    loadGameOverMenu(gameState);
 
 	Text::loadFont(memory, "./res/font/arial.ttf");
 

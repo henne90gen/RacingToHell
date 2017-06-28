@@ -76,50 +76,49 @@ enum class MenuState {
 	GAME, MAIN, GAME_OVER, PAUSE, CREDITS
 };
 
-enum class MenuType {
-	MAIN_MENU,
-	MAIN_DIFFICULTY,
-	MAIN_GAMEMODE,
-	PAUSE_MENU,
-	CREDITS_MENU,
-	GAME_OVER_MENU
-};
+//enum class MenuType {
+//	MAIN_MENU,
+//	MAIN_DIFFICULTY,
+//	MAIN_GAMEMODE,
+//	PAUSE_MENU,
+//	CREDITS_MENU,
+//	GAME_OVER_MENU
+//};
 
 struct MenuItem {
 	char text[50];
 };
 
 struct Menu {
-	bool isVisible = false;
 	MenuItem items[20];
 	uint8_t numberMenuItems = 0;
 	int8_t currentMenuItem = 0;
 	Math::Vector2f position;
 	int lineSpacing = 55;
+	bool isVisible = true;
 };
 
 struct GameState {
 	Sound::PlayingSound playingSounds[256];
 	int lastPlayingSound = -1;
 
-	MenuState menuState = MenuState::MAIN;
-
-	unsigned menuCount = 6;
-	Menu menus[6];
-	MenuType activeMenu = MenuType::MAIN_MENU;
-
 	uint32_t frameCounter;
 	uint32_t roadPosition;
 	uint8_t level;
 	float levelTime, maxLevelTime;
 	int8_t difficulty;
-
-	Player player;
-
 	uint32_t trafficFrequency;
 	uint32_t bulletFrequency;
 	uint32_t itemFrequency;
 	float bulletSpeed;
+
+	MenuState menuState = MenuState::MAIN;
+	Menu menus[3];
+	unsigned menuCount, activeMenuIndex;
+
+
+	Player player;
+
 
 	int32_t lastItemIndex = -1;
 	Item items[200];

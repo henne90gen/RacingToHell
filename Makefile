@@ -18,7 +18,7 @@ else
 	include linux/Makefile
 endif
 
-GCC_FLAGS := -Wall -g -O0
+GCC_FLAGS := -Wall -g -O0 -msse -msse2 -msse3 -msse4.1 -mavx2 -mfpmath=sse
 
 clean:
 	$(CLEAN_CMD)

@@ -2,16 +2,16 @@
 
 #include <time.h>
 #include <stdlib.h>
-#include <X11/cursorfont.h>
-#include <X11/X.h>
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/Xatom.h>
 #include <cstdio>
 #include <ctime>
 #include <string>
 #include <sstream>
 #include <vector>
+#include <X11/cursorfont.h>
+#include <X11/X.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xatom.h>
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glx.h>

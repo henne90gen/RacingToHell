@@ -5,12 +5,12 @@ namespace Render {
 
 void blendColor(uint32_t color, uint32_t* currentBufferPixel) {
 	uint8_t *currentBufferPixel8 = (uint8_t *) currentBufferPixel;
-    uint8_t *currentColorPixel8 = (uint8_t *)&color;
+	uint8_t *currentColorPixel8 = (uint8_t *) &color;
 
-    uint8_t colorR = *currentColorPixel8++;
-    uint8_t colorG = *currentColorPixel8++;
-    uint8_t colorB = *currentColorPixel8++;
-    uint8_t colorA = *currentColorPixel8++; 
+	uint8_t colorR = *currentColorPixel8++;
+	uint8_t colorG = *currentColorPixel8++;
+	uint8_t colorB = *currentColorPixel8++;
+	uint8_t colorA = *currentColorPixel8++;
 
 	if (colorA == 255) {
 		*currentBufferPixel = color;
@@ -25,23 +25,20 @@ void blendColor(uint32_t color, uint32_t* currentBufferPixel) {
 		if (resultAlpha == 0.0f) {
 			*currentBufferPixel = 0;
 		} else {
-			float newR = ((bufferAlpha 
-					* *currentBufferPixel8) + (textureAlpha * colorR))
-					/ resultAlpha;
+			float newR = ((bufferAlpha * *currentBufferPixel8)
+					+ (textureAlpha * colorR)) / resultAlpha;
 			*currentBufferPixel8++ = (uint8_t) newR;
 
-			float newG = ((bufferAlpha 
-					* *currentBufferPixel8) + (textureAlpha * colorG))
-					/ resultAlpha;
+			float newG = ((bufferAlpha * *currentBufferPixel8)
+					+ (textureAlpha * colorG)) / resultAlpha;
 			*currentBufferPixel8++ = (uint8_t) newG;
 
-			float newB = ((bufferAlpha
-					* *currentBufferPixel8) + (textureAlpha * colorB))
-					/ resultAlpha;
+			float newB = ((bufferAlpha * *currentBufferPixel8)
+					+ (textureAlpha * colorB)) / resultAlpha;
 			*currentBufferPixel8++ = (uint8_t) newB;
 
 			float newA = resultAlpha * 255.0f;
-			*currentBufferPixel8++ = (uint8_t) newA; 
+			*currentBufferPixel8++ = (uint8_t) newA;
 		}
 	}
 }
@@ -88,9 +85,6 @@ void triangleBottom(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1,
 	}
 }
 
-/**
- *
- */
 void triangleTop(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1,
 		Math::Vector2f point2, Math::Vector2f point3) {
 
@@ -142,312 +136,291 @@ void triangle(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1,
 	}
 }
 
-uint16_t &getUShortElement(__m128i *ptr, int index)
-{
-    int bigIndex = index >> 3;
-    int smallIndex = index - (bigIndex << 3);
-    return ptr[bigIndex].m128i_u16[smallIndex];
+uint16_t &getUShortElement(__m128i *ptr, int index) {
+	int bigIndex = index >> 3;
+	int smallIndex = index - (bigIndex << 3);
+//    return ptr[bigIndex].m128i_u16[smallIndex];
 }
 
 __m128i &get128BitElement(__m128i* ptr, int bigIndex, int bigSize, int smallRemainder)
 {
-    if (bigIndex != bigSize - 1)
-        return ptr[bigIndex];
-    else if (smallRemainder == 0)
-        return ptr[bigIndex];
-    else
-    {
-        for (int i = smallRemainder; i<8; ++i)
-            ptr[bigIndex].m128i_u16[i] = 1;
-
-        return ptr[bigIndex];
-    }
+	if (bigIndex != bigSize - 1)
+	return ptr[bigIndex];
+	else if (smallRemainder == 0)
+	return ptr[bigIndex];
+	else
+	{
+		for (int i = smallRemainder; i<8; ++i) {
+//            ptr[bigIndex].m128i_u16[i] = 1;
+		}
+		return ptr[bigIndex];
+	}
 }
 
-uint16_t &getUShortElement256(__m256i *ptr, int index)
-{
-    int bigIndex = index >> 4;
-    int smallIndex = index - (bigIndex << 4);
-    return ptr[bigIndex].m256i_u16[smallIndex];
+uint16_t &getUShortElement256(__m256i *ptr, int index) {
+	int bigIndex = index >> 4;
+	int smallIndex = index - (bigIndex << 4);
+//	return ptr[bigIndex].m256i_u16[smallIndex];
 }
 
 __m256i &get256BitElement(__m256i* ptr, int bigIndex, int bigSize, int smallRemainder)
 {
-    if (bigIndex != bigSize - 1)
-        return ptr[bigIndex];
-    else if (smallRemainder == 0)
-        return ptr[bigIndex];
-    else
-    {
-        for (int i = smallRemainder; i < 16; ++i)
-            ptr[bigIndex].m256i_u16[i] = 1;
-
-        return ptr[bigIndex];
-    }
+	if (bigIndex != bigSize - 1)
+	return ptr[bigIndex];
+	else if (smallRemainder == 0)
+	return ptr[bigIndex];
+	else
+	{
+		for (int i = smallRemainder; i < 16; ++i) {
+//		ptr[bigIndex].m256i_u16[i] = 1;
+		}
+		return ptr[bigIndex];
+	}
 }
 
-void rectangleSSE256(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color)
-{
-    int fullSize = rect.width * rect.height;
-    int arraySize = fullSize >> 4;
-    int remainder = fullSize % 16;
+void rectangleSSE256(VideoBuffer *buffer, Math::Rectangle rect,
+		uint32_t color) {
+	int fullSize = rect.width * rect.height;
+	int arraySize = fullSize >> 4;
+	int remainder = fullSize % 16;
 
-    if (remainder != 0)
-    {
-        ++arraySize;
-    }
+	if (remainder != 0) {
+		++arraySize;
+	}
 
-    fullSize = arraySize * 16 * 2;
+	fullSize = arraySize * 16 * 2;
 
-    __m256i *sourceR = (__m256i *)(_aligned_malloc((size_t)(fullSize), 16));
-    __m256i *sourceG = (__m256i *)(_aligned_malloc((size_t)(fullSize), 16));
-    __m256i *sourceB = (__m256i *)(_aligned_malloc((size_t)(fullSize), 16));
+	__m256i *sourceR = (__m256i *) (_mm_malloc((size_t) (fullSize), 16));
+	__m256i *sourceG = (__m256i *) (_mm_malloc((size_t) (fullSize), 16));
+	__m256i *sourceB = (__m256i *) (_mm_malloc((size_t) (fullSize), 16));
 
-    uint32_t *bufferContent = (uint32_t *)buffer->content;
+	uint32_t *bufferContent = (uint32_t *) buffer->content;
 
-    int index = 0;
-    int bufferIndex = rect.position.y * buffer->width + rect.position.x;
-    int line = buffer->width - rect.width;
+	int index = 0;
+	int bufferIndex = rect.position.y * buffer->width + rect.position.x;
+	int line = buffer->width - rect.width;
 
-    for (int rowIndex = 0; rowIndex < rect.height; ++rowIndex)
-    {
-        for (int columnIndex = 0; columnIndex < rect.width; ++columnIndex)
-        {
-            uint32_t r = (bufferContent[bufferIndex] & 0x000000ff);
-            uint32_t g = (bufferContent[bufferIndex] & 0x0000ff00) >> 8;
-            uint32_t b = (bufferContent[bufferIndex++] & 0x00ff0000) >> 16;
+	for (int rowIndex = 0; rowIndex < rect.height; ++rowIndex) {
+		for (int columnIndex = 0; columnIndex < rect.width; ++columnIndex) {
+			uint32_t r = (bufferContent[bufferIndex] & 0x000000ff);
+			uint32_t g = (bufferContent[bufferIndex] & 0x0000ff00) >> 8;
+			uint32_t b = (bufferContent[bufferIndex++] & 0x00ff0000) >> 16;
 
-            getUShortElement256(sourceR, index) = r;
-            getUShortElement256(sourceG, index) = g;
-            getUShortElement256(sourceB, index++) = b;
-        }
+			getUShortElement256(sourceR, index) = r;
+			getUShortElement256(sourceG, index) = g;
+			getUShortElement256(sourceB, index++) = b;
+		}
 
-        bufferIndex += line;
-    }
+		bufferIndex += line;
+	}
 
-    uint32_t rectColorR = (color & 0x000000ff);
-    uint32_t rectColorG = (color & 0x0000ff00) >> 8;
-    uint32_t rectColorB = (color & 0x00ff0000) >> 16;
-    uint32_t rectColorA = (color & 0xff000000) >> 24;
+	uint32_t rectColorR = (color & 0x000000ff);
+	uint32_t rectColorG = (color & 0x0000ff00) >> 8;
+	uint32_t rectColorB = (color & 0x00ff0000) >> 16;
+	uint32_t rectColorA = (color & 0xff000000) >> 24;
 
-    __m256i rectR = _mm256_set1_epi16(rectColorR * rectColorA);
-    __m256i rectG = _mm256_set1_epi16(rectColorG * rectColorA);
-    __m256i rectB = _mm256_set1_epi16(rectColorB * rectColorA);
+	__m256i rectR = _mm256_set1_epi16(rectColorR * rectColorA);
+	__m256i rectG = _mm256_set1_epi16(rectColorG * rectColorA);
+	__m256i rectB = _mm256_set1_epi16(rectColorB * rectColorA);
 
-    __m256i sourceA = _mm256_set1_epi16(255 - rectColorA);
+	__m256i sourceA = _mm256_set1_epi16(255 - rectColorA);
 
-    __m256i tmpR = _mm256_set1_epi16(0);
-    __m256i tmpG = _mm256_set1_epi16(0);
-    __m256i tmpB = _mm256_set1_epi16(0);
+	__m256i tmpR = _mm256_set1_epi16(0);
+	__m256i tmpG = _mm256_set1_epi16(0);
+	__m256i tmpB = _mm256_set1_epi16(0);
 
-    __m256i finalR = _mm256_set1_epi16(0);
-    __m256i finalG = _mm256_set1_epi16(0);
-    __m256i finalB = _mm256_set1_epi16(0);
+	__m256i finalR = _mm256_set1_epi16(0);
+	__m256i finalG = _mm256_set1_epi16(0);
+	__m256i finalB = _mm256_set1_epi16(0);
 
-    bufferIndex = rect.position.y * buffer->width + rect.position.x;
-    int widthCounter = 0;
+	bufferIndex = rect.position.y * buffer->width + rect.position.x;
+	int widthCounter = 0;
 
-    for (int i = 0; i < arraySize; ++i)
-    {
-        tmpR = _mm256_mullo_epi16(get256BitElement(sourceR, i, arraySize, remainder), sourceA);
-        tmpG = _mm256_mullo_epi16(get256BitElement(sourceG, i, arraySize, remainder), sourceA);
-        tmpB = _mm256_mullo_epi16(get256BitElement(sourceB, i, arraySize, remainder), sourceA);
+	for (int i = 0; i < arraySize; ++i) {
+		tmpR = _mm256_mullo_epi16(
+				get256BitElement(sourceR, i, arraySize, remainder), sourceA);
+		tmpG = _mm256_mullo_epi16(
+				get256BitElement(sourceG, i, arraySize, remainder), sourceA);
+		tmpB = _mm256_mullo_epi16(
+				get256BitElement(sourceB, i, arraySize, remainder), sourceA);
 
-        finalR = _mm256_add_epi16(tmpR, rectR);
-        finalG = _mm256_add_epi16(tmpG, rectG);
-        finalB = _mm256_add_epi16(tmpB, rectB);
+		finalR = _mm256_add_epi16(tmpR, rectR);
+		finalG = _mm256_add_epi16(tmpG, rectG);
+		finalB = _mm256_add_epi16(tmpB, rectB);
 
-        finalR = _mm256_srli_epi16(finalR, 8);
-        finalG = _mm256_srli_epi16(finalG, 8);
-        finalB = _mm256_srli_epi16(finalB, 8);
+		finalR = _mm256_srli_epi16(finalR, 8);
+		finalG = _mm256_srli_epi16(finalG, 8);
+		finalB = _mm256_srli_epi16(finalB, 8);
 
-        if (i != arraySize - 1 || (i == arraySize && remainder == 0))
-        {
-            for (int j = 0; j < 16; j++)
-            {
-                bufferContent[bufferIndex++] = 0xff000000 | finalB.m256i_u16[j] << 16 |
-                    finalG.m256i_u16[j] << 8 | finalR.m256i_u16[j];
+		if (i != arraySize - 1 || (i == arraySize && remainder == 0)) {
+			for (int j = 0; j < 16; j++) {
+//				bufferContent[bufferIndex++] = 0xff000000
+//						| finalB.m256i_u16[j] << 16 | finalG.m256i_u16[j] << 8
+//						| finalR.m256i_u16[j];
 
-                if (++widthCounter % rect.width == 0)
-                {
-                    bufferIndex += line;
-                }
-            }
-        }
-        else if (remainder != 0)
-        {
-            for (int j = 0; j < remainder; j++)
-            {
-                bufferContent[bufferIndex++] = 0xff000000 | finalB.m256i_u16[j] << 16 |
-                    finalG.m256i_u16[j] << 8 | finalR.m256i_u16[j];
-            }
+				if (++widthCounter % rect.width == 0) {
+					bufferIndex += line;
+				}
+			}
+		} else if (remainder != 0) {
+			for (int j = 0; j < remainder; j++) {
+//				bufferContent[bufferIndex++] = 0xff000000
+//						| finalB.m256i_u16[j] << 16 | finalG.m256i_u16[j] << 8
+//						| finalR.m256i_u16[j];
+			}
 
-            if (++widthCounter % rect.width == 0)
-            {
-                bufferIndex += line;
-            }
-        }
-    }
+			if (++widthCounter % rect.width == 0) {
+				bufferIndex += line;
+			}
+		}
+	}
 
-    if (sourceR)
-    {
-        _aligned_free(sourceR);
-    }
+	if (sourceR) {
+		_mm_free(sourceR);
+	}
 
-    if (sourceG)
-    {
-        _aligned_free(sourceG);
-    }
+	if (sourceG) {
+		_mm_free(sourceG);
+	}
 
-    if (sourceB)
-    {
-        _aligned_free(sourceB);
-    }
+	if (sourceB) {
+		_mm_free(sourceB);
+	}
 }
 
-void rectangleSSE(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color)
-{
-    int fullSize = rect.width * rect.height;
-    int arraySize = fullSize >> 3;
-    int remainder = fullSize % 8; 
+void rectangleSSE(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color) {
+	int fullSize = rect.width * rect.height;
+	int arraySize = fullSize >> 3;
+	int remainder = fullSize % 8;
 
-    if (remainder != 0)
-    {
-        ++arraySize;
-    }
+	if (remainder != 0) {
+		++arraySize;
+	}
 
-    fullSize = arraySize * 8 * 2;
+	fullSize = arraySize * 8 * 2;
 
-    __m128i *sourceR = (__m128i *)(_aligned_malloc((size_t)(fullSize), 16));
-    __m128i *sourceG = (__m128i *)(_aligned_malloc((size_t)(fullSize), 16));
-    __m128i *sourceB = (__m128i *)(_aligned_malloc((size_t)(fullSize), 16));
+	__m128i *sourceR = (__m128i *) (_mm_malloc((size_t) (fullSize), 16));
+	__m128i *sourceG = (__m128i *) (_mm_malloc((size_t) (fullSize), 16));
+	__m128i *sourceB = (__m128i *) (_mm_malloc((size_t) (fullSize), 16));
 
-    uint32_t *bufferContent = (uint32_t *)buffer->content;
+	uint32_t *bufferContent = (uint32_t *) buffer->content;
 
-    int index = 0;
-    int bufferIndex = rect.position.y * buffer->width + rect.position.x;
-    int line = buffer->width - rect.width;
+	int index = 0;
+	int bufferIndex = rect.position.y * buffer->width + rect.position.x;
+	int line = buffer->width - rect.width;
 
-    for (int rowIndex = 0; rowIndex < rect.height; ++rowIndex)
-    {
-        for (int columnIndex = 0; columnIndex < rect.width; ++columnIndex)
-        {
-            uint32_t r = (bufferContent[bufferIndex] & 0x000000ff); 
-            uint32_t g = (bufferContent[bufferIndex] & 0x0000ff00) >> 8;
-            uint32_t b = (bufferContent[bufferIndex++] & 0x00ff0000) >> 16;
+	for (int rowIndex = 0; rowIndex < rect.height; ++rowIndex) {
+		for (int columnIndex = 0; columnIndex < rect.width; ++columnIndex) {
+			uint32_t r = (bufferContent[bufferIndex] & 0x000000ff);
+			uint32_t g = (bufferContent[bufferIndex] & 0x0000ff00) >> 8;
+			uint32_t b = (bufferContent[bufferIndex++] & 0x00ff0000) >> 16;
 
-            getUShortElement(sourceR, index) = r;
-            getUShortElement(sourceG, index) = g;
-            getUShortElement(sourceB, index++) = b; 
-        }
+			getUShortElement(sourceR, index) = r;
+			getUShortElement(sourceG, index) = g;
+			getUShortElement(sourceB, index++) = b;
+		}
 
-        bufferIndex += line;
-    }
+		bufferIndex += line;
+	}
 
-    uint32_t rectColorR = (color & 0x000000ff);
-    uint32_t rectColorG = (color & 0x0000ff00) >> 8;
-    uint32_t rectColorB = (color & 0x00ff0000) >> 16;
-    uint32_t rectColorA = (color & 0xff000000) >> 24;
+	uint32_t rectColorR = (color & 0x000000ff);
+	uint32_t rectColorG = (color & 0x0000ff00) >> 8;
+	uint32_t rectColorB = (color & 0x00ff0000) >> 16;
+	uint32_t rectColorA = (color & 0xff000000) >> 24;
 
-    __m128i rectR = _mm_set1_epi16(rectColorR * rectColorA);
-    __m128i rectG = _mm_set1_epi16(rectColorG * rectColorA);
-    __m128i rectB = _mm_set1_epi16(rectColorB * rectColorA);
+	__m128i rectR = _mm_set1_epi16(rectColorR * rectColorA);
+	__m128i rectG = _mm_set1_epi16(rectColorG * rectColorA);
+	__m128i rectB = _mm_set1_epi16(rectColorB * rectColorA);
 
-    __m128i sourceA = _mm_set1_epi16(255 - rectColorA);
+	__m128i sourceA = _mm_set1_epi16(255 - rectColorA);
 
-    __m128i tmpR = _mm_set1_epi16(0);
-    __m128i tmpG = _mm_set1_epi16(0);
-    __m128i tmpB = _mm_set1_epi16(0);
+	__m128i tmpR = _mm_set1_epi16(0);
+	__m128i tmpG = _mm_set1_epi16(0);
+	__m128i tmpB = _mm_set1_epi16(0);
 
-    __m128i finalR = _mm_set1_epi16(0);
-    __m128i finalG = _mm_set1_epi16(0);
-    __m128i finalB = _mm_set1_epi16(0);
+	__m128i finalR = _mm_set1_epi16(0);
+	__m128i finalG = _mm_set1_epi16(0);
+	__m128i finalB = _mm_set1_epi16(0);
 
-    bufferIndex = rect.position.y * buffer->width + rect.position.x;
-    int widthCounter = 0;
+	bufferIndex = rect.position.y * buffer->width + rect.position.x;
+	int widthCounter = 0;
 
-    for (int i = 0; i < arraySize; ++i)
-    {
-        tmpR = _mm_mullo_epi16(get128BitElement(sourceR, i, arraySize, remainder), sourceA);
-        tmpG = _mm_mullo_epi16(get128BitElement(sourceG, i, arraySize, remainder), sourceA);
-        tmpB = _mm_mullo_epi16(get128BitElement(sourceB, i, arraySize, remainder), sourceA);
-        
-        finalR = _mm_add_epi16(tmpR, rectR);
-        finalG = _mm_add_epi16(tmpG, rectG);
-        finalB = _mm_add_epi16(tmpB, rectB);
+	for (int i = 0; i < arraySize; ++i) {
+		tmpR = _mm_mullo_epi16(
+				get128BitElement(sourceR, i, arraySize, remainder), sourceA);
+		tmpG = _mm_mullo_epi16(
+				get128BitElement(sourceG, i, arraySize, remainder), sourceA);
+		tmpB = _mm_mullo_epi16(
+				get128BitElement(sourceB, i, arraySize, remainder), sourceA);
 
-        finalR = _mm_srli_epi16(finalR, 8);
-        finalG = _mm_srli_epi16(finalG, 8);
-        finalB = _mm_srli_epi16(finalB, 8);
+		finalR = _mm_add_epi16(tmpR, rectR);
+		finalG = _mm_add_epi16(tmpG, rectG);
+		finalB = _mm_add_epi16(tmpB, rectB);
 
-        if (i != arraySize - 1 || (i == arraySize && remainder == 0))
-        {
-            for (int j = 0; j < 8; j++)
-            {
-                bufferContent[bufferIndex++] =  0xff000000 | finalB.m128i_u16[j] << 16 |
-                    finalG.m128i_u16[j] << 8 | finalR.m128i_u16[j]; 
+		finalR = _mm_srli_epi16(finalR, 8);
+		finalG = _mm_srli_epi16(finalG, 8);
+		finalB = _mm_srli_epi16(finalB, 8);
 
-                if (++widthCounter % rect.width == 0)
-                {
-                    bufferIndex += line;
-                }
-            }
-        }
-        else if (remainder != 0)
-        {
-            for (int j = 0; j < remainder; j++)
-            {
-                bufferContent[bufferIndex++] = 0xff000000 | finalB.m128i_u16[j] << 16 |
-                    finalG.m128i_u16[j] << 8 | finalR.m128i_u16[j]; 
-            } 
+		if (i != arraySize - 1 || (i == arraySize && remainder == 0)) {
+			for (int j = 0; j < 8; j++) {
+//				bufferContent[bufferIndex++] = 0xff000000
+//						| finalB.m128i_u16[j] << 16 | finalG.m128i_u16[j] << 8
+//						| finalR.m128i_u16[j];
 
-            if (++widthCounter % rect.width == 0)
-            {
-                bufferIndex += line;
-            }
-        }
-    }
+				if (++widthCounter % rect.width == 0) {
+					bufferIndex += line;
+				}
+			}
+		} else if (remainder != 0) {
+			for (int j = 0; j < remainder; j++) {
+//				bufferContent[bufferIndex++] = 0xff000000
+//						| finalB.m128i_u16[j] << 16 | finalG.m128i_u16[j] << 8
+//						| finalR.m128i_u16[j];
+			}
 
-    if (sourceR)
-    {
-        _aligned_free(sourceR);
-    }
+			if (++widthCounter % rect.width == 0) {
+				bufferIndex += line;
+			}
+		}
+	}
 
-    if (sourceG)
-    {
-        _aligned_free(sourceG);
-    }
+	if (sourceR) {
+		_mm_free(sourceR);
+	}
 
-    if (sourceB)
-    {
-        _aligned_free(sourceB);
-    }
+	if (sourceG) {
+		_mm_free(sourceG);
+	}
+
+	if (sourceB) {
+		_mm_free(sourceB);
+	}
 }
 
 void rectangle(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color) {
 #if _WIN32
-    if (rect.position.y < 0)
-    {
-        rect.position.y = 0;
-    }
+	if (rect.position.y < 0)
+	{
+		rect.position.y = 0;
+	}
 
-    if (rect.position.x < 0)
-    {
-        rect.position.x = 0;
-    }
+	if (rect.position.x < 0)
+	{
+		rect.position.x = 0;
+	}
 
-    if (rect.position.y + rect.height > buffer->height)
-    {
-        rect.height = buffer->height - rect.position.y;
-    }
+	if (rect.position.y + rect.height > buffer->height)
+	{
+		rect.height = buffer->height - rect.position.y;
+	}
 
-    if (rect.position.x + rect.width > buffer->width)
-    {
-        rect.width = buffer->width - rect.position.x;
-    }
+	if (rect.position.x + rect.width > buffer->width)
+	{
+		rect.width = buffer->width - rect.position.x;
+	}
 
-    rectangleSSE(buffer, rect, color);
-    return;
+	rectangleSSE(buffer, rect, color);
+	return;
 #endif
 
 	int offsetX = rect.position.x;

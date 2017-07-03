@@ -363,9 +363,11 @@ void rectangleSSE(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color) {
 
 		if (i != arraySize - 1 || (i == arraySize && remainder == 0)) {
 			for (int j = 0; j < 8; j++) {
-//				bufferContent[bufferIndex++] = 0xff000000
-//						| finalB.m128i_u16[j] << 16 | finalG.m128i_u16[j] << 8
-//						| finalR.m128i_u16[j];
+				const int n = 0;
+				bufferContent[bufferIndex++] =
+						0xff000000
+								| _mm_extract_epi16(finalB, n)
+										<< 16| _mm_extract_epi16(finalG, n) << 8 | _mm_extract_epi16(finalR, n);
 
 				if (++widthCounter % rect.width == 0) {
 					bufferIndex += line;

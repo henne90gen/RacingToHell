@@ -109,7 +109,6 @@ void triangleTop(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1,
 	}
 }
 
-// FIXME gap appears when not rendering just top or bottom flat triangle
 void triangle(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1,
 		Math::Vector2f point2, Math::Vector2f point3) {
 	if (point1.y > point2.y) {
@@ -130,9 +129,12 @@ void triangle(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1,
 		float x = point1.x
 				+ ((point2.y - point1.y) / (point3.y - point1.y))
 						* (point3.x - point1.x);
-		Math::Vector2f point4 = Math::Vector2f { x, point2.y };
-		triangleBottom(buffer, color, point1, point2, point4);
-		triangleTop(buffer, color, point2, point4, point3);
+		Math::Vector2f point4 = Math::Vector2f( { x, point2.y });
+		triangleTop(buffer, color, point2, point4 - Math::Vector2f( { 0, 1 }),
+				point3 - Math::Vector2f( { 0, 1 }));
+		triangleBottom(buffer, color, point1,
+				point2 + Math::Vector2f( { 0, 1 }), point4 + Math::Vector2f( {
+						0, 1 }));
 	}
 }
 
@@ -364,10 +366,10 @@ void rectangleSSE(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color) {
 		if (i != arraySize - 1 || (i == arraySize && remainder == 0)) {
 			for (int j = 0; j < 8; j++) {
 				const int n = 0;
-				bufferContent[bufferIndex++] =
-						0xff000000
-								| _mm_extract_epi16(finalB, n)
-										<< 16| _mm_extract_epi16(finalG, n) << 8 | _mm_extract_epi16(finalR, n);
+				bufferContent[bufferIndex++] = 0xff000000
+						| _mm_extract_epi16(finalB, n) << 16
+						| _mm_extract_epi16(finalG, n) << 8
+						| _mm_extract_epi16(finalR, n);
 
 				if (++widthCounter % rect.width == 0) {
 					bufferIndex += line;

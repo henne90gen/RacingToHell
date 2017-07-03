@@ -62,31 +62,25 @@ struct Resources {
 	Render::Texture trafficCarTextures[7];
 	Render::Texture itemTextures[2];
 	Render::Texture explosion[9 * 9];
+	Render::Texture tank;
+	Render::Texture tankCannon;
 
 	Text::Character characterMap[3][100];
 	unsigned availableFontSizes[3] = { 7, 10, 20 };
 
-	Sound::LoadedSound AIShot;
+	Sound::LoadedSound aiShot;
 	Sound::LoadedSound playerShot;
 
-	Sound::LoadedSound Level1Music;
+	Sound::LoadedSound level1Music;
 };
 
 enum class MenuState {
 	GAME, MAIN, GAME_OVER, PAUSE, CREDITS
 };
 
-//enum class MenuType {
-//	MAIN_MENU,
-//	MAIN_DIFFICULTY,
-//	MAIN_GAMEMODE,
-//	PAUSE_MENU,
-//	CREDITS_MENU,
-//	GAME_OVER_MENU
-//};
-
 struct MenuItem {
 	char text[50];
+	bool bouncy = true;
 };
 
 struct Menu {
@@ -96,6 +90,20 @@ struct Menu {
 	Math::Vector2f position;
 	int lineSpacing = 55;
 	bool isVisible = true;
+};
+
+enum class BossType {
+	TANK, MECH
+};
+
+struct Boss {
+	BossType type;
+	Math::Vector2f position;
+	float speed;
+	float health;
+	int16_t currentPhase;
+	int16_t numberOfPhases;
+	int32_t bulletFrequency;
 };
 
 struct GameState {
@@ -111,14 +119,15 @@ struct GameState {
 	uint32_t bulletFrequency;
 	uint32_t itemFrequency;
 	float bulletSpeed;
+	bool isInBossFight;
 
 	MenuState menuState = MenuState::MAIN;
 	Menu menus[3];
 	unsigned menuCount, activeMenuIndex;
 
-
 	Player player;
 
+	Boss boss;
 
 	int32_t lastItemIndex = -1;
 	Item items[200];
@@ -154,6 +163,8 @@ struct BitmapHeader {
 GameState* getGameState(GameMemory* memory);
 void resetGameState(GameState *gameState);
 Math::Vector2f getPlayerDimensions(GameState *gameState);
+void spawnBullet(GameState *gameState, Math::Vector2f position,
+		Math::Vector2f velocity, bool playerBullet);
 
 #define UPDATE_AND_RENDER(name) void name(VideoBuffer *buffer, Input *input, GameMemory *memory)
 typedef UPDATE_AND_RENDER(update_and_render);

@@ -15,6 +15,8 @@ void loadMainMenu(GameState *gameState) {
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Start Game");
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Multiplayer");
 	addMenuItem(&menu->items[menu->numberMenuItems++], "  Car");
+	menu->items[menu->numberMenuItems - 1].bouncy = false; // remove menu bounce effect
+
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Difficulty");
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Game mode");
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Credits");
@@ -93,7 +95,7 @@ void loadMenu(GameState *gameState, MenuState menuState) {
  * Switch to the game over screen
  */
 void gameOver(GameState *gameState) {
-	loadMenu(gameState, MenuState::GAME_OVER);
+//	loadMenu(gameState, MenuState::GAME_OVER);
 }
 
 void handleMenuEnterMain(GameMemory *memory) {
@@ -192,8 +194,16 @@ void renderMenuItem(GameMemory *memory, VideoBuffer *buffer, MenuItem item,
 		g = 128;
 		b = 128;
 	}
-	if (highlight) {
-		position = position + (Math::Vector2f { 20, 0 });
+	if (highlight && menuHighlight) {
+		// make the highlighted item 'bounce'
+		float a = 5;
+		if (item.bouncy) {
+			a = sin(0.12 * getGameState(memory)->frameCounter) * 7;
+			if (a < 0) {
+				a *= -1;
+			}
+		}
+		position = position + (Math::Vector2f { 15 + a, 0 });
 	}
 	Text::renderText(memory, buffer, std::string(item.text), position,
 			Text::FontSize::Big, r, g, b);
@@ -229,8 +239,14 @@ void renderCarSelection(GameMemory *memory, VideoBuffer *buffer,
 	}
 
 	float offsetX = position.x;
-	if (highlight) {
-		offsetX += 20;
+	float a = 5;
+	if (highlight && menuHighlight) {
+		offsetX += 15;
+		a = sin(0.1 * getGameState(memory)->frameCounter) * 7;
+		if (a < 0) {
+			a *= -1;
+		}
+		offsetX += a;
 	}
 
 	Math::Vector2f point1 = { offsetX + 12, position.y };
@@ -238,7 +254,7 @@ void renderCarSelection(GameMemory *memory, VideoBuffer *buffer,
 	Math::Vector2f point3 = { offsetX, position.y + 13 };
 	Render::triangle(buffer, color, point1, point2, point3);
 
-	offsetX += 100;
+	offsetX += 110 - 2 * a;
 	point1 = {offsetX, position.y};
 	point2 = {offsetX, position.y + 26};
 	point3 = {offsetX + 12, position.y + 13};

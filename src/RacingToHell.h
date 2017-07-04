@@ -81,6 +81,7 @@ enum class MenuState {
 struct MenuItem {
 	char text[50];
 	bool bouncy = true;
+	uint32_t animationCounter;
 };
 
 struct Menu {

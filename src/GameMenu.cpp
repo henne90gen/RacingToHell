@@ -186,7 +186,7 @@ void handleMenuEnter(GameMemory *memory, GameState *gameState) {
 /**
  * Renders a single menu item to screen
  */
-void renderMenuItem(GameMemory *memory, VideoBuffer *buffer, MenuItem item,
+void renderMenuItem(GameMemory *memory, VideoBuffer *buffer, MenuItem *item,
 		Math::Vector2f position, bool menuHighlight, bool highlight) {
 	int r = 255, g = 255, b = 255;
 	if (!menuHighlight) {
@@ -197,15 +197,19 @@ void renderMenuItem(GameMemory *memory, VideoBuffer *buffer, MenuItem item,
 	if (highlight && menuHighlight) {
 		// make the highlighted item 'bounce'
 		float a = 5;
-		if (item.bouncy) {
-			a = sin(0.12 * getGameState(memory)->frameCounter) * 7;
-			if (a < 0) {
-				a *= -1;
+		if (item->bouncy) {
+			item->animationCounter++;
+			if (item->animationCounter <= 25) {
+				a = sin(0.4 * (item->animationCounter - 2 * PI))
+						* (100 / (item->animationCounter - 2 * PI));
+				if (a < 0) {
+					a *= -1;
+				}
 			}
 		}
 		position = position + (Math::Vector2f { 15 + a, 0 });
 	}
-	Text::renderText(memory, buffer, std::string(item.text), position,
+	Text::renderText(memory, buffer, std::string(item->text), position,
 			Text::FontSize::Big, r, g, b);
 }
 
@@ -219,6 +223,7 @@ void changeMenuItemSelection(Menu *menu, int direction) {
 	} else if (menu->currentMenuItem < 0) {
 		menu->currentMenuItem = menu->numberMenuItems - 1;
 	}
+	menu->items[menu->currentMenuItem].animationCounter = 0;
 }
 
 void changeCarSelection(GameState *gameState, int direction) {
@@ -367,7 +372,7 @@ void updateAndRenderMenus(GameMemory *memory, VideoBuffer *buffer,
 		for (unsigned i = 0; i < menu->numberMenuItems; i++) {
 			bool highlight = i == (unsigned) menu->currentMenuItem;
 
-			renderMenuItem(memory, buffer, menu->items[i], currentPosition,
+			renderMenuItem(memory, buffer, &menu->items[i], currentPosition,
 					menuHighlight, highlight);
 
 			currentPosition = currentPosition + Math::Vector2f( { 0,

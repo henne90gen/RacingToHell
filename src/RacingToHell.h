@@ -101,7 +101,7 @@ struct Boss {
 	BossType type;
 	Math::Vector2f position;
 	float speed;
-	float health;
+	float health, maxHealth;
 	int16_t currentPhase;
 	int16_t numberOfPhases;
 	int32_t bulletFrequency;

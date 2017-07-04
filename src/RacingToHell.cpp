@@ -328,9 +328,7 @@ void updateAndRenderTraffic(VideoBuffer *buffer, GameState *gameState,
 			carIndex = std::rand() % gameState->lastTrafficCarIndex;
 		}
 		Car car = gameState->traffic[carIndex];
-		Math::Vector2f position = { car.position.x, car.position.y };
-		Math::Vector2f velocity = gameState->player.position - car.position;
-		spawnBullet(gameState, position, velocity, false);
+		shootAtPlayer(gameState, car.position);
 	}
 
 	for (int i = 0; i < gameState->lastTrafficCarIndex + 1; i++) {

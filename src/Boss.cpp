@@ -1,10 +1,25 @@
+void shootAtPlayer(GameState *gameState, Math::Vector2f origin) {
+	Math::Vector2f direction = gameState->player.position - origin;
+	spawnBullet(gameState, origin, direction, false);
+}
+
 void updateTank(GameState *gameState) {
 	Boss *boss = &gameState->boss;
 	Render::Texture *tankTexture = &gameState->resources.tank;
+	static int counter = 0;
+	static bool shooting = false;
 
 	if (boss->health < 0) {
 //		levelUp(gameState);
+	} else if (boss->health < boss->maxHealth * 0.3) {
+		boss->currentPhase = 2;
+	} else if (boss->health < boss->maxHealth * 0.6) {
+		boss->currentPhase = 1;
+	} else {
+		boss->currentPhase = 0;
 	}
+
+	boss->currentPhase = 1;
 
 	switch (boss->currentPhase) {
 	case 0: // Shoot and drive left and right
@@ -19,8 +34,33 @@ void updateTank(GameState *gameState) {
 					gameState->bulletSpeed }), false);
 		}
 		break;
-	case 1: //
-
+	case 1: // Three bullet burst
+		Math::Vector2f centerPosition = Math::Vector2f(
+				{ WINDOW_WIDTH / 2, 150 });
+		if (boss->speed < 0) {
+			boss->speed = -boss->speed;
+		}
+		if (boss->position.x != centerPosition.x
+				|| boss->position.y != centerPosition.y) {
+			Math::Vector2f movement = centerPosition - boss->position;
+			movement = Math::normalize(movement);
+			movement = movement * boss->speed;
+			boss->position = boss->position + movement;
+		}
+		if (gameState->frameCounter % 5 == 0) {
+			if (counter == -3) {
+				shooting = true;
+				counter = 0;
+			} else if (counter == 3) {
+				shooting = false;
+			}
+			if (counter < 3 && shooting) {
+				counter++;
+				shootAtPlayer(gameState, boss->position);
+			} else {
+				counter--;
+			}
+		}
 		break;
 	}
 }

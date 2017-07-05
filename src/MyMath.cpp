@@ -2,6 +2,12 @@
 
 namespace Math {
 
+Vector2f::Vector2f(float angle) :
+		x(0), y(0) {
+	x = cos(angle);
+	y = sin(angle);
+}
+
 Vector2f operator+(const Vector2f &v1, const Vector2f &v2) {
 	Vector2f result;
 
@@ -43,6 +49,13 @@ float length(const Vector2f &v) {
 
 Vector2f normalize(const Vector2f &v) {
 	return v * (1.0f / length(v));
+}
+
+/**
+ * Angle goes from -pi to pi
+ */
+float angle(const Vector2f &v) {
+	return atan2(v.y, v.x);
 }
 
 }

@@ -73,7 +73,7 @@ void updateAndRenderRoad(VideoBuffer *buffer, GameState *gameState,
 void spawnBullet(GameState *gameState, Math::Vector2f position,
 		Math::Vector2f velocity, bool playerBullet) {
 
-	velocity = velocity * (1.0 / Math::length(velocity));
+	velocity = Math::normalize(velocity);
 	// FIXME balance bullet speed
 	velocity = velocity * gameState->bulletSpeed;
 

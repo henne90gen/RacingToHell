@@ -382,7 +382,7 @@ void updateAndRenderMenus(GameMemory *memory, VideoBuffer *buffer,
 
 	if (gameState->menuState == MenuState::MAIN) {
 		Math::Vector2f carSelPos = gameState->menus[0].position;
-		carSelPos = carSelPos + (Math::Vector2f ) { 20, 133 };
+		carSelPos = carSelPos + Math::Vector2f{ 20, 133 };
 		bool highlightCarSelect = 2 == gameState->menus[0].currentMenuItem;
 		renderCarSelection(memory, buffer, carSelPos,
 				0 == gameState->activeMenuIndex, highlightCarSelect);

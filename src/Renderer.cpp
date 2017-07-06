@@ -138,10 +138,11 @@ void triangle(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1,
 	}
 }
 
+#if _WIN32
 uint16_t &getUShortElement(__m128i *ptr, int index) {
 	int bigIndex = index >> 3;
 	int smallIndex = index - (bigIndex << 3);
-//    return ptr[bigIndex].m128i_u16[smallIndex];
+    return ptr[bigIndex].m128i_u16[smallIndex];
 }
 
 __m128i &get128BitElement(__m128i* ptr, int bigIndex, int bigSize, int smallRemainder)
@@ -153,7 +154,7 @@ __m128i &get128BitElement(__m128i* ptr, int bigIndex, int bigSize, int smallRema
 	else
 	{
 		for (int i = smallRemainder; i<8; ++i) {
-//            ptr[bigIndex].m128i_u16[i] = 1;
+            ptr[bigIndex].m128i_u16[i] = 1;
 		}
 		return ptr[bigIndex];
 	}
@@ -162,7 +163,7 @@ __m128i &get128BitElement(__m128i* ptr, int bigIndex, int bigSize, int smallRema
 uint16_t &getUShortElement256(__m256i *ptr, int index) {
 	int bigIndex = index >> 4;
 	int smallIndex = index - (bigIndex << 4);
-//	return ptr[bigIndex].m256i_u16[smallIndex];
+	return ptr[bigIndex].m256i_u16[smallIndex];
 }
 
 __m256i &get256BitElement(__m256i* ptr, int bigIndex, int bigSize, int smallRemainder)
@@ -174,7 +175,7 @@ __m256i &get256BitElement(__m256i* ptr, int bigIndex, int bigSize, int smallRema
 	else
 	{
 		for (int i = smallRemainder; i < 16; ++i) {
-//		ptr[bigIndex].m256i_u16[i] = 1;
+		ptr[bigIndex].m256i_u16[i] = 1;
 		}
 		return ptr[bigIndex];
 	}
@@ -256,9 +257,9 @@ void rectangleSSE256(VideoBuffer *buffer, Math::Rectangle rect,
 
 		if (i != arraySize - 1 || (i == arraySize && remainder == 0)) {
 			for (int j = 0; j < 16; j++) {
-//				bufferContent[bufferIndex++] = 0xff000000
-//						| finalB.m256i_u16[j] << 16 | finalG.m256i_u16[j] << 8
-//						| finalR.m256i_u16[j];
+				bufferContent[bufferIndex++] = 0xff000000
+						| finalB.m256i_u16[j] << 16 | finalG.m256i_u16[j] << 8
+						| finalR.m256i_u16[j];
 
 				if (++widthCounter % rect.width == 0) {
 					bufferIndex += line;
@@ -266,9 +267,9 @@ void rectangleSSE256(VideoBuffer *buffer, Math::Rectangle rect,
 			}
 		} else if (remainder != 0) {
 			for (int j = 0; j < remainder; j++) {
-//				bufferContent[bufferIndex++] = 0xff000000
-//						| finalB.m256i_u16[j] << 16 | finalG.m256i_u16[j] << 8
-//						| finalR.m256i_u16[j];
+				bufferContent[bufferIndex++] = 0xff000000
+						| finalB.m256i_u16[j] << 16 | finalG.m256i_u16[j] << 8
+						| finalR.m256i_u16[j];
 			}
 
 			if (++widthCounter % rect.width == 0) {
@@ -365,11 +366,8 @@ void rectangleSSE(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color) {
 
 		if (i != arraySize - 1 || (i == arraySize && remainder == 0)) {
 			for (int j = 0; j < 8; j++) {
-				const int n = 0;
-				bufferContent[bufferIndex++] = 0xff000000
-						| _mm_extract_epi16(finalB, n) << 16
-						| _mm_extract_epi16(finalG, n) << 8
-						| _mm_extract_epi16(finalR, n);
+                bufferContent[bufferIndex++] = 0xff000000 | finalB.m128i_u16[j] << 16 |
+                    finalG.m128i_u16[j] << 8 | finalR.m128i_u16[j];
 
 				if (++widthCounter % rect.width == 0) {
 					bufferIndex += line;
@@ -377,9 +375,9 @@ void rectangleSSE(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color) {
 			}
 		} else if (remainder != 0) {
 			for (int j = 0; j < remainder; j++) {
-//				bufferContent[bufferIndex++] = 0xff000000
-//						| finalB.m128i_u16[j] << 16 | finalG.m128i_u16[j] << 8
-//						| finalR.m128i_u16[j];
+				bufferContent[bufferIndex++] = 0xff000000
+						| finalB.m128i_u16[j] << 16 | finalG.m128i_u16[j] << 8
+						| finalR.m128i_u16[j];
 			}
 
 			if (++widthCounter % rect.width == 0) {
@@ -400,6 +398,58 @@ void rectangleSSE(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color) {
 		_mm_free(sourceB);
 	}
 }
+
+void rectangleAMP(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color)
+{
+    uint32_t *sourcePixelPointer = (uint32_t *)buffer->content + ((uint32_t)rect.position.y * buffer->width);
+
+    uint32_t rectColorR = (color & 0x000000ff);
+    uint32_t rectColorG = (color & 0x0000ff00) >> 8;
+    uint32_t rectColorB = (color & 0x00ff0000) >> 16;
+    uint32_t rectColorA = (color & 0xff000000) >> 24;
+
+    uint32_t rectR = rectColorR * rectColorA;
+    uint32_t rectG = rectColorG * rectColorA;
+    uint32_t rectB = rectColorB * rectColorA;
+
+    uint32_t sourceA = 255 - rectColorA;
+
+    uint32_t x1 = (uint32_t)rect.position.x;
+    uint32_t x2 = (uint32_t)rect.position.x + rect.width;
+
+    concurrency::array_view<uint32_t, 2> sourcePixels(rect.height, buffer->width, sourcePixelPointer);
+
+    concurrency::parallel_for_each(sourcePixels.extent,
+        [=](concurrency::index<2> idx) restrict(amp)
+        {
+            if (idx[1] < x1 || idx[1] > x2)
+            {
+                return;
+            }
+
+            uint32_t sourcePixel = sourcePixels[idx];
+
+            uint32_t sourceR = (sourcePixel & 0x000000ff);;
+            uint32_t sourceG = (sourcePixel & 0x0000ff00) >> 8;
+            uint32_t sourceB = (sourcePixel & 0x00ff0000) >> 16;
+
+            sourceR *= sourceA;
+            sourceG *= sourceA;
+            sourceB *= sourceA;
+
+            uint32_t finalR = (sourceR + rectR) >> 8;
+            uint32_t finalG = (sourceG + rectG) >> 8;
+            uint32_t finalB = (sourceB + rectB) >> 8;
+
+            sourcePixels[idx] = 0xff000000 | finalB << 16 |
+                finalG << 8 | finalR;
+        }
+    );
+
+    Concurrency::copy(sourcePixels, sourcePixelPointer);
+}
+
+#endif
 
 void rectangle(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color) {
 #if _WIN32
@@ -423,7 +473,7 @@ void rectangle(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color) {
 		rect.width = buffer->width - rect.position.x;
 	}
 
-	rectangleSSE(buffer, rect, color);
+	rectangleAMP(buffer, rect, color);
 	return;
 #endif
 

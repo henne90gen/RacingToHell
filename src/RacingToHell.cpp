@@ -7,6 +7,7 @@
 #include "Font.cpp"
 #include "Sound.cpp"
 #include "GameMenu.cpp"
+#include "Boss.cpp"
 #include "Helper.cpp"
 #include "Init.cpp"
 
@@ -102,7 +103,7 @@ void spawnBullet(GameState *gameState, Math::Vector2f position,
 		Sound::output(gameState, &gameState->resources.playerShot, 0.1f, 0.1f,
 				Sound::PLAY_ONCE);
 	} else {
-		Sound::output(gameState, &gameState->resources.AIShot, 0.1f, 0.1f,
+		Sound::output(gameState, &gameState->resources.aiShot, 0.1f, 0.1f,
 				Sound::PLAY_ONCE);
 	}
 }
@@ -327,9 +328,7 @@ void updateAndRenderTraffic(VideoBuffer *buffer, GameState *gameState,
 			carIndex = std::rand() % gameState->lastTrafficCarIndex;
 		}
 		Car car = gameState->traffic[carIndex];
-		Math::Vector2f position = { car.position.x, car.position.y };
-		Math::Vector2f velocity = gameState->player.position - car.position;
-		spawnBullet(gameState, position, velocity, false);
+		shootAtPlayer(gameState, car.position);
 	}
 
 	for (int i = 0; i < gameState->lastTrafficCarIndex + 1; i++) {
@@ -473,9 +472,12 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState,
 void updateAndRenderTimer(VideoBuffer *buffer, GameState *gameState,
 		bool shouldUpdate) {
 	if (shouldUpdate) {
-		gameState->levelTime += 10.0f / 60.0f;
+		if (!gameState->isInBossFight) {
+			gameState->levelTime += 10.0f / 60.0f;
+		}
 		if (gameState->levelTime >= gameState->maxLevelTime) {
 			gameState->levelTime = 0;
+			gameState->isInBossFight = true;
 		}
 	}
 
@@ -530,8 +532,11 @@ void updateAndRenderGame(VideoBuffer *buffer, Input *input, GameMemory *memory,
 
 	updateAndRenderTraffic(buffer, gameState, update);
 
-	if (/*gameState->mainMenu.state != MAIN
-	 &&*/gameState->menuState != MenuState::CREDITS) {
+	if (gameState->isInBossFight) {
+		updateAndRenderBoss(buffer, gameState, update);
+	}
+
+	if (gameState->menuState != MenuState::CREDITS) {
 		// render player after traffic, so he is always on top
 		renderPlayer(buffer, gameState);
 	}
@@ -554,13 +559,9 @@ UPDATE_AND_RENDER(updateAndRender) {
 	updateAndRenderGame(buffer, input, memory, gameState,
 			gameState->menuState == MenuState::GAME);
 
-	if (gameState->menuState != MenuState::GAME) {
-		updateAndRenderMenus(memory, buffer, input);
-	}
-
 	if (input->escapeKeyClicked && gameState->menuState == MenuState::GAME) {
-		getMenuByType(gameState, MenuType::PAUSE_MENU)->isVisible = true;
-		gameState->menuState = MenuState::PAUSE;
-		gameState->activeMenu = MenuType::PAUSE_MENU;
+		loadMenu(gameState, MenuState::PAUSE);
+	} else if (gameState->menuState != MenuState::GAME) {
+		updateAndRenderMenus(memory, buffer, input);
 	}
 }

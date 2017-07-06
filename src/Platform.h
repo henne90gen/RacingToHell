@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include <string>
+#include <x86intrin.h>
 
 #define WINDOW_WIDTH 600
 #define WINDOW_HEIGHT 800

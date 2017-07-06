@@ -3,11 +3,11 @@
  */
 void loadAudioClips(GameMemory* memory) {
 	GameState *gameState = getGameState(memory);
-	gameState->resources.AIShot = Sound::loadWAV(memory,
+	gameState->resources.aiShot = Sound::loadWAV(memory,
 			"./res/sound/shotAI.wav");
 	gameState->resources.playerShot = Sound::loadWAV(memory,
 			"./res/sound/shotPlayer.wav");
-	gameState->resources.Level1Music = Sound::loadWAV(memory,
+	gameState->resources.level1Music = Sound::loadWAV(memory,
 			"./res/sound/music/level1.wav");
 }
 
@@ -64,6 +64,12 @@ void loadTextures(GameMemory *memory) {
 		}
 	}
 	memory->freeFile(&explosionFile);
+
+	File tankFile = memory->readFile("./res/textures/bosses/tank.bmp");
+	gameState->resources.tank = readBmpIntoMemory(tankFile, memory);
+	File tankCannonFile = memory->readFile(
+			"./res/textures/bosses/tank_cannon.bmp");
+	gameState->resources.tankCannon = readBmpIntoMemory(tankCannonFile, memory);
 }
 
 /**
@@ -101,6 +107,10 @@ void resetGameState(GameState *gameState) {
 	gameState->lastPlayerBulletIndex = -1;
 	gameState->lastTrafficCarIndex = -1;
 
+	gameState->isInBossFight = true;
+	loadBoss(gameState);
+
+	loadMenu(gameState, MenuState::MAIN);
 	// FIXME what is lastPlayingSound?
 }
 
@@ -117,20 +127,13 @@ void init(GameMemory *memory) {
 	*gameState = {};
 	resetGameState(gameState);
 
-    loadMainMenu(gameState);
-    loadDifficultyMenu(gameState);
-    loadGamemodeMenu(gameState);
-    loadPauseMenu(gameState);
-    loadCreditsMenu(gameState);
-    loadGameOverMenu(gameState);
-
 	Text::loadFont(memory, "./res/font/arial.ttf");
 
 	loadAudioClips(memory);
 
 	loadTextures(memory);
 
-	Sound::output(gameState, &gameState->resources.Level1Music, 0.1f, 0.1f,
+	Sound::output(gameState, &gameState->resources.level1Music, 0.1f, 0.1f,
 			Sound::PLAY_LOOP);
 }
 

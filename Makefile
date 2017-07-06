@@ -18,7 +18,7 @@ else
 	include linux/Makefile
 endif
 
-GCC_FLAGS := -Wall -g -O0
+GCC_FLAGS := -Wall -g -O0 -mavx2
 
 clean:
 	$(CLEAN_CMD)

@@ -20,8 +20,6 @@ void updateTank(GameState *gameState) {
 		boss->currentPhase = 0;
 	}
 
-	boss->currentPhase = 2;
-
 	switch (boss->currentPhase) {
 	case 0: // Shoot and drive left and right
 		boss->position = boss->position + Math::Vector2f( { boss->speed, 0 });
@@ -67,8 +65,7 @@ void updateTank(GameState *gameState) {
 	}
 		break;
 	case 2: // Waves of bullets
-		// TODO maybe move the frequency to a variable
-		if (gameState->frameCounter % 60 == 0) {
+		if (gameState->frameCounter % boss->bulletFrequency == 0) {
 			Math::Vector2f playerDirection = gameState->player.position
 					- boss->position;
 			float angle = Math::angle(playerDirection) + PI / 16;
@@ -81,12 +78,19 @@ void updateTank(GameState *gameState) {
 	}
 }
 
+void updateMech(GameState *gameState) {
+	Boss *boss = &gameState->boss;
+	Render::Texture *tankTexture = &gameState->resources.tank;
+
+}
+
 void updateBoss(GameState *gameState) {
 	switch (gameState->boss.type) {
 	case BossType::TANK:
 		updateTank(gameState);
 		break;
 	case BossType::MECH:
+		updateMech(gameState);
 		break;
 	}
 }
@@ -127,7 +131,10 @@ void loadBoss(GameState *gameState) {
 		break;
 		case 1:
 		gameState->boss.type = BossType::MECH;
+		gameState->boss.speed = 1.5f;
+		gameState->boss.bulletFrequency = 70;
 		break;
 	}
+	// TODO make boss move on screen instead of having him appear out of nowhere
 	gameState->boss.position = {WINDOW_WIDTH / 2, 150};
 }

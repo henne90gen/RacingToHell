@@ -1,7 +1,12 @@
 #pragma once
 #include <stdint.h>
 #include <string>
+
+#ifdef _WIN32
+#include <amp.h>
+#else
 #include <x86intrin.h>
+#endif
 
 #define WINDOW_WIDTH 600
 #define WINDOW_HEIGHT 800

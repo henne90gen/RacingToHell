@@ -43,12 +43,6 @@ void blendColor(uint32_t color, uint32_t* currentBufferPixel) {
 	}
 }
 
-void switchPoint(Math::Vector2f *point1, Math::Vector2f *point2) {
-	Math::Vector2f tmp = *point1;
-	*point1 = *point2;
-	*point2 = tmp;
-}
-
 void bar(VideoBuffer *buffer, Math::Vector2f position, uint8_t length,
 		uint32_t color) {
 	Math::Rectangle healthBar = { };
@@ -56,6 +50,12 @@ void bar(VideoBuffer *buffer, Math::Vector2f position, uint8_t length,
 	healthBar.width = length;
 	healthBar.height = 8;
 	Render::rectangle(buffer, healthBar, color);
+}
+
+void switchPoint(Math::Vector2f *point1, Math::Vector2f *point2) {
+	Math::Vector2f tmp = *point1;
+	*point1 = *point2;
+	*point2 = tmp;
 }
 
 /**
@@ -142,7 +142,7 @@ void triangle(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1,
 uint16_t &getUShortElement(__m128i *ptr, int index) {
 	int bigIndex = index >> 3;
 	int smallIndex = index - (bigIndex << 3);
-    return ptr[bigIndex].m128i_u16[smallIndex];
+	return ptr[bigIndex].m128i_u16[smallIndex];
 }
 
 __m128i &get128BitElement(__m128i* ptr, int bigIndex, int bigSize, int smallRemainder)
@@ -154,7 +154,7 @@ __m128i &get128BitElement(__m128i* ptr, int bigIndex, int bigSize, int smallRema
 	else
 	{
 		for (int i = smallRemainder; i<8; ++i) {
-            ptr[bigIndex].m128i_u16[i] = 1;
+			ptr[bigIndex].m128i_u16[i] = 1;
 		}
 		return ptr[bigIndex];
 	}
@@ -175,7 +175,7 @@ __m256i &get256BitElement(__m256i* ptr, int bigIndex, int bigSize, int smallRema
 	else
 	{
 		for (int i = smallRemainder; i < 16; ++i) {
-		ptr[bigIndex].m256i_u16[i] = 1;
+			ptr[bigIndex].m256i_u16[i] = 1;
 		}
 		return ptr[bigIndex];
 	}
@@ -258,8 +258,8 @@ void rectangleSSE256(VideoBuffer *buffer, Math::Rectangle rect,
 		if (i != arraySize - 1 || (i == arraySize && remainder == 0)) {
 			for (int j = 0; j < 16; j++) {
 				bufferContent[bufferIndex++] = 0xff000000
-						| finalB.m256i_u16[j] << 16 | finalG.m256i_u16[j] << 8
-						| finalR.m256i_u16[j];
+				| finalB.m256i_u16[j] << 16 | finalG.m256i_u16[j] << 8
+				| finalR.m256i_u16[j];
 
 				if (++widthCounter % rect.width == 0) {
 					bufferIndex += line;
@@ -268,8 +268,8 @@ void rectangleSSE256(VideoBuffer *buffer, Math::Rectangle rect,
 		} else if (remainder != 0) {
 			for (int j = 0; j < remainder; j++) {
 				bufferContent[bufferIndex++] = 0xff000000
-						| finalB.m256i_u16[j] << 16 | finalG.m256i_u16[j] << 8
-						| finalR.m256i_u16[j];
+				| finalB.m256i_u16[j] << 16 | finalG.m256i_u16[j] << 8
+				| finalR.m256i_u16[j];
 			}
 
 			if (++widthCounter % rect.width == 0) {
@@ -366,8 +366,8 @@ void rectangleSSE(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color) {
 
 		if (i != arraySize - 1 || (i == arraySize && remainder == 0)) {
 			for (int j = 0; j < 8; j++) {
-                bufferContent[bufferIndex++] = 0xff000000 | finalB.m128i_u16[j] << 16 |
-                    finalG.m128i_u16[j] << 8 | finalR.m128i_u16[j];
+				bufferContent[bufferIndex++] = 0xff000000 | finalB.m128i_u16[j] << 16 |
+				finalG.m128i_u16[j] << 8 | finalR.m128i_u16[j];
 
 				if (++widthCounter % rect.width == 0) {
 					bufferIndex += line;
@@ -376,8 +376,8 @@ void rectangleSSE(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color) {
 		} else if (remainder != 0) {
 			for (int j = 0; j < remainder; j++) {
 				bufferContent[bufferIndex++] = 0xff000000
-						| finalB.m128i_u16[j] << 16 | finalG.m128i_u16[j] << 8
-						| finalR.m128i_u16[j];
+				| finalB.m128i_u16[j] << 16 | finalG.m128i_u16[j] << 8
+				| finalR.m128i_u16[j];
 			}
 
 			if (++widthCounter % rect.width == 0) {
@@ -401,52 +401,52 @@ void rectangleSSE(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color) {
 
 void rectangleAMP(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color)
 {
-    uint32_t *sourcePixelPointer = (uint32_t *)buffer->content + ((uint32_t)rect.position.y * buffer->width);
+	uint32_t *sourcePixelPointer = (uint32_t *)buffer->content + ((uint32_t)rect.position.y * buffer->width);
 
-    uint32_t rectColorR = (color & 0x000000ff);
-    uint32_t rectColorG = (color & 0x0000ff00) >> 8;
-    uint32_t rectColorB = (color & 0x00ff0000) >> 16;
-    uint32_t rectColorA = (color & 0xff000000) >> 24;
+	uint32_t rectColorR = (color & 0x000000ff);
+	uint32_t rectColorG = (color & 0x0000ff00) >> 8;
+	uint32_t rectColorB = (color & 0x00ff0000) >> 16;
+	uint32_t rectColorA = (color & 0xff000000) >> 24;
 
-    uint32_t rectR = rectColorR * rectColorA;
-    uint32_t rectG = rectColorG * rectColorA;
-    uint32_t rectB = rectColorB * rectColorA;
+	uint32_t rectR = rectColorR * rectColorA;
+	uint32_t rectG = rectColorG * rectColorA;
+	uint32_t rectB = rectColorB * rectColorA;
 
-    uint32_t sourceA = 255 - rectColorA;
+	uint32_t sourceA = 255 - rectColorA;
 
-    uint32_t x1 = (uint32_t)rect.position.x;
-    uint32_t x2 = (uint32_t)rect.position.x + rect.width;
+	uint32_t x1 = (uint32_t)rect.position.x;
+	uint32_t x2 = (uint32_t)rect.position.x + rect.width;
 
-    concurrency::array_view<uint32_t, 2> sourcePixels(rect.height, buffer->width, sourcePixelPointer);
+	concurrency::array_view<uint32_t, 2> sourcePixels(rect.height, buffer->width, sourcePixelPointer);
 
-    concurrency::parallel_for_each(sourcePixels.extent,
-        [=](concurrency::index<2> idx) restrict(amp)
-        {
-            if (idx[1] < x1 || idx[1] > x2)
-            {
-                return;
-            }
+	concurrency::parallel_for_each(sourcePixels.extent,
+			[=](concurrency::index<2> idx) restrict(amp)
+			{
+				if (idx[1] < x1 || idx[1] > x2)
+				{
+					return;
+				}
 
-            uint32_t sourcePixel = sourcePixels[idx];
+				uint32_t sourcePixel = sourcePixels[idx];
 
-            uint32_t sourceR = (sourcePixel & 0x000000ff);;
-            uint32_t sourceG = (sourcePixel & 0x0000ff00) >> 8;
-            uint32_t sourceB = (sourcePixel & 0x00ff0000) >> 16;
+				uint32_t sourceR = (sourcePixel & 0x000000ff);;
+				uint32_t sourceG = (sourcePixel & 0x0000ff00) >> 8;
+				uint32_t sourceB = (sourcePixel & 0x00ff0000) >> 16;
 
-            sourceR *= sourceA;
-            sourceG *= sourceA;
-            sourceB *= sourceA;
+				sourceR *= sourceA;
+				sourceG *= sourceA;
+				sourceB *= sourceA;
 
-            uint32_t finalR = (sourceR + rectR) >> 8;
-            uint32_t finalG = (sourceG + rectG) >> 8;
-            uint32_t finalB = (sourceB + rectB) >> 8;
+				uint32_t finalR = (sourceR + rectR) >> 8;
+				uint32_t finalG = (sourceG + rectG) >> 8;
+				uint32_t finalB = (sourceB + rectB) >> 8;
 
-            sourcePixels[idx] = 0xff000000 | finalB << 16 |
-                finalG << 8 | finalR;
-        }
-    );
+				sourcePixels[idx] = 0xff000000 | finalB << 16 |
+				finalG << 8 | finalR;
+			}
+	);
 
-    Concurrency::copy(sourcePixels, sourcePixelPointer);
+	Concurrency::copy(sourcePixels, sourcePixelPointer);
 }
 
 #endif
@@ -636,6 +636,7 @@ void backgroundTexture(VideoBuffer *buffer, Texture* texture, int offsetY) {
 
 void textureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 		int offsetY) {
+
 	uint32_t *currentBufferPixel = (uint32_t *) buffer->content
 			+ offsetY * (int) buffer->width + offsetX;
 	uint32_t *currentTexturePixel = (uint32_t *) texture->content;

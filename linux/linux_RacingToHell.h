@@ -31,14 +31,6 @@
 static const float rect[] = { -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
 		1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f };
 
-static GLuint texture;
-static GLuint buffer;
-static GLuint program;
-
-static GLint a_position_location;
-static GLint a_texture_coordinates_location;
-static GLint u_texture_unit_location;
-
 // Giving keys more descriptive names
 #define KeyEscape 9
 #define KeyEnter 36
@@ -63,6 +55,15 @@ struct GraphicsData {
 	XSetWindowAttributes swa;
 	GLXContext glc;
 	XWindowAttributes gwa;
+
+	GLuint gl_texture;
+	GLuint gl_buffer;
+	GLuint gl_program;
+
+	GLint gl_position_location;
+	GLint gl_texture_coordinates_location;
+	GLint gl_texture_unit_location;
+
 	VideoBuffer videoBuffer;
 };
 
@@ -96,7 +97,5 @@ long int EVENT_MASK = KeyPressMask | KeyReleaseMask | ButtonPressMask
 GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
 
 static bool isRunning;
-static GraphicsData graphics;
-static AudioData audio;
 static GameCode gameCode;
 

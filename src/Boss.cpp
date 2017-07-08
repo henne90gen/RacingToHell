@@ -79,8 +79,8 @@ void updateTank(GameState *gameState) {
 }
 
 void updateMech(GameState *gameState) {
-	Boss *boss = &gameState->boss;
-	Render::Texture *tankTexture = &gameState->resources.tank;
+//	Boss *boss = &gameState->boss;
+//	Render::Texture *tankTexture = &gameState->resources.tank;
 
 }
 

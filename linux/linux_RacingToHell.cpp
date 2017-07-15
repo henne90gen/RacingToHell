@@ -1,5 +1,4 @@
 #include "linux_RacingToHell.h"
-#include "OpenGL.cpp"
 
 /**
  * Initializes the audio context
@@ -136,7 +135,7 @@ void setVSync(bool sync) {
 //	}
 }
 
-Render::Texture loadIcon(std::string iconName) {
+Render::Texture loadIcon(std::string iconName, void** content) {
 	File file = readFile(iconName);
 	if (((char*) file.content)[0] != 'B' || (file.content)[1] != 'M') {
 		abort(file.name + " is not a bitmap file.");
@@ -152,11 +151,10 @@ Render::Texture loadIcon(std::string iconName) {
 	icon.width = header.width;
 	icon.height = header.height;
 	icon.bytesPerPixel = header.bitsPerPixel / 8;
-	icon.content = malloc(
-			icon.width * icon.height * icon.bytesPerPixel);
+	*content = malloc(icon.width * icon.height * icon.bytesPerPixel);
 
 	void* src = file.content + header.size + fileHeaderSize;
-	void* dest = icon.content;
+	void* dest = *content;
 	for (unsigned y = 0; y < icon.height; y++) {
 		for (unsigned x = 0; x < icon.width; x++) {
 			int srcIndex = (header.height - y - 1) * header.width + x;
@@ -184,15 +182,8 @@ GraphicsData initGraphicsData() {
 		abort("Cannot open display.");
 	};
 
-	VideoBuffer videoBuffer = { };
-	videoBuffer.width = WINDOW_WIDTH;
-	videoBuffer.height = WINDOW_HEIGHT;
-	videoBuffer.bytesPerPixel = 4;
-	videoBuffer.content = malloc(
-			videoBuffer.bytesPerPixel * videoBuffer.width * videoBuffer.height);
-	graphics.videoBuffer = videoBuffer;
-
 	Window root = DefaultRootWindow(graphics.display);
+	GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
 	graphics.vi = glXChooseVisual(graphics.display, 0, att);
 	if (!graphics.vi) {
 		abort("No appropriate visual found.");
@@ -202,9 +193,9 @@ GraphicsData initGraphicsData() {
 
 	graphics.swa.colormap = graphics.cmap;
 	graphics.swa.event_mask = EVENT_MASK;
-	graphics.window = XCreateWindow(graphics.display, root, 0, 0, 600, 800, 0,
-			graphics.vi->depth, InputOutput, graphics.vi->visual,
-			CWColormap | CWEventMask, &graphics.swa);
+	graphics.window = XCreateWindow(graphics.display, root, 0, 0, WINDOW_WIDTH,
+	WINDOW_HEIGHT, 0, graphics.vi->depth, InputOutput, graphics.vi->visual,
+	CWColormap | CWEventMask, &graphics.swa);
 
 	graphics.glc = glXCreateContext(graphics.display, graphics.vi, NULL,
 	GL_TRUE);
@@ -234,19 +225,18 @@ GraphicsData initGraphicsData() {
 
 	// set icon
 	Atom iconAtom = XInternAtom(graphics.display, "_NET_WM_ICON", 0);
-	Render::Texture texture = loadIcon("./res/icon.bmp");
-	int propsize = 2 + (texture.width * texture.height);
+	void *iconContent = NULL;
+	Render::Texture icon = loadIcon("./res/icon.bmp", &iconContent);
+	int propsize = 2 + (icon.width * icon.height);
 	long *propdata = (long*) malloc(propsize * sizeof(long));
 
-	propdata[0] = texture.width;
-	propdata[1] = texture.height;
+	propdata[0] = icon.width;
+	propdata[1] = icon.height;
 	uint32_t *src;
 	long *dst = &propdata[2];
-	for (unsigned y = 0; y < texture.height; ++y) {
-		src =
-				(uint32_t*) ((uint8_t*) texture.content
-						+ y * (texture.width * 4));
-		for (unsigned x = 0; x < texture.width; ++x) {
+	for (unsigned y = 0; y < icon.height; ++y) {
+		src = (uint32_t*) ((uint8_t*) iconContent + y * (icon.width * 4));
+		for (unsigned x = 0; x < icon.width; ++x) {
 			uint32_t color = 0;
 			uint8_t alpha = (color & 0xff000000) >> 24;
 			uint8_t blue = (color & 0x00ff0000) >> 16;
@@ -258,7 +248,7 @@ GraphicsData initGraphicsData() {
 	}
 	XChangeProperty(graphics.display, graphics.window, iconAtom,
 	XA_CARDINAL, 32, PropModeReplace, (unsigned char *) propdata, propsize);
-	free(texture.content);
+	free(iconContent);
 
 	// subscribe to events
 	XSelectInput(graphics.display, graphics.window, EVENT_MASK);
@@ -273,9 +263,30 @@ GraphicsData initGraphicsData() {
 	XMapWindow(graphics.display, graphics.window);
 	XFlush(graphics.display);
 
-	setupOpenGL(&graphics);
-
 	return graphics;
+}
+
+void toggleFullscreen(GraphicsData *graphics) {
+	static bool isFullscreen = false;
+	isFullscreen = !isFullscreen;
+
+	Atom wmState = XInternAtom(graphics->display, "_NET_WM_STATE", False);
+	Atom fullscreen = XInternAtom(graphics->display, "_NET_WM_STATE_FULLSCREEN",
+	False);
+
+	XEvent xev;
+	xev.xclient.type = ClientMessage;
+	xev.xclient.serial = 0;
+	xev.xclient.send_event = True;
+	xev.xclient.window = graphics->window;
+	xev.xclient.message_type = wmState;
+	xev.xclient.format = 32;
+	xev.xclient.data.l[0] = (isFullscreen ? 1 : 0);
+	xev.xclient.data.l[1] = fullscreen;
+	xev.xclient.data.l[2] = 0;
+
+	XSendEvent(graphics->display, DefaultRootWindow(graphics->display), False,
+	SubstructureRedirectMask | SubstructureNotifyMask, &xev);
 }
 
 /**
@@ -359,12 +370,19 @@ EXIT_GAME(exitGame) {
 /**
  * Uses the native key event to fill the platform independent input struct
  */
-void handleKeyEvent(Input* input, XKeyEvent event) {
+void handleKeyEvent(GraphicsData* graphics, Input* input, XKeyEvent event) {
 	bool keyPressed = event.type == KeyPress;
+
+	printf("Key pressed: %d\n", event.keycode);
 
 	switch (event.keycode) {
 	case KeyF1:
 		exitGame();
+		break;
+	case KeyF11:
+		if (keyPressed) {
+			toggleFullscreen(graphics);
+		}
 		break;
 	case KeyW:
 		input->upKeyPressed = keyPressed;
@@ -454,37 +472,6 @@ void correctTiming(GraphicsData *graphics, timespec startTime,
 				nanoSecondsElapsed / 1000000.0f,
 				1000000000.0f / nanoSecondsElapsed);
 	}
-}
-
-/**
- * Draws the current video buffer to the screen
- */
-void swapVideoBuffers(GraphicsData *graphics) {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	setTexturePixels(graphics->gl_texture, &graphics->videoBuffer);
-
-	glUseProgram(graphics->gl_program);
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, graphics->gl_texture);
-	glUniform1i(graphics->gl_texture_unit_location, 0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, graphics->gl_buffer);
-	glVertexAttribPointer(graphics->gl_position_location, 2, GL_FLOAT, GL_FALSE,
-			4 * sizeof(GL_FLOAT), BUFFER_OFFSET(0));
-	glVertexAttribPointer(graphics->gl_texture_coordinates_location, 2,
-	GL_FLOAT, GL_FALSE, 4 * sizeof(GL_FLOAT),
-			BUFFER_OFFSET(2 * sizeof(GL_FLOAT)));
-	glEnableVertexAttribArray(graphics->gl_position_location);
-	glEnableVertexAttribArray(graphics->gl_texture_coordinates_location);
-
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glXSwapBuffers(graphics->display, graphics->window);
-	XSync(graphics->display, false);
 }
 
 /**
@@ -647,7 +634,7 @@ int main() {
 				exitGame();
 			}
 			if (event.type == KeyPress || event.type == KeyRelease) {
-				handleKeyEvent(newInput, event.xkey);
+				handleKeyEvent(&graphics, newInput, event.xkey);
 			}
 			if (event.type == ButtonPress || event.type == ButtonRelease) {
 				handleMouseEvent(newInput, event.xbutton, &wasLeftMousePressed,
@@ -659,6 +646,23 @@ int main() {
 				mousePosition.x = event.xmotion.x;
 				mousePosition.y = event.xmotion.y;
 				newInput->mousePosition = mousePosition;
+			}
+			if (event.type == ConfigureNotify) {
+				XConfigureEvent xce = event.xconfigure;
+				int width = xce.height / 9 * 16;
+				int height = xce.height;
+				int offsetX = 0;
+				int offsetY = 0;
+				if (width > xce.width) {
+					width = xce.width;
+					height = xce.width / 16 * 9;
+				} else {
+					offsetX = (xce.width - width) / 2;
+				}
+				if (xce.height > height) {
+					offsetY = (xce.height - height) / 2;
+				}
+				glViewport(offsetX, offsetY, width, height);
 			}
 		}
 
@@ -672,7 +676,12 @@ int main() {
 			newInput->shootKeyClicked = false;
 		}
 
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		gameCode.updateAndRender(&graphics.videoBuffer, newInput, &memory);
+
+		glXSwapBuffers(graphics.display, graphics.window);
+		XSync(graphics.display, false);
 
 #if SOUND_ENABLE
 		swapSoundBuffers(&memory);
@@ -687,8 +696,6 @@ int main() {
 			unloadGameCode(&gameCode);
 			gameCode = loadGameCode();
 		}
-
-		swapVideoBuffers(&graphics);
 
 		Input *tmp = oldInput;
 		oldInput = newInput;

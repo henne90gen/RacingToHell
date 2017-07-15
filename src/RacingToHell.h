@@ -11,6 +11,7 @@
 #include "Font.h"
 #include "GameMenu.h"
 
+#define BUFFER_OFFSET(i) ((void*)(i))
 #define PLAYER_SPEED 10
 
 struct VideoBuffer {

@@ -1,5 +1,6 @@
 #include "RacingToHell.h"
 
+#include "Helper.cpp"
 #include "MyMath.cpp"
 #include "Memory.cpp"
 #include "Collision.cpp"
@@ -8,7 +9,6 @@
 #include "Sound.cpp"
 #include "GameMenu.cpp"
 #include "Boss.cpp"
-#include "Helper.cpp"
 #include "Init.cpp"
 
 /**
@@ -556,12 +556,14 @@ UPDATE_AND_RENDER(updateAndRender) {
 	GameState *gameState = getGameState(memory);
 	gameState->frameCounter++;
 
-	updateAndRenderGame(buffer, input, memory, gameState,
-			gameState->menuState == MenuState::GAME);
+	Render::texture(memory, &gameState->resources.tank, 0, 0);
 
-	if (input->escapeKeyClicked && gameState->menuState == MenuState::GAME) {
-		loadMenu(gameState, MenuState::PAUSE);
-	} else if (gameState->menuState != MenuState::GAME) {
-		updateAndRenderMenus(memory, buffer, input);
-	}
+//	updateAndRenderGame(buffer, input, memory, gameState,
+//			gameState->menuState == MenuState::GAME);
+
+//	if (input->escapeKeyClicked && gameState->menuState == MenuState::GAME) {
+//		loadMenu(gameState, MenuState::PAUSE);
+//	} else if (gameState->menuState != MenuState::GAME) {
+//		updateAndRenderMenus(memory, buffer, input);
+//	}
 }

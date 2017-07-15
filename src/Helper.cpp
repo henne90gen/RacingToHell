@@ -52,39 +52,39 @@ void importPixelData(void* src, void* dest, unsigned srcWidth,
 	}
 }
 
-Render::Texture readBmpIntoMemory(File file, GameMemory *memory, int offsetX,
-		int offsetY, int width, int height) {
-	if (((char*) file.content)[0] != 'B' || (file.content)[1] != 'M') {
-		memory->abort(file.name + " is not a bitmap file.");
-	}
-	int fileHeaderSize = 14;
-	BitmapHeader header = *((BitmapHeader*) (file.content + fileHeaderSize));
+//Render::Texture readBmpIntoMemory(File file, GameMemory *memory, int offsetX,
+//		int offsetY, int width, int height) {
+//	if (((char*) file.content)[0] != 'B' || (file.content)[1] != 'M') {
+//		memory->abort(file.name + " is not a bitmap file.");
+//	}
+//	int fileHeaderSize = 14;
+//	BitmapHeader header = *((BitmapHeader*) (file.content + fileHeaderSize));
+//
+//	if (header.bitsPerPixel != 32) {
+//		memory->abort("Image must have 32-bit of color depth.");
+//	}
+//
+//	if (width == -1 || height == -1) {
+//		width = header.width;
+//		height = header.height;
+//	}
+//
+//	Render::Texture texture = { };
+//	texture.width = width;
+//	texture.height = height;
+//	texture.bytesPerPixel = header.bitsPerPixel / 8;
+//	texture.content = reservePermanentMemory(memory,
+//			texture.width * texture.height * texture.bytesPerPixel);
+//
+//	importPixelData(file.content + header.size + fileHeaderSize,
+//			texture.content, header.width, header.height, offsetX, offsetY,
+//			texture.width, texture.height);
+//	return texture;
+//}
 
-	if (header.bitsPerPixel != 32) {
-		memory->abort("Image must have 32-bit of color depth.");
-	}
-
-	if (width == -1 || height == -1) {
-		width = header.width;
-		height = header.height;
-	}
-
-	Render::Texture texture = { };
-	texture.width = width;
-	texture.height = height;
-	texture.bytesPerPixel = header.bitsPerPixel / 8;
-	texture.content = reservePermanentMemory(memory,
-			texture.width * texture.height * texture.bytesPerPixel);
-
-	importPixelData(file.content + header.size + fileHeaderSize,
-			texture.content, header.width, header.height, offsetX, offsetY,
-			texture.width, texture.height);
-	return texture;
-}
-
-Render::Texture readBmpIntoMemory(File file, GameMemory* memory) {
-	return readBmpIntoMemory(file, memory, 0, 0, -1, -1);
-}
+//Render::Texture readBmpIntoMemory(File file, GameMemory* memory) {
+//	return readBmpIntoMemory(file, memory, 0, 0, -1, -1);
+//}
 
 void checkInputForClicks(Input *input) {
 	static bool up, down, left, right, enter, escape;
@@ -145,4 +145,75 @@ void renderControls(VideoBuffer* buffer) {
 	point2 = Math::Vector2f { WINDOW_WIDTH - gapHalf, WINDOW_HEIGHT };
 	Render::triangle(buffer, color, point1, point2, point3 + Math::Vector2f { 0,
 			gapHalf });
+}
+
+GLuint createVertexBufferObject(const GLsizeiptr size, const GLvoid *data,
+		const GLenum usage) {
+	GLuint vbo_object;
+	glGenBuffers(1, &vbo_object);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_object);
+	glBufferData(GL_ARRAY_BUFFER, size, data, usage);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	return vbo_object;
+}
+
+GLuint compileShader(GameMemory *memory, const GLenum type,
+		const GLchar *source, const GLint length) {
+	GLuint shader_object_id = glCreateShader(type);
+	GLint compile_status;
+
+	glShaderSource(shader_object_id, 1, (const GLchar **) &source, &length);
+	glCompileShader(shader_object_id);
+	glGetShaderiv(shader_object_id, GL_COMPILE_STATUS, &compile_status);
+
+	if (compile_status == GL_FALSE) {
+		int infoLogLength;
+		glGetShaderiv(shader_object_id, GL_INFO_LOG_LENGTH, &infoLogLength);
+		if (infoLogLength > 0) {
+			char VertexShaderErrorMessage[infoLogLength + 1];
+			glGetShaderInfoLog(shader_object_id, infoLogLength, NULL,
+					VertexShaderErrorMessage);
+			printf("%s\n", VertexShaderErrorMessage);
+		}
+		std::string message = "Failed to compile shader. "
+				+ std::to_string(type) + "\n" + std::string(source);
+		memory->abort(message);
+	}
+
+	return shader_object_id;
+}
+
+GLuint linkProgram(GameMemory *memory, const GLuint vertex_shader,
+		const GLuint fragment_shader) {
+	GLuint program_object_id = glCreateProgram();
+	GLint link_status;
+
+	glAttachShader(program_object_id, vertex_shader);
+	glAttachShader(program_object_id, fragment_shader);
+	glLinkProgram(program_object_id);
+	glGetProgramiv(program_object_id, GL_LINK_STATUS, &link_status);
+
+	if (link_status == GL_FALSE) {
+		memory->abort("Couldn't link shader program.");
+	}
+
+	return program_object_id;
+}
+
+GLuint buildProgram(GameMemory *memory) {
+	// FIXME don't hard code the shaders
+	const GLchar *vertex_shader_source =
+			"attribute vec4 a_Position;attribute vec2 a_TextureCoordinates;varying vec2 v_TextureCoordinates;void main() {v_TextureCoordinates = a_TextureCoordinates;gl_Position = a_Position;}";
+	const GLint vertex_shader_source_length = 179;
+	const GLchar *fragment_shader_source =
+			"uniform sampler2D u_TextureUnit;varying vec2 v_TextureCoordinates;void main() {gl_FragColor = texture2D(u_TextureUnit, v_TextureCoordinates);}";
+	const GLint fragment_shader_source_length = 166;
+
+	GLuint vertex_shader = compileShader(memory, GL_VERTEX_SHADER,
+			vertex_shader_source, vertex_shader_source_length);
+	GLuint fragment_shader = compileShader(memory, GL_FRAGMENT_SHADER,
+			fragment_shader_source, fragment_shader_source_length);
+	return linkProgram(memory, vertex_shader, fragment_shader);
 }

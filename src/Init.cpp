@@ -11,16 +11,52 @@ void loadAudioClips(GameMemory* memory) {
 			"./res/sound/music/level1.wav");
 }
 
+Render::Texture loadTexture(GameMemory *memory, std::string fileName) {
+	File file = memory->readFile(fileName);
+	if (((char*) file.content)[0] != 'B' || (file.content)[1] != 'M') {
+		memory->abort(file.name + " is not a bitmap file.");
+	}
+	int fileHeaderSize = 14;
+	BitmapHeader header = *((BitmapHeader*) (file.content + fileHeaderSize));
+
+	if (header.bitsPerPixel != 32) {
+		memory->abort("Image must have 32-bit of color depth.");
+	}
+
+	Render::Texture texture = { };
+	texture.width = header.width;
+	texture.height = header.height;
+	texture.bytesPerPixel = header.bitsPerPixel / 8;
+	void* content = reserveTemporaryMemory(memory,
+			texture.width * texture.height * texture.bytesPerPixel);
+
+	importPixelData(file.content + header.size + fileHeaderSize, content,
+			header.width, header.height, 0, 0, texture.width, texture.height);
+
+	glGenTextures(1, &texture.id);
+	glBindTexture(GL_TEXTURE_2D, texture.id);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture.width, texture.height, 0,
+			GL_RGBA, GL_UNSIGNED_BYTE, content);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	return texture;
+}
+
 /**
  * Loads all textures that are going to be used into memory
  */
 void loadTextures(GameMemory *memory) {
 	GameState *gameState = getGameState(memory);
+	gameState->resources.tank = loadTexture(memory,
+			"./res/textures/bosses/tank.bmp");
+
+	// -----------------------------------------------------------------
 	for (int i = 0; i < 4; i++) {
 		std::string filename = "./res/textures/roads/road" + std::to_string(i)
 				+ ".bmp";
 		File file = memory->readFile(filename);
-		gameState->resources.roadTextures[i] = readBmpIntoMemory(file, memory);
+//		gameState->resources.roadTextures[i] = readBmpIntoMemory(file, memory);
 		memory->freeFile(&file);
 	}
 
@@ -28,8 +64,8 @@ void loadTextures(GameMemory *memory) {
 		std::string carSprites = "./res/textures/cars/player"
 				+ std::to_string(i) + ".bmp";
 		File carFile = memory->readFile(carSprites);
-		gameState->resources.playerCarTextures[i] = readBmpIntoMemory(carFile,
-				memory);
+//		gameState->resources.playerCarTextures[i] = readBmpIntoMemory(carFile,
+//				memory);
 		memory->freeFile(&carFile);
 	}
 
@@ -37,19 +73,19 @@ void loadTextures(GameMemory *memory) {
 		std::string carSprites = "./res/textures/cars/traffic"
 				+ std::to_string(i) + ".bmp";
 		File carFile = memory->readFile(carSprites);
-		gameState->resources.trafficCarTextures[i] = readBmpIntoMemory(carFile,
-				memory);
+//		gameState->resources.trafficCarTextures[i] = readBmpIntoMemory(carFile,
+//				memory);
 		memory->freeFile(&carFile);
 	}
 
 	File toolFile = memory->readFile("./res/textures/toolbox.bmp");
-	gameState->resources.itemTextures[TOOLBOX_ID] = readBmpIntoMemory(toolFile,
-			memory);
+//	gameState->resources.itemTextures[TOOLBOX_ID] = readBmpIntoMemory(toolFile,
+//			memory);
 	memory->freeFile(&toolFile);
 
 	File canFile = memory->readFile("./res/textures/canister.bmp");
-	gameState->resources.itemTextures[CANISTER_ID] = readBmpIntoMemory(canFile,
-			memory);
+//	gameState->resources.itemTextures[CANISTER_ID] = readBmpIntoMemory(canFile,
+//			memory);
 	memory->freeFile(&canFile);
 
 	File explosionFile = memory->readFile("./res/textures/explosion.bmp");
@@ -59,17 +95,17 @@ void loadTextures(GameMemory *memory) {
 			int offsetY = y * 100;
 			int width = 100;
 			int height = 100;
-			gameState->resources.explosion[y * 9 + x] = readBmpIntoMemory(
-					explosionFile, memory, offsetX, offsetY, width, height);
+//			gameState->resources.explosion[y * 9 + x] = readBmpIntoMemory(
+//					explosionFile, memory, offsetX, offsetY, width, height);
 		}
 	}
 	memory->freeFile(&explosionFile);
 
 	File tankFile = memory->readFile("./res/textures/bosses/tank.bmp");
-	gameState->resources.tank = readBmpIntoMemory(tankFile, memory);
+//	gameState->resources.tank = readBmpIntoMemory(tankFile, memory);
 	File tankCannonFile = memory->readFile(
 			"./res/textures/bosses/tank_cannon.bmp");
-	gameState->resources.tankCannon = readBmpIntoMemory(tankCannonFile, memory);
+//	gameState->resources.tankCannon = readBmpIntoMemory(tankCannonFile, memory);
 }
 
 /**

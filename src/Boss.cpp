@@ -20,6 +20,8 @@ void updateTank(GameState *gameState) {
 		boss->currentPhase = 0;
 	}
 
+//	boss->currentPhase = 2;
+
 	switch (boss->currentPhase) {
 	case 0: // Shoot and drive left and right
 		boss->position = boss->position + Math::Vector2f( { boss->speed, 0 });

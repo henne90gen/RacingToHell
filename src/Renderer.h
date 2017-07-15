@@ -27,7 +27,8 @@ struct Texture {
 
 	uint32_t width, height;
 	uint8_t bytesPerPixel;
-	void* content;
+//	void* content;
+	GLuint id;
 };
 
 void bar(VideoBuffer *buffer, Math::Vector2f position, uint8_t length, uint32_t color);

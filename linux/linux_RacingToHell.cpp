@@ -373,7 +373,7 @@ EXIT_GAME(exitGame) {
 void handleKeyEvent(GraphicsData* graphics, Input* input, XKeyEvent event) {
 	bool keyPressed = event.type == KeyPress;
 
-	printf("Key pressed: %d\n", event.keycode);
+//	printf("Key pressed: %d\n", event.keycode);
 
 	switch (event.keycode) {
 	case KeyF1:
@@ -678,7 +678,7 @@ int main() {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		gameCode.updateAndRender(&graphics.videoBuffer, newInput, &memory);
+		gameCode.updateAndRender(newInput, &memory);
 
 		glXSwapBuffers(graphics.display, graphics.window);
 		XSync(graphics.display, false);

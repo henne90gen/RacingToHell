@@ -24,10 +24,8 @@ struct Input;
 namespace Render {
 
 struct Texture {
-
 	uint32_t width, height;
 	uint8_t bytesPerPixel;
-//	void* content;
 	GLuint id;
 };
 

@@ -23,8 +23,8 @@
 #include "RacingToHell.h"
 
 // position X, Y, texture S, T
-static const float rect[] = { -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
-		1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f };
+//static const float rect[] = { -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
+//		1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f };
 
 // Giving keys more descriptive names
 #define KeyEscape 9
@@ -51,16 +51,6 @@ struct GraphicsData {
 	XSetWindowAttributes swa;
 	GLXContext glc;
 	XWindowAttributes gwa;
-
-	GLuint gl_texture;
-	GLuint gl_buffer;
-	GLuint gl_program;
-
-	GLint gl_position_location;
-	GLint gl_texture_coordinates_location;
-	GLint gl_texture_unit_location;
-
-	VideoBuffer videoBuffer;
 };
 
 struct AudioData {

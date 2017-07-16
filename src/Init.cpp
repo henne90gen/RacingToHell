@@ -11,6 +11,9 @@ void loadAudioClips(GameMemory* memory) {
 			"./res/sound/music/level1.wav");
 }
 
+/**
+ * Loads a texture from a bmp file and pushes it to the graphics card
+ */
 Render::Texture loadTexture(GameMemory *memory, std::string fileName) {
 	File file = memory->readFile(fileName);
 	if (((char*) file.content)[0] != 'B' || (file.content)[1] != 'M') {
@@ -33,6 +36,8 @@ Render::Texture loadTexture(GameMemory *memory, std::string fileName) {
 	importPixelData(file.content + header.size + fileHeaderSize, content,
 			header.width, header.height, 0, 0, texture.width, texture.height);
 
+	memory->freeFile(&file);
+
 	glGenTextures(1, &texture.id);
 	glBindTexture(GL_TEXTURE_2D, texture.id);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture.width, texture.height, 0,
@@ -40,6 +45,9 @@ Render::Texture loadTexture(GameMemory *memory, std::string fileName) {
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	freeTemporaryMemory(memory);
+
 	return texture;
 }
 
@@ -48,74 +56,51 @@ Render::Texture loadTexture(GameMemory *memory, std::string fileName) {
  */
 void loadTextures(GameMemory *memory) {
 	GameState *gameState = getGameState(memory);
-	gameState->resources.tank = loadTexture(memory,
-			"./res/textures/bosses/tank.bmp");
 
-	// -----------------------------------------------------------------
 	for (int i = 0; i < 4; i++) {
-		std::string filename = "./res/textures/roads/road" + std::to_string(i)
+		std::string fileName = "./res/textures/roads/road" + std::to_string(i)
 				+ ".bmp";
-		File file = memory->readFile(filename);
-//		gameState->resources.roadTextures[i] = readBmpIntoMemory(file, memory);
-		memory->freeFile(&file);
+		gameState->resources.roadTextures[i] = loadTexture(memory, fileName);
 	}
 
 	for (unsigned i = 0; i < NUM_PLAYER_TEXTURES; i++) {
-		std::string carSprites = "./res/textures/cars/player"
+		std::string playerSprite = "./res/textures/cars/player"
 				+ std::to_string(i) + ".bmp";
-		File carFile = memory->readFile(carSprites);
-//		gameState->resources.playerCarTextures[i] = readBmpIntoMemory(carFile,
-//				memory);
-		memory->freeFile(&carFile);
+		gameState->resources.playerCarTextures[i] = loadTexture(memory,
+				playerSprite);
 	}
 
 	for (unsigned i = 0; i < NUM_TRAFFIC_TEXTURES; i++) {
-		std::string carSprites = "./res/textures/cars/traffic"
+		std::string carSprite = "./res/textures/cars/traffic"
 				+ std::to_string(i) + ".bmp";
-		File carFile = memory->readFile(carSprites);
-//		gameState->resources.trafficCarTextures[i] = readBmpIntoMemory(carFile,
-//				memory);
-		memory->freeFile(&carFile);
+		gameState->resources.trafficCarTextures[i] = loadTexture(memory,
+				carSprite);
 	}
 
-	File toolFile = memory->readFile("./res/textures/toolbox.bmp");
-//	gameState->resources.itemTextures[TOOLBOX_ID] = readBmpIntoMemory(toolFile,
-//			memory);
-	memory->freeFile(&toolFile);
+	gameState->resources.itemTextures[TOOLBOX_ID] = loadTexture(memory,
+			"./res/textures/toolbox.bmp");
 
-	File canFile = memory->readFile("./res/textures/canister.bmp");
-//	gameState->resources.itemTextures[CANISTER_ID] = readBmpIntoMemory(canFile,
-//			memory);
-	memory->freeFile(&canFile);
+	gameState->resources.itemTextures[CANISTER_ID] = loadTexture(memory,
+			"./res/textures/canister.bmp");
 
-	File explosionFile = memory->readFile("./res/textures/explosion.bmp");
-	for (int y = 0; y < 9; y++) {
-		for (int x = 0; x < 9; x++) {
-			int offsetX = x * 100;
-			int offsetY = y * 100;
-			int width = 100;
-			int height = 100;
-//			gameState->resources.explosion[y * 9 + x] = readBmpIntoMemory(
-//					explosionFile, memory, offsetX, offsetY, width, height);
-		}
-	}
-	memory->freeFile(&explosionFile);
+	// Explosion sprite
+	gameState->resources.explosion = loadTexture(memory,
+			"./res/textures/explosion.bmp");
 
-	File tankFile = memory->readFile("./res/textures/bosses/tank.bmp");
-//	gameState->resources.tank = readBmpIntoMemory(tankFile, memory);
-	File tankCannonFile = memory->readFile(
+	// Tank boss
+	gameState->resources.tank = loadTexture(memory,
+			"./res/textures/bosses/tank.bmp");
+	gameState->resources.tankCannon = loadTexture(memory,
 			"./res/textures/bosses/tank_cannon.bmp");
-//	gameState->resources.tankCannon = readBmpIntoMemory(tankCannonFile, memory);
 }
 
 /**
  * Resets everything in the GameState to their initial values
  */
-
 void resetGameState(GameState *gameState) {
 	gameState->player = {};
-	gameState->player.position.x = 100;
-	gameState->player.position.y = 600;
+	gameState->player.position = Math::Vector2f(0, 0);
+	gameState->player.size = Math::Vector2f(0.05f, 0.15f);
 	// TODO balance speed
 	gameState->player.speed = 0;
 	// TODO balance health
@@ -146,8 +131,7 @@ void resetGameState(GameState *gameState) {
 	gameState->isInBossFight = true;
 	loadBoss(gameState);
 
-	loadMenu(gameState, MenuState::MAIN);
-	// FIXME what is lastPlayingSound?
+	loadMenu(gameState, MenuState::GAME);
 }
 
 /**

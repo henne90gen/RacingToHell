@@ -550,71 +550,28 @@ void explosion(VideoBuffer *buffer, GameState *gameState, int x, int y,
 			*explosionIndex = 0;
 		}
 	}
-	textureAlpha(buffer, &gameState->resources.explosion[*explosionIndex], x,
-			y);
+//	textureAlpha(buffer, &gameState->resources.explosion[*explosionIndex], x,
+//			y);
 }
 
-//void debugInformation(GameMemory *memory, VideoBuffer *buffer, Input *input, GameState *gameState) {
-//	std::string text = "Player 1: "
-//			+ std::to_string(gameState->player.position.x) + ", "
-//			+ std::to_string(gameState->player.position.y);
-//	Text::renderText(memory, buffer, text, {20, 100}, 7);
-//}
-
-void clearScreen(VideoBuffer *buffer, uint32_t color) {
-	for (unsigned int y = 0; y < buffer->height; y++) {
-		for (unsigned int x = 0; x < buffer->width; x++) {
-			((uint32_t*) buffer->content)[y * buffer->width + x] = color
-					+ (255 << 24);
-		}
-	}
+void clearScreen(uint32_t color) {
+	float red = ((color & 0xff000000) >> 24) / 255.0f;
+	float green = ((color & 0x00ff0000) >> 16) / 255.0f;
+	float blue = ((color & 0x0000ff00) >> 8) / 255.0f;
+	glClearColor(red, green, blue, 1.0f);
 }
 
-void texture(VideoBuffer *buffer, Texture* texture, int offsetX, int offsetY) {
-//	unsigned startY = 0;
-//	if (offsetY < 0) {
-//		startY = 0 - offsetY;
-//		printf("setting new startY");
-//	} else if (offsetY >= (int) buffer->height) {
-//		return;
-//	}
-//
-//	unsigned startX = 0;
-//	if (offsetX < 0) {
-//		startX = 0 - offsetX;
-//	} else if (offsetX >= (int) buffer->width) {
-//		return;
-//	}
-//
-//	for (unsigned y = startY; y < texture->height; y++) {
-//		if (offsetY + y >= buffer->height) {
-//			continue;
-//		}
-//		for (unsigned x = startX; x < texture->width; x++) {
-//			if (offsetX + x >= buffer->width) {
-//				continue;
-//			}
-//			int bufferIndex = buffer->width * (offsetY + y) + offsetX + x;
-//			int textureIndex = y * texture->width + x;
-//			((int*) buffer->content)[bufferIndex] =
-//					((int*) (texture->content))[textureIndex];
-//		}
-//	}
-}
-
-void texture(GameMemory *memory, Texture *texture, int offsetX, int offsetY) {
+void texture(GameMemory *memory, Texture *texture, float offsetX, float offsetY,
+		float width, float height) {
 	static GLuint program = buildProgram(memory);
 	// rect holds the screen coordinates with their associated texture coordinates
-	static const float rect[] = {
-			-1.0f, -1.0f,
-			0.0f, 1.0f,
-			-1.0f, 1.0f,
-			0.0f, 0.0f,
-			1.0f, -1.0f,
-			1.0f, 1.0f,
-			1.0f, 1.0f,
-			1.0f, 0.0f };
-	static GLuint buffer = createVertexBufferObject(sizeof(rect), rect,
+	const float rect[] = { offsetX, offsetY, 0.0f, 1.0f, //
+			offsetX, offsetY + height, 0.0f, 0.0f, //
+			offsetX + width, offsetY, 1.0f, 1.0f, //
+			offsetX + width, offsetY + height, 1.0f, 0.0f //
+			};
+
+	GLuint buffer = createVertexBufferObject(sizeof(rect), rect,
 	GL_STATIC_DRAW);
 	static GLuint position_location = glGetAttribLocation(program,
 			"a_Position");
@@ -649,64 +606,10 @@ void texture(GameMemory *memory, Texture *texture, int offsetX, int offsetY) {
 #define ABS(a) ((a < 0) ? -a : a)
 
 void backgroundTexture(VideoBuffer *buffer, Texture* texture, int offsetY) {
-//	if (offsetY < -(int32_t) texture->height
-//			|| offsetY > (int32_t) texture->height) {
-//		return;
-//	}
-//
-//	uint32_t *currentTexturePixel = (uint32_t *) texture->content
-//			- MIN(offsetY * (int32_t )texture->width, 0);
-//	uint32_t *currentBufferPixel = (uint32_t *) buffer->content
-//			+ MAX(0, offsetY * (int32_t )buffer->width);
-//
-//	uint32_t nextLine = buffer->width - texture->width;
-//	unsigned yMax = 0;
-//
-//	if (offsetY >= 0) {
-//		yMax = buffer->height - offsetY;
-//	} else if (offsetY < 0) {
-//		yMax = texture->height - ABS(offsetY);
-//	}
-//
-//	for (unsigned y = 0; y < yMax; ++y) {
-//		for (unsigned x = 0; x < texture->width; ++x) {
-//			*currentBufferPixel++ = *currentTexturePixel++;
-//		}
-//		currentBufferPixel += nextLine;
-//	}
 }
 
 void textureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 		int offsetY) {
-//
-//	uint32_t *currentBufferPixel = (uint32_t *) buffer->content
-//			+ offsetY * (int) buffer->width + offsetX;
-//	uint32_t *currentTexturePixel = (uint32_t *) texture->content;
-//
-//	uint32_t nextLine = buffer->width - texture->width;
-//
-//	for (int y = 0; y < (int) texture->height; ++y) {
-//		if (offsetY + y < 0) {
-//			currentBufferPixel += buffer->width;
-//			currentTexturePixel += texture->width;
-//			continue;
-//		} else if (offsetY + y >= (int) buffer->height) {
-//			break;
-//		}
-//
-//		for (int x = 0; x < (int) texture->width; ++x) {
-//			if (offsetX + x < 0 || offsetX + x >= (int) buffer->width) {
-//				currentBufferPixel++;
-//				currentTexturePixel++;
-//				continue;
-//			}
-//
-//			blendColor(*currentTexturePixel, currentBufferPixel);
-//			currentBufferPixel++;
-//			currentTexturePixel++;
-//		}
-//		currentBufferPixel += nextLine;
-//	}
 }
 
 }

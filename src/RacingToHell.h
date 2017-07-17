@@ -11,7 +11,8 @@
 #include "Font.h"
 #include "GameMenu.h"
 
-#define PLAYER_SPEED 10
+#define BUFFER_OFFSET(i) ((void*)(i))
+#define PLAYER_SPEED 0.01
 
 struct VideoBuffer {
 	uint32_t width, height, bytesPerPixel;
@@ -35,9 +36,10 @@ struct Input {
 };
 
 struct Player {
-	Math::Vector2f position;
+	Math::Vector2f position, direction, size;
 	int8_t carIndex, nextCarIndex;
-	int32_t speed, health, maxHealth, energy, maxEnergy;
+	double speed, maxSpeed;
+	int32_t health, maxHealth, energy, maxEnergy;
 };
 
 struct Car {
@@ -61,7 +63,7 @@ struct Resources {
 	Render::Texture playerCarTextures[6];
 	Render::Texture trafficCarTextures[7];
 	Render::Texture itemTextures[2];
-	Render::Texture explosion[9 * 9];
+	Render::Texture explosion;
 	Render::Texture tank;
 	Render::Texture tankCannon;
 
@@ -163,11 +165,10 @@ struct BitmapHeader {
 
 GameState* getGameState(GameMemory* memory);
 void resetGameState(GameState *gameState);
-Math::Vector2f getPlayerDimensions(GameState *gameState);
 void spawnBullet(GameState *gameState, Math::Vector2f position,
 		Math::Vector2f velocity, bool playerBullet);
 
-#define UPDATE_AND_RENDER(name) void name(VideoBuffer *buffer, Input *input, GameMemory *memory)
+#define UPDATE_AND_RENDER(name) void name(Input *input, GameMemory *memory)
 typedef UPDATE_AND_RENDER(update_and_render);
 
 #define GET_SOUND_SAMPLES(name) void name(GameMemory *memory, SoundBuffer *soundBuffer)

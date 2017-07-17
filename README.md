@@ -54,6 +54,9 @@
 
 ### IDEAs
 
+- tile map
+- procedurally generate roads and buildings
+- "dungeons"
 - powerups
     - destroy cars in radius
     - remove all bullets

@@ -86,7 +86,6 @@ void loadMenu(GameState *gameState, MenuState menuState) {
 		loadCreditsMenu(gameState);
 		break;
 	case MenuState::GAME:
-		gameState->player.speed = PLAYER_SPEED;
 		break;
 	}
 }
@@ -309,7 +308,7 @@ void updateMenu(GameMemory *memory, Input *input, Menu *menu) {
 		gameState->player.position = gameState->player.position
 				+ Math::Vector2f( { 0, (float) gameState->player.speed });
 		if (gameState->player.position.y
-				>= WINDOW_HEIGHT + getPlayerDimensions(gameState).y / 2) {
+				>= WINDOW_HEIGHT + gameState->player.size.y / 2) {
 			gameState->player.speed = -PLAYER_SPEED;
 			gameState->player.carIndex = gameState->player.nextCarIndex;
 		}

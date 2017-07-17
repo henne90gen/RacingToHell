@@ -43,12 +43,6 @@ void blendColor(uint32_t color, uint32_t* currentBufferPixel) {
 	}
 }
 
-void switchPoint(Math::Vector2f *point1, Math::Vector2f *point2) {
-	Math::Vector2f tmp = *point1;
-	*point1 = *point2;
-	*point2 = tmp;
-}
-
 void bar(VideoBuffer *buffer, Math::Vector2f position, uint8_t length,
 		uint32_t color) {
 	Math::Rectangle healthBar = { };
@@ -56,6 +50,12 @@ void bar(VideoBuffer *buffer, Math::Vector2f position, uint8_t length,
 	healthBar.width = length;
 	healthBar.height = 8;
 	Render::rectangle(buffer, healthBar, color);
+}
+
+void switchPoint(Math::Vector2f *point1, Math::Vector2f *point2) {
+	Math::Vector2f tmp = *point1;
+	*point1 = *point2;
+	*point2 = tmp;
 }
 
 /**
@@ -142,7 +142,7 @@ void triangle(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1,
 uint16_t &getUShortElement(__m128i *ptr, int index) {
 	int bigIndex = index >> 3;
 	int smallIndex = index - (bigIndex << 3);
-    return ptr[bigIndex].m128i_u16[smallIndex];
+	return ptr[bigIndex].m128i_u16[smallIndex];
 }
 
 __m128i &get128BitElement(__m128i* ptr, int bigIndex, int bigSize, int smallRemainder)
@@ -154,7 +154,7 @@ __m128i &get128BitElement(__m128i* ptr, int bigIndex, int bigSize, int smallRema
 	else
 	{
 		for (int i = smallRemainder; i<8; ++i) {
-            ptr[bigIndex].m128i_u16[i] = 1;
+			ptr[bigIndex].m128i_u16[i] = 1;
 		}
 		return ptr[bigIndex];
 	}
@@ -175,7 +175,7 @@ __m256i &get256BitElement(__m256i* ptr, int bigIndex, int bigSize, int smallRema
 	else
 	{
 		for (int i = smallRemainder; i < 16; ++i) {
-		ptr[bigIndex].m256i_u16[i] = 1;
+			ptr[bigIndex].m256i_u16[i] = 1;
 		}
 		return ptr[bigIndex];
 	}
@@ -258,8 +258,8 @@ void rectangleSSE256(VideoBuffer *buffer, Math::Rectangle rect,
 		if (i != arraySize - 1 || (i == arraySize && remainder == 0)) {
 			for (int j = 0; j < 16; j++) {
 				bufferContent[bufferIndex++] = 0xff000000
-						| finalB.m256i_u16[j] << 16 | finalG.m256i_u16[j] << 8
-						| finalR.m256i_u16[j];
+				| finalB.m256i_u16[j] << 16 | finalG.m256i_u16[j] << 8
+				| finalR.m256i_u16[j];
 
 				if (++widthCounter % rect.width == 0) {
 					bufferIndex += line;
@@ -268,8 +268,8 @@ void rectangleSSE256(VideoBuffer *buffer, Math::Rectangle rect,
 		} else if (remainder != 0) {
 			for (int j = 0; j < remainder; j++) {
 				bufferContent[bufferIndex++] = 0xff000000
-						| finalB.m256i_u16[j] << 16 | finalG.m256i_u16[j] << 8
-						| finalR.m256i_u16[j];
+				| finalB.m256i_u16[j] << 16 | finalG.m256i_u16[j] << 8
+				| finalR.m256i_u16[j];
 			}
 
 			if (++widthCounter % rect.width == 0) {
@@ -366,8 +366,8 @@ void rectangleSSE(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color) {
 
 		if (i != arraySize - 1 || (i == arraySize && remainder == 0)) {
 			for (int j = 0; j < 8; j++) {
-                bufferContent[bufferIndex++] = 0xff000000 | finalB.m128i_u16[j] << 16 |
-                    finalG.m128i_u16[j] << 8 | finalR.m128i_u16[j];
+				bufferContent[bufferIndex++] = 0xff000000 | finalB.m128i_u16[j] << 16 |
+				finalG.m128i_u16[j] << 8 | finalR.m128i_u16[j];
 
 				if (++widthCounter % rect.width == 0) {
 					bufferIndex += line;
@@ -376,8 +376,8 @@ void rectangleSSE(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color) {
 		} else if (remainder != 0) {
 			for (int j = 0; j < remainder; j++) {
 				bufferContent[bufferIndex++] = 0xff000000
-						| finalB.m128i_u16[j] << 16 | finalG.m128i_u16[j] << 8
-						| finalR.m128i_u16[j];
+				| finalB.m128i_u16[j] << 16 | finalG.m128i_u16[j] << 8
+				| finalR.m128i_u16[j];
 			}
 
 			if (++widthCounter % rect.width == 0) {
@@ -401,50 +401,50 @@ void rectangleSSE(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color) {
 
 void rectangleAMP(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color)
 {
-    uint32_t *sourcePixelPointer = (uint32_t *)buffer->content + ((uint32_t)rect.position.y * buffer->width);
+	uint32_t *sourcePixelPointer = (uint32_t *)buffer->content + ((uint32_t)rect.position.y * buffer->width);
 
-    uint32_t rectColorR = (color & 0x000000ff);
-    uint32_t rectColorG = (color & 0x0000ff00) >> 8;
-    uint32_t rectColorB = (color & 0x00ff0000) >> 16;
-    uint32_t rectColorA = (color & 0xff000000) >> 24;
+	uint32_t rectColorR = (color & 0x000000ff);
+	uint32_t rectColorG = (color & 0x0000ff00) >> 8;
+	uint32_t rectColorB = (color & 0x00ff0000) >> 16;
+	uint32_t rectColorA = (color & 0xff000000) >> 24;
 
-    uint32_t rectR = rectColorR * rectColorA;
-    uint32_t rectG = rectColorG * rectColorA;
-    uint32_t rectB = rectColorB * rectColorA;
+	uint32_t rectR = rectColorR * rectColorA;
+	uint32_t rectG = rectColorG * rectColorA;
+	uint32_t rectB = rectColorB * rectColorA;
 
-    uint32_t sourceA = 255 - rectColorA;
+	uint32_t sourceA = 255 - rectColorA;
 
-    uint32_t x1 = (uint32_t)rect.position.x;
-    uint32_t x2 = (uint32_t)rect.position.x + rect.width;
+	uint32_t x1 = (uint32_t)rect.position.x;
+	uint32_t x2 = (uint32_t)rect.position.x + rect.width;
 
-    concurrency::array_view<uint32_t, 2> sourcePixels(rect.height, buffer->width, sourcePixelPointer);
+	concurrency::array_view<uint32_t, 2> sourcePixels(rect.height, buffer->width, sourcePixelPointer);
 
-    concurrency::parallel_for_each(sourcePixels.extent,
-        [=](concurrency::index<2> idx) restrict(amp)
-        {
-            if (idx[1] < x1 || idx[1] > x2)
-            {
-                return;
-            }
+	concurrency::parallel_for_each(sourcePixels.extent,
+			[=](concurrency::index<2> idx) restrict(amp)
+			{
+				if (idx[1] < x1 || idx[1] > x2)
+				{
+					return;
+				}
 
-            uint32_t sourcePixel = sourcePixels[idx];
+				uint32_t sourcePixel = sourcePixels[idx];
 
-            uint32_t sourceR = (sourcePixel & 0x000000ff);;
-            uint32_t sourceG = (sourcePixel & 0x0000ff00) >> 8;
-            uint32_t sourceB = (sourcePixel & 0x00ff0000) >> 16;
+				uint32_t sourceR = (sourcePixel & 0x000000ff);;
+				uint32_t sourceG = (sourcePixel & 0x0000ff00) >> 8;
+				uint32_t sourceB = (sourcePixel & 0x00ff0000) >> 16;
 
-            sourceR *= sourceA;
-            sourceG *= sourceA;
-            sourceB *= sourceA;
+				sourceR *= sourceA;
+				sourceG *= sourceA;
+				sourceB *= sourceA;
 
-            uint32_t finalR = (sourceR + rectR) >> 8;
-            uint32_t finalG = (sourceG + rectG) >> 8;
-            uint32_t finalB = (sourceB + rectB) >> 8;
+				uint32_t finalR = (sourceR + rectR) >> 8;
+				uint32_t finalG = (sourceG + rectG) >> 8;
+				uint32_t finalB = (sourceB + rectB) >> 8;
 
-            sourcePixels[idx] = 0xff000000 | finalB << 16 |
-                finalG << 8 | finalR;
-        }
-    );
+				sourcePixels[idx] = 0xff000000 | finalB << 16 |
+				finalG << 8 | finalR;
+			}
+	);
 
     sourcePixels.synchronize();
 }
@@ -509,7 +509,7 @@ void rectangle(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color) {
 
 void circle(VideoBuffer* buffer, Math::Vector2f pos, unsigned radius,
 		uint32_t color) {
-// prevent array index issues
+	// prevent array index issues
 	int x = pos.x;
 	int y = pos.y;
 
@@ -550,120 +550,68 @@ void explosion(VideoBuffer *buffer, GameState *gameState, int x, int y,
 			*explosionIndex = 0;
 		}
 	}
-	textureAlpha(buffer, &gameState->resources.explosion[*explosionIndex], x,
-			y);
+//	textureAlpha(buffer, &gameState->resources.explosion[*explosionIndex], x,
+//			y);
 }
 
-//void debugInformation(GameMemory *memory, VideoBuffer *buffer, Input *input, GameState *gameState) {
-//	std::string text = "Player 1: "
-//			+ std::to_string(gameState->player.position.x) + ", "
-//			+ std::to_string(gameState->player.position.y);
-//	Text::renderText(memory, buffer, text, {20, 100}, 7);
-//}
-
-void clearScreen(VideoBuffer *buffer, uint32_t color) {
-	for (unsigned int y = 0; y < buffer->height; y++) {
-		for (unsigned int x = 0; x < buffer->width; x++) {
-			((uint32_t*) buffer->content)[y * buffer->width + x] = color
-					+ (255 << 24);
-		}
-	}
+void clearScreen(uint32_t color) {
+	float red = ((color & 0xff000000) >> 24) / 255.0f;
+	float green = ((color & 0x00ff0000) >> 16) / 255.0f;
+	float blue = ((color & 0x0000ff00) >> 8) / 255.0f;
+	glClearColor(red, green, blue, 1.0f);
 }
 
-void texture(VideoBuffer *buffer, Texture* texture, int offsetX, int offsetY) {
-	unsigned startY = 0;
-	if (offsetY < 0) {
-		startY = 0 - offsetY;
-		printf("setting new startY");
-	} else if (offsetY >= (int) buffer->height) {
-		return;
-	}
+void texture(GameMemory *memory, Texture *texture, Math::Vector2f position,
+		Math::Vector2f size, Math::Vector2f direction) {
+	static GLuint program = buildProgram(memory);
 
-	unsigned startX = 0;
-	if (offsetX < 0) {
-		startX = 0 - offsetX;
-	} else if (offsetX >= (int) buffer->width) {
-		return;
-	}
+	size = size * 0.5;
+	Math::Vector2f bottomLeft = Math::Vector2f(-size.x, -size.y);
+	Math::Vector2f topLeft = Math::Vector2f(-size.x, size.y);
+	Math::Vector2f bottomRight = Math::Vector2f(size.x, -size.y);
+	Math::Vector2f topRight = Math::Vector2f(size.x, size.y);
 
-	for (unsigned y = startY; y < texture->height; y++) {
-		if (offsetY + y >= buffer->height) {
-			continue;
-		}
-		for (unsigned x = startX; x < texture->width; x++) {
-			if (offsetX + x >= buffer->width) {
-				continue;
-			}
-			int bufferIndex = buffer->width * (offsetY + y) + offsetX + x;
-			int textureIndex = y * texture->width + x;
-			((int*) buffer->content)[bufferIndex] =
-					((int*) (texture->content))[textureIndex];
-		}
-	}
-}
+	double angle = Math::angle(direction) - PI / 2;
+	bottomLeft = Math::rotate(bottomLeft, angle) + position;
+	topLeft = Math::rotate(topLeft, angle) + position;
+	bottomRight = Math::rotate(bottomRight, angle) + position;
+	topRight = Math::rotate(topRight, angle) + position;
 
-#define MIN(a, b) ((a < b) ? a : b)
-#define MAX(a, b) ((a > b) ? a : b)
-#define ABS(a) ((a < 0) ? -a : a)
+	// holds the screen coordinates with their associated texture coordinates
+	const float coordinates[] = { bottomLeft.x, bottomLeft.y, 0.0f, 1.0f, //
+			topLeft.x, topLeft.y, 0.0f, 0.0f, //
+			bottomRight.x, bottomRight.y, 1.0f, 1.0f, //
+			topRight.x, topRight.y, 1.0f, 0.0f //
+			};
 
-void backgroundTexture(VideoBuffer *buffer, Texture* texture, int offsetY) {
-	if (offsetY < -(int32_t) texture->height
-			|| offsetY > (int32_t) texture->height) {
-		return;
-	}
+	GLuint buffer = createVertexBufferObject(sizeof(coordinates), coordinates,
+	GL_STATIC_DRAW);
+	static GLuint position_location = glGetAttribLocation(program,
+			"a_Position");
+	static GLuint texture_coordinates_location = glGetAttribLocation(program,
+			"a_TextureCoordinates");
+	static GLuint texture_unit_location = glGetUniformLocation(program,
+			"u_TextureUnit");
 
-	uint32_t *currentTexturePixel = (uint32_t *) texture->content
-			- MIN(offsetY * (int32_t )texture->width, 0);
-	uint32_t *currentBufferPixel = (uint32_t *) buffer->content
-			+ MAX(0, offsetY * (int32_t )buffer->width);
+	glUseProgram(program);
 
-	uint32_t nextLine = buffer->width - texture->width;
-	unsigned yMax = 0;
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture->id);
+	glUniform1i(texture_unit_location, 0);
 
-	if (offsetY >= 0) {
-		yMax = buffer->height - offsetY;
-	} else if (offsetY < 0) {
-		yMax = texture->height - ABS(offsetY);
-	}
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glVertexAttribPointer(position_location, 2, GL_FLOAT, GL_FALSE,
+			4 * sizeof(GL_FLOAT), BUFFER_OFFSET(0));
+	glVertexAttribPointer(texture_coordinates_location, 2,
+	GL_FLOAT, GL_FALSE, 4 * sizeof(GL_FLOAT),
+			BUFFER_OFFSET(2 * sizeof(GL_FLOAT)));
+	glEnableVertexAttribArray(position_location);
+	glEnableVertexAttribArray(texture_coordinates_location);
 
-	for (unsigned y = 0; y < yMax; ++y) {
-		for (unsigned x = 0; x < texture->width; ++x) {
-			*currentBufferPixel++ = *currentTexturePixel++;
-		}
-		currentBufferPixel += nextLine;
-	}
-}
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-void textureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
-		int offsetY) {
-	uint32_t *currentBufferPixel = (uint32_t *) buffer->content
-			+ offsetY * (int) buffer->width + offsetX;
-	uint32_t *currentTexturePixel = (uint32_t *) texture->content;
-
-	uint32_t nextLine = buffer->width - texture->width;
-
-	for (int y = 0; y < (int) texture->height; ++y) {
-		if (offsetY + y < 0) {
-			currentBufferPixel += buffer->width;
-			currentTexturePixel += texture->width;
-			continue;
-		} else if (offsetY + y >= (int) buffer->height) {
-			break;
-		}
-
-		for (int x = 0; x < (int) texture->width; ++x) {
-			if (offsetX + x < 0 || offsetX + x >= (int) buffer->width) {
-				currentBufferPixel++;
-				currentTexturePixel++;
-				continue;
-			}
-
-			blendColor(*currentTexturePixel, currentBufferPixel);
-			currentBufferPixel++;
-			currentTexturePixel++;
-		}
-		currentBufferPixel += nextLine;
-	}
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 }

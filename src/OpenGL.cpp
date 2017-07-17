@@ -2,12 +2,12 @@ void setTexturePixels(GLuint texture_object_id, VideoBuffer *videoBuffer) {
 	glBindTexture(GL_TEXTURE_2D, texture_object_id);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-	GL_LINEAR_MIPMAP_LINEAR);
+			GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, videoBuffer->width,
-			videoBuffer->height, 0, GL_RGBA,
-			GL_UNSIGNED_BYTE, videoBuffer->content);
-	glGenerateMipmap(GL_TEXTURE_2D);
+			videoBuffer->height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+			videoBuffer->content);
+	glGenerateMipmap (GL_TEXTURE_2D);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
@@ -113,15 +113,14 @@ GLuint createVertexBufferObject(const GLsizeiptr size, const GLvoid *data,
 	return vbo_object;
 }
 
-void setupOpenGL(VideoBuffer *videoBuffer) {
-	texture = loadTexture(videoBuffer);
-	buffer = createVertexBufferObject(sizeof(rect), rect,
-	GL_STATIC_DRAW);
+void setupOpenGL(GraphicsData *graphics) {
+	graphics->gl_texture = loadTexture(&graphics->videoBuffer);
+	graphics->gl_buffer = createVertexBufferObject(sizeof(rect), rect, GL_STATIC_DRAW);
 
-	program = buildProgram();
+	graphics->gl_program = buildProgram();
 
-	a_position_location = glGetAttribLocation(program, "a_Position");
-	a_texture_coordinates_location = glGetAttribLocation(program,
+	graphics->gl_position_location = glGetAttribLocation(graphics->gl_program, "a_Position");
+	graphics->gl_texture_coordinates_location = glGetAttribLocation(graphics->gl_program,
 			"a_TextureCoordinates");
-	u_texture_unit_location = glGetUniformLocation(program, "u_TextureUnit");
+	graphics->gl_texture_unit_location = glGetUniformLocation(graphics->gl_program, "u_TextureUnit");
 }

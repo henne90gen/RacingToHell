@@ -1,5 +1,4 @@
 #include "linux_RacingToHell.h"
-#include "OpenGL.cpp"
 
 /**
  * Initializes the audio context
@@ -105,8 +104,6 @@ AudioData initAudioData() {
 	return audio;
 }
 
-void setupOpenGL(VideoBuffer *videoBuffer);
-
 void setVSync(bool sync) {
 //	/*const char* extensions = */glXQueryExtensionsString(graphics.display,
 //			XDefaultScreen(graphics.display));
@@ -138,6 +135,43 @@ void setVSync(bool sync) {
 //	}
 }
 
+Render::Texture loadIcon(std::string iconName, void** content) {
+	File file = readFile(iconName);
+	if (((char*) file.content)[0] != 'B' || (file.content)[1] != 'M') {
+		abort(file.name + " is not a bitmap file.");
+	}
+	int fileHeaderSize = 14;
+	BitmapHeader header = *((BitmapHeader*) (file.content + fileHeaderSize));
+
+	if (header.bitsPerPixel != 32) {
+		abort("Image must have 32-bit of color depth.");
+	}
+
+	Render::Texture icon = { };
+	icon.width = header.width;
+	icon.height = header.height;
+	icon.bytesPerPixel = header.bitsPerPixel / 8;
+	*content = malloc(icon.width * icon.height * icon.bytesPerPixel);
+
+	void* src = file.content + header.size + fileHeaderSize;
+	void* dest = *content;
+	for (unsigned y = 0; y < icon.height; y++) {
+		for (unsigned x = 0; x < icon.width; x++) {
+			int srcIndex = (header.height - y - 1) * header.width + x;
+			int destIndex = y * icon.width + x;
+			uint32_t color = ((uint32_t*) (src))[srcIndex];
+			uint8_t red = (color & 0xff000000) >> 24;
+			uint8_t green = (color & 0x00ff0000) >> 16;
+			uint8_t blue = (color & 0x0000ff00) >> 8;
+			uint8_t alpha = color & 0x000000ff;
+			color = (alpha << 24) + (red << 16) + (green << 8) + blue;
+			((uint32_t*) (dest))[destIndex] = color;
+		}
+	}
+	free(file.content);
+	return icon;
+}
+
 /**
  * Opens a window and initializes the graphics context
  */
@@ -148,15 +182,8 @@ GraphicsData initGraphicsData() {
 		abort("Cannot open display.");
 	};
 
-	VideoBuffer videoBuffer = { };
-	videoBuffer.width = WINDOW_WIDTH;
-	videoBuffer.height = WINDOW_HEIGHT;
-	videoBuffer.bytesPerPixel = 4;
-	videoBuffer.content = malloc(
-			videoBuffer.bytesPerPixel * videoBuffer.width * videoBuffer.height);
-	graphics.videoBuffer = videoBuffer;
-
 	Window root = DefaultRootWindow(graphics.display);
+	GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
 	graphics.vi = glXChooseVisual(graphics.display, 0, att);
 	if (!graphics.vi) {
 		abort("No appropriate visual found.");
@@ -166,9 +193,9 @@ GraphicsData initGraphicsData() {
 
 	graphics.swa.colormap = graphics.cmap;
 	graphics.swa.event_mask = EVENT_MASK;
-	graphics.window = XCreateWindow(graphics.display, root, 0, 0, 600, 800, 0,
-			graphics.vi->depth, InputOutput, graphics.vi->visual,
-			CWColormap | CWEventMask, &graphics.swa);
+	graphics.window = XCreateWindow(graphics.display, root, 0, 0, WINDOW_WIDTH,
+	WINDOW_HEIGHT, 0, graphics.vi->depth, InputOutput, graphics.vi->visual,
+	CWColormap | CWEventMask, &graphics.swa);
 
 	graphics.glc = glXCreateContext(graphics.display, graphics.vi, NULL,
 	GL_TRUE);
@@ -197,39 +224,33 @@ GraphicsData initGraphicsData() {
 	XSetClassHint(graphics.display, graphics.window, classHint);
 
 	// set icon
-	// FIXME enable icon
-//	Atom iconAtom = XInternAtom(graphics.display, "_NET_WM_ICON", 0);
-//	File file = readFile("./res/icon.bmp");
-//	GameMemory bmpMemory = { };
-//	char bmpBuffer[48 * 48 * 4];
-//	bmpMemory.permanent = bmpBuffer;
-//	bmpMemory.permanentMemorySize = sizeof(bmpBuffer);
-//	Texture texture = readBmpIntoMemory(file, &bmpMemory);
-//	int propsize = 2 + (texture.width * texture.height);
-//	long *propdata = (long*) malloc(propsize * sizeof(long));
-//
-//	propdata[0] = texture.width;
-//	propdata[1] = texture.height;
-//	uint32_t *src;
-//	long *dst = &propdata[2];
-//	for (unsigned y = 0; y < texture.height; ++y) {
-//		src =
-//				(uint32_t*) ((uint8_t*) texture.content
-//						+ y * (texture.width * 4));
-//		for (unsigned x = 0; x < texture.width; ++x) {
-//			uint32_t color = *src++;
-//			uint8_t alpha = (color & 0xff000000) >> 24;
-//			uint8_t red = (color & 0x000000ff);
-//			uint8_t green = (color & 0x0000ff00) >> 8;
-//			uint8_t blue = (color & 0x00ff0000) >> 16;
-//			color = (alpha << 24) + (red << 16) + (green << 8) + blue;
-//			*dst++ = color;
-//		}
-//	}
-//	XChangeProperty(graphics.display, graphics.window, iconAtom,
-//	XA_CARDINAL, 32, PropModeReplace, (unsigned char *) propdata, propsize);
+	Atom iconAtom = XInternAtom(graphics.display, "_NET_WM_ICON", 0);
+	void *iconContent = NULL;
+	Render::Texture icon = loadIcon("./res/icon.bmp", &iconContent);
+	int propsize = 2 + (icon.width * icon.height);
+	long *propdata = (long*) malloc(propsize * sizeof(long));
 
-// subscribe to events
+	propdata[0] = icon.width;
+	propdata[1] = icon.height;
+	uint32_t *src;
+	long *dst = &propdata[2];
+	for (unsigned y = 0; y < icon.height; ++y) {
+		src = (uint32_t*) ((uint8_t*) iconContent + y * (icon.width * 4));
+		for (unsigned x = 0; x < icon.width; ++x) {
+			uint32_t color = 0;
+			uint8_t alpha = (color & 0xff000000) >> 24;
+			uint8_t blue = (color & 0x00ff0000) >> 16;
+			uint8_t green = (color & 0x0000ff00) >> 8;
+			uint8_t red = (color & 0x000000ff);
+			color = (alpha << 24) + (red << 16) + (green << 8) + blue;
+			*dst++ = *src++;
+		}
+	}
+	XChangeProperty(graphics.display, graphics.window, iconAtom,
+	XA_CARDINAL, 32, PropModeReplace, (unsigned char *) propdata, propsize);
+	free(iconContent);
+
+	// subscribe to events
 	XSelectInput(graphics.display, graphics.window, EVENT_MASK);
 
 	// change cursor
@@ -242,9 +263,30 @@ GraphicsData initGraphicsData() {
 	XMapWindow(graphics.display, graphics.window);
 	XFlush(graphics.display);
 
-	setupOpenGL(&videoBuffer);
-
 	return graphics;
+}
+
+void toggleFullscreen(GraphicsData *graphics) {
+	static bool isFullscreen = false;
+	isFullscreen = !isFullscreen;
+
+	Atom wmState = XInternAtom(graphics->display, "_NET_WM_STATE", False);
+	Atom fullscreen = XInternAtom(graphics->display, "_NET_WM_STATE_FULLSCREEN",
+	False);
+
+	XEvent xev;
+	xev.xclient.type = ClientMessage;
+	xev.xclient.serial = 0;
+	xev.xclient.send_event = True;
+	xev.xclient.window = graphics->window;
+	xev.xclient.message_type = wmState;
+	xev.xclient.format = 32;
+	xev.xclient.data.l[0] = (isFullscreen ? 1 : 0);
+	xev.xclient.data.l[1] = fullscreen;
+	xev.xclient.data.l[2] = 0;
+
+	XSendEvent(graphics->display, DefaultRootWindow(graphics->display), False,
+	SubstructureRedirectMask | SubstructureNotifyMask, &xev);
 }
 
 /**
@@ -328,12 +370,19 @@ EXIT_GAME(exitGame) {
 /**
  * Uses the native key event to fill the platform independent input struct
  */
-void handleKeyEvent(Input* input, XKeyEvent event) {
+void handleKeyEvent(GraphicsData* graphics, Input* input, XKeyEvent event) {
 	bool keyPressed = event.type == KeyPress;
+
+//	printf("Key pressed: %d\n", event.keycode);
 
 	switch (event.keycode) {
 	case KeyF1:
 		exitGame();
+		break;
+	case KeyF11:
+		if (keyPressed) {
+			toggleFullscreen(graphics);
+		}
 		break;
 	case KeyW:
 		input->upKeyPressed = keyPressed;
@@ -387,7 +436,8 @@ void handleMouseEvent(Input* input, XButtonEvent event,
 /**
  * Puts the processor to sleep if we were faster than 16.7ms
  */
-void correctTiming(timespec startTime, bool consoleOutput) {
+void correctTiming(GraphicsData *graphics, timespec startTime,
+		bool consoleOutput) {
 	timespec endTime = { };
 	clock_gettime(CLOCK_MONOTONIC_RAW, &endTime);
 	if (endTime.tv_nsec < startTime.tv_nsec) {
@@ -414,8 +464,8 @@ void correctTiming(timespec startTime, bool consoleOutput) {
 			<< std::to_string(nanoSecondsElapsed / 1000000.0f);
 	ss << "ms, " << std::to_string(1000000000.0f / nanoSecondsElapsed);
 	ss << " FPS";
-	XStoreName(graphics.display, graphics.window, ss.str().c_str());
-	XFlush(graphics.display);
+	XStoreName(graphics->display, graphics->window, ss.str().c_str());
+	XFlush(graphics->display);
 
 	if (consoleOutput) {
 		printf("Frametime: %fms, Framerate: %f\n",
@@ -425,59 +475,30 @@ void correctTiming(timespec startTime, bool consoleOutput) {
 }
 
 /**
- * Draws the current video buffer to the screen
- */
-void swapVideoBuffers(VideoBuffer *videoBuffer) {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	setTexturePixels(texture, videoBuffer);
-
-	glUseProgram(program);
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glUniform1i(u_texture_unit_location, 0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glVertexAttribPointer(a_position_location, 2, GL_FLOAT, GL_FALSE,
-			4 * sizeof(GL_FLOAT), BUFFER_OFFSET(0));
-	glVertexAttribPointer(a_texture_coordinates_location, 2, GL_FLOAT,
-	GL_FALSE, 4 * sizeof(GL_FLOAT), BUFFER_OFFSET(2 * sizeof(GL_FLOAT)));
-	glEnableVertexAttribArray(a_position_location);
-	glEnableVertexAttribArray(a_texture_coordinates_location);
-
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glXSwapBuffers(graphics.display, graphics.window);
-	XSync(graphics.display, false);
-}
-
-/**
  * Feeds ALSA the next interval that needs to be played
  */
-void swapSoundBuffers(GameMemory *memory) {
+void swapSoundBuffers(AudioData *audio, GameMemory *memory) {
 	// this implementation is from https://github.com/nxsy/xcb_handmade
 	snd_pcm_sframes_t delay, avail;
-	int error = snd_pcm_avail_delay(audio.pcm_handle, &avail, &delay);
+	int error = snd_pcm_avail_delay(audio->pcm_handle, &avail, &delay);
 	if (error < 0) {
 		// audio will cut out eventually, if we don't recover
-		snd_pcm_recover(audio.pcm_handle, error, true);
+		snd_pcm_recover(audio->pcm_handle, error, true);
 	}
 
 	int32_t samplesToFill = 0;
-	int32_t expectedSamplesPerFrame = ((float) audio.samples_per_second / 60.0f);
-	int32_t samplesInBuffer = audio.buffer_size_in_samples - avail;
+	int32_t expectedSamplesPerFrame =
+			((float) audio->samples_per_second / 60.0f);
+	int32_t samplesInBuffer = audio->buffer_size_in_samples - avail;
 
 	if (samplesInBuffer < 0) {
 		abort("SamplesInBuffer below 0: " + samplesInBuffer);
 	}
 
-	int32_t sampleAdjustment = (samplesInBuffer - (audio.period_size * 4)) / 2;
-	if (audio.buffer_size_in_samples == avail) {
+	int32_t sampleAdjustment = (samplesInBuffer - (audio->period_size * 4)) / 2;
+	if (audio->buffer_size_in_samples == avail) {
 		// NOTE: initial fill on startup and after an underrun
-		samplesToFill = (expectedSamplesPerFrame * 2) + audio.safety_samples;
+		samplesToFill = (expectedSamplesPerFrame * 2) + audio->safety_samples;
 	} else {
 		samplesToFill = expectedSamplesPerFrame - sampleAdjustment;
 		if (samplesToFill < 0) {
@@ -490,9 +511,9 @@ void swapSoundBuffers(GameMemory *memory) {
 	}
 
 	SoundBuffer soundBuffer = { };
-	soundBuffer.samplesPerSecond = audio.samples_per_second;
+	soundBuffer.samplesPerSecond = audio->samples_per_second;
 	soundBuffer.sampleCount = (((samplesToFill) + (7)) & ~(7));
-	soundBuffer.samples = audio.buffer;
+	soundBuffer.samples = audio->buffer;
 
 	if (soundBuffer.sampleCount < 0) {
 		abort("SampleCount below 0: " + soundBuffer.sampleCount);
@@ -502,13 +523,13 @@ void swapSoundBuffers(GameMemory *memory) {
 
 #if SOUND_DEBUG
 	// NOTE: "delay" is the delay of the soundcard hardware
-	printf("samples in buffer before write: %ld delay in samples: %ld\n", (audio.buffer_size_in_samples - avail), delay);
+	printf("samples in buffer before write: %ld delay in samples: %ld\n", (audio->buffer_size_in_samples - avail), delay);
 #endif
 
-	int32_t writtenSamples = snd_pcm_writei(audio.pcm_handle, audio.buffer,
+	int32_t writtenSamples = snd_pcm_writei(audio->pcm_handle, audio->buffer,
 			soundBuffer.sampleCount);
 	if (writtenSamples < 0) {
-		writtenSamples = snd_pcm_recover(audio.pcm_handle, writtenSamples,
+		writtenSamples = snd_pcm_recover(audio->pcm_handle, writtenSamples,
 				true);
 	} else if (writtenSamples != soundBuffer.sampleCount) {
 		printf("only wrote %d of %d samples\n", writtenSamples,
@@ -516,8 +537,8 @@ void swapSoundBuffers(GameMemory *memory) {
 	}
 
 #if SOUND_DEBUG
-	snd_pcm_avail_delay(audio.pcm_handle, &avail, &delay);
-	printf("samples in buffer after write: %ld delay in samples: %ld written samples: %d\n", (audio.buffer_size_in_samples - avail + writtenSamples), delay, writtenSamples);
+	snd_pcm_avail_delay(audio->pcm_handle, &avail, &delay);
+	printf("samples in buffer after write: %ld delay in samples: %ld written samples: %d\n", (audio->buffer_size_in_samples - avail + writtenSamples), delay, writtenSamples);
 #endif
 }
 
@@ -587,8 +608,8 @@ GameMemory initGameMemory() {
 int main() {
 	GameMemory memory = initGameMemory();
 
-	graphics = initGraphicsData();
-	audio = initAudioData();
+	GraphicsData graphics = initGraphicsData();
+	AudioData audio = initAudioData();
 	gameCode = loadGameCode();
 
 	isRunning = true;
@@ -613,7 +634,7 @@ int main() {
 				exitGame();
 			}
 			if (event.type == KeyPress || event.type == KeyRelease) {
-				handleKeyEvent(newInput, event.xkey);
+				handleKeyEvent(&graphics, newInput, event.xkey);
 			}
 			if (event.type == ButtonPress || event.type == ButtonRelease) {
 				handleMouseEvent(newInput, event.xbutton, &wasLeftMousePressed,
@@ -625,6 +646,23 @@ int main() {
 				mousePosition.x = event.xmotion.x;
 				mousePosition.y = event.xmotion.y;
 				newInput->mousePosition = mousePosition;
+			}
+			if (event.type == ConfigureNotify) {
+				XConfigureEvent xce = event.xconfigure;
+				int width = xce.height / 9 * 16;
+				int height = xce.height;
+				int offsetX = 0;
+				int offsetY = 0;
+				if (width > xce.width) {
+					width = xce.width;
+					height = xce.width / 16 * 9;
+				} else {
+					offsetX = (xce.width - width) / 2;
+				}
+				if (xce.height > height) {
+					offsetY = (xce.height - height) / 2;
+				}
+				glViewport(offsetX, offsetY, width, height);
 			}
 		}
 
@@ -638,7 +676,12 @@ int main() {
 			newInput->shootKeyClicked = false;
 		}
 
-		gameCode.updateAndRender(&graphics.videoBuffer, newInput, &memory);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		gameCode.updateAndRender(newInput, &memory);
+
+		glXSwapBuffers(graphics.display, graphics.window);
+		XSync(graphics.display, false);
 
 #if SOUND_ENABLE
 		swapSoundBuffers(&memory);
@@ -654,13 +697,11 @@ int main() {
 			gameCode = loadGameCode();
 		}
 
-		swapVideoBuffers(&graphics.videoBuffer);
-
 		Input *tmp = oldInput;
 		oldInput = newInput;
 		newInput = tmp;
 
-		correctTiming(startTime, false);
+		correctTiming(&graphics, startTime, false);
 	}
 
 	// FIXME maybe free game memory as well?

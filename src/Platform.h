@@ -2,14 +2,19 @@
 #include <stdint.h>
 #include <string>
 
+#include <GL/glew.h>
+#include <GL/gl.h>
+#include <GL/glx.h>
+#include <GL/glu.h>
+#include <GL/glext.h>
+#include <GL/glxext.h>
+
 #ifdef _WIN32
 #include <amp.h>
-#else
-#include <x86intrin.h>
 #endif
 
-#define WINDOW_WIDTH 600
-#define WINDOW_HEIGHT 800
+#define WINDOW_WIDTH 1200
+#define WINDOW_HEIGHT 675
 #define WINDOW_TITLE "Racing to Hell"
 #define NUM_PLAYER_TEXTURES 6
 #define NUM_TRAFFIC_TEXTURES 7

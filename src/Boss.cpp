@@ -9,6 +9,7 @@ void updateTank(GameState *gameState) {
 	static int counter = 0;
 	static bool shooting = false;
 
+	// TODO change triggers for the different attack styles
 	if (boss->health < 0) {
 //		levelUp(gameState);
 	} else if (boss->health < boss->maxHealth * 0.3) {
@@ -19,7 +20,7 @@ void updateTank(GameState *gameState) {
 		boss->currentPhase = 0;
 	}
 
-	boss->currentPhase = 1;
+//	boss->currentPhase = 2;
 
 	switch (boss->currentPhase) {
 	case 0: // Shoot and drive left and right
@@ -35,8 +36,10 @@ void updateTank(GameState *gameState) {
 		}
 		break;
 	case 1: // Three bullet burst
+	{
 		Math::Vector2f centerPosition = Math::Vector2f(
-				{ WINDOW_WIDTH / 2, 150 });
+
+		{ WINDOW_WIDTH / 2, 150 });
 		if (boss->speed < 0) {
 			boss->speed = -boss->speed;
 		}
@@ -61,8 +64,26 @@ void updateTank(GameState *gameState) {
 				counter--;
 			}
 		}
+	}
+		break;
+	case 2: // Waves of bullets
+		if (gameState->frameCounter % boss->bulletFrequency == 0) {
+			Math::Vector2f playerDirection = gameState->player.position
+					- boss->position;
+			float angle = Math::angle(playerDirection) + PI / 16;
+			for (int i = 0; i < 5; i++) {
+				Math::Vector2f direction = Math::Vector2f(angle - PI / 32 * i);
+				spawnBullet(gameState, boss->position, direction, false);
+			}
+		}
 		break;
 	}
+}
+
+void updateMech(GameState *gameState) {
+//	Boss *boss = &gameState->boss;
+//	Render::Texture *tankTexture = &gameState->resources.tank;
+
 }
 
 void updateBoss(GameState *gameState) {
@@ -71,23 +92,24 @@ void updateBoss(GameState *gameState) {
 		updateTank(gameState);
 		break;
 	case BossType::MECH:
+		updateMech(gameState);
 		break;
 	}
 }
 
 void renderBoss(VideoBuffer *buffer, GameState *gameState) {
-	Render::Texture* tankTexture = &gameState->resources.tank;
-	int tankOffsetX = gameState->boss.position.x - tankTexture->width / 2;
-	int tankOffsetY = gameState->boss.position.y - tankTexture->height / 2;
-	Render::textureAlpha(buffer, tankTexture, tankOffsetX, tankOffsetY);
+//	Render::Texture* tankTexture = &gameState->resources.tank;
+//	int tankOffsetX = gameState->boss.position.x - tankTexture->width / 2;
+//	int tankOffsetY = gameState->boss.position.y - tankTexture->height / 2;
+//	Render::textureAlpha(buffer, tankTexture, tankOffsetX, tankOffsetY);
 
-	Render::Texture* tankCannonTexture = &gameState->resources.tankCannon;
-	int cannonOffsetX = gameState->boss.position.x
-			- tankCannonTexture->width / 2;
-	int cannonOffsetY = gameState->boss.position.y
-			- tankCannonTexture->height / 2 + 29;
-	Render::textureAlpha(buffer, tankCannonTexture, cannonOffsetX,
-			cannonOffsetY);
+//	Render::Texture* tankCannonTexture = &gameState->resources.tankCannon;
+//	int cannonOffsetX = gameState->boss.position.x
+//			- tankCannonTexture->width / 2;
+//	int cannonOffsetY = gameState->boss.position.y
+//			- tankCannonTexture->height / 2 + 29;
+//	Render::textureAlpha(buffer, tankCannonTexture, cannonOffsetX,
+//			cannonOffsetY);
 }
 
 void updateAndRenderBoss(VideoBuffer *buffer, GameState *gameState,
@@ -111,7 +133,10 @@ void loadBoss(GameState *gameState) {
 		break;
 		case 1:
 		gameState->boss.type = BossType::MECH;
+		gameState->boss.speed = 1.5f;
+		gameState->boss.bulletFrequency = 70;
 		break;
 	}
+	// TODO make boss move on screen instead of having him appear out of nowhere
 	gameState->boss.position = {WINDOW_WIDTH / 2, 150};
 }

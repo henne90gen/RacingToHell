@@ -1,5 +1,6 @@
 #include "RacingToHell.h"
 
+#include "Helper.cpp"
 #include "MyMath.cpp"
 #include "Memory.cpp"
 #include "Collision.cpp"
@@ -8,7 +9,6 @@
 #include "Sound.cpp"
 #include "GameMenu.cpp"
 #include "Boss.cpp"
-#include "Helper.cpp"
 #include "Init.cpp"
 
 /**
@@ -19,12 +19,6 @@ GameState *getGameState(GameMemory *memory) {
 		init(memory);
 	}
 	return (GameState *) (memory->permanent);
-}
-
-Math::Vector2f getPlayerDimensions(GameState *gameState) {
-	Render::Texture *playerText =
-			&gameState->resources.playerCarTextures[gameState->player.carIndex];
-	return {(float)playerText->width, (float)playerText->height};
 }
 
 /**
@@ -61,10 +55,10 @@ void updateAndRenderRoad(VideoBuffer *buffer, GameState *gameState,
 		}
 	}
 
-	Render::backgroundTexture(buffer, getCurrentRoad(gameState),
-			gameState->roadPosition);
-	Render::backgroundTexture(buffer, getCurrentRoad(gameState),
-			gameState->roadPosition - 800);
+//	Render::backgroundTexture(buffer, getCurrentRoad(gameState),
+//			gameState->roadPosition);
+//	Render::backgroundTexture(buffer, getCurrentRoad(gameState),
+//			gameState->roadPosition - 800);
 }
 
 /**
@@ -73,7 +67,7 @@ void updateAndRenderRoad(VideoBuffer *buffer, GameState *gameState,
 void spawnBullet(GameState *gameState, Math::Vector2f position,
 		Math::Vector2f velocity, bool playerBullet) {
 
-	velocity = velocity * (1.0 / Math::length(velocity));
+	velocity = Math::normalize(velocity);
 	// FIXME balance bullet speed
 	velocity = velocity * gameState->bulletSpeed;
 
@@ -117,30 +111,36 @@ void spawnBullet(GameState *gameState, Math::Vector2f position,
  * 		- shooting
  */
 void updatePlayer(Input *input, GameState *gameState) {
-	int x = 0;
-	int y = 0;
+	float speed = 0;
+	float direction = 0;
 	if (input->downKeyPressed) {
-		y += gameState->player.speed;
+		speed -= 0.001;
 	}
 	if (input->upKeyPressed) {
-		y -= gameState->player.speed;
+		speed += 0.001;
 	}
 	if (input->leftKeyPressed) {
-		x -= gameState->player.speed;
+		direction += 0.09;
 	}
 	if (input->rightKeyPressed) {
-		x += gameState->player.speed;
+		direction -= 0.09;
 	}
 
 	// movement
-	if (x || y) {
-		Math::Vector2f movement = { };
-		movement.x = x;
-		movement.y = y;
-		movement = Math::normalize(movement);
-		movement = movement * gameState->player.speed;
-		gameState->player.position = gameState->player.position + movement;
+	gameState->player.speed += speed;
+	if (gameState->player.speed > PLAYER_SPEED) {
+		gameState->player.speed = PLAYER_SPEED;
+	} else if (gameState->player.speed < -PLAYER_SPEED) {
+		gameState->player.speed = -PLAYER_SPEED;
 	}
+	gameState->player.direction = Math::normalize(
+			Math::rotate(gameState->player.direction, direction));
+	gameState->player.position = gameState->player.position
+			+ gameState->player.direction * gameState->player.speed;
+	printf("Player position: %f, %f\n", gameState->player.position.x,
+			gameState->player.position.y);
+	printf("Player direction: %f, %f\n", gameState->player.direction.x,
+			gameState->player.direction.y);
 
 	// energy
 	gameState->player.energy -= 1;
@@ -168,31 +168,28 @@ void updatePlayer(Input *input, GameState *gameState) {
 	Render::Texture *texture = getPlayerTexture(gameState);
 	// checking left and right
 	if (gameState->player.position.x < texture->width / 2) {
-		gameState->player.position.x = texture->width / 2;
+//		gameState->player.position.x = texture->width / 2;
 	} else if (gameState->player.position.x
 			> WINDOW_WIDTH - texture->width / 2) {
-		gameState->player.position.x = WINDOW_WIDTH - texture->width / 2;
+//		gameState->player.position.x = WINDOW_WIDTH - texture->width / 2;
 	}
 
 	// checking top and bottom
 	if (gameState->player.position.y < texture->height / 2) {
-		gameState->player.position.y = texture->height / 2;
+//		gameState->player.position.y = texture->height / 2;
 	} else if (gameState->player.position.y
 			> WINDOW_HEIGHT - texture->height / 2) {
-		gameState->player.position.y = WINDOW_HEIGHT - texture->height / 2;
+//		gameState->player.position.y = WINDOW_HEIGHT - texture->height / 2;
 	}
 }
 
 /**
  * Renders the player to the video buffer
  */
-void renderPlayer(VideoBuffer *buffer, GameState *gameState) {
-	Render::Texture *texture = getPlayerTexture(gameState);
-
-	int textureX = gameState->player.position.x - texture->width / 2;
-	int textureY = gameState->player.position.y - texture->height / 2;
-
-	Render::textureAlpha(buffer, texture, textureX, textureY);
+void renderPlayer(GameMemory *memory, GameState *gameState) {
+	Render::texture(memory, getPlayerTexture(gameState),
+			gameState->player.position, gameState->player.size,
+			gameState->player.direction);
 }
 
 /**
@@ -371,9 +368,9 @@ void updateAndRenderTraffic(VideoBuffer *buffer, GameState *gameState,
 			}
 		}
 
-		int x = car->position.x - texture->width / 2;
+//		int x = car->position.x - texture->width / 2;
 		int y = car->position.y - texture->height / 2;
-		Render::textureAlpha(buffer, texture, x, y);
+//		Render::textureAlpha(buffer, texture, x, y);
 
 		Render::bar(buffer, { car->position.x, (float) y - 13 }, car->health,
 				0xff0000ff);
@@ -460,9 +457,9 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState,
 			}
 		}
 
-		int x = item->position.x - texture->width / 2;
-		int y = item->position.y - texture->height / 2;
-		Render::textureAlpha(buffer, texture, x, y);
+//		int x = item->position.x - texture->width / 2;
+//		int y = item->position.y - texture->height / 2;
+//		Render::textureAlpha(buffer, texture, x, y);
 	}
 }
 
@@ -519,49 +516,51 @@ void updateAndRenderUI(VideoBuffer *buffer, GameState *gameState,
 /**
  * Updates and renders the game with all its entities
  */
-void updateAndRenderGame(VideoBuffer *buffer, Input *input, GameMemory *memory,
-		GameState *gameState, bool update) {
-	updateAndRenderRoad(buffer, gameState, update);
+void updateAndRenderGame(Input *input, GameMemory *memory, GameState *gameState,
+		bool update) {
+//	updateAndRenderRoad(buffer, gameState, update);
 
-	// update player before doing any collision detection
+// update player before doing any collision detection
 	if (update) {
 		updatePlayer(input, gameState);
 	}
 
-	updateAndRenderItems(buffer, gameState, update);
+//	updateAndRenderItems(buffer, gameState, update);
 
-	updateAndRenderTraffic(buffer, gameState, update);
+//	updateAndRenderTraffic(buffer, gameState, update);
 
 	if (gameState->isInBossFight) {
-		updateAndRenderBoss(buffer, gameState, update);
+//		updateAndRenderBoss(buffer, gameState, update);
 	}
 
 	if (gameState->menuState != MenuState::CREDITS) {
 		// render player after traffic, so he is always on top
-		renderPlayer(buffer, gameState);
+		renderPlayer(memory, gameState);
 	}
 
-	updateAndRenderBullets(buffer, gameState, update);
+//	updateAndRenderBullets(buffer, gameState, update);
 
 	if (gameState->menuState != MenuState::MAIN
 			&& gameState->menuState != MenuState::CREDITS) {
-		updateAndRenderUI(buffer, gameState, update);
+//		updateAndRenderUI(buffer, gameState, update);
 	}
 }
 
 extern "C"
 UPDATE_AND_RENDER(updateAndRender) {
+	Render::clearScreen(0);
+
 	checkInputForClicks(input);
 
 	GameState *gameState = getGameState(memory);
 	gameState->frameCounter++;
 
-	updateAndRenderGame(buffer, input, memory, gameState,
+	updateAndRenderGame(input, memory, gameState,
 			gameState->menuState == MenuState::GAME);
 
-	if (input->escapeKeyClicked && gameState->menuState == MenuState::GAME) {
-		loadMenu(gameState, MenuState::PAUSE);
-	} else if (gameState->menuState != MenuState::GAME) {
-		updateAndRenderMenus(memory, buffer, input);
-	}
+//	if (input->escapeKeyClicked && gameState->menuState == MenuState::GAME) {
+//		loadMenu(gameState, MenuState::PAUSE);
+//	} else if (gameState->menuState != MenuState::GAME) {
+//		updateAndRenderMenus(memory, buffer, input);
+//	}
 }

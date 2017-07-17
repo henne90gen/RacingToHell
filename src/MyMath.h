@@ -8,6 +8,13 @@ namespace Math {
 
 struct Vector2f {
 	float x, y;
+	Vector2f() :
+			x(0), y(0) {
+	}
+	Vector2f(float angle);
+	Vector2f(float x, float y) :
+			x(x), y(y) {
+	}
 };
 
 struct Rectangle {

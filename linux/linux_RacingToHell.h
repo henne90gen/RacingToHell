@@ -7,17 +7,14 @@
 #include <string>
 #include <sstream>
 #include <vector>
+
 #include <X11/cursorfont.h>
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
-#include <GL/glew.h>
-#include <GL/gl.h>
-#include <GL/glx.h>
-#include <GL/glu.h>
-#include <GL/glext.h>
-#include <GL/glxext.h>
+#include <X11/extensions/xf86vmode.h>
+
 #include <alsa/asoundlib.h>
 #include <dlfcn.h>
 #include <sys/stat.h>
@@ -25,19 +22,9 @@
 #include "Platform.h"
 #include "RacingToHell.h"
 
-#define BUFFER_OFFSET(i) ((void*)(i))
-
 // position X, Y, texture S, T
-static const float rect[] = { -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
-		1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f };
-
-static GLuint texture;
-static GLuint buffer;
-static GLuint program;
-
-static GLint a_position_location;
-static GLint a_texture_coordinates_location;
-static GLint u_texture_unit_location;
+//static const float rect[] = { -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
+//		1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f };
 
 // Giving keys more descriptive names
 #define KeyEscape 9
@@ -47,6 +34,7 @@ static GLint u_texture_unit_location;
 #define KeyS	 39
 #define KeyD	 40
 #define KeyF1	 67
+#define KeyF11	 95
 
 // Giving mouse buttons more descriptive names
 #define MouseLeft       Button1
@@ -63,7 +51,6 @@ struct GraphicsData {
 	XSetWindowAttributes swa;
 	GLXContext glc;
 	XWindowAttributes gwa;
-	VideoBuffer videoBuffer;
 };
 
 struct AudioData {
@@ -91,12 +78,8 @@ struct GameCode {
 };
 
 long int EVENT_MASK = KeyPressMask | KeyReleaseMask | ButtonPressMask
-		| ButtonReleaseMask | PointerMotionMask;
-
-GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
+		| ButtonReleaseMask | PointerMotionMask | StructureNotifyMask;
 
 static bool isRunning;
-static GraphicsData graphics;
-static AudioData audio;
 static GameCode gameCode;
 

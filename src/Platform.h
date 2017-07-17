@@ -3,7 +3,18 @@
 #include <string>
 
 #ifdef _WIN32
+#include <GL/glew.h>
+#include <GL/wglew.h> 
+#include <gl/GL.h>
+#include <gl\GLU.h>
 #include <amp.h>
+#else
+#include <GL/glew.h>
+#include <GL/gl.h>
+#include <GL/glx.h>
+#include <GL/glu.h>
+#include <GL/glext.h>
+#include <GL/glxext.h>
 #endif
 
 #define WINDOW_WIDTH 1200

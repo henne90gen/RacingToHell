@@ -172,7 +172,7 @@ GLuint compileShader(GameMemory *memory, const GLenum type,
 		int infoLogLength;
 		glGetShaderiv(shader_object_id, GL_INFO_LOG_LENGTH, &infoLogLength);
 		if (infoLogLength > 0) {
-			char VertexShaderErrorMessage[infoLogLength + 1];
+			char *VertexShaderErrorMessage = new char[infoLogLength + 1];
 			glGetShaderInfoLog(shader_object_id, infoLogLength, NULL,
 					VertexShaderErrorMessage);
 			printf("%s\n", VertexShaderErrorMessage);

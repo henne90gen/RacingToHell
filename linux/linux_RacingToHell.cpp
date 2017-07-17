@@ -173,7 +173,6 @@ GraphicsData initGraphicsData() {
 		abort("Failed to initialize GLEW.");
 	}
 
-	setVSync(0);
 	glEnable(GL_DEPTH_TEST);
 
 	XGetWindowAttributes(graphics.display, graphics.window, &graphics.gwa);

@@ -3,6 +3,10 @@
 #include <string>
 
 #ifdef _WIN32
+#include <GL/glew.h>
+#include <GL/wglew.h> 
+#include <gl/GL.h>
+#include <gl\GLU.h>
 #include <amp.h>
 #else
 #include <GL/glew.h>

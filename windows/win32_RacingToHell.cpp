@@ -6,15 +6,11 @@
 #include <string>
 #include <dsound.h>
 
-#include <GL/glew.h>
-//#include <GL/eglew.h>
-//#include <GL/glxew.h>
-#include <GL/wglew.h> 
-#include <gl/GL.h>
-#include <gl/GLU.h>
-
 #include "RacingToHell.h"
 #include "win32_RacingToHell.h"
+
+#include <gl/GL.h>
+#include <gl/GLU.h>
 
 static bool isRunning = true;
 static OffscreenBuffer buffer;

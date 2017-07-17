@@ -55,10 +55,10 @@ void updateAndRenderRoad(VideoBuffer *buffer, GameState *gameState,
 		}
 	}
 
-	Render::backgroundTexture(buffer, getCurrentRoad(gameState),
-			gameState->roadPosition);
-	Render::backgroundTexture(buffer, getCurrentRoad(gameState),
-			gameState->roadPosition - 800);
+//	Render::backgroundTexture(buffer, getCurrentRoad(gameState),
+//			gameState->roadPosition);
+//	Render::backgroundTexture(buffer, getCurrentRoad(gameState),
+//			gameState->roadPosition - 800);
 }
 
 /**
@@ -111,35 +111,36 @@ void spawnBullet(GameState *gameState, Math::Vector2f position,
  * 		- shooting
  */
 void updatePlayer(Input *input, GameState *gameState) {
-	float x = 0;
-	float y = 0;
+	float speed = 0;
+	float direction = 0;
 	if (input->downKeyPressed) {
-		y -= 0.001;
+		speed -= 0.001;
 	}
 	if (input->upKeyPressed) {
-		y += 0.001;
+		speed += 0.001;
 	}
 	if (input->leftKeyPressed) {
-		x -= 0.001;
+		direction += 0.09;
 	}
 	if (input->rightKeyPressed) {
-		x += 0.001;
+		direction -= 0.09;
 	}
 
 	// movement
-	if (x || y) {
-		gameState->player.movement = gameState->player.movement
-				+ Math::Vector2f(x, y);
-		if (Math::length(gameState->player.movement)
-				> gameState->player.speed) {
-			gameState->player.movement = Math::normalize(
-					gameState->player.movement) * gameState->player.speed;
-		}
-		printf("Player position: %f, %f\n", gameState->player.position.x,
-				gameState->player.position.y);
+	gameState->player.speed += speed;
+	if (gameState->player.speed > PLAYER_SPEED) {
+		gameState->player.speed = PLAYER_SPEED;
+	} else if (gameState->player.speed < -PLAYER_SPEED) {
+		gameState->player.speed = -PLAYER_SPEED;
 	}
+	gameState->player.direction = Math::normalize(
+			Math::rotate(gameState->player.direction, direction));
 	gameState->player.position = gameState->player.position
-			+ gameState->player.movement;
+			+ gameState->player.direction * gameState->player.speed;
+	printf("Player position: %f, %f\n", gameState->player.position.x,
+			gameState->player.position.y);
+	printf("Player direction: %f, %f\n", gameState->player.direction.x,
+			gameState->player.direction.y);
 
 	// energy
 	gameState->player.energy -= 1;
@@ -186,14 +187,9 @@ void updatePlayer(Input *input, GameState *gameState) {
  * Renders the player to the video buffer
  */
 void renderPlayer(GameMemory *memory, GameState *gameState) {
-	Render::Texture *texture = getPlayerTexture(gameState);
-
-	float width = gameState->player.size.x;
-	float height = gameState->player.size.y;
-	float textureX = gameState->player.position.x - width / 2.0f;
-	float textureY = gameState->player.position.y - height / 2.0f;
-
-	Render::texture(memory, texture, textureX, textureY, width, height);
+	Render::texture(memory, getPlayerTexture(gameState),
+			gameState->player.position, gameState->player.size,
+			gameState->player.direction);
 }
 
 /**
@@ -372,9 +368,9 @@ void updateAndRenderTraffic(VideoBuffer *buffer, GameState *gameState,
 			}
 		}
 
-		int x = car->position.x - texture->width / 2;
+//		int x = car->position.x - texture->width / 2;
 		int y = car->position.y - texture->height / 2;
-		Render::textureAlpha(buffer, texture, x, y);
+//		Render::textureAlpha(buffer, texture, x, y);
 
 		Render::bar(buffer, { car->position.x, (float) y - 13 }, car->health,
 				0xff0000ff);
@@ -461,9 +457,9 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState,
 			}
 		}
 
-		int x = item->position.x - texture->width / 2;
-		int y = item->position.y - texture->height / 2;
-		Render::textureAlpha(buffer, texture, x, y);
+//		int x = item->position.x - texture->width / 2;
+//		int y = item->position.y - texture->height / 2;
+//		Render::textureAlpha(buffer, texture, x, y);
 	}
 }
 

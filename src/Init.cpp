@@ -100,9 +100,11 @@ void loadTextures(GameMemory *memory) {
 void resetGameState(GameState *gameState) {
 	gameState->player = {};
 	gameState->player.position = Math::Vector2f(0, 0);
-	gameState->player.size = Math::Vector2f(0.05f, 0.15f);
+	gameState->player.size = Math::Vector2f(0.06f, 0.15f);
+	gameState->player.direction = Math::Vector2f(1, 0);
 	// TODO balance speed
 	gameState->player.speed = 0;
+	gameState->player.maxSpeed = PLAYER_SPEED;
 	// TODO balance health
 	gameState->player.health = 10;
 	gameState->player.maxHealth = 100;

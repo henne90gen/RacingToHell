@@ -98,18 +98,18 @@ void updateBoss(GameState *gameState) {
 }
 
 void renderBoss(VideoBuffer *buffer, GameState *gameState) {
-	Render::Texture* tankTexture = &gameState->resources.tank;
-	int tankOffsetX = gameState->boss.position.x - tankTexture->width / 2;
-	int tankOffsetY = gameState->boss.position.y - tankTexture->height / 2;
-	Render::textureAlpha(buffer, tankTexture, tankOffsetX, tankOffsetY);
+//	Render::Texture* tankTexture = &gameState->resources.tank;
+//	int tankOffsetX = gameState->boss.position.x - tankTexture->width / 2;
+//	int tankOffsetY = gameState->boss.position.y - tankTexture->height / 2;
+//	Render::textureAlpha(buffer, tankTexture, tankOffsetX, tankOffsetY);
 
-	Render::Texture* tankCannonTexture = &gameState->resources.tankCannon;
-	int cannonOffsetX = gameState->boss.position.x
-			- tankCannonTexture->width / 2;
-	int cannonOffsetY = gameState->boss.position.y
-			- tankCannonTexture->height / 2 + 29;
-	Render::textureAlpha(buffer, tankCannonTexture, cannonOffsetX,
-			cannonOffsetY);
+//	Render::Texture* tankCannonTexture = &gameState->resources.tankCannon;
+//	int cannonOffsetX = gameState->boss.position.x
+//			- tankCannonTexture->width / 2;
+//	int cannonOffsetY = gameState->boss.position.y
+//			- tankCannonTexture->height / 2 + 29;
+//	Render::textureAlpha(buffer, tankCannonTexture, cannonOffsetX,
+//			cannonOffsetY);
 }
 
 void updateAndRenderBoss(VideoBuffer *buffer, GameState *gameState,

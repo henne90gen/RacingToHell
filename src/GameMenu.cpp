@@ -86,7 +86,6 @@ void loadMenu(GameState *gameState, MenuState menuState) {
 		loadCreditsMenu(gameState);
 		break;
 	case MenuState::GAME:
-		gameState->player.speed = PLAYER_SPEED;
 		break;
 	}
 }

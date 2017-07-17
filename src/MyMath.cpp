@@ -54,8 +54,14 @@ Vector2f normalize(const Vector2f &v) {
 /**
  * Angle goes from -pi to pi
  */
-float angle(const Vector2f &v) {
+double angle(const Vector2f &v) {
 	return atan2(v.y, v.x);
+}
+
+Vector2f rotate(const Vector2f &v, double angle) {
+	float x = v.x * cos(angle) - v.y * sin(angle);
+	float y = v.x * sin(angle) + v.y * cos(angle);
+	return Vector2f(x, y);
 }
 
 }

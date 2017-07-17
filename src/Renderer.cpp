@@ -561,17 +561,30 @@ void clearScreen(uint32_t color) {
 	glClearColor(red, green, blue, 1.0f);
 }
 
-void texture(GameMemory *memory, Texture *texture, float offsetX, float offsetY,
-		float width, float height) {
+void texture(GameMemory *memory, Texture *texture, Math::Vector2f position,
+		Math::Vector2f size, Math::Vector2f direction) {
 	static GLuint program = buildProgram(memory);
-	// rect holds the screen coordinates with their associated texture coordinates
-	const float rect[] = { offsetX, offsetY, 0.0f, 1.0f, //
-			offsetX, offsetY + height, 0.0f, 0.0f, //
-			offsetX + width, offsetY, 1.0f, 1.0f, //
-			offsetX + width, offsetY + height, 1.0f, 0.0f //
+
+	size = size * 0.5;
+	Math::Vector2f bottomLeft = Math::Vector2f(-size.x, -size.y);
+	Math::Vector2f topLeft = Math::Vector2f(-size.x, size.y);
+	Math::Vector2f bottomRight = Math::Vector2f(size.x, -size.y);
+	Math::Vector2f topRight = Math::Vector2f(size.x, size.y);
+
+	double angle = Math::angle(direction) - PI / 2;
+	bottomLeft = Math::rotate(bottomLeft, angle) + position;
+	topLeft = Math::rotate(topLeft, angle) + position;
+	bottomRight = Math::rotate(bottomRight, angle) + position;
+	topRight = Math::rotate(topRight, angle) + position;
+
+	// holds the screen coordinates with their associated texture coordinates
+	const float coordinates[] = { bottomLeft.x, bottomLeft.y, 0.0f, 1.0f, //
+			topLeft.x, topLeft.y, 0.0f, 0.0f, //
+			bottomRight.x, bottomRight.y, 1.0f, 1.0f, //
+			topRight.x, topRight.y, 1.0f, 0.0f //
 			};
 
-	GLuint buffer = createVertexBufferObject(sizeof(rect), rect,
+	GLuint buffer = createVertexBufferObject(sizeof(coordinates), coordinates,
 	GL_STATIC_DRAW);
 	static GLuint position_location = glGetAttribLocation(program,
 			"a_Position");
@@ -599,17 +612,6 @@ void texture(GameMemory *memory, Texture *texture, float offsetX, float offsetY,
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-#define MIN(a, b) ((a < b) ? a : b)
-#define MAX(a, b) ((a > b) ? a : b)
-#define ABS(a) ((a < 0) ? -a : a)
-
-void backgroundTexture(VideoBuffer *buffer, Texture* texture, int offsetY) {
-}
-
-void textureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
-		int offsetY) {
 }
 
 }

@@ -36,9 +36,9 @@ struct Input {
 };
 
 struct Player {
-	Math::Vector2f position, movement, size;
+	Math::Vector2f position, direction, size;
 	int8_t carIndex, nextCarIndex;
-	float speed;
+	double speed, maxSpeed;
 	int32_t health, maxHealth, energy, maxEnergy;
 };
 

@@ -1,13 +1,6 @@
 ifeq ($(OS), Windows_NT)
-	PLATFORM_FILE := windows/win32_RacingToHell.cpp
-	PLATFORM_FLAGS := -mwindows
-	EXTENSION := .exe
-	CLEAN_CMD := del *$(EXTENSION)
-	CL_FLAGS := -Od -MT -nologo -GR- -Gm- -EHsc- -Oi -FC -Zi -Iinclude -Isrc
-	CL_LINKER := -opt:ref -incremental:no user32.lib gdi32.lib winmm.lib opengl32.lib
-	GCC_LINKER := -lwinmm -luser32 -lgdi32 -lwinfreetype
-	GCC_INCLUDES := -Iinclude -Isrc -Lwindows
-	include windows/Makefile
+	cl:
+		windows\build
 else
 	PLATFORM_FILE := linux/linux_RacingToHell.cpp
 	PLATFORM_FLAGS := -L/usr/X11R6/lib
@@ -15,10 +8,19 @@ else
 	CLEAN_CMD := rm -f *$(EXTENSION)
 	GCC_LINKER := -ldl -lfreetype -lXxf86vm -lXext -lX11 -lasound -lGLEW -lGLU -lGL
 	GCC_INCLUDES := -Iinclude -Isrc -L.
-	include linux/Makefile
-endif
+	GCC_FLAGS := -Wall -g -O0 -mavx2
 
-GCC_FLAGS := -Wall -g -O0 -mavx2
+	game_code:
+		g++ $(GCC_FLAGS) -shared  -fpic -Iinclude src/RacingToHell.cpp -o librth.so.new
+		mv -f librth.so.new librth.so
+
+	all: game_code
+		g++ $(GCC_FLAGS) $(GCC_INCLUDES) $(PLATFORM_FLAGS) $(PLATFORM_FILE) -o RacingToHell$(EXTENSION) $(GCC_LINKER)
+
+	optimized: game_code
+		g++ -O3 $(GCC_INCLUDES) $(PLATFORM_FLAGS) $(PLATFORM_FILE) -o RacingToHell$(EXTENSION) $(GCC_LINKER)
+
+endif
 
 clean:
 	$(CLEAN_CMD)

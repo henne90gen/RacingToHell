@@ -104,37 +104,6 @@ AudioData initAudioData() {
 	return audio;
 }
 
-void setVSync(bool sync) {
-//	/*const char* extensions = */glXQueryExtensionsString(graphics.display,
-//			XDefaultScreen(graphics.display));
-//	const char* extensions = (const char*) glGetString(GL_EXTENSIONS);
-//	abort(extensions);
-//	if (strstr(extensions, "swap_control") != NULL) {
-//		abort("Hello world.");
-//	}
-//
-//	if (glewIsSupported("GL_ARB_shading_language_100")) {
-//		printf("Supporting shading language\n");
-//	}
-//	if (glewIsSupported("GLX_EXT_swap_control")) {
-//		abort("Supporting VSync control");
-//	}
-//	typedef BOOL (APIENTRY *PFNGLXSWAPINTERVALEXTPROC)( int );
-//	PFNGLXSWAPINTERVALEXTPROC glXSwapIntervalEXT = 0;
-//	const char *extensions = (char*) glGetString( GL_EXTENSIONS);
-//
-//	if (glXQueryExtensionsString(graphics.display, (int)"GLX_EXT_swap_control") == 0) {
-//		return;
-//	} else {
-//		glXSwapIntervalEXT = (PFNGLXSWAPINTERVALEXTPROC) glXGetProcAddress(
-//				(const GLubyte*) "glXSwapIntervalEXT");
-//
-//		if (glXSwapIntervalEXT) {
-//			glXSwapIntervalEXT(graphics.display, sync);
-//		}
-//	}
-}
-
 Render::Texture loadIcon(std::string iconName, void** content) {
 	File file = readFile(iconName);
 	if (((char*) file.content)[0] != 'B' || (file.content)[1] != 'M') {

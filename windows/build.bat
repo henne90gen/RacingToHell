@@ -1,5 +1,7 @@
 @echo off
 
+call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64
+
 set commonCompilerFlags=-O2 -MT -nologo -GR- -Gm- -EHsc- -Oi -FC -Zi -Iinclude -Isrc -arch:AVX
 set commonLinkerFlags=-opt:ref -incremental:no user32.lib gdi32.lib winmm.lib opengl32.lib
 

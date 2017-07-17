@@ -6,6 +6,10 @@
 #include <string>
 #include <dsound.h>
 
+#include <GL/glew.h>
+//#include <GL/eglew.h>
+//#include <GL/glxew.h>
+#include <GL/wglew.h> 
 #include <gl/GL.h>
 #include <gl/GLU.h>
 
@@ -738,7 +742,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 		vBuffer.bytesPerPixel = buffer.bytesPerPixel;
 		vBuffer.content = buffer.content;
 		
-		gameCode.updateAndRender(&vBuffer, newInput, &memory);
+		gameCode.updateAndRender(newInput, &memory);
 		
         uint64_t audioWallClock = getClockCounter();
         float fromBeginToAudioSeconds = (audioWallClock - flipWallClock) / (float)performanceCountFrequency;

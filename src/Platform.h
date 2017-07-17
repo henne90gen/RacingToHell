@@ -2,13 +2,6 @@
 #include <stdint.h>
 #include <string>
 
-#include <GL/glew.h>
-#include <GL/gl.h>
-#include <GL/glx.h>
-#include <GL/glu.h>
-#include <GL/glext.h>
-#include <GL/glxext.h>
-
 #ifdef _WIN32
 #include <amp.h>
 #endif

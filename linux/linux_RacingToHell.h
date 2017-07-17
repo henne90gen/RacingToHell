@@ -8,6 +8,13 @@
 #include <sstream>
 #include <vector>
 
+#include <GL/glew.h>
+#include <GL/gl.h>
+#include <GL/glx.h>
+#include <GL/glu.h>
+#include <GL/glext.h>
+#include <GL/glxext.h>
+
 #include <X11/cursorfont.h>
 #include <X11/X.h>
 #include <X11/Xlib.h>

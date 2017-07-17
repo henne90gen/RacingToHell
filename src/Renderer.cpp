@@ -446,7 +446,7 @@ void rectangleAMP(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color)
         }
     );
 
-    Concurrency::copy(sourcePixels, sourcePixelPointer);
+    sourcePixels.synchronize();
 }
 
 #endif
@@ -473,7 +473,7 @@ void rectangle(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color) {
 		rect.width = buffer->width - rect.position.x;
 	}
 
-	rectangleAMP(buffer, rect, color);
+    rectangleAMP(buffer, rect, color);
 	return;
 #endif
 

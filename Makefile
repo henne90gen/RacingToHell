@@ -1,6 +1,6 @@
 ifeq ($(OS), Windows_NT)
-	cl:
-		windows\build
+cl:
+	windows\build
 else
 	PLATFORM_FILE := linux/linux_RacingToHell.cpp
 	PLATFORM_FLAGS := -L/usr/X11R6/lib

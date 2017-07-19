@@ -110,6 +110,8 @@ struct Boss {
 };
 
 struct GameState {
+	GLuint glProgram;
+
 	Sound::PlayingSound playingSounds[256];
 	int lastPlayingSound = -1;
 

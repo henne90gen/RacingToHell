@@ -18,7 +18,7 @@ struct Vector2f {
 };
 
 struct Rectangle {
-	Math::Vector2f position;
+	Math::Vector2f position, size;
 	unsigned width, height;
 };
 

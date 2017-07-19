@@ -142,7 +142,7 @@ void updatePlayer(Input *input, GameState *gameState) {
 //	printf("Player direction: %f, %f\n", gameState->player.direction.x,
 //			gameState->player.direction.y);
 
-	// energy
+// energy
 	gameState->player.energy -= 1;
 	if (gameState->player.energy <= 0) {
 		// TODO play a nice animation before doing a game over
@@ -466,8 +466,8 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState,
 /**
  * Updates and renders the timer at the top of the screen
  */
-void updateAndRenderTimer(VideoBuffer *buffer, GameState *gameState,
-		bool shouldUpdate) {
+void updateAndRenderTimer(GameMemory *memory, bool shouldUpdate) {
+	GameState *gameState = getGameState(memory);
 	if (shouldUpdate) {
 		if (!gameState->isInBossFight) {
 			gameState->levelTime += 10.0f / 60.0f;
@@ -482,15 +482,15 @@ void updateAndRenderTimer(VideoBuffer *buffer, GameState *gameState,
 	rect.position = {0, 0};
 	rect.height = 10;
 	rect.width = gameState->levelTime * WINDOW_WIDTH / gameState->maxLevelTime;
-	Render::rectangle(buffer, rect, 0x80ffffff);
+	Render::rectangle(memory, rect, 0x80ffffff);
 }
 
 /**
  * Updates and renders the UI with player health, player energy and timer
  */
-void updateAndRenderUI(VideoBuffer *buffer, GameState *gameState,
-		bool shouldUpdate) {
-	updateAndRenderTimer(buffer, gameState, shouldUpdate);
+void updateAndRenderUI(GameMemory *memory, bool shouldUpdate) {
+	GameState *gameState = getGameState(memory);
+	updateAndRenderTimer(memory, shouldUpdate);
 
 	static int widthWhenFull = 250;
 	// FIXME find some better colors
@@ -504,13 +504,13 @@ void updateAndRenderUI(VideoBuffer *buffer, GameState *gameState,
 	bar.width = gameState->player.energy * widthWhenFull
 			/ gameState->player.maxEnergy;
 	bar.position = {0, (float) (WINDOW_HEIGHT - bar.height)};
-	Render::rectangle(buffer, bar, energyColor);
+	Render::rectangle(memory, bar, energyColor);
 
 	// health
 	bar.width = gameState->player.health * widthWhenFull
 			/ gameState->player.maxHealth;
 	bar.position = {0, (float) (WINDOW_HEIGHT - bar.height * 2)};
-	Render::rectangle(buffer, bar, healthColor);
+	Render::rectangle(memory, bar, healthColor);
 }
 
 /**
@@ -520,10 +520,12 @@ void updateAndRenderGame(Input *input, GameMemory *memory, GameState *gameState,
 		bool update) {
 //	updateAndRenderRoad(buffer, gameState, update);
 
+
 // update player before doing any collision detection
 	if (update) {
 		updatePlayer(input, gameState);
 	}
+
 
 //	updateAndRenderItems(buffer, gameState, update);
 
@@ -542,7 +544,7 @@ void updateAndRenderGame(Input *input, GameMemory *memory, GameState *gameState,
 
 	if (gameState->menuState != MenuState::MAIN
 			&& gameState->menuState != MenuState::CREDITS) {
-//		updateAndRenderUI(buffer, gameState, update);
+		updateAndRenderUI(memory, update);
 	}
 }
 
@@ -555,8 +557,13 @@ UPDATE_AND_RENDER(updateAndRender) {
 	GameState *gameState = getGameState(memory);
 	gameState->frameCounter++;
 
-	updateAndRenderGame(input, memory, gameState,
-			gameState->menuState == MenuState::GAME);
+	updatePlayer(input, gameState);
+	renderPlayer(memory, gameState);
+
+	Render::rectangle(memory, Math::Rectangle(), 0xffffffff);
+
+//	updateAndRenderGame(input, memory, gameState,
+//			gameState->menuState == MenuState::GAME);
 
 //	if (input->escapeKeyClicked && gameState->menuState == MenuState::GAME) {
 //		loadMenu(gameState, MenuState::PAUSE);

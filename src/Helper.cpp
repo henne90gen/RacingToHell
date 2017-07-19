@@ -161,45 +161,54 @@ GLuint createVertexBufferObject(const GLsizeiptr size, const GLvoid *data,
 
 GLuint compileShader(GameMemory *memory, const GLenum type,
 		const GLchar *source, const GLint length) {
-	GLuint shader_object_id = glCreateShader(type);
-	GLint compile_status;
+	GLuint shaderID = glCreateShader(type);
+	GLint compileStatus;
 
-	glShaderSource(shader_object_id, 1, (const GLchar **) &source, &length);
-	glCompileShader(shader_object_id);
-	glGetShaderiv(shader_object_id, GL_COMPILE_STATUS, &compile_status);
+	glShaderSource(shaderID, 1, (const GLchar **) &source, &length);
+	glCompileShader(shaderID);
+	glGetShaderiv(shaderID, GL_COMPILE_STATUS, &compileStatus);
 
-	if (compile_status == GL_FALSE) {
+	if (compileStatus == GL_FALSE) {
 		int infoLogLength;
-		glGetShaderiv(shader_object_id, GL_INFO_LOG_LENGTH, &infoLogLength);
+		glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
 		if (infoLogLength > 0) {
-			char *VertexShaderErrorMessage = new char[infoLogLength + 1];
-			glGetShaderInfoLog(shader_object_id, infoLogLength, NULL,
-					VertexShaderErrorMessage);
-			printf("%s\n", VertexShaderErrorMessage);
+			char *shaderErrorMessage = new char[infoLogLength + 1];
+			glGetShaderInfoLog(shaderID, infoLogLength, NULL,
+					shaderErrorMessage);
+			printf("%s\n", shaderErrorMessage);
 		}
 		std::string message = "Failed to compile shader. "
 				+ std::to_string(type) + "\n" + std::string(source);
 		memory->abort(message);
 	}
 
-	return shader_object_id;
+	return shaderID;
 }
 
 GLuint linkProgram(GameMemory *memory, const GLuint vertex_shader,
 		const GLuint fragment_shader) {
-	GLuint program_object_id = glCreateProgram();
-	GLint link_status;
+	GLuint programID = glCreateProgram();
+	GLint linkStatus;
 
-	glAttachShader(program_object_id, vertex_shader);
-	glAttachShader(program_object_id, fragment_shader);
-	glLinkProgram(program_object_id);
-	glGetProgramiv(program_object_id, GL_LINK_STATUS, &link_status);
+	glAttachShader(programID, vertex_shader);
+	glAttachShader(programID, fragment_shader);
+	glLinkProgram(programID);
+	glGetProgramiv(programID, GL_LINK_STATUS, &linkStatus);
 
-	if (link_status == GL_FALSE) {
-		memory->abort("Couldn't link shader program.");
+	if (linkStatus == GL_FALSE) {
+		int infoLogLength;
+		glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &infoLogLength);
+		if (infoLogLength > 0) {
+			char *programErrorMessage = new char[infoLogLength + 1];
+			glGetProgramInfoLog(programID, infoLogLength, NULL,
+					programErrorMessage);
+			printf("%s\n", programErrorMessage);
+		}
+		std::string message = "Failed to link shader program.\n";
+		memory->abort(message);
 	}
 
-	return program_object_id;
+	return programID;
 }
 
 GLuint buildProgram(GameMemory *memory) {

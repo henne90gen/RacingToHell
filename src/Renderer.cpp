@@ -45,11 +45,11 @@ void blendColor(uint32_t color, uint32_t* currentBufferPixel) {
 
 void bar(VideoBuffer *buffer, Math::Vector2f position, uint8_t length,
 		uint32_t color) {
-	Math::Rectangle healthBar = { };
-	healthBar.position = {position.x - length / 2, (float) position.y};
-	healthBar.width = length;
-	healthBar.height = 8;
-	Render::rectangle(buffer, healthBar, color);
+	Math::Rectangle bar = { };
+	bar.position = {position.x - length / 2, (float) position.y};
+	bar.width = length;
+	bar.height = 8;
+	Render::rectangle(buffer, bar, color);
 }
 
 void switchPoint(Math::Vector2f *point1, Math::Vector2f *point2) {
@@ -507,9 +507,71 @@ void rectangle(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color) {
 	}
 }
 
+void rectangle(GameMemory *memory, Math::Rectangle rect, uint32_t color) {
+	GameState *gameState = getGameState(memory);
+
+	rect.position = Math::Vector2f();
+	rect.size = Math::Vector2f(1.0, 1.0);
+
+	rect.size = rect.size * 0.5;
+	Math::Vector2f bottomLeft = Math::Vector2f(-rect.size.x, -rect.size.y);
+	Math::Vector2f topLeft = Math::Vector2f(-rect.size.x, rect.size.y);
+	Math::Vector2f bottomRight = Math::Vector2f(rect.size.x, -rect.size.y);
+	Math::Vector2f topRight = Math::Vector2f(rect.size.x, rect.size.y);
+
+	bottomLeft = bottomLeft + rect.position;
+	topLeft = topLeft + rect.position;
+	bottomRight = bottomRight + rect.position;
+	topRight = topRight + rect.position;
+
+	float r = ((color & 0xff000000) >> 24) / 255.0f;
+	float g = ((color & 0x00ff0000) >> 16) / 255.0f;
+	float b = ((color & 0x0000ff00) >> 8) / 255.0f;
+	float a = (color & 0x000000ff) / 255.0f;
+	a = 0.5;
+
+	// holds the screen coordinates with their associated texture coordinates
+	const float coordinates[] = { bottomLeft.x, bottomLeft.y, r, g, b, a, //
+			topLeft.x, topLeft.y, r, g, b, a, //
+			bottomRight.x, bottomRight.y, r, g, b, a, //
+			topRight.x, topRight.y, r, g, b, a, //
+			};
+
+	GLuint coordinatesBuffer = createVertexBufferObject(sizeof(coordinates),
+			coordinates, GL_STATIC_DRAW);
+
+	static GLuint positionLocation = glGetAttribLocation(gameState->glProgram,
+			"a_Position");
+	static GLuint colorLocation = glGetAttribLocation(gameState->glProgram,
+			"a_Color");
+	static GLuint colorSourceLocation = glGetUniformLocation(
+			gameState->glProgram, "u_ColorSource");
+
+
+	glUniform1i(colorSourceLocation, 1);
+
+	glBindBuffer(GL_ARRAY_BUFFER, coordinatesBuffer);
+
+	GLuint stride = 6 * sizeof(GL_FLOAT);
+
+	glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, stride,
+			BUFFER_OFFSET(0));
+	glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, stride,
+			BUFFER_OFFSET(2 * sizeof(GL_FLOAT)));
+	glEnableVertexAttribArray(positionLocation);
+	glEnableVertexAttribArray(colorLocation);
+
+	glEnable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
 void circle(VideoBuffer* buffer, Math::Vector2f pos, unsigned radius,
 		uint32_t color) {
-	// prevent array index issues
+// prevent array index issues
 	int x = pos.x;
 	int y = pos.y;
 
@@ -563,7 +625,7 @@ void clearScreen(uint32_t color) {
 
 void texture(GameMemory *memory, Texture *texture, Math::Vector2f position,
 		Math::Vector2f size, Math::Vector2f direction) {
-	static GLuint program = buildProgram(memory);
+	GameState *gameState = getGameState(memory);
 
 	size = size * 0.5;
 	Math::Vector2f bottomLeft = Math::Vector2f(-size.x, -size.y);
@@ -577,7 +639,7 @@ void texture(GameMemory *memory, Texture *texture, Math::Vector2f position,
 	bottomRight = Math::rotate(bottomRight, angle) + position;
 	topRight = Math::rotate(topRight, angle) + position;
 
-	// holds the screen coordinates with their associated texture coordinates
+// holds the screen coordinates with their associated texture coordinates
 	const float coordinates[] = { bottomLeft.x, bottomLeft.y, 0.0f, 1.0f, //
 			topLeft.x, topLeft.y, 0.0f, 0.0f, //
 			bottomRight.x, bottomRight.y, 1.0f, 1.0f, //
@@ -587,36 +649,36 @@ void texture(GameMemory *memory, Texture *texture, Math::Vector2f position,
 	GLuint coordinatesBuffer = createVertexBufferObject(sizeof(coordinates),
 			coordinates, GL_STATIC_DRAW);
 
-	static GLfloat scaleMatrix[16] = { 1.0, 0, 0, 0, //
-			0, 16.0 / 9.0, 0, 0, //
-			0, 0, 1.0, 0, //
-			0, 0, 0, 1.0 };
+	static GLuint positionLocation = glGetAttribLocation(gameState->glProgram,
+			"a_Position");
+	static GLuint textureCoordinatesLocation = glGetAttribLocation(
+			gameState->glProgram, "a_TextureCoordinates");
+	static GLuint colorSourceLocation = glGetUniformLocation(
+			gameState->glProgram, "u_ColorSource");
+	static GLuint textureUnitLocation = glGetUniformLocation(
+			gameState->glProgram, "u_TextureUnit");
 
-	static GLuint scaleMatrixLocation = glGetUniformLocation(program,
-			"u_ScaleMatrix");
-	static GLuint positionLocation = glGetAttribLocation(program, "a_Position");
-	static GLuint textureCoordinates_location = glGetAttribLocation(program,
-			"a_TextureCoordinates");
-	static GLuint textureUnitLocation = glGetUniformLocation(program,
-			"u_TextureUnit");
-
-	glUseProgram(program);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture->id);
 	glUniform1i(textureUnitLocation, 0);
-
-	glUniformMatrix4fv(scaleMatrixLocation, 1, GL_FALSE, &scaleMatrix[0]);
+	glUniform1i(colorSourceLocation, 0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, coordinatesBuffer);
-	glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE,
-			4 * sizeof(GL_FLOAT), BUFFER_OFFSET(0));
-	glVertexAttribPointer(textureCoordinates_location, 2,
-	GL_FLOAT, GL_FALSE, 4 * sizeof(GL_FLOAT),
-			BUFFER_OFFSET(2 * sizeof(GL_FLOAT)));
-	glEnableVertexAttribArray(positionLocation);
-	glEnableVertexAttribArray(textureCoordinates_location);
 
+	std::size_t stride = 4 * sizeof(GL_FLOAT);
+
+	glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, stride,
+			BUFFER_OFFSET(0));
+	glVertexAttribPointer(textureCoordinatesLocation, 2,
+	GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(2 * sizeof(GL_FLOAT)));
+
+	glEnableVertexAttribArray(positionLocation);
+	glEnableVertexAttribArray(textureCoordinatesLocation);
+
+	glEnable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

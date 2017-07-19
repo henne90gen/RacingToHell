@@ -43,8 +43,10 @@ Render::Texture loadTexture(GameMemory *memory, std::string fileName) {
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture.width, texture.height, 0,
 			GL_RGBA, GL_UNSIGNED_BYTE, content);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+			GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glGenerateMipmap (GL_TEXTURE_2D);
 
 	freeTemporaryMemory(memory);
 
@@ -100,7 +102,7 @@ void loadTextures(GameMemory *memory) {
 void resetGameState(GameState *gameState) {
 	gameState->player = {};
 	gameState->player.position = Math::Vector2f(0, 0);
-	gameState->player.size = Math::Vector2f(0.06f, 0.15f);
+	gameState->player.size = Math::Vector2f(0.05f, 0.10f);
 	gameState->player.direction = Math::Vector2f(1, 0);
 	// TODO balance speed
 	gameState->player.speed = 0;
@@ -147,6 +149,19 @@ void init(GameMemory *memory) {
 			sizeof(GameState));
 
 	*gameState = {};
+
+	// setting up OpenGL
+	gameState->glProgram = buildProgram(memory);
+	glUseProgram(gameState->glProgram);
+	float scale = 4;
+	static GLfloat scaleMatrix[16] = { 9.0 / 16.0 * scale, 0, 0, 0, //
+			0, 1.0 * scale, 0, 0, //
+			0, 0, 1.0, 0, //
+			0, 0, 0, 1.0 };
+	static GLuint scaleMatrixLocation = glGetUniformLocation(
+			gameState->glProgram, "u_ScaleMatrix");
+	glUniformMatrix4fv(scaleMatrixLocation, 1, GL_FALSE, &scaleMatrix[0]);
+
 	resetGameState(gameState);
 
 	Text::loadFont(memory, "./res/font/arial.ttf");

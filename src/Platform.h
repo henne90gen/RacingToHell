@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include <string>
+#include <cstring>
 
 #ifdef _WIN32
 #include <GL/glew.h>

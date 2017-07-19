@@ -137,10 +137,10 @@ void updatePlayer(Input *input, GameState *gameState) {
 			Math::rotate(gameState->player.direction, direction));
 	gameState->player.position = gameState->player.position
 			+ gameState->player.direction * gameState->player.speed;
-	printf("Player position: %f, %f\n", gameState->player.position.x,
-			gameState->player.position.y);
-	printf("Player direction: %f, %f\n", gameState->player.direction.x,
-			gameState->player.direction.y);
+//	printf("Player position: %f, %f\n", gameState->player.position.x,
+//			gameState->player.position.y);
+//	printf("Player direction: %f, %f\n", gameState->player.direction.x,
+//			gameState->player.direction.y);
 
 	// energy
 	gameState->player.energy -= 1;

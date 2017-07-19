@@ -446,7 +446,7 @@ void rectangleAMP(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color)
 			}
 	);
 
-    sourcePixels.synchronize();
+	sourcePixels.synchronize();
 }
 
 #endif
@@ -473,7 +473,7 @@ void rectangle(VideoBuffer *buffer, Math::Rectangle rect, uint32_t color) {
 		rect.width = buffer->width - rect.position.x;
 	}
 
-    rectangleAMP(buffer, rect, color);
+	rectangleAMP(buffer, rect, color);
 	return;
 #endif
 
@@ -584,29 +584,38 @@ void texture(GameMemory *memory, Texture *texture, Math::Vector2f position,
 			topRight.x, topRight.y, 1.0f, 0.0f //
 			};
 
-	GLuint buffer = createVertexBufferObject(sizeof(coordinates), coordinates,
-	GL_STATIC_DRAW);
-	static GLuint position_location = glGetAttribLocation(program,
-			"a_Position");
-	static GLuint texture_coordinates_location = glGetAttribLocation(program,
+	GLuint coordinatesBuffer = createVertexBufferObject(sizeof(coordinates),
+			coordinates, GL_STATIC_DRAW);
+
+	static GLfloat scaleMatrix[16] = { 1.0, 0, 0, 0, //
+			0, 16.0 / 9.0, 0, 0, //
+			0, 0, 1.0, 0, //
+			0, 0, 0, 1.0 };
+
+	static GLuint scaleMatrixLocation = glGetUniformLocation(program,
+			"u_ScaleMatrix");
+	static GLuint positionLocation = glGetAttribLocation(program, "a_Position");
+	static GLuint textureCoordinates_location = glGetAttribLocation(program,
 			"a_TextureCoordinates");
-	static GLuint texture_unit_location = glGetUniformLocation(program,
+	static GLuint textureUnitLocation = glGetUniformLocation(program,
 			"u_TextureUnit");
 
 	glUseProgram(program);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture->id);
-	glUniform1i(texture_unit_location, 0);
+	glUniform1i(textureUnitLocation, 0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glVertexAttribPointer(position_location, 2, GL_FLOAT, GL_FALSE,
+	glUniformMatrix4fv(scaleMatrixLocation, 1, GL_FALSE, &scaleMatrix[0]);
+
+	glBindBuffer(GL_ARRAY_BUFFER, coordinatesBuffer);
+	glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE,
 			4 * sizeof(GL_FLOAT), BUFFER_OFFSET(0));
-	glVertexAttribPointer(texture_coordinates_location, 2,
+	glVertexAttribPointer(textureCoordinates_location, 2,
 	GL_FLOAT, GL_FALSE, 4 * sizeof(GL_FLOAT),
 			BUFFER_OFFSET(2 * sizeof(GL_FLOAT)));
-	glEnableVertexAttribArray(position_location);
-	glEnableVertexAttribArray(texture_coordinates_location);
+	glEnableVertexAttribArray(positionLocation);
+	glEnableVertexAttribArray(textureCoordinates_location);
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 

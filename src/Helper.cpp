@@ -203,17 +203,16 @@ GLuint linkProgram(GameMemory *memory, const GLuint vertex_shader,
 }
 
 GLuint buildProgram(GameMemory *memory) {
-	// FIXME don't hard code the shaders
-	const GLchar *vertex_shader_source =
-			"attribute vec4 a_Position;attribute vec2 a_TextureCoordinates;varying vec2 v_TextureCoordinates;void main() {v_TextureCoordinates = a_TextureCoordinates;gl_Position = a_Position;}";
-	const GLint vertex_shader_source_length = 179;
-	const GLchar *fragment_shader_source =
-			"uniform sampler2D u_TextureUnit;varying vec2 v_TextureCoordinates;void main() {gl_FragColor = texture2D(u_TextureUnit, v_TextureCoordinates);}";
-	const GLint fragment_shader_source_length = 166;
+	File vertexShaderFile = memory->readFile("./res/shaders/vertex.glsl");
+	GLuint vertexShader = compileShader(memory, GL_VERTEX_SHADER,
+			vertexShaderFile.content, std::strlen(vertexShaderFile.content));
+	memory->freeFile(&vertexShaderFile);
 
-	GLuint vertex_shader = compileShader(memory, GL_VERTEX_SHADER,
-			vertex_shader_source, vertex_shader_source_length);
-	GLuint fragment_shader = compileShader(memory, GL_FRAGMENT_SHADER,
-			fragment_shader_source, fragment_shader_source_length);
-	return linkProgram(memory, vertex_shader, fragment_shader);
+	File fragmentShaderFile = memory->readFile("./res/shaders/fragment.glsl");
+	GLuint fragmentShader = compileShader(memory, GL_FRAGMENT_SHADER,
+			fragmentShaderFile.content,
+			std::strlen(fragmentShaderFile.content));
+	memory->freeFile(&fragmentShaderFile);
+
+	return linkProgram(memory, vertexShader, fragmentShader);
 }

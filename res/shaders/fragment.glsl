@@ -10,9 +10,8 @@ varying vec2 v_TextureCoordinates;
 void main() {
 	if (u_ColorSource == 0) {
 		gl_FragColor = texture2D(u_TextureUnit, v_TextureCoordinates);
-		//gl_FragColor = vec4(0.0, 1.0, 0.0, 0.5);
 	} else if (u_ColorSource == 1) {
-		//gl_FragColor = v_Color;
-		gl_FragColor = vec4(1.0, 0.0, 0.0, 0.5);
+		gl_FragColor = v_Color;
+		//gl_FragColor = vec4(1.0, 0.0, 0.0, 0.5);
 	}
 }

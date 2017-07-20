@@ -520,12 +520,10 @@ void updateAndRenderGame(Input *input, GameMemory *memory, GameState *gameState,
 		bool update) {
 //	updateAndRenderRoad(buffer, gameState, update);
 
-
 // update player before doing any collision detection
 	if (update) {
 		updatePlayer(input, gameState);
 	}
-
 
 //	updateAndRenderItems(buffer, gameState, update);
 
@@ -558,9 +556,11 @@ UPDATE_AND_RENDER(updateAndRender) {
 	gameState->frameCounter++;
 
 	updatePlayer(input, gameState);
+	Render::texture(memory, &gameState->resources.playerCarTextures[0],
+			Math::Vector2f(), Math::Vector2f(0.05, 0.1),
+			Math::Vector2f(1.0, 0.0));
 	renderPlayer(memory, gameState);
-
-	Render::rectangle(memory, Math::Rectangle(), 0xffffffff);
+	Render::rectangle(memory, Math::Rectangle(), 0xffffff30);
 
 //	updateAndRenderGame(input, memory, gameState,
 //			gameState->menuState == MenuState::GAME);

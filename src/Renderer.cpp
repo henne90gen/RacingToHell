@@ -528,7 +528,7 @@ void rectangle(GameMemory *memory, Math::Rectangle rect, uint32_t color) {
 	float g = ((color & 0x00ff0000) >> 16) / 255.0f;
 	float b = ((color & 0x0000ff00) >> 8) / 255.0f;
 	float a = (color & 0x000000ff) / 255.0f;
-	a = 0.5;
+//	a = 0.5;
 
 	// holds the screen coordinates with their associated texture coordinates
 	const float coordinates[] = { bottomLeft.x, bottomLeft.y, r, g, b, a, //
@@ -561,8 +561,9 @@ void rectangle(GameMemory *memory, Math::Rectangle rect, uint32_t color) {
 	glEnableVertexAttribArray(positionLocation);
 	glEnableVertexAttribArray(colorLocation);
 
+	glDepthMask(GL_FALSE);
 	glEnable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
@@ -676,8 +677,9 @@ void texture(GameMemory *memory, Texture *texture, Math::Vector2f position,
 	glEnableVertexAttribArray(positionLocation);
 	glEnableVertexAttribArray(textureCoordinatesLocation);
 
+	glDepthMask(GL_FALSE);
 	glEnable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 

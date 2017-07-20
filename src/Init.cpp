@@ -40,11 +40,11 @@ Render::Texture loadTexture(GameMemory *memory, std::string fileName) {
 
 	glGenTextures(1, &texture.id);
 	glBindTexture(GL_TEXTURE_2D, texture.id);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture.width, texture.height, 0,
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture.width, texture.height, 0,
 			GL_RGBA, GL_UNSIGNED_BYTE, content);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-			GL_LINEAR_MIPMAP_LINEAR);
+			GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glGenerateMipmap (GL_TEXTURE_2D);
 
@@ -153,7 +153,7 @@ void init(GameMemory *memory) {
 	// setting up OpenGL
 	gameState->glProgram = buildProgram(memory);
 	glUseProgram(gameState->glProgram);
-	float scale = 4;
+	float scale = 1.0;
 	static GLfloat scaleMatrix[16] = { 9.0 / 16.0 * scale, 0, 0, 0, //
 			0, 1.0 * scale, 0, 0, //
 			0, 0, 1.0, 0, //

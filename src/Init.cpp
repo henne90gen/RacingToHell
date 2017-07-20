@@ -43,8 +43,7 @@ Render::Texture loadTexture(GameMemory *memory, std::string fileName) {
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture.width, texture.height, 0,
 			GL_RGBA, GL_UNSIGNED_BYTE, content);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-			GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glGenerateMipmap (GL_TEXTURE_2D);
 
@@ -58,6 +57,9 @@ Render::Texture loadTexture(GameMemory *memory, std::string fileName) {
  */
 void loadTextures(GameMemory *memory) {
 	GameState *gameState = getGameState(memory);
+
+	gameState->resources.bulletTexture = loadTexture(memory,
+			"./res/textures/bullet.bmp");
 
 	for (int i = 0; i < 4; i++) {
 		std::string fileName = "./res/textures/roads/road" + std::to_string(i)

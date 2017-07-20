@@ -59,6 +59,7 @@ struct Bullet {
 };
 
 struct Resources {
+	Render::Texture bulletTexture;
 	Render::Texture roadTextures[4];
 	Render::Texture playerCarTextures[6];
 	Render::Texture trafficCarTextures[7];

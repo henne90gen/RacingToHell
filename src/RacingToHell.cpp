@@ -196,9 +196,8 @@ void renderPlayer(GameMemory *memory, GameState *gameState) {
  * Updates and renders a single bullet
  * Checks for collisions with other cars or the player
  */
-bool updateAndRenderBullet(VideoBuffer *buffer, GameState *gameState,
-		Bullet &bullet, bool isPlayerBullet, bool shouldUpdate) {
-
+bool updateAndRenderBullet(GameMemory *memory, GameState *gameState, Bullet &bullet,
+		bool isPlayerBullet, bool shouldUpdate) {
 	if (shouldUpdate) {
 		bullet.position = bullet.position + bullet.velocity;
 
@@ -261,26 +260,25 @@ bool updateAndRenderBullet(VideoBuffer *buffer, GameState *gameState,
 		}
 	}
 
-	Render::circle(buffer, bullet.position, bullet.radius, bullet.color);
+	Render::circle(memory, bullet.position, bullet.radius, bullet.color);
 	return false;
 }
 
 /**
  * Updates and renders all bullets (player and AI)
  */
-void updateAndRenderBullets(VideoBuffer *buffer, GameState *gameState,
-		bool shouldUpdate) {
+void updateAndRenderBullets(GameMemory *memory, GameState *gameState, bool shouldUpdate) {
 	for (int i = 0; i < gameState->lastAIBulletIndex + 1; i++) {
-		if (updateAndRenderBullet(buffer, gameState, gameState->aiBullets[i],
-				false, shouldUpdate)) {
+		if (updateAndRenderBullet(memory, gameState, gameState->aiBullets[i], false,
+				shouldUpdate)) {
 			removeElement(gameState->aiBullets, &gameState->lastAIBulletIndex,
 					&i);
 		}
 	}
 
 	for (int i = 0; i < gameState->lastPlayerBulletIndex + 1; i++) {
-		if (updateAndRenderBullet(buffer, gameState,
-				gameState->playerBullets[i], true, shouldUpdate)) {
+		if (updateAndRenderBullet(memory, gameState, gameState->playerBullets[i], true,
+				shouldUpdate)) {
 			removeElement(gameState->playerBullets,
 					&gameState->lastPlayerBulletIndex, &i);
 		}
@@ -464,53 +462,34 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState,
 }
 
 /**
- * Updates and renders the timer at the top of the screen
- */
-void updateAndRenderTimer(GameMemory *memory, bool shouldUpdate) {
-	GameState *gameState = getGameState(memory);
-	if (shouldUpdate) {
-		if (!gameState->isInBossFight) {
-			gameState->levelTime += 10.0f / 60.0f;
-		}
-		if (gameState->levelTime >= gameState->maxLevelTime) {
-			gameState->levelTime = 0;
-			gameState->isInBossFight = true;
-		}
-	}
-
-	Math::Rectangle rect = { };
-	rect.position = {0, 0};
-	rect.height = 10;
-	rect.width = gameState->levelTime * WINDOW_WIDTH / gameState->maxLevelTime;
-	Render::rectangle(memory, rect, 0x80ffffff);
-}
-
-/**
  * Updates and renders the UI with player health, player energy and timer
  */
 void updateAndRenderUI(GameMemory *memory, bool shouldUpdate) {
 	GameState *gameState = getGameState(memory);
-	updateAndRenderTimer(memory, shouldUpdate);
 
-	static int widthWhenFull = 250;
-	// FIXME find some better colors
 	static uint32_t energyColor = 0xFFA51795;
 	static uint32_t healthColor = 0xFFA51795;
 
-	Math::Rectangle bar;
-	bar.height = 20;
+	float barWidth = 0.05;
+	float screenHeight = 2.0;
+	float screenWidth = (16.0 / 9.0) * 2.0;
 
 	// energy
-	bar.width = gameState->player.energy * widthWhenFull
+	Math::Rectangle energyBar;
+	float energyHeight = gameState->player.energy * screenHeight / 2.0
 			/ gameState->player.maxEnergy;
-	bar.position = {0, (float) (WINDOW_HEIGHT - bar.height)};
-	Render::rectangle(memory, bar, energyColor);
+	energyBar.size = Math::Vector2f(barWidth, energyHeight);
+	energyBar.position = Math::Vector2f(-screenWidth / 2.0, energyHeight - 1.0);
+	Render::rectangle(memory, energyBar, energyColor);
 
 	// health
-	bar.width = gameState->player.health * widthWhenFull
+	Math::Rectangle healthBar;
+	float healthHeight = gameState->player.health * screenHeight / 2.0
 			/ gameState->player.maxHealth;
-	bar.position = {0, (float) (WINDOW_HEIGHT - bar.height * 2)};
-	Render::rectangle(memory, bar, healthColor);
+	healthBar.size = Math::Vector2f(barWidth, healthHeight);
+	healthBar.position = Math::Vector2f(-screenWidth / 2.0 + barWidth,
+			healthHeight - 1.0);
+	Render::rectangle(memory, healthBar, healthColor);
 }
 
 /**
@@ -538,7 +517,7 @@ void updateAndRenderGame(Input *input, GameMemory *memory, GameState *gameState,
 		renderPlayer(memory, gameState);
 	}
 
-//	updateAndRenderBullets(buffer, gameState, update);
+	updateAndRenderBullets(memory, gameState, update);
 
 	if (gameState->menuState != MenuState::MAIN
 			&& gameState->menuState != MenuState::CREDITS) {
@@ -555,15 +534,8 @@ UPDATE_AND_RENDER(updateAndRender) {
 	GameState *gameState = getGameState(memory);
 	gameState->frameCounter++;
 
-	updatePlayer(input, gameState);
-	Render::texture(memory, &gameState->resources.playerCarTextures[0],
-			Math::Vector2f(), Math::Vector2f(0.05, 0.1),
-			Math::Vector2f(1.0, 0.0));
-	renderPlayer(memory, gameState);
-	Render::rectangle(memory, Math::Rectangle(), 0xffffff30);
-
-//	updateAndRenderGame(input, memory, gameState,
-//			gameState->menuState == MenuState::GAME);
+	updateAndRenderGame(input, memory, gameState,
+			gameState->menuState == MenuState::GAME);
 
 //	if (input->escapeKeyClicked && gameState->menuState == MenuState::GAME) {
 //		loadMenu(gameState, MenuState::PAUSE);

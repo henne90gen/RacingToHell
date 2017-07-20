@@ -11,7 +11,9 @@ void main() {
 	if (u_ColorSource == 0) {
 		gl_FragColor = texture2D(u_TextureUnit, v_TextureCoordinates);
 	} else if (u_ColorSource == 1) {
+		vec4 textureColor = texture2D(u_TextureUnit, v_TextureCoordinates);
+		gl_FragColor = vec4(v_Color.r, v_Color.g, v_Color.b, textureColor.a);
+	} else if (u_ColorSource == 2) {
 		gl_FragColor = v_Color;
-		//gl_FragColor = vec4(1.0, 0.0, 0.0, 0.5);
 	}
 }

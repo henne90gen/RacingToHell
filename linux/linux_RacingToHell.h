@@ -43,6 +43,11 @@
 #define MouseScrollUp   Button4
 #define MouseScrollDown Button5
 
+struct ViewProperties {
+	int width, height;
+	int offsetX, offsetY;
+};
+
 struct GraphicsData {
 	Display* display;
 	Window window;
@@ -51,6 +56,7 @@ struct GraphicsData {
 	XSetWindowAttributes swa;
 	GLXContext glc;
 	XWindowAttributes gwa;
+	ViewProperties viewProps;
 };
 
 struct AudioData {

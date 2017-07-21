@@ -75,7 +75,7 @@ void spawnBullet(GameState *gameState, Math::Vector2f position,
 	bullet.position = position;
 	bullet.velocity = velocity;
 	// FIXME balance bullet radius
-	bullet.radius = 10;
+	bullet.radius = 0.05;
 
 	if (playerBullet) {
 		int arrSize = sizeof(gameState->playerBullets) / sizeof(Bullet);
@@ -196,21 +196,21 @@ void renderPlayer(GameMemory *memory, GameState *gameState) {
  * Updates and renders a single bullet
  * Checks for collisions with other cars or the player
  */
-bool updateAndRenderBullet(GameMemory *memory, GameState *gameState, Bullet &bullet,
-		bool isPlayerBullet, bool shouldUpdate) {
+bool updateAndRenderBullet(GameMemory *memory, GameState *gameState,
+		Bullet &bullet, bool isPlayerBullet, bool shouldUpdate) {
 	if (shouldUpdate) {
 		bullet.position = bullet.position + bullet.velocity;
 
-		if (bullet.position.x < 0) {
-			return true;
-		} else if (bullet.position.x > WINDOW_WIDTH) {
-			return true;
-		}
-		if (bullet.position.y < 0) {
-			return true;
-		} else if (bullet.position.y > WINDOW_HEIGHT) {
-			return true;
-		}
+//		if (bullet.position.x < 0) {
+//			return true;
+//		} else if (bullet.position.x > WINDOW_WIDTH) {
+//			return true;
+//		}
+//		if (bullet.position.y < 0) {
+//			return true;
+//		} else if (bullet.position.y > WINDOW_HEIGHT) {
+//			return true;
+//		}
 
 		Math::Rectangle bulletRect = getBoundingBox(bullet.position,
 				bullet.radius * 2, bullet.radius * 2);
@@ -267,18 +267,19 @@ bool updateAndRenderBullet(GameMemory *memory, GameState *gameState, Bullet &bul
 /**
  * Updates and renders all bullets (player and AI)
  */
-void updateAndRenderBullets(GameMemory *memory, GameState *gameState, bool shouldUpdate) {
+void updateAndRenderBullets(GameMemory *memory, GameState *gameState,
+		bool shouldUpdate) {
 	for (int i = 0; i < gameState->lastAIBulletIndex + 1; i++) {
-		if (updateAndRenderBullet(memory, gameState, gameState->aiBullets[i], false,
-				shouldUpdate)) {
+		if (updateAndRenderBullet(memory, gameState, gameState->aiBullets[i],
+				false, shouldUpdate)) {
 			removeElement(gameState->aiBullets, &gameState->lastAIBulletIndex,
 					&i);
 		}
 	}
 
 	for (int i = 0; i < gameState->lastPlayerBulletIndex + 1; i++) {
-		if (updateAndRenderBullet(memory, gameState, gameState->playerBullets[i], true,
-				shouldUpdate)) {
+		if (updateAndRenderBullet(memory, gameState,
+				gameState->playerBullets[i], true, shouldUpdate)) {
 			removeElement(gameState->playerBullets,
 					&gameState->lastPlayerBulletIndex, &i);
 		}

@@ -575,6 +575,61 @@ GameMemory initGameMemory() {
 	return memory;
 }
 
+/**
+ * Cuts off anything that is not inside -range <--> range
+ */
+float cullToRange(float value, float range) {
+	if (value < -range) {
+		return -range;
+	} else if (value > range) {
+		return range;
+	}
+	return value;
+}
+
+Math::Vector2f adjustMousePosition(ViewProperties props, float aspectRatio,
+		float x, float y) {
+	x = x - props.offsetX;
+	x = x * 2.0 / ((float) props.width);
+	x -= 1.0;
+	x *= aspectRatio;
+	x = cullToRange(x, aspectRatio);
+
+	y = y - props.offsetY;
+	y = y * 2.0 / ((float) props.height);
+	y -= 1.0;
+	y *= -1.0;
+	y = cullToRange(y, 1.0);
+
+	return Math::Vector2f(x, y);
+}
+
+ViewProperties resizeViewport(GraphicsData *graphics, int width, int height,
+		float aspectRatio) {
+	int viewWidth = height * aspectRatio;
+	int viewHeight = height;
+	int offsetX = 0;
+	int offsetY = 0;
+	if (viewWidth > width) {
+		viewWidth = width;
+		viewHeight = width / aspectRatio;
+	} else {
+		offsetX = (width - viewWidth) / 2;
+	}
+	if (height > viewHeight) {
+		offsetY = (height - viewHeight) / 2;
+	}
+
+	glViewport(offsetX, offsetY, viewWidth, viewHeight);
+
+	ViewProperties props = { };
+	props.width = viewWidth;
+	props.height = viewHeight;
+	props.offsetX = offsetX;
+	props.offsetY = offsetY;
+	return props;
+}
+
 int main() {
 	GameMemory memory = initGameMemory();
 
@@ -612,27 +667,14 @@ int main() {
 				mouseEvent = true;
 			}
 			if (event.type == MotionNotify) {
-				Math::Vector2f mousePosition = { };
-				mousePosition.x = event.xmotion.x;
-				mousePosition.y = event.xmotion.y;
-				newInput->mousePosition = mousePosition;
+				newInput->mousePosition = adjustMousePosition(
+						graphics.viewProps, memory.aspectRatio, event.xmotion.x,
+						event.xmotion.y);
 			}
 			if (event.type == ConfigureNotify) {
 				XConfigureEvent xce = event.xconfigure;
-				int width = xce.height / 9 * 16;
-				int height = xce.height;
-				int offsetX = 0;
-				int offsetY = 0;
-				if (width > xce.width) {
-					width = xce.width;
-					height = xce.width / 16 * 9;
-				} else {
-					offsetX = (xce.width - width) / 2;
-				}
-				if (xce.height > height) {
-					offsetY = (xce.height - height) / 2;
-				}
-				glViewport(offsetX, offsetY, width, height);
+				graphics.viewProps = resizeViewport(&graphics, xce.width,
+						xce.height, memory.aspectRatio);
 			}
 		}
 
@@ -674,9 +716,9 @@ int main() {
 		correctTiming(&graphics, startTime, false);
 	}
 
-	// FIXME maybe free game memory as well?
+// FIXME maybe free game memory as well?
 
-	// Clean up audio
+// Clean up audio
 	snd_pcm_drain(audio.pcm_handle);
 	snd_pcm_close(audio.pcm_handle);
 	free(audio.buffer);

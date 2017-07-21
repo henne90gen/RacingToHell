@@ -127,7 +127,7 @@ void resetGameState(GameState *gameState) {
 	gameState->trafficFrequency = 50;
 	gameState->bulletFrequency = 50;
 	gameState->itemFrequency = 50;
-	gameState->bulletSpeed = 7.5f;
+	gameState->bulletSpeed = 0.005f;
 
 	gameState->lastAIBulletIndex = -1;
 	gameState->lastItemIndex = -1;
@@ -146,6 +146,8 @@ void resetGameState(GameState *gameState) {
 void init(GameMemory *memory) {
 	std::srand(time(0));
 	memory->isInitialized = true;
+	memory->aspectRatio = 16.0 / 9.0;
+	memory->stretch = false;
 
 	GameState *gameState = (GameState *) reservePermanentMemory(memory,
 			sizeof(GameState));
@@ -155,14 +157,11 @@ void init(GameMemory *memory) {
 	// setting up OpenGL
 	gameState->glProgram = buildProgram(memory);
 	glUseProgram(gameState->glProgram);
-	float scale = 1.0;
-	static GLfloat scaleMatrix[16] = { 9.0 / 16.0 * scale, 0, 0, 0, //
-			0, 1.0 * scale, 0, 0, //
-			0, 0, 1.0, 0, //
-			0, 0, 0, 1.0 };
-	static GLuint scaleMatrixLocation = glGetUniformLocation(
-			gameState->glProgram, "u_ScaleMatrix");
-	glUniformMatrix4fv(scaleMatrixLocation, 1, GL_FALSE, &scaleMatrix[0]);
+	glDepthMask(GL_TRUE);
+	glEnable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	resizeView(memory, 1.0);
 
 	resetGameState(gameState);
 

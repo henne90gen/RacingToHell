@@ -225,3 +225,17 @@ GLuint buildProgram(GameMemory *memory) {
 
 	return linkProgram(memory, vertexShader, fragmentShader);
 }
+
+void resizeView(GameMemory* memory, float scale) {
+	GameState *gameState = getGameState(memory);
+	float scaleY = 1.0 * scale;
+	float scaleX = (1.0 / memory->aspectRatio) * scale;
+	static GLfloat scaleMatrix[16] = { scaleX, 0, 0, 0, //
+			0, scaleY, 0, 0, //
+			0, 0, 1.0, 0, //
+			0, 0, 0, 1.0 };
+	static GLuint scaleMatrixLocation = glGetUniformLocation(
+			gameState->glProgram, "u_ScaleMatrix");
+	glUniformMatrix4fv(scaleMatrixLocation, 1, GL_FALSE, &scaleMatrix[0]);
+}
+

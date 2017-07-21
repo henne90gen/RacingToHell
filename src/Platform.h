@@ -63,14 +63,19 @@ EXIT_GAME(exitGame);
 struct GameMemory {
 	bool isInitialized = false;
 
+	float aspectRatio;
+	bool stretch = false;
+
 	abort_ *abort;
 	read_file *readFile;
 	free_file *freeFile;
 	exit_game *exitGame;
 
-	size_t temporaryMemorySize = 0, permanentMemorySize = 0;
-	char *temporary, *permanent;
-
-	size_t permanentMemoryOffset = 0;
+	char *temporary;
+	size_t temporaryMemorySize = 0;
 	size_t temporaryMemoryOffset = 0;
+
+	char *permanent;
+	size_t permanentMemorySize = 0;
+	size_t permanentMemoryOffset = 0;
 };

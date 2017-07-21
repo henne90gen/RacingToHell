@@ -630,10 +630,6 @@ void texture(GameMemory *memory, Texture *texture, Math::Vector2f position,
 	glEnableVertexAttribArray(positionLocation);
 	glEnableVertexAttribArray(textureCoordinatesLocation);
 
-	glDepthMask(GL_FALSE);
-	glEnable(GL_BLEND);
-	glDisable(GL_DEPTH_TEST);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -694,10 +690,6 @@ void rectangle(GameMemory *memory, Math::Rectangle rect, uint32_t color) {
 	glEnableVertexAttribArray(positionLocation);
 	glEnableVertexAttribArray(colorLocation);
 
-	glDepthMask(GL_FALSE);
-	glEnable(GL_BLEND);
-	glDisable(GL_DEPTH_TEST);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

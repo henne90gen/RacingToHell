@@ -55,7 +55,8 @@ struct Item {
 
 struct Bullet {
 	Math::Vector2f position, velocity;
-	uint32_t color, radius;
+	float radius;
+	uint32_t color;
 };
 
 struct Resources {

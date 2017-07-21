@@ -34,6 +34,7 @@
 #define KeyS	 39
 #define KeyD	 40
 #define KeyF1	 67
+#define KeyF2	 68
 #define KeyF11	 95
 
 // Giving mouse buttons more descriptive names
@@ -56,6 +57,7 @@ struct GraphicsData {
 	XSetWindowAttributes swa;
 	GLXContext glc;
 	XWindowAttributes gwa;
+	int windowWidth, windowHeight;
 	ViewProperties viewProps;
 };
 

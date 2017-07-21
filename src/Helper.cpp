@@ -228,9 +228,11 @@ GLuint buildProgram(GameMemory *memory) {
 
 void resizeView(GameMemory* memory, float scale) {
 	GameState *gameState = getGameState(memory);
+	memory->doResize = false;
+
 	float scaleY = 1.0 * scale;
 	float scaleX = (1.0 / memory->aspectRatio) * scale;
-	static GLfloat scaleMatrix[16] = { scaleX, 0, 0, 0, //
+	GLfloat scaleMatrix[16] = { scaleX, 0, 0, 0, //
 			0, scaleY, 0, 0, //
 			0, 0, 1.0, 0, //
 			0, 0, 0, 1.0 };

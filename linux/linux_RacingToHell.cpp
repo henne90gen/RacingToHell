@@ -338,12 +338,43 @@ EXIT_GAME(exitGame) {
 }
 
 /**
+ * Changes the OpenGL viewport to the desired aspect ratio within the given window
+ */
+void resizeViewport(GraphicsData *graphics, GameMemory *memory) {
+	int viewWidth = graphics->windowHeight * memory->aspectRatio;
+	int viewHeight = graphics->windowHeight;
+	int offsetX = 0;
+	int offsetY = 0;
+	if (viewWidth > graphics->windowWidth) {
+		viewWidth = graphics->windowWidth;
+		viewHeight = graphics->windowWidth / memory->aspectRatio;
+	} else {
+		offsetX = (graphics->windowWidth - viewWidth) / 2;
+	}
+	if (graphics->windowHeight > viewHeight) {
+		offsetY = (graphics->windowHeight - viewHeight) / 2;
+	}
+
+	glViewport(offsetX, offsetY, viewWidth, viewHeight);
+
+	ViewProperties props = { };
+	props.width = viewWidth;
+	props.height = viewHeight;
+	props.offsetX = offsetX;
+	props.offsetY = offsetY;
+	graphics->viewProps = props;
+
+	memory->doResize = true;
+}
+
+/**
  * Uses the native key event to fill the platform independent input struct
  */
-void handleKeyEvent(GraphicsData* graphics, Input* input, XKeyEvent event) {
+void handleKeyEvent(GameMemory *memory, GraphicsData* graphics, Input* input,
+		XKeyEvent event) {
 	bool keyPressed = event.type == KeyPress;
 
-//	printf("Key pressed: %d\n", event.keycode);
+	printf("Key pressed: %d\n", event.keycode);
 
 	switch (event.keycode) {
 	case KeyF1:
@@ -352,6 +383,16 @@ void handleKeyEvent(GraphicsData* graphics, Input* input, XKeyEvent event) {
 	case KeyF11:
 		if (keyPressed) {
 			toggleFullscreen(graphics);
+		}
+		break;
+	case KeyF2:
+		if (keyPressed) {
+			if (memory->aspectRatio < 1.5) {
+				memory->aspectRatio = 16.0 / 9.0;
+			} else {
+				memory->aspectRatio = 4.0 / 3.0;
+			}
+			resizeViewport(graphics, memory);
 		}
 		break;
 	case KeyW:
@@ -604,32 +645,6 @@ Math::Vector2f adjustMousePosition(ViewProperties props, float aspectRatio,
 	return Math::Vector2f(x, y);
 }
 
-ViewProperties resizeViewport(GraphicsData *graphics, int width, int height,
-		float aspectRatio) {
-	int viewWidth = height * aspectRatio;
-	int viewHeight = height;
-	int offsetX = 0;
-	int offsetY = 0;
-	if (viewWidth > width) {
-		viewWidth = width;
-		viewHeight = width / aspectRatio;
-	} else {
-		offsetX = (width - viewWidth) / 2;
-	}
-	if (height > viewHeight) {
-		offsetY = (height - viewHeight) / 2;
-	}
-
-	glViewport(offsetX, offsetY, viewWidth, viewHeight);
-
-	ViewProperties props = { };
-	props.width = viewWidth;
-	props.height = viewHeight;
-	props.offsetX = offsetX;
-	props.offsetY = offsetY;
-	return props;
-}
-
 int main() {
 	GameMemory memory = initGameMemory();
 
@@ -659,7 +674,7 @@ int main() {
 				exitGame();
 			}
 			if (event.type == KeyPress || event.type == KeyRelease) {
-				handleKeyEvent(&graphics, newInput, event.xkey);
+				handleKeyEvent(&memory, &graphics, newInput, event.xkey);
 			}
 			if (event.type == ButtonPress || event.type == ButtonRelease) {
 				handleMouseEvent(newInput, event.xbutton, &wasLeftMousePressed,
@@ -673,8 +688,9 @@ int main() {
 			}
 			if (event.type == ConfigureNotify) {
 				XConfigureEvent xce = event.xconfigure;
-				graphics.viewProps = resizeViewport(&graphics, xce.width,
-						xce.height, memory.aspectRatio);
+				graphics.windowWidth = xce.width;
+				graphics.windowHeight = xce.height;
+				resizeViewport(&graphics, &memory);
 			}
 		}
 

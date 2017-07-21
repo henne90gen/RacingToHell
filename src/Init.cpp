@@ -157,9 +157,9 @@ void init(GameMemory *memory) {
 	// setting up OpenGL
 	gameState->glProgram = buildProgram(memory);
 	glUseProgram(gameState->glProgram);
-	glDepthMask(GL_TRUE);
-	glEnable(GL_BLEND);
-	glDisable(GL_DEPTH_TEST);
+	glDepthMask (GL_TRUE);
+	glEnable (GL_BLEND);
+	glDisable (GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	resizeView(memory, 1.0);
 

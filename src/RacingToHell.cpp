@@ -528,6 +528,10 @@ void updateAndRenderGame(Input *input, GameMemory *memory, GameState *gameState,
 
 extern "C"
 UPDATE_AND_RENDER(updateAndRender) {
+	if (memory->doResize) {
+		resizeView(memory, 1.0);
+	}
+
 	Render::clearScreen(0);
 
 	checkInputForClicks(input);
@@ -537,6 +541,10 @@ UPDATE_AND_RENDER(updateAndRender) {
 
 	updateAndRenderGame(input, memory, gameState,
 			gameState->menuState == MenuState::GAME);
+
+	Math::Rectangle rect = { { -memory->aspectRatio, 1.0 }, { 2
+			* memory->aspectRatio, 2.0 } };
+	Render::rectangle(memory, rect, 0xff00ff80);
 
 //	if (input->escapeKeyClicked && gameState->menuState == MenuState::GAME) {
 //		loadMenu(gameState, MenuState::PAUSE);

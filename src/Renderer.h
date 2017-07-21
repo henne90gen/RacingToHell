@@ -51,4 +51,6 @@ void texture(VideoBuffer *buffer, Texture* texture, int offsetX, int offsetY);
 
 void clearScreen(VideoBuffer *buffer, uint32_t color);
 
+void clearScreen(uint32_t color);
+
 }

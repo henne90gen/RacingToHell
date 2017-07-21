@@ -528,16 +528,7 @@ void updateAndRenderGame(Input *input, GameMemory *memory, GameState *gameState,
 
 extern "C"
 UPDATE_AND_RENDER(updateAndRender) {
-	if (memory->doResize) {
-		resizeView(memory, 1.0);
-	}
-
-	Render::clearScreen(0);
-
-	checkInputForClicks(input);
-
-	GameState *gameState = getGameState(memory);
-	gameState->frameCounter++;
+	GameState *gameState = beginFrame(memory, input);
 
 	updateAndRenderGame(input, memory, gameState,
 			gameState->menuState == MenuState::GAME);

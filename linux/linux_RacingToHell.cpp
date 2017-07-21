@@ -367,6 +367,15 @@ void resizeViewport(GraphicsData *graphics, GameMemory *memory) {
 	memory->doResize = true;
 }
 
+void toggleAspectRatio(GameMemory* memory, GraphicsData* graphics) {
+	if (memory->aspectRatio < 1.5) {
+		memory->aspectRatio = 16.0 / 9.0;
+	} else {
+		memory->aspectRatio = 4.0 / 3.0;
+	}
+	resizeViewport(graphics, memory);
+}
+
 /**
  * Uses the native key event to fill the platform independent input struct
  */
@@ -387,12 +396,7 @@ void handleKeyEvent(GameMemory *memory, GraphicsData* graphics, Input* input,
 		break;
 	case KeyF2:
 		if (keyPressed) {
-			if (memory->aspectRatio < 1.5) {
-				memory->aspectRatio = 16.0 / 9.0;
-			} else {
-				memory->aspectRatio = 4.0 / 3.0;
-			}
-			resizeViewport(graphics, memory);
+			toggleAspectRatio(memory, graphics);
 		}
 		break;
 	case KeyW:
@@ -711,6 +715,10 @@ int main() {
 		glXSwapBuffers(graphics.display, graphics.window);
 		XSync(graphics.display, false);
 
+		if (memory.doResize) {
+			resizeViewport(&graphics, &memory);
+		}
+
 #if SOUND_ENABLE
 		swapSoundBuffers(&memory);
 #endif
@@ -732,9 +740,10 @@ int main() {
 		correctTiming(&graphics, startTime, false);
 	}
 
-// FIXME maybe free game memory as well?
+	free(memory.permanent);
+	free(memory.temporary);
 
-// Clean up audio
+	// Clean up audio
 	snd_pcm_drain(audio.pcm_handle);
 	snd_pcm_close(audio.pcm_handle);
 	free(audio.buffer);

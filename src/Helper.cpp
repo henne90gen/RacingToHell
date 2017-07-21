@@ -241,3 +241,17 @@ void resizeView(GameMemory* memory, float scale) {
 	glUniformMatrix4fv(scaleMatrixLocation, 1, GL_FALSE, &scaleMatrix[0]);
 }
 
+GameState* beginFrame(GameMemory *memory, Input *input) {
+	if (memory->doResize) {
+		resizeView(memory, 1.0);
+	}
+
+	Render::clearScreen(0);
+
+	checkInputForClicks (input);
+
+	GameState *gameState = getGameState(memory);
+	gameState->frameCounter++;
+
+	return gameState;
+}

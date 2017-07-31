@@ -52,17 +52,15 @@ void updateAndRenderRoad(GameMemory *memory, bool shouldUpdate) {
 	for (unsigned y = 0; y < gameState->world.height; y++) {
 		for (unsigned x = 0; x < gameState->world.width; x++) {
 			Tile *tile = &gameState->world.tiles[y * gameState->world.width + x];
-			Math::Rectangle rect = { };
-			rect.position.x = ((int) x) * 2.0f / 10.0f - 1.0f;
-			rect.position.y = ((int) y) * 2.0f / 10.0f - 0.8f;
-			rect.size = Math::Vector2f(0.2f, 0.2f);
-			uint32_t color = 0x00ff00ff;
+			uint32_t color = 0xff0000ff;
 			if (tile->traversable) {
-				color = 0xff0000ff;
+				color = 0x00ff00ff;
+			} else {
+				checkPlayerTileCollision(&gameState->player, tile);
 			}
 //			printf("X: %f, Y: %f, Size: %f\n", rect.position.x, rect.position.y,
 //					rect.size.x);
-			Render::rectangle(memory, rect, color);
+			Render::rectangle(memory, tile->rect, color);
 		}
 	}
 }
@@ -504,12 +502,13 @@ void updateAndRenderUI(GameMemory *memory, bool shouldUpdate) {
  */
 void updateAndRenderGame(Input *input, GameMemory *memory, GameState *gameState,
 		bool update) {
-	updateAndRenderRoad(memory, update);
 
 // update player before doing any collision detection
 	if (update) {
 		updatePlayer(input, gameState);
 	}
+
+	updateAndRenderRoad(memory, update);
 
 //	updateAndRenderItems(buffer, gameState, update);
 

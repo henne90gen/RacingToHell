@@ -25,10 +25,10 @@ Math::Rectangle getBoundingBox(Math::Vector2f position, unsigned width,
  * Use the result and the position of rect2 for collision detection
  */
 Math::Rectangle getCollisionBox(Math::Rectangle rect1, Math::Rectangle rect2) {
-	rect1.width += rect2.width;
-	rect1.height += rect2.height;
-	rect1.position.x -= rect2.width / 2;
-	rect1.position.y -= rect2.height / 2;
+	rect1.size.x += rect2.size.x;
+	rect1.size.y += rect2.size.y;
+	rect1.position.x -= rect2.size.x / 2.0f;
+	rect1.position.y -= rect2.size.y / 2.0f;
 	return rect1;
 }
 
@@ -188,9 +188,24 @@ void generateWorld(GameState *gameState) {
 		for (unsigned x = 0; x < gameState->world.width; x++) {
 			Tile tile = { };
 			tile.orientation = Math::Vector2f(0, 1);
-			tile.traversable = x % 2 == 0 && y % 2 == 0;
+			tile.traversable = x % 2 != 0 || y % 2 != 0;
+			tile.rect.position.x = ((int) x) * 2.0f / 10.0f - 1.0f;
+			tile.rect.position.y = ((int) y) * 2.0f / 10.0f - 0.8f;
+			tile.rect.size = Math::Vector2f(0.2f, 0.2f);
+
 			gameState->world.tiles[y * gameState->world.width + x] = tile;
 			printf("X: %d, Y: %d, Traversable: %d\n", x, y, tile.traversable);
 		}
+	}
+}
+
+void checkPlayerTileCollision(Player *player, Tile *tile) {
+	Math::Rectangle playerRect = { };
+	playerRect.position = player->position;
+	playerRect.size = player->size;
+	//	Math::Rectangle collisionBox = getCollisionBox(tile->rect, playerRect);
+	// TODO use actual size of car instead of just the position
+	if (Collision::rectangle(tile->rect, player->position)) {
+		printf("Collision!\n");
 	}
 }

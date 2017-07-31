@@ -113,7 +113,7 @@ struct Boss {
 
 struct Tile {
 //	Render::Texture *texture;
-//	Math::Vector2f position;
+	Math::Rectangle rect;
 	Math::Vector2f orientation;
 	bool traversable;
 };

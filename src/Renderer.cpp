@@ -562,6 +562,7 @@ void clearScreen(uint32_t color) {
 }
 
 /**
+ * position: center of the texture
  * colorMode: 0 for texture colors, 1 for solid color with alpha from texture
  */
 void texture(GameMemory *memory, Texture *texture, Math::Vector2f position,

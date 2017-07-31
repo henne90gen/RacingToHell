@@ -10,7 +10,7 @@ void addMenuItem(MenuItem *item, std::string text) {
 
 void loadMainMenu(GameState *gameState) {
 	Menu *menu = &gameState->menus[gameState->menuCount++];
-	menu->position = Math::Vector2f( { 20, 50 });
+	menu->position = Math::Vector2f( { -1.0, 0.8 });
 
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Start Game");
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Multiplayer");
@@ -185,8 +185,8 @@ void handleMenuEnter(GameMemory *memory, GameState *gameState) {
 /**
  * Renders a single menu item to screen
  */
-void renderMenuItem(GameMemory *memory, VideoBuffer *buffer, MenuItem *item,
-		Math::Vector2f position, bool menuHighlight, bool highlight) {
+void renderMenuItem(GameMemory *memory, MenuItem *item, Math::Vector2f position,
+		bool menuHighlight, bool highlight) {
 	int r = 255, g = 255, b = 255;
 	if (!menuHighlight) {
 		r = 128;
@@ -208,8 +208,8 @@ void renderMenuItem(GameMemory *memory, VideoBuffer *buffer, MenuItem *item,
 		}
 		position = position + (Math::Vector2f { 15 + a, 0 });
 	}
-	Text::renderText(memory, buffer, std::string(item->text), position,
-			Text::FontSize::Big, r, g, b);
+//	Text::renderText(memory, buffer, std::string(item->text), position,
+//			Text::FontSize::Big, r, g, b);
 }
 
 /**
@@ -235,8 +235,8 @@ void changeCarSelection(GameState *gameState, int direction) {
 	}
 }
 
-void renderCarSelection(GameMemory *memory, VideoBuffer *buffer,
-		Math::Vector2f position, bool menuHighlight, bool highlight) {
+void renderCarSelection(GameMemory *memory, Math::Vector2f position,
+		bool menuHighlight, bool highlight) {
 	uint32_t color = 0xffffffff;
 	if (!menuHighlight) {
 		color = 0xff808080;
@@ -256,21 +256,21 @@ void renderCarSelection(GameMemory *memory, VideoBuffer *buffer,
 	Math::Vector2f point1 = { offsetX + 12, position.y };
 	Math::Vector2f point2 = { offsetX + 12, position.y + 26 };
 	Math::Vector2f point3 = { offsetX, position.y + 13 };
-	Render::triangle(buffer, color, point1, point2, point3);
+	Render::triangle(memory, point1, point2, point3, color);
 
 	offsetX += 110 - 2 * a;
 	point1 = {offsetX, position.y};
 	point2 = {offsetX, position.y + 26};
 	point3 = {offsetX + 12, position.y + 13};
-	Render::triangle(buffer, color, point1, point2, point3);
+	Render::triangle(memory, point1, point2, point3, color);
 }
 
-void renderMenuBackdrop(VideoBuffer *buffer, Menu *menu) {
+void renderMenuBackdrop(GameMemory *memory, Menu *menu) {
 	Math::Rectangle rect = { };
 	rect.position = menu->position;
-	rect.width = WINDOW_WIDTH - 40;
-	rect.height = menu->numberMenuItems * menu->lineSpacing + 10;
-	Render::rectangle(buffer, rect, 0x80202020);
+	// FIXME calculate size
+	rect.size = Math::Vector2f(2.0, 1.5);
+	Render::rectangle(memory, rect, 0xff00ff60);
 }
 
 void updateMenu(GameMemory *memory, Input *input, Menu *menu) {
@@ -305,10 +305,11 @@ void updateMenu(GameMemory *memory, Input *input, Menu *menu) {
 		}
 
 		// update the car position and the speed
+		// FIXME movement is calculated completely different now
 		gameState->player.position = gameState->player.position
 				+ Math::Vector2f( { 0, (float) gameState->player.speed });
 		if (gameState->player.position.y
-				>= WINDOW_HEIGHT + gameState->player.size.y / 2) {
+				>= -1.0 + gameState->player.size.y / 2) {
 			gameState->player.speed = -PLAYER_SPEED;
 			gameState->player.carIndex = gameState->player.nextCarIndex;
 		}
@@ -321,8 +322,7 @@ void updateMenu(GameMemory *memory, Input *input, Menu *menu) {
 /**
  * Updates and renders all the menus
  */
-void updateAndRenderMenus(GameMemory *memory, VideoBuffer *buffer,
-		Input *input) {
+void updateAndRenderMenus(GameMemory *memory, Input *input) {
 	GameState *gameState = getGameState(memory);
 
 	// Update
@@ -353,7 +353,7 @@ void updateAndRenderMenus(GameMemory *memory, VideoBuffer *buffer,
 	}
 
 	// Backdrop is always rendered with the first menu
-	renderMenuBackdrop(buffer, &gameState->menus[0]);
+	renderMenuBackdrop(memory, &gameState->menus[0]);
 
 	for (unsigned int menuIndex = 0; menuIndex < gameState->menuCount;
 			++menuIndex) {
@@ -371,7 +371,7 @@ void updateAndRenderMenus(GameMemory *memory, VideoBuffer *buffer,
 		for (unsigned i = 0; i < menu->numberMenuItems; i++) {
 			bool highlight = i == (unsigned) menu->currentMenuItem;
 
-			renderMenuItem(memory, buffer, &menu->items[i], currentPosition,
+			renderMenuItem(memory, &menu->items[i], currentPosition,
 					menuHighlight, highlight);
 
 			currentPosition = currentPosition + Math::Vector2f( { 0,
@@ -381,9 +381,9 @@ void updateAndRenderMenus(GameMemory *memory, VideoBuffer *buffer,
 
 	if (gameState->menuState == MenuState::MAIN) {
 		Math::Vector2f carSelPos = gameState->menus[0].position;
-		carSelPos = carSelPos + Math::Vector2f{ 20, 133 };
+		carSelPos = carSelPos + Math::Vector2f { 20, 133 };
 		bool highlightCarSelect = 2 == gameState->menus[0].currentMenuItem;
-		renderCarSelection(memory, buffer, carSelPos,
-				0 == gameState->activeMenuIndex, highlightCarSelect);
+		renderCarSelection(memory, carSelPos, 0 == gameState->activeMenuIndex,
+				highlightCarSelect);
 	}
 }

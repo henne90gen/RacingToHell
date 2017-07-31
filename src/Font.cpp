@@ -7,6 +7,8 @@ namespace Text {
 FT_Library fontLibrary;
 FT_Face face;
 
+// FIXME use only the largest font size to create one big texture and generate UV coordinates from that
+
 void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 	int currentGlyphIndex = FT_Get_Char_Index(face, loadCharacter);
 	int error = FT_Load_Glyph(face, currentGlyphIndex, FT_LOAD_RENDER);
@@ -15,15 +17,17 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 				"Couldn't load glyph for " + std::to_string(loadCharacter));
 	}
 
-    bool useKerning = FT_HAS_KERNING(face);;
+	bool useKerning = FT_HAS_KERNING(face);
 
 	Character newCharacter = { };
 	newCharacter.value = loadCharacter;
 	newCharacter.width = face->glyph->bitmap.width;
 	newCharacter.height = face->glyph->bitmap.rows;
+	printf("Width: %d, Height: %d\n", newCharacter.width, newCharacter.height);
+
 	newCharacter.bearingX = face->glyph->bitmap_left;
 	newCharacter.bearingY = -face->glyph->bitmap_top;
-    newCharacter.advanceX = useKerning ? face->glyph->advance.x >> 6 : 0;
+	newCharacter.advanceX = useKerning ? face->glyph->advance.x >> 6 : 0;
 
 	for (char nextChar = minChar; nextChar < maxChar; nextChar++) {
 		int nextGlyphIndex = FT_Get_Char_Index(face, nextChar);
@@ -76,9 +80,12 @@ void loadFont(GameMemory* memory, std::string fontFileName) {
 			memory->abort(message);
 		}
 
+		int count = 0;
 		for (char currentChar = minChar; currentChar < maxChar; currentChar++) {
 			loadCharacter(memory, currentChar, fontSizeIndex);
+			count++;
 		}
+		printf("Number of characters for each font size: %d\n", count);
 	}
 }
 

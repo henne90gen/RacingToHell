@@ -606,6 +606,7 @@ void unloadGameCode(GameCode *code) {
  */
 GameMemory initGameMemory() {
 	GameMemory memory = { };
+	memory.doResize = true;
 
 	memory.abort = abort;
 	memory.readFile = readFile;

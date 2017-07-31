@@ -473,7 +473,7 @@ void updateAndRenderUI(GameMemory *memory, bool shouldUpdate) {
 
 	float barWidth = 0.05;
 	float screenHeight = 2.0;
-	float screenWidth = (16.0 / 9.0) * 2.0;
+	float screenWidth = memory->aspectRatio * 2.0;
 
 	// energy
 	Math::Rectangle energyBar;
@@ -533,13 +533,17 @@ UPDATE_AND_RENDER(updateAndRender) {
 	updateAndRenderGame(input, memory, gameState,
 			gameState->menuState == MenuState::GAME);
 
-	Math::Rectangle rect = { { -memory->aspectRatio, 1.0 }, { 2
-			* memory->aspectRatio, 2.0 } };
-	Render::rectangle(memory, rect, 0xff00ff80);
+//	Math::Rectangle rect = { { -memory->aspectRatio, 1.0 }, { 2
+//			* memory->aspectRatio, 2.0 } };
+//	Render::rectangle(memory, rect, 0xff00ff80);
+//	Math::Vector2f p1 = {1.0, 1.0};
+//	Math::Vector2f p2 = {1.0, -1.0};
+//	Math::Vector2f p3 = {0.0, 0.0};
+//	Render::triangle(memory, p1, p2, p3, 0xff00ff80);
 
-//	if (input->escapeKeyClicked && gameState->menuState == MenuState::GAME) {
-//		loadMenu(gameState, MenuState::PAUSE);
-//	} else if (gameState->menuState != MenuState::GAME) {
-//		updateAndRenderMenus(memory, buffer, input);
-//	}
+	if (input->escapeKeyClicked && gameState->menuState == MenuState::GAME) {
+		loadMenu(gameState, MenuState::PAUSE);
+	} else if (gameState->menuState != MenuState::GAME) {
+		updateAndRenderMenus(memory, input);
+	}
 }

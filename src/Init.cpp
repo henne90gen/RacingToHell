@@ -137,7 +137,7 @@ void resetGameState(GameState *gameState) {
 	gameState->isInBossFight = true;
 	loadBoss(gameState);
 
-	loadMenu(gameState, MenuState::GAME);
+	loadMenu(gameState, MenuState::MAIN);
 }
 
 /**

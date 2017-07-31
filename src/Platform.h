@@ -64,7 +64,7 @@ struct GameMemory {
 	bool isInitialized = false;
 
 	float aspectRatio;
-	bool doResize = false;
+	bool doResize;
 	bool stretch = false;
 
 	abort_ *abort;

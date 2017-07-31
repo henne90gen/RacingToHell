@@ -64,6 +64,8 @@ void loadGameOverMenu(GameState *gameState) {
 }
 
 void loadMenu(GameState *gameState, MenuState menuState) {
+	MenuState previousMenuState = gameState->menuState;
+
 	gameState->menuState = menuState;
 	gameState->menuCount = 0;
 	gameState->activeMenuIndex = 0;
@@ -86,6 +88,9 @@ void loadMenu(GameState *gameState, MenuState menuState) {
 		loadCreditsMenu(gameState);
 		break;
 	case MenuState::GAME:
+		if (previousMenuState == MenuState::MAIN) {
+			generateWorld(gameState);
+		}
 		break;
 	}
 }
@@ -187,12 +192,12 @@ void handleMenuEnter(GameMemory *memory, GameState *gameState) {
  */
 void renderMenuItem(GameMemory *memory, MenuItem *item, Math::Vector2f position,
 		bool menuHighlight, bool highlight) {
-	int r = 255, g = 255, b = 255;
-	if (!menuHighlight) {
-		r = 128;
-		g = 128;
-		b = 128;
-	}
+//	int r = 255, g = 255, b = 255;
+//	if (!menuHighlight) {
+//		r = 128;
+//		g = 128;
+//		b = 128;
+//	}
 	if (highlight && menuHighlight) {
 		// make the highlighted item 'bounce'
 		float a = 5;

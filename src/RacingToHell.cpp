@@ -46,19 +46,25 @@ Render::Texture *getPlayerTexture(GameState *gameState) {
 /**
  * Updates and renders the road in the background
  */
-void updateAndRenderRoad(VideoBuffer *buffer, GameState *gameState,
-		bool shouldUpdate) {
-	if (shouldUpdate) {
-		gameState->roadPosition += getRoadSpeed(gameState);
-		if (gameState->roadPosition >= 800) {
-			gameState->roadPosition = 0;
+void updateAndRenderRoad(GameMemory *memory, bool shouldUpdate) {
+	GameState *gameState = getGameState(memory);
+
+	for (unsigned y = 0; y < gameState->world.height; y++) {
+		for (unsigned x = 0; x < gameState->world.width; x++) {
+			Tile *tile = &gameState->world.tiles[y * gameState->world.width + x];
+			Math::Rectangle rect = { };
+			rect.position.x = ((int) x) * 2.0f / 10.0f - 1.0f;
+			rect.position.y = ((int) y) * 2.0f / 10.0f - 0.8f;
+			rect.size = Math::Vector2f(0.2f, 0.2f);
+			uint32_t color = 0x00ff00ff;
+			if (tile->traversable) {
+				color = 0xff0000ff;
+			}
+//			printf("X: %f, Y: %f, Size: %f\n", rect.position.x, rect.position.y,
+//					rect.size.x);
+			Render::rectangle(memory, rect, color);
 		}
 	}
-
-//	Render::backgroundTexture(buffer, getCurrentRoad(gameState),
-//			gameState->roadPosition);
-//	Render::backgroundTexture(buffer, getCurrentRoad(gameState),
-//			gameState->roadPosition - 800);
 }
 
 /**
@@ -216,8 +222,8 @@ bool updateAndRenderBullet(GameMemory *memory, GameState *gameState,
 				bullet.radius * 2, bullet.radius * 2);
 
 		if (isPlayerBullet) {
-			for (int i = 0; i < gameState->lastTrafficCarIndex + 1; i++) {
-				Car *car = &gameState->traffic[i];
+			for (int i = 0; i < gameState->world.lastTrafficCarIndex + 1; i++) {
+				Car *car = &gameState->world.traffic[i];
 				Render::Texture trafficTexture =
 						gameState->resources.trafficCarTextures[car->carIndex];
 
@@ -297,10 +303,10 @@ void spawnTrafficCar(GameState *gameState) {
 	car.speed = 5;
 	car.health = 75;
 
-	unsigned arrSize = sizeof(gameState->traffic) / sizeof(Car);
-	if (gameState->lastTrafficCarIndex + 1 < (int) arrSize) {
-		gameState->lastTrafficCarIndex++;
-		gameState->traffic[gameState->lastTrafficCarIndex] = car;
+	unsigned arrSize = sizeof(gameState->world.traffic) / sizeof(Car);
+	if (gameState->world.lastTrafficCarIndex + 1 < (int) arrSize) {
+		gameState->world.lastTrafficCarIndex++;
+		gameState->world.traffic[gameState->world.lastTrafficCarIndex] = car;
 	}
 }
 
@@ -317,18 +323,18 @@ void updateAndRenderTraffic(VideoBuffer *buffer, GameState *gameState,
 
 	if (shouldUpdate
 			&& gameState->frameCounter % gameState->bulletFrequency == 0
-			&& gameState->lastTrafficCarIndex >= 0) {
+			&& gameState->world.lastTrafficCarIndex >= 0) {
 		// FIXME maybe choose the car that is furthest away from the player
 		int carIndex = 0;
-		if (gameState->lastTrafficCarIndex > 0) {
-			carIndex = std::rand() % gameState->lastTrafficCarIndex;
+		if (gameState->world.lastTrafficCarIndex > 0) {
+			carIndex = std::rand() % gameState->world.lastTrafficCarIndex;
 		}
-		Car car = gameState->traffic[carIndex];
+		Car car = gameState->world.traffic[carIndex];
 		shootAtPlayer(gameState, car.position);
 	}
 
-	for (int i = 0; i < gameState->lastTrafficCarIndex + 1; i++) {
-		Car *car = &gameState->traffic[i];
+	for (int i = 0; i < gameState->world.lastTrafficCarIndex + 1; i++) {
+		Car *car = &gameState->world.traffic[i];
 		Render::Texture *texture =
 				&gameState->resources.trafficCarTextures[car->carIndex];
 
@@ -337,13 +343,13 @@ void updateAndRenderTraffic(VideoBuffer *buffer, GameState *gameState,
 
 			if (car->health <= 0) {
 				// TODO should we show an explosion?
-				removeElement(gameState->traffic, &gameState->lastTrafficCarIndex,
+				removeElement(gameState->world.traffic, &gameState->world.lastTrafficCarIndex,
 						&i);
 				continue;
 			}
 
 			if (car->position.y - texture->height / 2 > WINDOW_HEIGHT) {
-				removeElement(gameState->traffic, &gameState->lastTrafficCarIndex,
+				removeElement(gameState->world.traffic, &gameState->world.lastTrafficCarIndex,
 						&i);
 				continue;
 			}
@@ -385,10 +391,10 @@ void spawnItem(GameState *gameState) {
 	float x = (std::rand() % 4) * (WINDOW_WIDTH / 4) + WINDOW_WIDTH / 8;
 	item.position = {x, -80};
 
-	unsigned arrSize = sizeof(gameState->items) / sizeof(Item);
-	if (gameState->lastItemIndex + 1 < (int) arrSize) {
-		gameState->lastItemIndex++;
-		gameState->items[gameState->lastItemIndex] = item;
+	unsigned arrSize = sizeof(gameState->world.items) / sizeof(Item);
+	if (gameState->world.lastItemIndex + 1 < (int) arrSize) {
+		gameState->world.lastItemIndex++;
+		gameState->world.items[gameState->world.lastItemIndex] = item;
 	}
 }
 
@@ -403,8 +409,8 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState,
 		spawnItem(gameState);
 	}
 
-	for (int i = 0; i < gameState->lastItemIndex + 1; i++) {
-		Item *item = &gameState->items[i];
+	for (int i = 0; i < gameState->world.lastItemIndex + 1; i++) {
+		Item *item = &gameState->world.items[i];
 		Render::Texture *texture =
 				&gameState->resources.itemTextures[item->itemIndex];
 
@@ -446,12 +452,12 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState,
 					}
 					break;
 				}
-				removeElement(gameState->items, &gameState->lastItemIndex, &i);
+				removeElement(gameState->world.items, &gameState->world.lastItemIndex, &i);
 				continue;
 			}
 
 			if (item->position.y - texture->height / 2 > WINDOW_HEIGHT) {
-				removeElement(gameState->items, &gameState->lastItemIndex, &i);
+				removeElement(gameState->world.items, &gameState->world.lastItemIndex, &i);
 				continue;
 			}
 		}
@@ -498,7 +504,7 @@ void updateAndRenderUI(GameMemory *memory, bool shouldUpdate) {
  */
 void updateAndRenderGame(Input *input, GameMemory *memory, GameState *gameState,
 		bool update) {
-//	updateAndRenderRoad(buffer, gameState, update);
+	updateAndRenderRoad(memory, update);
 
 // update player before doing any collision detection
 	if (update) {

@@ -130,14 +130,19 @@ void resetGameState(GameState *gameState) {
 	gameState->bulletSpeed = 0.005f;
 
 	gameState->lastAIBulletIndex = -1;
-	gameState->lastItemIndex = -1;
 	gameState->lastPlayerBulletIndex = -1;
-	gameState->lastTrafficCarIndex = -1;
+
+	gameState->world = {};
+	gameState->world.lastItemIndex = -1;
+	gameState->world.lastTrafficCarIndex = -1;
+	gameState->world.width = 10;
+	gameState->world.height = 10;
 
 	gameState->isInBossFight = true;
 	loadBoss(gameState);
 
-	loadMenu(gameState, MenuState::MAIN);
+	gameState->menuState = MenuState::MAIN; // triggers world generation when loading the game directly into game mode
+	loadMenu(gameState, MenuState::GAME);
 }
 
 /**
@@ -146,8 +151,6 @@ void resetGameState(GameState *gameState) {
 void init(GameMemory *memory) {
 	std::srand(time(0));
 	memory->isInitialized = true;
-	memory->aspectRatio = 16.0 / 9.0;
-	memory->stretch = false;
 
 	GameState *gameState = (GameState *) reservePermanentMemory(memory,
 			sizeof(GameState));
@@ -163,8 +166,6 @@ void init(GameMemory *memory) {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	resizeView(memory, 1.0);
 
-	resetGameState(gameState);
-
 	Text::loadFont(memory, "./res/font/arial.ttf");
 
 	loadAudioClips(memory);
@@ -173,5 +174,7 @@ void init(GameMemory *memory) {
 
 	Sound::output(gameState, &gameState->resources.level1Music, 0.1f, 0.1f,
 			Sound::PLAY_LOOP);
+
+	resetGameState(gameState);
 }
 

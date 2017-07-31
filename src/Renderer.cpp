@@ -685,6 +685,9 @@ void triangle(GameMemory *memory, Math::Vector2f point1, Math::Vector2f point2,
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+/**
+ * Draws a rectangle to the screen with it's top left position being rect.position and extending to the bottom right
+ */
 void rectangle(GameMemory *memory, Math::Rectangle rect, uint32_t color) {
 	GameState *gameState = getGameState(memory);
 

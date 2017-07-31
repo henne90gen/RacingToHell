@@ -383,7 +383,7 @@ void handleKeyEvent(GameMemory *memory, GraphicsData* graphics, Input* input,
 		XKeyEvent event) {
 	bool keyPressed = event.type == KeyPress;
 
-	printf("Key pressed: %d\n", event.keycode);
+//	printf("Key pressed: %d\n", event.keycode);
 
 	switch (event.keycode) {
 	case KeyF1:
@@ -607,6 +607,8 @@ void unloadGameCode(GameCode *code) {
 GameMemory initGameMemory() {
 	GameMemory memory = { };
 	memory.doResize = true;
+	memory.aspectRatio = 16.0 / 9.0;
+	memory.stretch = false;
 
 	memory.abort = abort;
 	memory.readFile = readFile;

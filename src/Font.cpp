@@ -23,7 +23,7 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 	newCharacter.value = loadCharacter;
 	newCharacter.width = face->glyph->bitmap.width;
 	newCharacter.height = face->glyph->bitmap.rows;
-	printf("Width: %d, Height: %d\n", newCharacter.width, newCharacter.height);
+//	printf("Width: %d, Height: %d\n", newCharacter.width, newCharacter.height);
 
 	newCharacter.bearingX = face->glyph->bitmap_left;
 	newCharacter.bearingY = -face->glyph->bitmap_top;
@@ -85,7 +85,7 @@ void loadFont(GameMemory* memory, std::string fontFileName) {
 			loadCharacter(memory, currentChar, fontSizeIndex);
 			count++;
 		}
-		printf("Number of characters for each font size: %d\n", count);
+//		printf("Number of characters for each font size: %d\n", count);
 	}
 }
 

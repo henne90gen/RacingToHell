@@ -111,6 +111,24 @@ struct Boss {
 	int32_t bulletFrequency;
 };
 
+struct Tile {
+//	Render::Texture *texture;
+//	Math::Vector2f position;
+	Math::Vector2f orientation;
+	bool traversable;
+};
+
+struct GameWorld {
+	int32_t lastItemIndex = -1;
+	Item items[200];
+
+	int32_t lastTrafficCarIndex = -1;
+	Car traffic[200];
+
+	Tile tiles[100];
+	unsigned width, height; // in tiles
+};
+
 struct GameState {
 	GLuint glProgram;
 
@@ -136,11 +154,7 @@ struct GameState {
 
 	Boss boss;
 
-	int32_t lastItemIndex = -1;
-	Item items[200];
-
-	int32_t lastTrafficCarIndex = -1;
-	Car traffic[200];
+	GameWorld world;
 
 	int32_t lastPlayerBulletIndex = -1;
 	Bullet playerBullets[100];

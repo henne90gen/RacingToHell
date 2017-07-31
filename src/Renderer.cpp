@@ -641,6 +641,50 @@ void texture(GameMemory *memory, Texture *texture, Math::Vector2f position,
 	Render::texture(memory, texture, position, size, direction, 0, 0);
 }
 
+void triangle(GameMemory *memory, Math::Vector2f point1, Math::Vector2f point2,
+		Math::Vector2f point3, uint32_t color) {
+	GameState *gameState = getGameState(memory);
+
+	float r = ((color & 0xff000000) >> 24) / 255.0f;
+	float g = ((color & 0x00ff0000) >> 16) / 255.0f;
+	float b = ((color & 0x0000ff00) >> 8) / 255.0f;
+	float a = (color & 0x000000ff) / 255.0f;
+
+	// holds the screen coordinates with their associated texture coordinates
+	const float coordinates[] = { point1.x, point1.y, r, g, b, a, //
+			point2.x, point2.y, r, g, b, a, //
+			point3.x, point3.y, r, g, b, a, //
+			};
+
+	GLuint coordinatesBuffer = createVertexBufferObject(sizeof(coordinates),
+			coordinates, GL_STATIC_DRAW);
+
+	static GLuint positionLocation = glGetAttribLocation(gameState->glProgram,
+			"a_Position");
+	static GLuint colorLocation = glGetAttribLocation(gameState->glProgram,
+			"a_Color");
+	static GLuint colorSourceLocation = glGetUniformLocation(
+			gameState->glProgram, "u_ColorSource");
+
+	// rectangle supplies it's own color
+	glUniform1i(colorSourceLocation, 2);
+
+	glBindBuffer(GL_ARRAY_BUFFER, coordinatesBuffer);
+
+	GLuint stride = 6 * sizeof(GL_FLOAT);
+
+	glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, stride,
+			BUFFER_OFFSET(0));
+	glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, stride,
+			BUFFER_OFFSET(2 * sizeof(GL_FLOAT)));
+	glEnableVertexAttribArray(positionLocation);
+	glEnableVertexAttribArray(colorLocation);
+
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
 void rectangle(GameMemory *memory, Math::Rectangle rect, uint32_t color) {
 	GameState *gameState = getGameState(memory);
 
@@ -699,8 +743,8 @@ void circle(GameMemory *memory, Math::Vector2f position, float radius,
 		uint32_t color) {
 	GameState *gameState = getGameState(memory);
 
-	texture(memory, &gameState->resources.bulletTexture, position, Math::Vector2f(radius, radius), Math::Vector2f(1.0, 0.0), 1,
-			color);
+	texture(memory, &gameState->resources.bulletTexture, position,
+			Math::Vector2f(radius, radius), Math::Vector2f(1.0, 0.0), 1, color);
 }
 
 }

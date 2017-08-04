@@ -1,3 +1,114 @@
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
+FT_Library fontLibrary;
+FT_Face face;
+
+void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
+	float scale = 0.0065f; // this is a constant to scale from pixel sizes to coordinate sizes
+
+	int currentGlyphIndex = FT_Get_Char_Index(face, loadCharacter);
+	int error = FT_Load_Glyph(face, currentGlyphIndex, FT_LOAD_RENDER);
+	if (error) {
+		memory->abort(
+				"Couldn't load glyph for " + std::to_string(loadCharacter));
+	}
+
+	bool useKerning = FT_HAS_KERNING(face);
+
+	Render::Character newCharacter = { };
+	newCharacter.value = loadCharacter;
+
+	newCharacter.width = face->glyph->bitmap.width;
+	newCharacter.height = face->glyph->bitmap.rows;
+
+	newCharacter.size = Math::Vector2f(newCharacter.width * scale,
+			newCharacter.height * scale);
+
+	newCharacter.bearing = Math::Vector2f(face->glyph->bitmap_left,
+			-face->glyph->bitmap_top);
+	newCharacter.bearing = newCharacter.bearing * scale;
+
+	newCharacter.advance = (useKerning ? face->glyph->advance.x >> 6 : 0)
+			* scale;
+
+	for (char nextChar = Render::firstCharacter;
+			nextChar < Render::lastCharacter; nextChar++) {
+		int nextGlyphIndex = FT_Get_Char_Index(face, nextChar);
+
+		FT_Vector kerning;
+		FT_Get_Kerning(face, currentGlyphIndex, nextGlyphIndex,
+				FT_KERNING_DEFAULT, &kerning);
+
+		newCharacter.kerning[nextChar - Render::firstCharacter] = (kerning.x
+				>> 6) * scale;
+	}
+	unsigned bitmapSizeInPixel = newCharacter.width * newCharacter.height;
+
+	void* content = reserveTemporaryMemory(memory, bitmapSizeInPixel * 4);
+	uint8_t* src = face->glyph->bitmap.buffer;
+	uint32_t* dest = (uint32_t*) content;
+
+	for (unsigned i = 0; i < bitmapSizeInPixel; i++) {
+		uint8_t alpha = *src;
+		*dest = (alpha << 24);
+		src++;
+		dest++;
+	}
+
+	glGenTextures(1, &newCharacter.texture.id);
+	glBindTexture(GL_TEXTURE_2D, newCharacter.texture.id);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, newCharacter.width,
+			newCharacter.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, content);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glGenerateMipmap (GL_TEXTURE_2D);
+
+	GameState *gameState = getGameState(memory);
+	gameState->resources.characterMap[fontSize][loadCharacter
+			- Render::firstCharacter] = newCharacter;
+
+	freeTemporaryMemory(memory);
+}
+
+void loadFont(GameMemory* memory, std::string fontFileName) {
+	int error;
+	error = FT_Init_FreeType(&fontLibrary);
+	if (error) {
+		memory->abort("Couldn't initialize font library.");
+	}
+
+	File fontFile = memory->readFile(fontFileName);
+	error = FT_New_Memory_Face(fontLibrary, (const FT_Byte *) fontFile.content,
+			fontFile.size, 0, &face);
+	if (error) {
+		memory->abort("Couldn't load font " + fontFileName + ".");
+	}
+
+	GameState *gameState = getGameState(memory);
+
+	for (unsigned fontSizeIndex = 0;
+			fontSizeIndex < sizeof(gameState->resources.availableFontSizes) / 4;
+			fontSizeIndex++) {
+		int fontSize = getFontSize(gameState, fontSizeIndex);
+//		int error = FT_Set_Char_Size(face, 0, fontSize*32, WINDOW_WIDTH, WINDOW_HEIGHT);
+		int error = FT_Set_Pixel_Sizes(face, fontSize * 2, 0);
+		if (error) {
+			std::string message = "Couldn't set pixel size to "
+					+ std::to_string(fontSize) + ".";
+			memory->abort(message);
+		}
+
+		int count = 0;
+		for (char currentChar = Render::firstCharacter;
+				currentChar < Render::lastCharacter; currentChar++) {
+			loadCharacter(memory, currentChar, fontSizeIndex);
+			count++;
+		}
+	}
+}
+
 /**
  * Loads all audio clips that are going to be used into memory
  */
@@ -87,11 +198,11 @@ void loadTextures(GameMemory *memory) {
 	gameState->resources.itemTextures[CANISTER_ID] = loadTexture(memory,
 			"./res/textures/canister.bmp");
 
-	// Explosion sprite
+// Explosion sprite
 	gameState->resources.explosion = loadTexture(memory,
 			"./res/textures/explosion.bmp");
 
-	// Tank boss
+// Tank boss
 	gameState->resources.tank = loadTexture(memory,
 			"./res/textures/bosses/tank.bmp");
 	gameState->resources.tankCannon = loadTexture(memory,
@@ -106,13 +217,13 @@ void resetGameState(GameState *gameState) {
 	gameState->player.position = Math::Vector2f(0, 0);
 	gameState->player.size = Math::Vector2f(0.05f, 0.10f);
 	gameState->player.direction = Math::Vector2f(1, 0);
-	// TODO balance speed
+// TODO balance speed
 	gameState->player.speed = 0;
 	gameState->player.maxSpeed = PLAYER_SPEED;
-	// TODO balance health
+// TODO balance health
 	gameState->player.health = 10;
 	gameState->player.maxHealth = 100;
-	// TODO balance energy
+// TODO balance energy
 	gameState->player.energy = 1000;
 	gameState->player.maxEnergy = 1000;
 
@@ -123,7 +234,7 @@ void resetGameState(GameState *gameState) {
 	gameState->roadPosition = 0;
 	gameState->frameCounter = 0;
 
-	// TODO balance spawn rates
+// TODO balance spawn rates
 	gameState->trafficFrequency = 50;
 	gameState->bulletFrequency = 50;
 	gameState->itemFrequency = 50;
@@ -166,7 +277,7 @@ void init(GameMemory *memory) {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	resizeView(memory, 1.0);
 
-	Text::loadFont(memory, "./res/font/arial.ttf");
+	loadFont(memory, "./res/font/arial.ttf");
 
 	loadAudioClips(memory);
 

@@ -642,6 +642,61 @@ void texture(GameMemory *memory, Texture *texture, Math::Vector2f position,
 	Render::texture(memory, texture, position, size, direction, 0, 0);
 }
 
+void character(GameMemory *memory, char character, Math::Vector2f position,
+		FontSize fontSize, uint32_t color) {
+	GameState *gameState = getGameState(memory);
+
+	Render::Character* c = getCharacter(gameState, character, fontSize);
+
+	position = position + c->bearing;
+
+	texture(memory, &c->texture, position, c->size, Math::Vector2f(0.0, 1.0), 1,
+			color);
+}
+
+/**
+ * Renders the given text with the given color to the screen.
+ * Position is the bottom left corner of the text.
+ * fontSizeID needs to be one of the following: FontSizeSmall, FontSizeMedium or FontSizeBig.
+ */
+void text(GameMemory *memory, std::string text, Math::Vector2f position,
+		FontSize fontSize, uint32_t color) {
+	if (text.size() == 0) {
+		return;
+	}
+
+	GameState *gameState = getGameState(memory);
+
+	// offsets where found by trial and error
+	switch (fontSize) {
+	case FontSize::Small:
+		position.y += 0.098;
+		break;
+	case FontSize::Medium:
+		position.y += 0.145;
+		break;
+	case FontSize::Large:
+		position.y += 0.284;
+		break;
+	}
+
+	Character *firstChar = getCharacter(gameState, text[0], fontSize);
+	position.x += firstChar->size.x / 2;
+
+	for (unsigned characterIndex = 0; characterIndex < text.size();
+			++characterIndex) {
+		Character *c = getCharacter(gameState, text[characterIndex], fontSize);
+
+		character(memory, text[characterIndex], position, fontSize, color);
+
+		if (characterIndex < text.size() - 1) {
+			position.x += c->advance
+					+ c->kerning[text[characterIndex + 1]
+							- Render::firstCharacter];
+		}
+	}
+}
+
 void triangle(GameMemory *memory, Math::Vector2f point1, Math::Vector2f point2,
 		Math::Vector2f point3, uint32_t color) {
 	GameState *gameState = getGameState(memory);

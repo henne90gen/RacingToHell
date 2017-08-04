@@ -8,7 +8,6 @@
 #include "Sound.h"
 #include "Renderer.h"
 #include "Collision.h"
-#include "Font.h"
 #include "GameMenu.h"
 
 #define BUFFER_OFFSET(i) ((void*)(i))
@@ -69,7 +68,7 @@ struct Resources {
 	Render::Texture tank;
 	Render::Texture tankCannon;
 
-	Text::Character characterMap[3][100];
+	Render::Character characterMap[3][100];
 	unsigned availableFontSizes[3] = { 7, 10, 20 };
 
 	Sound::LoadedSound aiShot;

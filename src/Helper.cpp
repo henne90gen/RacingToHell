@@ -6,6 +6,16 @@ template<typename T> void removeElement(T arr[], int *lastIndex,
 	(*iteratorIndex)--;
 }
 
+Render::Character *getCharacter(GameState *gameState, char character,
+		unsigned fontSizeIndex) {
+	return &gameState->resources.characterMap[fontSizeIndex][character
+			- Render::firstCharacter];
+}
+
+int getFontSize(GameState *gameState, int fontSizeIndex) {
+	return gameState->resources.availableFontSizes[fontSizeIndex];
+}
+
 /**
  * position - center of the model in question
  * texture - used for width and height of the rectangle
@@ -188,13 +198,13 @@ void generateWorld(GameState *gameState) {
 		for (unsigned x = 0; x < gameState->world.width; x++) {
 			Tile tile = { };
 			tile.orientation = Math::Vector2f(0, 1);
-			tile.traversable = x % 2 != 0 || y % 2 != 0;
 			tile.rect.position.x = ((int) x) * 2.0f / 10.0f - 1.0f;
 			tile.rect.position.y = ((int) y) * 2.0f / 10.0f - 0.8f;
 			tile.rect.size = Math::Vector2f(0.2f, 0.2f);
+			tile.traversable = x % 2 != 0 || y % 2 != 0;
 
 			gameState->world.tiles[y * gameState->world.width + x] = tile;
-			printf("X: %d, Y: %d, Traversable: %d\n", x, y, tile.traversable);
+//			printf("X: %d, Y: %d, Traversable: %d\n", x, y, tile.traversable);
 		}
 	}
 }
@@ -206,6 +216,6 @@ void checkPlayerTileCollision(Player *player, Tile *tile) {
 	//	Math::Rectangle collisionBox = getCollisionBox(tile->rect, playerRect);
 	// TODO use actual size of car instead of just the position
 	if (Collision::rectangle(tile->rect, player->position)) {
-		printf("Collision!\n");
+//		printf("Collision!\n");
 	}
 }

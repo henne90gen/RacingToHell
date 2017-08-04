@@ -3,7 +3,6 @@
 #include "Platform.h"
 #include "RacingToHell.h"
 #include "MyMath.h"
-#include "Font.h"
 
 // forward declarations
 struct VideoBuffer;
@@ -23,21 +22,42 @@ struct Input;
 
 namespace Render {
 
+const char firstCharacter = ' ';
+const char lastCharacter = '~';
+
+enum FontSize {
+	Small, Medium, Large
+};
+
 struct Texture {
 	uint32_t width, height;
 	uint8_t bytesPerPixel;
 	GLuint id;
 };
 
-void bar(VideoBuffer *buffer, Math::Vector2f position, uint8_t length, uint32_t color);
+struct Character {
+	char value;
+	unsigned width, height;
+	Math::Vector2f size;
+	Math::Vector2f bearing;
+	float advance;
+	float kerning[lastCharacter - firstCharacter];
+	Render::Texture texture;
+};
 
-void triangle(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1, Math::Vector2f point2, Math::Vector2f point3);
+void bar(VideoBuffer *buffer, Math::Vector2f position, uint8_t length,
+		uint32_t color);
+
+void triangle(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1,
+		Math::Vector2f point2, Math::Vector2f point3);
 
 void rectangle(VideoBuffer * buffer, Math::Rectangle rect, uint32_t color);
 
-void circle(VideoBuffer* buffer, Math::Vector2f pos, unsigned radius, uint32_t color);
+void circle(VideoBuffer* buffer, Math::Vector2f pos, unsigned radius,
+		uint32_t color);
 
-void explosion(VideoBuffer *buffer, GameState *gameState, int x, int y, unsigned *explosionIndex);
+void explosion(VideoBuffer *buffer, GameState *gameState, int x, int y,
+		unsigned *explosionIndex);
 
 void debugInformation(GameMemory *memory, VideoBuffer *buffer, Input *input,
 		GameState *gameState);
@@ -48,6 +68,10 @@ void textureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
 void backgroundTexture(VideoBuffer *buffer, Texture* texture, int offsetY);
 
 void texture(VideoBuffer *buffer, Texture* texture, int offsetX, int offsetY);
+
+void renderText(GameMemory *memory, VideoBuffer* buffer, std::string text,
+		Math::Vector2f position, FontSize fontSize, uint8_t r, uint8_t g,
+		uint8_t b);
 
 void clearScreen(VideoBuffer *buffer, uint32_t color);
 

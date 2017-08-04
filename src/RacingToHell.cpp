@@ -5,7 +5,6 @@
 #include "Memory.cpp"
 #include "Collision.cpp"
 #include "Renderer.cpp"
-#include "Font.cpp"
 #include "Sound.cpp"
 #include "GameMenu.cpp"
 #include "Boss.cpp"
@@ -545,6 +544,13 @@ UPDATE_AND_RENDER(updateAndRender) {
 //	Math::Vector2f p2 = {1.0, -1.0};
 //	Math::Vector2f p3 = {0.0, 0.0};
 //	Render::triangle(memory, p1, p2, p3, 0xff00ff80);
+
+	Math::Vector2f position = Math::Vector2f(-1.0f, 0);
+	Render::text(memory, "ABC", position, Render::FontSize::Small, 0x0000ffff);
+	position = Math::Vector2f(-0.2, 0);
+	Render::text(memory, "ABC", position, Render::FontSize::Medium, 0x0000ffff);
+	position = position + Math::Vector2f(0.6, 0);
+	Render::text(memory, "ABC", position, Render::FontSize::Large, 0x0000ffff);
 
 	if (input->escapeKeyClicked && gameState->menuState == MenuState::GAME) {
 		loadMenu(gameState, MenuState::PAUSE);

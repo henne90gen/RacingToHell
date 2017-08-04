@@ -22,12 +22,8 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 	newCharacter.width = face->glyph->bitmap.width;
 	newCharacter.height = face->glyph->bitmap.rows;
 
-	newCharacter.size = Math::Vector2f(newCharacter.width * scale,
-			newCharacter.height * scale);
-
-	newCharacter.bearing = Math::Vector2f(face->glyph->bitmap_left,
-			-face->glyph->bitmap_top);
-	newCharacter.bearing = newCharacter.bearing * scale;
+	newCharacter.size = Math::Vector2f(newCharacter.width, newCharacter.height)
+			* scale;
 
 	newCharacter.advance = (useKerning ? face->glyph->advance.x >> 6 : 0)
 			* scale;

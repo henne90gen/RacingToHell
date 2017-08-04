@@ -648,7 +648,7 @@ void character(GameMemory *memory, char character, Math::Vector2f position,
 
 	Render::Character* c = getCharacter(gameState, character, fontSize);
 
-	position = position + c->bearing;
+	position = position + (c->size * 0.5);
 
 	texture(memory, &c->texture, position, c->size, Math::Vector2f(0.0, 1.0), 1,
 			color);
@@ -667,21 +667,22 @@ void text(GameMemory *memory, std::string text, Math::Vector2f position,
 
 	GameState *gameState = getGameState(memory);
 
-	// offsets where found by trial and error
-	switch (fontSize) {
-	case FontSize::Small:
-		position.y += 0.098;
-		break;
-	case FontSize::Medium:
-		position.y += 0.145;
-		break;
-	case FontSize::Large:
-		position.y += 0.284;
-		break;
-	}
+	// y offsets where found by trial and error
+//	switch (fontSize) {
+//	case FontSize::Small:
+//		position.y += 0.098;
+//		break;
+//	case FontSize::Medium:
+//		position.y += 0.145;
+//		break;
+//	case FontSize::Large:
+//		position.y += 0.284;
+//		break;
+//	}
 
-	Character *firstChar = getCharacter(gameState, text[0], fontSize);
-	position.x += firstChar->size.x / 2;
+//	Character *firstChar = getCharacter(gameState, text[0], fontSize);
+//	position.x += firstChar->size.x / 2;
+//	position.y -= firstChar->size.y / 2;
 
 	for (unsigned characterIndex = 0; characterIndex < text.size();
 			++characterIndex) {

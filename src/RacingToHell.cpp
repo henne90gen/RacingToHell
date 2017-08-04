@@ -190,9 +190,9 @@ void updatePlayer(Input *input, GameState *gameState) {
  * Renders the player to the video buffer
  */
 void renderPlayer(GameMemory *memory, GameState *gameState) {
-	Render::texture(memory, getPlayerTexture(gameState),
-			gameState->player.position, gameState->player.size,
-			gameState->player.direction);
+//	Render::texture(memory, getPlayerTexture(gameState),
+//			gameState->player.position, gameState->player.size,
+//			gameState->player.direction);
 }
 
 /**
@@ -546,11 +546,11 @@ UPDATE_AND_RENDER(updateAndRender) {
 //	Render::triangle(memory, p1, p2, p3, 0xff00ff80);
 
 	Math::Vector2f position = Math::Vector2f(-1.0f, 0);
-	Render::text(memory, "ABC", position, Render::FontSize::Small, 0x0000ffff);
+	Render::text(memory, "Franzi is the best", position, Render::FontSize::Small, 0x0000ffff);
 	position = Math::Vector2f(-0.2, 0);
-	Render::text(memory, "ABC", position, Render::FontSize::Medium, 0x0000ffff);
+	Render::text(memory, "Franzi is the best", position, Render::FontSize::Medium, 0x0000ffff);
 	position = position + Math::Vector2f(0.6, 0);
-	Render::text(memory, "ABC", position, Render::FontSize::Large, 0x0000ffff);
+	Render::text(memory, "Franzi is the best", position, Render::FontSize::Large, 0x0000ffff);
 
 	if (input->escapeKeyClicked && gameState->menuState == MenuState::GAME) {
 		loadMenu(gameState, MenuState::PAUSE);

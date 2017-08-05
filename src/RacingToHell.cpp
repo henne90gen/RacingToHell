@@ -533,6 +533,9 @@ void updateAndRenderGame(Input *input, GameMemory *memory, GameState *gameState,
 extern "C"
 UPDATE_AND_RENDER(updateAndRender) {
 	GameState *gameState = beginFrame(memory, input);
+	if (input->enterKeyClicked) {
+		loadFont(memory, "./res/font/DejaVuSansMono.ttf");
+	}
 
 	updateAndRenderGame(input, memory, gameState,
 			gameState->menuState == MenuState::GAME);

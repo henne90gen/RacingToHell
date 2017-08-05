@@ -2,10 +2,30 @@
 #include FT_FREETYPE_H
 
 FT_Library fontLibrary;
-FT_Face face;
 
-void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
-	float scale = 0.0065f; // this is a constant to scale from pixel sizes to coordinate sizes
+/**
+ * Moves content to graphics memory.
+ */
+void loadTextureToGraphicsMemory(Render::Texture *texture, void *content) {
+	if (!texture->id) {
+		glGenTextures(1, &texture->id);
+	}
+
+	glBindTexture(GL_TEXTURE_2D, texture->id);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture->width, texture->height, 0,
+			GL_RGBA, GL_UNSIGNED_BYTE, content);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glGenerateMipmap (GL_TEXTURE_2D);
+}
+
+/**
+ * Load the texture and kerning information for the specified character
+ */
+void loadCharacter(GameMemory* memory, FT_Face face, char loadCharacter,
+		int fontSize, bool hasKerning) {
+	float scale = 0.002f; // this is a constant to scale from pixel sizes to coordinate sizes
 
 	int currentGlyphIndex = FT_Get_Char_Index(face, loadCharacter);
 	int error = FT_Load_Glyph(face, currentGlyphIndex, FT_LOAD_RENDER);
@@ -14,8 +34,6 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 				"Couldn't load glyph for " + std::to_string(loadCharacter));
 	}
 
-	bool useKerning = FT_HAS_KERNING(face);
-
 	GameState *gameState = getGameState(memory);
 
 	Render::Character newCharacter =
@@ -23,29 +41,32 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 					- Render::firstCharacter];
 
 	newCharacter.value = loadCharacter;
+	newCharacter.hasKerning = hasKerning;
 
-	newCharacter.width = face->glyph->bitmap.width;
-	newCharacter.height = face->glyph->bitmap.rows;
+	newCharacter.texture.width = face->glyph->bitmap.width;
+	newCharacter.texture.height = face->glyph->bitmap.rows;
 
-	newCharacter.size = Math::Vector2f(newCharacter.width, newCharacter.height)
-			* scale;
+	newCharacter.size = Math::Vector2f(newCharacter.texture.width,
+			newCharacter.texture.height) * scale;
 
-	newCharacter.advance = (useKerning ? face->glyph->advance.x >> 6 : 0)
-			* scale;
+	newCharacter.advance = (face->glyph->advance.x >> 6) * scale;
 
-	for (char nextChar = Render::firstCharacter;
-			nextChar < Render::lastCharacter; nextChar++) {
-		int nextGlyphIndex = FT_Get_Char_Index(face, nextChar);
+	if (hasKerning) {
+		for (char nextChar = Render::firstCharacter;
+				nextChar < Render::lastCharacter; nextChar++) {
+			int nextGlyphIndex = FT_Get_Char_Index(face, nextChar);
 
-		FT_Vector kerning;
-		FT_Get_Kerning(face, currentGlyphIndex, nextGlyphIndex,
-				FT_KERNING_DEFAULT, &kerning);
+			FT_Vector kerning;
+			FT_Get_Kerning(face, currentGlyphIndex, nextGlyphIndex,
+					FT_KERNING_DEFAULT, &kerning);
 
-		newCharacter.kerning[nextChar - Render::firstCharacter] = (kerning.x
-				>> 6) * scale;
+			newCharacter.kerning[nextChar - Render::firstCharacter] = (kerning.x
+					>> 6) * scale;
+		}
 	}
-	unsigned bitmapSizeInPixel = newCharacter.width * newCharacter.height;
 
+	unsigned bitmapSizeInPixel = newCharacter.texture.width
+			* newCharacter.texture.height;
 	void* content = reserveTemporaryMemory(memory, bitmapSizeInPixel * 4);
 	uint8_t* src = face->glyph->bitmap.buffer;
 	uint32_t* dest = (uint32_t*) content;
@@ -57,13 +78,7 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 		dest++;
 	}
 
-	glBindTexture(GL_TEXTURE_2D, newCharacter.texture.id);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, newCharacter.width,
-			newCharacter.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, content);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glGenerateMipmap (GL_TEXTURE_2D);
+	loadTextureToGraphicsMemory(&newCharacter.texture, content);
 
 	gameState->resources.characterMap[fontSize][loadCharacter
 			- Render::firstCharacter] = newCharacter;
@@ -71,24 +86,28 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 	freeTemporaryMemory(memory);
 }
 
+/**
+ * Load the specified font file to be used as game font
+ */
 void loadFont(GameMemory* memory, std::string fontFileName) {
 	int error;
+	GameState *gameState = getGameState(memory);
 
 	File fontFile = memory->readFile(fontFileName);
+	FT_Face face = { };
 	error = FT_New_Memory_Face(fontLibrary, (const FT_Byte *) fontFile.content,
 			fontFile.size, 0, &face);
 	if (error) {
 		memory->abort("Couldn't load font " + fontFileName + ".");
 	}
 
-	GameState *gameState = getGameState(memory);
+	bool hasKerning = FT_HAS_KERNING(face);
 
 	for (unsigned fontSizeIndex = 0;
 			fontSizeIndex < sizeof(gameState->resources.availableFontSizes) / 4;
 			fontSizeIndex++) {
 		int fontSize = getFontSize(gameState, fontSizeIndex);
-//		int error = FT_Set_Char_Size(face, 0, fontSize*32, WINDOW_WIDTH, WINDOW_HEIGHT);
-		int error = FT_Set_Pixel_Sizes(face, fontSize * 2, 0);
+		int error = FT_Set_Pixel_Sizes(face, fontSize * 5, 0);
 		if (error) {
 			std::string message = "Couldn't set pixel size to "
 					+ std::to_string(fontSize) + ".";
@@ -97,13 +116,13 @@ void loadFont(GameMemory* memory, std::string fontFileName) {
 
 		for (char currentChar = Render::firstCharacter;
 				currentChar < Render::lastCharacter; currentChar++) {
-			loadCharacter(memory, currentChar, fontSizeIndex);
+			loadCharacter(memory, face, currentChar, fontSizeIndex, hasKerning);
 		}
 	}
 }
 
 /**
- * Loads all audio clips that are going to be used into memory
+ * Load all audio clips that are going to be used into memory
  */
 void loadAudioClips(GameMemory* memory) {
 	GameState *gameState = getGameState(memory);
@@ -116,7 +135,7 @@ void loadAudioClips(GameMemory* memory) {
 }
 
 /**
- * Loads a texture from a bmp file and pushes it to the graphics card
+ * Load a texture from a bmp file and pushes it to the graphics card
  */
 Render::Texture loadTexture(GameMemory *memory, std::string fileName) {
 	File file = memory->readFile(fileName);
@@ -142,14 +161,7 @@ Render::Texture loadTexture(GameMemory *memory, std::string fileName) {
 
 	memory->freeFile(&file);
 
-	glGenTextures(1, &texture.id);
-	glBindTexture(GL_TEXTURE_2D, texture.id);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture.width, texture.height, 0,
-			GL_RGBA, GL_UNSIGNED_BYTE, content);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glGenerateMipmap (GL_TEXTURE_2D);
+	loadTextureToGraphicsMemory(&texture, content);
 
 	freeTemporaryMemory(memory);
 
@@ -157,7 +169,7 @@ Render::Texture loadTexture(GameMemory *memory, std::string fileName) {
 }
 
 /**
- * Loads all textures that are going to be used into memory
+ * Load all textures that are going to be used into memory
  */
 void loadTextures(GameMemory *memory) {
 	GameState *gameState = getGameState(memory);
@@ -249,29 +261,8 @@ void resetGameState(GameState *gameState) {
 	loadMenu(gameState, MenuState::GAME);
 }
 
-void initFont(GameMemory* memory) {
-	GameState* gameState = getGameState(memory);
-
-	int error = FT_Init_FreeType(&fontLibrary);
-	if (error) {
-		memory->abort("Couldn't initialize font library.");
-	}
-
-	for (unsigned fontSizeIndex = 0;
-			fontSizeIndex < sizeof(gameState->resources.availableFontSizes) / 4;
-			fontSizeIndex++) {
-		for (char currentChar = Render::firstCharacter;
-				currentChar < Render::lastCharacter; currentChar++) {
-			Render::Character newCharacter = { };
-			glGenTextures(1, &newCharacter.texture.id);
-			gameState->resources.characterMap[fontSizeIndex][currentChar
-					- Render::firstCharacter] = newCharacter;
-		}
-	}
-}
-
 /**
- * Initialize the game memory appropriately
+ * Initialize the game appropriately
  */
 void init(GameMemory *memory) {
 	std::srand(time(0));
@@ -292,7 +283,11 @@ void init(GameMemory *memory) {
 	gameState->scale = 1.0f;
 	resizeView(memory);
 
-	initFont(memory);
+	// setting up font system
+	int error = FT_Init_FreeType(&fontLibrary);
+	if (error) {
+		memory->abort("Couldn't initialize font library.");
+	}
 	loadFont(memory, "./res/font/arial.ttf");
 
 	loadAudioClips(memory);

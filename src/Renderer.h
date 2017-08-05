@@ -37,7 +37,7 @@ struct Texture {
 
 struct Character {
 	char value;
-	unsigned width, height;
+	bool hasKerning;
 	Math::Vector2f size;
 	float advance;
 	float kerning[lastCharacter - firstCharacter];

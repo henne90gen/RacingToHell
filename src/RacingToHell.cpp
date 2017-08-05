@@ -51,7 +51,7 @@ void updateAndRenderRoad(GameMemory *memory, bool shouldUpdate) {
 	for (unsigned y = 0; y < gameState->world.height; y++) {
 		for (unsigned x = 0; x < gameState->world.width; x++) {
 			Tile *tile = &gameState->world.tiles[y * gameState->world.width + x];
-			uint32_t color = 0xff0000ff;
+			uint32_t color = 0x0000ffff;
 			if (tile->traversable) {
 				color = 0x00ff00ff;
 			} else {
@@ -160,7 +160,7 @@ void updatePlayer(Input *input, GameState *gameState) {
 
 	// shooting
 	if (input->shootKeyClicked
-			&& gameState->player.energy >= 15/*FIXME make this a variable*/) {
+	/*&& gameState->player.energy >= 15*//*FIXME make this a variable*/) {
 		Math::Vector2f velocity = input->mousePosition
 				- gameState->player.position;
 		spawnBullet(gameState, gameState->player.position, velocity, true);
@@ -190,9 +190,9 @@ void updatePlayer(Input *input, GameState *gameState) {
  * Renders the player to the video buffer
  */
 void renderPlayer(GameMemory *memory, GameState *gameState) {
-//	Render::texture(memory, getPlayerTexture(gameState),
-//			gameState->player.position, gameState->player.size,
-//			gameState->player.direction);
+	Render::texture(memory, getPlayerTexture(gameState),
+			gameState->player.position, gameState->player.size,
+			gameState->player.direction);
 }
 
 /**
@@ -204,16 +204,16 @@ bool updateAndRenderBullet(GameMemory *memory, GameState *gameState,
 	if (shouldUpdate) {
 		bullet.position = bullet.position + bullet.velocity;
 
-//		if (bullet.position.x < 0) {
-//			return true;
-//		} else if (bullet.position.x > WINDOW_WIDTH) {
-//			return true;
-//		}
-//		if (bullet.position.y < 0) {
-//			return true;
-//		} else if (bullet.position.y > WINDOW_HEIGHT) {
-//			return true;
-//		}
+		if (bullet.position.x < -10.0) {
+			return true;
+		} else if (bullet.position.x > 10.0) {
+			return true;
+		}
+		if (bullet.position.y < -10.0) {
+			return true;
+		} else if (bullet.position.y > 10.0) {
+			return true;
+		}
 
 		Math::Rectangle bulletRect = getBoundingBox(bullet.position,
 				bullet.radius * 2, bullet.radius * 2);
@@ -546,11 +546,14 @@ UPDATE_AND_RENDER(updateAndRender) {
 //	Render::triangle(memory, p1, p2, p3, 0xff00ff80);
 
 	Math::Vector2f position = Math::Vector2f(-1.0f, 0);
-	Render::text(memory, "Franzi is the best", position, Render::FontSize::Small, 0x0000ffff);
+	Render::text(memory, "Franzi is the best", position,
+			Render::FontSize::Small, 0x0000ffff);
 	position = Math::Vector2f(-0.2, 0);
-	Render::text(memory, "Franzi is the best", position, Render::FontSize::Medium, 0x0000ffff);
+	Render::text(memory, "Franzi is the best", position,
+			Render::FontSize::Medium, 0x0000ffff);
 	position = position + Math::Vector2f(0.6, 0);
-	Render::text(memory, "Franzi is the best", position, Render::FontSize::Large, 0x0000ffff);
+	Render::text(memory, "Franzi is the best", position,
+			Render::FontSize::Large, 0x0000ffff);
 
 	if (input->escapeKeyClicked && gameState->menuState == MenuState::GAME) {
 		loadMenu(gameState, MenuState::PAUSE);

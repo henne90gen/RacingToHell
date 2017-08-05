@@ -16,7 +16,12 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 
 	bool useKerning = FT_HAS_KERNING(face);
 
-	Render::Character newCharacter = { };
+	GameState *gameState = getGameState(memory);
+
+	Render::Character newCharacter =
+			gameState->resources.characterMap[fontSize][loadCharacter
+					- Render::firstCharacter];
+
 	newCharacter.value = loadCharacter;
 
 	newCharacter.width = face->glyph->bitmap.width;
@@ -52,7 +57,6 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 		dest++;
 	}
 
-	glGenTextures(1, &newCharacter.texture.id);
 	glBindTexture(GL_TEXTURE_2D, newCharacter.texture.id);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, newCharacter.width,
 			newCharacter.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, content);
@@ -61,7 +65,6 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glGenerateMipmap (GL_TEXTURE_2D);
 
-	GameState *gameState = getGameState(memory);
 	gameState->resources.characterMap[fontSize][loadCharacter
 			- Render::firstCharacter] = newCharacter;
 
@@ -70,10 +73,6 @@ void loadCharacter(GameMemory* memory, char loadCharacter, int fontSize) {
 
 void loadFont(GameMemory* memory, std::string fontFileName) {
 	int error;
-	error = FT_Init_FreeType(&fontLibrary);
-	if (error) {
-		memory->abort("Couldn't initialize font library.");
-	}
 
 	File fontFile = memory->readFile(fontFileName);
 	error = FT_New_Memory_Face(fontLibrary, (const FT_Byte *) fontFile.content,
@@ -96,11 +95,9 @@ void loadFont(GameMemory* memory, std::string fontFileName) {
 			memory->abort(message);
 		}
 
-		int count = 0;
 		for (char currentChar = Render::firstCharacter;
 				currentChar < Render::lastCharacter; currentChar++) {
 			loadCharacter(memory, currentChar, fontSizeIndex);
-			count++;
 		}
 	}
 }
@@ -252,6 +249,27 @@ void resetGameState(GameState *gameState) {
 	loadMenu(gameState, MenuState::GAME);
 }
 
+void initFont(GameMemory* memory) {
+	GameState* gameState = getGameState(memory);
+
+	int error = FT_Init_FreeType(&fontLibrary);
+	if (error) {
+		memory->abort("Couldn't initialize font library.");
+	}
+
+	for (unsigned fontSizeIndex = 0;
+			fontSizeIndex < sizeof(gameState->resources.availableFontSizes) / 4;
+			fontSizeIndex++) {
+		for (char currentChar = Render::firstCharacter;
+				currentChar < Render::lastCharacter; currentChar++) {
+			Render::Character newCharacter = { };
+			glGenTextures(1, &newCharacter.texture.id);
+			gameState->resources.characterMap[fontSizeIndex][currentChar
+					- Render::firstCharacter] = newCharacter;
+		}
+	}
+}
+
 /**
  * Initialize the game memory appropriately
  */
@@ -271,8 +289,10 @@ void init(GameMemory *memory) {
 	glEnable (GL_BLEND);
 	glDisable (GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	resizeView(memory, 1.0);
+	gameState->scale = 1.0f;
+	resizeView(memory);
 
+	initFont(memory);
 	loadFont(memory, "./res/font/arial.ttf");
 
 	loadAudioClips(memory);

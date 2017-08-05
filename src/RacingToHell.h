@@ -32,6 +32,8 @@ struct Input {
 	bool enterKeyPressed, escapeKeyPressed;
 	bool enterKeyClicked, escapeKeyClicked;
 	bool shootKeyPressed, shootKeyClicked;
+	bool plusKeyPressed, plusKeyClicked;
+	bool minusKeyPressed, minusKeyClicked;
 };
 
 struct Player {
@@ -130,6 +132,7 @@ struct GameWorld {
 
 struct GameState {
 	GLuint glProgram;
+	float scale;
 
 	Sound::PlayingSound playingSounds[256];
 	int lastPlayingSound = -1;

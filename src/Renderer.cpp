@@ -667,23 +667,6 @@ void text(GameMemory *memory, std::string text, Math::Vector2f position,
 
 	GameState *gameState = getGameState(memory);
 
-	// y offsets where found by trial and error
-//	switch (fontSize) {
-//	case FontSize::Small:
-//		position.y += 0.098;
-//		break;
-//	case FontSize::Medium:
-//		position.y += 0.145;
-//		break;
-//	case FontSize::Large:
-//		position.y += 0.284;
-//		break;
-//	}
-
-//	Character *firstChar = getCharacter(gameState, text[0], fontSize);
-//	position.x += firstChar->size.x / 2;
-//	position.y -= firstChar->size.y / 2;
-
 	for (unsigned characterIndex = 0; characterIndex < text.size();
 			++characterIndex) {
 		Character *c = getCharacter(gameState, text[characterIndex], fontSize);

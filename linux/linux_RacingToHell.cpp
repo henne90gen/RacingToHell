@@ -417,6 +417,12 @@ void handleKeyEvent(GameMemory *memory, GraphicsData* graphics, Input* input,
 	case KeyEnter:
 		input->enterKeyPressed = keyPressed;
 		break;
+	case KeyPlus:
+		input->plusKeyPressed = keyPressed;
+		break;
+	case KeyMinus:
+		input->minusKeyPressed = keyPressed;
+		break;
 	}
 }
 

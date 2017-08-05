@@ -33,6 +33,8 @@
 #define KeyA	 38
 #define KeyS	 39
 #define KeyD	 40
+#define KeyPlus  86
+#define KeyMinus 82
 #define KeyF1	 67
 #define KeyF2	 68
 #define KeyF11	 95

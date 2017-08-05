@@ -63,7 +63,8 @@ void importPixelData(void* src, void* dest, unsigned srcWidth,
 }
 
 void checkInputForClicks(Input *input) {
-	static bool up, down, left, right, enter, escape;
+	static bool up, down, left, right, enter, escape, plus, minus;
+
 	input->upKeyClicked = input->upKeyPressed && !up;
 	up = input->upKeyPressed;
 
@@ -81,6 +82,12 @@ void checkInputForClicks(Input *input) {
 
 	input->escapeKeyClicked = input->escapeKeyPressed && !escape;
 	escape = input->escapeKeyPressed;
+
+	input->plusKeyClicked = input->plusKeyPressed && !plus;
+	plus = input->plusKeyPressed;
+
+	input->minusKeyClicked = input->minusKeyPressed && !minus;
+	minus = input->minusKeyPressed;
 }
 
 GLuint createVertexBufferObject(const GLsizeiptr size, const GLvoid *data,
@@ -162,12 +169,12 @@ GLuint buildProgram(GameMemory *memory) {
 	return linkProgram(memory, vertexShader, fragmentShader);
 }
 
-void resizeView(GameMemory* memory, float scale) {
+void resizeView(GameMemory* memory) {
 	GameState *gameState = getGameState(memory);
 	memory->doResize = false;
 
-	float scaleY = 1.0 * scale;
-	float scaleX = (1.0 / memory->aspectRatio) * scale;
+	float scaleY = 1.0 * gameState->scale;
+	float scaleX = (1.0 / memory->aspectRatio) * gameState->scale;
 	GLfloat scaleMatrix[16] = { scaleX, 0, 0, 0, //
 			0, scaleY, 0, 0, //
 			0, 0, 1.0, 0, //
@@ -179,7 +186,7 @@ void resizeView(GameMemory* memory, float scale) {
 
 GameState* beginFrame(GameMemory *memory, Input *input) {
 	if (memory->doResize) {
-		resizeView(memory, 1.0);
+		resizeView(memory);
 	}
 
 	Render::clearScreen(0);
@@ -188,6 +195,15 @@ GameState* beginFrame(GameMemory *memory, Input *input) {
 
 	GameState *gameState = getGameState(memory);
 	gameState->frameCounter++;
+
+	if (input->plusKeyPressed) {
+		gameState->scale += 0.01;
+	} else if (input->minusKeyPressed) {
+		gameState->scale -= 0.01;
+	}
+	if (input->plusKeyPressed || input->minusKeyPressed) {
+		resizeView(memory);
+	}
 
 	return gameState;
 }

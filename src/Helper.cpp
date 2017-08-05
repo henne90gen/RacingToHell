@@ -208,6 +208,22 @@ GameState* beginFrame(GameMemory *memory, Input *input) {
 	return gameState;
 }
 
+void extractFileName(std::string fileName, std::string fileExtension,
+		char result[]) {
+	fileName = fileName.substr(0, fileName.size() - fileExtension.size());
+
+	int index = 0;
+	for (unsigned i = 0; i < fileName.size(); i++) {
+		if (fileName[i] == '/') {
+			index = 0;
+			continue;
+		}
+		result[index] = fileName[i];
+		index++;
+	}
+	result[index] = '\0';
+}
+
 void generateWorld(GameState *gameState) {
 	printf("Generating game world.\n");
 	for (unsigned y = 0; y < gameState->world.height; y++) {

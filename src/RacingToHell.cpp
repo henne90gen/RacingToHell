@@ -51,7 +51,7 @@ void updateAndRenderRoad(GameMemory *memory, bool shouldUpdate) {
 	for (unsigned y = 0; y < gameState->world.height; y++) {
 		for (unsigned x = 0; x < gameState->world.width; x++) {
 			Tile *tile = &gameState->world.tiles[y * gameState->world.width + x];
-			uint32_t color = 0x0000ffff;
+			uint32_t color = 0xff0000ff;
 			if (tile->traversable) {
 				color = 0x00ff00ff;
 			} else {
@@ -534,7 +534,11 @@ extern "C"
 UPDATE_AND_RENDER(updateAndRender) {
 	GameState *gameState = beginFrame(memory, input);
 	if (input->enterKeyClicked) {
-		loadFont(memory, "./res/font/DejaVuSansMono.ttf");
+		if (!strcmp(gameState->resources.fontName, "arial")) {
+			loadFont(memory, "./res/font/DejaVuSansMono.ttf");
+		} else {
+			loadFont(memory, "./res/font/arial.ttf");
+		}
 	}
 
 	updateAndRenderGame(input, memory, gameState,
@@ -549,14 +553,14 @@ UPDATE_AND_RENDER(updateAndRender) {
 //	Render::triangle(memory, p1, p2, p3, 0xff00ff80);
 
 	Math::Vector2f position = Math::Vector2f(-1.0f, 0);
-	Render::text(memory, "Franzi is the best", position,
-			Render::FontSize::Small, 0x0000ffff);
-	position = Math::Vector2f(-0.2, 0);
-	Render::text(memory, "Franzi is the best", position,
-			Render::FontSize::Medium, 0x0000ffff);
-	position = position + Math::Vector2f(0.6, 0);
-	Render::text(memory, "Franzi is the best", position,
-			Render::FontSize::Large, 0x0000ffff);
+//	Render::text(memory, "Franzi is the best", position,
+//			Render::FontSize::Small, 0x0000ffff);
+//	position = Math::Vector2f(-0.2, 0);
+	Render::text(memory, "The quick brown fox jumps over the lazy dog",
+			position, Render::FontSize::Medium, 0x0000ffff);
+//	position = position + Math::Vector2f(0.6, 0);
+//	Render::text(memory, "Franzi is the best", position,
+//			Render::FontSize::Large, 0x0000ffff);
 
 	if (input->escapeKeyClicked && gameState->menuState == MenuState::GAME) {
 		loadMenu(gameState, MenuState::PAUSE);

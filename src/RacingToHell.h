@@ -70,6 +70,7 @@ struct Resources {
 	Render::Texture tank;
 	Render::Texture tankCannon;
 
+	char fontName[100];
 	Render::Character characterMap[3][100];
 	unsigned availableFontSizes[3] = { 7, 10, 20 };
 

@@ -9,6 +9,7 @@ FT_Library fontLibrary;
 void loadTextureToGraphicsMemory(Render::Texture *texture, void *content) {
 	if (!texture->id) {
 		glGenTextures(1, &texture->id);
+		printf("Generated new texture ID\n");
 	}
 
 	glBindTexture(GL_TEXTURE_2D, texture->id);
@@ -48,6 +49,10 @@ void loadCharacter(GameMemory* memory, FT_Face face, char loadCharacter,
 
 	newCharacter.size = Math::Vector2f(newCharacter.texture.width,
 			newCharacter.texture.height) * scale;
+
+	newCharacter.bearing = Math::Vector2f(face->glyph->bitmap_left,
+			(newCharacter.texture.height - face->glyph->bitmap_top)) * scale;
+	newCharacter.bearing.y *= -1;
 
 	newCharacter.advance = (face->glyph->advance.x >> 6) * scale;
 
@@ -100,6 +105,8 @@ void loadFont(GameMemory* memory, std::string fontFileName) {
 	if (error) {
 		memory->abort("Couldn't load font " + fontFileName + ".");
 	}
+
+	extractFileName(fontFileName, ".ttf", gameState->resources.fontName);
 
 	bool hasKerning = FT_HAS_KERNING(face);
 

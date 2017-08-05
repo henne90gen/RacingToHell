@@ -648,6 +648,8 @@ void character(GameMemory *memory, char character, Math::Vector2f position,
 
 	Render::Character* c = getCharacter(gameState, character, fontSize);
 
+	position = position + c->bearing;
+
 	position = position + (c->size * 0.5);
 
 	texture(memory, &c->texture, position, c->size, Math::Vector2f(0.0, 1.0), 1,

@@ -289,13 +289,14 @@ void init(GameMemory *memory) {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	gameState->scale = 1.0f;
 	resizeView(memory);
+	scaleView(memory);
 
 	// setting up font system
 	int error = FT_Init_FreeType(&fontLibrary);
 	if (error) {
 		memory->abort("Couldn't initialize font library.");
 	}
-	loadFont(memory, "./res/font/arial.ttf");
+	loadFont(memory, "./res/font/Arial.ttf");
 
 	loadAudioClips(memory);
 

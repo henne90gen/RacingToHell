@@ -169,19 +169,44 @@ GLuint buildProgram(GameMemory *memory) {
 	return linkProgram(memory, vertexShader, fragmentShader);
 }
 
+void setScaleToIdentity(GameMemory* memory) {
+	GameState *gameState = getGameState(memory);
+
+	GLfloat scaleMatrix[16] = { 1.0, 0, 0, 0, //
+			0, 1.0, 0, 0, //
+			0, 0, 1.0, 0, //
+			0, 0, 0, 1.0 };
+
+	static GLuint scaleMatrixLocation = glGetUniformLocation(
+			gameState->glProgram, "u_ScaleMatrix");
+	glUniformMatrix4fv(scaleMatrixLocation, 1, GL_FALSE, &scaleMatrix[0]);
+}
+
+void scaleView(GameMemory* memory) {
+	GameState *gameState = getGameState(memory);
+
+	GLfloat scaleMatrix[16] = { gameState->scale, 0, 0, 0, //
+			0, gameState->scale, 0, 0, //
+			0, 0, 1.0, 0, //
+			0, 0, 0, 1.0 };
+
+	static GLuint scaleMatrixLocation = glGetUniformLocation(
+			gameState->glProgram, "u_ScaleMatrix");
+	glUniformMatrix4fv(scaleMatrixLocation, 1, GL_FALSE, &scaleMatrix[0]);
+}
+
 void resizeView(GameMemory* memory) {
 	GameState *gameState = getGameState(memory);
 	memory->doResize = false;
 
-	float scaleY = 1.0 * gameState->scale;
-	float scaleX = (1.0 / memory->aspectRatio) * gameState->scale;
-	GLfloat scaleMatrix[16] = { scaleX, 0, 0, 0, //
-			0, scaleY, 0, 0, //
+	GLfloat aspectRatioMatrix[16] = { 1.0f / memory->aspectRatio, 0, 0, 0, //
+			0, 1.0, 0, 0, //
 			0, 0, 1.0, 0, //
 			0, 0, 0, 1.0 };
-	static GLuint scaleMatrixLocation = glGetUniformLocation(
-			gameState->glProgram, "u_ScaleMatrix");
-	glUniformMatrix4fv(scaleMatrixLocation, 1, GL_FALSE, &scaleMatrix[0]);
+	static GLuint aspectRatioMatrixLocation = glGetUniformLocation(
+			gameState->glProgram, "u_AspectRatioMatrix");
+	glUniformMatrix4fv(aspectRatioMatrixLocation, 1, GL_FALSE,
+			&aspectRatioMatrix[0]);
 }
 
 GameState* beginFrame(GameMemory *memory, Input *input) {
@@ -201,9 +226,7 @@ GameState* beginFrame(GameMemory *memory, Input *input) {
 	} else if (input->minusKeyPressed) {
 		gameState->scale -= 0.01;
 	}
-	if (input->plusKeyPressed || input->minusKeyPressed) {
-		resizeView(memory);
-	}
+	scaleView(memory);
 
 	return gameState;
 }

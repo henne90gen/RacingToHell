@@ -1,18 +1,16 @@
 
+attribute vec4 a_Color;
 attribute vec4 a_Position;
-
 attribute vec2 a_TextureCoordinates;
 
-attribute vec4 a_Color;
-
 uniform mat4 u_ScaleMatrix;
-
-varying vec2 v_TextureCoordinates;
+uniform mat4 u_AspectRatioMatrix;
 
 varying vec4 v_Color;
+varying vec2 v_TextureCoordinates;
 
 void main() {
 	v_TextureCoordinates = a_TextureCoordinates;
 	v_Color = a_Color;
-	gl_Position = u_ScaleMatrix * a_Position;
+	gl_Position = u_ScaleMatrix * u_AspectRatioMatrix * a_Position;
 }

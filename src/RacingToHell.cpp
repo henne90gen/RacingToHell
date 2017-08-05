@@ -9,6 +9,7 @@
 #include "GameMenu.cpp"
 #include "Boss.cpp"
 #include "Init.cpp"
+#include "Demos.cpp"
 
 /**
  * Retrieves the GameState from memory
@@ -509,14 +510,6 @@ void updateAndRenderGame(Input *input, GameMemory *memory, GameState *gameState,
 
 	updateAndRenderRoad(memory, update);
 
-//	updateAndRenderItems(buffer, gameState, update);
-
-//	updateAndRenderTraffic(buffer, gameState, update);
-
-	if (gameState->isInBossFight) {
-//		updateAndRenderBoss(buffer, gameState, update);
-	}
-
 	if (gameState->menuState != MenuState::CREDITS) {
 		// render player after traffic, so he is always on top
 		renderPlayer(memory, gameState);
@@ -526,6 +519,7 @@ void updateAndRenderGame(Input *input, GameMemory *memory, GameState *gameState,
 
 	if (gameState->menuState != MenuState::MAIN
 			&& gameState->menuState != MenuState::CREDITS) {
+		setScaleToIdentity(memory);
 		updateAndRenderUI(memory, update);
 	}
 }
@@ -533,34 +527,11 @@ void updateAndRenderGame(Input *input, GameMemory *memory, GameState *gameState,
 extern "C"
 UPDATE_AND_RENDER(updateAndRender) {
 	GameState *gameState = beginFrame(memory, input);
-	if (input->enterKeyClicked) {
-		if (!strcmp(gameState->resources.fontName, "arial")) {
-			loadFont(memory, "./res/font/DejaVuSansMono.ttf");
-		} else {
-			loadFont(memory, "./res/font/arial.ttf");
-		}
-	}
 
-	updateAndRenderGame(input, memory, gameState,
-			gameState->menuState == MenuState::GAME);
+//	updateAndRenderGame(input, memory, gameState,
+//			gameState->menuState == MenuState::GAME);
 
-//	Math::Rectangle rect = { { -memory->aspectRatio, 1.0 }, { 2
-//			* memory->aspectRatio, 2.0 } };
-//	Render::rectangle(memory, rect, 0xff00ff80);
-//	Math::Vector2f p1 = {1.0, 1.0};
-//	Math::Vector2f p2 = {1.0, -1.0};
-//	Math::Vector2f p3 = {0.0, 0.0};
-//	Render::triangle(memory, p1, p2, p3, 0xff00ff80);
-
-	Math::Vector2f position = Math::Vector2f(-1.0f, 0);
-//	Render::text(memory, "Franzi is the best", position,
-//			Render::FontSize::Small, 0x0000ffff);
-//	position = Math::Vector2f(-0.2, 0);
-	Render::text(memory, "The quick brown fox jumps over the lazy dog",
-			position, Render::FontSize::Medium, 0x0000ffff);
-//	position = position + Math::Vector2f(0.6, 0);
-//	Render::text(memory, "Franzi is the best", position,
-//			Render::FontSize::Large, 0x0000ffff);
+	textDemo(memory, input);
 
 	if (input->escapeKeyClicked && gameState->menuState == MenuState::GAME) {
 		loadMenu(gameState, MenuState::PAUSE);

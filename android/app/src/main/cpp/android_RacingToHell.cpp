@@ -18,8 +18,8 @@ Java_game_racingtohell_NativeWrapper_on_1surface_1changed(JNIEnv *env UNUSED, jc
         memory.temporary = (char *) malloc(memory.temporaryMemorySize);
         memory.permanent = (char *) malloc(memory.permanentMemorySize);
 
-        videoBuffer.width = WINDOW_WIDTH;
-        videoBuffer.height = WINDOW_HEIGHT;
+        videoBuffer.width = DEFAULT_WINDOW_WIDTH;
+        videoBuffer.height = DEFAULT_WINDOW_HEIGHT;
         videoBuffer.bytesPerPixel = 4;
         videoBuffer.content = malloc(
                 videoBuffer.bytesPerPixel * videoBuffer.width * videoBuffer.height);
@@ -33,11 +33,11 @@ Java_game_racingtohell_NativeWrapper_on_1surface_1changed(JNIEnv *env UNUSED, jc
 }
 
 bool inControlCircle(float x, float y) {
-    return x > WINDOW_WIDTH / 2 && y > WINDOW_HEIGHT / 4 * 3;
+    return x > DEFAULT_WINDOW_WIDTH / 2 && y > DEFAULT_WINDOW_HEIGHT / 4 * 3;
 }
 
 float getAngleInControlCircle(float x, float y) {
-    Math::Vector2f midPoint = {WINDOW_WIDTH / 4 * 3, WINDOW_HEIGHT / 8 * 7};
+    Math::Vector2f midPoint = {DEFAULT_WINDOW_WIDTH / 4 * 3, DEFAULT_WINDOW_HEIGHT / 8 * 7};
     Math::Vector2f diff = midPoint - (Math::Vector2f) {x, y};
     return atan2(diff.y, diff.x);
 }
@@ -47,8 +47,8 @@ JNIEXPORT void JNICALL
 Java_game_racingtohell_NativeWrapper_on_1touch_1event(JNIEnv *env UNUSED, jclass clazz UNUSED,
                                                       jfloat x, jfloat y, jboolean pressed) {
     // Scaling x and y to game-coordinates
-    x = x * WINDOW_WIDTH / realWindowWidth;
-    y = y * WINDOW_HEIGHT / realWindowHeight;
+    x = x * DEFAULT_WINDOW_WIDTH / realWindowWidth;
+    y = y * DEFAULT_WINDOW_HEIGHT / realWindowHeight;
 
     gameInput.leftKeyPressed = 0;
     gameInput.rightKeyPressed = 0;

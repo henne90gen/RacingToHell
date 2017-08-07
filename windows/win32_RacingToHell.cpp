@@ -282,7 +282,7 @@ void initDSound(HWND window, uint32_t samplesPerSecond, int32_t bufferSize)
 
             if (SUCCEEDED(directSound->SetCooperativeLevel(window, DSSCL_PRIORITY)))
             {
-                //Primärbuffer "erstellen"
+                //Primï¿½rbuffer "erstellen"
                 DSBUFFERDESC bufferDescription = {};
 
                 bufferDescription.dwSize = sizeof(bufferDescription);
@@ -297,12 +297,12 @@ void initDSound(HWND window, uint32_t samplesPerSecond, int32_t bufferSize)
                     }
                     else
                     {
-                        abort("Primärbufferformat konnte nicht gesetzt werden.");
+                        abort("Primï¿½rbufferformat konnte nicht gesetzt werden.");
                     }
                 }
                 else
                 {
-                    abort("Primärbuffer konnte nicht erstellt werden.");
+                    abort("Primï¿½rbuffer konnte nicht erstellt werden.");
                 }
             }
             else
@@ -310,7 +310,7 @@ void initDSound(HWND window, uint32_t samplesPerSecond, int32_t bufferSize)
                 abort("directSound->SetCooperativeLevel fehlgeschlagen.");
             }
 
-            //Sekundärbuffer "erstellen"
+            //Sekundï¿½rbuffer "erstellen"
             DSBUFFERDESC bufferDescription = {};
 
             bufferDescription.dwSize = sizeof(bufferDescription);
@@ -320,7 +320,7 @@ void initDSound(HWND window, uint32_t samplesPerSecond, int32_t bufferSize)
 
             if (SUCCEEDED(directSound->CreateSoundBuffer(&bufferDescription, &secondaryBuffer, 0)))
             {
-                debugString("Sekundärbuffer wurde gesetzt\n");
+                debugString("Sekundï¿½rbuffer wurde gesetzt\n");
             }
 
             //Sound abspielen
@@ -647,7 +647,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 
     uint64_t performanceCountFrequency = frequencyResult.QuadPart;
 
-	resizeOffscreenBuffer(&buffer, WINDOW_WIDTH, WINDOW_HEIGHT);
+	resizeOffscreenBuffer(&buffer, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
 
     GameMemory memory;
     memory.temporaryMemorySize = 10 * 1024 * 1024;
@@ -660,7 +660,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
     memory.freeFile = freeFile;
     memory.exitGame = exitGame;
 
-	HWND windowHandle = openWindow(instance, show, WINDOW_WIDTH, WINDOW_HEIGHT);
+	HWND windowHandle = openWindow(instance, show, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
 
     createOpenGLContext(windowHandle);
 

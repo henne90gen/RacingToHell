@@ -174,7 +174,7 @@ void updatePlayer(Input *input, GameState *gameState) {
 	if (gameState->player.position.x < texture->width / 2) {
 //		gameState->player.position.x = texture->width / 2;
 	} else if (gameState->player.position.x
-			> WINDOW_WIDTH - texture->width / 2) {
+			> DEFAULT_WINDOW_WIDTH - texture->width / 2) {
 //		gameState->player.position.x = WINDOW_WIDTH - texture->width / 2;
 	}
 
@@ -182,7 +182,7 @@ void updatePlayer(Input *input, GameState *gameState) {
 	if (gameState->player.position.y < texture->height / 2) {
 //		gameState->player.position.y = texture->height / 2;
 	} else if (gameState->player.position.y
-			> WINDOW_HEIGHT - texture->height / 2) {
+			> DEFAULT_WINDOW_HEIGHT - texture->height / 2) {
 //		gameState->player.position.y = WINDOW_HEIGHT - texture->height / 2;
 	}
 }
@@ -296,7 +296,7 @@ void updateAndRenderBullets(GameMemory *memory, GameState *gameState,
 void spawnTrafficCar(GameState *gameState) {
 	Car car = { };
 	car.carIndex = std::rand() % NUM_TRAFFIC_TEXTURES;
-	float x = (std::rand() % 4) * (WINDOW_WIDTH / 4) + WINDOW_WIDTH / 8;
+	float x = (std::rand() % 4) * (DEFAULT_WINDOW_WIDTH / 4) + DEFAULT_WINDOW_WIDTH / 8;
 	car.position = {x, -80};
 	car.speed = 5;
 	car.health = 75;
@@ -346,7 +346,7 @@ void updateAndRenderTraffic(VideoBuffer *buffer, GameState *gameState,
 				continue;
 			}
 
-			if (car->position.y - texture->height / 2 > WINDOW_HEIGHT) {
+			if (car->position.y - texture->height / 2 > DEFAULT_WINDOW_HEIGHT) {
 				removeElement(gameState->world.traffic, &gameState->world.lastTrafficCarIndex,
 						&i);
 				continue;
@@ -386,7 +386,7 @@ void updateAndRenderTraffic(VideoBuffer *buffer, GameState *gameState,
 void spawnItem(GameState *gameState) {
 	Item item = { };
 	item.itemIndex = std::rand() % NUM_ITEM_TEXTURES;
-	float x = (std::rand() % 4) * (WINDOW_WIDTH / 4) + WINDOW_WIDTH / 8;
+	float x = (std::rand() % 4) * (DEFAULT_WINDOW_WIDTH / 4) + DEFAULT_WINDOW_WIDTH / 8;
 	item.position = {x, -80};
 
 	unsigned arrSize = sizeof(gameState->world.items) / sizeof(Item);
@@ -454,7 +454,7 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState,
 				continue;
 			}
 
-			if (item->position.y - texture->height / 2 > WINDOW_HEIGHT) {
+			if (item->position.y - texture->height / 2 > DEFAULT_WINDOW_HEIGHT) {
 				removeElement(gameState->world.items, &gameState->world.lastItemIndex, &i);
 				continue;
 			}

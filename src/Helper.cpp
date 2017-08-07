@@ -169,6 +169,7 @@ GLuint buildProgram(GameMemory *memory) {
 	return linkProgram(memory, vertexShader, fragmentShader);
 }
 
+
 void setScaleToIdentity(GameMemory* memory) {
 	GameState *gameState = getGameState(memory);
 
@@ -177,8 +178,8 @@ void setScaleToIdentity(GameMemory* memory) {
 			0, 0, 1.0, 0, //
 			0, 0, 0, 1.0 };
 
-	static GLuint scaleMatrixLocation = glGetUniformLocation(
-			gameState->glProgram, "u_ScaleMatrix");
+	GLuint scaleMatrixLocation = glGetUniformLocation(gameState->glProgram,
+			"u_ScaleMatrix");
 	glUniformMatrix4fv(scaleMatrixLocation, 1, GL_FALSE, &scaleMatrix[0]);
 }
 
@@ -190,8 +191,8 @@ void scaleView(GameMemory* memory) {
 			0, 0, 1.0, 0, //
 			0, 0, 0, 1.0 };
 
-	static GLuint scaleMatrixLocation = glGetUniformLocation(
-			gameState->glProgram, "u_ScaleMatrix");
+	GLuint scaleMatrixLocation = glGetUniformLocation(gameState->glProgram,
+			"u_ScaleMatrix");
 	glUniformMatrix4fv(scaleMatrixLocation, 1, GL_FALSE, &scaleMatrix[0]);
 }
 
@@ -203,13 +204,44 @@ void resizeView(GameMemory* memory) {
 			0, 1.0, 0, 0, //
 			0, 0, 1.0, 0, //
 			0, 0, 0, 1.0 };
-	static GLuint aspectRatioMatrixLocation = glGetUniformLocation(
+	GLuint aspectRatioMatrixLocation = glGetUniformLocation(
 			gameState->glProgram, "u_AspectRatioMatrix");
 	glUniformMatrix4fv(aspectRatioMatrixLocation, 1, GL_FALSE,
 			&aspectRatioMatrix[0]);
 }
 
+void initOpenGL(GameMemory* memory) {
+	GameState *gameState = getGameState(memory);
+
+	gameState->glProgram = buildProgram(memory);
+	glUseProgram(gameState->glProgram);
+
+	glDepthMask (GL_TRUE);
+	glEnable (GL_BLEND);
+	glDisable (GL_DEPTH_TEST);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	resizeView(memory);
+	scaleView(memory);
+}
+
 GameState* beginFrame(GameMemory *memory, Input *input) {
+	GameState *gameState = getGameState(memory);
+	gameState->frameCounter++;
+
+	unsigned amountOfShaders = sizeof(memory->shaderFileNames)
+			/ sizeof(memory->shaderFileNames[0]);
+	bool rebuildProgram = false;
+	for (unsigned i = 0; i < amountOfShaders; i++) {
+		if (memory->shaderModTimes[i][0] != memory->shaderModTimes[i][1]) {
+			rebuildProgram = true;
+			break;
+		}
+	}
+	if (rebuildProgram) {
+		initOpenGL(memory);
+	}
+
 	if (memory->doResize) {
 		resizeView(memory);
 	}
@@ -217,9 +249,6 @@ GameState* beginFrame(GameMemory *memory, Input *input) {
 	Render::clearScreen(0);
 
 	checkInputForClicks(input);
-
-	GameState *gameState = getGameState(memory);
-	gameState->frameCounter++;
 
 	if (input->plusKeyPressed) {
 		gameState->scale += 0.01;

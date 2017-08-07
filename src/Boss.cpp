@@ -25,7 +25,7 @@ void updateTank(GameState *gameState) {
 	switch (boss->currentPhase) {
 	case 0: // Shoot and drive left and right
 		boss->position = boss->position + Math::Vector2f( { boss->speed, 0 });
-		if (boss->position.x + tankTexture->width / 2 > WINDOW_WIDTH) {
+		if (boss->position.x + tankTexture->width / 2 > DEFAULT_WINDOW_WIDTH) {
 			boss->speed = -boss->speed;
 		} else if (boss->position.x - tankTexture->width / 2 < 0) {
 			boss->speed = -boss->speed;
@@ -39,7 +39,7 @@ void updateTank(GameState *gameState) {
 	{
 		Math::Vector2f centerPosition = Math::Vector2f(
 
-		{ WINDOW_WIDTH / 2, 150 });
+		{ DEFAULT_WINDOW_WIDTH / 2, 150 });
 		if (boss->speed < 0) {
 			boss->speed = -boss->speed;
 		}
@@ -138,5 +138,5 @@ void loadBoss(GameState *gameState) {
 		break;
 	}
 	// TODO make boss move on screen instead of having him appear out of nowhere
-	gameState->boss.position = {WINDOW_WIDTH / 2, 150};
+	gameState->boss.position = {DEFAULT_WINDOW_WIDTH / 2, 150};
 }

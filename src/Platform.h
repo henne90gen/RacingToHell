@@ -18,8 +18,8 @@
 #include <GL/glxext.h>
 #endif
 
-#define WINDOW_WIDTH 1200
-#define WINDOW_HEIGHT 675
+#define DEFAULT_WINDOW_WIDTH 1200
+#define DEFAULT_WINDOW_HEIGHT 675
 #define WINDOW_TITLE "Racing to Hell"
 #define NUM_PLAYER_TEXTURES 6
 #define NUM_TRAFFIC_TEXTURES 7
@@ -66,6 +66,9 @@ struct GameMemory {
 	float aspectRatio;
 	bool doResize;
 	bool stretch = false;
+
+	time_t shaderModTimes[2][2];
+	char shaderFileNames[2][100];
 
 	abort_ *abort;
 	read_file *readFile;

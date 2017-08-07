@@ -281,15 +281,8 @@ void init(GameMemory *memory) {
 	*gameState = {};
 
 	// setting up OpenGL
-	gameState->glProgram = buildProgram(memory);
-	glUseProgram(gameState->glProgram);
-	glDepthMask (GL_TRUE);
-	glEnable (GL_BLEND);
-	glDisable (GL_DEPTH_TEST);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	gameState->scale = 1.0f;
-	resizeView(memory);
-	scaleView(memory);
+	initOpenGL(memory);
 
 	// setting up font system
 	int error = FT_Init_FreeType(&fontLibrary);

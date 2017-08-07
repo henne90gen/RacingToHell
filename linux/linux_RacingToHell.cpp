@@ -162,9 +162,11 @@ GraphicsData initGraphicsData() {
 
 	graphics.swa.colormap = graphics.cmap;
 	graphics.swa.event_mask = EVENT_MASK;
-	graphics.window = XCreateWindow(graphics.display, root, 0, 0, WINDOW_WIDTH,
-	WINDOW_HEIGHT, 0, graphics.vi->depth, InputOutput, graphics.vi->visual,
-	CWColormap | CWEventMask, &graphics.swa);
+	graphics.window = XCreateWindow(graphics.display, root, 0, 0,
+	DEFAULT_WINDOW_WIDTH,
+	DEFAULT_WINDOW_HEIGHT, 0, graphics.vi->depth, InputOutput,
+			graphics.vi->visual,
+			CWColormap | CWEventMask, &graphics.swa);
 
 	graphics.glc = glXCreateContext(graphics.display, graphics.vi, NULL,
 	GL_TRUE);
@@ -616,6 +618,25 @@ GameMemory initGameMemory() {
 	memory.aspectRatio = 16.0 / 9.0;
 	memory.stretch = false;
 
+	char vertexShaderFileName[] = "./res/shaders/vertex.glsl";
+	for (unsigned i = 0; i < sizeof(vertexShaderFileName) / sizeof(char); i++) {
+		memory.shaderFileNames[0][i] = vertexShaderFileName[i];
+	}
+	char fragmentShaderFileName[] = "./res/shaders/fragment.glsl";
+	for (unsigned i = 0; i < sizeof(fragmentShaderFileName) / sizeof(char);
+			i++) {
+		memory.shaderFileNames[1][i] = fragmentShaderFileName[i];
+	}
+
+	unsigned amountOfShaders = sizeof(memory.shaderFileNames)
+			/ sizeof(memory.shaderFileNames[0]);
+	for (unsigned i = 0; i < amountOfShaders; i++) {
+		struct stat shaderStatBuffer = { };
+		stat(memory.shaderFileNames[i], &shaderStatBuffer);
+		memory.shaderModTimes[i][0] = shaderStatBuffer.st_mtime;
+		memory.shaderModTimes[i][1] = shaderStatBuffer.st_mtime;
+	}
+
 	memory.abort = abort;
 	memory.readFile = readFile;
 	memory.freeFile = freeFile;
@@ -681,7 +702,8 @@ int main() {
 		*newInput = *oldInput;
 
 		bool mouseEvent = false;
-		while (XEventsQueued(graphics.display, QueuedAfterReading)) {
+		while (XEventsQueued(graphics.display,
+		QueuedAfterReading)) {
 			XNextEvent(graphics.display, &event);
 			if (event.type == ClientMessage) {
 				exitGame();
@@ -732,14 +754,23 @@ int main() {
 		swapSoundBuffers(&memory);
 #endif
 
-		struct stat library_statbuf = { };
-		stat("./librth.so", &library_statbuf);
+		struct stat libraryStatBuffer = { };
+		stat("./librth.so", &libraryStatBuffer);
 
-		bool ExecutableNeedsToBeReloaded = (library_statbuf.st_mtime
+		bool libraryNeedsToBeReloaded = (libraryStatBuffer.st_mtime
 				!= gameCode.libraryMTime);
-		if (ExecutableNeedsToBeReloaded) {
+		if (libraryNeedsToBeReloaded) {
 			unloadGameCode(&gameCode);
 			gameCode = loadGameCode();
+		}
+
+		unsigned amountOfShaders = sizeof(memory.shaderFileNames)
+				/ sizeof(memory.shaderFileNames[0]);
+		for (unsigned i = 0; i < amountOfShaders; i++) {
+			struct stat shaderStatBuffer = { };
+			stat(memory.shaderFileNames[i], &shaderStatBuffer);
+			memory.shaderModTimes[i][0] = memory.shaderModTimes[i][1];
+			memory.shaderModTimes[i][1] = shaderStatBuffer.st_mtime;
 		}
 
 		Input *tmp = oldInput;
@@ -752,7 +783,7 @@ int main() {
 	free(memory.permanent);
 	free(memory.temporary);
 
-	// Clean up audio
+// Clean up audio
 	snd_pcm_drain(audio.pcm_handle);
 	snd_pcm_close(audio.pcm_handle);
 	free(audio.buffer);

@@ -513,15 +513,15 @@ void circle(VideoBuffer* buffer, Math::Vector2f pos, unsigned radius,
 	int x = pos.x;
 	int y = pos.y;
 
-	if (x + radius < 0 || x - (int) radius > WINDOW_WIDTH) {
+	if (x + radius < 0 || x - (int) radius > DEFAULT_WINDOW_WIDTH) {
 		return;
 	}
-	if (y + radius < 0 || y - (int) radius > WINDOW_HEIGHT) {
+	if (y + radius < 0 || y - (int) radius > DEFAULT_WINDOW_HEIGHT) {
 		return;
 	}
 
 	for (int i = -1 * (int) radius; i < (int) radius; i++) {
-		if (y + i >= WINDOW_HEIGHT) {
+		if (y + i >= DEFAULT_WINDOW_HEIGHT) {
 			break;
 		} else if (y + i < 0) {
 			continue;
@@ -529,7 +529,7 @@ void circle(VideoBuffer* buffer, Math::Vector2f pos, unsigned radius,
 		float angle = asin(i / (float) radius);
 		int xRange = abs(cos(angle) * (float) radius);
 		for (int j = -1 * xRange; j < xRange; j++) {
-			if (x + j >= WINDOW_WIDTH) {
+			if (x + j >= DEFAULT_WINDOW_WIDTH) {
 				break;
 			} else if (x + j < 0) {
 				continue;
@@ -601,16 +601,15 @@ void texture(GameMemory *memory, Texture *texture, Math::Vector2f position,
 	GLuint coordinatesBuffer = createVertexBufferObject(sizeof(coordinates),
 			coordinates, GL_STATIC_DRAW);
 
-	static GLuint positionLocation = glGetAttribLocation(gameState->glProgram,
+	GLuint positionLocation = glGetAttribLocation(gameState->glProgram,
 			"a_Position");
-	static GLuint textureCoordinatesLocation = glGetAttribLocation(
+	GLuint textureCoordinatesLocation = glGetAttribLocation(
 			gameState->glProgram, "a_TextureCoordinates");
-	static GLuint colorLocation = glGetAttribLocation(gameState->glProgram,
-			"a_Color");
-	static GLuint colorSourceLocation = glGetUniformLocation(
-			gameState->glProgram, "u_ColorSource");
-	static GLuint textureUnitLocation = glGetUniformLocation(
-			gameState->glProgram, "u_TextureUnit");
+	GLuint colorLocation = glGetAttribLocation(gameState->glProgram, "a_Color");
+	GLuint colorSourceLocation = glGetUniformLocation(gameState->glProgram,
+			"u_ColorSource");
+	GLuint textureUnitLocation = glGetUniformLocation(gameState->glProgram,
+			"u_TextureUnit");
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture->id);
@@ -701,12 +700,11 @@ void triangle(GameMemory *memory, Math::Vector2f point1, Math::Vector2f point2,
 	GLuint coordinatesBuffer = createVertexBufferObject(sizeof(coordinates),
 			coordinates, GL_STATIC_DRAW);
 
-	static GLuint positionLocation = glGetAttribLocation(gameState->glProgram,
+	GLuint positionLocation = glGetAttribLocation(gameState->glProgram,
 			"a_Position");
-	static GLuint colorLocation = glGetAttribLocation(gameState->glProgram,
-			"a_Color");
-	static GLuint colorSourceLocation = glGetUniformLocation(
-			gameState->glProgram, "u_ColorSource");
+	GLuint colorLocation = glGetAttribLocation(gameState->glProgram, "a_Color");
+	GLuint colorSourceLocation = glGetUniformLocation(gameState->glProgram,
+			"u_ColorSource");
 
 	// rectangle supplies it's own color
 	glUniform1i(colorSourceLocation, 2);
@@ -758,12 +756,11 @@ void rectangle(GameMemory *memory, Math::Rectangle rect, uint32_t color) {
 	GLuint coordinatesBuffer = createVertexBufferObject(sizeof(coordinates),
 			coordinates, GL_STATIC_DRAW);
 
-	static GLuint positionLocation = glGetAttribLocation(gameState->glProgram,
+	GLuint positionLocation = glGetAttribLocation(gameState->glProgram,
 			"a_Position");
-	static GLuint colorLocation = glGetAttribLocation(gameState->glProgram,
-			"a_Color");
-	static GLuint colorSourceLocation = glGetUniformLocation(
-			gameState->glProgram, "u_ColorSource");
+	GLuint colorLocation = glGetAttribLocation(gameState->glProgram, "a_Color");
+	GLuint colorSourceLocation = glGetUniformLocation(gameState->glProgram,
+			"u_ColorSource");
 
 	// rectangle supplies it's own color
 	glUniform1i(colorSourceLocation, 2);

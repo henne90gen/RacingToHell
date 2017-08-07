@@ -296,7 +296,8 @@ void updateAndRenderBullets(GameMemory *memory, GameState *gameState,
 void spawnTrafficCar(GameState *gameState) {
 	Car car = { };
 	car.carIndex = std::rand() % NUM_TRAFFIC_TEXTURES;
-	float x = (std::rand() % 4) * (DEFAULT_WINDOW_WIDTH / 4) + DEFAULT_WINDOW_WIDTH / 8;
+	float x = (std::rand() % 4) * (DEFAULT_WINDOW_WIDTH / 4)
+			+ DEFAULT_WINDOW_WIDTH / 8;
 	car.position = {x, -80};
 	car.speed = 5;
 	car.health = 75;
@@ -386,7 +387,8 @@ void updateAndRenderTraffic(VideoBuffer *buffer, GameState *gameState,
 void spawnItem(GameState *gameState) {
 	Item item = { };
 	item.itemIndex = std::rand() % NUM_ITEM_TEXTURES;
-	float x = (std::rand() % 4) * (DEFAULT_WINDOW_WIDTH / 4) + DEFAULT_WINDOW_WIDTH / 8;
+	float x = (std::rand() % 4) * (DEFAULT_WINDOW_WIDTH / 4)
+			+ DEFAULT_WINDOW_WIDTH / 8;
 	item.position = {x, -80};
 
 	unsigned arrSize = sizeof(gameState->world.items) / sizeof(Item);
@@ -534,7 +536,7 @@ UPDATE_AND_RENDER(updateAndRender) {
 	textDemo(memory, input);
 
 	if (input->escapeKeyClicked && gameState->menuState == MenuState::GAME) {
-		loadMenu(gameState, MenuState::PAUSE);
+		loadMenu(memory, MenuState::PAUSE);
 	} else if (gameState->menuState != MenuState::GAME) {
 		updateAndRenderMenus(memory, input);
 	}

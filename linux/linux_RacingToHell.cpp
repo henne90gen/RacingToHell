@@ -4,7 +4,7 @@
  * Initializes the audio context
  */
 AudioData initAudioData() {
-	printf("Loading audio context.\n");
+	log("Loading audio context.");
 
 	AudioData audio = { };
 
@@ -78,14 +78,15 @@ AudioData initAudioData() {
 		abort(errorMsg);
 	}
 
-	printf("PCM name: %s\n", snd_pcm_name(audio.pcm_handle));
-	printf("PCM state: %s\n",
+	log("PCM name: " + std::string(snd_pcm_name(audio.pcm_handle)));
+	std::string pcmState = std::string(
 			snd_pcm_state_name(snd_pcm_state(audio.pcm_handle)));
+	log("PCM state: " + pcmState);
 
 	snd_pcm_hw_params_get_channels(audio.hw_params, &audio.channels);
-	printf("Channels: %i\n", audio.channels);
+	log("Channels: " + std::to_string(audio.channels));
 
-	printf("Rate: %i\n", audio.samples_per_second);
+	log("Rate: " + std::to_string(audio.samples_per_second));
 
 	if ((error = snd_pcm_hw_params_get_period_size(audio.hw_params,
 			&audio.period_size, 0)) < 0) {
@@ -94,13 +95,13 @@ AudioData initAudioData() {
 		abort(errorMsg);
 	}
 
-	printf("Period size: %li\n", audio.period_size);
+	log("Period size: " + std::to_string(audio.period_size));
 
 	int32_t maxPossibleOverrun = 2 * 8 * sizeof(int16_t);
 	audio.buffer = (int16_t *) malloc(
 			audio.buffer_size_in_bytes + maxPossibleOverrun);
 
-	printf("Successfully loaded audio context.\n");
+	log("Successfully loaded audio context.");
 	return audio;
 }
 
@@ -269,12 +270,16 @@ ABORT(abort) {
 	exit(1);
 }
 
+LOG(log) {
+	printf("%s", (message + "\n").c_str());
+}
+
 /**
  * Reads an entire file into memory
  * This might be a very expensive operation, if the file is very large
  */
 READ_FILE(readFile) {
-	printf("Reading %s\n", fileName.c_str());
+	log("Reading " + fileName);
 
 	FILE *fileHandle = fopen(fileName.c_str(), "rb");
 	if (!fileHandle) {
@@ -302,16 +307,18 @@ READ_FILE(readFile) {
  * Writes an entire file to disk
  */
 WRITE_FILE(writeFile) {
-	printf("Writing %s\n", fileName.c_str());
+	log("Writing " + fileName);
 
 	FILE *fHandle = fopen(fileName.c_str(), "wb");
 	if (fHandle == NULL) {
-		printf("ERROR - Failed to open file for writing\n");
+		log("ERROR - Failed to open file for writing");
 		return false;
 	}
 
 	if (fwrite((void *) file->content, 1, file->size, fHandle) != file->size) {
-		printf("ERROR - Failed to write %lu bytes to file\n", file->size);
+		std::string errorMsg = "ERROR - Failed to write "
+				+ std::to_string(file->size) + " bytes to file";
+		log(errorMsg);
 		return false;
 	}
 
@@ -335,7 +342,7 @@ FREE_FILE(freeFile) {
  * Ends the game gracefully
  */
 EXIT_GAME(exitGame) {
-	printf("Exiting\n");
+	log("Exiting");
 	isRunning = false;
 }
 
@@ -385,7 +392,7 @@ void handleKeyEvent(GameMemory *memory, GraphicsData* graphics, Input* input,
 		XKeyEvent event) {
 	bool keyPressed = event.type == KeyPress;
 
-//	printf("Key pressed: %d\n", event.keycode);
+//	log("Key pressed: " + event.keycode);
 
 	switch (event.keycode) {
 	case KeyF1:
@@ -491,9 +498,12 @@ void correctTiming(GraphicsData *graphics, timespec startTime,
 	XFlush(graphics->display);
 
 	if (consoleOutput) {
-		printf("Frametime: %fms, Framerate: %f\n",
-				nanoSecondsElapsed / 1000000.0f,
-				1000000000.0f / nanoSecondsElapsed);
+		// FIXME use same string for window title and console
+		std::string frameTimeAndFrameRate = "Frametime: "
+				+ std::to_string(nanoSecondsElapsed / 1000000.0f)
+				+ "ms, Framerate: "
+				+ std::to_string(1000000000.0f / nanoSecondsElapsed);
+		log(frameTimeAndFrameRate);
 	}
 }
 
@@ -546,7 +556,7 @@ void swapSoundBuffers(AudioData *audio, GameMemory *memory) {
 
 #if SOUND_DEBUG
 	// NOTE: "delay" is the delay of the soundcard hardware
-	printf("samples in buffer before write: %ld delay in samples: %ld\n", (audio->buffer_size_in_samples - avail), delay);
+	log("Samples in buffer before write: " + std::to_string(audio->buffer_size_in_samples - avail) + " | Delay in samples: " + std::to_string(delay));
 #endif
 
 	int32_t writtenSamples = snd_pcm_writei(audio->pcm_handle, audio->buffer,
@@ -555,13 +565,15 @@ void swapSoundBuffers(AudioData *audio, GameMemory *memory) {
 		writtenSamples = snd_pcm_recover(audio->pcm_handle, writtenSamples,
 				true);
 	} else if (writtenSamples != soundBuffer.sampleCount) {
-		printf("only wrote %d of %d samples\n", writtenSamples,
-				soundBuffer.sampleCount);
+		std::string message = "Only wrote " + std::to_string(writtenSamples)
+				+ " of " + std::to_string(soundBuffer.sampleCount)
+				+ " samples.";
+		log(message);
 	}
 
 #if SOUND_DEBUG
 	snd_pcm_avail_delay(audio->pcm_handle, &avail, &delay);
-	printf("samples in buffer after write: %ld delay in samples: %ld written samples: %d\n", (audio->buffer_size_in_samples - avail + writtenSamples), delay, writtenSamples);
+	log("Samples in buffer after write: " + std::to_string(audio->buffer_size_in_samples - avail + writtenSamples) + " | Delay in samples: " + std::to_string(delay) + " | Written samples: " + std::to_string(writtenSamples));
 #endif
 }
 
@@ -569,7 +581,7 @@ void swapSoundBuffers(AudioData *audio, GameMemory *memory) {
  * Loads the game code library and fetches the required methods from it
  */
 GameCode loadGameCode() {
-	printf("Loading GameCode.\n");
+	log("Loading GameCode.");
 	GameCode result = { };
 
 	struct stat statbuf = { };
@@ -601,7 +613,7 @@ GameCode loadGameCode() {
  * Unloads the game code library
  */
 void unloadGameCode(GameCode *code) {
-	printf("Unloading GameCode.\n");
+	log("Unloading GameCode.");
 
 	if (code->libraryHandle) {
 		dlclose(code->libraryHandle);
@@ -628,16 +640,8 @@ GameMemory initGameMemory() {
 		memory.shaderFileNames[1][i] = fragmentShaderFileName[i];
 	}
 
-	unsigned amountOfShaders = sizeof(memory.shaderFileNames)
-			/ sizeof(memory.shaderFileNames[0]);
-	for (unsigned i = 0; i < amountOfShaders; i++) {
-		struct stat shaderStatBuffer = { };
-		stat(memory.shaderFileNames[i], &shaderStatBuffer);
-		memory.shaderModTimes[i][0] = shaderStatBuffer.st_mtime;
-		memory.shaderModTimes[i][1] = shaderStatBuffer.st_mtime;
-	}
-
 	memory.abort = abort;
+	memory.log = log;
 	memory.readFile = readFile;
 	memory.freeFile = freeFile;
 	memory.exitGame = exitGame;

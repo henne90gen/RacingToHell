@@ -9,7 +9,6 @@ FT_Library fontLibrary;
 void loadTextureToGraphicsMemory(Render::Texture *texture, void *content) {
 	if (!texture->id) {
 		glGenTextures(1, &texture->id);
-		printf("Generated new texture ID\n");
 	}
 
 	glBindTexture(GL_TEXTURE_2D, texture->id);
@@ -265,7 +264,6 @@ void resetGameState(GameState *gameState) {
 	loadBoss(gameState);
 
 	gameState->menuState = MenuState::MAIN; // triggers world generation when loading the game directly into game mode
-	loadMenu(gameState, MenuState::GAME);
 }
 
 /**
@@ -299,5 +297,6 @@ void init(GameMemory *memory) {
 			Sound::PLAY_LOOP);
 
 	resetGameState(gameState);
+	loadMenu(memory, MenuState::GAME);
 }
 

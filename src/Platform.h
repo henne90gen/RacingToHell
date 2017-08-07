@@ -44,6 +44,10 @@ struct File {
 typedef ABORT(abort_);
 ABORT(abort);
 
+#define LOG(name) void name(std::string message)
+typedef LOG(log_);
+LOG(log);
+
 #define READ_FILE(name) File name(std::string fileName)
 typedef READ_FILE(read_file);
 READ_FILE(readFile);
@@ -71,6 +75,7 @@ struct GameMemory {
 	char shaderFileNames[2][100];
 
 	abort_ *abort;
+	log_ *log;
 	read_file *readFile;
 	free_file *freeFile;
 	exit_game *exitGame;

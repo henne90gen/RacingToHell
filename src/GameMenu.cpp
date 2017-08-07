@@ -63,7 +63,8 @@ void loadGameOverMenu(GameState *gameState) {
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Back");
 }
 
-void loadMenu(GameState *gameState, MenuState menuState) {
+void loadMenu(GameMemory *memory, MenuState menuState) {
+	GameState *gameState = getGameState(memory);
 	MenuState previousMenuState = gameState->menuState;
 
 	gameState->menuState = menuState;
@@ -74,22 +75,22 @@ void loadMenu(GameState *gameState, MenuState menuState) {
 	}
 
 	switch (menuState) {
-	case MenuState::MAIN:
+		case MenuState::MAIN:
 		gameState->player.speed = 0;
 		loadMainMenu(gameState);
 		break;
-	case MenuState::PAUSE:
+		case MenuState::PAUSE:
 		loadPauseMenu(gameState);
 		break;
-	case MenuState::GAME_OVER:
+		case MenuState::GAME_OVER:
 		loadGameOverMenu(gameState);
 		break;
-	case MenuState::CREDITS:
+		case MenuState::CREDITS:
 		loadCreditsMenu(gameState);
 		break;
-	case MenuState::GAME:
+		case MenuState::GAME:
 		if (previousMenuState == MenuState::MAIN) {
-			generateWorld(gameState);
+			generateWorld(memory);
 		}
 		break;
 	}
@@ -110,7 +111,7 @@ void handleMenuEnterMain(GameMemory *memory) {
 	case 0:
 		switch (activeMenu->currentMenuItem) {
 		case 0: // Start Game
-			loadMenu(gameState, MenuState::GAME);
+			loadMenu(memory, MenuState::GAME);
 			break;
 		case 1: // Multiplayer
 			break;
@@ -123,7 +124,7 @@ void handleMenuEnterMain(GameMemory *memory) {
 			gameState->activeMenuIndex = 2;
 			break;
 		case 5: // Credits
-			loadMenu(gameState, MenuState::CREDITS);
+			loadMenu(memory, MenuState::CREDITS);
 			break;
 		case 6: // Quit
 			memory->exitGame();
@@ -178,7 +179,7 @@ void handleMenuEnter(GameMemory *memory, GameState *gameState) {
 	case MenuState::CREDITS:
 		switch (gameState->menus[0].currentMenuItem) {
 		case 0:
-			loadMenu(gameState, MenuState::MAIN);
+			loadMenu(memory, MenuState::MAIN);
 			break;
 		}
 		break;
@@ -347,10 +348,10 @@ void updateAndRenderMenus(GameMemory *memory, Input *input) {
 			}
 			break;
 		case MenuState::CREDITS:
-			loadMenu(gameState, MenuState::MAIN);
+			loadMenu(memory, MenuState::MAIN);
 			break;
 		case MenuState::PAUSE:
-			loadMenu(gameState, MenuState::GAME);
+			loadMenu(memory, MenuState::GAME);
 			break;
 		default:
 			break;

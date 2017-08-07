@@ -118,7 +118,7 @@ GLuint compileShader(GameMemory *memory, const GLenum type,
 			char *shaderErrorMessage = new char[infoLogLength + 1];
 			glGetShaderInfoLog(shaderID, infoLogLength, NULL,
 					shaderErrorMessage);
-			printf("%s\n", shaderErrorMessage);
+			memory->log(shaderErrorMessage);
 		}
 		std::string message = "Failed to compile shader. "
 				+ std::to_string(type) + "\n" + std::string(source);
@@ -145,7 +145,7 @@ GLuint linkProgram(GameMemory *memory, const GLuint vertex_shader,
 			char *programErrorMessage = new char[infoLogLength + 1];
 			glGetProgramInfoLog(programID, infoLogLength, NULL,
 					programErrorMessage);
-			printf("%s\n", programErrorMessage);
+			memory->log(programErrorMessage);
 		}
 		std::string message = "Failed to link shader program.\n";
 		memory->abort(message);
@@ -155,12 +155,12 @@ GLuint linkProgram(GameMemory *memory, const GLuint vertex_shader,
 }
 
 GLuint buildProgram(GameMemory *memory) {
-	File vertexShaderFile = memory->readFile("./res/shaders/vertex.glsl");
+	File vertexShaderFile = memory->readFile(memory->shaderFileNames[0]);
 	GLuint vertexShader = compileShader(memory, GL_VERTEX_SHADER,
 			vertexShaderFile.content, std::strlen(vertexShaderFile.content));
 	memory->freeFile(&vertexShaderFile);
 
-	File fragmentShaderFile = memory->readFile("./res/shaders/fragment.glsl");
+	File fragmentShaderFile = memory->readFile(memory->shaderFileNames[1]);
 	GLuint fragmentShader = compileShader(memory, GL_FRAGMENT_SHADER,
 			fragmentShaderFile.content,
 			std::strlen(fragmentShaderFile.content));
@@ -168,7 +168,6 @@ GLuint buildProgram(GameMemory *memory) {
 
 	return linkProgram(memory, vertexShader, fragmentShader);
 }
-
 
 void setScaleToIdentity(GameMemory* memory) {
 	GameState *gameState = getGameState(memory);
@@ -225,10 +224,7 @@ void initOpenGL(GameMemory* memory) {
 	scaleView(memory);
 }
 
-GameState* beginFrame(GameMemory *memory, Input *input) {
-	GameState *gameState = getGameState(memory);
-	gameState->frameCounter++;
-
+void checkShaders(GameMemory* memory) {
 	unsigned amountOfShaders = sizeof(memory->shaderFileNames)
 			/ sizeof(memory->shaderFileNames[0]);
 	bool rebuildProgram = false;
@@ -241,6 +237,13 @@ GameState* beginFrame(GameMemory *memory, Input *input) {
 	if (rebuildProgram) {
 		initOpenGL(memory);
 	}
+}
+
+GameState* beginFrame(GameMemory *memory, Input *input) {
+	GameState *gameState = getGameState(memory);
+	gameState->frameCounter++;
+
+	checkShaders(memory);
 
 	if (memory->doResize) {
 		resizeView(memory);
@@ -276,8 +279,9 @@ void extractFileName(std::string fileName, std::string fileExtension,
 	result[index] = '\0';
 }
 
-void generateWorld(GameState *gameState) {
-	printf("Generating game world.\n");
+void generateWorld(GameMemory *memory) {
+	GameState *gameState = getGameState(memory);
+	memory->log("Generating game world.");
 	for (unsigned y = 0; y < gameState->world.height; y++) {
 		for (unsigned x = 0; x < gameState->world.width; x++) {
 			Tile tile = { };
@@ -288,7 +292,7 @@ void generateWorld(GameState *gameState) {
 			tile.traversable = x % 2 != 0 || y % 2 != 0;
 
 			gameState->world.tiles[y * gameState->world.width + x] = tile;
-//			printf("X: %d, Y: %d, Traversable: %d\n", x, y, tile.traversable);
+//			memory->log("X: %d, Y: %d, Traversable: %d", x, y, tile.traversable);
 		}
 	}
 }
@@ -300,6 +304,6 @@ void checkPlayerTileCollision(Player *player, Tile *tile) {
 	//	Math::Rectangle collisionBox = getCollisionBox(tile->rect, playerRect);
 	// TODO use actual size of car instead of just the position
 	if (Collision::rectangle(tile->rect, player->position)) {
-//		printf("Collision!\n");
+//		memory->log("Collision!");
 	}
 }

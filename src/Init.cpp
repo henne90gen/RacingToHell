@@ -276,7 +276,17 @@ void init(GameMemory *memory) {
 	GameState *gameState = (GameState *) reservePermanentMemory(memory,
 			sizeof(GameState));
 
-	*gameState = {};
+	//*gameState = {};
+
+    char vertexShaderFileName[] = "./res/shaders/vertex.glsl";
+    for (unsigned i = 0; i < sizeof(vertexShaderFileName) / sizeof(char); i++) {
+        memory->shaderFileNames[0][i] = vertexShaderFileName[i];
+    }
+    char fragmentShaderFileName[] = "./res/shaders/fragment.glsl";
+    for (unsigned i = 0; i < sizeof(fragmentShaderFileName) / sizeof(char);
+        i++) {
+        memory->shaderFileNames[1][i] = fragmentShaderFileName[i];
+    }
 
 	// setting up OpenGL
 	gameState->scale = 1.0f;

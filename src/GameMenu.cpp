@@ -10,7 +10,7 @@ void addMenuItem(MenuItem *item, std::string text) {
 
 void loadMainMenu(GameState *gameState) {
 	Menu *menu = &gameState->menus[gameState->menuCount++];
-	menu->position = Math::Vector2f( { -1.0, 0.8 });
+	menu->position = Math::Vector2f( { -1.0f, 0.8f });
 
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Start Game");
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Multiplayer");

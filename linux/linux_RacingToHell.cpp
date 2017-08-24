@@ -630,16 +630,6 @@ GameMemory initGameMemory() {
 	memory.aspectRatio = 16.0 / 9.0;
 	memory.stretch = false;
 
-	char vertexShaderFileName[] = "./res/shaders/vertex.glsl";
-	for (unsigned i = 0; i < sizeof(vertexShaderFileName) / sizeof(char); i++) {
-		memory.shaderFileNames[0][i] = vertexShaderFileName[i];
-	}
-	char fragmentShaderFileName[] = "./res/shaders/fragment.glsl";
-	for (unsigned i = 0; i < sizeof(fragmentShaderFileName) / sizeof(char);
-			i++) {
-		memory.shaderFileNames[1][i] = fragmentShaderFileName[i];
-	}
-
 	memory.abort = abort;
 	memory.log = log;
 	memory.readFile = readFile;

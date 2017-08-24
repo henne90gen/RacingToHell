@@ -169,9 +169,7 @@ GLuint buildProgram(GameMemory *memory) {
 	return linkProgram(memory, vertexShader, fragmentShader);
 }
 
-void setScaleToIdentity(GameMemory* memory) {
-	GameState *gameState = getGameState(memory);
-
+void setScaleToIdentity(GameState *gameState) {
 	GLfloat scaleMatrix[16] = { 1.0, 0, 0, 0, //
 			0, 1.0, 0, 0, //
 			0, 0, 1.0, 0, //
@@ -182,9 +180,7 @@ void setScaleToIdentity(GameMemory* memory) {
 	glUniformMatrix4fv(scaleMatrixLocation, 1, GL_FALSE, &scaleMatrix[0]);
 }
 
-void scaleView(GameMemory* memory) {
-	GameState *gameState = getGameState(memory);
-
+void scaleView(GameState *gameState) {
 	GLfloat scaleMatrix[16] = { gameState->scale, 0, 0, 0, //
 			0, gameState->scale, 0, 0, //
 			0, 0, 1.0, 0, //
@@ -221,7 +217,7 @@ void initOpenGL(GameMemory* memory) {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	resizeView(memory);
-	scaleView(memory);
+	scaleView(gameState);
 }
 
 void checkShaders(GameMemory* memory) {
@@ -250,6 +246,7 @@ GameState* beginFrame(GameMemory *memory, Input *input) {
 	}
 
 	Render::clearScreen(0);
+	gameState->renderGroup.count = 0;
 
 	checkInputForClicks(input);
 
@@ -258,7 +255,8 @@ GameState* beginFrame(GameMemory *memory, Input *input) {
 	} else if (input->minusKeyPressed) {
 		gameState->scale -= 0.01;
 	}
-	scaleView(memory);
+
+	Render::pushEnableScaling(gameState, true);
 
 	return gameState;
 }

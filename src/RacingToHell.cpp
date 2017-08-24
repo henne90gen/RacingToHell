@@ -60,7 +60,7 @@ void updateAndRenderRoad(GameMemory *memory, bool shouldUpdate) {
 			}
 //			printf("X: %f, Y: %f, Size: %f\n", rect.position.x, rect.position.y,
 //					rect.size.x);
-			Render::rectangle(memory, tile->rect, color);
+			Render::pushRectangle(gameState, tile->rect, color);
 		}
 	}
 }
@@ -191,7 +191,7 @@ void updatePlayer(Input *input, GameState *gameState) {
  * Renders the player to the video buffer
  */
 void renderPlayer(GameMemory *memory, GameState *gameState) {
-	Render::texture(memory, getPlayerTexture(gameState),
+	Render::pushTexture(getGameState(memory), getPlayerTexture(gameState),
 			gameState->player.position, gameState->player.size,
 			gameState->player.direction);
 }
@@ -235,7 +235,7 @@ bool updateAndRenderBullet(GameMemory *memory, GameState *gameState,
 						bulletRect);
 
 #if COLLISION_DEBUG
-				Render::rectangle(buffer, collisionBox, 0x40ff0000);
+				Render::pushRectangle(buffer, collisionBox, 0x40ff0000);
 #endif
 
 				if (Collision::rectangle(collisionBox, bullet.position)) {
@@ -253,7 +253,7 @@ bool updateAndRenderBullet(GameMemory *memory, GameState *gameState,
 					bulletRect);
 
 #if COLLISION_DEBUG
-			Render::rectangle(buffer, collisionBox, 0x40ff0000);
+			Render::pushRectangle(buffer, collisionBox, 0x40ff0000);
 #endif
 
 			if (Collision::rectangle(collisionBox, bullet.position)) {
@@ -264,7 +264,7 @@ bool updateAndRenderBullet(GameMemory *memory, GameState *gameState,
 		}
 	}
 
-	Render::circle(memory, bullet.position, bullet.radius, bullet.color);
+	Render::pushCircle(gameState, bullet.position, bullet.radius, bullet.color);
 	return false;
 }
 
@@ -364,7 +364,7 @@ void updateAndRenderTraffic(VideoBuffer *buffer, GameState *gameState,
 			Math::Rectangle collisionBox = getCollisionBox(carRect, playerRect);
 
 #if COLLISION_DEBUG
-			Render::rectangle(buffer, collisionBox, 0x4000ff00);
+			Render::pushRectangle(buffer, collisionBox, 0x4000ff00);
 #endif
 
 			if (Collision::rectangle(collisionBox, gameState->player.position)) {
@@ -376,8 +376,8 @@ void updateAndRenderTraffic(VideoBuffer *buffer, GameState *gameState,
 		int y = car->position.y - texture->height / 2;
 //		Render::textureAlpha(buffer, texture, x, y);
 
-		Render::bar(buffer, { car->position.x, (float) y - 13 }, car->health,
-				0xff0000ff);
+		//Render::bar(buffer, { car->position.x, (float) y - 13 }, car->health,
+		//		0xff0000ff);
 	}
 }
 
@@ -431,7 +431,7 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState,
 			Math::Rectangle collisionRect = getCollisionBox(rect, playerRect);
 
 #if COLLISION_DEBUG
-			Render::rectangle(buffer, collisionRect, 0x00ffff50);
+			Render::pushRectangle(buffer, collisionRect, 0x00ffff50);
 #endif
 
 			if (Collision::rectangle(collisionRect, gameState->player.position)) {
@@ -487,7 +487,7 @@ void updateAndRenderUI(GameMemory *memory, bool shouldUpdate) {
 			/ gameState->player.maxEnergy;
 	energyBar.size = Math::Vector2f(barWidth, energyHeight);
 	energyBar.position = Math::Vector2f(-screenWidth / 2.0, energyHeight - 1.0);
-	Render::rectangle(memory, energyBar, energyColor);
+	Render::pushRectangle(gameState, energyBar, energyColor);
 
 	// health
 	Math::Rectangle healthBar;
@@ -496,7 +496,7 @@ void updateAndRenderUI(GameMemory *memory, bool shouldUpdate) {
 	healthBar.size = Math::Vector2f(barWidth, healthHeight);
 	healthBar.position = Math::Vector2f(-screenWidth / 2.0 + barWidth,
 			healthHeight - 1.0);
-	Render::rectangle(memory, healthBar, healthColor);
+	Render::pushRectangle(gameState, healthBar, healthColor);
 }
 
 /**
@@ -521,7 +521,7 @@ void updateAndRenderGame(Input *input, GameMemory *memory, GameState *gameState,
 
 	if (gameState->menuState != MenuState::MAIN
 			&& gameState->menuState != MenuState::CREDITS) {
-		setScaleToIdentity(memory);
+		Render::pushEnableScaling(gameState, false);
 		updateAndRenderUI(memory, update);
 	}
 }
@@ -529,15 +529,19 @@ void updateAndRenderGame(Input *input, GameMemory *memory, GameState *gameState,
 extern "C"
 UPDATE_AND_RENDER(updateAndRender) {
 	GameState *gameState = beginFrame(memory, input);
+	
+	//update(memory);
+	
+	updateAndRenderGame(input, memory, gameState,
+			gameState->menuState == MenuState::GAME);
 
-//	updateAndRenderGame(input, memory, gameState,
-//			gameState->menuState == MenuState::GAME);
-
-	textDemo(memory, input);
+	//textDemo(memory, input);
 
 	if (input->escapeKeyClicked && gameState->menuState == MenuState::GAME) {
 		loadMenu(memory, MenuState::PAUSE);
 	} else if (gameState->menuState != MenuState::GAME) {
 		updateAndRenderMenus(memory, input);
 	}
+
+	Render::flushBuffer(gameState);
 }

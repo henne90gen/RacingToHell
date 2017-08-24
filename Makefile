@@ -3,7 +3,7 @@ ifeq ($(OS), Windows_NT)
 cl:
 	windows\build
 
-# TODO: CLEAN_CMD := 
+# TODO: CLEAN_CMD := del bin
 
 else
 
@@ -25,6 +25,9 @@ game_code: setup
 setup:
 	mkdir -p bin
 	cp -r res bin/
+
+start: all
+	cd bin && ./RacingToHell$(EXTENSION)
 
 endif
 

@@ -262,13 +262,13 @@ void renderCarSelection(GameMemory *memory, Math::Vector2f position,
 	Math::Vector2f point1 = { offsetX + 12, position.y };
 	Math::Vector2f point2 = { offsetX + 12, position.y + 26 };
 	Math::Vector2f point3 = { offsetX, position.y + 13 };
-	Render::triangle(memory, point1, point2, point3, color);
+	Render::triangle(getGameState(memory), point1, point2, point3, color);
 
 	offsetX += 110 - 2 * a;
 	point1 = {offsetX, position.y};
 	point2 = {offsetX, position.y + 26};
 	point3 = {offsetX + 12, position.y + 13};
-	Render::triangle(memory, point1, point2, point3, color);
+	Render::triangle(getGameState(memory), point1, point2, point3, color);
 }
 
 void renderMenuBackdrop(GameMemory *memory, Menu *menu) {
@@ -276,7 +276,7 @@ void renderMenuBackdrop(GameMemory *memory, Menu *menu) {
 	rect.position = menu->position;
 	// FIXME calculate size
 	rect.size = Math::Vector2f(2.0, 1.5);
-	Render::rectangle(memory, rect, 0xff00ff60);
+	Render::rectangle(getGameState(memory), rect, 0xff00ff60);
 }
 
 void updateMenu(GameMemory *memory, Input *input, Menu *menu) {

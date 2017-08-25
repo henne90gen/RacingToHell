@@ -23,7 +23,7 @@ void textDemo(GameMemory* memory, Input* input) {
 			position, Render::FontSize::Small, 0x0000ffff);
 
 	position = Math::Vector2f(-1.7f, 0);
-	Render::pushText(gameState, "The quick brown fox jumps over the lazy dog",
+	Render::pushText(gameState, "The quick brown fox jumps over the lazy dog The quick brown fox jumps over the lazy dog",
 			position, Render::FontSize::Medium, 0x0000ffff);
 
 	position = Math::Vector2f(-1.7f, -0.35);

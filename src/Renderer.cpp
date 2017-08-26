@@ -177,6 +177,9 @@ void triangle(GameState *gameState, Math::Vector2f point1, Math::Vector2f point2
 
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 
+    //DELETE BUFFER!!!
+    glDeleteBuffers(1, &coordinatesBuffer);
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
@@ -230,6 +233,9 @@ void rectangle(GameState *gameState, Math::Rectangle rect, uint32_t color) {
 	glEnableVertexAttribArray(colorLocation);
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+    //DELETE BUFFER!!!
+    glDeleteBuffers(1, &coordinatesBuffer);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

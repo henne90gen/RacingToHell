@@ -12,5 +12,5 @@ varying vec2 v_TextureCoordinates;
 void main() {
 	v_TextureCoordinates = a_TextureCoordinates;
 	v_Color = a_Color;
-	gl_Position = u_ScaleMatrix * u_AspectRatioMatrix * a_Position;
+    gl_Position = u_ScaleMatrix * u_AspectRatioMatrix * a_Position;
 }

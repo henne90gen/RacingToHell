@@ -531,7 +531,7 @@ UPDATE_AND_RENDER(updateAndRender) {
 	GameState *gameState = beginFrame(memory, input);
 	
 	//update(memory);
-	
+
 	updateAndRenderGame(input, memory, gameState,
 			gameState->menuState == MenuState::GAME);
 

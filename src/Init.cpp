@@ -288,6 +288,8 @@ void init(GameMemory *memory) {
         memory->shaderFileNames[1][i] = fragmentShaderFileName[i];
     }
 
+    glClearColor(1.0, 0, 1.0, 1.0);
+
 	// setting up OpenGL
 	gameState->scale = 1.0f;
 	initOpenGL(memory);

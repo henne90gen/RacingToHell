@@ -619,11 +619,12 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 
 	resizeOffscreenBuffer(&buffer, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
 
-    GameMemory memory;
+    GameMemory memory = {};
     memory.temporaryMemorySize = 10 * 1024 * 1024;
     memory.permanentMemorySize = 300 * 1024 * 1024;
     memory.temporary = (char *)VirtualAlloc(0, memory.permanentMemorySize + memory.temporaryMemorySize, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
     memory.permanent = (char *)memory.temporary + memory.temporaryMemorySize;
+    memory.aspectRatio = 16.0f / 9.0f;
 
     memory.abort = abort;
     memory.readFile = readFile;
@@ -713,8 +714,8 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 		vBuffer.width = buffer.width;
 		vBuffer.height = buffer.height;
 		vBuffer.bytesPerPixel = buffer.bytesPerPixel;
-		vBuffer.content = buffer.content;
-		
+        vBuffer.content = buffer.content;
+
 		gameCode.updateAndRender(newInput, &memory);
 		
         uint64_t audioWallClock = getClockCounter();

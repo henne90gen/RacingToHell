@@ -16,14 +16,14 @@ void textDemo(GameMemory* memory, Input* input) {
 	Math::Rectangle rect = { };
 	rect.position = Math::Vector2f(-memory->aspectRatio, 0.5);
 	rect.size = Math::Vector2f(memory->aspectRatio * 2.0f, 1.0);
-	Render::pushRectangle(gameState, rect, 0x00ff0050);
+	Render::pushRectangle(gameState, rect, 0x00ff00ff);
 
 	Math::Vector2f position = Math::Vector2f(-1.7f, 0.3);
-	Render::pushText(gameState, "The quick brown fox jumps over the lazy dog",
+	Render::pushText(gameState, "The quick brown fox jumps over the lazy dog The quick brown fox jumps over the lazy dog",
 			position, Render::FontSize::Small, 0x0000ffff);
 
 	position = Math::Vector2f(-1.7f, 0);
-	Render::pushText(gameState, "The quick brown fox jumps over the lazy dog",
+	Render::pushText(gameState, "The quick brown fox jumps over the lazy dog The quick brown fox jumps over the lazy dog",
 			position, Render::FontSize::Medium, 0x0000ffff);
 
 	position = Math::Vector2f(-1.7f, -0.35);

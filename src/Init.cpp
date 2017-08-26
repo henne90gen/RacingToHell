@@ -276,7 +276,7 @@ void init(GameMemory *memory) {
 	GameState *gameState = (GameState *) reservePermanentMemory(memory,
 			sizeof(GameState));
 
-	//*gameState = {};
+	*gameState = {};
 
     char vertexShaderFileName[] = "./res/shaders/vertex.glsl";
     for (unsigned i = 0; i < sizeof(vertexShaderFileName) / sizeof(char); i++) {

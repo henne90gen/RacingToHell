@@ -283,15 +283,27 @@ void pushRectangle(GameState *gameState, Math::Rectangle dimensions, uint32_t co
 	atom->content.rect.color = color;
 }
 
-// FIXME split up long text into multiple render atoms
 void pushText(GameState *gameState, std::string text, Math::Vector2f position, FontSize fontSize, uint32_t color) {
-	RenderAtom *atom = pushRenderAtom(gameState, AtomType::TEXT);
-	for (unsigned i = 0; i < text.size(); i++) {
-		atom->content.text.characters[i] = text[i];
+	while (true) {
+		RenderAtom *atom = pushRenderAtom(gameState, AtomType::TEXT);
+		unsigned numChars = 50;
+		if (text.size() < numChars) {
+			numChars = text.size();
+		}
+		for (unsigned i = 0; i < numChars; i++) {
+			atom->content.text.characters[i] = text[i];
+		}
+		atom->content.text.position = position;
+		atom->content.text.fontSize = fontSize;
+		atom->content.text.color = color;
+		if (text.size() >= 50) {
+			std::string tmp = text.substr(0, 50);
+			position.x += calculateTextLength(gameState, tmp, fontSize);
+			text = text.substr(50);
+		} else {
+			return;
+		}
 	}
-	atom->content.text.position = position;
-	atom->content.text.fontSize = fontSize;
-	atom->content.text.color = color;
 }
 
 void flushBuffer(GameState *gameState) {

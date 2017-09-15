@@ -277,6 +277,7 @@ void init(GameMemory *memory) {
 	GameState *gameState = (GameState *) reservePermanentMemory(memory,
 			sizeof(GameState));
 
+    // TODO fix this default constructor error
 	*gameState = {};
 
     char vertexShaderFileName[] = "./res/shaders/vertex.glsl";

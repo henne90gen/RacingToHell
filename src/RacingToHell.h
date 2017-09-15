@@ -114,7 +114,6 @@ struct Boss {
 };
 
 struct Tile {
-//	Render::Texture *texture;
 	Math::Rectangle rect;
 	Math::Vector2f orientation;
 	bool traversable;
@@ -136,13 +135,18 @@ enum AtomType {
 };
 
 struct RenderAtom {
-	AtomType type;
 	union Content {
 		Render::Rectangle rect;
 		Render::Text text;
 		Render::Circle circle;
 		Render::TextureRectangle textureRect;
-	} content;
+
+        Content() {}
+        Content(const Content& other) {}
+	};
+
+    Content content;
+    AtomType type;
 };
 
 struct RenderGroup {

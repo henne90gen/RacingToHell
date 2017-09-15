@@ -95,7 +95,7 @@ struct Menu {
 	uint8_t numberMenuItems = 0;
 	int8_t currentMenuItem = 0;
 	Math::Vector2f position;
-	int lineSpacing = 55;
+	float lineSpacing = 0.2;
 	bool isVisible = true;
 };
 

@@ -9,6 +9,7 @@
 #include <gl/GL.h>
 #include <gl\GLU.h>
 #include <amp.h>
+#elif ANDROID
 #else
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -46,7 +47,7 @@ ABORT(abort);
 
 #define LOG(name) void name(std::string message)
 typedef LOG(log_);
-LOG(log);
+LOG(rth_log);
 
 #define READ_FILE(name) File name(std::string fileName)
 typedef READ_FILE(read_file);

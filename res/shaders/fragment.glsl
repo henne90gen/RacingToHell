@@ -1,4 +1,3 @@
-
 uniform int u_ColorSource;
 
 varying vec4 v_Color;

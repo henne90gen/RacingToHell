@@ -6,9 +6,10 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_game_racingtohell_NativeWrapper_on_1surface_1changed(JNIEnv *env UNUSED, jclass clazz UNUSED,
                                                           jint width, jint height) {
-    if (!initialized) {
-        LOGI("Initializing Game");
+    if (!memoryInitialized) {
+        rth_log("Initializing Game");
         memory = {};
+        memory.log = rth_log;
         memory.abort = abort;
         memory.exitGame = exitGame;
         memory.readFile = readFile;
@@ -18,13 +19,17 @@ Java_game_racingtohell_NativeWrapper_on_1surface_1changed(JNIEnv *env UNUSED, jc
         memory.temporary = (char *) malloc(memory.temporaryMemorySize);
         memory.permanent = (char *) malloc(memory.permanentMemorySize);
 
-        videoBuffer.width = DEFAULT_WINDOW_WIDTH;
-        videoBuffer.height = DEFAULT_WINDOW_HEIGHT;
-        videoBuffer.bytesPerPixel = 4;
-        videoBuffer.content = malloc(
-                videoBuffer.bytesPerPixel * videoBuffer.width * videoBuffer.height);
+        char vertexShaderFileName[] = "./res/shaders/vertex.glsl";
+        for (unsigned i = 0; i < sizeof(vertexShaderFileName) / sizeof(char); i++) {
+            memory.shaderFileNames[0][i] = vertexShaderFileName[i];
+        }
+        char fragmentShaderFileName[] = "./res/shaders/fragment.glsl";
+        for (unsigned i = 0; i < sizeof(fragmentShaderFileName) / sizeof(char);
+             i++) {
+            memory.shaderFileNames[1][i] = fragmentShaderFileName[i];
+        }
 
-        initialized = true;
+        memoryInitialized = true;
     }
 
     realWindowWidth = width;
@@ -112,7 +117,9 @@ JNIEXPORT void JNICALL
 Java_game_racingtohell_NativeWrapper_on_1draw_1frame(JNIEnv *env UNUSED, jclass clazz UNUSED) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    updateAndRender(&videoBuffer, &gameInput, &memory);
+//    rth_log("Before update");
+    updateAndRender(&gameInput, &memory);
+//    rth_log("After update");
 
     swapBuffers(&videoBuffer);
     renderControls();
@@ -125,35 +132,50 @@ Java_game_racingtohell_NativeWrapper_init_1asset_1manager(JNIEnv *env UNUSED, jc
     asset_manager = AAssetManager_fromJava(env, java_asset_manager);
 }
 
-void abort(std::string message) {
-    LOGI("%s", message.c_str());
+ABORT(abort) {
+    __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, "%s", message.c_str());
     exit(1);
 }
 
-File readFile(std::string fileName) {
+LOG(rth_log) {
+    __android_log_print(ANDROID_LOG_INFO, LOG_TAG, "%s", message.c_str());
+}
 
+READ_FILE(readFile) {
     std::string assetName = "";
     for (int i = 6; i < fileName.length(); i++) {
         assetName += fileName[i];
     }
 
-    LOGI("Reading %s\n", assetName.c_str());
+    rth_log("Reading " + assetName);
+
     AAsset *asset = AAssetManager_open(asset_manager, assetName.c_str(), AASSET_MODE_STREAMING);
 
     if (!asset) {
         abort("Couldn't open file " + fileName);
     }
 
+    const char *content;
+    size_t length = (size_t) AAsset_getLength(asset);
+    if (fileName == std::string(memory.shaderFileNames[1])) {
+        std::string tmp = "precision mediump float;";
+        length += tmp.size();
+        tmp += std::string((char *) AAsset_getBuffer(asset));
+        content = tmp.c_str();
+    } else {
+        content = (char *) AAsset_getBuffer(asset);
+    }
+
     File file = {};
-    file.size = (size_t) AAsset_getLength(asset);
+    file.size = length;
     file.name = fileName;
-    file.content = (char *) AAsset_getBuffer(asset);
+    file.content = (char *) content;
     file.fileHandle = asset;
 
     return file;
 }
 
-void freeFile(File *file) {
+FREE_FILE(freeFile) {
     if (file->content) {
         AAsset_close((AAsset *) file->fileHandle);
     }
@@ -161,6 +183,7 @@ void freeFile(File *file) {
     file->size = 0;
 }
 
-void exitGame() {
+EXIT_GAME(exitGame) {
+    rth_log("Exiting.");
     exit(0);
 }

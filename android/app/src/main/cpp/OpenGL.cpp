@@ -85,16 +85,16 @@ GLuint buildProgramFromAssets(const char *vertex_shader_path, const char *fragme
             fragment_shader_source.content, fragment_shader_source.size);
 }
 
-GLuint createVertexBufferObject(const GLsizeiptr size, const GLvoid *data, const GLenum usage) {
-    GLuint vbo_object;
-    glGenBuffers(1, &vbo_object);
-
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_object);
-    glBufferData(GL_ARRAY_BUFFER, size, data, usage);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    return vbo_object;
-}
+//GLuint createVertexBufferObject(const GLsizeiptr size, const GLvoid *data, const GLenum usage) {
+//    GLuint vbo_object;
+//    glGenBuffers(1, &vbo_object);
+//
+//    glBindBuffer(GL_ARRAY_BUFFER, vbo_object);
+//    glBufferData(GL_ARRAY_BUFFER, size, data, usage);
+//    glBindBuffer(GL_ARRAY_BUFFER, 0);
+//
+//    return vbo_object;
+//}
 
 GLuint buildTriangleProgram() {
     // FIXME don't hard code the shaders
@@ -109,7 +109,8 @@ GLuint buildTriangleProgram() {
 }
 
 void setupOpenGL(VideoBuffer *videoBuffer) {
-    LOGI("Setting up OpenGL");
+    rth_log("Setting up OpenGL");
+
     texture = loadTexture(videoBuffer->width, videoBuffer->height, GL_RGBA, videoBuffer->content);
     buffer = createVertexBufferObject(sizeof(rect), rect, GL_STATIC_DRAW);
 

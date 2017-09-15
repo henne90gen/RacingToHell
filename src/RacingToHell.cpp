@@ -530,10 +530,10 @@ extern "C"
 UPDATE_AND_RENDER(updateAndRender) {
 	GameState *gameState = beginFrame(memory, input);
 
-//	updateAndRenderGame(input, memory, gameState,
-//			gameState->menuState == MenuState::GAME);
+	updateAndRenderGame(input, memory, gameState,
+			gameState->menuState == MenuState::GAME);
 
-	textDemo(memory, input);
+//	textDemo(memory, input);
 
 	if (input->escapeKeyClicked && gameState->menuState == MenuState::GAME) {
 		loadMenu(memory, MenuState::PAUSE);

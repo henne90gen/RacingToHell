@@ -10,11 +10,10 @@
 
 #define UNUSED  __attribute__((unused))
 #define LOG_TAG "RacingToHell"
-#define LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 
 static AAssetManager *asset_manager;
 static GameMemory memory;
 static VideoBuffer videoBuffer;
 static Input gameInput = {};
-static bool initialized = false;
+static bool memoryInitialized = false;
 static int realWindowWidth, realWindowHeight;

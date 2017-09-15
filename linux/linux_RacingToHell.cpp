@@ -4,7 +4,7 @@
  * Initializes the audio context
  */
 AudioData initAudioData() {
-	log("Loading audio context.");
+	rth_log("Loading audio context.");
 
 	AudioData audio = { };
 
@@ -78,15 +78,15 @@ AudioData initAudioData() {
 		abort(errorMsg);
 	}
 
-	log("PCM name: " + std::string(snd_pcm_name(audio.pcm_handle)));
+	rth_log("PCM name: " + std::string(snd_pcm_name(audio.pcm_handle)));
 	std::string pcmState = std::string(
 			snd_pcm_state_name(snd_pcm_state(audio.pcm_handle)));
-	log("PCM state: " + pcmState);
+	rth_log("PCM state: " + pcmState);
 
 	snd_pcm_hw_params_get_channels(audio.hw_params, &audio.channels);
-	log("Channels: " + std::to_string(audio.channels));
+	rth_log("Channels: " + std::to_string(audio.channels));
 
-	log("Rate: " + std::to_string(audio.samples_per_second));
+	rth_log("Rate: " + std::to_string(audio.samples_per_second));
 
 	if ((error = snd_pcm_hw_params_get_period_size(audio.hw_params,
 			&audio.period_size, 0)) < 0) {
@@ -95,13 +95,13 @@ AudioData initAudioData() {
 		abort(errorMsg);
 	}
 
-	log("Period size: " + std::to_string(audio.period_size));
+	rth_log("Period size: " + std::to_string(audio.period_size));
 
 	int32_t maxPossibleOverrun = 2 * 8 * sizeof(int16_t);
 	audio.buffer = (int16_t *) malloc(
 			audio.buffer_size_in_bytes + maxPossibleOverrun);
 
-	log("Successfully loaded audio context.");
+	rth_log("Successfully loaded audio context.");
 	return audio;
 }
 
@@ -270,7 +270,7 @@ ABORT(abort) {
 	exit(1);
 }
 
-LOG(log) {
+LOG(rth_log) {
 	printf("%s", (message + "\n").c_str());
 }
 
@@ -279,7 +279,7 @@ LOG(log) {
  * This might be a very expensive operation, if the file is very large
  */
 READ_FILE(readFile) {
-	log("Reading " + fileName);
+	rth_log("Reading " + fileName);
 
 	FILE *fileHandle = fopen(fileName.c_str(), "rb");
 	if (!fileHandle) {
@@ -307,18 +307,18 @@ READ_FILE(readFile) {
  * Writes an entire file to disk
  */
 WRITE_FILE(writeFile) {
-	log("Writing " + fileName);
+	rth_log("Writing " + fileName);
 
 	FILE *fHandle = fopen(fileName.c_str(), "wb");
 	if (fHandle == NULL) {
-		log("ERROR - Failed to open file for writing");
+		rth_log("ERROR - Failed to open file for writing");
 		return false;
 	}
 
 	if (fwrite((void *) file->content, 1, file->size, fHandle) != file->size) {
 		std::string errorMsg = "ERROR - Failed to write "
 				+ std::to_string(file->size) + " bytes to file";
-		log(errorMsg);
+		rth_log(errorMsg);
 		return false;
 	}
 
@@ -342,7 +342,7 @@ FREE_FILE(freeFile) {
  * Ends the game gracefully
  */
 EXIT_GAME(exitGame) {
-	log("Exiting");
+	rth_log("Exiting");
 	isRunning = false;
 }
 
@@ -392,7 +392,7 @@ void handleKeyEvent(GameMemory *memory, GraphicsData* graphics, Input* input,
 		XKeyEvent event) {
 	bool keyPressed = event.type == KeyPress;
 
-//	log("Key pressed: " + event.keycode);
+//	rth_log("Key pressed: " + event.keycode);
 
 	switch (event.keycode) {
 	case KeyF1:
@@ -503,7 +503,7 @@ void correctTiming(GraphicsData *graphics, timespec startTime,
 				+ std::to_string(nanoSecondsElapsed / 1000000.0f)
 				+ "ms, Framerate: "
 				+ std::to_string(1000000000.0f / nanoSecondsElapsed);
-		log(frameTimeAndFrameRate);
+		rth_log(frameTimeAndFrameRate);
 	}
 }
 
@@ -556,7 +556,7 @@ void swapSoundBuffers(AudioData *audio, GameMemory *memory) {
 
 #if SOUND_DEBUG
 	// NOTE: "delay" is the delay of the soundcard hardware
-	log("Samples in buffer before write: " + std::to_string(audio->buffer_size_in_samples - avail) + " | Delay in samples: " + std::to_string(delay));
+	rth_log("Samples in buffer before write: " + std::to_string(audio->buffer_size_in_samples - avail) + " | Delay in samples: " + std::to_string(delay));
 #endif
 
 	int32_t writtenSamples = snd_pcm_writei(audio->pcm_handle, audio->buffer,
@@ -568,12 +568,12 @@ void swapSoundBuffers(AudioData *audio, GameMemory *memory) {
 		std::string message = "Only wrote " + std::to_string(writtenSamples)
 				+ " of " + std::to_string(soundBuffer.sampleCount)
 				+ " samples.";
-		log(message);
+		rth_log(message);
 	}
 
 #if SOUND_DEBUG
 	snd_pcm_avail_delay(audio->pcm_handle, &avail, &delay);
-	log("Samples in buffer after write: " + std::to_string(audio->buffer_size_in_samples - avail + writtenSamples) + " | Delay in samples: " + std::to_string(delay) + " | Written samples: " + std::to_string(writtenSamples));
+	rth_log("Samples in buffer after write: " + std::to_string(audio->buffer_size_in_samples - avail + writtenSamples) + " | Delay in samples: " + std::to_string(delay) + " | Written samples: " + std::to_string(writtenSamples));
 #endif
 }
 
@@ -581,7 +581,7 @@ void swapSoundBuffers(AudioData *audio, GameMemory *memory) {
  * Loads the game code library and fetches the required methods from it
  */
 GameCode loadGameCode() {
-	log("Loading GameCode.");
+	rth_log("Loading GameCode.");
 	GameCode result = { };
 
 	struct stat statbuf = { };
@@ -613,7 +613,7 @@ GameCode loadGameCode() {
  * Unloads the game code library
  */
 void unloadGameCode(GameCode *code) {
-	log("Unloading GameCode.");
+	rth_log("Unloading GameCode.");
 
 	if (code->libraryHandle) {
 		dlclose(code->libraryHandle);
@@ -641,7 +641,7 @@ GameMemory initGameMemory() {
 	}
 
 	memory.abort = abort;
-	memory.log = log;
+	memory.log = rth_log;
 	memory.readFile = readFile;
 	memory.freeFile = freeFile;
 	memory.exitGame = exitGame;

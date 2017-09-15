@@ -102,7 +102,8 @@ void loadFont(GameMemory* memory, std::string fontFileName) {
 	error = FT_New_Memory_Face(fontLibrary, (const FT_Byte *) fontFile.content,
 			fontFile.size, 0, &face);
 	if (error) {
-		memory->abort("Couldn't load font " + fontFileName + ".");
+		memory->abort(
+				"Couldn't load font " + fontFileName + ". Errorcode: " + std::to_string(error));
 	}
 
 	extractFileName(fontFileName, ".ttf", gameState->resources.fontName);
@@ -297,6 +298,6 @@ void init(GameMemory *memory) {
 			Sound::PLAY_LOOP);
 
 	resetGameState(gameState);
-	loadMenu(memory, MenuState::GAME);
+	loadMenu(memory, MenuState::MAIN);
 }
 

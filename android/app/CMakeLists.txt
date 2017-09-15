@@ -20,6 +20,8 @@ add_library( # Sets the name of the library.
              src/main/cpp/OpenGL.cpp
              src/main/cpp/android_RacingToHell.cpp )
 
+add_definitions(-DANDROID=1)
+
 add_subdirectory(libs/freetype-2.8)
 include_directories(libs/freetype-2.8/include)
 

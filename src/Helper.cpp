@@ -103,11 +103,10 @@ GLuint createVertexBufferObject(const GLsizeiptr size, const GLvoid *data,
 }
 
 GLuint compileShader(GameMemory *memory, const GLenum type,
-		const GLchar *source, const GLint length) {
-	GLuint shaderID = glCreateShader(type);
+		const GLchar **source, const GLint *length) {
 	GLint compileStatus;
-
-	glShaderSource(shaderID, 1, (const GLchar **) &source, &length);
+	GLuint shaderID = glCreateShader(type);
+	glShaderSource(shaderID, 1, source, length);
 	glCompileShader(shaderID);
 	glGetShaderiv(shaderID, GL_COMPILE_STATUS, &compileStatus);
 
@@ -121,7 +120,7 @@ GLuint compileShader(GameMemory *memory, const GLenum type,
 			memory->log(shaderErrorMessage);
 		}
 		std::string message = "Failed to compile shader. "
-				+ std::to_string(type) + "\n" + std::string(source);
+				+ std::to_string(type) + "\n" + std::string(*source);
 		memory->abort(message);
 	}
 
@@ -156,14 +155,17 @@ GLuint linkProgram(GameMemory *memory, const GLuint vertex_shader,
 
 GLuint buildProgram(GameMemory *memory) {
 	File vertexShaderFile = memory->readFile(memory->shaderFileNames[0]);
+	size_t vertexShaderLength = std::strlen(vertexShaderFile.content);
 	GLuint vertexShader = compileShader(memory, GL_VERTEX_SHADER,
-			vertexShaderFile.content, std::strlen(vertexShaderFile.content));
+			(const GLchar **) &vertexShaderFile.content,
+			(GLint *) &vertexShaderLength);
 	memory->freeFile(&vertexShaderFile);
 
 	File fragmentShaderFile = memory->readFile(memory->shaderFileNames[1]);
+	size_t fragmentShaderLength = std::strlen(fragmentShaderFile.content);
 	GLuint fragmentShader = compileShader(memory, GL_FRAGMENT_SHADER,
-			fragmentShaderFile.content,
-			std::strlen(fragmentShaderFile.content));
+			(const GLchar **) &fragmentShaderFile.content,
+			(GLint *) &fragmentShaderLength);
 	memory->freeFile(&fragmentShaderFile);
 
 	return linkProgram(memory, vertexShader, fragmentShader);

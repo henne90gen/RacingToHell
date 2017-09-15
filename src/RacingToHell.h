@@ -131,6 +131,25 @@ struct GameWorld {
 	unsigned width, height; // in tiles
 };
 
+enum AtomType {
+	RECTANGLE, TEXT, TEXTURE, CIRCLE, SCALE, NOSCALE
+};
+
+struct RenderAtom {
+	AtomType type;
+	union Content {
+		Render::Rectangle rect;
+		Render::Text text;
+		Render::Circle circle;
+		Render::TextureRectangle textureRect;
+	} content;
+};
+
+struct RenderGroup {
+	uint32_t count;
+	RenderAtom renderAtoms[1000];	
+};
+
 struct GameState {
 	GLuint glProgram;
 	float scale;
@@ -165,6 +184,8 @@ struct GameState {
 	int32_t lastAIBulletIndex = -1;
 	Bullet aiBullets[1000];
 
+	RenderGroup renderGroup;
+	
 	Resources resources;
 };
 

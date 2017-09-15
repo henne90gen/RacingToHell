@@ -44,36 +44,32 @@ struct Character {
 	Render::Texture texture;
 };
 
-void bar(VideoBuffer *buffer, Math::Vector2f position, uint8_t length,
-		uint32_t color);
+struct Rectangle {
+	Math::Rectangle dimensions;
+	uint32_t color;
+};
 
-void triangle(VideoBuffer *buffer, uint32_t color, Math::Vector2f point1,
-		Math::Vector2f point2, Math::Vector2f point3);
+struct TextureRectangle {
+	Texture texture;
+	Math::Rectangle dimensions;
+	Math::Vector2f direction;
+};
 
-void rectangle(VideoBuffer * buffer, Math::Rectangle rect, uint32_t color);
+struct Circle {
+	Math::Vector2f position;
+	float radius;
+	uint32_t color;	
+};
 
-void circle(VideoBuffer* buffer, Math::Vector2f pos, unsigned radius,
-		uint32_t color);
-
-void explosion(VideoBuffer *buffer, GameState *gameState, int x, int y,
-		unsigned *explosionIndex);
-
-void debugInformation(GameMemory *memory, VideoBuffer *buffer, Input *input,
-		GameState *gameState);
-
-void textureAlpha(VideoBuffer *buffer, Texture* texture, int offsetX,
-		int offsetY);
-
-void backgroundTexture(VideoBuffer *buffer, Texture* texture, int offsetY);
-
-void texture(VideoBuffer *buffer, Texture* texture, int offsetX, int offsetY);
-
-void renderText(GameMemory *memory, VideoBuffer* buffer, std::string text,
-		Math::Vector2f position, FontSize fontSize, uint8_t r, uint8_t g,
-		uint8_t b);
-
-void clearScreen(VideoBuffer *buffer, uint32_t color);
+struct Text {
+	Math::Vector2f position;
+	char characters[50];
+	FontSize fontSize;
+	uint32_t color;
+};
 
 void clearScreen(uint32_t color);
+
+void pushEnableScaling(GameState *gameState, bool enable);
 
 }

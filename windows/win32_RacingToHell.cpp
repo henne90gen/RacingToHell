@@ -12,6 +12,9 @@
 #include <gl/GL.h>
 #include <gl/GLU.h>
 
+#include <GL/glew.h>
+#include <GL/wglew.h>
+
 static bool isRunning = true;
 static OffscreenBuffer buffer;
 static LPDIRECTSOUNDBUFFER secondaryBuffer;
@@ -176,7 +179,7 @@ void setVSync(bool sync)
     }
 }
 
-void drawBuffer(HDC deviceContext, OffscreenBuffer *buffer)
+void drawBuffer(HDC deviceContext, HGLRC openglContext)
 {
 #if 0
    if (!StretchDIBits(
@@ -192,66 +195,6 @@ void drawBuffer(HDC deviceContext, OffscreenBuffer *buffer)
         debugString("DBits failed.");
     } 
 #else	
-    glViewport(0, 0, buffer->width, buffer->height);
-
-    GLuint textureHandle = 0;
-    static bool init = false;
-
-    if (!init)
-    {
-        glGenTextures(1, &textureHandle);
-        setVSync(false);
-        init = true;
-    }
-
-    glBindTexture(GL_TEXTURE_2D, textureHandle);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, buffer->width, buffer->height, 0,
-        GL_RGBA, GL_UNSIGNED_BYTE, buffer->content);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-    glEnable(GL_TEXTURE_2D);
-
-    glClearColor(1.0f, 0, 1.0f, 0);
-    glClear(GL_COLOR_BUFFER_BIT);
-    
-    glMatrixMode(GL_TEXTURE);
-    glLoadIdentity();
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-
-    glBegin(GL_TRIANGLES);
-    
-    glTexCoord2f(0.0f, 1.0f);
-    glVertex2i(-1.0f, -1.0f);
-
-    glTexCoord2f(1.0f, 1.0f);
-    glVertex2i(1.0f, -1.0f);
-
-    glTexCoord2f(1.0f, 0.0f);
-    glVertex2i(1.0f, 1.0f);
-
-    glTexCoord2f(0.0f, 1.0f);
-    glVertex2i(-1.0f, -1.0f);
-
-    glTexCoord2f(1.0f, 0.0f);
-    glVertex2i(1.0f, 1.0f);
-
-    glTexCoord2f(0.0f, 0.0f);
-    glVertex2i(-1.0f, 1.0f); 
-
-    glEnd(); 
-
     SwapBuffers(deviceContext); 
 #endif 
 }
@@ -407,7 +350,7 @@ LRESULT CALLBACK WndProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM 
 			PAINTSTRUCT paint;
 			
 			HDC deviceContext = BeginPaint(windowHandle, &paint);
-			drawBuffer(deviceContext, &buffer);
+			//drawBuffer(deviceContext, &buffer);
 			EndPaint(windowHandle, &paint);
 		} break;
 	}
@@ -453,9 +396,9 @@ HWND openWindow(HINSTANCE instance, int show, unsigned width, unsigned height)
 	return windowHandle;
 }
 
-HGLRC createOpenGLContext(HWND windowHandle)
+HGLRC createOpenGLContext(HWND windowHandle, HDC deviceContext)
 {
-    HDC deviceContext = GetDC(windowHandle);
+    HGLRC result = NULL;
 
     PIXELFORMATDESCRIPTOR descrptor =
     {
@@ -484,12 +427,36 @@ HGLRC createOpenGLContext(HWND windowHandle)
         abort("Konnte Pixelformat nicht setzen.");
     }
 
-    HGLRC openglContext = wglCreateContext(deviceContext);
-    wglMakeCurrent(deviceContext, openglContext);
+    HGLRC tempContext = wglCreateContext(deviceContext);
+    wglMakeCurrent(deviceContext, tempContext);
 
-    ReleaseDC(windowHandle, deviceContext);
+    GLenum glewStatus = glewInit();
 
-    return openglContext;
+    if (glewStatus != GLEW_OK)
+    {
+        abort("Failed to initialize glew.");
+    }
+
+    int attributes[] =
+    {
+        WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
+        WGL_CONTEXT_MINOR_VERSION_ARB, 1,
+        WGL_CONTEXT_FLAGS_ARB, 0,
+        0
+    };
+
+    if (wglewIsSupported("WGL_ARB_create_context") == 1)
+    {
+        result = wglCreateContextAttribsARB(deviceContext, 0, attributes);
+        wglMakeCurrent(NULL, NULL);
+        wglMakeCurrent(deviceContext, result);
+    }
+    else
+    {
+        result = tempContext;
+    }
+
+    return result; 
 }
 
 void deleteOpenglContext(HDC deviceContext, HGLRC openGLContext)
@@ -604,6 +571,11 @@ uint64_t getClockCounter()
     return value;
 }
 
+LOG(log)
+{
+    OutputDebugString((message + "\n").c_str());
+}
+
 void sleep(float time, uint64_t frequency)
 {
     float timePassed = 0.0f;
@@ -616,8 +588,6 @@ void sleep(float time, uint64_t frequency)
     }
 }
 
-
-#if 1
 int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 {
     float debugFrameTimes[256] = {};
@@ -649,20 +619,23 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 
 	resizeOffscreenBuffer(&buffer, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
 
-    GameMemory memory;
+    GameMemory memory = {};
     memory.temporaryMemorySize = 10 * 1024 * 1024;
     memory.permanentMemorySize = 300 * 1024 * 1024;
     memory.temporary = (char *)VirtualAlloc(0, memory.permanentMemorySize + memory.temporaryMemorySize, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
     memory.permanent = (char *)memory.temporary + memory.temporaryMemorySize;
+    memory.aspectRatio = 16.0f / 9.0f;
 
     memory.abort = abort;
     memory.readFile = readFile;
     memory.freeFile = freeFile;
     memory.exitGame = exitGame;
+    memory.log = log;
 
 	HWND windowHandle = openWindow(instance, show, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
 
-    createOpenGLContext(windowHandle);
+    HDC deviceContext = GetDC(windowHandle);
+    HGLRC openglContext = createOpenGLContext(windowHandle, deviceContext);
 
     SoundOutput soundOutput;
     soundOutput.safetyBytes = (soundOutput.samplesPerSecond * soundOutput.bytesPerSample) * targetFrameTime;
@@ -689,6 +662,11 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 
 	while (isRunning)
 	{
+        wglMakeCurrent(deviceContext, openglContext);
+
+        glClearColor(0.0, 0.0, 0.0, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         FILETIME newDLLWriteTime = getLastWriteTime(sourceGameCodeDLLFullPath);
 
         if (CompareFileTime(&newDLLWriteTime, &gameCode.lastWriteTime) != 0)
@@ -736,8 +714,8 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 		vBuffer.width = buffer.width;
 		vBuffer.height = buffer.height;
 		vBuffer.bytesPerPixel = buffer.bytesPerPixel;
-		vBuffer.content = buffer.content;
-		
+        vBuffer.content = buffer.content;
+
 		gameCode.updateAndRender(newInput, &memory);
 		
         uint64_t audioWallClock = getClockCounter();
@@ -850,9 +828,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
         uint64_t prevLastCounter = lastCounter;
         lastCounter = getClockCounter();
 
-		HDC deviceContext = GetDC(windowHandle);
-		drawBuffer(deviceContext, &buffer);
-		ReleaseDC(windowHandle, deviceContext);
+		drawBuffer(deviceContext, openglContext);
 	
         Input *tmp = oldInput;
         oldInput = newInput;
@@ -882,4 +858,3 @@ int WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR args, int show)
 	
 	return 0;
 }
-#endif 

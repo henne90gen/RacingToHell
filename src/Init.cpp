@@ -279,6 +279,18 @@ void init(GameMemory *memory) {
 
 	*gameState = {};
 
+    char vertexShaderFileName[] = "./res/shaders/vertex.glsl";
+    for (unsigned i = 0; i < sizeof(vertexShaderFileName) / sizeof(char); i++) {
+        memory->shaderFileNames[0][i] = vertexShaderFileName[i];
+    }
+    char fragmentShaderFileName[] = "./res/shaders/fragment.glsl";
+    for (unsigned i = 0; i < sizeof(fragmentShaderFileName) / sizeof(char);
+        i++) {
+        memory->shaderFileNames[1][i] = fragmentShaderFileName[i];
+    }
+
+    glClearColor(1.0, 0, 1.0, 1.0);
+
 	// setting up OpenGL
 	gameState->scale = 1.0f;
 	initOpenGL(memory);

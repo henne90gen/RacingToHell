@@ -215,7 +215,7 @@ void renderMenuItem(GameMemory *memory, MenuItem *item, Math::Vector2f position,
 		position = position + (Math::Vector2f { a, 0 });
 	}
 	uint32_t color =  (r << 24) + (g << 16) + (b << 8) + 255;
-	Render::text(memory, std::string(item->text), position,
+	Render::text(getGameState(memory), std::string(item->text), position,
 			Render::FontSize::Large, color);
 }
 
@@ -330,9 +330,9 @@ void updateMenu(GameMemory *memory, Input *input, Menu *menu) {
  * Updates and renders all the menus
  */
 void updateAndRenderMenus(GameMemory *memory, Input *input) {
-	setScaleToIdentity(memory);
-
 	GameState *gameState = getGameState(memory);
+
+	Render::pushEnableScaling(gameState, false);
 
 	// Update
 	updateMenu(memory, input, &gameState->menus[gameState->activeMenuIndex]);

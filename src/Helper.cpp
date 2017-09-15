@@ -1,3 +1,5 @@
+#include "Platform.h"
+
 // FIXME do we really want to use templates here or is there a more performant way of doing it?
 template<typename T> void removeElement(T arr[], int *lastIndex,
 		int *iteratorIndex) {
@@ -103,10 +105,14 @@ GLuint createVertexBufferObject(const GLsizeiptr size, const GLvoid *data,
 }
 
 GLuint compileShader(GameMemory *memory, const GLenum type,
-		const GLchar **source, const GLint *length) {
+		std::string shaderFileName) {
+
+	File shaderFile = memory->readFile(shaderFileName);
+
 	GLint compileStatus;
 	GLuint shaderID = glCreateShader(type);
-	glShaderSource(shaderID, 1, source, length);
+	glShaderSource(shaderID, 1, (GLchar **) &shaderFile.content,
+			(GLint *) &shaderFile.size);
 	glCompileShader(shaderID);
 	glGetShaderiv(shaderID, GL_COMPILE_STATUS, &compileStatus);
 
@@ -120,9 +126,11 @@ GLuint compileShader(GameMemory *memory, const GLenum type,
 			memory->log(shaderErrorMessage);
 		}
 		std::string message = "Failed to compile shader. "
-				+ std::to_string(type) + "\n" + std::string(*source);
+				+ std::to_string(type) + "\n" + std::string(shaderFile.content);
 		memory->abort(message);
 	}
+
+	memory->freeFile(&shaderFile);
 
 	return shaderID;
 }
@@ -154,19 +162,11 @@ GLuint linkProgram(GameMemory *memory, const GLuint vertex_shader,
 }
 
 GLuint buildProgram(GameMemory *memory) {
-	File vertexShaderFile = memory->readFile(memory->shaderFileNames[0]);
-	size_t vertexShaderLength = std::strlen(vertexShaderFile.content);
 	GLuint vertexShader = compileShader(memory, GL_VERTEX_SHADER,
-			(const GLchar **) &vertexShaderFile.content,
-			(GLint *) &vertexShaderLength);
-	memory->freeFile(&vertexShaderFile);
+			memory->shaderFileNames[0]);
 
-	File fragmentShaderFile = memory->readFile(memory->shaderFileNames[1]);
-	size_t fragmentShaderLength = std::strlen(fragmentShaderFile.content);
 	GLuint fragmentShader = compileShader(memory, GL_FRAGMENT_SHADER,
-			(const GLchar **) &fragmentShaderFile.content,
-			(GLint *) &fragmentShaderLength);
-	memory->freeFile(&fragmentShaderFile);
+			memory->shaderFileNames[1]);
 
 	return linkProgram(memory, vertexShader, fragmentShader);
 }
@@ -213,9 +213,9 @@ void initOpenGL(GameMemory* memory) {
 	gameState->glProgram = buildProgram(memory);
 	glUseProgram(gameState->glProgram);
 
-	glDepthMask (GL_TRUE);
-	glEnable (GL_BLEND);
-	glDisable (GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
+	glEnable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	resizeView(memory);
@@ -308,7 +308,8 @@ void checkPlayerTileCollision(Player *player, Tile *tile) {
 	}
 }
 
-float calculateTextLength(GameState *gameState, std::string text, Render::FontSize fontSize) {
+float calculateTextLength(GameState *gameState, std::string text,
+		Render::FontSize fontSize) {
 	if (text.size() == 0) {
 		return 0.0f;
 	}
@@ -317,9 +318,11 @@ float calculateTextLength(GameState *gameState, std::string text, Render::FontSi
 
 	for (unsigned characterIndex = 0; characterIndex < text.size();
 			++characterIndex) {
-		Render::Character *c = getCharacter(gameState, text[characterIndex], fontSize);
+		Render::Character *c = getCharacter(gameState, text[characterIndex],
+				fontSize);
 
-		length += c->advance + c->kerning[text[characterIndex + 1] - Render::firstCharacter];
+		length += c->advance
+				+ c->kerning[text[characterIndex + 1] - Render::firstCharacter];
 	}
 	return length;
 }

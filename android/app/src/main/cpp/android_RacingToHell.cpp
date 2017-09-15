@@ -34,7 +34,7 @@ Java_game_racingtohell_NativeWrapper_on_1surface_1changed(JNIEnv *env UNUSED, jc
 
     realWindowWidth = width;
     realWindowHeight = height;
-    setupOpenGL(&videoBuffer);
+//    setupOpenGL(&videoBuffer);
 }
 
 bool inControlCircle(float x, float y) {
@@ -117,11 +117,9 @@ JNIEXPORT void JNICALL
 Java_game_racingtohell_NativeWrapper_on_1draw_1frame(JNIEnv *env UNUSED, jclass clazz UNUSED) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-//    rth_log("Before update");
     updateAndRender(&gameInput, &memory);
-//    rth_log("After update");
 
-    swapBuffers(&videoBuffer);
+//    swapBuffers(&videoBuffer);
     renderControls();
 }
 
@@ -157,14 +155,7 @@ READ_FILE(readFile) {
 
     const char *content;
     size_t length = (size_t) AAsset_getLength(asset);
-    if (fileName == std::string(memory.shaderFileNames[1])) {
-        std::string tmp = "precision mediump float;";
-        length += tmp.size();
-        tmp += std::string((char *) AAsset_getBuffer(asset));
-        content = tmp.c_str();
-    } else {
-        content = (char *) AAsset_getBuffer(asset);
-    }
+    content = (char *) AAsset_getBuffer(asset);
 
     File file = {};
     file.size = length;

@@ -48,7 +48,11 @@ float length(const Vector2f &v) {
 }
 
 Vector2f normalize(const Vector2f &v) {
-	return v * (1.0f / length(v));
+	float l = length(v);
+	if (l == 0) {
+		return v;
+	}
+	return v * (1.0f / l);
 }
 
 /**

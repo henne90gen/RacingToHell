@@ -1,3 +1,5 @@
+#include "GameDemo.cpp"
+
 void textDemo(GameMemory* memory, Input* input) {
 	static char fontFileNames[3][100] = { "./res/font/DejaVuSansMono.ttf",
 			"./res/font/ComicSans.ttf", "./res/font/Arial.ttf" };
@@ -113,4 +115,25 @@ void animationDemo(GameMemory *memory) {
 		Render::pushAnimation(getGameState(memory), explosionTexture, position,
 				size, &explosionIndex1, AtomPlane::BACKGROUND);
 	}
+}
+
+void followingCarDemo(GameMemory *memory, Input *input) {
+	GameState *gameState = getGameState(memory);
+	Render::Texture *texture = &gameState->resources.playerCarTextures[0];
+
+	Math::Vector2f desired = input->mousePosition - gameState->player.position;
+	if (Math::length(desired) > 0.01f) {
+		desired = Math::normalize(desired);
+		desired = desired * 0.005f;
+
+		Math::Vector2f steering = desired
+				- (gameState->player.direction * gameState->player.speed);
+
+		gameState->player.position = gameState->player.position + steering;
+		gameState->player.direction = Math::normalize(steering);
+	}
+
+	Render::pushTexture(gameState, texture, gameState->player.position,
+			gameState->player.size, gameState->player.direction, 0,
+			AtomPlane::PLAYER);
 }

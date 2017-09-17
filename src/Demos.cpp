@@ -89,25 +89,28 @@ void performanceDemo(GameMemory *memory, AtomType type, int n) {
 }
 
 void animationDemo(GameMemory *memory) {
+	Render::Texture *explosionTexture =
+			&getGameState(memory)->resources.explosion;
+
 	static unsigned int explosionIndex3 = 0;
 	Math::Vector2f position = Math::Vector2f(1, 0);
 	Math::Vector2f size = Math::Vector2f(1, 1);
-	Render::pushExplosion(getGameState(memory), position, size,
-			&explosionIndex3, AtomPlane::BACKGROUND, 3);
+	Render::pushAnimation(getGameState(memory), explosionTexture, position,
+			size, &explosionIndex3, AtomPlane::BACKGROUND, 3);
 
 	static unsigned int explosionIndex2 = 0;
 	if (explosionIndex2 >= explosionIndex3) {
 		position = Math::Vector2f();
 		size = Math::Vector2f(1, 1);
-		Render::pushExplosion(getGameState(memory), position, size,
-				&explosionIndex2, AtomPlane::BACKGROUND, 2);
+		Render::pushAnimation(getGameState(memory), explosionTexture, position,
+				size, &explosionIndex2, AtomPlane::BACKGROUND, 2);
 	}
 
 	static unsigned int explosionIndex1 = 0;
 	if (explosionIndex1 >= explosionIndex3) {
-	position = Math::Vector2f(-1, 0);
-	size = Math::Vector2f(1, 1);
-		Render::pushExplosion(getGameState(memory), position, size,
-				&explosionIndex1, AtomPlane::BACKGROUND);
+		position = Math::Vector2f(-1, 0);
+		size = Math::Vector2f(1, 1);
+		Render::pushAnimation(getGameState(memory), explosionTexture, position,
+				size, &explosionIndex1, AtomPlane::BACKGROUND);
 	}
 }

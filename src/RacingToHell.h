@@ -146,13 +146,15 @@ struct RenderAtom {
 		Render::TextureRectangle textureRect;
 		Render::Triangle triangle;
 
-        Content() {}
-        Content(const Content& other) {}
+		Content() {
+		}
+		Content(const Content& other) {
+		}
 	};
 
-    Content content;
-    AtomType type;
-    float plane;
+	Content content;
+	AtomType type;
+	float plane;
 };
 
 struct RenderGroup {
@@ -195,7 +197,7 @@ struct GameState {
 	Bullet aiBullets[1000];
 
 	RenderGroup renderGroup;
-	
+
 	Resources resources;
 };
 

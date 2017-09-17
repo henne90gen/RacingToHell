@@ -55,9 +55,17 @@ void performanceDemo(GameMemory *memory, AtomType type) {
 		Render::pushTexture(gameState, texture, pos, size, dir, plane);
 	}
 		break;
-	case AtomType::TRIANGLE:
+	case AtomType::TRIANGLE: {
+		Math::Vector2f p1 = Math::Vector2f(1, 1);
+		Math::Vector2f p2 = Math::Vector2f(-1, 1);
+		Math::Vector2f p3 = Math::Vector2f();
+		Render::pushTriangle(gameState, p1, p2, p3, 0xff0000ff, plane);
+	}
 		break;
-	case AtomType::CIRCLE:
+	case AtomType::CIRCLE: {
+		Math::Vector2f position = Math::Vector2f();
+		Render::pushCircle(gameState, position, 1, 0xff0000ff, plane);
+	}
 		break;
 	case AtomType::TEXT: {
 		Math::Vector2f position = Math::Vector2f(-1.7f, 0.7);
@@ -66,11 +74,40 @@ void performanceDemo(GameMemory *memory, AtomType type) {
 				0xff0000ff, plane);
 	}
 		break;
+	case AtomType::NOSCALE:
+	case AtomType::SCALE:
+		Render::pushEnableScaling(gameState, false, plane);
+		Render::pushEnableScaling(gameState, true, plane);
+		break;
 	}
 }
 
 void performanceDemo(GameMemory *memory, AtomType type, int n) {
 	for (int i = 0; i < n; i++) {
 		performanceDemo(memory, type);
+	}
+}
+
+void animationDemo(GameMemory *memory) {
+	static unsigned int explosionIndex3 = 0;
+	Math::Vector2f position = Math::Vector2f(1, 0);
+	Math::Vector2f size = Math::Vector2f(1, 1);
+	Render::pushExplosion(getGameState(memory), position, size,
+			&explosionIndex3, AtomPlane::BACKGROUND, 3);
+
+	static unsigned int explosionIndex2 = 0;
+	if (explosionIndex2 >= explosionIndex3) {
+		position = Math::Vector2f();
+		size = Math::Vector2f(1, 1);
+		Render::pushExplosion(getGameState(memory), position, size,
+				&explosionIndex2, AtomPlane::BACKGROUND, 2);
+	}
+
+	static unsigned int explosionIndex1 = 0;
+	if (explosionIndex1 >= explosionIndex3) {
+	position = Math::Vector2f(-1, 0);
+	size = Math::Vector2f(1, 1);
+		Render::pushExplosion(getGameState(memory), position, size,
+				&explosionIndex1, AtomPlane::BACKGROUND);
 	}
 }

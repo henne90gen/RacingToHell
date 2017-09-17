@@ -3,20 +3,6 @@
 
 namespace Render {
 
-void explosion(VideoBuffer *buffer, GameState *gameState, int x, int y,
-		unsigned *explosionIndex) {
-	if (gameState->frameCounter % 3 == 0) {
-		std::size_t explosionSize = sizeof(gameState->resources.explosion);
-		explosionSize /= sizeof(Texture);
-		explosionSize--;
-		if ((*explosionIndex)++ >= explosionSize) {
-			*explosionIndex = 0;
-		}
-	}
-//	textureAlpha(buffer, &gameState->resources.explosion[*explosionIndex], x,
-//			y);
-}
-
 void clearScreen(uint32_t color) {
 	float red = ((color & 0xff000000) >> 24) / 255.0f;
 	float green = ((color & 0x00ff0000) >> 16) / 255.0f;
@@ -26,11 +12,12 @@ void clearScreen(uint32_t color) {
 
 /**
  * position: center of the texture
+ * tileIndex: starts in the top left and goes to the right and then down
  * colorMode: 0 for texture colors, 1 for solid color with alpha from texture
  */
 void texture(GameState *gameState, Texture *texture, Math::Vector2f position,
-		Math::Vector2f size, Math::Vector2f direction, uint8_t colorMode,
-		uint32_t color) {
+		Math::Vector2f size, Math::Vector2f direction, int tileIndex,
+		uint8_t colorMode = 0, uint32_t color = 0) {
 	size = size * 0.5;
 	Math::Vector2f bottomLeft = Math::Vector2f(-size.x, -size.y);
 	Math::Vector2f topLeft = Math::Vector2f(-size.x, size.y);
@@ -51,12 +38,21 @@ void texture(GameState *gameState, Texture *texture, Math::Vector2f position,
 		a = (color & 0x000000ff) / 255.0f;
 	}
 
+	float xStride = 1.0f / (float) texture->xDivision;
+	float yStride = 1.0f / (float) texture->yDivision;
+	float x = ((float) (tileIndex % texture->xDivision)) * xStride;
+	float y = ((float) ((int) (tileIndex / texture->yDivision))) * xStride;
+	Math::Vector2f texTL = Math::Vector2f(x, y);
+	Math::Vector2f texTR = Math::Vector2f(x + xStride, y);
+	Math::Vector2f texBL = Math::Vector2f(x, y + yStride);
+	Math::Vector2f texBR = Math::Vector2f(x + xStride, y + yStride);
+
 	// holds the screen coordinates with their associated texture coordinates
 	const float coordinates[] = { //
-			bottomLeft.x, bottomLeft.y, r, g, b, a, 0.0f, 1.0f, //
-					topLeft.x, topLeft.y, r, g, b, a, 0.0f, 0.0f, //
-					bottomRight.x, bottomRight.y, r, g, b, a, 1.0f, 1.0f, //
-					topRight.x, topRight.y, r, g, b, a, 1.0f, 0.0f //
+			bottomLeft.x, bottomLeft.y, r, g, b, a, texBL.x, texBL.y, //
+					topLeft.x, topLeft.y, r, g, b, a, texTL.x, texTL.y, //
+					bottomRight.x, bottomRight.y, r, g, b, a, texBR.x, texBR.y, //
+					topRight.x, topRight.y, r, g, b, a, texTR.x, texTR.y //
 			};
 
 	GLuint coordinatesBuffer = createVBO(sizeof(coordinates), coordinates,
@@ -97,11 +93,6 @@ void texture(GameState *gameState, Texture *texture, Math::Vector2f position,
 	glDeleteBuffers(1, &coordinatesBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-void texture(GameState *gameState, Texture *texture, Math::Vector2f position,
-		Math::Vector2f size, Math::Vector2f direction) {
-	Render::texture(gameState, texture, position, size, direction, 0, 0);
 }
 
 void character(GameState *gameState, char character, Math::Vector2f position,
@@ -284,7 +275,7 @@ void pushCircle(GameState *gameState, Math::Vector2f position, float radius,
 
 void pushTexture(GameState *gameState, Texture *texture,
 		Math::Vector2f position, Math::Vector2f size, Math::Vector2f direction,
-		AtomPlane plane) {
+		int tileIndex = 0, AtomPlane plane = AtomPlane::BACKGROUND) {
 	RenderAtom *atom;
 	if ((atom = pushRenderAtom(gameState, AtomType::TEXTURE, plane)) == 0) {
 		return;
@@ -295,6 +286,7 @@ void pushTexture(GameState *gameState, Texture *texture,
 	dimensions.size = size;
 	atom->content.textureRect.dimensions = dimensions;
 	atom->content.textureRect.direction = direction;
+	atom->content.textureRect.tileIndex = tileIndex;
 }
 
 void pushRectangle(GameState *gameState, Math::Rectangle dimensions,
@@ -349,6 +341,22 @@ void pushText(GameState *gameState, std::string text, Math::Vector2f position,
 	}
 }
 
+void pushExplosion(GameState *gameState, Math::Vector2f position,
+		Math::Vector2f size, unsigned *explosionIndex, AtomPlane plane,
+		int timing = 1) {
+	Texture *texture = &gameState->resources.explosion;
+	pushTexture(gameState, texture, position, size, Math::Vector2f(0, 1),
+			*explosionIndex, plane);
+	if (gameState->frameCounter % timing == 0) {
+		*explosionIndex += 1;
+
+		if ((int) *explosionIndex >= texture->xDivision * texture->yDivision) {
+			*explosionIndex = 0;
+		}
+	}
+
+}
+
 void sortRenderAtoms(GameState *gameState, int left = -1, int right = -1) {
 	if (left == -1 && right == -1) {
 		left = 0;
@@ -389,7 +397,7 @@ void flushBuffer(GameMemory *memory) {
 
 #if RENDER_DEBUG
 	int rects = 0, tris = 0, texts = 0, textures = 0, circles = 0, scales = 0,
-			noscales = 0;
+	noscales = 0;
 #endif
 
 	for (unsigned i = 0; i < gameState->renderGroup.count; i++) {
@@ -426,7 +434,7 @@ void flushBuffer(GameMemory *memory) {
 #endif
 			TextureRectangle tr = atom->content.textureRect;
 			Render::texture(gameState, &tr.texture, tr.dimensions.position,
-					tr.dimensions.size, tr.direction);
+					tr.dimensions.size, tr.direction, tr.tileIndex);
 		}
 			break;
 		case AtomType::CIRCLE: {
@@ -468,19 +476,19 @@ void flushBuffer(GameMemory *memory) {
 	GLenum err;
 	while ((err = glGetError()) != GL_NO_ERROR) {
 		switch (err) {
-		case GL_INVALID_OPERATION:
+			case GL_INVALID_OPERATION:
 			msg = "INVALID_OPERATION";
 			break;
-		case GL_INVALID_ENUM:
+			case GL_INVALID_ENUM:
 			msg = "INVALID_ENUM";
 			break;
-		case GL_INVALID_VALUE:
+			case GL_INVALID_VALUE:
 			msg = "INVALID_VALUE";
 			break;
-		case GL_OUT_OF_MEMORY:
+			case GL_OUT_OF_MEMORY:
 			msg = "OUT_OF_MEMORY";
 			break;
-		case GL_INVALID_FRAMEBUFFER_OPERATION:
+			case GL_INVALID_FRAMEBUFFER_OPERATION:
 			msg = "INVALID_FRAMEBUFFER_OPERATION";
 			break;
 		}

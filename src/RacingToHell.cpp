@@ -380,7 +380,7 @@ void updateAndRenderTraffic(VideoBuffer *buffer, GameState *gameState,
 		}
 
 //		int x = car->position.x - texture->width / 2;
-		int y = car->position.y - texture->height / 2;
+//		int y = car->position.y - texture->height / 2;
 //		Render::textureAlpha(buffer, texture, x, y);
 
 //Render::bar(buffer, { car->position.x, (float) y - 13 }, car->health,
@@ -541,8 +541,9 @@ UPDATE_AND_RENDER(updateAndRender) {
 	GameState *gameState = beginFrame(memory, input);
 
 //	textDemo(memory, input);
+//	performanceDemo(memory, AtomType::NOSCALE, 100);
 
-	performanceDemo(memory, AtomType::TEXT, 50);
+	animationDemo(memory);
 
 //	long start = memory->queryTime();
 //

@@ -33,6 +33,8 @@ struct Texture {
 	uint32_t width, height;
 	uint8_t bytesPerPixel;
 	GLuint id;
+	int xDivision = 1;
+	int yDivision = 1;
 };
 
 struct Character {
@@ -58,6 +60,7 @@ struct TextureRectangle {
 	Texture texture;
 	Math::Rectangle dimensions;
 	Math::Vector2f direction;
+	int tileIndex;
 };
 
 struct Circle {

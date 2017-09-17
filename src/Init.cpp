@@ -144,7 +144,8 @@ void loadAudioClips(GameMemory* memory) {
 /**
  * Load a texture from a bmp file and pushes it to the graphics card
  */
-Render::Texture loadTexture(GameMemory *memory, std::string fileName) {
+Render::Texture loadTexture(GameMemory *memory, std::string fileName,
+		int xDivision = 1, int yDivision = 1) {
 	File file = memory->readFile(fileName);
 	if (((char*) file.content)[0] != 'B' || (file.content)[1] != 'M') {
 		memory->abort(file.name + " is not a bitmap file.");
@@ -160,6 +161,8 @@ Render::Texture loadTexture(GameMemory *memory, std::string fileName) {
 	texture.width = header.width;
 	texture.height = header.height;
 	texture.bytesPerPixel = header.bitsPerPixel / 8;
+	texture.xDivision = xDivision;
+	texture.yDivision = yDivision;
 	void* content = reserveTemporaryMemory(memory,
 			texture.width * texture.height * texture.bytesPerPixel);
 
@@ -212,7 +215,7 @@ void loadTextures(GameMemory *memory) {
 
 // Explosion sprite
 	gameState->resources.explosion = loadTexture(memory,
-			"./res/textures/explosion.bmp");
+			"./res/textures/explosion.bmp", 9, 9);
 
 // Tank boss
 	gameState->resources.tank = loadTexture(memory,

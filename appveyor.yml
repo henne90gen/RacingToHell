@@ -31,7 +31,6 @@ configuration: Debug
 # to run your custom scripts instead of automatic MSBuild
 build_script:
   - windows/build
-  - xcopy res bin\res /e
 
 after_build:
   - 7z a RacingToHellWindows.zip ./bin/*

@@ -270,8 +270,20 @@ ABORT(abort) {
 	exit(1);
 }
 
+/**
+ * Uses 'printf' to log messages to the console
+ */
 LOG(rth_log) {
 	printf("%s", (message + "\n").c_str());
+}
+
+/**
+ * Returns the time in nanoseconds that has passed since the program start
+ */
+QUERY_TIME(queryTime) {
+	timespec time = {};
+	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time);
+	return time.tv_nsec + 1000000000 * time.tv_sec;
 }
 
 /**
@@ -632,6 +644,7 @@ GameMemory initGameMemory() {
 
 	memory.abort = abort;
 	memory.log = rth_log;
+	memory.queryTime = queryTime;
 	memory.readFile = readFile;
 	memory.freeFile = freeFile;
 	memory.exitGame = exitGame;

@@ -131,7 +131,11 @@ struct GameWorld {
 };
 
 enum AtomType {
-	RECTANGLE, TEXT, TEXTURE, CIRCLE, SCALE, NOSCALE
+	RECTANGLE, TRIANGLE, TEXT, TEXTURE, CIRCLE, SCALE, NOSCALE
+};
+
+enum AtomPlane {
+	BACKGROUND, AI, AI_BULLETS, PLAYER, PLAYER_BULLETS, GAME_UI, MENU
 };
 
 struct RenderAtom {
@@ -140,6 +144,7 @@ struct RenderAtom {
 		Render::Text text;
 		Render::Circle circle;
 		Render::TextureRectangle textureRect;
+		Render::Triangle triangle;
 
         Content() {}
         Content(const Content& other) {}
@@ -147,11 +152,12 @@ struct RenderAtom {
 
     Content content;
     AtomType type;
+    float plane;
 };
 
 struct RenderGroup {
 	uint32_t count;
-	RenderAtom renderAtoms[1000];	
+	RenderAtom renderAtoms[1100];
 };
 
 struct GameState {

@@ -60,7 +60,8 @@ void updateAndRenderRoad(GameMemory *memory, bool shouldUpdate) {
 			}
 //			printf("X: %f, Y: %f, Size: %f\n", rect.position.x, rect.position.y,
 //					rect.size.x);
-			Render::pushRectangle(gameState, tile->rect, color);
+			Render::pushRectangle(gameState, tile->rect, color,
+					AtomPlane::BACKGROUND);
 		}
 	}
 }
@@ -193,7 +194,7 @@ void updatePlayer(Input *input, GameState *gameState) {
 void renderPlayer(GameMemory *memory, GameState *gameState) {
 	Render::pushTexture(getGameState(memory), getPlayerTexture(gameState),
 			gameState->player.position, gameState->player.size,
-			gameState->player.direction);
+			gameState->player.direction, AtomPlane::PLAYER);
 }
 
 /**
@@ -264,7 +265,13 @@ bool updateAndRenderBullet(GameMemory *memory, GameState *gameState,
 		}
 	}
 
-	Render::pushCircle(gameState, bullet.position, bullet.radius, bullet.color);
+	AtomPlane plane = AtomPlane::AI_BULLETS;
+	if (isPlayerBullet) {
+		plane = AtomPlane::PLAYER_BULLETS;
+	}
+
+	Render::pushCircle(gameState, bullet.position, bullet.radius, bullet.color,
+			plane);
 	return false;
 }
 
@@ -376,8 +383,8 @@ void updateAndRenderTraffic(VideoBuffer *buffer, GameState *gameState,
 		int y = car->position.y - texture->height / 2;
 //		Render::textureAlpha(buffer, texture, x, y);
 
-		//Render::bar(buffer, { car->position.x, (float) y - 13 }, car->health,
-		//		0xff0000ff);
+//Render::bar(buffer, { car->position.x, (float) y - 13 }, car->health,
+//		0xff0000ff);
 	}
 }
 
@@ -487,7 +494,8 @@ void updateAndRenderUI(GameMemory *memory, bool shouldUpdate) {
 			/ gameState->player.maxEnergy;
 	energyBar.size = Math::Vector2f(barWidth, energyHeight);
 	energyBar.position = Math::Vector2f(-screenWidth / 2.0, energyHeight - 1.0);
-	Render::pushRectangle(gameState, energyBar, energyColor);
+	Render::pushRectangle(gameState, energyBar, energyColor,
+			AtomPlane::GAME_UI);
 
 	// health
 	Math::Rectangle healthBar;
@@ -496,7 +504,8 @@ void updateAndRenderUI(GameMemory *memory, bool shouldUpdate) {
 	healthBar.size = Math::Vector2f(barWidth, healthHeight);
 	healthBar.position = Math::Vector2f(-screenWidth / 2.0 + barWidth,
 			healthHeight - 1.0);
-	Render::pushRectangle(gameState, healthBar, healthColor);
+	Render::pushRectangle(gameState, healthBar, healthColor,
+			AtomPlane::GAME_UI);
 }
 
 /**
@@ -521,7 +530,8 @@ void updateAndRenderGame(Input *input, GameMemory *memory, GameState *gameState,
 
 	if (gameState->menuState != MenuState::MAIN
 			&& gameState->menuState != MenuState::CREDITS) {
-		Render::pushEnableScaling(gameState, false);
+		float plane = ((float) AtomPlane::GAME_UI) - 0.5f;
+		Render::pushEnableScaling(gameState, false, plane);
 		updateAndRenderUI(memory, update);
 	}
 }
@@ -529,17 +539,28 @@ void updateAndRenderGame(Input *input, GameMemory *memory, GameState *gameState,
 extern "C"
 UPDATE_AND_RENDER(updateAndRender) {
 	GameState *gameState = beginFrame(memory, input);
-	
+
+//	textDemo(memory, input);
+
+	performanceDemo(memory, AtomType::TEXT, 50);
+
+//	long start = memory->queryTime();
+//
+//	textDemo(memory, input);
+//	logTimeDifferenceInMS(memory, &start, "Text demo");
+//
 //	updateAndRenderGame(input, memory, gameState,
 //			gameState->menuState == MenuState::GAME);
+//	logTimeDifferenceInMS(memory, &start,"Updating game");
+//
+//	if (input->escapeKeyClicked && gameState->menuState == MenuState::GAME) {
+//		loadMenu(memory, MenuState::PAUSE);
+//	} else if (gameState->menuState != MenuState::GAME) {
+//		updateAndRenderMenus(memory, input);
+//
+//		logTimeDifferenceInMS(memory, &start, "Updating Menu");
+//	}
 
-	textDemo(memory, input);
-
-	if (input->escapeKeyClicked && gameState->menuState == MenuState::GAME) {
-		loadMenu(memory, MenuState::PAUSE);
-	} else if (gameState->menuState != MenuState::GAME) {
-		updateAndRenderMenus(memory, input);
-	}
-
-	Render::flushBuffer(gameState);
+	Render::flushBuffer(memory);
+//	logTimeDifferenceInMS(memory, &start, "Flush buffer");
 }

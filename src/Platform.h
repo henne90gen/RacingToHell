@@ -30,6 +30,7 @@
 #define CANISTER_ID 1
 
 // Debug flags:
+#define RENDER_DEBUG 0
 #define COLLISION_DEBUG 0
 #define SOUND_DEBUG 0
 #define SOUND_ENABLE 0
@@ -48,6 +49,10 @@ ABORT(abort);
 #define LOG(name) void name(std::string message)
 typedef LOG(log_);
 LOG(rth_log);
+
+#define QUERY_TIME(name) long name()
+typedef QUERY_TIME(query_time);
+QUERY_TIME(queryTime);
 
 #define READ_FILE(name) File name(std::string fileName)
 typedef READ_FILE(read_file);
@@ -77,6 +82,7 @@ struct GameMemory {
 
 	abort_ *abort;
 	log_ *log;
+	query_time *queryTime;
 	read_file *readFile;
 	free_file *freeFile;
 	exit_game *exitGame;

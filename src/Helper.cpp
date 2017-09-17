@@ -92,16 +92,16 @@ void checkInputForClicks(Input *input) {
 	minus = input->minusKeyPressed;
 }
 
-GLuint createVertexBufferObject(const GLsizeiptr size, const GLvoid *data,
+GLuint createVBO(const GLsizeiptr size, const GLvoid *data,
 		const GLenum usage) {
-	GLuint vbo_object;
-	glGenBuffers(1, &vbo_object);
+	GLuint vbo;
+	glGenBuffers(1, &vbo);
 
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_object);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, size, data, usage);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	return vbo_object;
+	return vbo;
 }
 
 GLuint compileShader(GameMemory *memory, const GLenum type,
@@ -258,7 +258,7 @@ GameState* beginFrame(GameMemory *memory, Input *input) {
 		gameState->scale -= 0.01;
 	}
 
-	Render::pushEnableScaling(gameState, true);
+	Render::pushEnableScaling(gameState, true, -1);
 
 	return gameState;
 }
@@ -325,4 +325,11 @@ float calculateTextLength(GameState *gameState, std::string text,
 				+ c->kerning[text[characterIndex + 1] - Render::firstCharacter];
 	}
 	return length;
+}
+
+void logTimeDifferenceInMS(GameMemory *memory, long *start, std::string msg) {
+	long temp = memory->queryTime();
+	float diff = (float) (temp - *start) / 1000000.0f;
+	memory->log(msg + ": " + std::to_string(diff));
+	*start = temp;
 }

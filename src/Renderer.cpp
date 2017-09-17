@@ -59,8 +59,8 @@ void texture(GameState *gameState, Texture *texture, Math::Vector2f position,
 					topRight.x, topRight.y, r, g, b, a, 1.0f, 0.0f //
 			};
 
-	GLuint coordinatesBuffer = createVertexBufferObject(sizeof(coordinates),
-			coordinates, GL_STATIC_DRAW);
+	GLuint coordinatesBuffer = createVBO(sizeof(coordinates), coordinates,
+	GL_STATIC_DRAW);
 
 	GLuint positionLocation = glGetAttribLocation(gameState->glProgram,
 			"a_Position");
@@ -89,10 +89,12 @@ void texture(GameState *gameState, Texture *texture, Math::Vector2f position,
 	GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(6 * sizeof(GL_FLOAT)));
 
 	glEnableVertexAttribArray(positionLocation);
+	glEnableVertexAttribArray(colorLocation);
 	glEnableVertexAttribArray(textureCoordinatesLocation);
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
+	glDeleteBuffers(1, &coordinatesBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
@@ -110,8 +112,8 @@ void character(GameState *gameState, char character, Math::Vector2f position,
 
 	position = position + (c->size * 0.5);
 
-	texture(gameState, &c->texture, position, c->size, Math::Vector2f(0.0, 1.0), 1,
-			color);
+	texture(gameState, &c->texture, position, c->size, Math::Vector2f(0.0, 1.0),
+			1, color);
 }
 
 /**
@@ -139,8 +141,8 @@ void text(GameState *gameState, std::string text, Math::Vector2f position,
 	}
 }
 
-void triangle(GameState *gameState, Math::Vector2f point1, Math::Vector2f point2,
-		Math::Vector2f point3, uint32_t color) {
+void triangle(GameState *gameState, Math::Vector2f point1,
+		Math::Vector2f point2, Math::Vector2f point3, uint32_t color) {
 	float r = ((color & 0xff000000) >> 24) / 255.0f;
 	float g = ((color & 0x00ff0000) >> 16) / 255.0f;
 	float b = ((color & 0x0000ff00) >> 8) / 255.0f;
@@ -152,8 +154,8 @@ void triangle(GameState *gameState, Math::Vector2f point1, Math::Vector2f point2
 			point3.x, point3.y, r, g, b, a, //
 			};
 
-	GLuint coordinatesBuffer = createVertexBufferObject(sizeof(coordinates),
-			coordinates, GL_STATIC_DRAW);
+	GLuint coordinatesBuffer = createVBO(sizeof(coordinates), coordinates,
+	GL_STATIC_DRAW);
 
 	GLuint positionLocation = glGetAttribLocation(gameState->glProgram,
 			"a_Position");
@@ -177,9 +179,7 @@ void triangle(GameState *gameState, Math::Vector2f point1, Math::Vector2f point2
 
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 
-    //DELETE BUFFER!!!
-    glDeleteBuffers(1, &coordinatesBuffer);
-
+	glDeleteBuffers(1, &coordinatesBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
@@ -209,8 +209,8 @@ void rectangle(GameState *gameState, Math::Rectangle rect, uint32_t color) {
 			topRight.x, topRight.y, r, g, b, a, //
 			};
 
-	GLuint coordinatesBuffer = createVertexBufferObject(sizeof(coordinates),
-			coordinates, GL_STATIC_DRAW);
+	GLuint coordinatesBuffer = createVBO(sizeof(coordinates), coordinates,
+	GL_STATIC_DRAW);
 
 	GLuint positionLocation = glGetAttribLocation(gameState->glProgram,
 			"a_Position");
@@ -229,14 +229,13 @@ void rectangle(GameState *gameState, Math::Rectangle rect, uint32_t color) {
 			BUFFER_OFFSET(0));
 	glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, stride,
 			BUFFER_OFFSET(2 * sizeof(GL_FLOAT)));
+
 	glEnableVertexAttribArray(positionLocation);
 	glEnableVertexAttribArray(colorLocation);
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-    //DELETE BUFFER!!!
-    glDeleteBuffers(1, &coordinatesBuffer);
-
+	glDeleteBuffers(1, &coordinatesBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
@@ -246,46 +245,90 @@ void circle(GameState *gameState, Math::Vector2f position, float radius,
 			Math::Vector2f(radius, radius), Math::Vector2f(1.0, 0.0), 1, color);
 }
 
-RenderAtom* pushRenderAtom(GameState *gameState, AtomType type) {
-	RenderAtom *atom = gameState->renderGroup.renderAtoms + gameState->renderGroup.count++;
+RenderAtom* pushRenderAtom(GameState *gameState, AtomType type, float plane) {
+	if (gameState->renderGroup.count + 1
+			== sizeof(gameState->renderGroup.renderAtoms)
+					/ sizeof(RenderAtom)) {
+		return 0;
+	}
+	RenderAtom *atom = gameState->renderGroup.renderAtoms
+			+ gameState->renderGroup.count++;
 	atom->type = type;
+	atom->plane = plane;
 	return atom;
 }
 
-void pushEnableScaling(GameState *gameState, bool enable) {
+RenderAtom* pushRenderAtom(GameState *gameState, AtomType type,
+		AtomPlane plane) {
+	return pushRenderAtom(gameState, type, (float) plane);
+}
+
+void pushEnableScaling(GameState *gameState, bool enable, float plane) {
 	if (enable) {
-		pushRenderAtom(gameState, AtomType::SCALE);
+		pushRenderAtom(gameState, AtomType::SCALE, plane);
 	} else {
-		pushRenderAtom(gameState, AtomType::NOSCALE);
+		pushRenderAtom(gameState, AtomType::NOSCALE, plane);
 	}
 }
 
-void pushCircle(GameState *gameState, Math::Vector2f position, float radius, uint32_t color) {
-	RenderAtom *atom = pushRenderAtom(gameState, AtomType::CIRCLE);
+void pushCircle(GameState *gameState, Math::Vector2f position, float radius,
+		uint32_t color, AtomPlane plane) {
+	RenderAtom *atom;
+	if ((atom = pushRenderAtom(gameState, AtomType::CIRCLE, plane)) == 0) {
+		return;
+	}
 	atom->content.circle.position = position;
 	atom->content.circle.radius = radius;
 	atom->content.circle.color = color;
 }
 
-void pushTexture(GameState *gameState, Texture *texture, Math::Vector2f position, Math::Vector2f size, Math::Vector2f direction) {
-	RenderAtom *atom = pushRenderAtom(gameState, AtomType::TEXTURE);
+void pushTexture(GameState *gameState, Texture *texture,
+		Math::Vector2f position, Math::Vector2f size, Math::Vector2f direction,
+		AtomPlane plane) {
+	RenderAtom *atom;
+	if ((atom = pushRenderAtom(gameState, AtomType::TEXTURE, plane)) == 0) {
+		return;
+	}
 	atom->content.textureRect.texture = *texture;
-	Math::Rectangle dimensions = {};
+	Math::Rectangle dimensions = { };
 	dimensions.position = position;
 	dimensions.size = size;
 	atom->content.textureRect.dimensions = dimensions;
 	atom->content.textureRect.direction = direction;
 }
 
-void pushRectangle(GameState *gameState, Math::Rectangle dimensions, uint32_t color) {
-	RenderAtom *atom = pushRenderAtom(gameState, AtomType::RECTANGLE);
+void pushRectangle(GameState *gameState, Math::Rectangle dimensions,
+		uint32_t color, float plane) {
+	RenderAtom *atom;
+	if ((atom = pushRenderAtom(gameState, AtomType::RECTANGLE, plane)) == 0) {
+		return;
+	}
 	atom->content.rect.dimensions = dimensions;
 	atom->content.rect.color = color;
 }
 
-void pushText(GameState *gameState, std::string text, Math::Vector2f position, FontSize fontSize, uint32_t color) {
+void pushRectangle(GameState *gameState, Math::Rectangle dimensions,
+		uint32_t color, AtomPlane plane) {
+	pushRectangle(gameState, dimensions, color, (float) plane);
+}
+
+void pushTriangle(GameState *gameState, Math::Vector2f point1,
+		Math::Vector2f point2, Math::Vector2f point3, uint32_t color,
+		float plane) {
+	RenderAtom *atom = pushRenderAtom(gameState, AtomType::TRIANGLE, plane);
+	atom->content.triangle.p1 = point1;
+	atom->content.triangle.p2 = point2;
+	atom->content.triangle.p3 = point3;
+	atom->content.triangle.color = color;
+}
+
+void pushText(GameState *gameState, std::string text, Math::Vector2f position,
+		FontSize fontSize, uint32_t color, AtomPlane plane) {
 	while (true) {
-		RenderAtom *atom = pushRenderAtom(gameState, AtomType::TEXT);
+		RenderAtom *atom;
+		if ((atom = pushRenderAtom(gameState, AtomType::TEXT, plane)) == 0) {
+			return;
+		}
 		unsigned numChars = 50;
 		if (text.size() < numChars) {
 			numChars = text.size();
@@ -306,36 +349,144 @@ void pushText(GameState *gameState, std::string text, Math::Vector2f position, F
 	}
 }
 
-void flushBuffer(GameState *gameState) {
+void sortRenderAtoms(GameState *gameState, int left = -1, int right = -1) {
+	if (left == -1 && right == -1) {
+		left = 0;
+		right = gameState->renderGroup.count - 1;
+	}
+
+	if (left >= right) {
+		return;
+	}
+
+	RenderAtom *pivot =
+			&gameState->renderGroup.renderAtoms[(int) ((left + right) / 2)];
+	int i = left - 1;
+	int j = right + 1;
+
+	while (true) {
+		do {
+			i++;
+		} while (gameState->renderGroup.renderAtoms[i].plane < pivot->plane);
+		do {
+			j--;
+		} while (gameState->renderGroup.renderAtoms[j].plane > pivot->plane);
+
+		if (i >= j) {
+			pivot = &gameState->renderGroup.renderAtoms[j];
+			break;
+		}
+	}
+
+	sortRenderAtoms(gameState, left, j);
+	sortRenderAtoms(gameState, j + 1, right);
+}
+
+void flushBuffer(GameMemory *memory) {
+	GameState *gameState = getGameState(memory);
+
+	sortRenderAtoms(gameState);
+
+#if RENDER_DEBUG
+	int rects = 0, tris = 0, texts = 0, textures = 0, circles = 0, scales = 0,
+			noscales = 0;
+#endif
+
 	for (unsigned i = 0; i < gameState->renderGroup.count; i++) {
 		RenderAtom *atom = &gameState->renderGroup.renderAtoms[i];
 		switch (atom->type) {
-		case AtomType::RECTANGLE:
-			Render::rectangle(gameState, atom->content.rect.dimensions, atom->content.rect.color);
+		case AtomType::RECTANGLE: {
+#if RENDER_DEBUG
+			rects++;
+#endif
+			Rectangle *r = &atom->content.rect;
+			Render::rectangle(gameState, r->dimensions, r->color);
+		}
 			break;
-		case AtomType::TEXT:
-		{
-			Text text = atom->content.text;
-			Render::text(gameState, text.characters, text.position, text.fontSize, text.color);
-		} break;
-		case AtomType::TEXTURE:
-		{
+		case AtomType::TRIANGLE: {
+#if RENDER_DEBUG
+			tris++;
+#endif
+			Triangle *t = &atom->content.triangle;
+			Render::triangle(gameState, t->p1, t->p2, t->p3, t->color);
+		}
+			break;
+		case AtomType::TEXT: {
+#if RENDER_DEBUG
+			texts++;
+#endif
+			Text *t = &atom->content.text;
+			Render::text(gameState, t->characters, t->position, t->fontSize,
+					t->color);
+		}
+			break;
+		case AtomType::TEXTURE: {
+#if RENDER_DEBUG
+			textures++;
+#endif
 			TextureRectangle tr = atom->content.textureRect;
-			Render::texture(gameState, &tr.texture, tr.dimensions.position, tr.dimensions.size, tr.direction);
-		} break;
-		case AtomType::CIRCLE:
-		{
+			Render::texture(gameState, &tr.texture, tr.dimensions.position,
+					tr.dimensions.size, tr.direction);
+		}
+			break;
+		case AtomType::CIRCLE: {
+#if RENDER_DEBUG
+			circles++;
+#endif
 			Circle c = atom->content.circle;
 			Render::circle(gameState, c.position, c.radius, c.color);
-		} break;
+		}
+			break;
 		case AtomType::SCALE:
+#if RENDER_DEBUG
+			scales++;
+#endif
 			scaleView(gameState);
 			break;
 		case AtomType::NOSCALE:
+#if RENDER_DEBUG
+			noscales++;
+#endif
 			setScaleToIdentity(gameState);
 			break;
 		}
 	}
+
+#if RENDER_DEBUG
+	memory->log("RenderAtoms: " + std::to_string(gameState->renderGroup.count));
+	std::string msg;
+	memory->log("Statistics: ");
+	memory->log("\tRectangles: " + std::to_string(rects));
+	memory->log("\tTriangles: " + std::to_string(tris));
+	memory->log("\tCirlces: " + std::to_string(circles));
+	memory->log("\tTexts: " + std::to_string(texts));
+	memory->log("\tTextures: " + std::to_string(textures));
+	memory->log("\tScales: " + std::to_string(scales));
+	memory->log("\tNoScales: " + std::to_string(noscales));
+	memory->log(msg);
+
+	GLenum err;
+	while ((err = glGetError()) != GL_NO_ERROR) {
+		switch (err) {
+		case GL_INVALID_OPERATION:
+			msg = "INVALID_OPERATION";
+			break;
+		case GL_INVALID_ENUM:
+			msg = "INVALID_ENUM";
+			break;
+		case GL_INVALID_VALUE:
+			msg = "INVALID_VALUE";
+			break;
+		case GL_OUT_OF_MEMORY:
+			msg = "OUT_OF_MEMORY";
+			break;
+		case GL_INVALID_FRAMEBUFFER_OPERATION:
+			msg = "INVALID_FRAMEBUFFER_OPERATION";
+			break;
+		}
+		memory->abort("OpenGL error: " + msg);
+	}
+#endif
 }
 
 }

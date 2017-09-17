@@ -76,18 +76,17 @@ void loadCharacter(GameMemory* memory, FT_Face face, char loadCharacter,
 	uint32_t* dest = (uint32_t*) content;
 
 	for (unsigned i = 0; i < bitmapSizeInPixel; i++) {
-		uint8_t alpha = *src;
-		*dest = (alpha << 24);
+		*dest = (*src << 24) + 0x00ffffff;
 		src++;
 		dest++;
 	}
 
 	loadTextureToGraphicsMemory(&newCharacter.texture, content);
 
+	freeTemporaryMemory(memory);
+
 	gameState->resources.characterMap[fontSize][loadCharacter
 			- Render::firstCharacter] = newCharacter;
-
-	freeTemporaryMemory(memory);
 }
 
 /**
@@ -103,7 +102,8 @@ void loadFont(GameMemory* memory, std::string fontFileName) {
 			fontFile.size, 0, &face);
 	if (error) {
 		memory->abort(
-				"Couldn't load font " + fontFileName + ". Errorcode: " + std::to_string(error));
+				"Couldn't load font " + fontFileName + ". Errorcode: "
+						+ std::to_string(error));
 	}
 
 	extractFileName(fontFileName, ".ttf", gameState->resources.fontName);
@@ -277,20 +277,19 @@ void init(GameMemory *memory) {
 	GameState *gameState = (GameState *) reservePermanentMemory(memory,
 			sizeof(GameState));
 
-    // TODO fix this default constructor error
 	*gameState = {};
 
-    char vertexShaderFileName[] = "./res/shaders/vertex.glsl";
-    for (unsigned i = 0; i < sizeof(vertexShaderFileName) / sizeof(char); i++) {
-        memory->shaderFileNames[0][i] = vertexShaderFileName[i];
-    }
-    char fragmentShaderFileName[] = "./res/shaders/fragment.glsl";
-    for (unsigned i = 0; i < sizeof(fragmentShaderFileName) / sizeof(char);
-        i++) {
-        memory->shaderFileNames[1][i] = fragmentShaderFileName[i];
-    }
+	char vertexShaderFileName[] = "./res/shaders/vertex.glsl";
+	for (unsigned i = 0; i < sizeof(vertexShaderFileName) / sizeof(char); i++) {
+		memory->shaderFileNames[0][i] = vertexShaderFileName[i];
+	}
+	char fragmentShaderFileName[] = "./res/shaders/fragment.glsl";
+	for (unsigned i = 0; i < sizeof(fragmentShaderFileName) / sizeof(char);
+			i++) {
+		memory->shaderFileNames[1][i] = fragmentShaderFileName[i];
+	}
 
-    glClearColor(1.0, 0, 1.0, 1.0);
+	glClearColor(1.0, 0, 1.0, 1.0);
 
 	// setting up OpenGL
 	gameState->scale = 1.0f;

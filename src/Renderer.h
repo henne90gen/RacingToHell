@@ -49,6 +49,11 @@ struct Rectangle {
 	uint32_t color;
 };
 
+struct Triangle {
+	Math::Vector2f p1, p2, p3;
+	uint32_t color;
+};
+
 struct TextureRectangle {
 	Texture texture;
 	Math::Rectangle dimensions;
@@ -58,7 +63,7 @@ struct TextureRectangle {
 struct Circle {
 	Math::Vector2f position;
 	float radius;
-	uint32_t color;	
+	uint32_t color;
 };
 
 struct Text {
@@ -68,8 +73,9 @@ struct Text {
 	uint32_t color;
 };
 
+// both of those declarations are needed for Helper.cpp
 void clearScreen(uint32_t color);
 
-void pushEnableScaling(GameState *gameState, bool enable);
+void pushEnableScaling(GameState *gameState, bool enable, float plane);
 
 }

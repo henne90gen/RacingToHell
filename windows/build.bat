@@ -8,7 +8,7 @@ set commonLinkerFlags=-opt:ref -incremental:no user32.lib gdi32.lib winmm.lib op
 mkdir bin
 del bin\*.pdb >nul 2>nul
 
-xcopy res bin\res /e
+robocopy res bin\res /e
 
 cl %commonCompilerFlags% opengl32.lib glew32.lib freetype28.lib src/RacingToHell.cpp /Febin\RacingToHell.dll -LD /link -incremental:no /PDB:bin\RacingToHell%random%.pdb /EXPORT:updateAndRender /EXPORT:getSoundSamples
 cl %commonCompilerFlags% glew32.lib windows/win32_RacingToHell.cpp /Febin\RacingToHell.exe -Fmwin32_RacingToHell.map /link %commonLinkerFlags%

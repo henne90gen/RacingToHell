@@ -341,17 +341,16 @@ void pushText(GameState *gameState, std::string text, Math::Vector2f position,
 	}
 }
 
-void pushExplosion(GameState *gameState, Math::Vector2f position,
-		Math::Vector2f size, unsigned *explosionIndex, AtomPlane plane,
-		int timing = 1) {
-	Texture *texture = &gameState->resources.explosion;
+void pushAnimation(GameState *gameState, Texture *texture,
+		Math::Vector2f position, Math::Vector2f size, unsigned *tileIndex,
+		AtomPlane plane, int timing = 1) {
 	pushTexture(gameState, texture, position, size, Math::Vector2f(0, 1),
-			*explosionIndex, plane);
+			*tileIndex, plane);
 	if (gameState->frameCounter % timing == 0) {
-		*explosionIndex += 1;
+		*tileIndex += 1;
 
-		if ((int) *explosionIndex >= texture->xDivision * texture->yDivision) {
-			*explosionIndex = 0;
+		if ((int) *tileIndex >= texture->xDivision * texture->yDivision) {
+			*tileIndex = 0;
 		}
 	}
 

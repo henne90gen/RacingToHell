@@ -22,7 +22,7 @@ static GLint u_texture_unit_location;
 
 void setupOpenGL(VideoBuffer *videoBuffer);
 
-GLuint createVertexBufferObject(const GLsizeiptr size, const GLvoid *data, const GLenum usage);
+GLuint createVBO(const GLsizeiptr size, const GLvoid *data, const GLenum usage);
 
 GLuint buildProgramFromAssets(const char *vertex_shader_path, const char *fragment_shader_path);
 

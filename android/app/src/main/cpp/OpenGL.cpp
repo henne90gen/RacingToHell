@@ -112,7 +112,7 @@ void setupOpenGL(VideoBuffer *videoBuffer) {
     rth_log("Setting up OpenGL");
 
     texture = loadTexture(videoBuffer->width, videoBuffer->height, GL_RGBA, videoBuffer->content);
-    buffer = createVertexBufferObject(sizeof(rect), rect, GL_STATIC_DRAW);
+    buffer = createVBO(sizeof(rect), rect, GL_STATIC_DRAW);
 
     program = buildProgram();
 

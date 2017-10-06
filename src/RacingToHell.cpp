@@ -25,7 +25,11 @@ extern "C"
 UPDATE_AND_RENDER(updateAndRender) {
 	beginFrame(memory, input);
 
+	textDemo(memory, input, AtomPlane::BACKGROUND);
+
 	followingCarDemo(memory, input);
+
+	animationDemo(memory, AtomPlane::MENU);
 
 	Render::flushBuffer(memory);
 }

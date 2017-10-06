@@ -109,16 +109,16 @@ void updatePlayer(Input *input, GameState *gameState) {
 	}
 
 	// movement
-	gameState->player.speed += speed;
-	if (gameState->player.speed > PLAYER_SPEED) {
-		gameState->player.speed = PLAYER_SPEED;
-	} else if (gameState->player.speed < -PLAYER_SPEED) {
-		gameState->player.speed = -PLAYER_SPEED;
-	}
-	gameState->player.direction = Math::normalize(
-			Math::rotate(gameState->player.direction, direction));
-	gameState->player.position = gameState->player.position
-			+ gameState->player.direction * gameState->player.speed;
+//	gameState->player.speed += speed;
+//	if (gameState->player.speed > PLAYER_SPEED) {
+//		gameState->player.speed = PLAYER_SPEED;
+//	} else if (gameState->player.speed < -PLAYER_SPEED) {
+//		gameState->player.speed = -PLAYER_SPEED;
+//	}
+//	gameState->player.direction = Math::normalize(
+//			Math::rotate(gameState->player.direction, direction));
+//	gameState->player.position = gameState->player.position
+//			+ gameState->player.direction * gameState->player.speed;
 //	printf("Player position: %f, %f\n", gameState->player.position.x,
 //			gameState->player.position.y);
 //	printf("Player direction: %f, %f\n", gameState->player.direction.x,

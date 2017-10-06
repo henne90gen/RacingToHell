@@ -45,6 +45,8 @@ void loadCharacter(GameMemory* memory, FT_Face face, char loadCharacter,
 
 	newCharacter.texture.width = face->glyph->bitmap.width;
 	newCharacter.texture.height = face->glyph->bitmap.rows;
+	newCharacter.texture.xDivision = 1;
+	newCharacter.texture.yDivision = 1;
 
 	newCharacter.size = Math::Vector2f(newCharacter.texture.width,
 			newCharacter.texture.height) * scale;
@@ -71,6 +73,7 @@ void loadCharacter(GameMemory* memory, FT_Face face, char loadCharacter,
 
 	unsigned bitmapSizeInPixel = newCharacter.texture.width
 			* newCharacter.texture.height;
+
 	void* content = reserveTemporaryMemory(memory, bitmapSizeInPixel * 4);
 	uint8_t* src = face->glyph->bitmap.buffer;
 	uint32_t* dest = (uint32_t*) content;
@@ -231,9 +234,9 @@ void resetGameState(GameState *gameState) {
 	gameState->player = {};
 	gameState->player.position = Math::Vector2f(0, 0);
 	gameState->player.size = Math::Vector2f(0.05f, 0.10f);
-	gameState->player.direction = Math::Vector2f(1, 0);
+//	gameState->player.direction = Math::Vector2f(1, 0);
 // TODO balance speed
-	gameState->player.speed = 0;
+//	gameState->player.speed = 0;
 	gameState->player.maxSpeed = PLAYER_SPEED;
 // TODO balance health
 	gameState->player.health = 10;

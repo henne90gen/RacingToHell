@@ -76,7 +76,7 @@ void loadMenu(GameMemory *memory, MenuState menuState) {
 
 	switch (menuState) {
 	case MenuState::MAIN:
-		gameState->player.speed = 0;
+//		gameState->player.speed = 0;
 		loadMainMenu(gameState);
 		break;
 	case MenuState::PAUSE:
@@ -233,7 +233,7 @@ void changeMenuItemSelection(Menu *menu, int direction) {
 }
 
 void changeCarSelection(GameState *gameState, int direction) {
-	gameState->player.speed = PLAYER_SPEED;
+//	gameState->player.speed = PLAYER_SPEED;
 	gameState->player.nextCarIndex += direction;
 	if (gameState->player.nextCarIndex < 0) {
 		gameState->player.nextCarIndex = NUM_PLAYER_TEXTURES - 1;

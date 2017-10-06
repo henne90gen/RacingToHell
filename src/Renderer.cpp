@@ -17,7 +17,7 @@ void clearScreen(uint32_t color) {
  */
 void texture(GameState *gameState, Texture *texture, Math::Vector2f position,
 		Math::Vector2f size, Math::Vector2f direction, int tileIndex,
-		uint8_t colorMode = 0, uint32_t color = 0) {
+		uint8_t colorMode, uint32_t color) {
 	size = size * 0.5;
 	Math::Vector2f bottomLeft = Math::Vector2f(-size.x, -size.y);
 	Math::Vector2f topLeft = Math::Vector2f(-size.x, size.y);
@@ -55,7 +55,10 @@ void texture(GameState *gameState, Texture *texture, Math::Vector2f position,
 					topRight.x, topRight.y, r, g, b, a, texTR.x, texTR.y //
 			};
 
-	GLuint coordinatesBuffer = createVBO(sizeof(coordinates), coordinates,
+	GLuint coordinatesBuffer;
+	glGenBuffers(1, &coordinatesBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, coordinatesBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(coordinates), coordinates,
 	GL_STATIC_DRAW);
 
 	GLuint positionLocation = glGetAttribLocation(gameState->glProgram,
@@ -75,23 +78,28 @@ void texture(GameState *gameState, Texture *texture, Math::Vector2f position,
 
 	glBindBuffer(GL_ARRAY_BUFFER, coordinatesBuffer);
 
-	std::size_t stride = 8 * sizeof(GL_FLOAT);
+	GLuint stride = 8 * sizeof(GL_FLOAT);
 
+	glEnableVertexAttribArray(positionLocation);
 	glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, stride,
 			BUFFER_OFFSET(0));
+
+	glEnableVertexAttribArray(colorLocation);
 	glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, stride,
 			BUFFER_OFFSET(2 * sizeof(GL_FLOAT)));
+
+	glEnableVertexAttribArray(textureCoordinatesLocation);
 	glVertexAttribPointer(textureCoordinatesLocation, 2,
 	GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(6 * sizeof(GL_FLOAT)));
 
-	glEnableVertexAttribArray(positionLocation);
-	glEnableVertexAttribArray(colorLocation);
-	glEnableVertexAttribArray(textureCoordinatesLocation);
-
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-	glDeleteBuffers(1, &coordinatesBuffer);
+	glDisableVertexAttribArray(positionLocation);
+	glDisableVertexAttribArray(colorLocation);
+	glDisableVertexAttribArray(textureCoordinatesLocation);
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glDeleteBuffers(1, &coordinatesBuffer);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -100,11 +108,10 @@ void character(GameState *gameState, char character, Math::Vector2f position,
 	Render::Character* c = getCharacter(gameState, character, fontSize);
 
 	position = position + c->bearing;
-
 	position = position + (c->size * 0.5);
 
 	texture(gameState, &c->texture, position, c->size, Math::Vector2f(0.0, 1.0),
-			1, color);
+			0, 1, color);
 }
 
 /**
@@ -139,8 +146,8 @@ void triangle(GameState *gameState, Math::Vector2f point1,
 	float b = ((color & 0x0000ff00) >> 8) / 255.0f;
 	float a = (color & 0x000000ff) / 255.0f;
 
-	// holds the screen coordinates with their associated texture coordinates
-	const float coordinates[] = { point1.x, point1.y, r, g, b, a, //
+	// holds the screen coordinates with their associated colors
+	float coordinates[] = { point1.x, point1.y, r, g, b, a, //
 			point2.x, point2.y, r, g, b, a, //
 			point3.x, point3.y, r, g, b, a, //
 			};
@@ -161,17 +168,21 @@ void triangle(GameState *gameState, Math::Vector2f point1,
 
 	GLuint stride = 6 * sizeof(GL_FLOAT);
 
+	glEnableVertexAttribArray(positionLocation);
 	glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, stride,
 			BUFFER_OFFSET(0));
+
+	glEnableVertexAttribArray(colorLocation);
 	glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, stride,
 			BUFFER_OFFSET(2 * sizeof(GL_FLOAT)));
-	glEnableVertexAttribArray(positionLocation);
-	glEnableVertexAttribArray(colorLocation);
 
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 
-	glDeleteBuffers(1, &coordinatesBuffer);
+	glDisableVertexAttribArray(positionLocation);
+	glDisableVertexAttribArray(colorLocation);
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glDeleteBuffers(1, &coordinatesBuffer);
 }
 
 /**
@@ -194,13 +205,17 @@ void rectangle(GameState *gameState, Math::Rectangle rect, uint32_t color) {
 	float a = (color & 0x000000ff) / 255.0f;
 
 	// holds the screen coordinates with their associated texture coordinates
-	const float coordinates[] = { bottomLeft.x, bottomLeft.y, r, g, b, a, //
-			topLeft.x, topLeft.y, r, g, b, a, //
-			bottomRight.x, bottomRight.y, r, g, b, a, //
-			topRight.x, topRight.y, r, g, b, a, //
+	const float coordinates[] = { //
+			bottomLeft.x, bottomLeft.y, r, g, b, a, //
+					topLeft.x, topLeft.y, r, g, b, a, //
+					bottomRight.x, bottomRight.y, r, g, b, a,  //
+					topRight.x, topRight.y, r, g, b, a, //
 			};
 
-	GLuint coordinatesBuffer = createVBO(sizeof(coordinates), coordinates,
+	GLuint coordinatesBuffer;
+	glGenBuffers(1, &coordinatesBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, coordinatesBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(coordinates), coordinates,
 	GL_STATIC_DRAW);
 
 	GLuint positionLocation = glGetAttribLocation(gameState->glProgram,
@@ -216,24 +231,28 @@ void rectangle(GameState *gameState, Math::Rectangle rect, uint32_t color) {
 
 	GLuint stride = 6 * sizeof(GL_FLOAT);
 
+	glEnableVertexAttribArray(positionLocation);
 	glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, stride,
 			BUFFER_OFFSET(0));
+
+	glEnableVertexAttribArray(colorLocation);
 	glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, stride,
 			BUFFER_OFFSET(2 * sizeof(GL_FLOAT)));
 
-	glEnableVertexAttribArray(positionLocation);
-	glEnableVertexAttribArray(colorLocation);
-
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-	glDeleteBuffers(1, &coordinatesBuffer);
+	glDisableVertexAttribArray(positionLocation);
+	glDisableVertexAttribArray(colorLocation);
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glDeleteBuffers(1, &coordinatesBuffer);
 }
 
 void circle(GameState *gameState, Math::Vector2f position, float radius,
 		uint32_t color) {
 	texture(gameState, &gameState->resources.bulletTexture, position,
-			Math::Vector2f(radius, radius), Math::Vector2f(1.0, 0.0), 1, color);
+			Math::Vector2f(radius, radius), Math::Vector2f(1.0, 0.0), 0, 1,
+			color);
 }
 
 RenderAtom* pushRenderAtom(GameState *gameState, AtomType type, float plane) {
@@ -323,18 +342,20 @@ void pushText(GameState *gameState, std::string text, Math::Vector2f position,
 		}
 		unsigned numChars = 50;
 		if (text.size() < numChars) {
-			numChars = text.size();
+			numChars = text.size() + 1;
 		}
-		for (unsigned i = 0; i < numChars; i++) {
+		for (unsigned i = 0; i < numChars - 1; i++) {
 			atom->content.text.characters[i] = text[i];
 		}
+		atom->content.text.characters[numChars - 1] = '\0';
+
 		atom->content.text.position = position;
 		atom->content.text.fontSize = fontSize;
 		atom->content.text.color = color;
 		if (text.size() >= 50) {
-			std::string tmp = text.substr(0, 50);
+			std::string tmp = text.substr(0, 49);
 			position.x += calculateTextLength(gameState, tmp, fontSize);
-			text = text.substr(50);
+			text = text.substr(49);
 		} else {
 			return;
 		}
@@ -368,25 +389,36 @@ void sortRenderAtoms(GameState *gameState, int left = -1, int right = -1) {
 
 	RenderAtom *pivot =
 			&gameState->renderGroup.renderAtoms[(int) ((left + right) / 2)];
-	int i = left - 1;
-	int j = right + 1;
+	int i = left;
+	int j = right;
 
-	while (true) {
-		do {
+	do {
+		while (gameState->renderGroup.renderAtoms[i].plane < pivot->plane) {
 			i++;
-		} while (gameState->renderGroup.renderAtoms[i].plane < pivot->plane);
-		do {
-			j--;
-		} while (gameState->renderGroup.renderAtoms[j].plane > pivot->plane);
-
-		if (i >= j) {
-			pivot = &gameState->renderGroup.renderAtoms[j];
-			break;
 		}
+		while (gameState->renderGroup.renderAtoms[j].plane > pivot->plane) {
+			j--;
+		}
+		if (i <= j) {
+			RenderAtom tmp = { };
+			std::memcpy(&tmp, &gameState->renderGroup.renderAtoms[i],
+					sizeof(RenderAtom));
+			std::memcpy(&gameState->renderGroup.renderAtoms[i],
+					&gameState->renderGroup.renderAtoms[j], sizeof(RenderAtom));
+			std::memcpy(&gameState->renderGroup.renderAtoms[j], &tmp,
+					sizeof(RenderAtom));
+			i++;
+			j--;
+		}
+	} while (i <= j);
+
+	if (left < j) {
+		sortRenderAtoms(gameState, left, j);
+	}
+	if (right > i) {
+		sortRenderAtoms(gameState, i, right);
 	}
 
-	sortRenderAtoms(gameState, left, j);
-	sortRenderAtoms(gameState, j + 1, right);
 }
 
 void flushBuffer(GameMemory *memory) {
@@ -397,6 +429,7 @@ void flushBuffer(GameMemory *memory) {
 #if RENDER_DEBUG
 	int rects = 0, tris = 0, texts = 0, textures = 0, circles = 0, scales = 0,
 	noscales = 0;
+	std::string ordering = "";
 #endif
 
 	for (unsigned i = 0; i < gameState->renderGroup.count; i++) {
@@ -405,6 +438,7 @@ void flushBuffer(GameMemory *memory) {
 		case AtomType::RECTANGLE: {
 #if RENDER_DEBUG
 			rects++;
+			ordering += " re";
 #endif
 			Rectangle *r = &atom->content.rect;
 			Render::rectangle(gameState, r->dimensions, r->color);
@@ -413,6 +447,7 @@ void flushBuffer(GameMemory *memory) {
 		case AtomType::TRIANGLE: {
 #if RENDER_DEBUG
 			tris++;
+			ordering += " tr";
 #endif
 			Triangle *t = &atom->content.triangle;
 			Render::triangle(gameState, t->p1, t->p2, t->p3, t->color);
@@ -421,24 +456,28 @@ void flushBuffer(GameMemory *memory) {
 		case AtomType::TEXT: {
 #if RENDER_DEBUG
 			texts++;
+			ordering += " te";
 #endif
 			Text *t = &atom->content.text;
-			Render::text(gameState, t->characters, t->position, t->fontSize,
+			std::string textString = std::string(t->characters);
+			Render::text(gameState, textString, t->position, t->fontSize,
 					t->color);
 		}
 			break;
 		case AtomType::TEXTURE: {
 #if RENDER_DEBUG
 			textures++;
+			ordering += " tr";
 #endif
 			TextureRectangle tr = atom->content.textureRect;
 			Render::texture(gameState, &tr.texture, tr.dimensions.position,
-					tr.dimensions.size, tr.direction, tr.tileIndex);
+					tr.dimensions.size, tr.direction, tr.tileIndex, 0, 0);
 		}
 			break;
 		case AtomType::CIRCLE: {
 #if RENDER_DEBUG
 			circles++;
+			ordering += " ci";
 #endif
 			Circle c = atom->content.circle;
 			Render::circle(gameState, c.position, c.radius, c.color);
@@ -447,12 +486,14 @@ void flushBuffer(GameMemory *memory) {
 		case AtomType::SCALE:
 #if RENDER_DEBUG
 			scales++;
+			ordering += " sc";
 #endif
 			scaleView(gameState);
 			break;
 		case AtomType::NOSCALE:
 #if RENDER_DEBUG
 			noscales++;
+			ordering += " ns";
 #endif
 			setScaleToIdentity(gameState);
 			break;
@@ -461,7 +502,7 @@ void flushBuffer(GameMemory *memory) {
 
 #if RENDER_DEBUG
 	memory->log("RenderAtoms: " + std::to_string(gameState->renderGroup.count));
-	std::string msg;
+	memory->log("Ordering:" + ordering);
 	memory->log("Statistics: ");
 	memory->log("\tRectangles: " + std::to_string(rects));
 	memory->log("\tTriangles: " + std::to_string(tris));
@@ -470,8 +511,9 @@ void flushBuffer(GameMemory *memory) {
 	memory->log("\tTextures: " + std::to_string(textures));
 	memory->log("\tScales: " + std::to_string(scales));
 	memory->log("\tNoScales: " + std::to_string(noscales));
-	memory->log(msg);
+	memory->log("");
 
+	std::string msg;
 	GLenum err;
 	while ((err = glGetError()) != GL_NO_ERROR) {
 		switch (err) {

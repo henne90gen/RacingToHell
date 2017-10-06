@@ -37,9 +37,9 @@ struct Input {
 };
 
 struct Player {
-	Math::Vector2f position, direction, size;
+	Math::Vector2f position, direction, velocity, acceleration, size;
 	int8_t carIndex, nextCarIndex;
-	double speed, maxSpeed;
+	double maxSpeed;
 	int32_t health, maxHealth, energy, maxEnergy;
 };
 
@@ -185,6 +185,9 @@ struct GameState {
 	unsigned menuCount, activeMenuIndex;
 
 	Player player;
+
+	Player agents[1000];
+	int agentCount;
 
 	Boss boss;
 

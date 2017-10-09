@@ -299,6 +299,7 @@ void init(GameMemory *memory) {
 
 	// setting up OpenGL
 	gameState->scale = 1.0f;
+	gameState->rotationAngle = 0.0f;
 	initOpenGL(memory);
 
 	// setting up font system

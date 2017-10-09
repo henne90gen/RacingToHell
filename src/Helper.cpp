@@ -207,6 +207,16 @@ void resizeView(GameMemory* memory) {
 			&aspectRatioMatrix[0]);
 }
 
+void rotateView(GameState *gameState) {
+    GLfloat rotationMatrix[16] = {cos(gameState->rotationAngle), sin(gameState->rotationAngle), 0, 0, //
+                                  -sin(gameState->rotationAngle), cos(gameState->rotationAngle), 0, 0, //
+                                  0, 0, 1.0, 0, //
+                                  0, 0, 0, 1.0};
+    GLint rotationMatrixLocation = glGetUniformLocation(
+            gameState->glProgram, "u_RotationMatrix");
+    glUniformMatrix4fv(rotationMatrixLocation, 1, GL_FALSE, rotationMatrix);
+}
+
 void initOpenGL(GameMemory* memory) {
 	GameState *gameState = getGameState(memory);
 
@@ -220,6 +230,7 @@ void initOpenGL(GameMemory* memory) {
 
 	resizeView(memory);
 	scaleView(gameState);
+	rotateView(gameState);
 }
 
 void checkShaders(GameMemory* memory) {

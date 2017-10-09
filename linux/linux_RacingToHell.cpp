@@ -176,10 +176,6 @@ GraphicsData initGraphicsData() {
 		abort("Failed to initialize GLEW.");
 	}
 
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	XGetWindowAttributes(graphics.display, graphics.window, &graphics.gwa);
 	glViewport(0, 0, graphics.gwa.width, graphics.gwa.height);
 
@@ -639,8 +635,7 @@ void unloadGameCode(GameCode *code) {
 GameMemory initGameMemory() {
 	GameMemory memory = { };
 	memory.doResize = true;
-	memory.aspectRatio = 16.0 / 9.0;
-	memory.stretch = false;
+	memory.aspectRatio = 16.0f / 9.0f;
 
 	memory.abort = abort;
 	memory.log = rth_log;

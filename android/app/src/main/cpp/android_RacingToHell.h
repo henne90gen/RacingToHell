@@ -6,14 +6,12 @@
 #include <stdlib.h>
 #include <cstdlib>
 #include <RacingToHell.h>
-#include "OpenGL.h"
 
 #define UNUSED  __attribute__((unused))
 #define LOG_TAG "RacingToHell"
 
 static AAssetManager *asset_manager;
 static GameMemory memory;
-static VideoBuffer videoBuffer;
 static Input gameInput = {};
 static bool memoryInitialized = false;
 static int realWindowWidth, realWindowHeight;

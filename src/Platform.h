@@ -75,7 +75,6 @@ struct GameMemory {
 
 	float aspectRatio;
 	bool doResize;
-	bool stretch = false;
 
 	time_t shaderModTimes[2][2];
 	char shaderFileNames[2][100];

@@ -55,9 +55,11 @@ void texture(GameState *gameState, Texture *texture, Math::Vector2f position,
 					topRight.x, topRight.y, r, g, b, a, texTR.x, texTR.y //
 			};
 
-	GLuint coordinatesBuffer;
-	glGenBuffers(1, &coordinatesBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, coordinatesBuffer);
+	static GLuint coordinatesBufferID;
+	if (!coordinatesBufferID) {
+		glGenBuffers(1, &coordinatesBufferID);
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, coordinatesBufferID);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(coordinates), coordinates,
 	GL_STATIC_DRAW);
 
@@ -75,8 +77,6 @@ void texture(GameState *gameState, Texture *texture, Math::Vector2f position,
 	glBindTexture(GL_TEXTURE_2D, texture->id);
 	glUniform1i(textureUnitLocation, 0);
 	glUniform1i(colorSourceLocation, colorMode);
-
-	glBindBuffer(GL_ARRAY_BUFFER, coordinatesBuffer);
 
 	GLuint stride = 8 * sizeof(GL_FLOAT);
 
@@ -99,7 +99,6 @@ void texture(GameState *gameState, Texture *texture, Math::Vector2f position,
 	glDisableVertexAttribArray(textureCoordinatesLocation);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glDeleteBuffers(1, &coordinatesBuffer);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -152,7 +151,12 @@ void triangle(GameState *gameState, Math::Vector2f point1,
 			point3.x, point3.y, r, g, b, a, //
 			};
 
-	GLuint coordinatesBuffer = createVBO(sizeof(coordinates), coordinates,
+	static GLuint coordinatesBufferID;
+	if (!coordinatesBufferID) {
+		glGenBuffers(1, &coordinatesBufferID);
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, coordinatesBufferID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(coordinates), coordinates,
 	GL_STATIC_DRAW);
 
 	GLuint positionLocation = glGetAttribLocation(gameState->glProgram,
@@ -163,8 +167,6 @@ void triangle(GameState *gameState, Math::Vector2f point1,
 
 	// rectangle supplies it's own color
 	glUniform1i(colorSourceLocation, 2);
-
-	glBindBuffer(GL_ARRAY_BUFFER, coordinatesBuffer);
 
 	GLuint stride = 6 * sizeof(GL_FLOAT);
 
@@ -182,7 +184,6 @@ void triangle(GameState *gameState, Math::Vector2f point1,
 	glDisableVertexAttribArray(colorLocation);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glDeleteBuffers(1, &coordinatesBuffer);
 }
 
 /**
@@ -212,9 +213,11 @@ void rectangle(GameState *gameState, Math::Rectangle rect, uint32_t color) {
 					topRight.x, topRight.y, r, g, b, a, //
 			};
 
-	GLuint coordinatesBuffer;
-	glGenBuffers(1, &coordinatesBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, coordinatesBuffer);
+	static GLuint coordinatesBufferID;
+	if (!coordinatesBufferID) {
+		glGenBuffers(1, &coordinatesBufferID);
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, coordinatesBufferID);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(coordinates), coordinates,
 	GL_STATIC_DRAW);
 
@@ -226,8 +229,6 @@ void rectangle(GameState *gameState, Math::Rectangle rect, uint32_t color) {
 
 	// rectangle supplies it's own color
 	glUniform1i(colorSourceLocation, 2);
-
-	glBindBuffer(GL_ARRAY_BUFFER, coordinatesBuffer);
 
 	GLuint stride = 6 * sizeof(GL_FLOAT);
 
@@ -245,7 +246,6 @@ void rectangle(GameState *gameState, Math::Rectangle rect, uint32_t color) {
 	glDisableVertexAttribArray(colorLocation);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glDeleteBuffers(1, &coordinatesBuffer);
 }
 
 void circle(GameState *gameState, Math::Vector2f position, float radius,

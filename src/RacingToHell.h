@@ -164,6 +164,7 @@ struct RenderGroup {
 
 struct GameState {
 	GLuint glProgram;
+	float rotationAngle;
 	float scale;
 
 	Sound::PlayingSound playingSounds[256];

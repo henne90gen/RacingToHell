@@ -29,22 +29,20 @@ Java_game_racingtohell_NativeWrapper_on_1surface_1changed(JNIEnv *env UNUSED, jc
             memory.shaderFileNames[1][i] = fragmentShaderFileName[i];
         }
 
+        memory.doResize = true;
+        memory.aspectRatio = 16.0f / 9.0f;
+
         memoryInitialized = true;
     }
 
+    // cause shaders to recompile
+    memory.shaderModTimes[0][0] = 0;
+    memory.shaderModTimes[0][1] = 1;
+    memory.shaderModTimes[1][0] = 0;
+    memory.shaderModTimes[1][1] = 1;
+
     realWindowWidth = width;
     realWindowHeight = height;
-//    setupOpenGL(&videoBuffer);
-}
-
-bool inControlCircle(float x, float y) {
-    return x > DEFAULT_WINDOW_WIDTH / 2 && y > DEFAULT_WINDOW_HEIGHT / 4 * 3;
-}
-
-float getAngleInControlCircle(float x, float y) {
-    Math::Vector2f midPoint = {DEFAULT_WINDOW_WIDTH / 4 * 3, DEFAULT_WINDOW_HEIGHT / 8 * 7};
-    Math::Vector2f diff = midPoint - (Math::Vector2f) {x, y};
-    return atan2(diff.y, diff.x);
 }
 
 extern "C"
@@ -61,55 +59,6 @@ Java_game_racingtohell_NativeWrapper_on_1touch_1event(JNIEnv *env UNUSED, jclass
     gameInput.downKeyPressed = 0;
     gameInput.shootKeyClicked = 0;
     gameInput.shootKeyPressed = 0;
-
-    if (inControlCircle(x, y)) {
-        float angle = getAngleInControlCircle(x, y);
-        // TODO enable top-left, top-right etc.
-        if ((angle < PI / 4 && angle > 0) || (angle > -PI / 4 && angle < 0)) {
-            gameInput.leftKeyPressed = pressed;
-        } else if (angle > PI / 4 && angle < PI / 4 * 3) {
-            gameInput.upKeyPressed = pressed;
-        } else if (angle > PI / 4 * 3 || angle < -PI / 4 * 3) {
-            gameInput.rightKeyPressed = pressed;
-        } else if (angle < -PI / 4 && angle > -PI / 4 * 3) {
-            gameInput.downKeyPressed = pressed;
-        }
-    } else {
-        gameInput.shootKeyClicked = pressed;
-        gameInput.shootKeyPressed = pressed;
-        gameInput.enterKeyClicked = pressed;
-        gameInput.enterKeyPressed = pressed;
-        gameInput.mousePosition = Math::Vector2f {x, y};
-    }
-}
-
-void drawTriangle(GLfloat vertices[]) {
-    static GLuint triangleProgram = buildTriangleProgram();
-    glUseProgram(triangleProgram);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, vertices);
-    glEnableVertexAttribArray(0);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-}
-
-void renderControls() {
-    // TODO refine triangles
-    GLfloat topTriangle[] = {0.0f, -0.5f, 0.0f,
-                             1.0f, -0.5f, 0.0f,
-                             0.5f, -0.75f, 0.0f};
-    GLfloat rightTriangle[] = {1.0f, -0.5f, 0.0f,
-                               1.0f, -1.0f, 0.0f,
-                               0.5f, -0.75f, 0.0f};
-    GLfloat bottomTriangle[] = {1.0f, -1.0f, 0.0f,
-                                0.0f, -1.0f, 0.0f,
-                                0.5f, -0.75f, 0.0f};
-    GLfloat leftTriangle[] = {0.0f, -1.0f, 0.0f,
-                              0.0f, -0.5f, 0.0f,
-                              0.5f, -0.75f, 0.0f};
-
-    drawTriangle(topTriangle);
-    drawTriangle(rightTriangle);
-    drawTriangle(bottomTriangle);
-    drawTriangle(leftTriangle);
 }
 
 extern "C"
@@ -117,10 +66,15 @@ JNIEXPORT void JNICALL
 Java_game_racingtohell_NativeWrapper_on_1draw_1frame(JNIEnv *env UNUSED, jclass clazz UNUSED) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    GameState *gameState = getGameState(&memory);
+    gameState->rotationAngle = PI / 2;
+
     updateAndRender(&gameInput, &memory);
 
-//    swapBuffers(&videoBuffer);
-    renderControls();
+    memory.shaderModTimes[0][0] = 0;
+    memory.shaderModTimes[0][1] = 0;
+    memory.shaderModTimes[1][0] = 0;
+    memory.shaderModTimes[1][1] = 0;
 }
 
 extern "C"

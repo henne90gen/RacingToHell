@@ -1,0 +1,28 @@
+var searchData=
+[
+  ['background',['BACKGROUND',['../RacingToHell_8h.html#adaaed1041e2548a32356df31e79c0eb2aa44b734476c2f3d073ee7aca08660a0e',1,'RacingToHell.h']]],
+  ['bearing',['bearing',['../structRender_1_1Character.html#a01c4f4e34e2f2064522e23c322d2d593',1,'Render::Character']]],
+  ['beginframe',['beginFrame',['../Helper_8cpp.html#a3176d9ec66cf6e4429c349b835f84371',1,'Helper.cpp']]],
+  ['bitmapheader',['BitmapHeader',['../structBitmapHeader.html',1,'']]],
+  ['bitsperpixel',['bitsPerPixel',['../structBitmapHeader.html#aead04d141e7e83c61631a11fef54e5ea',1,'BitmapHeader']]],
+  ['bitspersample',['bitsPerSample',['../structSound_1_1WaveFormat.html#ac6dd42428aa5dc84384ec93ce4b047ff',1,'Sound::WaveFormat']]],
+  ['blockalign',['blockAlign',['../structSound_1_1WaveFormat.html#a6caaa23c2d51a8b744479a2fc4a3f2c7',1,'Sound::WaveFormat']]],
+  ['boss',['Boss',['../structBoss.html',1,'Boss'],['../structGameState.html#a10376b48eab0d0e33bf4b85ff7cfbb98',1,'GameState::boss()']]],
+  ['boss_2ecpp',['Boss.cpp',['../Boss_8cpp.html',1,'']]],
+  ['bosstype',['BossType',['../RacingToHell_8h.html#af75f53750ffcde869545d08348fb7f96',1,'RacingToHell.h']]],
+  ['bouncy',['bouncy',['../structMenuItem.html#a58cd4b7e3826d2961bd1e521cb348358',1,'MenuItem']]],
+  ['buffer',['buffer',['../structAudioData.html#a3d397e407e0c778bc6e878bede78d3db',1,'AudioData']]],
+  ['buffer_5foffset',['BUFFER_OFFSET',['../RacingToHell_8h.html#a063a3af905ecefe83d76ca3f0fe0653e',1,'RacingToHell.h']]],
+  ['buffer_5fsize_5fin_5fbytes',['buffer_size_in_bytes',['../structAudioData.html#a4eaa83d74a434ba76dd7d8e237c2185e',1,'AudioData']]],
+  ['buffer_5fsize_5fin_5fsamples',['buffer_size_in_samples',['../structAudioData.html#a8831aa32d7356722e716675274aa4cf3',1,'AudioData']]],
+  ['buildexepathfilename',['buildExePathFilename',['../win32__RacingToHell_8cpp.html#a7b0354965c7add4b04e03e6fefdbb0f6',1,'win32_RacingToHell.cpp']]],
+  ['buildprogram',['buildProgram',['../Helper_8cpp.html#a4c6c84050d9a8da142f674e3acd8698f',1,'Helper.cpp']]],
+  ['bullet',['Bullet',['../structBullet.html',1,'']]],
+  ['bulletfrequency',['bulletFrequency',['../structBoss.html#a88c298993f1eb92bb5183c83bf710eaa',1,'Boss::bulletFrequency()'],['../structGameState.html#a46b4873a5d44e73f4105d68da22817ab',1,'GameState::bulletFrequency()']]],
+  ['bulletspeed',['bulletSpeed',['../structGameState.html#a0523e9332f37b3b474418056aff33921',1,'GameState']]],
+  ['bullettexture',['bulletTexture',['../structResources.html#a443d3033addd268d2d79b0c39403a991',1,'Resources']]],
+  ['byterate',['byteRate',['../structSound_1_1WaveFormat.html#a193c5487435f5f639bdcb8572ac99eed',1,'Sound::WaveFormat']]],
+  ['bytes_5fper_5fsample',['bytes_per_sample',['../structAudioData.html#a782e20fbcab076bb6c5dff8fc4646a29',1,'AudioData']]],
+  ['bytesperpixel',['bytesPerPixel',['../structVideoBuffer.html#a61605f83bb83705b19710c3bf8473b1c',1,'VideoBuffer::bytesPerPixel()'],['../structRender_1_1Texture.html#a0c2b274935c493739e4cd43b034f53f2',1,'Render::Texture::bytesPerPixel()'],['../structOffscreenBuffer.html#a1d566bfb8b2a41452df3f15a2073789c',1,'OffscreenBuffer::bytesPerPixel()']]],
+  ['bytespersample',['bytesPerSample',['../structSoundOutput.html#a4aff11e4a6e01f69db54444e601d75ac',1,'SoundOutput']]]
+];

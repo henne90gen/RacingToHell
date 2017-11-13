@@ -13,13 +13,14 @@ EXTENSION := .out
 CLEAN_CMD := rm -rf bin
 GCC_LINKER := -ldl -lfreetype -lXxf86vm -lXext -lX11 -lasound -lGLEW -lGLU -lGL
 GCC_INCLUDES := -Iinclude -Isrc
-GCC_FLAGS := -Wall -g -O0 -march=athlon64 # not sure how to make this system independent
+GCC_FLAGS := -Wall -g -O0 -std=c++11 -march=athlon64 # not sure how to make this system independent
+COMPILER := clang++
 
 all: setup game_code
-	g++ $(GCC_FLAGS) $(GCC_INCLUDES) $(PLATFORM_FLAGS) $(PLATFORM_FILE) -o bin/RacingToHell$(EXTENSION) $(GCC_LINKER)
+	$(COMPILER) $(GCC_FLAGS) $(GCC_INCLUDES) $(PLATFORM_FLAGS) $(PLATFORM_FILE) -o bin/RacingToHell$(EXTENSION) $(GCC_LINKER)
 
 game_code: setup
-	g++ $(GCC_FLAGS) -shared -fPIC $(GCC_INCLUDES) src/RacingToHell.cpp -o librth.so.new -lfreetype
+	$(COMPILER) $(GCC_FLAGS) -shared -fPIC $(GCC_INCLUDES) src/RacingToHell.cpp -o librth.so.new -lfreetype
 	mv -f librth.so.new bin/librth.so
 
 setup:

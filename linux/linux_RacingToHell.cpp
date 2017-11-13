@@ -277,7 +277,7 @@ LOG(rth_log) {
  * Returns the time in nanoseconds that has passed since the program start
  */
 QUERY_TIME(queryTime) {
-	timespec time = {};
+	timespec time = { };
 	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time);
 	return time.tv_nsec + 1000000000 * time.tv_sec;
 }
@@ -590,10 +590,15 @@ void swapSoundBuffers(AudioData *audio, GameMemory *memory) {
  */
 GameCode loadGameCode() {
 	rth_log("Loading GameCode.");
+	const char* gamecodeFilename = "./librth.so";
+	if (access(gamecodeFilename, F_OK | R_OK) != 0) {
+		abort("File for game code library could not be found.");
+	}
+
 	GameCode result = { };
 
 	struct stat statbuf = { };
-	uint32_t stat_result = stat("./librth.so", &statbuf);
+	uint32_t stat_result = stat(gamecodeFilename, &statbuf);
 	if (stat_result != 0) {
 		abort("Failed to read modification time of game code library.");
 	}

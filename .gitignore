@@ -10,3 +10,4 @@ doc
 *.exe
 librth.so
 rth.dll
+build/

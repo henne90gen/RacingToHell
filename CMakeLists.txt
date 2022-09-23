@@ -1,0 +1,73 @@
+cmake_minimum_required(VERSION 3.20)
+
+project(RacingToHell)
+
+# Third Party Dependencies
+set(BENCHMARK_ENABLE_TESTING OFF)
+set(BENCHMARK_ENABLE_INSTALL OFF)
+set(BENCHMARK_INSTALL_DOCS OFF)
+set(BUILD_GMOCK OFF)
+set(INSTALL_GTEST OFF)
+set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
+
+include(FetchContent)
+FetchContent_Declare(
+    spdlog
+    GIT_REPOSITORY https://github.com/gabime/spdlog.git
+    GIT_TAG 76fb40d95455f249bd70824ecfcae7a8f0930fa3 # v1.10.0
+)
+FetchContent_Declare(
+    benchmark
+    GIT_REPOSITORY https://github.com/google/benchmark.git
+    GIT_TAG 0d98dba29d66e93259db7daa53a9327df767a415 # v1.6.1
+)
+FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG e2239ee6043f73722e7aa812a459f54a28552929 # release-1.11.0
+)
+FetchContent_Declare(
+    glfw
+    GIT_REPOSITORY https://github.com/glfw/glfw.git
+    GIT_TAG 7482de6071d21db77a7236155da44c172a7f6c9e # 3.3.8
+)
+FetchContent_Declare(
+    imgui
+    GIT_REPOSITORY https://github.com/ocornut/imgui.git
+    GIT_TAG 9aae45eb4a05a5a1f96be1ef37eb503a12ceb889 # v1.88
+)
+FetchContent_Declare(
+    glm
+    GIT_REPOSITORY https://github.com/g-truc/glm.git
+    GIT_TAG bf71a834948186f4097caa076cd2663c69a10e1e # 0.9.9.8
+)
+FetchContent_Declare(
+    freetype2
+    GIT_REPOSITORY https://github.com/aseprite/freetype2.git
+    GIT_TAG fbbcf50367403a6316a013b51690071198962920 # VER-2-10-0
+)
+
+FetchContent_MakeAvailable(
+    spdlog
+    benchmark
+    googletest
+    glfw
+    imgui
+    glm
+    freetype2
+)
+
+find_package(OpenGL REQUIRED)
+
+add_library(imgui
+    "${imgui_SOURCE_DIR}/imgui.cpp"
+    "${imgui_SOURCE_DIR}/imgui_draw.cpp"
+    "${imgui_SOURCE_DIR}/imgui_widgets.cpp"
+    "${imgui_SOURCE_DIR}/imgui_tables.cpp"
+    "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp"
+    "${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp"
+)
+target_include_directories(imgui PUBLIC "${imgui_SOURCE_DIR}")
+target_link_libraries(imgui PUBLIC glad glfw)
+
+add_subdirectory(src)

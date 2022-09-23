@@ -467,7 +467,7 @@ void flushBuffer(GameMemory *memory) {
 		case AtomType::TEXTURE: {
 #if RENDER_DEBUG
 			textures++;
-			ordering += " tr";
+			ordering += " tx";
 #endif
 			TextureRectangle tr = atom->content.textureRect;
 			Render::texture(gameState, &tr.texture, tr.dimensions.position,

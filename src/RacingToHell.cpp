@@ -1,7 +1,6 @@
 #include "RacingToHell.h"
 
 #include "Helper.cpp"
-#include "MyMath.cpp"
 #include "Memory.cpp"
 #include "Collision.cpp"
 #include "Renderer.cpp"
@@ -14,15 +13,17 @@
 /**
  * Retrieves the GameState from memory
  */
-GameState *getGameState(GameMemory *memory) {
-	if (!memory->isInitialized) {
+GameState *getGameState(GameMemory *memory)
+{
+	if (!memory->isInitialized)
+	{
 		init(memory);
 	}
-	return (GameState *) (memory->permanent);
+	return (GameState *)(memory->permanent);
 }
 
-extern "C"
-UPDATE_AND_RENDER(updateAndRender) {
+void update_and_render(Input *input, GameMemory *memory)
+{
 	beginFrame(memory, input);
 
 	textDemo(memory, input, AtomPlane::BACKGROUND);

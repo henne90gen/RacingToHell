@@ -15,14 +15,14 @@ void clearScreen(uint32_t color) {
  * tileIndex: starts in the top left and goes to the right and then down
  * colorMode: 0 for texture colors, 1 for solid color with alpha from texture
  */
-void texture(GameState *gameState, Texture *texture, Math::Vector2f position,
-		Math::Vector2f size, Math::Vector2f direction, int tileIndex,
+void texture(GameState *gameState, Texture *texture, glm::vec2 position,
+		glm::vec2 size, glm::vec2 direction, int tileIndex,
 		uint8_t colorMode, uint32_t color) {
-	size = size * 0.5;
-	Math::Vector2f bottomLeft = Math::Vector2f(-size.x, -size.y);
-	Math::Vector2f topLeft = Math::Vector2f(-size.x, size.y);
-	Math::Vector2f bottomRight = Math::Vector2f(size.x, -size.y);
-	Math::Vector2f topRight = Math::Vector2f(size.x, size.y);
+	size = size * 0.5F;
+	glm::vec2 bottomLeft = glm::vec2(-size.x, -size.y);
+	glm::vec2 topLeft = glm::vec2(-size.x, size.y);
+	glm::vec2 bottomRight = glm::vec2(size.x, -size.y);
+	glm::vec2 topRight = glm::vec2(size.x, size.y);
 
 	double angle = Math::angle(direction) - PI / 2;
 	bottomLeft = Math::rotate(bottomLeft, angle) + position;
@@ -42,10 +42,10 @@ void texture(GameState *gameState, Texture *texture, Math::Vector2f position,
 	float yStride = 1.0f / (float) texture->yDivision;
 	float x = ((float) (tileIndex % texture->xDivision)) * xStride;
 	float y = ((float) ((int) (tileIndex / texture->yDivision))) * xStride;
-	Math::Vector2f texTL = Math::Vector2f(x, y);
-	Math::Vector2f texTR = Math::Vector2f(x + xStride, y);
-	Math::Vector2f texBL = Math::Vector2f(x, y + yStride);
-	Math::Vector2f texBR = Math::Vector2f(x + xStride, y + yStride);
+	glm::vec2 texTL = glm::vec2(x, y);
+	glm::vec2 texTR = glm::vec2(x + xStride, y);
+	glm::vec2 texBL = glm::vec2(x, y + yStride);
+	glm::vec2 texBR = glm::vec2(x + xStride, y + yStride);
 
 	// holds the screen coordinates with their associated texture coordinates
 	const float coordinates[] = { //
@@ -102,14 +102,14 @@ void texture(GameState *gameState, Texture *texture, Math::Vector2f position,
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void character(GameState *gameState, char character, Math::Vector2f position,
+void character(GameState *gameState, char character, glm::vec2 position,
 		FontSize fontSize, uint32_t color) {
 	Render::Character* c = getCharacter(gameState, character, fontSize);
 
 	position = position + c->bearing;
-	position = position + (c->size * 0.5);
+	position = position + (c->size * 0.5F);
 
-	texture(gameState, &c->texture, position, c->size, Math::Vector2f(0.0, 1.0),
+	texture(gameState, &c->texture, position, c->size, glm::vec2(0.0, 1.0),
 			0, 1, color);
 }
 
@@ -118,7 +118,7 @@ void character(GameState *gameState, char character, Math::Vector2f position,
  * Position is the bottom left corner of the text.
  * fontSizeID needs to be one of the following: FontSizeSmall, FontSizeMedium or FontSizeBig.
  */
-void text(GameState *gameState, std::string text, Math::Vector2f position,
+void text(GameState *gameState, std::string text, glm::vec2 position,
 		FontSize fontSize, uint32_t color) {
 	if (text.size() == 0) {
 		return;
@@ -138,8 +138,8 @@ void text(GameState *gameState, std::string text, Math::Vector2f position,
 	}
 }
 
-void triangle(GameState *gameState, Math::Vector2f point1,
-		Math::Vector2f point2, Math::Vector2f point3, uint32_t color) {
+void triangle(GameState *gameState, glm::vec2 point1,
+		glm::vec2 point2, glm::vec2 point3, uint32_t color) {
 	float r = ((color & 0xff000000) >> 24) / 255.0f;
 	float g = ((color & 0x00ff0000) >> 16) / 255.0f;
 	float b = ((color & 0x0000ff00) >> 8) / 255.0f;
@@ -190,10 +190,10 @@ void triangle(GameState *gameState, Math::Vector2f point1,
  * Draws a rectangle to the screen with it's top left position being rect.position and extending to the bottom right
  */
 void rectangle(GameState *gameState, Math::Rectangle rect, uint32_t color) {
-	Math::Vector2f bottomLeft = Math::Vector2f(0, -rect.size.y);
-	Math::Vector2f topLeft = Math::Vector2f(0, 0);
-	Math::Vector2f bottomRight = Math::Vector2f(rect.size.x, -rect.size.y);
-	Math::Vector2f topRight = Math::Vector2f(rect.size.x, 0);
+	glm::vec2 bottomLeft = glm::vec2(0, -rect.size.y);
+	glm::vec2 topLeft = glm::vec2(0, 0);
+	glm::vec2 bottomRight = glm::vec2(rect.size.x, -rect.size.y);
+	glm::vec2 topRight = glm::vec2(rect.size.x, 0);
 
 	bottomLeft = bottomLeft + rect.position;
 	topLeft = topLeft + rect.position;
@@ -248,10 +248,10 @@ void rectangle(GameState *gameState, Math::Rectangle rect, uint32_t color) {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void circle(GameState *gameState, Math::Vector2f position, float radius,
+void circle(GameState *gameState, glm::vec2 position, float radius,
 		uint32_t color) {
 	texture(gameState, &gameState->resources.bulletTexture, position,
-			Math::Vector2f(radius, radius), Math::Vector2f(1.0, 0.0), 0, 1,
+			glm::vec2(radius, radius), glm::vec2(1.0, 0.0), 0, 1,
 			color);
 }
 
@@ -281,7 +281,7 @@ void pushEnableScaling(GameState *gameState, bool enable, float plane) {
 	}
 }
 
-void pushCircle(GameState *gameState, Math::Vector2f position, float radius,
+void pushCircle(GameState *gameState, glm::vec2 position, float radius,
 		uint32_t color, AtomPlane plane) {
 	RenderAtom *atom;
 	if ((atom = pushRenderAtom(gameState, AtomType::CIRCLE, plane)) == 0) {
@@ -293,7 +293,7 @@ void pushCircle(GameState *gameState, Math::Vector2f position, float radius,
 }
 
 void pushTexture(GameState *gameState, Texture *texture,
-		Math::Vector2f position, Math::Vector2f size, Math::Vector2f direction,
+		glm::vec2 position, glm::vec2 size, glm::vec2 direction,
 		int tileIndex = 0, AtomPlane plane = AtomPlane::BACKGROUND) {
 	RenderAtom *atom;
 	if ((atom = pushRenderAtom(gameState, AtomType::TEXTURE, plane)) == 0) {
@@ -323,8 +323,8 @@ void pushRectangle(GameState *gameState, Math::Rectangle dimensions,
 	pushRectangle(gameState, dimensions, color, (float) plane);
 }
 
-void pushTriangle(GameState *gameState, Math::Vector2f point1,
-		Math::Vector2f point2, Math::Vector2f point3, uint32_t color,
+void pushTriangle(GameState *gameState, glm::vec2 point1,
+		glm::vec2 point2, glm::vec2 point3, uint32_t color,
 		float plane) {
 	RenderAtom *atom = pushRenderAtom(gameState, AtomType::TRIANGLE, plane);
 	atom->content.triangle.p1 = point1;
@@ -333,7 +333,7 @@ void pushTriangle(GameState *gameState, Math::Vector2f point1,
 	atom->content.triangle.color = color;
 }
 
-void pushText(GameState *gameState, std::string text, Math::Vector2f position,
+void pushText(GameState *gameState, std::string text, glm::vec2 position,
 		FontSize fontSize, uint32_t color, AtomPlane plane) {
 	while (true) {
 		RenderAtom *atom;
@@ -363,9 +363,9 @@ void pushText(GameState *gameState, std::string text, Math::Vector2f position,
 }
 
 void pushAnimation(GameState *gameState, Texture *texture,
-		Math::Vector2f position, Math::Vector2f size, unsigned *tileIndex,
+		glm::vec2 position, glm::vec2 size, unsigned *tileIndex,
 		AtomPlane plane, int timing = 1) {
-	pushTexture(gameState, texture, position, size, Math::Vector2f(0, 1),
+	pushTexture(gameState, texture, position, size, glm::vec2(0, 1),
 			*tileIndex, plane);
 	if (gameState->frameCounter % timing == 0) {
 		*tileIndex += 1;

@@ -2,7 +2,6 @@
 
 #include "Platform.h"
 #include "RacingToHell.h"
-#include "MyMath.h"
 
 // forward declarations
 struct VideoBuffer;
@@ -40,7 +39,7 @@ struct Texture {
 struct Character {
 	char value;
 	bool hasKerning;
-	Math::Vector2f size, bearing;
+	glm::vec2 size, bearing;
 	float advance;
 	float kerning[lastCharacter - firstCharacter];
 	Render::Texture texture;
@@ -52,25 +51,25 @@ struct Rectangle {
 };
 
 struct Triangle {
-	Math::Vector2f p1, p2, p3;
+	glm::vec2 p1, p2, p3;
 	uint32_t color;
 };
 
 struct TextureRectangle {
 	Texture texture;
 	Math::Rectangle dimensions;
-	Math::Vector2f direction;
+	glm::vec2 direction;
 	int tileIndex;
 };
 
 struct Circle {
-	Math::Vector2f position;
+	glm::vec2 position;
 	float radius;
 	uint32_t color;
 };
 
 struct Text {
-	Math::Vector2f position;
+	glm::vec2 position;
 	char characters[50];
 	FontSize fontSize;
 	uint32_t color;

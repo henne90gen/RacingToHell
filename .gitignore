@@ -11,3 +11,4 @@ doc
 librth.so
 rth.dll
 build/
+.vscode/

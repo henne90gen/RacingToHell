@@ -22,7 +22,7 @@ int getFontSize(GameState *gameState, int fontSizeIndex) {
  * position - center of the model in question
  * texture - used for width and height of the rectangle
  */
-Math::Rectangle getBoundingBox(Math::Vector2f position, unsigned width,
+Math::Rectangle getBoundingBox(glm::vec2 position, unsigned width,
 		unsigned height) {
 	Math::Rectangle rect = { };
 	rect.width = width;
@@ -296,10 +296,10 @@ void generateWorld(GameMemory *memory) {
 	for (unsigned y = 0; y < gameState->world.height; y++) {
 		for (unsigned x = 0; x < gameState->world.width; x++) {
 			Tile tile = { };
-			tile.orientation = Math::Vector2f(0, 1);
+			tile.orientation = glm::vec2(0, 1);
 			tile.rect.position.x = ((int) x) * 2.0f / 10.0f - 1.0f;
 			tile.rect.position.y = ((int) y) * 2.0f / 10.0f - 0.8f;
-			tile.rect.size = Math::Vector2f(0.2f, 0.2f);
+			tile.rect.size = glm::vec2(0.2f, 0.2f);
 			tile.traversable = x % 2 != 0 || y % 2 != 0;
 
 			gameState->world.tiles[y * gameState->world.width + x] = tile;

@@ -10,7 +10,7 @@ void addMenuItem(MenuItem *item, std::string text) {
 
 void loadMainMenu(GameState *gameState) {
 	Menu *menu = &gameState->menus[gameState->menuCount++];
-	menu->position = Math::Vector2f( { -1.0f, 0.8f });
+	menu->position = glm::vec2( { -1.0f, 0.8f });
 
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Start Game");
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Multiplayer");
@@ -23,7 +23,7 @@ void loadMainMenu(GameState *gameState) {
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Quit");
 
 	menu = &gameState->menus[gameState->menuCount++];
-	menu->position = Math::Vector2f( { 0.1, 0.8 });
+	menu->position = glm::vec2( { 0.1, 0.8 });
 	menu->isVisible = false;
 
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Easy");
@@ -32,7 +32,7 @@ void loadMainMenu(GameState *gameState) {
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Extreme");
 
 	menu = &gameState->menus[gameState->menuCount++];
-	menu->position = Math::Vector2f( { 0.1, 0.8 });
+	menu->position = glm::vec2( { 0.1, 0.8 });
 	menu->isVisible = false;
 
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Some");
@@ -42,7 +42,7 @@ void loadMainMenu(GameState *gameState) {
 
 void loadPauseMenu(GameState *gameState) {
 	Menu *menu = &gameState->menus[gameState->menuCount++];
-	menu->position = Math::Vector2f( { 20, 50 });
+	menu->position = glm::vec2( { 20, 50 });
 
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Resume");
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Main Menu");
@@ -50,14 +50,14 @@ void loadPauseMenu(GameState *gameState) {
 
 void loadCreditsMenu(GameState *gameState) {
 	Menu *menu = &gameState->menus[gameState->menuCount++];
-	menu->position = Math::Vector2f( { 20, 50 });
+	menu->position = glm::vec2( { 20, 50 });
 
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Back");
 }
 
 void loadGameOverMenu(GameState *gameState) {
 	Menu *menu = &gameState->menus[gameState->menuCount++];
-	menu->position = Math::Vector2f( { 20, 50 });
+	menu->position = glm::vec2( { 20, 50 });
 
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Submit Score");
 	addMenuItem(&menu->items[menu->numberMenuItems++], "Back");
@@ -192,7 +192,7 @@ void handleMenuEnter(GameMemory *memory, GameState *gameState) {
  * Renders a single menu item to screen
  */
 void renderMenuItem(GameState *gameState, MenuItem *item,
-		Math::Vector2f position, bool menuHighlight, bool highlight) {
+		glm::vec2 position, bool menuHighlight, bool highlight) {
 	int r = 255, g = 255, b = 255;
 	if (!menuHighlight) {
 		r = 128;
@@ -212,7 +212,7 @@ void renderMenuItem(GameState *gameState, MenuItem *item,
 //				}
 //			}
 //		}
-		position = position + (Math::Vector2f { a, 0 });
+		position = position + (glm::vec2 { a, 0 });
 	}
 	uint32_t color = (r << 24) + (g << 16) + (b << 8) + 255;
 	Render::pushText(gameState, std::string(item->text), position,
@@ -242,7 +242,7 @@ void changeCarSelection(GameState *gameState, int direction) {
 	}
 }
 
-void renderCarSelection(GameState *gameState, Math::Vector2f position,
+void renderCarSelection(GameState *gameState, glm::vec2 position,
 		bool menuHighlight, bool highlight) {
 	uint32_t color = 0xffffffff;
 	if (!menuHighlight) {
@@ -260,9 +260,9 @@ void renderCarSelection(GameState *gameState, Math::Vector2f position,
 		offsetX += a;
 	}
 
-	Math::Vector2f point1 = { offsetX + 12, position.y };
-	Math::Vector2f point2 = { offsetX + 12, position.y + 26 };
-	Math::Vector2f point3 = { offsetX, position.y + 13 };
+	glm::vec2 point1 = { offsetX + 12, position.y };
+	glm::vec2 point2 = { offsetX + 12, position.y + 26 };
+	glm::vec2 point3 = { offsetX, position.y + 13 };
 	Render::pushTriangle(gameState, point1, point2, point3, color,
 			AtomPlane::MENU);
 
@@ -278,7 +278,7 @@ void renderMenuBackdrop(GameState *gameState, Menu *menu) {
 	Math::Rectangle rect = { };
 	rect.position = menu->position;
 	// FIXME calculate size
-	rect.size = Math::Vector2f(2.0, 1.5);
+	rect.size = glm::vec2(2.0, 1.5);
 	Render::pushRectangle(gameState, rect, 0xff00ff60, AtomPlane::MENU - 0.1f);
 }
 
@@ -316,7 +316,7 @@ void updateMenu(GameMemory *memory, Input *input, Menu *menu) {
 		// update the car position and the speed
 		// FIXME movement is calculated completely different now
 //		gameState->player.position = gameState->player.position
-//				+ Math::Vector2f( { 0, (float) gameState->player.speed });
+//				+ glm::vec2( { 0, (float) gameState->player.speed });
 //		if (gameState->player.position.y
 //				>= -1.0 + gameState->player.size.y / 2) {
 //			gameState->player.speed = -PLAYER_SPEED;
@@ -377,8 +377,8 @@ void updateAndRenderMenus(GameMemory *memory, Input *input) {
 		bool menuHighlight = menuIndex == gameState->activeMenuIndex;
 
 		// Menu items
-		Math::Vector2f currentPosition = menu->position
-				- Math::Vector2f(-0.1, 0.2);
+		glm::vec2 currentPosition = menu->position
+				- glm::vec2(-0.1, 0.2);
 
 		for (unsigned i = 0; i < menu->numberMenuItems; i++) {
 			bool highlight = i == (unsigned) menu->currentMenuItem;
@@ -386,14 +386,14 @@ void updateAndRenderMenus(GameMemory *memory, Input *input) {
 			renderMenuItem(getGameState(memory), &menu->items[i], currentPosition,
 					menuHighlight, highlight);
 
-			currentPosition = currentPosition - Math::Vector2f( { 0,
+			currentPosition = currentPosition - glm::vec2( { 0,
 					(float) menu->lineSpacing });
 		}
 	}
 
 //	if (gameState->menuState == MenuState::MAIN) {
-//		Math::Vector2f carSelPos = gameState->menus[0].position;
-//		carSelPos = carSelPos + Math::Vector2f { 20, 133 };
+//		glm::vec2 carSelPos = gameState->menus[0].position;
+//		carSelPos = carSelPos + glm::vec2 { 20, 133 };
 //		bool highlightCarSelect = 2 == gameState->menus[0].currentMenuItem;
 //		renderCarSelection(memory, carSelPos, 0 == gameState->activeMenuIndex,
 //				highlightCarSelect);

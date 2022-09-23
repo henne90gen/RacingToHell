@@ -46,8 +46,8 @@ void updateAndRenderRoad(GameMemory *memory, bool shouldUpdate) {
 /**
  * Spawns a bullet at the location of a randomly chosen car
  */
-void spawnBullet(GameState *gameState, Math::Vector2f position,
-		Math::Vector2f velocity, bool playerBullet) {
+void spawnBullet(GameState *gameState, glm::vec2 position,
+		glm::vec2 velocity, bool playerBullet) {
 
 	velocity = Math::normalize(velocity);
 	// FIXME balance bullet speed
@@ -140,7 +140,7 @@ void updatePlayer(Input *input, GameState *gameState) {
 	// shooting
 	if (input->shootKeyClicked
 	/*&& gameState->player.energy >= 15*//*FIXME make this a variable*/) {
-		Math::Vector2f velocity = input->mousePosition
+		glm::vec2 velocity = input->mousePosition
 				- gameState->player.position;
 		spawnBullet(gameState, gameState->player.position, velocity, true);
 		// FIXME make this a variable
@@ -469,8 +469,8 @@ void updateAndRenderUI(GameMemory *memory, bool shouldUpdate) {
 	Math::Rectangle energyBar;
 	float energyHeight = gameState->player.energy * screenHeight / 2.0
 			/ gameState->player.maxEnergy;
-	energyBar.size = Math::Vector2f(barWidth, energyHeight);
-	energyBar.position = Math::Vector2f(-screenWidth / 2.0, energyHeight - 1.0);
+	energyBar.size = glm::vec2(barWidth, energyHeight);
+	energyBar.position = glm::vec2(-screenWidth / 2.0, energyHeight - 1.0);
 	Render::pushRectangle(gameState, energyBar, energyColor,
 			AtomPlane::GAME_UI);
 
@@ -478,8 +478,8 @@ void updateAndRenderUI(GameMemory *memory, bool shouldUpdate) {
 	Math::Rectangle healthBar;
 	float healthHeight = gameState->player.health * screenHeight / 2.0
 			/ gameState->player.maxHealth;
-	healthBar.size = Math::Vector2f(barWidth, healthHeight);
-	healthBar.position = Math::Vector2f(-screenWidth / 2.0 + barWidth,
+	healthBar.size = glm::vec2(barWidth, healthHeight);
+	healthBar.position = glm::vec2(-screenWidth / 2.0 + barWidth,
 			healthHeight - 1.0);
 	Render::pushRectangle(gameState, healthBar, healthColor,
 			AtomPlane::GAME_UI);

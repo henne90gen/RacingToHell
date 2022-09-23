@@ -790,7 +790,7 @@ int main() {
 	free(memory.permanent);
 	free(memory.temporary);
 
-// Clean up audio
+    // Clean up audio
 	snd_pcm_drain(audio.pcm_handle);
 	snd_pcm_close(audio.pcm_handle);
 	free(audio.buffer);

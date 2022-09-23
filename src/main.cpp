@@ -7,6 +7,8 @@
 #include <imgui_demo.cpp>
 #include <spdlog/spdlog.h>
 
+#include "RacingToHell.h"
+
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
 
 void initImGui(GLFWwindow *window) {
@@ -37,6 +39,26 @@ void finishImGuiFrame() {
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
+GameMemory initGameMemory() {
+	GameMemory memory = { };
+	memory.doResize = true;
+	memory.aspectRatio = 16.0f / 9.0f;
+
+	// memory.abort = abort;
+	// memory.log = rth_log;
+	// memory.queryTime = queryTime;
+	// memory.readFile = readFile;
+	// memory.freeFile = freeFile;
+	// memory.exitGame = exitGame;
+
+	memory.temporaryMemorySize = 10 * 1024 * 1024;
+	memory.permanentMemorySize = 100 * 1024 * 1024;
+	memory.temporary = (char*) malloc(memory.temporaryMemorySize);
+	memory.permanent = (char*) malloc(memory.permanentMemorySize);
+
+	return memory;
+}
+
 int main() {
   spdlog::info("Starting RacingToHell");
   GLFWwindow *window = nullptr;
@@ -49,7 +71,7 @@ int main() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  window = glfwCreateWindow(300, 500, "RacingToHell", nullptr, nullptr);
+  window = glfwCreateWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, WINDOW_TITLE, nullptr, nullptr);
   if (window == nullptr) {
     spdlog::error("Failed to create window");
     glfwTerminate();
@@ -82,6 +104,12 @@ int main() {
 
   //  enableOpenGLDebugging();
 
+	GameMemory memory = initGameMemory();
+
+	Input input[2] = { };
+	Input *oldInput = &input[0];
+	Input *newInput = &input[1];
+
   while (glfwWindowShouldClose(window) == 0) {
     glClearColor(0.1F, 0.1F, 0.1F, 1.0F);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
@@ -89,7 +117,13 @@ int main() {
 
     startImGuiFrame();
 
-    ShowDemoWindowWidgets();
+		*newInput = *oldInput;
+
+    update_and_render(input, &memory);
+
+		Input *tmp = oldInput;
+		oldInput = newInput;
+		newInput = tmp;
 
     finishImGuiFrame();
 

@@ -3,22 +3,6 @@
 #include <string>
 #include <cstring>
 
-#ifdef _WIN32
-#include <GL/glew.h>
-#include <GL/wglew.h> 
-#include <gl/GL.h>
-#include <gl\GLU.h>
-#include <amp.h>
-#elif ANDROID
-#else
-#include <GL/glew.h>
-#include <GL/gl.h>
-#include <GL/glx.h>
-#include <GL/glu.h>
-#include <GL/glext.h>
-#include <GL/glxext.h>
-#endif
-
 #define DEFAULT_WINDOW_WIDTH 1200
 #define DEFAULT_WINDOW_HEIGHT 675
 #define WINDOW_TITLE "Racing to Hell"
@@ -34,6 +18,7 @@
 #define COLLISION_DEBUG 0
 #define SOUND_DEBUG 0
 #define SOUND_ENABLE 0
+#define FONT_ENABLED 0
 
 struct File {
 	char* content;

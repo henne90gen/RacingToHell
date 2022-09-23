@@ -1,5 +1,5 @@
-void shootAtPlayer(GameState *gameState, Math::Vector2f origin) {
-	Math::Vector2f direction = gameState->player.position - origin;
+void shootAtPlayer(GameState *gameState, glm::vec2 origin) {
+	glm::vec2 direction = gameState->player.position - origin;
 	spawnBullet(gameState, origin, direction, false);
 }
 
@@ -24,20 +24,20 @@ void updateTank(GameState *gameState) {
 
 	switch (boss->currentPhase) {
 	case 0: // Shoot and drive left and right
-		boss->position = boss->position + Math::Vector2f( { boss->speed, 0 });
+		boss->position = boss->position + glm::vec2( { boss->speed, 0 });
 		if (boss->position.x + tankTexture->width / 2 > DEFAULT_WINDOW_WIDTH) {
 			boss->speed = -boss->speed;
 		} else if (boss->position.x - tankTexture->width / 2 < 0) {
 			boss->speed = -boss->speed;
 		}
 		if (gameState->frameCounter % boss->bulletFrequency == 0) {
-			spawnBullet(gameState, boss->position, Math::Vector2f( { 0,
+			spawnBullet(gameState, boss->position, glm::vec2( { 0,
 					gameState->bulletSpeed }), false);
 		}
 		break;
 	case 1: // Three bullet burst
 	{
-		Math::Vector2f centerPosition = Math::Vector2f(
+		glm::vec2 centerPosition = glm::vec2(
 
 		{ DEFAULT_WINDOW_WIDTH / 2, 150 });
 		if (boss->speed < 0) {
@@ -45,7 +45,7 @@ void updateTank(GameState *gameState) {
 		}
 		if (boss->position.x != centerPosition.x
 				|| boss->position.y != centerPosition.y) {
-			Math::Vector2f movement = centerPosition - boss->position;
+			glm::vec2 movement = centerPosition - boss->position;
 			movement = Math::normalize(movement);
 			movement = movement * boss->speed;
 			boss->position = boss->position + movement;
@@ -68,11 +68,11 @@ void updateTank(GameState *gameState) {
 		break;
 	case 2: // Waves of bullets
 		if (gameState->frameCounter % boss->bulletFrequency == 0) {
-			Math::Vector2f playerDirection = gameState->player.position
+			glm::vec2 playerDirection = gameState->player.position
 					- boss->position;
 			float angle = Math::angle(playerDirection) + PI / 16;
 			for (int i = 0; i < 5; i++) {
-				Math::Vector2f direction = Math::Vector2f(angle - PI / 32 * i);
+				glm::vec2 direction = glm::vec2(angle - PI / 32 * i);
 				spawnBullet(gameState, boss->position, direction, false);
 			}
 		}

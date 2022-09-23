@@ -1,6 +1,6 @@
 #pragma once
-#include <time.h> // needed for android build
-#include <cstdlib> // needed for android build
+
+#include <glad/glad.h>
 
 #include "Platform.h"
 #include "MyMath.h"
@@ -25,7 +25,7 @@ struct SoundBuffer {
 };
 
 struct Input {
-	Math::Vector2f mousePosition;
+	glm::vec2 mousePosition;
 	// TODO convert these into a bit mask (optimization)
 	bool upKeyPressed, downKeyPressed, leftKeyPressed, rightKeyPressed;
 	bool upKeyClicked, downKeyClicked, leftKeyClicked, rightKeyClicked;
@@ -37,25 +37,25 @@ struct Input {
 };
 
 struct Player {
-	Math::Vector2f position, direction, velocity, acceleration, size;
+	glm::vec2 position, direction, velocity, acceleration, size;
 	int8_t carIndex, nextCarIndex;
 	double maxSpeed;
 	int32_t health, maxHealth, energy, maxEnergy;
 };
 
 struct Car {
-	Math::Vector2f position;
+	glm::vec2 position;
 	uint8_t carIndex;
 	int8_t health, speed;
 };
 
 struct Item {
-	Math::Vector2f position;
+	glm::vec2 position;
 	uint8_t effect, itemIndex;
 };
 
 struct Bullet {
-	Math::Vector2f position, velocity;
+	glm::vec2 position, velocity;
 	float radius;
 	uint32_t color;
 };
@@ -94,7 +94,7 @@ struct Menu {
 	MenuItem items[20];
 	uint8_t numberMenuItems = 0;
 	int8_t currentMenuItem = 0;
-	Math::Vector2f position;
+	glm::vec2 position;
 	float lineSpacing = 0.2;
 	bool isVisible = true;
 };
@@ -105,7 +105,7 @@ enum class BossType {
 
 struct Boss {
 	BossType type;
-	Math::Vector2f position;
+	glm::vec2 position;
 	float speed;
 	float health, maxHealth;
 	int16_t currentPhase;
@@ -115,7 +115,7 @@ struct Boss {
 
 struct Tile {
 	Math::Rectangle rect;
-	Math::Vector2f orientation;
+	glm::vec2 orientation;
 	bool traversable;
 };
 
@@ -223,11 +223,12 @@ struct BitmapHeader {
 
 GameState* getGameState(GameMemory* memory);
 void resetGameState(GameState *gameState);
-void spawnBullet(GameState *gameState, Math::Vector2f position,
-		Math::Vector2f velocity, bool playerBullet);
+void spawnBullet(GameState *gameState, glm::vec2 position,
+		glm::vec2 velocity, bool playerBullet);
 
-#define UPDATE_AND_RENDER(name) void name(Input *input, GameMemory *memory)
-typedef UPDATE_AND_RENDER(update_and_render);
+// #define UPDATE_AND_RENDER(name) void name(Input *input, GameMemory *memory)
+// typedef UPDATE_AND_RENDER(update_and_render);
+void update_and_render(Input *input, GameMemory *memory);
 
 #define GET_SOUND_SAMPLES(name) void name(GameMemory *memory, SoundBuffer *soundBuffer)
 typedef GET_SOUND_SAMPLES(get_sound_samples);

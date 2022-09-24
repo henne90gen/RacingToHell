@@ -1,7 +1,10 @@
 #pragma once
 
+#include <glad/glad.h>
+#include <glm/vec2.hpp>
+
+#include "MyMath.h"
 #include "Platform.h"
-#include "RacingToHell.h"
 
 // forward declarations
 struct VideoBuffer;
@@ -19,65 +22,86 @@ struct Input;
 // uint8_t textureB = *currentColorPointer8++;
 // uint8_t textureA = *currentColorPointer8++;
 
+enum AtomPlane {
+    BACKGROUND,
+    AI,
+    AI_BULLETS,
+    PLAYER,
+    PLAYER_BULLETS,
+    GAME_UI,
+    MENU
+};
+
 namespace Render {
 
 const char firstCharacter = ' ';
 const char lastCharacter = '~';
 
-enum FontSize {
-	Small, Medium, Large
-};
+enum FontSize { Small, Medium, Large };
 
 struct Texture {
-	uint32_t width, height;
-	uint8_t bytesPerPixel;
-	GLuint id;
-	int xDivision = 1;
-	int yDivision = 1;
+    uint32_t width, height;
+    uint8_t bytesPerPixel;
+    GLuint id;
+    int xDivision = 1;
+    int yDivision = 1;
 };
 
 struct Character {
-	char value;
-	bool hasKerning;
-	glm::vec2 size, bearing;
-	float advance;
-	float kerning[lastCharacter - firstCharacter];
-	Render::Texture texture;
+    char value;
+    bool hasKerning;
+    glm::vec2 size, bearing;
+    float advance;
+    float kerning[lastCharacter - firstCharacter];
+    Render::Texture texture;
 };
 
 struct Rectangle {
-	Math::Rectangle dimensions;
-	uint32_t color;
+    Math::Rectangle dimensions;
+    uint32_t color;
 };
 
 struct Triangle {
-	glm::vec2 p1, p2, p3;
-	uint32_t color;
+    glm::vec2 p1, p2, p3;
+    uint32_t color;
 };
 
 struct TextureRectangle {
-	Texture texture;
-	Math::Rectangle dimensions;
-	glm::vec2 direction;
-	int tileIndex;
+    Texture texture;
+    Math::Rectangle dimensions;
+    glm::vec2 direction;
+    int tileIndex;
 };
 
 struct Circle {
-	glm::vec2 position;
-	float radius;
-	uint32_t color;
+    glm::vec2 position;
+    float radius;
+    uint32_t color;
 };
 
 struct Text {
-	glm::vec2 position;
-	char characters[50];
-	FontSize fontSize;
-	uint32_t color;
+    glm::vec2 position;
+    char characters[50];
+    FontSize fontSize;
+    uint32_t color;
 };
 
-// both of those declarations are needed for Helper.cpp
 void clearScreen(uint32_t color);
-
 void pushEnableScaling(GameState *gameState, bool enable, float plane);
+void flushBuffer(GameMemory *memory);
+void pushText(GameState *gameState, std::string text, glm::vec2 position,
+              FontSize fontSize, uint32_t color, AtomPlane plane);
+void pushTriangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2,
+                  glm::vec2 point3, uint32_t color, float plane);
+void pushRectangle(GameState *gameState, Math::Rectangle dimensions,
+                   uint32_t color, float plane);
+void pushCircle(GameState *gameState, glm::vec2 position, float radius,
+                uint32_t color, AtomPlane plane);
+void pushTexture(GameState *gameState, Texture *texture, glm::vec2 position,
+                 glm::vec2 size, glm::vec2 direction, int tileIndex = 0,
+                 AtomPlane plane = AtomPlane::BACKGROUND);
+void pushAnimation(GameState *gameState, Texture *texture, glm::vec2 position,
+                   glm::vec2 size, unsigned *tileIndex, AtomPlane plane,
+                   int timing = 1);
 
-}
+} // namespace Render

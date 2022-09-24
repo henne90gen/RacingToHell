@@ -1,3 +1,5 @@
+#include "Boss.h"
+
 void shootAtPlayer(GameState *gameState, glm::vec2 origin) {
 	glm::vec2 direction = gameState->player.position - origin;
 	spawnBullet(gameState, origin, direction, false);

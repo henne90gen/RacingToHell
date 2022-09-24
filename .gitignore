@@ -12,3 +12,5 @@ librth.so
 rth.dll
 build/
 .vscode/
+cmake-build-*/
+.idea/

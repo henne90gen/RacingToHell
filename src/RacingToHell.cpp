@@ -1,36 +1,31 @@
 #include "RacingToHell.h"
 
-#include "Helper.cpp"
-#include "Memory.cpp"
-#include "Collision.cpp"
-#include "Renderer.cpp"
-#include "Sound.cpp"
-#include "GameMenu.cpp"
-#include "Boss.cpp"
-#include "Init.cpp"
-#include "Demos.cpp"
+#include <spdlog/spdlog.h>
+
+#include "Demos.h"
+#include "Helper.h"
+#include "Init.h"
+#include "Renderer.h"
 
 /**
  * Retrieves the GameState from memory
  */
-GameState *getGameState(GameMemory *memory)
-{
-	if (!memory->isInitialized)
-	{
-		init(memory);
-	}
-	return (GameState *)(memory->permanent);
+GameState *getGameState(GameMemory *memory) {
+    if (!memory->isInitialized) {
+        init(memory);
+    }
+    return (GameState *)(memory->permanent);
 }
 
-void update_and_render(Input *input, GameMemory *memory)
-{
-	beginFrame(memory, input);
+void update_and_render(Input *input, GameMemory *memory) {
+    beginFrame(memory, input);
 
-	textDemo(memory, input, AtomPlane::BACKGROUND);
+    Render::pushTriangle(getGameState(memory), {0,0}, {1,0}, {1,1}, 0xffffffff, 1.0F);
+    //     textDemo(memory, input, AtomPlane::BACKGROUND);
 
-	followingCarDemo(memory, input);
+    followingCarDemo(memory, input);
 
-	animationDemo(memory, AtomPlane::MENU);
+    animationDemo(memory, AtomPlane::MENU);
 
-	Render::flushBuffer(memory);
+    Render::flushBuffer(memory);
 }

@@ -1,7 +1,8 @@
 #pragma once
+
+#include <cstring>
 #include <stdint.h>
 #include <string>
-#include <cstring>
 
 #define DEFAULT_WINDOW_WIDTH 1200
 #define DEFAULT_WINDOW_HEIGHT 675
@@ -21,17 +22,17 @@
 #define FONT_ENABLED 0
 
 struct File {
-	char* content;
-	const void* fileHandle;
-	size_t size;
-	std::string name;
+    char *content;
+    const void *fileHandle;
+    size_t size;
+    std::string name;
 };
 
-#define ABORT(name) void name(std::string message)
+#define ABORT(name) void name(const std::string &message)
 typedef ABORT(abort_);
 ABORT(abort);
 
-#define LOG(name) void name(std::string message)
+#define LOG(name) void name(const std::string &message)
 typedef LOG(log_);
 LOG(rth_log);
 
@@ -56,26 +57,26 @@ typedef EXIT_GAME(exit_game);
 EXIT_GAME(exitGame);
 
 struct GameMemory {
-	bool isInitialized = false;
+    bool isInitialized = false;
 
-	float aspectRatio;
-	bool doResize;
+    float aspectRatio;
+    bool doResize;
 
-	time_t shaderModTimes[2][2];
-	char shaderFileNames[2][100];
+    time_t shaderModTimes[2][2];
+    char shaderFileNames[2][100];
 
-	abort_ *abort;
-	log_ *log;
-	query_time *queryTime;
-	read_file *readFile;
-	free_file *freeFile;
-	exit_game *exitGame;
+    abort_ *abort;
+    log_ *log;
+    query_time *queryTime;
+    read_file *readFile;
+    free_file *freeFile;
+    exit_game *exitGame;
 
-	char *temporary;
-	size_t temporaryMemorySize = 0;
-	size_t temporaryMemoryOffset = 0;
+    char *temporary;
+    size_t temporaryMemorySize = 0;
+    size_t temporaryMemoryOffset = 0;
 
-	char *permanent;
-	size_t permanentMemorySize = 0;
-	size_t permanentMemoryOffset = 0;
+    char *permanent;
+    size_t permanentMemorySize = 0;
+    size_t permanentMemoryOffset = 0;
 };

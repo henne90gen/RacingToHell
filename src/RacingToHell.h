@@ -8,7 +8,6 @@
 #include "Sound.h"
 #include "Renderer.h"
 #include "Collision.h"
-#include "GameMenu.h"
 
 #define BUFFER_OFFSET(i) ((void*)(i))
 #define PLAYER_SPEED 0.01
@@ -132,10 +131,6 @@ struct GameWorld {
 
 enum AtomType {
 	RECTANGLE, TRIANGLE, TEXT, TEXTURE, CIRCLE, SCALE, NOSCALE
-};
-
-enum AtomPlane {
-	BACKGROUND, AI, AI_BULLETS, PLAYER, PLAYER_BULLETS, GAME_UI, MENU
 };
 
 struct RenderAtom {

@@ -1,4 +1,4 @@
-name: Build and Install the CGV plugin
+name: Build Racing To Hell
 
 on: push
 
@@ -32,7 +32,7 @@ jobs:
 
       - name: Run CMake
         working-directory: build
-        run: cmake .. -G Ninja
+        run: cmake ..
 
       - name: Build
         working-directory: ./build

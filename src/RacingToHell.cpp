@@ -1,7 +1,5 @@
 #include "RacingToHell.h"
 
-#include <spdlog/spdlog.h>
-
 #include "Demos.h"
 #include "Helper.h"
 #include "Init.h"
@@ -20,8 +18,8 @@ GameState *getGameState(GameMemory *memory) {
 void update_and_render(Input *input, GameMemory *memory) {
     beginFrame(memory, input);
 
-    Render::pushTriangle(getGameState(memory), {0,0}, {1,0}, {1,1}, 0xffffffff, 1.0F);
-    //     textDemo(memory, input, AtomPlane::BACKGROUND);
+    Render::pushTriangle(getGameState(memory), {0, 0}, {1, 0}, {1, 1}, 0xffffffff, 1.0F);
+    textDemo(memory, input, AtomPlane::BACKGROUND);
 
     followingCarDemo(memory, input);
 

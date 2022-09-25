@@ -17,9 +17,8 @@ void clearScreen(uint32_t color) {
  * tileIndex: starts in the top left and goes to the right and then down
  * colorMode: 0 for texture colors, 1 for solid color with alpha from texture
  */
-void texture(GameState *gameState, Texture *texture, glm::vec2 position,
-             glm::vec2 size, glm::vec2 direction, int tileIndex,
-             uint8_t colorMode, uint32_t color) {
+void texture(GameState *gameState, Texture *texture, glm::vec2 position, glm::vec2 size, glm::vec2 direction,
+             int tileIndex, uint8_t colorMode, uint32_t color) {
     size = size * 0.5F;
     glm::vec2 bottomLeft = glm::vec2(-size.x, -size.y);
     glm::vec2 topLeft = glm::vec2(-size.x, size.y);
@@ -63,18 +62,13 @@ void texture(GameState *gameState, Texture *texture, glm::vec2 position,
         glGenBuffers(1, &coordinatesBufferID);
     }
     glBindBuffer(GL_ARRAY_BUFFER, coordinatesBufferID);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(coordinates), coordinates,
-                 GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(coordinates), coordinates, GL_STATIC_DRAW);
 
-    GLuint positionLocation =
-        glGetAttribLocation(gameState->glProgram, "a_Position");
-    GLuint textureCoordinatesLocation =
-        glGetAttribLocation(gameState->glProgram, "a_TextureCoordinates");
+    GLuint positionLocation = glGetAttribLocation(gameState->glProgram, "a_Position");
+    GLuint textureCoordinatesLocation = glGetAttribLocation(gameState->glProgram, "a_TextureCoordinates");
     GLuint colorLocation = glGetAttribLocation(gameState->glProgram, "a_Color");
-    GLuint colorSourceLocation =
-        glGetUniformLocation(gameState->glProgram, "u_ColorSource");
-    GLuint textureUnitLocation =
-        glGetUniformLocation(gameState->glProgram, "u_TextureUnit");
+    GLuint colorSourceLocation = glGetUniformLocation(gameState->glProgram, "u_ColorSource");
+    GLuint textureUnitLocation = glGetUniformLocation(gameState->glProgram, "u_TextureUnit");
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture->id);
@@ -84,16 +78,14 @@ void texture(GameState *gameState, Texture *texture, glm::vec2 position,
     GLuint stride = 8 * sizeof(GL_FLOAT);
 
     glEnableVertexAttribArray(positionLocation);
-    glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, stride,
-                          BUFFER_OFFSET(0));
+    glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(0));
 
     glEnableVertexAttribArray(colorLocation);
-    glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, stride,
-                          BUFFER_OFFSET(2 * sizeof(GL_FLOAT)));
+    glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(2 * sizeof(GL_FLOAT)));
 
     glEnableVertexAttribArray(textureCoordinatesLocation);
-    glVertexAttribPointer(textureCoordinatesLocation, 2, GL_FLOAT, GL_FALSE,
-                          stride, BUFFER_OFFSET(6 * sizeof(GL_FLOAT)));
+    glVertexAttribPointer(textureCoordinatesLocation, 2, GL_FLOAT, GL_FALSE, stride,
+                          BUFFER_OFFSET(6 * sizeof(GL_FLOAT)));
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
@@ -105,15 +97,13 @@ void texture(GameState *gameState, Texture *texture, glm::vec2 position,
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void character(GameState *gameState, char character, glm::vec2 position,
-               FontSize fontSize, uint32_t color) {
+void character(GameState *gameState, char character, glm::vec2 position, FontSize fontSize, uint32_t color) {
     Render::Character *c = getCharacter(gameState, character, fontSize);
 
     position = position + c->bearing;
     position = position + (c->size * 0.5F);
 
-    texture(gameState, &c->texture, position, c->size, glm::vec2(0.0, 1.0), 0,
-            1, color);
+    texture(gameState, &c->texture, position, c->size, glm::vec2(0.0, 1.0), 0, 1, color);
 }
 
 /**
@@ -122,32 +112,27 @@ void character(GameState *gameState, char character, glm::vec2 position,
  * fontSizeID needs to be one of the following: FontSizeSmall, FontSizeMedium or
  * FontSizeBig.
  */
-void text(GameState *gameState, std::string text, glm::vec2 position,
-          FontSize fontSize, uint32_t color) {
+void text(GameState *gameState, std::string text, glm::vec2 position, FontSize fontSize, uint32_t color) {
     if (text.size() == 0) {
         return;
     }
 
-    for (unsigned characterIndex = 0; characterIndex < text.size();
-         ++characterIndex) {
+    for (unsigned characterIndex = 0; characterIndex < text.size(); ++characterIndex) {
         Character *c = getCharacter(gameState, text[characterIndex], fontSize);
 
         character(gameState, text[characterIndex], position, fontSize, color);
 
         if (characterIndex < text.size() - 1) {
-            position.x +=
-                c->advance +
-                c->kerning[text[characterIndex + 1] - Render::firstCharacter];
+            position.x += c->advance + c->kerning[text[characterIndex + 1] - Render::firstCharacter];
         }
     }
 }
 
-void triangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2,
-              glm::vec2 point3, uint32_t color) {
-    float r = ((color & 0xff000000) >> 24) / 255.0f;
-    float g = ((color & 0x00ff0000) >> 16) / 255.0f;
-    float b = ((color & 0x0000ff00) >> 8) / 255.0f;
-    float a = (color & 0x000000ff) / 255.0f;
+void triangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, uint32_t color) {
+    float r = static_cast<float>((color & 0xff000000) >> 24) / 255.0f;
+    float g = static_cast<float>((color & 0x00ff0000) >> 16) / 255.0f;
+    float b = static_cast<float>((color & 0x0000ff00) >> 8) / 255.0f;
+    float a = static_cast<float>(color & 0x000000ff) / 255.0f;
 
     // holds the screen coordinates with their associated colors
     float coordinates[] = {
@@ -161,27 +146,22 @@ void triangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2,
         glGenBuffers(1, &coordinatesBufferID);
     }
     glBindBuffer(GL_ARRAY_BUFFER, coordinatesBufferID);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(coordinates), coordinates,
-                 GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(coordinates), coordinates, GL_STATIC_DRAW);
 
-    GLuint positionLocation =
-        glGetAttribLocation(gameState->glProgram, "a_Position");
-    GLuint colorLocation = glGetAttribLocation(gameState->glProgram, "a_Color");
-    GLuint colorSourceLocation =
-        glGetUniformLocation(gameState->glProgram, "u_ColorSource");
+    auto positionLocation = glGetAttribLocation(gameState->glProgram, "a_Position");
+    auto colorLocation = glGetAttribLocation(gameState->glProgram, "a_Color");
+    auto colorSourceLocation = glGetUniformLocation(gameState->glProgram, "u_ColorSource");
 
-    // rectangle supplies it's own color
+    // rectangle supplies its own color
     glUniform1i(colorSourceLocation, 2);
 
-    GLuint stride = 6 * sizeof(GL_FLOAT);
+    GLint stride = 6 * sizeof(GLfloat);
 
+    glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(0));
     glEnableVertexAttribArray(positionLocation);
-    glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, stride,
-                          BUFFER_OFFSET(0));
 
+    glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(2 * sizeof(GLfloat)));
     glEnableVertexAttribArray(colorLocation);
-    glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, stride,
-                          BUFFER_OFFSET(2 * sizeof(GL_FLOAT)));
 
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
@@ -206,10 +186,10 @@ void rectangle(GameState *gameState, Math::Rectangle rect, uint32_t color) {
     bottomRight = bottomRight + rect.position;
     topRight = topRight + rect.position;
 
-    float r = ((color & 0xff000000) >> 24) / 255.0f;
-    float g = ((color & 0x00ff0000) >> 16) / 255.0f;
-    float b = ((color & 0x0000ff00) >> 8) / 255.0f;
-    float a = (color & 0x000000ff) / 255.0f;
+    float r = static_cast<float>((color & 0xff000000) >> 24) / 255.0f;
+    float g = static_cast<float>((color & 0x00ff0000) >> 16) / 255.0f;
+    float b = static_cast<float>((color & 0x0000ff00) >> 8) / 255.0f;
+    float a = static_cast<float>(color & 0x000000ff) / 255.0f;
 
     // holds the screen coordinates with their associated texture coordinates
     const float coordinates[] = {
@@ -225,27 +205,22 @@ void rectangle(GameState *gameState, Math::Rectangle rect, uint32_t color) {
         glGenBuffers(1, &coordinatesBufferID);
     }
     glBindBuffer(GL_ARRAY_BUFFER, coordinatesBufferID);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(coordinates), coordinates,
-                 GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(coordinates), coordinates, GL_STATIC_DRAW);
 
-    GLuint positionLocation =
-        glGetAttribLocation(gameState->glProgram, "a_Position");
+    GLuint positionLocation = glGetAttribLocation(gameState->glProgram, "a_Position");
     GLuint colorLocation = glGetAttribLocation(gameState->glProgram, "a_Color");
-    GLuint colorSourceLocation =
-        glGetUniformLocation(gameState->glProgram, "u_ColorSource");
+    GLuint colorSourceLocation = glGetUniformLocation(gameState->glProgram, "u_ColorSource");
 
-    // rectangle supplies it's own color
+    // rectangle supplies its own color
     glUniform1i(colorSourceLocation, 2);
 
     GLuint stride = 6 * sizeof(GL_FLOAT);
 
     glEnableVertexAttribArray(positionLocation);
-    glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, stride,
-                          BUFFER_OFFSET(0));
+    glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(0));
 
     glEnableVertexAttribArray(colorLocation);
-    glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, stride,
-                          BUFFER_OFFSET(2 * sizeof(GL_FLOAT)));
+    glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(2 * sizeof(GLfloat)));
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
@@ -255,26 +230,23 @@ void rectangle(GameState *gameState, Math::Rectangle rect, uint32_t color) {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void circle(GameState *gameState, glm::vec2 position, float radius,
-            uint32_t color) {
-    texture(gameState, &gameState->resources.bulletTexture, position,
-            glm::vec2(radius, radius), glm::vec2(1.0, 0.0), 0, 1, color);
+void circle(GameState *gameState, glm::vec2 position, float radius, uint32_t color) {
+    texture(gameState, &gameState->resources.bulletTexture, position, glm::vec2(radius, radius), glm::vec2(1.0, 0.0), 0,
+            1, color);
 }
 
 RenderAtom *pushRenderAtom(GameState *gameState, AtomType type, float plane) {
-    if (gameState->renderGroup.count + 1 ==
-        sizeof(gameState->renderGroup.renderAtoms) / sizeof(RenderAtom)) {
-        return 0;
+    if (gameState->renderGroup.count + 1 == sizeof(gameState->renderGroup.renderAtoms) / sizeof(RenderAtom)) {
+        return nullptr;
     }
-    RenderAtom *atom =
-        gameState->renderGroup.renderAtoms + gameState->renderGroup.count++;
+
+    RenderAtom *atom = gameState->renderGroup.renderAtoms + gameState->renderGroup.count++;
     atom->type = type;
     atom->plane = plane;
     return atom;
 }
 
-RenderAtom *pushRenderAtom(GameState *gameState, AtomType type,
-                           AtomPlane plane) {
+RenderAtom *pushRenderAtom(GameState *gameState, AtomType type, AtomPlane plane) {
     return pushRenderAtom(gameState, type, (float)plane);
 }
 
@@ -286,8 +258,7 @@ void pushEnableScaling(GameState *gameState, bool enable, float plane) {
     }
 }
 
-void pushCircle(GameState *gameState, glm::vec2 position, float radius,
-                uint32_t color, AtomPlane plane) {
+void pushCircle(GameState *gameState, glm::vec2 position, float radius, uint32_t color, AtomPlane plane) {
     RenderAtom *atom = pushRenderAtom(gameState, AtomType::CIRCLE, plane);
     if (atom == nullptr) {
         return;
@@ -297,9 +268,8 @@ void pushCircle(GameState *gameState, glm::vec2 position, float radius,
     atom->content.circle.color = color;
 }
 
-void pushTexture(GameState *gameState, Texture *texture, glm::vec2 position,
-                 glm::vec2 size, glm::vec2 direction, int tileIndex,
-                 AtomPlane plane) {
+void pushTexture(GameState *gameState, Texture *texture, glm::vec2 position, glm::vec2 size, glm::vec2 direction,
+                 int tileIndex, AtomPlane plane) {
     RenderAtom *atom = pushRenderAtom(gameState, AtomType::TEXTURE, plane);
     if (atom == nullptr) {
         return;
@@ -314,8 +284,7 @@ void pushTexture(GameState *gameState, Texture *texture, glm::vec2 position,
     atom->content.textureRect.tileIndex = tileIndex;
 }
 
-void pushRectangle(GameState *gameState, Math::Rectangle dimensions,
-                   uint32_t color, float plane) {
+void pushRectangle(GameState *gameState, Math::Rectangle dimensions, uint32_t color, float plane) {
     RenderAtom *atom = pushRenderAtom(gameState, AtomType::RECTANGLE, plane);
     if (atom == nullptr) {
         return;
@@ -325,13 +294,12 @@ void pushRectangle(GameState *gameState, Math::Rectangle dimensions,
     atom->content.rect.color = color;
 }
 
-void pushRectangle(GameState *gameState, Math::Rectangle dimensions,
-                   uint32_t color, AtomPlane plane) {
+void pushRectangle(GameState *gameState, Math::Rectangle dimensions, uint32_t color, AtomPlane plane) {
     pushRectangle(gameState, dimensions, color, (float)plane);
 }
 
-void pushTriangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2,
-                  glm::vec2 point3, uint32_t color, float plane) {
+void pushTriangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, uint32_t color,
+                  float plane) {
     RenderAtom *atom = pushRenderAtom(gameState, AtomType::TRIANGLE, plane);
     if (atom == nullptr) {
         return;
@@ -343,8 +311,8 @@ void pushTriangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2,
     atom->content.triangle.color = color;
 }
 
-void pushText(GameState *gameState, std::string text, glm::vec2 position,
-              FontSize fontSize, uint32_t color, AtomPlane plane) {
+void pushText(GameState *gameState, std::string text, glm::vec2 position, FontSize fontSize, uint32_t color,
+              AtomPlane plane) {
     while (true) {
         RenderAtom *atom = pushRenderAtom(gameState, AtomType::TEXT, plane);
         if (atom == nullptr) {
@@ -373,11 +341,9 @@ void pushText(GameState *gameState, std::string text, glm::vec2 position,
     }
 }
 
-void pushAnimation(GameState *gameState, Texture *texture, glm::vec2 position,
-                   glm::vec2 size, unsigned *tileIndex, AtomPlane plane,
-                   int timing) {
-    pushTexture(gameState, texture, position, size, glm::vec2(0, 1), *tileIndex,
-                plane);
+void pushAnimation(GameState *gameState, Texture *texture, glm::vec2 position, glm::vec2 size, unsigned *tileIndex,
+                   AtomPlane plane, int timing) {
+    pushTexture(gameState, texture, position, size, glm::vec2(0, 1), *tileIndex, plane);
     if (gameState->frameCounter % timing == 0) {
         *tileIndex += 1;
 
@@ -397,8 +363,7 @@ void sortRenderAtoms(GameState *gameState, int left = -1, int right = -1) {
         return;
     }
 
-    RenderAtom *pivot =
-        &gameState->renderGroup.renderAtoms[(int)((left + right) / 2)];
+    RenderAtom *pivot = &gameState->renderGroup.renderAtoms[(int)((left + right) / 2)];
     int i = left;
     int j = right;
 
@@ -411,13 +376,10 @@ void sortRenderAtoms(GameState *gameState, int left = -1, int right = -1) {
         }
         if (i <= j) {
             RenderAtom tmp = {};
-            std::memcpy(&tmp, &gameState->renderGroup.renderAtoms[i],
+            std::memcpy(&tmp, &gameState->renderGroup.renderAtoms[i], sizeof(RenderAtom));
+            std::memcpy(&gameState->renderGroup.renderAtoms[i], &gameState->renderGroup.renderAtoms[j],
                         sizeof(RenderAtom));
-            std::memcpy(&gameState->renderGroup.renderAtoms[i],
-                        &gameState->renderGroup.renderAtoms[j],
-                        sizeof(RenderAtom));
-            std::memcpy(&gameState->renderGroup.renderAtoms[j], &tmp,
-                        sizeof(RenderAtom));
+            std::memcpy(&gameState->renderGroup.renderAtoms[j], &tmp, sizeof(RenderAtom));
             i++;
             j--;
         }
@@ -437,8 +399,7 @@ void setScaleToIdentity(GameState *gameState) {
                                0,   0,   1.0, 0, //
                                0,   0,   0,   1.0};
 
-    GLuint scaleMatrixLocation =
-        glGetUniformLocation(gameState->glProgram, "u_ScaleMatrix");
+    GLuint scaleMatrixLocation = glGetUniformLocation(gameState->glProgram, "u_ScaleMatrix");
     glUniformMatrix4fv(scaleMatrixLocation, 1, GL_FALSE, &scaleMatrix[0]);
 }
 
@@ -448,8 +409,7 @@ void flushBuffer(GameMemory *memory) {
     sortRenderAtoms(gameState);
 
 #if RENDER_DEBUG
-    int rects = 0, tris = 0, texts = 0, textures = 0, circles = 0, scales = 0,
-        noscales = 0;
+    int rects = 0, tris = 0, texts = 0, textures = 0, circles = 0, scales = 0, noscales = 0;
     std::string ordering = "";
 #endif
 
@@ -479,8 +439,7 @@ void flushBuffer(GameMemory *memory) {
 #endif
             Text *t = &atom->content.text;
             std::string textString = std::string(t->characters);
-            Render::text(gameState, textString, t->position, t->fontSize,
-                         t->color);
+            Render::text(gameState, textString, t->position, t->fontSize, t->color);
         } break;
         case AtomType::TEXTURE: {
 #if RENDER_DEBUG
@@ -488,9 +447,8 @@ void flushBuffer(GameMemory *memory) {
             ordering += " tx";
 #endif
             TextureRectangle tr = atom->content.textureRect;
-            Render::texture(gameState, &tr.texture, tr.dimensions.position,
-                            tr.dimensions.size, tr.direction, tr.tileIndex, 0,
-                            0);
+            Render::texture(gameState, &tr.texture, tr.dimensions.position, tr.dimensions.size, tr.direction,
+                            tr.tileIndex, 0, 0);
         } break;
         case AtomType::CIRCLE: {
 #if RENDER_DEBUG

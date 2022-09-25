@@ -87,8 +87,9 @@ struct Text {
 };
 
 void clearScreen(uint32_t color);
-void pushEnableScaling(GameState *gameState, bool enable, float plane);
 void flushBuffer(GameMemory *memory);
+
+void pushEnableScaling(GameState *gameState, bool enable, float plane);
 void pushText(GameState *gameState, std::string text, glm::vec2 position,
               FontSize fontSize, uint32_t color, AtomPlane plane);
 void pushTriangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2,
@@ -103,5 +104,8 @@ void pushTexture(GameState *gameState, Texture *texture, glm::vec2 position,
 void pushAnimation(GameState *gameState, Texture *texture, glm::vec2 position,
                    glm::vec2 size, unsigned *tileIndex, AtomPlane plane,
                    int timing = 1);
+
+void triangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2,
+              glm::vec2 point3, uint32_t color);
 
 } // namespace Render

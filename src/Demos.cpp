@@ -12,13 +12,11 @@ void textDemo(GameMemory *memory, Input *input, AtomPlane plane) {
     static int fontIndex = 0;
 
     if (input->enterKeyClicked) {
-#if FONT_ENABLED
         loadFont(memory, fontFileNames[fontIndex]);
         fontIndex++;
         if (fontIndex >= 3) {
             fontIndex = 0;
         }
-#endif
     }
 
     GameState *gameState = getGameState(memory);

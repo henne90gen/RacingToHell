@@ -14,15 +14,14 @@ add_library(game
         RacingToHell.cpp
         Renderer.cpp
         Shader.cpp
-        Sound.cpp
-        )
+        Sound.cpp)
 target_link_libraries(game PUBLIC
         glad
         spdlog
         glm::glm
         imgui
-        ${OPENGL_gl_LIBRARY}
-        )
+        freetype
+        ${OPENGL_gl_LIBRARY})
 #target_include_directories(game PUBLIC ${OPENGL_INCLUDE_DIR})
 #target_link_libraries(game ${OPENGL_gl_LIBRARY})
 

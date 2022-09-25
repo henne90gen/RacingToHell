@@ -4,19 +4,20 @@
 #include "Renderer.h"
 #include "Shader.h"
 
-Render::Character *getCharacter(GameState *gameState, char character,
-                                unsigned fontSizeIndex) {
-    return &gameState->resources
-                .characterMap[fontSizeIndex]
-                             [character - Render::firstCharacter];
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
+FT_Library fontLibrary;
+
+Render::Character *getCharacter(GameState *gameState, char character, unsigned fontSizeIndex) {
+    return &gameState->resources.characterMap[fontSizeIndex][character - Render::firstCharacter];
 }
 
 int getFontSize(GameState *gameState, int fontSizeIndex) {
     return gameState->resources.availableFontSizes[fontSizeIndex];
 }
 
-Math::Rectangle getBoundingBox(glm::vec2 position, unsigned width,
-                               unsigned height) {
+Math::Rectangle getBoundingBox(glm::vec2 position, unsigned width, unsigned height) {
     Math::Rectangle rect = {};
     rect.width = width;
     rect.height = height;
@@ -37,14 +38,12 @@ Math::Rectangle getCollisionBox(Math::Rectangle rect1, Math::Rectangle rect2) {
     return rect1;
 }
 
-void importPixelData(void *src, void *dest, unsigned srcWidth,
-                     unsigned srcHeight, int offsetX, int offsetY,
+void importPixelData(void *src, void *dest, unsigned srcWidth, unsigned srcHeight, int offsetX, int offsetY,
                      unsigned destWidth, unsigned destHeight) {
 
     for (unsigned y = 0; y < destHeight; y++) {
         for (unsigned x = 0; x < destWidth; x++) {
-            int srcIndex =
-                (srcHeight - (y + offsetY) - 1) * srcWidth + x + offsetX;
+            int srcIndex = (srcHeight - (y + offsetY) - 1) * srcWidth + x + offsetX;
             int destIndex = y * destWidth + x;
             uint32_t color = ((uint32_t *)(src))[srcIndex];
             uint8_t red = (color & 0xff000000) >> 24;
@@ -85,8 +84,7 @@ void checkInputForClicks(Input *input) {
     minus = input->minusKeyPressed;
 }
 
-GLuint createVBO(const GLsizeiptr size, const GLvoid *data,
-                 const GLenum usage) {
+GLuint createVBO(const GLsizeiptr size, const GLvoid *data, const GLenum usage) {
     GLuint vbo;
     glGenBuffers(1, &vbo);
 
@@ -101,70 +99,40 @@ void resizeView(GameMemory *memory) {
     GameState *gameState = getGameState(memory);
     memory->doResize = false;
 
-    GLfloat aspectRatioMatrix[16] = {1.0f / memory->aspectRatio,
-                                     0,
-                                     0,
-                                     0, //
-                                     0,
-                                     1.0,
-                                     0,
-                                     0, //
-                                     0,
-                                     0,
-                                     1.0,
-                                     0, //
-                                     0,
-                                     0,
-                                     0,
-                                     1.0};
-    GLuint aspectRatioMatrixLocation =
-        glGetUniformLocation(gameState->glProgram, "u_AspectRatioMatrix");
-    glUniformMatrix4fv(aspectRatioMatrixLocation, 1, GL_FALSE,
-                       &aspectRatioMatrix[0]);
+    auto xScale = 1.0f / memory->aspectRatio;
+    GLfloat aspectRatioMatrix[16] = {
+        xScale, 0,   0,   0,   //
+        0,      1.0, 0,   0,   //
+        0,      0,   1.0, 0,   //
+        0,      0,   0,   1.0, //
+    };
+    auto aspectRatioMatrixLocation = glGetUniformLocation(gameState->glProgram, "u_AspectRatioMatrix");
+    glUniformMatrix4fv(aspectRatioMatrixLocation, 1, GL_FALSE, &aspectRatioMatrix[0]);
 }
 
 void rotateView(GameState *gameState) {
-    GLfloat rotationMatrix[16] = {cos(gameState->rotationAngle),
-                                  sin(gameState->rotationAngle),
-                                  0,
-                                  0, //
-                                  -sin(gameState->rotationAngle),
-                                  cos(gameState->rotationAngle),
-                                  0,
-                                  0, //
-                                  0,
-                                  0,
-                                  1.0,
-                                  0, //
-                                  0,
-                                  0,
-                                  0,
-                                  1.0};
-    GLint rotationMatrixLocation =
-        glGetUniformLocation(gameState->glProgram, "u_RotationMatrix");
+    float a = cos(gameState->rotationAngle);
+    float b = sin(gameState->rotationAngle);
+    GLfloat rotationMatrix[16] = {
+        a,  b, 0,   0, //
+        -b, a, 0,   0, //
+        0,  0, 1.0, 0, //
+        0,  0, 0,   1.0,
+    };
+    GLint rotationMatrixLocation = glGetUniformLocation(gameState->glProgram, "u_RotationMatrix");
     glUniformMatrix4fv(rotationMatrixLocation, 1, GL_FALSE, rotationMatrix);
 }
 
 void scaleView(GameState *gameState) {
-    GLfloat scaleMatrix[16] = {gameState->scale,
-                               0,
-                               0,
-                               0, //
-                               0,
-                               gameState->scale,
-                               0,
-                               0, //
-                               0,
-                               0,
-                               1.0,
-                               0, //
-                               0,
-                               0,
-                               0,
-                               1.0};
+    float s = gameState->scale;
+    GLfloat scaleMatrix[16] = {
+        s, 0, 0,   0,   //
+        0, s, 0,   0,   //
+        0, 0, 1.0, 0,   //
+        0, 0, 0,   1.0, //
+    };
 
-    GLuint scaleMatrixLocation =
-        glGetUniformLocation(gameState->glProgram, "u_ScaleMatrix");
+    auto scaleMatrixLocation = glGetUniformLocation(gameState->glProgram, "u_ScaleMatrix");
     glUniformMatrix4fv(scaleMatrixLocation, 1, GL_FALSE, &scaleMatrix[0]);
 }
 
@@ -185,8 +153,7 @@ void initOpenGL(GameMemory *memory) {
 }
 
 void checkShaders(GameMemory *memory) {
-    unsigned amountOfShaders =
-        sizeof(memory->shaderFileNames) / sizeof(memory->shaderFileNames[0]);
+    unsigned amountOfShaders = sizeof(memory->shaderFileNames) / sizeof(memory->shaderFileNames[0]);
     bool rebuildProgram = false;
     for (unsigned i = 0; i < amountOfShaders; i++) {
         if (memory->shaderModTimes[i][0] != memory->shaderModTimes[i][1]) {
@@ -200,6 +167,12 @@ void checkShaders(GameMemory *memory) {
 }
 
 GameState *beginFrame(GameMemory *memory, Input *input) {
+    static unsigned int VAO;
+    if (!VAO) {
+        glGenVertexArrays(1, &VAO);
+    }
+    glBindVertexArray(VAO);
+
     GameState *gameState = getGameState(memory);
     gameState->frameCounter++;
 
@@ -225,17 +198,141 @@ GameState *beginFrame(GameMemory *memory, Input *input) {
     return gameState;
 }
 
-void extractFileName(std::string fileName, std::string fileExtension,
-                     char result[]) {
+/**
+ * Moves content to graphics memory.
+ */
+void loadTextureToGraphicsMemory(Render::Texture *texture, void *content) {
+    if (!texture->id) {
+        glGenTextures(1, &texture->id);
+    }
+
+    glBindTexture(GL_TEXTURE_2D, texture->id);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture->width, texture->height, 0,
+                 GL_RGBA, GL_UNSIGNED_BYTE, content);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glGenerateMipmap(GL_TEXTURE_2D);
+}
+
+/**
+ * Load the texture and kerning information for the specified character
+ */
+void loadCharacter(GameMemory *memory, FT_Face face, char loadCharacter, int fontSize, bool hasKerning) {
+    float scale = 0.002f; // this is a constant to scale from pixel sizes to
+                          // coordinate sizes
+
+    int currentGlyphIndex = FT_Get_Char_Index(face, loadCharacter);
+    int error = FT_Load_Glyph(face, currentGlyphIndex, FT_LOAD_RENDER);
+    if (error) {
+        memory->abort("Couldn't load glyph for " + std::to_string(loadCharacter));
+    }
+
+    GameState *gameState = getGameState(memory);
+
+    Render::Character newCharacter =
+        gameState->resources.characterMap[fontSize][loadCharacter - Render::firstCharacter];
+
+    newCharacter.value = loadCharacter;
+    newCharacter.hasKerning = hasKerning;
+
+    newCharacter.texture.width = face->glyph->bitmap.width;
+    newCharacter.texture.height = face->glyph->bitmap.rows;
+    newCharacter.texture.xDivision = 1;
+    newCharacter.texture.yDivision = 1;
+
+    newCharacter.size = glm::vec2(newCharacter.texture.width, newCharacter.texture.height) * scale;
+
+    newCharacter.bearing =
+        glm::vec2(face->glyph->bitmap_left, (newCharacter.texture.height - face->glyph->bitmap_top)) * scale;
+    newCharacter.bearing.y *= -1;
+
+    newCharacter.advance = (face->glyph->advance.x >> 6) * scale;
+
+    if (hasKerning) {
+        for (char nextChar = Render::firstCharacter; nextChar < Render::lastCharacter; nextChar++) {
+            int nextGlyphIndex = FT_Get_Char_Index(face, nextChar);
+
+            FT_Vector kerning;
+            FT_Get_Kerning(face, currentGlyphIndex, nextGlyphIndex, FT_KERNING_DEFAULT, &kerning);
+
+            newCharacter.kerning[nextChar - Render::firstCharacter] = (kerning.x >> 6) * scale;
+        }
+    }
+
+    unsigned bitmapSizeInPixel = newCharacter.texture.width * newCharacter.texture.height;
+
+    void *content = reserveTemporaryMemory(memory, bitmapSizeInPixel * 4);
+    uint8_t *src = face->glyph->bitmap.buffer;
+    uint32_t *dest = (uint32_t *)content;
+
+    for (unsigned i = 0; i < bitmapSizeInPixel; i++) {
+        *dest = (*src << 24) + 0x00ffffff;
+        src++;
+        dest++;
+    }
+
+    loadTextureToGraphicsMemory(&newCharacter.texture, content);
+
+    freeTemporaryMemory(memory);
+
+    gameState->resources.characterMap[fontSize][loadCharacter - Render::firstCharacter] = newCharacter;
+}
+
+/**
+ * Load the specified font file to be used as game font
+ */
+void loadFont(GameMemory *memory, std::string fontFileName) {
+    int error;
+
+    // setting up font system
+    static bool fontLibraryLoaded = false;
+    if (!fontLibraryLoaded) {
+        error = FT_Init_FreeType(&fontLibrary);
+        if (error) {
+            memory->abort("Couldn't initialize font library.");
+        }
+        fontLibraryLoaded = true;
+    }
+
+    GameState *gameState = getGameState(memory);
+
+    File fontFile = memory->readFile(fontFileName);
+    FT_Face face = {};
+    error = FT_New_Memory_Face(fontLibrary, (const FT_Byte *)fontFile.content, fontFile.size, 0, &face);
+    if (error) {
+        memory->abort("Couldn't load font " + fontFileName + ". Errorcode: " + std::to_string(error));
+    }
+
+    extractFileName(fontFileName, ".ttf", gameState->resources.fontName);
+
+    bool hasKerning = FT_HAS_KERNING(face);
+
+    for (unsigned fontSizeIndex = 0; fontSizeIndex < sizeof(gameState->resources.availableFontSizes) / 4;
+         fontSizeIndex++) {
+        int fontSize = getFontSize(gameState, fontSizeIndex);
+        int error = FT_Set_Pixel_Sizes(face, fontSize * 5, 0);
+        if (error) {
+            std::string message = "Couldn't set pixel size to " + std::to_string(fontSize) + ".";
+            memory->abort(message);
+        }
+
+        for (char currentChar = Render::firstCharacter; currentChar < Render::lastCharacter; currentChar++) {
+            loadCharacter(memory, face, currentChar, fontSizeIndex, hasKerning);
+        }
+    }
+}
+
+void extractFileName(std::string fileName, const std::string &fileExtension, char result[]) {
     fileName = fileName.substr(0, fileName.size() - fileExtension.size());
 
     int index = 0;
-    for (unsigned i = 0; i < fileName.size(); i++) {
-        if (fileName[i] == '/') {
+    for (char i : fileName) {
+        if (i == '/') {
             index = 0;
             continue;
         }
-        result[index] = fileName[i];
+        result[index] = i;
         index++;
     }
     result[index] = '\0';
@@ -254,8 +351,8 @@ void generateWorld(GameMemory *memory) {
             tile.traversable = x % 2 != 0 || y % 2 != 0;
 
             gameState->world.tiles[y * gameState->world.width + x] = tile;
-            //			memory->log("X: %d, Y: %d, Traversable: %d", x, y,
-            //tile.traversable);
+            //			memory->log("X: %d, Y: %d, Traversable: %d", x,
+            // y, tile.traversable);
         }
     }
 }
@@ -271,26 +368,22 @@ void checkPlayerTileCollision(Player *player, Tile *tile) {
     }
 }
 
-float calculateTextLength(GameState *gameState, std::string text,
-                          Render::FontSize fontSize) {
-    if (text.size() == 0) {
+float calculateTextLength(GameState *gameState, std::string text, Render::FontSize fontSize) {
+    if (text.empty()) {
         return 0.0f;
     }
 
     float length = 0.0f;
 
-    for (unsigned characterIndex = 0; characterIndex < text.size();
-         ++characterIndex) {
-        Render::Character *c =
-            getCharacter(gameState, text[characterIndex], fontSize);
+    for (unsigned characterIndex = 0; characterIndex < text.size(); ++characterIndex) {
+        Render::Character *c = getCharacter(gameState, text[characterIndex], fontSize);
 
-        length += c->advance +
-                  c->kerning[text[characterIndex + 1] - Render::firstCharacter];
+        length += c->advance + c->kerning[text[characterIndex + 1] - Render::firstCharacter];
     }
     return length;
 }
 
-void logTimeDifferenceInMS(GameMemory *memory, long *start, std::string msg) {
+void logTimeDifferenceInMS(GameMemory *memory, long *start, const std::string &msg) {
     long temp = memory->queryTime();
     float diff = (float)(temp - *start) / 1000000.0f;
     memory->log(msg + ": " + std::to_string(diff));

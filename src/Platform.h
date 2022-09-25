@@ -19,7 +19,6 @@
 #define COLLISION_DEBUG 0
 #define SOUND_DEBUG 0
 #define SOUND_ENABLE 0
-#define FONT_ENABLED 0
 
 struct File {
     char *content;

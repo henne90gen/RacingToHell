@@ -16,8 +16,7 @@ void initImGui(GLFWwindow *window) {
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
     // NOLINTNEXTLINE(hicpp-signed-bitwise)
-    io.ConfigFlags |=
-        ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
     // io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // Enable Docking
     // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;   // Enable Gamepad
     // Controls
@@ -96,8 +95,7 @@ WRITE_FILE(writeFile) {
     }
 
     if (fwrite((void *)file->content, 1, file->size, fHandle) != file->size) {
-        std::string errorMsg = "ERROR - Failed to write " +
-                               std::to_string(file->size) + " bytes to file";
+        std::string errorMsg = "ERROR - Failed to write " + std::to_string(file->size) + " bytes to file";
         rth_log(errorMsg);
         return false;
     }
@@ -147,6 +145,33 @@ GameMemory initGameMemory() {
     return memory;
 }
 
+void resizeViewport(GameMemory *memory, int windowWidth, int windowHeight) {
+    int viewWidth = windowHeight * memory->aspectRatio;
+    int viewHeight = windowHeight;
+    int offsetX = 0;
+    int offsetY = 0;
+    if (viewWidth > windowWidth) {
+        viewWidth = windowWidth;
+        viewHeight = windowWidth / memory->aspectRatio;
+    } else {
+        offsetX = (windowWidth - viewWidth) / 2;
+    }
+    if (windowHeight > viewHeight) {
+        offsetY = (windowHeight - viewHeight) / 2;
+    }
+
+    glViewport(offsetX, offsetY, viewWidth, viewHeight);
+
+    spdlog::info("Updated the viewport to x={}, y={}, width={}, height={}", offsetX, offsetY, viewWidth, viewHeight);
+
+    memory->doResize = true;
+}
+
+void glfw_framebuffer_size_callback(GLFWwindow *window, int width, int height) {
+    auto memory = reinterpret_cast<GameMemory *>(glfwGetWindowUserPointer(window));
+    resizeViewport(memory, width, height);
+}
+
 int main() {
     spdlog::info("Starting RacingToHell");
     GLFWwindow *window = nullptr;
@@ -159,8 +184,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    window = glfwCreateWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT,
-                              WINDOW_TITLE, nullptr, nullptr);
+    window = glfwCreateWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, WINDOW_TITLE, nullptr, nullptr);
     if (window == nullptr) {
         spdlog::error("Failed to create window");
         glfwTerminate();
@@ -175,15 +199,18 @@ int main() {
         return 1;
     }
 
+    GameMemory memory = initGameMemory();
+    glfwSetWindowUserPointer(window, (void *)&memory);
+
+    // set up callbacks
+    glfwSetFramebufferSizeCallback(window, glfw_framebuffer_size_callback);
+
     // to disable vsync uncomment this line
     //    glfwSwapInterval(0);
 
-    // glfwSetWindowUserPointer(window, scene);
-
     // triggering it once "manually" to ensure the aspect ratio is set up
     // correctly
-    //  scene->onWindowResize(INITIAL_WINDOW_WIDTH, INITIAL_WINDOW_HEIGHT);
-    //  installCallbacks(window);
+    resizeViewport(&memory, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
 
     // ImGui installs its own glfw callbacks, which will then call our
     // previously installed callbacks
@@ -192,8 +219,9 @@ int main() {
     glEnable(GL_DEPTH_TEST);
 
     //  enableOpenGLDebugging();
-
-    GameMemory memory = initGameMemory();
+    std::string versionString = std::string((const char *)glGetString(GL_VERSION));
+    spdlog::info("OpenGL Version: {}", versionString);
+    // TODO query graphics hardware information
 
     Input input[2] = {};
     Input *oldInput = &input[0];
@@ -201,8 +229,7 @@ int main() {
 
     while (glfwWindowShouldClose(window) == 0) {
         glClearColor(0.1F, 0.1F, 0.1F, 1.0F);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
-                GL_STENCIL_BUFFER_BIT); // NOLINT(hicpp-signed-bitwise)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // NOLINT(hicpp-signed-bitwise)
 
         startImGuiFrame();
 

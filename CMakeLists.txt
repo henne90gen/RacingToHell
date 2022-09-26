@@ -72,6 +72,52 @@ target_link_libraries(imgui PUBLIC glad glfw)
 add_library(glad src/glad/src/glad.c)
 target_include_directories(glad PUBLIC src/glad/include)
 
+add_executable(resource_generator tools/resource_generator.cpp)
+target_link_libraries(resource_generator spdlog)
+
+function(register_resource resource_list resource)
+    string(MAKE_C_IDENTIFIER ${resource} filename)
+    get_filename_component(resource_absolute ${resource} ABSOLUTE)
+    add_custom_command(
+            OUTPUT ${filename}.cpp
+            COMMAND resource_generator ${resource_absolute} ${filename}
+            DEPENDS ${resource}
+    )
+    set(filename ${filename}.cpp)
+    list(APPEND ${resource_list} ${filename})
+    set(${resource_list} ${${resource_list}} PARENT_SCOPE)
+endfunction()
+
+register_resource(RESOURCES res/shaders/fragment.glsl)
+register_resource(RESOURCES res/shaders/vertex.glsl)
+register_resource(RESOURCES res/font/Arial.ttf)
+register_resource(RESOURCES res/font/ComicSans.ttf)
+register_resource(RESOURCES res/font/DejaVuSansMono.ttf)
+register_resource(RESOURCES res/sound/music/level1.wav)
+register_resource(RESOURCES res/sound/gameOver.wav)
+register_resource(RESOURCES res/sound/shotAI.wav)
+register_resource(RESOURCES res/sound/shotPlayer.wav)
+register_resource(RESOURCES res/textures/bosses/tank.bmp)
+register_resource(RESOURCES res/textures/bosses/tank_cannon.bmp)
+register_resource(RESOURCES res/textures/cars/cars.bmp)
+register_resource(RESOURCES res/textures/cars/player0.bmp)
+register_resource(RESOURCES res/textures/cars/player1.bmp)
+register_resource(RESOURCES res/textures/cars/player2.bmp)
+register_resource(RESOURCES res/textures/cars/player3.bmp)
+register_resource(RESOURCES res/textures/cars/player4.bmp)
+register_resource(RESOURCES res/textures/cars/player5.bmp)
+register_resource(RESOURCES res/textures/cars/traffic0.bmp)
+register_resource(RESOURCES res/textures/cars/traffic1.bmp)
+register_resource(RESOURCES res/textures/cars/traffic2.bmp)
+register_resource(RESOURCES res/textures/cars/traffic3.bmp)
+register_resource(RESOURCES res/textures/cars/traffic4.bmp)
+register_resource(RESOURCES res/textures/cars/traffic5.bmp)
+register_resource(RESOURCES res/textures/cars/traffic6.bmp)
+register_resource(RESOURCES res/textures/roads/road0.bmp)
+register_resource(RESOURCES res/textures/roads/road1.bmp)
+register_resource(RESOURCES res/textures/roads/road2.bmp)
+register_resource(RESOURCES res/textures/roads/road3.bmp)
+
 add_library(game
         src/Boss.cpp
         src/Collision.cpp
@@ -85,7 +131,8 @@ add_library(game
         src/RacingToHell.cpp
         src/Renderer.cpp
         src/Shader.cpp
-        src/Sound.cpp)
+        src/Sound.cpp
+        ${RESOURCES})
 target_link_libraries(game PUBLIC
         glad
         spdlog
@@ -93,7 +140,7 @@ target_link_libraries(game PUBLIC
         imgui
         freetype
         ${OPENGL_gl_LIBRARY})
-target_include_directories(game PUBLIC ${OPENGL_INCLUDE_DIR})
+target_include_directories(game PUBLIC ${OPENGL_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 add_executable(RacingToHell src/main.cpp)
 target_link_libraries(RacingToHell game glfw)

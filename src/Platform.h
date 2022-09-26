@@ -35,7 +35,7 @@ ABORT(abort);
 typedef LOG(log_);
 LOG(rth_log);
 
-#define QUERY_TIME(name) long name()
+#define QUERY_TIME(name) int64_t name()
 typedef QUERY_TIME(query_time);
 QUERY_TIME(queryTime);
 

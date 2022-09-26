@@ -31,12 +31,15 @@ void texture(GameState *gameState, Texture *texture, glm::vec2 position, glm::ve
     bottomRight = Math::rotate(bottomRight, angle) + position;
     topRight = Math::rotate(topRight, angle) + position;
 
-    float r, g, b, a;
+    float r = 0.0F;
+    float g = 0.0F;
+    float b = 0.0F;
+    float a = 0.0F;
     if (colorMode == 1) {
-        r = ((color & 0xff000000) >> 24) / 255.0f;
-        g = ((color & 0x00ff0000) >> 16) / 255.0f;
-        b = ((color & 0x0000ff00) >> 8) / 255.0f;
-        a = (color & 0x000000ff) / 255.0f;
+        r = static_cast<float>((color & 0xff000000) >> 24) / 255.0f;
+        g = static_cast<float>((color & 0x00ff0000) >> 16) / 255.0f;
+        b = static_cast<float>((color & 0x0000ff00) >> 8) / 255.0f;
+        a = static_cast<float>(color & 0x000000ff) / 255.0f;
     }
 
     float xStride = 1.0f / (float)texture->xDivision;

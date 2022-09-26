@@ -1,15 +1,15 @@
 #include <glad/glad.h>
 
+#define IMGUI_IMPL_OPENGL_LOADER_GLAD
+
 #include <GLFW/glfw3.h>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
+#include <chrono>
 #include <imgui.h>
-#include <imgui_demo.cpp>
 #include <spdlog/spdlog.h>
 
 #include "RacingToHell.h"
-
-#define IMGUI_IMPL_OPENGL_LOADER_GLAD
 
 void initImGui(GLFWwindow *window) {
     IMGUI_CHECKVERSION();
@@ -44,13 +44,15 @@ ABORT(abort) {
 }
 
 LOG(rth_log) { spdlog::info(message); }
+
 /**
  * Returns the time in nanoseconds that has passed since the program start
  */
+static std::chrono::time_point<std::chrono::high_resolution_clock> program_start;
 QUERY_TIME(queryTime) {
-    timespec time = {};
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time);
-    return time.tv_nsec + 1000000000 * time.tv_sec;
+    auto now = std::chrono::high_resolution_clock::now();
+    auto diff = program_start - now;
+    return std::chrono::duration_cast<std::chrono::nanoseconds>(diff).count();
 }
 
 /**
@@ -173,6 +175,8 @@ void glfw_framebuffer_size_callback(GLFWwindow *window, int width, int height) {
 }
 
 int main() {
+    program_start = std::chrono::high_resolution_clock::now();
+
     spdlog::info("Starting RacingToHell");
     GLFWwindow *window = nullptr;
 

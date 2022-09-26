@@ -11,11 +11,11 @@
 void loadAudioClips(GameMemory *memory) {
     GameState *gameState = getGameState(memory);
     gameState->resources.aiShot =
-        Sound::loadWAV(memory, "../../res/sound/shotAI.wav");
+        Sound::loadWAV(memory, "../res/sound/shotAI.wav");
     gameState->resources.playerShot =
-        Sound::loadWAV(memory, "../../res/sound/shotPlayer.wav");
+        Sound::loadWAV(memory, "../res/sound/shotPlayer.wav");
     gameState->resources.level1Music =
-        Sound::loadWAV(memory, "../../res/sound/music/level1.wav");
+        Sound::loadWAV(memory, "../res/sound/music/level1.wav");
 }
 
 /**
@@ -63,43 +63,43 @@ void loadTextures(GameMemory *memory) {
     GameState *gameState = getGameState(memory);
 
     gameState->resources.bulletTexture =
-        loadTexture(memory, "../../res/textures/bullet.bmp");
+        loadTexture(memory, "../res/textures/bullet.bmp");
 
     for (int i = 0; i < 4; i++) {
         std::string fileName =
-            "../../res/textures/roads/road" + std::to_string(i) + ".bmp";
+            "../res/textures/roads/road" + std::to_string(i) + ".bmp";
         gameState->resources.roadTextures[i] = loadTexture(memory, fileName);
     }
 
     for (unsigned i = 0; i < NUM_PLAYER_TEXTURES; i++) {
         std::string playerSprite =
-            "../../res/textures/cars/player" + std::to_string(i) + ".bmp";
+            "../res/textures/cars/player" + std::to_string(i) + ".bmp";
         gameState->resources.playerCarTextures[i] =
             loadTexture(memory, playerSprite);
     }
 
     for (unsigned i = 0; i < NUM_TRAFFIC_TEXTURES; i++) {
         std::string carSprite =
-            "../../res/textures/cars/traffic" + std::to_string(i) + ".bmp";
+            "../res/textures/cars/traffic" + std::to_string(i) + ".bmp";
         gameState->resources.trafficCarTextures[i] =
             loadTexture(memory, carSprite);
     }
 
     gameState->resources.itemTextures[TOOLBOX_ID] =
-        loadTexture(memory, "../../res/textures/toolbox.bmp");
+        loadTexture(memory, "../res/textures/toolbox.bmp");
 
     gameState->resources.itemTextures[CANISTER_ID] =
-        loadTexture(memory, "../../res/textures/canister.bmp");
+        loadTexture(memory, "../res/textures/canister.bmp");
 
     // Explosion sprite
     gameState->resources.explosion =
-        loadTexture(memory, "../../res/textures/explosion.bmp", 9, 9);
+        loadTexture(memory, "../res/textures/explosion.bmp", 9, 9);
 
     // Tank boss
     gameState->resources.tank =
-        loadTexture(memory, "../../res/textures/bosses/tank.bmp");
+        loadTexture(memory, "../res/textures/bosses/tank.bmp");
     gameState->resources.tankCannon =
-        loadTexture(memory, "../../res/textures/bosses/tank_cannon.bmp");
+        loadTexture(memory, "../res/textures/bosses/tank_cannon.bmp");
 }
 
 /**
@@ -162,11 +162,11 @@ void init(GameMemory *memory) {
 
     *gameState = {};
 
-    char vertexShaderFileName[] = "../../res/shaders/vertex.glsl";
+    char vertexShaderFileName[] = "../res/shaders/vertex.glsl";
     for (unsigned i = 0; i < sizeof(vertexShaderFileName) / sizeof(char); i++) {
         memory->shaderFileNames[0][i] = vertexShaderFileName[i];
     }
-    char fragmentShaderFileName[] = "../../res/shaders/fragment.glsl";
+    char fragmentShaderFileName[] = "../res/shaders/fragment.glsl";
     for (unsigned i = 0; i < sizeof(fragmentShaderFileName) / sizeof(char);
          i++) {
         memory->shaderFileNames[1][i] = fragmentShaderFileName[i];
@@ -179,7 +179,7 @@ void init(GameMemory *memory) {
     gameState->rotationAngle = 0.0f;
     initOpenGL(memory);
 
-    loadFont(memory, "../../res/font/Arial.ttf");
+    loadFont(memory, "../res/font/Arial.ttf");
 
     loadAudioClips(memory);
 

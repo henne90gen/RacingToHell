@@ -162,27 +162,16 @@ void init(GameMemory *memory) {
 
     *gameState = {};
 
-    char vertexShaderFileName[] = "../res/shaders/vertex.glsl";
-    for (unsigned i = 0; i < sizeof(vertexShaderFileName) / sizeof(char); i++) {
-        memory->shaderFileNames[0][i] = vertexShaderFileName[i];
-    }
-    char fragmentShaderFileName[] = "../res/shaders/fragment.glsl";
-    for (unsigned i = 0; i < sizeof(fragmentShaderFileName) / sizeof(char);
-         i++) {
-        memory->shaderFileNames[1][i] = fragmentShaderFileName[i];
-    }
-
     glClearColor(1.0, 0, 1.0, 1.0);
 
     // setting up OpenGL
     gameState->scale = 1.0f;
     gameState->rotationAngle = 0.0f;
-    initOpenGL(memory);
+
+    checkShaders(memory);
 
     loadFont(memory, "../res/font/Arial.ttf");
-
     loadAudioClips(memory);
-
     loadTextures(memory);
 
     Sound::output(gameState, &gameState->resources.level1Music, 0.1f, 0.1f,

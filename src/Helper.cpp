@@ -2,10 +2,12 @@
 
 #include "Platform.h"
 #include "Renderer.h"
+#include "Resources.h"
 #include "Shader.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
+#include "spdlog/spdlog.h"
 
 FT_Library fontLibrary;
 
@@ -136,10 +138,10 @@ void scaleView(GameState *gameState) {
     glUniformMatrix4fv(scaleMatrixLocation, 1, GL_FALSE, &scaleMatrix[0]);
 }
 
-void initOpenGL(GameMemory *memory) {
+void initOpenGL(GameMemory *memory, Resource *vertex_shader, Resource *fragment_shader) {
     GameState *gameState = getGameState(memory);
 
-    gameState->glProgram = buildProgram(memory);
+    gameState->glProgram = buildProgram(memory, vertex_shader, fragment_shader);
     glUseProgram(gameState->glProgram);
 
     glDepthMask(GL_TRUE);
@@ -153,16 +155,22 @@ void initOpenGL(GameMemory *memory) {
 }
 
 void checkShaders(GameMemory *memory) {
-    unsigned amountOfShaders = sizeof(memory->shaderFileNames) / sizeof(memory->shaderFileNames[0]);
-    bool rebuildProgram = false;
-    for (unsigned i = 0; i < amountOfShaders; i++) {
-        if (memory->shaderModTimes[i][0] != memory->shaderModTimes[i][1]) {
-            rebuildProgram = true;
-            break;
-        }
+    auto vertex_opt = get_resource("res/shaders/vertex.glsl");
+    if (!vertex_opt.has_value()) {
+        memory->abort("Failed to load vertex shader resource");
+        return;
     }
-    if (rebuildProgram) {
-        initOpenGL(memory);
+
+    auto fragment_opt = get_resource("res/shaders/fragment.glsl");
+    if (!fragment_opt.has_value()) {
+        memory->abort("Failed to load fragment shader resource");
+        return;
+    }
+
+    static bool has_been_loaded_once = false;
+    if (!has_been_loaded_once) {
+        initOpenGL(memory, vertex_opt.value(), fragment_opt.value());
+        has_been_loaded_once = true;
     }
 }
 
@@ -207,8 +215,7 @@ void loadTextureToGraphicsMemory(Render::Texture *texture, void *content) {
     }
 
     glBindTexture(GL_TEXTURE_2D, texture->id);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture->width, texture->height, 0,
-                 GL_RGBA, GL_UNSIGNED_BYTE, content);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, content);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

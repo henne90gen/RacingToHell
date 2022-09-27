@@ -1,11 +1,12 @@
 #pragma once
 
 #include "RacingToHell.h"
+#include "Resources.h"
 
 GameState *beginFrame(GameMemory *memory, Input *input);
 void importPixelData(void *src, void *dest, unsigned srcWidth, unsigned srcHeight, int offsetX, int offsetY,
                      unsigned destWidth, unsigned destHeight);
-void initOpenGL(GameMemory *memory);
+void checkShaders(GameMemory *memory);
 Render::Character *getCharacter(GameState *gameState, char character, unsigned fontSizeIndex);
 float calculateTextLength(GameState *gameState, std::string text, Render::FontSize fontSize);
 void scaleView(GameState *gameState);

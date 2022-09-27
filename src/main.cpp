@@ -6,6 +6,7 @@
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 #include <chrono>
+#include <filesystem>
 #include <imgui.h>
 #include <spdlog/spdlog.h>
 
@@ -127,10 +128,12 @@ EXIT_GAME(exitGame) {
     exit(0);
 }
 
-GameMemory initGameMemory() {
+GameMemory initGameMemory(std::string_view base_path) {
     GameMemory memory = {};
     memory.doResize = true;
     memory.aspectRatio = 16.0f / 9.0f;
+
+    memory.base_path = base_path;
 
     memory.abort = abort;
     memory.log = rth_log;
@@ -174,7 +177,7 @@ void glfw_framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     resizeViewport(memory, width, height);
 }
 
-int main() {
+int main(int argc, char **argv) {
     program_start = std::chrono::high_resolution_clock::now();
 
     spdlog::info("Starting RacingToHell");
@@ -203,7 +206,13 @@ int main() {
         return 1;
     }
 
-    GameMemory memory = initGameMemory();
+    const std::string &current_path = std::filesystem::current_path().string();
+    std::string_view base_path = current_path;
+    if (argc == 2) {
+        base_path = std::string_view(argv[1]);
+    }
+    spdlog::info("Setting base path to '{}'", base_path);
+    GameMemory memory = initGameMemory(base_path);
     glfwSetWindowUserPointer(window, (void *)&memory);
 
     // set up callbacks

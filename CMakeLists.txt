@@ -59,6 +59,8 @@ FetchContent_MakeAvailable(
 
 find_package(OpenGL REQUIRED)
 
+set(CMAKE_CXX_STANDARD_REQUIRED 20)
+
 add_library(imgui
         "${imgui_SOURCE_DIR}/imgui.cpp"
         "${imgui_SOURCE_DIR}/imgui_draw.cpp"
@@ -76,14 +78,14 @@ add_executable(resource_generator tools/resource_generator.cpp)
 target_link_libraries(resource_generator spdlog)
 
 function(register_resource resource_list resource)
-    string(MAKE_C_IDENTIFIER ${resource} filename)
+    string(MAKE_C_IDENTIFIER ${resource} identifier)
     get_filename_component(resource_absolute ${resource} ABSOLUTE)
+    set(filename ${identifier}.cpp)
     add_custom_command(
-            OUTPUT ${filename}.cpp
-            COMMAND resource_generator ${resource_absolute} ${filename}
+            OUTPUT ${filename}
+            COMMAND resource_generator ${resource_absolute} ${filename} ${resource} ${identifier}
             DEPENDS ${resource}
     )
-    set(filename ${filename}.cpp)
     list(APPEND ${resource_list} ${filename})
     set(${resource_list} ${${resource_list}} PARENT_SCOPE)
 endfunction()
@@ -130,6 +132,7 @@ add_library(game
         src/MyMath.cpp
         src/RacingToHell.cpp
         src/Renderer.cpp
+        src/Resources.cpp
         src/Shader.cpp
         src/Sound.cpp
         ${RESOURCES})
@@ -141,6 +144,8 @@ target_link_libraries(game PUBLIC
         freetype
         ${OPENGL_gl_LIBRARY})
 target_include_directories(game PUBLIC ${OPENGL_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set_property(TARGET game PROPERTY CXX_STANDARD 20)
 
 add_executable(RacingToHell src/main.cpp)
 target_link_libraries(RacingToHell game glfw)
+set_property(TARGET RacingToHell PROPERTY CXX_STANDARD 20)

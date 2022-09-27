@@ -3,6 +3,7 @@
 #include <cstring>
 #include <stdint.h>
 #include <string>
+#include <string_view>
 
 #define DEFAULT_WINDOW_WIDTH 1200
 #define DEFAULT_WINDOW_HEIGHT 675
@@ -61,8 +62,7 @@ struct GameMemory {
     float aspectRatio;
     bool doResize;
 
-    time_t shaderModTimes[2][2];
-    char shaderFileNames[2][100];
+    std::string_view base_path;
 
     abort_ *abort;
     log_ *log;

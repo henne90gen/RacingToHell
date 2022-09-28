@@ -5,8 +5,9 @@
 GLuint compileShader(GameMemory *memory, const GLenum type, Resource *shader) {
     GLint compileStatus;
     GLuint shaderID = glCreateShader(type);
-    const auto shader_content = shader->content.data();
-    const auto shader_size = shader->content.size();
+
+    const auto shader_content = shader->get_content(memory);
+    const auto shader_size = shader_content.size();
     glShaderSource(shaderID, 1, (GLchar **)&shader_content, (GLint *)&shader_size);
     glCompileShader(shaderID);
     glGetShaderiv(shaderID, GL_COMPILE_STATUS, &compileStatus);
@@ -40,7 +41,7 @@ GLuint linkProgram(GameMemory *memory, const GLuint vertex_shader, const GLuint 
         glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &infoLogLength);
         if (infoLogLength > 0) {
             char *programErrorMessage = new char[infoLogLength + 1];
-            glGetProgramInfoLog(programID, infoLogLength, NULL, programErrorMessage);
+            glGetProgramInfoLog(programID, infoLogLength, nullptr, programErrorMessage);
             memory->log(programErrorMessage);
         }
         std::string message = "Failed to link shader program.\n";

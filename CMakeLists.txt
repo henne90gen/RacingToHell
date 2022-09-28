@@ -76,6 +76,8 @@ target_include_directories(glad PUBLIC src/glad/include)
 
 add_executable(resource_generator tools/resource_generator.cpp)
 target_link_libraries(resource_generator spdlog)
+add_executable(resource_finalizer tools/resource_finalizer.cpp)
+target_link_libraries(resource_finalizer spdlog)
 
 function(register_resource resource_list resource)
     string(MAKE_C_IDENTIFIER ${resource} identifier)
@@ -85,6 +87,16 @@ function(register_resource resource_list resource)
             OUTPUT ${filename}
             COMMAND resource_generator ${resource_absolute} ${filename} ${resource} ${identifier}
             DEPENDS ${resource}
+    )
+    list(APPEND ${resource_list} ${filename})
+    set(${resource_list} ${${resource_list}} PARENT_SCOPE)
+endfunction()
+function(finalize_resources resource_list)
+    set(filename resources.cpp)
+    add_custom_command(
+            OUTPUT ${filename}
+            COMMAND resource_finalizer ${${resource_list}}
+            DEPENDS ${${resource_list}}
     )
     list(APPEND ${resource_list} ${filename})
     set(${resource_list} ${${resource_list}} PARENT_SCOPE)
@@ -99,6 +111,9 @@ register_resource(RESOURCES res/sound/music/level1.wav)
 register_resource(RESOURCES res/sound/gameOver.wav)
 register_resource(RESOURCES res/sound/shotAI.wav)
 register_resource(RESOURCES res/sound/shotPlayer.wav)
+register_resource(RESOURCES res/textures/bullet.bmp)
+register_resource(RESOURCES res/textures/canister.bmp)
+register_resource(RESOURCES res/textures/explosion.bmp)
 register_resource(RESOURCES res/textures/bosses/tank.bmp)
 register_resource(RESOURCES res/textures/bosses/tank_cannon.bmp)
 register_resource(RESOURCES res/textures/cars/cars.bmp)
@@ -119,6 +134,8 @@ register_resource(RESOURCES res/textures/roads/road0.bmp)
 register_resource(RESOURCES res/textures/roads/road1.bmp)
 register_resource(RESOURCES res/textures/roads/road2.bmp)
 register_resource(RESOURCES res/textures/roads/road3.bmp)
+register_resource(RESOURCES res/textures/toolbox.bmp)
+finalize_resources(RESOURCES)
 
 add_library(game
         src/Boss.cpp

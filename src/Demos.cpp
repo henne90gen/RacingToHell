@@ -3,11 +3,13 @@
 #include "Helper.h"
 #include "Renderer.h"
 
+#include <array>
+
 void textDemo(GameMemory *memory, Input *input, AtomPlane plane) {
-    static char fontFileNames[3][100] = {
-        "../res/font/DejaVuSansMono.ttf",
-        "../res/font/ComicSans.ttf",
-        "../res/font/Arial.ttf",
+    static std::array<std::string, 3> fontFileNames = {
+        "res/font/DejaVuSansMono.ttf",
+        "res/font/ComicSans.ttf",
+        "res/font/Arial.ttf",
     };
     static int fontIndex = 0;
 

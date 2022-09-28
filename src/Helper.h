@@ -31,5 +31,5 @@ void checkPlayerTileCollision(Player *player, Tile *tile);
 
 int getFontSize(GameState *gameState, int fontSizeIndex);
 void extractFileName(std::string fileName, const std::string &fileExtension, char result[]);
-void loadFont(GameMemory *memory, std::string fontFileName);
+void loadFont(GameMemory *memory, const std::string& fontFileName);
 void loadTextureToGraphicsMemory(Render::Texture *texture, void *content);

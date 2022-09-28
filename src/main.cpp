@@ -11,6 +11,7 @@
 #include <spdlog/spdlog.h>
 
 #include "RacingToHell.h"
+#include "Resources.h"
 
 void initImGui(GLFWwindow *window) {
     IMGUI_CHECKVERSION();
@@ -228,6 +229,8 @@ int main(int argc, char **argv) {
     // ImGui installs its own glfw callbacks, which will then call our
     // previously installed callbacks
     initImGui(window);
+
+    init_resources();
 
     glEnable(GL_DEPTH_TEST);
 

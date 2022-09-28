@@ -289,7 +289,7 @@ void loadCharacter(GameMemory *memory, FT_Face face, char loadCharacter, int fon
 /**
  * Load the specified font file to be used as game font
  */
-void loadFont(GameMemory *memory, std::string fontFileName) {
+void loadFont(GameMemory *memory, const std::string &fontFileName) {
     int error;
 
     // setting up font system
@@ -304,9 +304,14 @@ void loadFont(GameMemory *memory, std::string fontFileName) {
 
     GameState *gameState = getGameState(memory);
 
-    File fontFile = memory->readFile(fontFileName);
+    auto resource_opt = get_resource(fontFileName);
+    if (!resource_opt.has_value()) {
+        memory->abort("Failed to load font file " + fontFileName);
+    }
+
+    auto content = resource_opt.value()->get_content(memory);
     FT_Face face = {};
-    error = FT_New_Memory_Face(fontLibrary, (const FT_Byte *)fontFile.content, fontFile.size, 0, &face);
+    error = FT_New_Memory_Face(fontLibrary, (const FT_Byte *)content.data(), (FT_Long)content.size(), 0, &face);
     if (error) {
         memory->abort("Couldn't load font " + fontFileName + ". Errorcode: " + std::to_string(error));
     }

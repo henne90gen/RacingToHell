@@ -10,25 +10,28 @@
  */
 void loadAudioClips(GameMemory *memory) {
     GameState *gameState = getGameState(memory);
-    gameState->resources.aiShot =
-        Sound::loadWAV(memory, "../res/sound/shotAI.wav");
-    gameState->resources.playerShot =
-        Sound::loadWAV(memory, "../res/sound/shotPlayer.wav");
-    gameState->resources.level1Music =
-        Sound::loadWAV(memory, "../res/sound/music/level1.wav");
+    gameState->resources.aiShot = Sound::loadWAV(memory, "res/sound/shotAI.wav");
+    gameState->resources.playerShot = Sound::loadWAV(memory, "res/sound/shotPlayer.wav");
+    gameState->resources.level1Music = Sound::loadWAV(memory, "res/sound/music/level1.wav");
 }
 
 /**
  * Load a texture from a bmp file and pushes it to the graphics card
  */
-Render::Texture loadTexture(GameMemory *memory, std::string fileName,
-                            int xDivision = 1, int yDivision = 1) {
-    File file = memory->readFile(fileName);
-    if (((char *)file.content)[0] != 'B' || (file.content)[1] != 'M') {
-        memory->abort(file.name + " is not a bitmap file.");
+Render::Texture loadTexture(GameMemory *memory, const std::string &resource_name, int xDivision = 1,
+                            int yDivision = 1) {
+    auto resource_opt = get_resource(resource_name);
+    if (!resource_opt.has_value()) {
+        memory->abort("Failed to load texture " + resource_name);
     }
+
+    auto resource_content = resource_opt.value()->get_content(memory);
+    if (resource_content[0] != 'B' || resource_content[1] != 'M') {
+        memory->abort(resource_name + " is not a bitmap file.");
+    }
+
     int fileHeaderSize = 14;
-    BitmapHeader header = *((BitmapHeader *)(file.content + fileHeaderSize));
+    BitmapHeader header = *((BitmapHeader *)(resource_content.data() + fileHeaderSize));
 
     if (header.bitsPerPixel != 32) {
         memory->abort("Image must have 32-bit of color depth.");
@@ -40,14 +43,10 @@ Render::Texture loadTexture(GameMemory *memory, std::string fileName,
     texture.bytesPerPixel = header.bitsPerPixel / 8;
     texture.xDivision = xDivision;
     texture.yDivision = yDivision;
-    void *content = reserveTemporaryMemory(
-        memory, texture.width * texture.height * texture.bytesPerPixel);
+    void *content = reserveTemporaryMemory(memory, texture.width * texture.height * texture.bytesPerPixel);
 
-    importPixelData(file.content + header.size + fileHeaderSize, content,
-                    header.width, header.height, 0, 0, texture.width,
-                    texture.height);
-
-    memory->freeFile(&file);
+    importPixelData((void *)(resource_content.data() + header.size + fileHeaderSize), content, header.width,
+                    header.height, 0, 0, texture.width, texture.height);
 
     loadTextureToGraphicsMemory(&texture, content);
 
@@ -62,44 +61,33 @@ Render::Texture loadTexture(GameMemory *memory, std::string fileName,
 void loadTextures(GameMemory *memory) {
     GameState *gameState = getGameState(memory);
 
-    gameState->resources.bulletTexture =
-        loadTexture(memory, "../res/textures/bullet.bmp");
+    gameState->resources.bulletTexture = loadTexture(memory, "res/textures/bullet.bmp");
 
     for (int i = 0; i < 4; i++) {
-        std::string fileName =
-            "../res/textures/roads/road" + std::to_string(i) + ".bmp";
+        std::string fileName = "res/textures/roads/road" + std::to_string(i) + ".bmp";
         gameState->resources.roadTextures[i] = loadTexture(memory, fileName);
     }
 
     for (unsigned i = 0; i < NUM_PLAYER_TEXTURES; i++) {
-        std::string playerSprite =
-            "../res/textures/cars/player" + std::to_string(i) + ".bmp";
-        gameState->resources.playerCarTextures[i] =
-            loadTexture(memory, playerSprite);
+        std::string playerSprite = "res/textures/cars/player" + std::to_string(i) + ".bmp";
+        gameState->resources.playerCarTextures[i] = loadTexture(memory, playerSprite);
     }
 
     for (unsigned i = 0; i < NUM_TRAFFIC_TEXTURES; i++) {
-        std::string carSprite =
-            "../res/textures/cars/traffic" + std::to_string(i) + ".bmp";
-        gameState->resources.trafficCarTextures[i] =
-            loadTexture(memory, carSprite);
+        std::string carSprite = "res/textures/cars/traffic" + std::to_string(i) + ".bmp";
+        gameState->resources.trafficCarTextures[i] = loadTexture(memory, carSprite);
     }
 
-    gameState->resources.itemTextures[TOOLBOX_ID] =
-        loadTexture(memory, "../res/textures/toolbox.bmp");
+    gameState->resources.itemTextures[TOOLBOX_ID] = loadTexture(memory, "res/textures/toolbox.bmp");
 
-    gameState->resources.itemTextures[CANISTER_ID] =
-        loadTexture(memory, "../res/textures/canister.bmp");
+    gameState->resources.itemTextures[CANISTER_ID] = loadTexture(memory, "res/textures/canister.bmp");
 
     // Explosion sprite
-    gameState->resources.explosion =
-        loadTexture(memory, "../res/textures/explosion.bmp", 9, 9);
+    gameState->resources.explosion = loadTexture(memory, "res/textures/explosion.bmp", 9, 9);
 
     // Tank boss
-    gameState->resources.tank =
-        loadTexture(memory, "../res/textures/bosses/tank.bmp");
-    gameState->resources.tankCannon =
-        loadTexture(memory, "../res/textures/bosses/tank_cannon.bmp");
+    gameState->resources.tank = loadTexture(memory, "res/textures/bosses/tank.bmp");
+    gameState->resources.tankCannon = loadTexture(memory, "res/textures/bosses/tank_cannon.bmp");
 }
 
 /**
@@ -145,9 +133,8 @@ void resetGameState(GameState *gameState) {
     gameState->isInBossFight = true;
     loadBoss(gameState);
 
-    gameState->menuState =
-        MenuState::MAIN; // triggers world generation when loading the game
-                         // directly into game mode
+    gameState->menuState = MenuState::MAIN; // triggers world generation when loading the game
+                                            // directly into game mode
 }
 
 /**
@@ -157,8 +144,7 @@ void init(GameMemory *memory) {
     std::srand(1337);
     memory->isInitialized = true;
 
-    GameState *gameState =
-        (GameState *)reservePermanentMemory(memory, sizeof(GameState));
+    GameState *gameState = (GameState *)reservePermanentMemory(memory, sizeof(GameState));
 
     *gameState = {};
 
@@ -170,12 +156,11 @@ void init(GameMemory *memory) {
 
     checkShaders(memory);
 
-    loadFont(memory, "../res/font/Arial.ttf");
+    loadFont(memory, "res/font/Arial.ttf");
     loadAudioClips(memory);
     loadTextures(memory);
 
-    Sound::output(gameState, &gameState->resources.level1Music, 0.1f, 0.1f,
-                  Sound::PLAY_LOOP);
+    Sound::output(gameState, &gameState->resources.level1Music, 0.1f, 0.1f, Sound::PLAY_LOOP);
 
     resetGameState(gameState);
     loadMenu(memory, MenuState::MAIN);

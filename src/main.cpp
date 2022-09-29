@@ -213,6 +213,10 @@ int main(int argc, char **argv) {
         base_path = std::string_view(argv[1]);
     }
     spdlog::info("Setting base path to '{}'", base_path);
+    if (!std::filesystem::exists(std::string(base_path) + "/res")) {
+        spdlog::error("Failed to find resources directory!");
+        return 1;
+    }
     GameMemory memory = initGameMemory(base_path);
     glfwSetWindowUserPointer(window, (void *)&memory);
 

@@ -8,7 +8,8 @@ GLuint compileShader(GameMemory *memory, const GLenum type, Resource *shader) {
 
     const auto shader_content = shader->get_content(memory);
     const auto shader_size = shader_content.size();
-    glShaderSource(shaderID, 1, (GLchar **)&shader_content, (GLint *)&shader_size);
+    auto shader_data = const_cast<char *>(shader_content.data());
+    glShaderSource(shaderID, 1, &shader_data, (GLint *)&shader_size);
     glCompileShader(shaderID);
     glGetShaderiv(shaderID, GL_COMPILE_STATUS, &compileStatus);
 

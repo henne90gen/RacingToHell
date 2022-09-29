@@ -8,13 +8,13 @@ struct GameMemory;
 
 struct Resource {
     std::string resource_name;
-    std::string_view content;
-    bool file_too_large;
-    uint64_t last_modified = 0;
+    int64_t last_modified;
 
-    Resource(std::string _resource_name, std::string_view _content, bool _file_too_large);
+    explicit Resource(std::string _resource_name, int64_t last_modified);
 
     std::string_view get_content(GameMemory *memory);
+    [[nodiscard]] bool has_changed(GameMemory *memory) const;
+    [[nodiscard]] std::string get_file_name(GameMemory *memory) const;
 };
 
 void init_resources();

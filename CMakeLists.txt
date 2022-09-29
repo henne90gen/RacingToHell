@@ -76,66 +76,58 @@ target_include_directories(glad PUBLIC src/glad/include)
 
 add_executable(resource_generator tools/resource_generator.cpp)
 target_link_libraries(resource_generator spdlog)
+set_property(TARGET resource_generator PROPERTY CXX_STANDARD 20)
 add_executable(resource_finalizer tools/resource_finalizer.cpp)
 target_link_libraries(resource_finalizer spdlog)
 
-function(register_resource resource_list resource)
-    string(MAKE_C_IDENTIFIER ${resource} identifier)
-    get_filename_component(resource_absolute ${resource} ABSOLUTE)
-    set(filename ${identifier}.cpp)
+function(register_resources resources_var)
+    foreach (resource IN LISTS ARGN)
+        string(MAKE_C_IDENTIFIER ${resource} identifier)
+        get_filename_component(resource_absolute ${resource} ABSOLUTE)
+        list(APPEND resources ${resource} ${identifier} ${resource_absolute})
+    endforeach ()
     add_custom_command(
-            OUTPUT ${filename}
-            COMMAND resource_generator ${resource_absolute} ${filename} ${resource} ${identifier}
-            DEPENDS ${resource}
+            OUTPUT resources.cpp
+            COMMAND resource_generator ${resources}
+            DEPENDS ${ARGN}
     )
-    list(APPEND ${resource_list} ${filename})
-    set(${resource_list} ${${resource_list}} PARENT_SCOPE)
-endfunction()
-function(finalize_resources resource_list)
-    set(filename resources.cpp)
-    add_custom_command(
-            OUTPUT ${filename}
-            COMMAND resource_finalizer ${${resource_list}}
-            DEPENDS ${${resource_list}}
-    )
-    list(APPEND ${resource_list} ${filename})
-    set(${resource_list} ${${resource_list}} PARENT_SCOPE)
+    set(${resources_var} resources.cpp PARENT_SCOPE)
 endfunction()
 
-register_resource(RESOURCES res/shaders/fragment.glsl)
-register_resource(RESOURCES res/shaders/vertex.glsl)
-register_resource(RESOURCES res/font/Arial.ttf)
-register_resource(RESOURCES res/font/ComicSans.ttf)
-register_resource(RESOURCES res/font/DejaVuSansMono.ttf)
-register_resource(RESOURCES res/sound/music/level1.wav)
-register_resource(RESOURCES res/sound/gameOver.wav)
-register_resource(RESOURCES res/sound/shotAI.wav)
-register_resource(RESOURCES res/sound/shotPlayer.wav)
-register_resource(RESOURCES res/textures/bullet.bmp)
-register_resource(RESOURCES res/textures/canister.bmp)
-register_resource(RESOURCES res/textures/explosion.bmp)
-register_resource(RESOURCES res/textures/bosses/tank.bmp)
-register_resource(RESOURCES res/textures/bosses/tank_cannon.bmp)
-register_resource(RESOURCES res/textures/cars/cars.bmp)
-register_resource(RESOURCES res/textures/cars/player0.bmp)
-register_resource(RESOURCES res/textures/cars/player1.bmp)
-register_resource(RESOURCES res/textures/cars/player2.bmp)
-register_resource(RESOURCES res/textures/cars/player3.bmp)
-register_resource(RESOURCES res/textures/cars/player4.bmp)
-register_resource(RESOURCES res/textures/cars/player5.bmp)
-register_resource(RESOURCES res/textures/cars/traffic0.bmp)
-register_resource(RESOURCES res/textures/cars/traffic1.bmp)
-register_resource(RESOURCES res/textures/cars/traffic2.bmp)
-register_resource(RESOURCES res/textures/cars/traffic3.bmp)
-register_resource(RESOURCES res/textures/cars/traffic4.bmp)
-register_resource(RESOURCES res/textures/cars/traffic5.bmp)
-register_resource(RESOURCES res/textures/cars/traffic6.bmp)
-register_resource(RESOURCES res/textures/roads/road0.bmp)
-register_resource(RESOURCES res/textures/roads/road1.bmp)
-register_resource(RESOURCES res/textures/roads/road2.bmp)
-register_resource(RESOURCES res/textures/roads/road3.bmp)
-register_resource(RESOURCES res/textures/toolbox.bmp)
-finalize_resources(RESOURCES)
+register_resources(RESOURCES
+        res/shaders/fragment.glsl
+        res/shaders/vertex.glsl
+        res/font/Arial.ttf
+        res/font/ComicSans.ttf
+        res/font/DejaVuSansMono.ttf
+        res/sound/music/level1.wav
+        res/sound/gameOver.wav
+        res/sound/shotAI.wav
+        res/sound/shotPlayer.wav
+        res/textures/bullet.bmp
+        res/textures/canister.bmp
+        res/textures/explosion.bmp
+        res/textures/bosses/tank.bmp
+        res/textures/bosses/tank_cannon.bmp
+        res/textures/cars/cars.bmp
+        res/textures/cars/player0.bmp
+        res/textures/cars/player1.bmp
+        res/textures/cars/player2.bmp
+        res/textures/cars/player3.bmp
+        res/textures/cars/player4.bmp
+        res/textures/cars/player5.bmp
+        res/textures/cars/traffic0.bmp
+        res/textures/cars/traffic1.bmp
+        res/textures/cars/traffic2.bmp
+        res/textures/cars/traffic3.bmp
+        res/textures/cars/traffic4.bmp
+        res/textures/cars/traffic5.bmp
+        res/textures/cars/traffic6.bmp
+        res/textures/roads/road0.bmp
+        res/textures/roads/road1.bmp
+        res/textures/roads/road2.bmp
+        res/textures/roads/road3.bmp
+        res/textures/toolbox.bmp)
 
 add_library(game
         src/Boss.cpp

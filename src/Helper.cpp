@@ -168,7 +168,7 @@ void checkShaders(GameMemory *memory) {
     }
 
     static bool has_been_loaded_once = false;
-    if (!has_been_loaded_once) {
+    if (!has_been_loaded_once || vertex_opt.value()->has_changed(memory) || fragment_opt.value()->has_changed(memory)) {
         initOpenGL(memory, vertex_opt.value(), fragment_opt.value());
         has_been_loaded_once = true;
     }

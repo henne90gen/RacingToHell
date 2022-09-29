@@ -21,7 +21,7 @@ GLuint compileShader(GameMemory *memory, const GLenum type, Resource *shader) {
             glGetShaderInfoLog(shaderID, infoLogLength, nullptr, shaderErrorMessage);
             memory->log(shaderErrorMessage);
         }
-        std::string message = "Failed to compile shader. " + std::to_string(type) + "\n" + std::string(shader->content);
+        std::string message = "Failed to compile shader. " + std::to_string(type) + "\n" + std::string(shader_content);
         memory->abort(message);
     }
 

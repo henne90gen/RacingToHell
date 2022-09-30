@@ -77,8 +77,6 @@ target_include_directories(glad PUBLIC src/glad/include)
 add_executable(resource_generator tools/resource_generator.cpp)
 target_link_libraries(resource_generator spdlog)
 set_property(TARGET resource_generator PROPERTY CXX_STANDARD 20)
-add_executable(resource_finalizer tools/resource_finalizer.cpp)
-target_link_libraries(resource_finalizer spdlog)
 
 function(register_resources resources_var)
     foreach (resource IN LISTS ARGN)

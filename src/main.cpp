@@ -239,9 +239,11 @@ int main(int argc, char **argv) {
     glEnable(GL_DEPTH_TEST);
 
     //  enableOpenGLDebugging();
-    std::string versionString = std::string((const char *)glGetString(GL_VERSION));
-    spdlog::info("OpenGL Version: {}", versionString);
-    // TODO query graphics hardware information
+
+    std::string renderer = std::string((const char *)glGetString(GL_RENDERER));
+    std::string version = std::string((const char *)glGetString(GL_VERSION));
+    spdlog::info("Graphics Card: {}", renderer);
+    spdlog::info("OpenGL Version: {}", version);
 
     Input input[2] = {};
     Input *oldInput = &input[0];

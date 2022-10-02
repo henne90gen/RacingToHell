@@ -71,7 +71,7 @@ File Platform::read_file(const std::string &file_path, bool is_resource) {
     long int file_size = ftell(fileHandle);
     rewind(fileHandle);
 
-    char *content = (char *)malloc(file_size);
+    char *content = (char *)std::malloc(file_size);
     fread(content, file_size, 1, fileHandle);
     fclose(fileHandle);
 
@@ -82,6 +82,14 @@ File Platform::read_file(const std::string &file_path, bool is_resource) {
     file.content = content;
 
     return file;
+}
+
+void Platform::free_file(File &file) {
+    if (file.content) {
+        std::free(file.content);
+    }
+
+    file.size = 0;
 }
 
 bool Platform::write_file(const File &file) {
@@ -102,14 +110,6 @@ bool Platform::write_file(const File &file) {
     fclose(fHandle);
     fHandle = nullptr;
     return true;
-}
-
-void Platform::free_file(File &file) {
-    if (file.content) {
-        free(file.content);
-    }
-
-    file.size = 0;
 }
 
 void Platform::exit() {

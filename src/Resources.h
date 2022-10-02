@@ -8,10 +8,10 @@
 
 struct Resource {
     std::string resource_name;
-    int64_t last_modified;
+    int64_t last_modified = 0;
     File file = {};
 
-    explicit Resource(std::string _resource_name, int64_t last_modified);
+    explicit Resource(std::string _resource_name);
 
     std::string_view get_content(Platform &platform);
     [[nodiscard]] bool has_changed(Platform &platform) const;

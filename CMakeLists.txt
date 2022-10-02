@@ -65,35 +65,49 @@ endif ()
 
 set(CMAKE_CXX_STANDARD_REQUIRED 20)
 
-add_library(imgui
-        "${imgui_SOURCE_DIR}/imgui.cpp"
-        "${imgui_SOURCE_DIR}/imgui_draw.cpp"
-        "${imgui_SOURCE_DIR}/imgui_widgets.cpp"
-        "${imgui_SOURCE_DIR}/imgui_tables.cpp"
-        "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp"
-        "${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp")
-target_include_directories(imgui PUBLIC "${imgui_SOURCE_DIR}")
-target_link_libraries(imgui PUBLIC glad glfw)
+if (NOT ANDROID)
+    add_library(imgui
+            "${imgui_SOURCE_DIR}/imgui.cpp"
+            "${imgui_SOURCE_DIR}/imgui_draw.cpp"
+            "${imgui_SOURCE_DIR}/imgui_widgets.cpp"
+            "${imgui_SOURCE_DIR}/imgui_tables.cpp"
+            "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp"
+            "${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp")
+    target_include_directories(imgui PUBLIC "${imgui_SOURCE_DIR}")
+    target_link_libraries(imgui PUBLIC glad glfw)
+else ()
+    add_library(imgui
+            "${imgui_SOURCE_DIR}/imgui.cpp"
+            "${imgui_SOURCE_DIR}/imgui_draw.cpp"
+            "${imgui_SOURCE_DIR}/imgui_widgets.cpp"
+            "${imgui_SOURCE_DIR}/imgui_tables.cpp"
+            "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp"
+            "${imgui_SOURCE_DIR}/backends/imgui_impl_android.cpp")
+    target_include_directories(imgui PUBLIC "${imgui_SOURCE_DIR}")
+    target_link_libraries(imgui PUBLIC glad)
+endif ()
 
 add_library(glad src/glad/src/glad.c)
 target_include_directories(glad PUBLIC src/glad/include)
-
-add_executable(resource_generator tools/resource_generator.cpp)
-target_link_libraries(resource_generator spdlog)
-set_property(TARGET resource_generator PROPERTY CXX_STANDARD 20)
 
 function(register_resources resources_var)
     foreach (resource IN LISTS ARGN)
         string(MAKE_C_IDENTIFIER ${resource} identifier)
         get_filename_component(resource_absolute ${resource} ABSOLUTE)
-        list(APPEND resources ${resource} ${identifier} ${resource_absolute})
+        string(APPEND resource_definitions "Resource ${identifier}_resource(\"${resource}\");\n")
+        string(APPEND resource_additions "    resources[${identifier}_resource.resource_name] = &${identifier}_resource;\n")
     endforeach ()
-    add_custom_command(
-            OUTPUT resources.cpp
-            COMMAND resource_generator ${resources}
-            DEPENDS ${ARGN}
+    file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/resources.cpp
+            "#include \"Resources.h\"\n"
+            "#include <string>\n"
+            "#include <unordered_map>\n\n"
+            "extern std::unordered_map<std::string, Resource *> resources;\n\n"
+            "${resource_definitions}\n"
+            "void init_resources() {\n"
+            "${resource_additions}"
+            "}\n"
     )
-    set(${resources_var} resources.cpp PARENT_SCOPE)
+    set(${resources_var} ${CMAKE_CURRENT_BINARY_DIR}/resources.cpp PARENT_SCOPE)
 endfunction()
 
 register_resources(RESOURCES

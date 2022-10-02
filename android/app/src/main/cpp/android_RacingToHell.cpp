@@ -1,9 +1,11 @@
 #include "android_RacingToHell.h"
 
+#define IMGUI_IMPL_OPENGL_LOADER_GLAD
+
 #define MB 1024 * 1024
 
 AAssetManager *asset_manager;
-GameMemory memory;
+Platform platform = {};
 Input gameInput = {};
 int realWindowWidth, realWindowHeight;
 
@@ -15,20 +17,14 @@ Java_game_racingtohell_NativeWrapper_on_1surface_1changed(JNIEnv *env UNUSED, jc
     if (!memoryInitialized) {
         memoryInitialized = true;
 
-        rth_log("Initializing Game");
-        memory = {};
-        memory.log = rth_log;
-        memory.abort = abort;
-        memory.exitGame = exitGame;
-        memory.readFile = readFile;
-        memory.freeFile = freeFile;
-        memory.temporaryMemorySize = 10 * MB;
-        memory.permanentMemorySize = 100 * MB;
-        memory.temporary = (char *) malloc(memory.temporaryMemorySize);
-        memory.permanent = (char *) malloc(memory.permanentMemorySize);
-        memory.doResize = true;
-        memory.aspectRatio = 16.0f / 9.0f;
-        memory.base_path = "./";
+        platform.log("Initializing Game");
+        platform.memory.temporaryMemorySize = 10 * MB;
+        platform.memory.permanentMemorySize = 100 * MB;
+        platform.memory.temporary = (char *) malloc(platform.memory.temporaryMemorySize);
+        platform.memory.permanent = (char *) malloc(platform.memory.permanentMemorySize);
+        platform.memory.doResize = true;
+        platform.memory.aspectRatio = 16.0f / 9.0f;
+        platform.memory.base_path = "./";
     }
 
     realWindowWidth = width;
@@ -56,10 +52,11 @@ JNIEXPORT void JNICALL
 Java_game_racingtohell_NativeWrapper_on_1draw_1frame(JNIEnv *env UNUSED, jclass clazz UNUSED) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    GameState *gameState = getGameState(&memory);
+    GameState *gameState = getGameState(platform);
     gameState->rotationAngle = PI / 2;
 
-    update_and_render(&gameInput, &memory);
+    platform.input = &gameInput;
+    update_and_render(platform);
 }
 
 extern "C"
@@ -69,51 +66,48 @@ Java_game_racingtohell_NativeWrapper_init_1asset_1manager(JNIEnv *env UNUSED, jc
     asset_manager = AAssetManager_fromJava(env, java_asset_manager);
 }
 
-ABORT(abort) {
-    __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, "%s", message.c_str());
-    exit(1);
+void Platform::abort(const std::string &msg) {
+    __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, "%s", msg.c_str());
+    ::exit(1);
 }
 
-LOG(rth_log) {
-    __android_log_print(ANDROID_LOG_INFO, LOG_TAG, "%s", message.c_str());
+void Platform::log(const std::string &msg) {
+    __android_log_print(ANDROID_LOG_INFO, LOG_TAG, "%s", msg.c_str());
 }
 
-READ_FILE(readFile) {
-    std::string assetName = "";
-    for (int i = 6; i < fileName.length(); i++) {
-        assetName += fileName[i];
-    }
+File Platform::read_file(const std::string &file_path, bool is_resource) {
+    std::string assetName = file_path;
 
-    rth_log("Reading " + assetName);
+    log("Reading " + assetName);
 
     AAsset *asset = AAssetManager_open(asset_manager, assetName.c_str(), AASSET_MODE_STREAMING);
 
     if (!asset) {
-        abort("Couldn't open file " + fileName);
+        abort("Couldn't open file " + file_path);
     }
 
-    const char *content;
-    size_t length = (size_t) AAsset_getLength(asset);
-    content = (char *) AAsset_getBuffer(asset);
+    auto length = (size_t) AAsset_getLength(asset);
+    auto content = (char *) std::malloc(length);
+    std::memcpy(content, AAsset_getBuffer(asset), length);
+    AAsset_close(asset);
 
     File file = {};
     file.size = length;
-    file.name = fileName;
-    file.content = (char *) content;
-    file.fileHandle = asset;
+    file.name = file_path;
+    file.content = content;
 
     return file;
 }
 
-FREE_FILE(freeFile) {
-    if (file->content) {
-        AAsset_close((AAsset *) file->fileHandle);
+void Platform::free_file(File &file) {
+    if (file.content) {
+        std::free(file.content);
     }
 
-    file->size = 0;
+    file.size = 0;
 }
 
-EXIT_GAME(exitGame) {
-    rth_log("Exiting.");
-    exit(0);
+void Platform::exit() {
+    log("Exiting.");
+    ::exit(0);
 }

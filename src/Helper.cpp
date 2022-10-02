@@ -1,5 +1,6 @@
 #include "Helper.h"
 
+#include "Memory.h"
 #include "Platform.h"
 #include "Renderer.h"
 #include "Resources.h"
@@ -7,7 +8,7 @@
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
-#include "spdlog/spdlog.h"
+#include <spdlog/spdlog.h>
 
 FT_Library fontLibrary;
 
@@ -97,11 +98,11 @@ GLuint createVBO(const GLsizeiptr size, const GLvoid *data, const GLenum usage) 
     return vbo;
 }
 
-void resizeView(GameMemory *memory) {
-    GameState *gameState = getGameState(memory);
-    memory->doResize = false;
+void resizeView(Platform &platform) {
+    GameState *gameState = getGameState(platform);
+    platform.memory.doResize = false;
 
-    auto xScale = 1.0f / memory->aspectRatio;
+    auto xScale = 1.0f / platform.memory.aspectRatio;
     GLfloat aspectRatioMatrix[16] = {
         xScale, 0,   0,   0,   //
         0,      1.0, 0,   0,   //
@@ -138,10 +139,10 @@ void scaleView(GameState *gameState) {
     glUniformMatrix4fv(scaleMatrixLocation, 1, GL_FALSE, &scaleMatrix[0]);
 }
 
-void initOpenGL(GameMemory *memory, Resource *vertex_shader, Resource *fragment_shader) {
-    GameState *gameState = getGameState(memory);
+void initOpenGL(Platform &platform, Resource *vertex_shader, Resource *fragment_shader) {
+    GameState *gameState = getGameState(platform);
 
-    gameState->glProgram = buildProgram(memory, vertex_shader, fragment_shader);
+    gameState->glProgram = buildProgram(platform, vertex_shader, fragment_shader);
     glUseProgram(gameState->glProgram);
 
     glDepthMask(GL_TRUE);
@@ -149,55 +150,56 @@ void initOpenGL(GameMemory *memory, Resource *vertex_shader, Resource *fragment_
     glDisable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    resizeView(memory);
+    resizeView(platform);
     scaleView(gameState);
     rotateView(gameState);
 }
 
-void checkShaders(GameMemory *memory) {
+void checkShaders(Platform &platform) {
     auto vertex_opt = get_resource("res/shaders/vertex.glsl");
     if (!vertex_opt.has_value()) {
-        memory->abort("Failed to load vertex shader resource");
+        platform.abort("Failed to load vertex shader resource");
         return;
     }
 
     auto fragment_opt = get_resource("res/shaders/fragment.glsl");
     if (!fragment_opt.has_value()) {
-        memory->abort("Failed to load fragment shader resource");
+        platform.abort("Failed to load fragment shader resource");
         return;
     }
 
     static bool has_been_loaded_once = false;
-    if (!has_been_loaded_once || vertex_opt.value()->has_changed(memory) || fragment_opt.value()->has_changed(memory)) {
-        initOpenGL(memory, vertex_opt.value(), fragment_opt.value());
+    if (!has_been_loaded_once || vertex_opt.value()->has_changed(platform) ||
+        fragment_opt.value()->has_changed(platform)) {
+        initOpenGL(platform, vertex_opt.value(), fragment_opt.value());
         has_been_loaded_once = true;
     }
 }
 
-GameState *beginFrame(GameMemory *memory, Input *input) {
+GameState *beginFrame(Platform &platform) {
     static unsigned int VAO;
     if (!VAO) {
         glGenVertexArrays(1, &VAO);
     }
     glBindVertexArray(VAO);
 
-    GameState *gameState = getGameState(memory);
+    GameState *gameState = getGameState(platform);
     gameState->frameCounter++;
 
-    checkShaders(memory);
+    checkShaders(platform);
 
-    if (memory->doResize) {
-        resizeView(memory);
+    if (platform.memory.doResize) {
+        resizeView(platform);
     }
 
     Render::clearScreen(0);
     gameState->renderGroup.count = 0;
 
-    checkInputForClicks(input);
+    checkInputForClicks(platform.input);
 
-    if (input->plusKeyPressed) {
+    if (platform.input->plusKeyPressed) {
         gameState->scale += 0.01;
-    } else if (input->minusKeyPressed) {
+    } else if (platform.input->minusKeyPressed) {
         gameState->scale -= 0.01;
     }
 
@@ -225,17 +227,17 @@ void loadTextureToGraphicsMemory(Render::Texture *texture, void *content) {
 /**
  * Load the texture and kerning information for the specified character
  */
-void loadCharacter(GameMemory *memory, FT_Face face, char loadCharacter, int fontSize, bool hasKerning) {
+void loadCharacter(Platform &platform, FT_Face face, char loadCharacter, int fontSize, bool hasKerning) {
     float scale = 0.002f; // this is a constant to scale from pixel sizes to
                           // coordinate sizes
 
     int currentGlyphIndex = FT_Get_Char_Index(face, loadCharacter);
     int error = FT_Load_Glyph(face, currentGlyphIndex, FT_LOAD_RENDER);
     if (error) {
-        memory->abort("Couldn't load glyph for " + std::to_string(loadCharacter));
+        platform.abort("Couldn't load glyph for " + std::to_string(loadCharacter));
     }
 
-    GameState *gameState = getGameState(memory);
+    GameState *gameState = getGameState(platform);
 
     Render::Character newCharacter =
         gameState->resources.characterMap[fontSize][loadCharacter - Render::firstCharacter];
@@ -269,7 +271,7 @@ void loadCharacter(GameMemory *memory, FT_Face face, char loadCharacter, int fon
 
     unsigned bitmapSizeInPixel = newCharacter.texture.width * newCharacter.texture.height;
 
-    void *content = reserveTemporaryMemory(memory, bitmapSizeInPixel * 4);
+    void *content = reserveTemporaryMemory(platform, bitmapSizeInPixel * 4);
     uint8_t *src = face->glyph->bitmap.buffer;
     uint32_t *dest = (uint32_t *)content;
 
@@ -281,7 +283,7 @@ void loadCharacter(GameMemory *memory, FT_Face face, char loadCharacter, int fon
 
     loadTextureToGraphicsMemory(&newCharacter.texture, content);
 
-    freeTemporaryMemory(memory);
+    freeTemporaryMemory(platform);
 
     gameState->resources.characterMap[fontSize][loadCharacter - Render::firstCharacter] = newCharacter;
 }
@@ -289,7 +291,7 @@ void loadCharacter(GameMemory *memory, FT_Face face, char loadCharacter, int fon
 /**
  * Load the specified font file to be used as game font
  */
-void loadFont(GameMemory *memory, const std::string &fontFileName) {
+void loadFont(Platform &platform, const std::string &fontFileName) {
     int error;
 
     // setting up font system
@@ -297,23 +299,23 @@ void loadFont(GameMemory *memory, const std::string &fontFileName) {
     if (!fontLibraryLoaded) {
         error = FT_Init_FreeType(&fontLibrary);
         if (error) {
-            memory->abort("Couldn't initialize font library.");
+            platform.abort("Couldn't initialize font library.");
         }
         fontLibraryLoaded = true;
     }
 
-    GameState *gameState = getGameState(memory);
+    GameState *gameState = getGameState(platform);
 
     auto resource_opt = get_resource(fontFileName);
     if (!resource_opt.has_value()) {
-        memory->abort("Failed to load font file " + fontFileName);
+        platform.abort("Failed to load font file " + fontFileName);
     }
 
-    auto content = resource_opt.value()->get_content(memory);
+    auto content = resource_opt.value()->get_content(platform);
     FT_Face face = {};
     error = FT_New_Memory_Face(fontLibrary, (const FT_Byte *)content.data(), (FT_Long)content.size(), 0, &face);
     if (error) {
-        memory->abort("Couldn't load font " + fontFileName + ". Errorcode: " + std::to_string(error));
+        platform.abort("Couldn't load font " + fontFileName + ". Errorcode: " + std::to_string(error));
     }
 
     extractFileName(fontFileName, ".ttf", gameState->resources.fontName);
@@ -326,11 +328,11 @@ void loadFont(GameMemory *memory, const std::string &fontFileName) {
         int error = FT_Set_Pixel_Sizes(face, fontSize * 5, 0);
         if (error) {
             std::string message = "Couldn't set pixel size to " + std::to_string(fontSize) + ".";
-            memory->abort(message);
+            platform.abort(message);
         }
 
         for (char currentChar = Render::firstCharacter; currentChar < Render::lastCharacter; currentChar++) {
-            loadCharacter(memory, face, currentChar, fontSizeIndex, hasKerning);
+            loadCharacter(platform, face, currentChar, fontSizeIndex, hasKerning);
         }
     }
 }
@@ -350,9 +352,9 @@ void extractFileName(std::string fileName, const std::string &fileExtension, cha
     result[index] = '\0';
 }
 
-void generateWorld(GameMemory *memory) {
-    GameState *gameState = getGameState(memory);
-    memory->log("Generating game world.");
+void generateWorld(Platform &platform) {
+    GameState *gameState = getGameState(platform);
+    platform.log("Generating game world.");
     for (unsigned y = 0; y < gameState->world.height; y++) {
         for (unsigned x = 0; x < gameState->world.width; x++) {
             Tile tile = {};
@@ -395,9 +397,9 @@ float calculateTextLength(GameState *gameState, std::string text, Render::FontSi
     return length;
 }
 
-void logTimeDifferenceInMS(GameMemory *memory, long *start, const std::string &msg) {
-    long temp = memory->queryTime();
+void logTimeDifferenceInMS(Platform &platform, int64_t *start, const std::string &msg) {
+    auto temp = platform.time();
     float diff = (float)(temp - *start) / 1000000.0f;
-    memory->log(msg + ": " + std::to_string(diff));
+    platform.log(msg + ": " + std::to_string(diff));
     *start = temp;
 }

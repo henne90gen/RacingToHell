@@ -3,14 +3,14 @@
 #include "RacingToHell.h"
 #include "Resources.h"
 
-GameState *beginFrame(GameMemory *memory, Input *input);
+GameState *beginFrame(Platform &platform);
 void importPixelData(void *src, void *dest, unsigned srcWidth, unsigned srcHeight, int offsetX, int offsetY,
                      unsigned destWidth, unsigned destHeight);
-void checkShaders(GameMemory *memory);
+void checkShaders(Platform &platform);
 Render::Character *getCharacter(GameState *gameState, char character, unsigned fontSizeIndex);
 float calculateTextLength(GameState *gameState, std::string text, Render::FontSize fontSize);
 void scaleView(GameState *gameState);
-void generateWorld(GameMemory *memory);
+void generateWorld(Platform &platform);
 Math::Rectangle getCollisionBox(Math::Rectangle rect1, Math::Rectangle rect2);
 
 // FIXME do we really want to use templates here or is there a more performant
@@ -31,5 +31,5 @@ void checkPlayerTileCollision(Player *player, Tile *tile);
 
 int getFontSize(GameState *gameState, int fontSizeIndex);
 void extractFileName(std::string fileName, const std::string &fileExtension, char result[]);
-void loadFont(GameMemory *memory, const std::string& fontFileName);
+void loadFont(Platform &platform, const std::string &fontFileName);
 void loadTextureToGraphicsMemory(Render::Texture *texture, void *content);

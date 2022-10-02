@@ -2,11 +2,11 @@
 
 #include "Resources.h"
 
-GLuint compileShader(GameMemory *memory, const GLenum type, Resource *shader) {
+GLuint compileShader(Platform &platform, const GLenum type, Resource *shader) {
     GLint compileStatus;
     GLuint shaderID = glCreateShader(type);
 
-    const auto shader_content = shader->get_content(memory);
+    const auto shader_content = shader->get_content(platform);
     const auto shader_size = shader_content.size();
     auto shader_data = const_cast<char *>(shader_content.data());
     glShaderSource(shaderID, 1, &shader_data, (GLint *)&shader_size);
@@ -19,16 +19,16 @@ GLuint compileShader(GameMemory *memory, const GLenum type, Resource *shader) {
         if (infoLogLength > 0) {
             char *shaderErrorMessage = new char[infoLogLength + 1];
             glGetShaderInfoLog(shaderID, infoLogLength, nullptr, shaderErrorMessage);
-            memory->log(shaderErrorMessage);
+            platform.log(shaderErrorMessage);
         }
         std::string message = "Failed to compile shader. " + std::to_string(type) + "\n" + std::string(shader_content);
-        memory->abort(message);
+        platform.abort(message);
     }
 
     return shaderID;
 }
 
-GLuint linkProgram(GameMemory *memory, const GLuint vertex_shader, const GLuint fragment_shader) {
+GLuint linkProgram(Platform &platform, const GLuint vertex_shader, const GLuint fragment_shader) {
     GLuint programID = glCreateProgram();
     GLint linkStatus;
 
@@ -43,17 +43,17 @@ GLuint linkProgram(GameMemory *memory, const GLuint vertex_shader, const GLuint 
         if (infoLogLength > 0) {
             char *programErrorMessage = new char[infoLogLength + 1];
             glGetProgramInfoLog(programID, infoLogLength, nullptr, programErrorMessage);
-            memory->log(programErrorMessage);
+            platform.log(programErrorMessage);
         }
         std::string message = "Failed to link shader program.\n";
-        memory->abort(message);
+        platform.abort(message);
     }
 
     return programID;
 }
 
-GLuint buildProgram(GameMemory *memory, Resource *vertex_shader, Resource *fragment_shader) {
-    GLuint vertex_shader_id = compileShader(memory, GL_VERTEX_SHADER, vertex_shader);
-    GLuint fragment_shader_id = compileShader(memory, GL_FRAGMENT_SHADER, fragment_shader);
-    return linkProgram(memory, vertex_shader_id, fragment_shader_id);
+GLuint buildProgram(Platform &platform, Resource *vertex_shader, Resource *fragment_shader) {
+    GLuint vertex_shader_id = compileShader(platform, GL_VERTEX_SHADER, vertex_shader);
+    GLuint fragment_shader_id = compileShader(platform, GL_FRAGMENT_SHADER, fragment_shader);
+    return linkProgram(platform, vertex_shader_id, fragment_shader_id);
 }

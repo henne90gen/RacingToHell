@@ -1,5 +1,6 @@
 #include "Sound.h"
 
+#include "Memory.h"
 #include "RacingToHell.h"
 #include "Resources.h"
 
@@ -41,22 +42,22 @@ uint32_t getChunkDataSize(RiffIterator iter) {
     return chunk->size;
 }
 
-LoadedSound loadWAV(GameMemory *memory, const std::string &path) {
+LoadedSound loadWAV(Platform &platform, const std::string &path) {
     LoadedSound result = {};
 
     auto resource_opt = get_resource(path);
     if (!resource_opt.has_value()) {
-        memory->abort(path + " konnte nicht geladen werden.");
+        platform.abort(path + " konnte nicht geladen werden.");
     }
 
-    auto content = resource_opt.value()->get_content(memory);
+    auto content = resource_opt.value()->get_content(platform);
 
     auto header = (WaveHeader *)(content.data());
     uint32_t sampleDataSize;
     int16_t *sampleData;
 
     if (header->riffId != WAVE_CHUNKID_RIFF || header->waveId != WAVE_CHUNKID_WAVE) {
-        memory->abort("Invalid WAV header");
+        platform.abort("Invalid WAV header");
     }
 
     for (RiffIterator iter = parseChunkAt(header + 1, (uint8_t *)(header + 1) + header->chunkSize - 4); isValid(iter);
@@ -77,14 +78,14 @@ LoadedSound loadWAV(GameMemory *memory, const std::string &path) {
     result.sampleCount = sampleDataSize / (result.channelCount * sizeof(int16_t));
 
     if (result.channelCount == 1) {
-        result.samples[0] = (int16_t *)reservePermanentMemory(memory, result.sampleCount * sizeof(int16_t));
+        result.samples[0] = (int16_t *)reservePermanentMemory(platform, result.sampleCount * sizeof(int16_t));
 
         for (uint32_t sampleIndex = 0; sampleIndex < result.sampleCount; ++sampleIndex) {
             result.samples[0][sampleIndex] = sampleData[sampleIndex];
         }
     } else if (result.channelCount == 2) {
-        result.samples[0] = (int16_t *)reservePermanentMemory(memory, result.sampleCount * sizeof(int16_t));
-        result.samples[1] = (int16_t *)reservePermanentMemory(memory, result.sampleCount * sizeof(int16_t));
+        result.samples[0] = (int16_t *)reservePermanentMemory(platform, result.sampleCount * sizeof(int16_t));
+        result.samples[1] = (int16_t *)reservePermanentMemory(platform, result.sampleCount * sizeof(int16_t));
 
         for (uint32_t sampleIndex = 0; sampleIndex < result.sampleCount; ++sampleIndex) {
 
@@ -95,7 +96,7 @@ LoadedSound loadWAV(GameMemory *memory, const std::string &path) {
             result.samples[1][sampleIndex] = source;
         }
     } else {
-        memory->abort("More than two channels aren't supported.");
+        platform.abort("More than two channels aren't supported.");
     }
 
     return result;
@@ -116,11 +117,12 @@ void output(GameState *state, Sound::LoadedSound *loadedSound, float volumeLeft,
 }
 } // END namespace Sound
 
+#if SOUND_ENABLE
 extern "C" GET_SOUND_SAMPLES(getSoundSamples) {
-    GameState *gameState = getGameState(memory);
+    GameState *gameState = getGameState(platform);
 
-    float *realChannel0 = (float *)reserveTemporaryMemory(memory, sizeof(float) * soundBuffer->sampleCount);
-    float *realChannel1 = (float *)reserveTemporaryMemory(memory, sizeof(float) * soundBuffer->sampleCount);
+    float *realChannel0 = (float *)reserveTemporaryMemory(platform, sizeof(float) * soundBuffer->sampleCount);
+    float *realChannel1 = (float *)reserveTemporaryMemory(platform, sizeof(float) * soundBuffer->sampleCount);
 
     {
         float *dest0 = realChannel0;
@@ -192,3 +194,4 @@ extern "C" GET_SOUND_SAMPLES(getSoundSamples) {
 
     freeTemporaryMemory(memory);
 }
+#endif

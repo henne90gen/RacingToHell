@@ -13,6 +13,8 @@
 #include "RacingToHell.h"
 #include "Resources.h"
 
+GLFWwindow *glfw_window = nullptr;
+
 void initImGui(GLFWwindow *window) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -40,93 +42,79 @@ void finishImGuiFrame() {
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-ABORT(abort) {
-    spdlog::error(message);
-    exit(1);
+void Platform::abort(const std::string &msg) {
+    spdlog::error(msg);
+    ::exit(1);
 }
 
-LOG(rth_log) { spdlog::info(message); }
+void Platform::log(const std::string &msg) { spdlog::info(msg); }
 
-/**
- * Returns the time in nanoseconds that has passed since the program start
- */
 static std::chrono::time_point<std::chrono::high_resolution_clock> program_start;
-QUERY_TIME(queryTime) {
+int64_t Platform::time() {
     auto now = std::chrono::high_resolution_clock::now();
     auto diff = program_start - now;
     return std::chrono::duration_cast<std::chrono::nanoseconds>(diff).count();
 }
 
-/**
- * Reads an entire file into memory
- * This might be a very expensive operation, if the file is very large
- */
-READ_FILE(readFile) {
-    rth_log("Reading " + fileName);
+File Platform::read_file(const std::string &file_path, bool is_resource) {
+    auto final_file_path = file_path;
+    if (is_resource) {
+        final_file_path = memory.base_path + "/" + file_path;
+    }
+    log("Reading " + final_file_path);
 
-    FILE *fileHandle = fopen(fileName.c_str(), "rb");
+    FILE *fileHandle = fopen(final_file_path.c_str(), "rb");
     if (!fileHandle) {
-        abort("Could not open file " + fileName);
+        abort("Could not open file " + final_file_path);
     }
     fseek(fileHandle, 0, SEEK_END);
-    long int fileSize = ftell(fileHandle);
+    long int file_size = ftell(fileHandle);
     rewind(fileHandle);
 
-    char *content = (char *)malloc(fileSize + 1);
-    fread(content, fileSize, 1, fileHandle);
+    char *content = (char *)malloc(file_size);
+    fread(content, file_size, 1, fileHandle);
     fclose(fileHandle);
 
-    content[fileSize] = 0; // 0-terminated
-
     File file = {};
-    file.size = fileSize;
-    file.name = fileName;
+    file.size = file_size;
+    file.name = file_path;
+    file.is_resource = is_resource;
     file.content = content;
 
     return file;
 }
 
-/**
- * Writes an entire file to disk
- */
-WRITE_FILE(writeFile) {
-    rth_log("Writing " + fileName);
+bool Platform::write_file(const File &file) {
+    log("Writing " + file.name);
 
-    FILE *fHandle = fopen(fileName.c_str(), "wb");
+    FILE *fHandle = fopen(file.name.c_str(), "wb");
     if (fHandle == NULL) {
-        rth_log("ERROR - Failed to open file for writing");
+        log("ERROR - Failed to open file for writing");
         return false;
     }
 
-    if (fwrite((void *)file->content, 1, file->size, fHandle) != file->size) {
-        std::string errorMsg = "ERROR - Failed to write " + std::to_string(file->size) + " bytes to file";
-        rth_log(errorMsg);
+    if (fwrite((void *)file.content, 1, file.size, fHandle) != file.size) {
+        std::string errorMsg = "ERROR - Failed to write " + std::to_string(file.size) + " bytes to file";
+        log(errorMsg);
         return false;
     }
 
     fclose(fHandle);
-    fHandle = NULL;
+    fHandle = nullptr;
     return true;
 }
 
-/**
- * Releases the memory that was allocated for the given file
- */
-FREE_FILE(freeFile) {
-    if (file->content) {
-        free(file->content);
+void Platform::free_file(File &file) {
+    if (file.content) {
+        free(file.content);
     }
 
-    file->size = 0;
+    file.size = 0;
 }
 
-/**
- * Ends the game gracefully
- */
-EXIT_GAME(exitGame) {
-    rth_log("Exiting");
-    //    glfwSetWindowShouldClose();
-    exit(0);
+void Platform::exit() {
+    spdlog::info("Exiting...");
+    glfwSetWindowShouldClose(glfw_window, 1);
 }
 
 GameMemory initGameMemory(std::string_view base_path) {
@@ -135,14 +123,6 @@ GameMemory initGameMemory(std::string_view base_path) {
     memory.aspectRatio = 16.0f / 9.0f;
 
     memory.base_path = base_path;
-
-    memory.abort = abort;
-    memory.log = rth_log;
-    memory.queryTime = queryTime;
-    memory.readFile = readFile;
-    memory.freeFile = freeFile;
-    memory.exitGame = exitGame;
-
     memory.temporaryMemorySize = 10 * 1024 * 1024;
     memory.permanentMemorySize = 100 * 1024 * 1024;
     memory.temporary = (char *)malloc(memory.temporaryMemorySize);
@@ -151,14 +131,14 @@ GameMemory initGameMemory(std::string_view base_path) {
     return memory;
 }
 
-void resizeViewport(GameMemory *memory, int windowWidth, int windowHeight) {
-    int viewWidth = windowHeight * memory->aspectRatio;
+void resizeViewport(Platform *platform, int windowWidth, int windowHeight) {
+    int viewWidth = windowHeight * platform->memory.aspectRatio;
     int viewHeight = windowHeight;
     int offsetX = 0;
     int offsetY = 0;
     if (viewWidth > windowWidth) {
         viewWidth = windowWidth;
-        viewHeight = windowWidth / memory->aspectRatio;
+        viewHeight = windowWidth / platform->memory.aspectRatio;
     } else {
         offsetX = (windowWidth - viewWidth) / 2;
     }
@@ -170,19 +150,16 @@ void resizeViewport(GameMemory *memory, int windowWidth, int windowHeight) {
 
     spdlog::info("Updated the viewport to x={}, y={}, width={}, height={}", offsetX, offsetY, viewWidth, viewHeight);
 
-    memory->doResize = true;
+    platform->memory.doResize = true;
 }
 
 void glfw_framebuffer_size_callback(GLFWwindow *window, int width, int height) {
-    auto memory = reinterpret_cast<GameMemory *>(glfwGetWindowUserPointer(window));
-    resizeViewport(memory, width, height);
+    auto platform = reinterpret_cast<Platform *>(glfwGetWindowUserPointer(window));
+    resizeViewport(platform, width, height);
 }
 
 int main(int argc, char **argv) {
-    program_start = std::chrono::high_resolution_clock::now();
-
     spdlog::info("Starting RacingToHell");
-    GLFWwindow *window = nullptr;
 
     if (glfwInit() == 0) {
         return 1;
@@ -192,14 +169,14 @@ int main(int argc, char **argv) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    window = glfwCreateWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, WINDOW_TITLE, nullptr, nullptr);
-    if (window == nullptr) {
+    glfw_window = glfwCreateWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, WINDOW_TITLE, nullptr, nullptr);
+    if (glfw_window == nullptr) {
         spdlog::error("Failed to create window");
         glfwTerminate();
         return 1;
     }
 
-    glfwMakeContextCurrent(window);
+    glfwMakeContextCurrent(glfw_window);
     auto procAddress = reinterpret_cast<GLADloadproc>(glfwGetProcAddress);
     auto status = gladLoadGLLoader(procAddress);
     if (status == 0) {
@@ -217,22 +194,24 @@ int main(int argc, char **argv) {
         spdlog::error("Failed to find resources directory!");
         return 1;
     }
-    GameMemory memory = initGameMemory(base_path);
-    glfwSetWindowUserPointer(window, (void *)&memory);
+
+    Platform platform = {};
+    platform.memory = initGameMemory(base_path);
+    glfwSetWindowUserPointer(glfw_window, (void *)&platform);
 
     // set up callbacks
-    glfwSetFramebufferSizeCallback(window, glfw_framebuffer_size_callback);
+    glfwSetFramebufferSizeCallback(glfw_window, glfw_framebuffer_size_callback);
 
     // to disable vsync uncomment this line
     //    glfwSwapInterval(0);
 
     // triggering it once "manually" to ensure the aspect ratio is set up
     // correctly
-    resizeViewport(&memory, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
+    resizeViewport(&platform, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
 
     // ImGui installs its own glfw callbacks, which will then call our
     // previously installed callbacks
-    initImGui(window);
+    initImGui(glfw_window);
 
     init_resources();
 
@@ -249,15 +228,15 @@ int main(int argc, char **argv) {
     Input *oldInput = &input[0];
     Input *newInput = &input[1];
 
-    while (glfwWindowShouldClose(window) == 0) {
+    while (glfwWindowShouldClose(glfw_window) == 0) {
         glClearColor(0.1F, 0.1F, 0.1F, 1.0F);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // NOLINT(hicpp-signed-bitwise)
 
         startImGuiFrame();
 
         *newInput = *oldInput;
-
-        update_and_render(input, &memory);
+        platform.input = newInput;
+        update_and_render(platform);
 
         Input *tmp = oldInput;
         oldInput = newInput;
@@ -265,7 +244,7 @@ int main(int argc, char **argv) {
 
         finishImGuiFrame();
 
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(glfw_window);
         glfwPollEvents();
     }
 

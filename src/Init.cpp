@@ -3,38 +3,39 @@
 #include "Boss.h"
 #include "GameMenu.h"
 #include "Helper.h"
+#include "Memory.h"
 #include "Renderer.h"
 
 /**
  * Load all audio clips that are going to be used into memory
  */
-void loadAudioClips(GameMemory *memory) {
-    GameState *gameState = getGameState(memory);
-    gameState->resources.aiShot = Sound::loadWAV(memory, "res/sound/shotAI.wav");
-    gameState->resources.playerShot = Sound::loadWAV(memory, "res/sound/shotPlayer.wav");
-    gameState->resources.level1Music = Sound::loadWAV(memory, "res/sound/music/level1.wav");
+void loadAudioClips(Platform &platform) {
+    GameState *gameState = getGameState(platform);
+    gameState->resources.aiShot = Sound::loadWAV(platform, "res/sound/shotAI.wav");
+    gameState->resources.playerShot = Sound::loadWAV(platform, "res/sound/shotPlayer.wav");
+    gameState->resources.level1Music = Sound::loadWAV(platform, "res/sound/music/level1.wav");
 }
 
 /**
  * Load a texture from a bmp file and pushes it to the graphics card
  */
-Render::Texture loadTexture(GameMemory *memory, const std::string &resource_name, int xDivision = 1,
+Render::Texture loadTexture(Platform &platform, const std::string &resource_name, int xDivision = 1,
                             int yDivision = 1) {
     auto resource_opt = get_resource(resource_name);
     if (!resource_opt.has_value()) {
-        memory->abort("Failed to load texture " + resource_name);
+        platform.abort("Failed to load texture " + resource_name);
     }
 
-    auto resource_content = resource_opt.value()->get_content(memory);
+    auto resource_content = resource_opt.value()->get_content(platform);
     if (resource_content[0] != 'B' || resource_content[1] != 'M') {
-        memory->abort(resource_name + " is not a bitmap file.");
+        platform.abort(resource_name + " is not a bitmap file.");
     }
 
     int fileHeaderSize = 14;
     BitmapHeader header = *((BitmapHeader *)(resource_content.data() + fileHeaderSize));
 
     if (header.bitsPerPixel != 32) {
-        memory->abort("Image must have 32-bit of color depth.");
+        platform.abort("Image must have 32-bit of color depth.");
     }
 
     Render::Texture texture = {};
@@ -43,14 +44,14 @@ Render::Texture loadTexture(GameMemory *memory, const std::string &resource_name
     texture.bytesPerPixel = header.bitsPerPixel / 8;
     texture.xDivision = xDivision;
     texture.yDivision = yDivision;
-    void *content = reserveTemporaryMemory(memory, texture.width * texture.height * texture.bytesPerPixel);
+    void *content = reserveTemporaryMemory(platform, texture.width * texture.height * texture.bytesPerPixel);
 
     importPixelData((void *)(resource_content.data() + header.size + fileHeaderSize), content, header.width,
                     header.height, 0, 0, texture.width, texture.height);
 
     loadTextureToGraphicsMemory(&texture, content);
 
-    freeTemporaryMemory(memory);
+    freeTemporaryMemory(platform);
 
     return texture;
 }
@@ -58,36 +59,36 @@ Render::Texture loadTexture(GameMemory *memory, const std::string &resource_name
 /**
  * Load all textures that are going to be used into memory
  */
-void loadTextures(GameMemory *memory) {
-    GameState *gameState = getGameState(memory);
+void loadTextures(Platform &platform) {
+    GameState *gameState = getGameState(platform);
 
-    gameState->resources.bulletTexture = loadTexture(memory, "res/textures/bullet.bmp");
+    gameState->resources.bulletTexture = loadTexture(platform, "res/textures/bullet.bmp");
 
     for (int i = 0; i < 4; i++) {
         std::string fileName = "res/textures/roads/road" + std::to_string(i) + ".bmp";
-        gameState->resources.roadTextures[i] = loadTexture(memory, fileName);
+        gameState->resources.roadTextures[i] = loadTexture(platform, fileName);
     }
 
     for (unsigned i = 0; i < NUM_PLAYER_TEXTURES; i++) {
         std::string playerSprite = "res/textures/cars/player" + std::to_string(i) + ".bmp";
-        gameState->resources.playerCarTextures[i] = loadTexture(memory, playerSprite);
+        gameState->resources.playerCarTextures[i] = loadTexture(platform, playerSprite);
     }
 
     for (unsigned i = 0; i < NUM_TRAFFIC_TEXTURES; i++) {
         std::string carSprite = "res/textures/cars/traffic" + std::to_string(i) + ".bmp";
-        gameState->resources.trafficCarTextures[i] = loadTexture(memory, carSprite);
+        gameState->resources.trafficCarTextures[i] = loadTexture(platform, carSprite);
     }
 
-    gameState->resources.itemTextures[TOOLBOX_ID] = loadTexture(memory, "res/textures/toolbox.bmp");
+    gameState->resources.itemTextures[TOOLBOX_ID] = loadTexture(platform, "res/textures/toolbox.bmp");
 
-    gameState->resources.itemTextures[CANISTER_ID] = loadTexture(memory, "res/textures/canister.bmp");
+    gameState->resources.itemTextures[CANISTER_ID] = loadTexture(platform, "res/textures/canister.bmp");
 
     // Explosion sprite
-    gameState->resources.explosion = loadTexture(memory, "res/textures/explosion.bmp", 9, 9);
+    gameState->resources.explosion = loadTexture(platform, "res/textures/explosion.bmp", 9, 9);
 
     // Tank boss
-    gameState->resources.tank = loadTexture(memory, "res/textures/bosses/tank.bmp");
-    gameState->resources.tankCannon = loadTexture(memory, "res/textures/bosses/tank_cannon.bmp");
+    gameState->resources.tank = loadTexture(platform, "res/textures/bosses/tank.bmp");
+    gameState->resources.tankCannon = loadTexture(platform, "res/textures/bosses/tank_cannon.bmp");
 }
 
 /**
@@ -140,12 +141,11 @@ void resetGameState(GameState *gameState) {
 /**
  * Initialize the game appropriately
  */
-void init(GameMemory *memory) {
+void init(Platform &platform) {
     std::srand(1337);
-    memory->isInitialized = true;
+    platform.memory.isInitialized = true;
 
-    GameState *gameState = (GameState *)reservePermanentMemory(memory, sizeof(GameState));
-
+    GameState *gameState = (GameState *)reservePermanentMemory(platform, sizeof(GameState));
     *gameState = {};
 
     glClearColor(1.0, 0, 1.0, 1.0);
@@ -154,14 +154,14 @@ void init(GameMemory *memory) {
     gameState->scale = 1.0f;
     gameState->rotationAngle = 0.0f;
 
-    checkShaders(memory);
+    checkShaders(platform);
 
-    loadFont(memory, "res/font/Arial.ttf");
-    loadAudioClips(memory);
-    loadTextures(memory);
+    loadFont(platform, "res/font/Arial.ttf");
+    loadAudioClips(platform);
+    loadTextures(platform);
 
     Sound::output(gameState, &gameState->resources.level1Music, 0.1f, 0.1f, Sound::PLAY_LOOP);
 
     resetGameState(gameState);
-    loadMenu(memory, MenuState::MAIN);
+    loadMenu(platform, MenuState::MAIN);
 }

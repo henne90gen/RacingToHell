@@ -406,8 +406,8 @@ void setScaleToIdentity(GameState *gameState) {
     glUniformMatrix4fv(scaleMatrixLocation, 1, GL_FALSE, &scaleMatrix[0]);
 }
 
-void flushBuffer(GameMemory *memory) {
-    GameState *gameState = getGameState(memory);
+void flushBuffer(Platform &platform) {
+    GameState *gameState = getGameState(platform);
 
     sortRenderAtoms(gameState);
 

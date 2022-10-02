@@ -22,15 +22,7 @@ struct Input;
 // uint8_t textureB = *currentColorPointer8++;
 // uint8_t textureA = *currentColorPointer8++;
 
-enum AtomPlane {
-    BACKGROUND,
-    AI,
-    AI_BULLETS,
-    PLAYER,
-    PLAYER_BULLETS,
-    GAME_UI,
-    MENU
-};
+enum AtomPlane { BACKGROUND, AI, AI_BULLETS, PLAYER, PLAYER_BULLETS, GAME_UI, MENU };
 
 namespace Render {
 
@@ -87,25 +79,20 @@ struct Text {
 };
 
 void clearScreen(uint32_t color);
-void flushBuffer(GameMemory *memory);
+void flushBuffer(Platform &platform);
 
 void pushEnableScaling(GameState *gameState, bool enable, float plane);
-void pushText(GameState *gameState, std::string text, glm::vec2 position,
-              FontSize fontSize, uint32_t color, AtomPlane plane);
-void pushTriangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2,
-                  glm::vec2 point3, uint32_t color, float plane);
-void pushRectangle(GameState *gameState, Math::Rectangle dimensions,
-                   uint32_t color, float plane);
-void pushCircle(GameState *gameState, glm::vec2 position, float radius,
-                uint32_t color, AtomPlane plane);
-void pushTexture(GameState *gameState, Texture *texture, glm::vec2 position,
-                 glm::vec2 size, glm::vec2 direction, int tileIndex = 0,
-                 AtomPlane plane = AtomPlane::BACKGROUND);
-void pushAnimation(GameState *gameState, Texture *texture, glm::vec2 position,
-                   glm::vec2 size, unsigned *tileIndex, AtomPlane plane,
-                   int timing = 1);
+void pushText(GameState *gameState, std::string text, glm::vec2 position, FontSize fontSize, uint32_t color,
+              AtomPlane plane);
+void pushTriangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, uint32_t color,
+                  float plane);
+void pushRectangle(GameState *gameState, Math::Rectangle dimensions, uint32_t color, float plane);
+void pushCircle(GameState *gameState, glm::vec2 position, float radius, uint32_t color, AtomPlane plane);
+void pushTexture(GameState *gameState, Texture *texture, glm::vec2 position, glm::vec2 size, glm::vec2 direction,
+                 int tileIndex = 0, AtomPlane plane = AtomPlane::BACKGROUND);
+void pushAnimation(GameState *gameState, Texture *texture, glm::vec2 position, glm::vec2 size, unsigned *tileIndex,
+                   AtomPlane plane, int timing = 1);
 
-void triangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2,
-              glm::vec2 point3, uint32_t color);
+void triangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, uint32_t color);
 
 } // namespace Render

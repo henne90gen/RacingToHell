@@ -1,7 +1,8 @@
 #pragma once
 
+#include <cstdint>
 #include <cstring>
-#include <stdint.h>
+#include <glm/vec2.hpp>
 #include <string>
 #include <string_view>
 
@@ -22,39 +23,11 @@
 #define SOUND_ENABLE 0
 
 struct File {
-    char *content;
-    const void *fileHandle;
-    size_t size;
+    char *content = nullptr;
+    size_t size = 0;
+    bool is_resource = false;
     std::string name;
 };
-
-#define ABORT(name) void name(const std::string &message)
-typedef ABORT(abort_);
-ABORT(abort);
-
-#define LOG(name) void name(const std::string &message)
-typedef LOG(log_);
-LOG(rth_log);
-
-#define QUERY_TIME(name) int64_t name()
-typedef QUERY_TIME(query_time);
-QUERY_TIME(queryTime);
-
-#define READ_FILE(name) File name(std::string fileName)
-typedef READ_FILE(read_file);
-READ_FILE(readFile);
-
-#define WRITE_FILE(name) bool name(File *file, std::string fileName)
-typedef WRITE_FILE(write_file);
-WRITE_FILE(writeFile);
-
-#define FREE_FILE(name) void name(File *file)
-typedef FREE_FILE(free_file);
-FREE_FILE(freeFile);
-
-#define EXIT_GAME(name) void name()
-typedef EXIT_GAME(exit_game);
-EXIT_GAME(exitGame);
 
 struct GameMemory {
     bool isInitialized = false;
@@ -62,14 +35,7 @@ struct GameMemory {
     float aspectRatio;
     bool doResize;
 
-    std::string_view base_path;
-
-    abort_ *abort;
-    log_ *log;
-    query_time *queryTime;
-    read_file *readFile;
-    free_file *freeFile;
-    exit_game *exitGame;
+    std::string base_path;
 
     char *temporary;
     size_t temporaryMemorySize = 0;
@@ -78,4 +44,38 @@ struct GameMemory {
     char *permanent;
     size_t permanentMemorySize = 0;
     size_t permanentMemoryOffset = 0;
+};
+
+struct Input {
+    glm::vec2 mousePosition;
+    // TODO convert these into a bit mask (optimization)
+    bool upKeyPressed, downKeyPressed, leftKeyPressed, rightKeyPressed;
+    bool upKeyClicked, downKeyClicked, leftKeyClicked, rightKeyClicked;
+    bool enterKeyPressed, escapeKeyPressed;
+    bool enterKeyClicked, escapeKeyClicked;
+    bool shootKeyPressed, shootKeyClicked;
+    bool plusKeyPressed, plusKeyClicked;
+    bool minusKeyPressed, minusKeyClicked;
+};
+
+struct Platform {
+    GameMemory memory = {};
+    Input *input;
+
+    // ---------------------------------------------------
+    /// crash the game because of a fatal error
+    void abort(const std::string &msg);
+    /// gracefully shut down game
+    void exit();
+    /// log a message to the console
+    void log(const std::string &msg);
+    /// reads a file from disk
+    File read_file(const std::string &file_path, bool is_resource);
+    /// releases the memory that was allocated for the given file
+    void free_file(File &file);
+    /// writes a file to disk
+    bool write_file(const File &file);
+    /// gets the time in nanoseconds since the epoch
+    int64_t time();
+    // ---------------------------------------------------
 };

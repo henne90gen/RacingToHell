@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.18)
 
 project(RacingToHell)
 
@@ -51,13 +51,17 @@ FetchContent_MakeAvailable(
         # benchmark
         # googletest
         spdlog
-        glfw
         imgui
         glm
         freetype2
 )
 
-find_package(OpenGL REQUIRED)
+if (NOT ANDROID)
+    FetchContent_MakeAvailable(
+            glfw
+    )
+    find_package(OpenGL REQUIRED)
+endif ()
 
 set(CMAKE_CXX_STANDARD_REQUIRED 20)
 

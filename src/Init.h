@@ -2,4 +2,4 @@
 
 #include "RacingToHell.h"
 
-void init(GameMemory *memory);
+void init(Platform &platform);

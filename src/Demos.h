@@ -2,6 +2,6 @@
 
 #include "RacingToHell.h"
 
-void textDemo(GameMemory *memory, Input *input, AtomPlane plane);
-void followingCarDemo(GameMemory *memory, Input *input);
-void animationDemo(GameMemory *memory, AtomPlane plane);
+void textDemo(Platform &platform, AtomPlane plane);
+void followingCarDemo(Platform &platform);
+void animationDemo(Platform &platform, AtomPlane plane);

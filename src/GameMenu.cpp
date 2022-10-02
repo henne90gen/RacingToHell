@@ -18,8 +18,7 @@ void loadMainMenu(GameState *gameState) {
     addMenuItem(&menu->items[menu->numberMenuItems++], "Start Game");
     addMenuItem(&menu->items[menu->numberMenuItems++], "Multiplayer");
     addMenuItem(&menu->items[menu->numberMenuItems++], "  Car");
-    menu->items[menu->numberMenuItems - 1].bouncy =
-        false; // remove menu bounce effect
+    menu->items[menu->numberMenuItems - 1].bouncy = false; // remove menu bounce effect
 
     addMenuItem(&menu->items[menu->numberMenuItems++], "Difficulty");
     addMenuItem(&menu->items[menu->numberMenuItems++], "Game mode");
@@ -67,15 +66,15 @@ void loadGameOverMenu(GameState *gameState) {
     addMenuItem(&menu->items[menu->numberMenuItems++], "Back");
 }
 
-void loadMenu(GameMemory *memory, MenuState menuState) {
-    GameState *gameState = getGameState(memory);
+void loadMenu(Platform &platform, MenuState menuState) {
+    GameState *gameState = getGameState(platform);
     MenuState previousMenuState = gameState->menuState;
 
     gameState->menuState = menuState;
     gameState->menuCount = 0;
     gameState->activeMenuIndex = 0;
-    for (unsigned i = 0; i < sizeof(gameState->menus) / sizeof(Menu); i++) {
-        gameState->menus[i] = {};
+    for (auto &menu : gameState->menus) {
+        menu = {};
     }
 
     switch (menuState) {
@@ -94,7 +93,7 @@ void loadMenu(GameMemory *memory, MenuState menuState) {
         break;
     case MenuState::GAME:
         if (previousMenuState == MenuState::MAIN) {
-            generateWorld(memory);
+            generateWorld(platform);
         }
         break;
     }
@@ -107,15 +106,15 @@ void gameOver(GameState *gameState) {
     //	loadMenu(gameState, MenuState::GAME_OVER);
 }
 
-void handleMenuEnterMain(GameMemory *memory) {
-    GameState *gameState = getGameState(memory);
+void handleMenuEnterMain(Platform &platform) {
+    GameState *gameState = getGameState(platform);
 
     Menu *activeMenu = &gameState->menus[gameState->activeMenuIndex];
     switch (gameState->activeMenuIndex) {
     case 0:
         switch (activeMenu->currentMenuItem) {
         case 0: // Start Game
-            loadMenu(memory, MenuState::GAME);
+            loadMenu(platform, MenuState::GAME);
             break;
         case 1: // Multiplayer
             break;
@@ -128,10 +127,10 @@ void handleMenuEnterMain(GameMemory *memory) {
             gameState->activeMenuIndex = 2;
             break;
         case 5: // Credits
-            loadMenu(memory, MenuState::CREDITS);
+            loadMenu(platform, MenuState::CREDITS);
             break;
         case 6: // Quit
-            memory->exitGame();
+            platform.exit();
             break;
         }
 
@@ -169,10 +168,10 @@ void handleMenuEnterGameOver(GameState *gameState) {
  * Process enter key being pressed
  * Action depends on the current menu and the selected menu item
  */
-void handleMenuEnter(GameMemory *memory, GameState *gameState) {
+void handleMenuEnter(Platform &platform, GameState *gameState) {
     switch (gameState->menuState) {
     case MenuState::MAIN:
-        handleMenuEnterMain(memory);
+        handleMenuEnterMain(platform);
         break;
     case MenuState::PAUSE:
         handleMenuEnterPause(gameState);
@@ -183,7 +182,7 @@ void handleMenuEnter(GameMemory *memory, GameState *gameState) {
     case MenuState::CREDITS:
         switch (gameState->menus[0].currentMenuItem) {
         case 0:
-            loadMenu(memory, MenuState::MAIN);
+            loadMenu(platform, MenuState::MAIN);
             break;
         }
         break;
@@ -195,8 +194,7 @@ void handleMenuEnter(GameMemory *memory, GameState *gameState) {
 /**
  * Renders a single menu item to screen
  */
-void renderMenuItem(GameState *gameState, MenuItem *item, glm::vec2 position,
-                    bool menuHighlight, bool highlight) {
+void renderMenuItem(GameState *gameState, MenuItem *item, glm::vec2 position, bool menuHighlight, bool highlight) {
     int r = 255, g = 255, b = 255;
     if (!menuHighlight) {
         r = 128;
@@ -210,17 +208,16 @@ void renderMenuItem(GameState *gameState, MenuItem *item, glm::vec2 position,
         //			item->animationCounter++;
         //			if (item->animationCounter <= 25) {
         //				a = sin(0.4 * (item->animationCounter - 2 *
-        //PI))
+        // PI))
         //						* (100 / (item->animationCounter -
-        //2 * PI)); 				if (a < 0) { 					a *= -1;
+        // 2 * PI)); 				if (a < 0) { 					a *= -1;
         //				}
         //			}
         //		}
         position = position + (glm::vec2{a, 0});
     }
     uint32_t color = (r << 24) + (g << 16) + (b << 8) + 255;
-    Render::pushText(gameState, std::string(item->text), position,
-                     Render::FontSize::Large, color, AtomPlane::MENU);
+    Render::pushText(gameState, std::string(item->text), position, Render::FontSize::Large, color, AtomPlane::MENU);
 }
 
 /**
@@ -246,8 +243,7 @@ void changeCarSelection(GameState *gameState, int direction) {
     }
 }
 
-void renderCarSelection(GameState *gameState, glm::vec2 position,
-                        bool menuHighlight, bool highlight) {
+void renderCarSelection(GameState *gameState, glm::vec2 position, bool menuHighlight, bool highlight) {
     uint32_t color = 0xffffffff;
     if (!menuHighlight) {
         color = 0xff808080;
@@ -267,15 +263,13 @@ void renderCarSelection(GameState *gameState, glm::vec2 position,
     glm::vec2 point1 = {offsetX + 12, position.y};
     glm::vec2 point2 = {offsetX + 12, position.y + 26};
     glm::vec2 point3 = {offsetX, position.y + 13};
-    Render::pushTriangle(gameState, point1, point2, point3, color,
-                         AtomPlane::MENU);
+    Render::pushTriangle(gameState, point1, point2, point3, color, AtomPlane::MENU);
 
     offsetX += 110 - 2 * a;
     point1 = {offsetX, position.y};
     point2 = {offsetX, position.y + 26};
     point3 = {offsetX + 12, position.y + 13};
-    Render::pushTriangle(gameState, point1, point2, point3, color,
-                         AtomPlane::MENU);
+    Render::pushTriangle(gameState, point1, point2, point3, color, AtomPlane::MENU);
 }
 
 void renderMenuBackdrop(GameState *gameState, Menu *menu) {
@@ -286,23 +280,22 @@ void renderMenuBackdrop(GameState *gameState, Menu *menu) {
     Render::pushRectangle(gameState, rect, 0xff00ff60, AtomPlane::MENU - 0.1f);
 }
 
-void updateMenu(GameMemory *memory, Input *input, Menu *menu) {
-    if (input->upKeyClicked) {
+void updateMenu(Platform &platform, Menu *menu) {
+    if (platform.input->upKeyClicked) {
         changeMenuItemSelection(menu, -1);
     }
 
-    if (input->downKeyClicked) {
+    if (platform.input->downKeyClicked) {
         changeMenuItemSelection(menu, 1);
     }
 
-    GameState *gameState = getGameState(memory);
-    if (gameState->menuState == MenuState::MAIN &&
-        gameState->activeMenuIndex == 0) {
+    GameState *gameState = getGameState(platform);
+    if (gameState->menuState == MenuState::MAIN && gameState->activeMenuIndex == 0) {
         if (menu->currentMenuItem == 2) { // Car
-            if (input->leftKeyClicked) {
+            if (platform.input->leftKeyClicked) {
                 changeCarSelection(gameState, -1);
             }
-            if (input->rightKeyClicked) {
+            if (platform.input->rightKeyClicked) {
                 changeCarSelection(gameState, 1);
             }
         }
@@ -321,10 +314,10 @@ void updateMenu(GameMemory *memory, Input *input, Menu *menu) {
         // FIXME movement is calculated completely different now
         //		gameState->player.position = gameState->player.position
         //				+ glm::vec2( { 0, (float)
-        //gameState->player.speed }); 		if (gameState->player.position.y
+        // gameState->player.speed }); 		if (gameState->player.position.y
         //				>= -1.0 + gameState->player.size.y / 2)
-        //{ 			gameState->player.speed = -PLAYER_SPEED; 			gameState->player.carIndex
-        //= gameState->player.nextCarIndex;
+        //{ 			gameState->player.speed = -PLAYER_SPEED; gameState->player.carIndex =
+        // gameState->player.nextCarIndex;
         //		}
         //		if (gameState->player.position.y <= 600) {
         //			gameState->player.speed = 0;
@@ -335,33 +328,33 @@ void updateMenu(GameMemory *memory, Input *input, Menu *menu) {
 /**
  * Updates and renders all the menus
  */
-void updateAndRenderMenus(GameMemory *memory, Input *input) {
-    GameState *gameState = getGameState(memory);
+void updateAndRenderMenus(Platform &platform) {
+    GameState *gameState = getGameState(platform);
 
     float plane = ((float)AtomPlane::MENU) - 0.5f;
     Render::pushEnableScaling(gameState, false, plane);
 
     // Update
-    updateMenu(memory, input, &gameState->menus[gameState->activeMenuIndex]);
+    updateMenu(platform, &gameState->menus[gameState->activeMenuIndex]);
 
-    if (input->enterKeyClicked) {
-        handleMenuEnter(memory, gameState);
+    if (platform.input->enterKeyClicked) {
+        handleMenuEnter(platform, gameState);
     }
 
-    if (input->escapeKeyClicked) {
+    if (platform.input->escapeKeyClicked) {
         switch (gameState->menuState) {
         case MenuState::MAIN:
             if (gameState->activeMenuIndex == 0) {
-                memory->exitGame();
+                platform.exit();
             } else {
                 gameState->activeMenuIndex = 0;
             }
             break;
         case MenuState::CREDITS:
-            loadMenu(memory, MenuState::MAIN);
+            loadMenu(platform, MenuState::MAIN);
             break;
         case MenuState::PAUSE:
-            loadMenu(memory, MenuState::GAME);
+            loadMenu(platform, MenuState::GAME);
             break;
         default:
             break;
@@ -369,10 +362,9 @@ void updateAndRenderMenus(GameMemory *memory, Input *input) {
     }
 
     // Backdrop is always rendered with the first menu
-    renderMenuBackdrop(getGameState(memory), &gameState->menus[0]);
+    renderMenuBackdrop(getGameState(platform), &gameState->menus[0]);
 
-    for (unsigned int menuIndex = 0; menuIndex < gameState->menuCount;
-         ++menuIndex) {
+    for (unsigned int menuIndex = 0; menuIndex < gameState->menuCount; ++menuIndex) {
         Menu *menu = &gameState->menus[menuIndex];
 
         if (!menu->isVisible) {
@@ -386,11 +378,9 @@ void updateAndRenderMenus(GameMemory *memory, Input *input) {
         for (unsigned i = 0; i < menu->numberMenuItems; i++) {
             bool highlight = i == (unsigned)menu->currentMenuItem;
 
-            renderMenuItem(getGameState(memory), &menu->items[i],
-                           currentPosition, menuHighlight, highlight);
+            renderMenuItem(getGameState(platform), &menu->items[i], currentPosition, menuHighlight, highlight);
 
-            currentPosition =
-                currentPosition - glm::vec2({0, (float)menu->lineSpacing});
+            currentPosition = currentPosition - glm::vec2({0, (float)menu->lineSpacing});
         }
     }
 
@@ -398,7 +388,7 @@ void updateAndRenderMenus(GameMemory *memory, Input *input) {
     //		glm::vec2 carSelPos = gameState->menus[0].position;
     //		carSelPos = carSelPos + glm::vec2 { 20, 133 };
     //		bool highlightCarSelect = 2 ==
-    //gameState->menus[0].currentMenuItem; 		renderCarSelection(memory, carSelPos,
-    //0 == gameState->activeMenuIndex, 				highlightCarSelect);
+    // gameState->menus[0].currentMenuItem; 		renderCarSelection(memory, carSelPos,
+    // 0 == gameState->activeMenuIndex, 				highlightCarSelect);
     //	}
 }

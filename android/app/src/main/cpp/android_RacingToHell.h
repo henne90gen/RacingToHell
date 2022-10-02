@@ -1,4 +1,5 @@
 #pragma once
+
 #include <jni.h>
 #include <android/log.h>
 #include <GLES2/gl2.h>
@@ -9,9 +10,3 @@
 
 #define UNUSED  __attribute__((unused))
 #define LOG_TAG "RacingToHell"
-
-static AAssetManager *asset_manager;
-static GameMemory memory;
-static Input gameInput = {};
-static bool memoryInitialized = false;
-static int realWindowWidth, realWindowHeight;

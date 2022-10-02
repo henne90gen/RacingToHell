@@ -1,12 +1,20 @@
 #include "android_RacingToHell.h"
 
-#include "RacingToHell.cpp"
+#define MB 1024 * 1024
+
+AAssetManager *asset_manager;
+GameMemory memory;
+Input gameInput = {};
+int realWindowWidth, realWindowHeight;
 
 extern "C"
 JNIEXPORT void JNICALL
 Java_game_racingtohell_NativeWrapper_on_1surface_1changed(JNIEnv *env UNUSED, jclass clazz UNUSED,
                                                           jint width, jint height) {
+    static bool memoryInitialized = false;
     if (!memoryInitialized) {
+        memoryInitialized = true;
+
         rth_log("Initializing Game");
         memory = {};
         memory.log = rth_log;
@@ -14,32 +22,14 @@ Java_game_racingtohell_NativeWrapper_on_1surface_1changed(JNIEnv *env UNUSED, jc
         memory.exitGame = exitGame;
         memory.readFile = readFile;
         memory.freeFile = freeFile;
-        memory.temporaryMemorySize = 10 * 1024 * 1024;
-        memory.permanentMemorySize = 100 * 1024 * 1024;
+        memory.temporaryMemorySize = 10 * MB;
+        memory.permanentMemorySize = 100 * MB;
         memory.temporary = (char *) malloc(memory.temporaryMemorySize);
         memory.permanent = (char *) malloc(memory.permanentMemorySize);
-
-        char vertexShaderFileName[] = "./res/shaders/vertex.glsl";
-        for (unsigned i = 0; i < sizeof(vertexShaderFileName) / sizeof(char); i++) {
-            memory.shaderFileNames[0][i] = vertexShaderFileName[i];
-        }
-        char fragmentShaderFileName[] = "./res/shaders/fragment.glsl";
-        for (unsigned i = 0; i < sizeof(fragmentShaderFileName) / sizeof(char);
-             i++) {
-            memory.shaderFileNames[1][i] = fragmentShaderFileName[i];
-        }
-
         memory.doResize = true;
         memory.aspectRatio = 16.0f / 9.0f;
-
-        memoryInitialized = true;
+        memory.base_path = "./";
     }
-
-    // cause shaders to recompile
-    memory.shaderModTimes[0][0] = 0;
-    memory.shaderModTimes[0][1] = 1;
-    memory.shaderModTimes[1][0] = 0;
-    memory.shaderModTimes[1][1] = 1;
 
     realWindowWidth = width;
     realWindowHeight = height;
@@ -69,12 +59,7 @@ Java_game_racingtohell_NativeWrapper_on_1draw_1frame(JNIEnv *env UNUSED, jclass 
     GameState *gameState = getGameState(&memory);
     gameState->rotationAngle = PI / 2;
 
-    updateAndRender(&gameInput, &memory);
-
-    memory.shaderModTimes[0][0] = 0;
-    memory.shaderModTimes[0][1] = 0;
-    memory.shaderModTimes[1][0] = 0;
-    memory.shaderModTimes[1][1] = 0;
+    update_and_render(&gameInput, &memory);
 }
 
 extern "C"

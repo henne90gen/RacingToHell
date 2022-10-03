@@ -8,7 +8,6 @@
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
-#include <spdlog/spdlog.h>
 
 FT_Library fontLibrary;
 

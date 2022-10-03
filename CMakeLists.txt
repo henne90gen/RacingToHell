@@ -11,20 +11,20 @@ set(INSTALL_GTEST OFF)
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 
 include(FetchContent)
+#FetchContent_Declare(
+#        benchmark
+#        GIT_REPOSITORY https://github.com/google/benchmark.git
+#        GIT_TAG 0d98dba29d66e93259db7daa53a9327df767a415 # v1.6.1
+#)
+#FetchContent_Declare(
+#        googletest
+#        GIT_REPOSITORY https://github.com/google/googletest.git
+#        GIT_TAG e2239ee6043f73722e7aa812a459f54a28552929 # release-1.11.0
+#)
 FetchContent_Declare(
-        spdlog
-        GIT_REPOSITORY https://github.com/gabime/spdlog.git
-        GIT_TAG 76fb40d95455f249bd70824ecfcae7a8f0930fa3 # v1.10.0
-)
-FetchContent_Declare(
-        benchmark
-        GIT_REPOSITORY https://github.com/google/benchmark.git
-        GIT_TAG 0d98dba29d66e93259db7daa53a9327df767a415 # v1.6.1
-)
-FetchContent_Declare(
-        googletest
-        GIT_REPOSITORY https://github.com/google/googletest.git
-        GIT_TAG e2239ee6043f73722e7aa812a459f54a28552929 # release-1.11.0
+        fmt
+        GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+        GIT_TAG a33701196adfad74917046096bf5a2aa0ab0bb50 # 9.1.0
 )
 FetchContent_Declare(
         glfw
@@ -50,7 +50,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(
         # benchmark
         # googletest
-        spdlog
+        fmt
         imgui
         glm
         freetype2
@@ -165,7 +165,7 @@ add_library(game
         src/Sound.cpp
         ${RESOURCES})
 target_link_libraries(game PUBLIC
-        spdlog
+        fmt::fmt
         glm::glm
         imgui
         freetype

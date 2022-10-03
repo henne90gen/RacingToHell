@@ -7,8 +7,9 @@
 #include <backends/imgui_impl_opengl3.h>
 #include <chrono>
 #include <filesystem>
+#include <fmt/core.h>
 #include <imgui.h>
-#include <spdlog/spdlog.h>
+#include <iostream>
 
 #include "RacingToHell.h"
 #include "Resources.h"
@@ -43,11 +44,11 @@ void finishImGuiFrame() {
 }
 
 void Platform::abort(const std::string &msg) {
-    spdlog::error(msg);
+    std::cerr << msg << std::endl;
     ::exit(1);
 }
 
-void Platform::log(const std::string &msg) { spdlog::info(msg); }
+void Platform::log(const std::string &msg) { std::cout << msg << std::endl; }
 
 static std::chrono::time_point<std::chrono::high_resolution_clock> program_start;
 int64_t Platform::time() {
@@ -118,7 +119,7 @@ bool Platform::write_file(const File &file) {
 }
 
 void Platform::exit() {
-    spdlog::info("Exiting...");
+    log("Exiting...");
     glfwSetWindowShouldClose(glfw_window, 1);
 }
 
@@ -153,7 +154,9 @@ void resizeViewport(Platform *platform, int windowWidth, int windowHeight) {
 
     glViewport(offsetX, offsetY, viewWidth, viewHeight);
 
-    spdlog::info("Updated the viewport to x={}, y={}, width={}, height={}", offsetX, offsetY, viewWidth, viewHeight);
+    std::cout << fmt::format("Updated the viewport to x={}, y={}, width={}, height={}", offsetX, offsetY, viewWidth,
+                             viewHeight)
+              << std::endl;
 
     platform->memory.doResize = true;
 }
@@ -164,7 +167,7 @@ void glfw_framebuffer_size_callback(GLFWwindow *window, int width, int height) {
 }
 
 int main(int argc, char **argv) {
-    spdlog::info("Starting RacingToHell");
+    std::cout << "Starting RacingToHell" << std::endl;
 
     if (glfwInit() == 0) {
         return 1;
@@ -176,7 +179,7 @@ int main(int argc, char **argv) {
 
     glfw_window = glfwCreateWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, WINDOW_TITLE, nullptr, nullptr);
     if (glfw_window == nullptr) {
-        spdlog::error("Failed to create window");
+        std::cerr << "Failed to create window" << std::endl;
         glfwTerminate();
         return 1;
     }
@@ -185,7 +188,7 @@ int main(int argc, char **argv) {
     auto procAddress = reinterpret_cast<GLADloadproc>(glfwGetProcAddress);
     auto status = gladLoadGLLoader(procAddress);
     if (status == 0) {
-        spdlog::error("Failed to initialize GLAD");
+        std::cerr << "Failed to initialize GLAD" << std::endl;
         return 1;
     }
 
@@ -194,9 +197,9 @@ int main(int argc, char **argv) {
     if (argc == 2) {
         base_path = std::string_view(argv[1]);
     }
-    spdlog::info("Setting base path to '{}'", base_path);
+    std::cout << fmt::format("Setting base path to '{}'", base_path) << std::endl;
     if (!std::filesystem::exists(std::string(base_path) + "/res")) {
-        spdlog::error("Failed to find resources directory!");
+        std::cerr << "Failed to find resources directory!" << std::endl;
         return 1;
     }
 
@@ -226,8 +229,8 @@ int main(int argc, char **argv) {
 
     std::string renderer = std::string((const char *)glGetString(GL_RENDERER));
     std::string version = std::string((const char *)glGetString(GL_VERSION));
-    spdlog::info("Graphics Card: {}", renderer);
-    spdlog::info("OpenGL Version: {}", version);
+    std::cout << fmt::format("Graphics Card: {}", renderer) << std::endl;
+    std::cout << fmt::format("OpenGL Version: {}", version) << std::endl;
 
     Input input[2] = {};
     Input *oldInput = &input[0];
@@ -253,7 +256,7 @@ int main(int argc, char **argv) {
         glfwPollEvents();
     }
 
-    spdlog::info("RacingToHell has been terminated");
+    std::cout << "RacingToHell has been terminated" << std::endl;
 
     glfwTerminate();
     return 0;

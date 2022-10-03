@@ -3,8 +3,20 @@ name: Build Racing To Hell
 on: push
 
 jobs:
-  build-ubuntu:
-    name: "Ubuntu"
+  build-android:
+    name: "Android"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run Android Tests
+        run: cd android && ./gradlew test
+
+      - name: Run Android Build
+        run: cd android && ./gradlew build
+
+  build-linux:
+    name: "Linux"
     runs-on: ubuntu-latest
 
     steps:

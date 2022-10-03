@@ -1,12 +1,6 @@
 #include "Resources.h"
 
-#include "Memory.h"
-
-#include <filesystem>
-#include <fstream>
-#include <spdlog/spdlog.h>
 #include <unordered_map>
-#include <utility>
 
 std::unordered_map<std::string, Resource *> resources = {};
 

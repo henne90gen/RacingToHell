@@ -45,7 +45,7 @@ uint32_t getChunkDataSize(RiffIterator iter) {
 LoadedSound loadWAV(Platform &platform, const std::string &path) {
     LoadedSound result = {};
 
-    auto resource_opt = get_resource(path);
+    auto resource_opt = get_resource(platform, path);
     if (!resource_opt.has_value()) {
         platform.abort(path + " konnte nicht geladen werden.");
     }

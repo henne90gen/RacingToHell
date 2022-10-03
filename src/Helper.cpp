@@ -156,13 +156,13 @@ void initOpenGL(Platform &platform, Resource *vertex_shader, Resource *fragment_
 }
 
 void checkShaders(Platform &platform) {
-    auto vertex_opt = get_resource("res/shaders/vertex.glsl");
+    auto vertex_opt = get_resource(platform, "res/shaders/vertex.glsl");
     if (!vertex_opt.has_value()) {
         platform.abort("Failed to load vertex shader resource");
         return;
     }
 
-    auto fragment_opt = get_resource("res/shaders/fragment.glsl");
+    auto fragment_opt = get_resource(platform, "res/shaders/fragment.glsl");
     if (!fragment_opt.has_value()) {
         platform.abort("Failed to load fragment shader resource");
         return;
@@ -306,7 +306,7 @@ void loadFont(Platform &platform, const std::string &fontFileName) {
 
     GameState *gameState = getGameState(platform);
 
-    auto resource_opt = get_resource(fontFileName);
+    auto resource_opt = get_resource(platform, fontFileName);
     if (!resource_opt.has_value()) {
         platform.abort("Failed to load font file " + fontFileName);
     }

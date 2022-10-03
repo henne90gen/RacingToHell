@@ -92,6 +92,11 @@ void Platform::free_file(File &file) {
     file.size = 0;
 }
 
+int64_t Platform::last_modified(const std::string &file_path) {
+    auto last_write_time = std::filesystem::last_write_time(file_path);
+    return std::chrono::time_point_cast<std::chrono::milliseconds>(last_write_time).time_since_epoch().count();
+}
+
 bool Platform::write_file(const File &file) {
     log("Writing " + file.name);
 

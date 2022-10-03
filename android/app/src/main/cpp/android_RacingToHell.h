@@ -2,7 +2,6 @@
 
 #include <jni.h>
 #include <android/log.h>
-#include <GLES2/gl2.h>
 #include <android/asset_manager_jni.h>
 #include <stdlib.h>
 #include <cstdlib>

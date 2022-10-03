@@ -19,4 +19,5 @@ struct Resource {
 };
 
 void init_resources();
-std::optional<Resource *> get_resource(const std::string &resource_name);
+
+std::optional<Resource *> get_resource(Platform &platform, const std::string &resource_name);

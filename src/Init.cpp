@@ -21,7 +21,7 @@ void loadAudioClips(Platform &platform) {
  */
 Render::Texture loadTexture(Platform &platform, const std::string &resource_name, int xDivision = 1,
                             int yDivision = 1) {
-    auto resource_opt = get_resource(resource_name);
+    auto resource_opt = get_resource(platform, resource_name);
     if (!resource_opt.has_value()) {
         platform.abort("Failed to load texture " + resource_name);
     }

@@ -20,4 +20,6 @@ target_link_libraries(native-lib PRIVATE
         ${log-lib}
         android
         freetype
-        GLESv2)
+        glad
+        GLESv3
+        EGL)

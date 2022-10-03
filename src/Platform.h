@@ -73,6 +73,8 @@ struct Platform {
     File read_file(const std::string &file_path, bool is_resource);
     /// releases the memory that was allocated for the given file
     void free_file(File &file);
+    /// returns the last modification time in nanoseconds since the epoch
+    int64_t last_modified(const std::string &file_path);
     /// writes a file to disk
     bool write_file(const File &file);
     /// gets the time in nanoseconds since the epoch

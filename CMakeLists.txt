@@ -65,6 +65,9 @@ endif ()
 
 set(CMAKE_CXX_STANDARD_REQUIRED 20)
 
+add_library(glad glad/src/glad.c)
+target_include_directories(glad PUBLIC glad/include)
+
 if (NOT ANDROID)
     add_library(imgui
             "${imgui_SOURCE_DIR}/imgui.cpp"
@@ -87,17 +90,16 @@ else ()
     target_link_libraries(imgui PUBLIC glad)
 endif ()
 
-add_library(glad src/glad/src/glad.c)
-target_include_directories(glad PUBLIC src/glad/include)
-
 function(register_resources resources_var)
+    message(STATUS "Registering resources")
     foreach (resource IN LISTS ARGN)
         string(MAKE_C_IDENTIFIER ${resource} identifier)
         get_filename_component(resource_absolute ${resource} ABSOLUTE)
         string(APPEND resource_definitions "Resource ${identifier}_resource(\"${resource}\");\n")
         string(APPEND resource_additions "    resources[${identifier}_resource.resource_name] = &${identifier}_resource;\n")
     endforeach ()
-    file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/resources.cpp
+    set(output_file ${CMAKE_CURRENT_BINARY_DIR}/resources.cpp)
+    file(WRITE ${output_file}
             "#include \"Resources.h\"\n"
             "#include <string>\n"
             "#include <unordered_map>\n\n"
@@ -107,7 +109,8 @@ function(register_resources resources_var)
             "${resource_additions}"
             "}\n"
     )
-    set(${resources_var} ${CMAKE_CURRENT_BINARY_DIR}/resources.cpp PARENT_SCOPE)
+    set(${resources_var} ${output_file} PARENT_SCOPE)
+    message(STATUS "Registering resources - Done")
 endfunction()
 
 register_resources(RESOURCES
@@ -162,7 +165,6 @@ add_library(game
         src/Sound.cpp
         ${RESOURCES})
 target_link_libraries(game PUBLIC
-        glad
         spdlog
         glm::glm
         imgui
@@ -171,6 +173,8 @@ target_link_libraries(game PUBLIC
 target_include_directories(game PUBLIC ${OPENGL_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set_property(TARGET game PROPERTY CXX_STANDARD 20)
 
-add_executable(RacingToHell src/main.cpp)
-target_link_libraries(RacingToHell game glfw)
-set_property(TARGET RacingToHell PROPERTY CXX_STANDARD 20)
+if (NOT ANDROID)
+    add_executable(RacingToHell src/main.cpp)
+    target_link_libraries(RacingToHell game glfw glad)
+    set_property(TARGET RacingToHell PROPERTY CXX_STANDARD 20)
+endif ()

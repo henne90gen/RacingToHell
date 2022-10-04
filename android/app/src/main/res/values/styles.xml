@@ -1,5 +1,4 @@
 <resources>
 
-    <style name="RacingToHellTheme" parent="Theme.AppCompat.NoActionBar" />
-
+    <style name="RacingToHellTheme" parent="android:Theme.Holo.NoActionBar" />
 </resources>

@@ -17,7 +17,7 @@ add_library(native-lib SHARED src/main/cpp/android_RacingToHell.cpp)
 target_include_directories(native-lib PRIVATE ../../src)
 target_link_libraries(native-lib PRIVATE
         game
-        ${log-lib}
+        ${logging_library}
         android
         freetype
         glad

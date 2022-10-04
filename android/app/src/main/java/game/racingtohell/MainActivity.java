@@ -39,6 +39,7 @@ public class MainActivity extends Activity {
             // Avoids crashes on startup with some emulator images.
             glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         }
+        glSurfaceView.setRenderer(new RendererWrapper(this));
         setContentView(glSurfaceView);
     }
 

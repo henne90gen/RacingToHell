@@ -15,7 +15,6 @@ public class GLSurfaceViewWrapper extends GLSurfaceView {
     public GLSurfaceViewWrapper(Context context) {
         super(context);
         setEGLContextClientVersion(3);
-        setRenderer(new RendererWrapper(context));
     }
 
     @Override

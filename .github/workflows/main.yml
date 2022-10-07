@@ -15,6 +15,30 @@ jobs:
       - name: Run Android Build
         run: cd android && ./gradlew build
 
+  build-web:
+    name: "Android"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install emscripten SDK
+        run: |
+          git clone https://github.com/emscripten-core/emsdk.git
+          cd emsdk
+          ./emsdk install latest
+          ./emsdk activate latest
+          source ./emsdk_env.sh
+
+      - run: mkdir build
+
+      - name: Run CMake
+        working-directory: build
+        run: emcmake cmake ..
+
+      - name: Build
+        working-directory: build
+        run: emmake make -j 8
+
   build-linux:
     name: "Linux"
     runs-on: ubuntu-latest
@@ -47,5 +71,5 @@ jobs:
         run: cmake ..
 
       - name: Build
-        working-directory: ./build
+        working-directory: build
         run: cmake --build .

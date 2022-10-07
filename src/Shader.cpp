@@ -2,12 +2,15 @@
 
 #include "Resources.h"
 
+#include <fmt/core.h>
+
 GLuint compileShader(Platform &platform, const GLenum type, Resource *shader) {
     GLint compileStatus;
     GLuint shaderID = glCreateShader(type);
 
     const auto shader_content = shader->get_content(platform);
     const auto shader_size = shader_content.size();
+
     auto shader_data = const_cast<char *>(shader_content.data());
     glShaderSource(shaderID, 1, &shader_data, (GLint *)&shader_size);
     glCompileShader(shaderID);
@@ -21,8 +24,7 @@ GLuint compileShader(Platform &platform, const GLenum type, Resource *shader) {
             glGetShaderInfoLog(shaderID, infoLogLength, nullptr, shaderErrorMessage);
             platform.log(shaderErrorMessage);
         }
-        std::string message = "Failed to compile shader. " + std::to_string(type) + "\n" + std::string(shader_content);
-        platform.abort(message);
+        platform.abort(fmt::format("Failed to compile shader: {}\n{}", type, shader_content));
     }
 
     return shaderID;
@@ -45,14 +47,14 @@ GLuint linkProgram(Platform &platform, const GLuint vertex_shader, const GLuint 
             glGetProgramInfoLog(programID, infoLogLength, nullptr, programErrorMessage);
             platform.log(programErrorMessage);
         }
-        std::string message = "Failed to link shader program.\n";
-        platform.abort(message);
+        platform.abort("Failed to link shader program.");
     }
 
     return programID;
 }
 
 GLuint buildProgram(Platform &platform, Resource *vertex_shader, Resource *fragment_shader) {
+    platform.log("Compiling shaders...");
     GLuint vertex_shader_id = compileShader(platform, GL_VERTEX_SHADER, vertex_shader);
     GLuint fragment_shader_id = compileShader(platform, GL_FRAGMENT_SHADER, fragment_shader);
     return linkProgram(platform, vertex_shader_id, fragment_shader_id);

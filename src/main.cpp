@@ -11,10 +11,16 @@
 #include <imgui.h>
 #include <iostream>
 
+#if EMSCRIPTEN
+#include <emscripten.h>
+#endif
+
 #include "RacingToHell.h"
 #include "Resources.h"
 
 GLFWwindow *glfw_window = nullptr;
+Platform platform = {};
+Input input[2] = {};
 
 void initImGui(GLFWwindow *window) {
     IMGUI_CHECKVERSION();
@@ -60,7 +66,11 @@ int64_t Platform::time() {
 File Platform::read_file(const std::string &file_path, bool is_resource) {
     auto final_file_path = file_path;
     if (is_resource) {
+#if EMSCRIPTEN
+        final_file_path = "/" + file_path;
+#else
         final_file_path = memory.base_path + "/" + file_path;
+#endif
     }
     log("Reading " + final_file_path);
 
@@ -94,8 +104,12 @@ void Platform::free_file(File &file) {
 }
 
 int64_t Platform::last_modified(const std::string &file_path) {
+#if EMSCRIPTEN
+    return 0;
+#else
     auto last_write_time = std::filesystem::last_write_time(file_path);
     return std::chrono::time_point_cast<std::chrono::milliseconds>(last_write_time).time_since_epoch().count();
+#endif
 }
 
 bool Platform::write_file(const File &file) {
@@ -166,6 +180,29 @@ void glfw_framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     resizeViewport(platform, width, height);
 }
 
+void run_main_loop() {
+    glClearColor(0.1F, 0.1F, 0.1F, 1.0F);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // NOLINT(hicpp-signed-bitwise)
+
+    startImGuiFrame();
+
+    Input *oldInput = &input[0];
+    Input *newInput = &input[1];
+    *newInput = *oldInput;
+    platform.input = newInput;
+
+    update_and_render(platform);
+
+    Input *tmp = oldInput;
+    oldInput = newInput;
+    newInput = tmp;
+
+    finishImGuiFrame();
+
+    glfwSwapBuffers(glfw_window);
+    glfwPollEvents();
+}
+
 int main(int argc, char **argv) {
     std::cout << "Starting RacingToHell" << std::endl;
 
@@ -197,13 +234,15 @@ int main(int argc, char **argv) {
     if (argc == 2) {
         base_path = std::string_view(argv[1]);
     }
+
     std::cout << fmt::format("Setting base path to '{}'", base_path) << std::endl;
+#if !EMSCRIPTEN
     if (!std::filesystem::exists(std::string(base_path) + "/res")) {
         std::cerr << "Failed to find resources directory!" << std::endl;
         return 1;
     }
+#endif
 
-    Platform platform = {};
     platform.memory = initGameMemory(base_path);
     glfwSetWindowUserPointer(glfw_window, (void *)&platform);
 
@@ -232,29 +271,13 @@ int main(int argc, char **argv) {
     std::cout << fmt::format("Graphics Card: {}", renderer) << std::endl;
     std::cout << fmt::format("OpenGL Version: {}", version) << std::endl;
 
-    Input input[2] = {};
-    Input *oldInput = &input[0];
-    Input *newInput = &input[1];
-
+#if EMSCRIPTEN
+    emscripten_set_main_loop(run_main_loop, 0, 1);
+#else
     while (glfwWindowShouldClose(glfw_window) == 0) {
-        glClearColor(0.1F, 0.1F, 0.1F, 1.0F);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // NOLINT(hicpp-signed-bitwise)
-
-        startImGuiFrame();
-
-        *newInput = *oldInput;
-        platform.input = newInput;
-        update_and_render(platform);
-
-        Input *tmp = oldInput;
-        oldInput = newInput;
-        newInput = tmp;
-
-        finishImGuiFrame();
-
-        glfwSwapBuffers(glfw_window);
-        glfwPollEvents();
+        run_main_loop();
     }
+#endif
 
     std::cout << "RacingToHell has been terminated" << std::endl;
 

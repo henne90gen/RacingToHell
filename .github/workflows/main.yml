@@ -33,13 +33,13 @@ jobs:
       - name: Run CMake
         working-directory: build
         run: |
-          source ./emsdk/emsdk_env.sh
+          source ../emsdk/emsdk_env.sh
           emcmake cmake ..
 
       - name: Build
         working-directory: build
         run: |
-          source ./emsdk/emsdk_env.sh
+          source ../emsdk/emsdk_env.sh
           emmake make -j 8
 
   build-linux:

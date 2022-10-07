@@ -34,13 +34,17 @@ jobs:
         working-directory: build
         run: |
           source ../emsdk/emsdk_env.sh
-          emcmake cmake ..
+          emcmake cmake -G Ninja ..
 
       - name: Build
         working-directory: build
-        run: |
-          source ../emsdk/emsdk_env.sh
-          emmake make -j 8
+        run: cmake --build .
+      
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@4.4.0
+        with:
+          branch: gh-pages
+          folder: build/html
 
   build-linux:
     name: "Linux"

@@ -152,7 +152,3 @@ void Platform::exit() {
     log("Exiting.");
     ::exit(0);
 }
-
-int64_t Platform::time() {
-    return 0;
-}

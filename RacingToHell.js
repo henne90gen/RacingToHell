@@ -8591,12 +8591,6 @@ var ASM_CONSTS = {
       GLFW.getWindowSize(winid, width, height);
     }
 
-  function _glfwGetWindowUserPointer(winid) {
-      var win = GLFW.WindowFromId(winid);
-      if (!win) return 0;
-      return win.userptr;
-    }
-
   function _glfwInit() {
       if (GLFW.windows) return 1; // GL_TRUE
   
@@ -9685,7 +9679,6 @@ var asmLibraryArg = {
   "glfwGetJoystickButtons": _glfwGetJoystickButtons,
   "glfwGetTime": _glfwGetTime,
   "glfwGetWindowSize": _glfwGetWindowSize,
-  "glfwGetWindowUserPointer": _glfwGetWindowUserPointer,
   "glfwInit": _glfwInit,
   "glfwMakeContextCurrent": _glfwMakeContextCurrent,
   "glfwPollEvents": _glfwPollEvents,

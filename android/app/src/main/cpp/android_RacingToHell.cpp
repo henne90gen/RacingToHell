@@ -9,7 +9,6 @@
 
 AAssetManager *asset_manager;
 Platform platform = {};
-Input gameInput = {};
 int realWindowWidth, realWindowHeight;
 
 extern "C"
@@ -63,12 +62,12 @@ Java_game_racingtohell_NativeWrapper_on_1touch_1event(JNIEnv *env UNUSED, jclass
     x = x * DEFAULT_WINDOW_WIDTH / realWindowWidth;
     y = y * DEFAULT_WINDOW_HEIGHT / realWindowHeight;
 
-    gameInput.leftKeyPressed = 0;
-    gameInput.rightKeyPressed = 0;
-    gameInput.upKeyPressed = 0;
-    gameInput.downKeyPressed = 0;
-    gameInput.shootKeyClicked = 0;
-    gameInput.shootKeyPressed = 0;
+    platform.input.leftKeyPressed = 0;
+    platform.input.rightKeyPressed = 0;
+    platform.input.upKeyPressed = 0;
+    platform.input.downKeyPressed = 0;
+    platform.input.shootKeyClicked = 0;
+    platform.input.shootKeyPressed = 0;
 }
 
 extern "C"
@@ -79,13 +78,6 @@ Java_game_racingtohell_NativeWrapper_on_1draw_1frame(JNIEnv *env UNUSED, jclass 
 //    GameState *gameState = getGameState(platform);
 //    gameState->rotationAngle = PI / 2;
 
-//    static unsigned int VAO;
-//    if (!VAO) {
-//        glGenVertexArrays(1, &VAO);
-//    }
-//    glBindVertexArray(VAO);
-
-    platform.input = &gameInput;
     update_and_render(platform);
 }
 

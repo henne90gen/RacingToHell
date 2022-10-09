@@ -14,7 +14,7 @@ void textDemo(Platform &platform, AtomPlane plane) {
     };
     static int fontIndex = 0;
 
-    if (platform.input->enterKeyClicked) {
+    if (platform.input.enterKeyClicked) {
         loadFont(platform, fontFileNames[fontIndex]);
         fontIndex++;
         if (fontIndex >= 3) {
@@ -116,11 +116,11 @@ void animationDemo(Platform&platform, AtomPlane plane) {
 void followingCarDemo(Platform &platform) {
     GameState *gameState = getGameState(platform);
 
-    if (platform.input->shootKeyPressed && gameState->agentCount < (int)sizeof(gameState->agents) / (int)sizeof(Player)) {
+    if (platform.input.shootKeyPressed && gameState->agentCount < (int)sizeof(gameState->agents) / (int)sizeof(Player)) {
         platform.log(fmt::format("Spawning agent {}", gameState->agentCount));
         gameState->agents[gameState->agentCount++] = Player();
         Player *agent = &gameState->agents[gameState->agentCount - 1];
-        agent->position = platform.input->mousePosition;
+        agent->position = platform.input.mousePosition;
         agent->size = glm::vec2(0.05f, 0.10f);
         agent->maxSpeed = PLAYER_SPEED;
         agent->carIndex = std::rand() % NUM_PLAYER_TEXTURES;
@@ -131,7 +131,7 @@ void followingCarDemo(Platform &platform) {
 
         Render::Texture *texture = &gameState->resources.playerCarTextures[agent->carIndex];
 
-        glm::vec2 desired = platform.input->mousePosition - agent->position;
+        glm::vec2 desired = platform.input.mousePosition - agent->position;
         //		if (Math::length(desired) > 0.01f) {
         desired = Math::normalize(desired);
         desired = desired * static_cast<float>(agent->maxSpeed);

@@ -20,7 +20,6 @@
 
 GLFWwindow *glfw_window = nullptr;
 Platform platform = {};
-Input input[2] = {};
 
 void initImGui(GLFWwindow *window) {
     IMGUI_CHECKVERSION();
@@ -133,7 +132,7 @@ void Platform::exit() {
 GameMemory initGameMemory(std::string_view base_path) {
     GameMemory memory = {};
     memory.doResize = true;
-    memory.aspectRatio = 16.0f / 9.0f;
+    memory.aspectRatio = 9.0f / 16.0f;
 
     memory.base_path = base_path;
     memory.temporaryMemorySize = 10 * 1024 * 1024;
@@ -144,83 +143,79 @@ GameMemory initGameMemory(std::string_view base_path) {
     return memory;
 }
 
-void resizeViewport(Platform *platform, int windowWidth, int windowHeight) {
-    int viewWidth = windowHeight * platform->memory.aspectRatio;
+void resizeViewport(int windowWidth, int windowHeight) {
+    int viewWidth = windowHeight * platform.memory.aspectRatio;
     int viewHeight = windowHeight;
     int offsetX = 0;
     int offsetY = 0;
-    if (viewWidth > windowWidth) {
-        viewWidth = windowWidth;
-        viewHeight = windowWidth / platform->memory.aspectRatio;
+    if (viewHeight > windowHeight) {
+        viewHeight = windowHeight;
+        viewWidth = windowHeight / platform.memory.aspectRatio;
     } else {
-        offsetX = (windowWidth - viewWidth) / 2;
-    }
-    if (windowHeight > viewHeight) {
         offsetY = (windowHeight - viewHeight) / 2;
+    }
+    if (windowWidth > viewWidth) {
+        offsetX = (windowWidth - viewWidth) / 2;
     }
 
     glViewport(offsetX, offsetY, viewWidth, viewHeight);
 
-    std::cout << fmt::format("Updated the viewport to x={}, y={}, width={}, height={}", offsetX, offsetY, viewWidth,
-                             viewHeight)
-              << std::endl;
+    platform.logf("Updated the viewport to x={}, y={}, width={}, height={}", offsetX, offsetY, viewWidth, viewHeight);
 
-    platform->memory.doResize = true;
+    platform.memory.doResize = true;
 }
 
-void glfw_framebuffer_size_callback(GLFWwindow *window, int width, int height) {
-    auto platform = reinterpret_cast<Platform *>(glfwGetWindowUserPointer(window));
-    resizeViewport(platform, width, height);
-}
+void glfw_framebuffer_size_callback(GLFWwindow *window, int width, int height) { resizeViewport(width, height); }
 
 /**
  * All *Clicked variables are filled here.
  * *Clicked signals the moment where we go from not pressing to pressing a button.
  */
-void check_input_for_clicks(Input *input) {
+void check_input_for_clicks(Input &input) {
     static bool up, down, left, right, enter, escape, plus, minus, shoot;
 
-    input->upKeyClicked = input->upKeyPressed && !up;
-    up = input->upKeyPressed;
+    input.upKeyClicked = input.upKeyPressed && !up;
+    up = input.upKeyPressed;
 
-    input->downKeyClicked = input->downKeyPressed && !down;
-    down = input->downKeyPressed;
+    input.downKeyClicked = input.downKeyPressed && !down;
+    down = input.downKeyPressed;
 
-    input->leftKeyClicked = input->leftKeyPressed && !left;
-    left = input->leftKeyPressed;
+    input.leftKeyClicked = input.leftKeyPressed && !left;
+    left = input.leftKeyPressed;
 
-    input->rightKeyClicked = input->rightKeyPressed && !right;
-    right = input->rightKeyPressed;
+    input.rightKeyClicked = input.rightKeyPressed && !right;
+    right = input.rightKeyPressed;
 
-    input->enterKeyClicked = input->enterKeyPressed && !enter;
-    enter = input->enterKeyPressed;
+    input.enterKeyClicked = input.enterKeyPressed && !enter;
+    enter = input.enterKeyPressed;
 
-    input->escapeKeyClicked = input->escapeKeyPressed && !escape;
-    escape = input->escapeKeyPressed;
+    input.escapeKeyClicked = input.escapeKeyPressed && !escape;
+    escape = input.escapeKeyPressed;
 
-    input->plusKeyClicked = input->plusKeyPressed && !plus;
-    plus = input->plusKeyPressed;
+    input.plusKeyClicked = input.plusKeyPressed && !plus;
+    plus = input.plusKeyPressed;
 
-    input->minusKeyClicked = input->minusKeyPressed && !minus;
-    minus = input->minusKeyPressed;
+    input.minusKeyClicked = input.minusKeyPressed && !minus;
+    minus = input.minusKeyPressed;
 
-    input->shootKeyClicked = input->shootKeyPressed && !shoot;
-    shoot = input->shootKeyPressed;
+    input.shootKeyClicked = input.shootKeyPressed && !shoot;
+    shoot = input.shootKeyPressed;
 }
 
+// window The window that received the event.
 // key – The [keyboard key](keys) that was pressed or released.
 // scancode – The system-specific scancode of the key.
 // action – `GLFW_PRESS`, `GLFW_RELEASE` or `GLFW_REPEAT`. Future releases may add more actions.
 // mods – Bit field describing which [modifier keys](mods) were held down.
 void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-    platform.input->enterKeyPressed = key == GLFW_KEY_ENTER && action == GLFW_PRESS;
-    platform.input->escapeKeyPressed = key == GLFW_KEY_ESCAPE && action == GLFW_PRESS;
-    platform.input->upKeyPressed = key == GLFW_KEY_UP && action == GLFW_PRESS;
-    platform.input->downKeyPressed = key == GLFW_KEY_DOWN && action == GLFW_PRESS;
-    platform.input->leftKeyPressed = key == GLFW_KEY_LEFT && action == GLFW_PRESS;
-    platform.input->rightKeyPressed = key == GLFW_KEY_RIGHT && action == GLFW_PRESS;
-    platform.input->plusKeyPressed = key == GLFW_KEY_KP_ADD && action == GLFW_PRESS;
-    platform.input->minusKeyPressed = key == GLFW_KEY_KP_SUBTRACT && action == GLFW_PRESS;
+    platform.input.enterKeyPressed = key == GLFW_KEY_ENTER && action == GLFW_PRESS;
+    platform.input.escapeKeyPressed = key == GLFW_KEY_ESCAPE && action == GLFW_PRESS;
+    platform.input.upKeyPressed = key == GLFW_KEY_UP && action == GLFW_PRESS;
+    platform.input.downKeyPressed = key == GLFW_KEY_DOWN && action == GLFW_PRESS;
+    platform.input.leftKeyPressed = key == GLFW_KEY_LEFT && action == GLFW_PRESS;
+    platform.input.rightKeyPressed = key == GLFW_KEY_RIGHT && action == GLFW_PRESS;
+    platform.input.plusKeyPressed = key == GLFW_KEY_KP_ADD && action == GLFW_PRESS;
+    platform.input.minusKeyPressed = key == GLFW_KEY_KP_SUBTRACT && action == GLFW_PRESS;
 }
 
 // window The window that received the event.
@@ -228,45 +223,49 @@ void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, in
 // action One of `GLFW_PRESS` or `GLFW_RELEASE`. Future releases may add more actions.
 // mods Bit field describing which [modifier keys](@ref mods) were held down.
 void glfw_mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
-    platform.input->shootKeyPressed = button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS;
+    platform.input.shootKeyPressed = button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS;
 }
 
 // window The window that received the event.
 // xpos The new cursor x-coordinate, relative to the left edge of the content area.
 // ypos The new cursor y-coordinate, relative to the top edge of the content area.
 void glfw_cursor_pos_callback(GLFWwindow *window, double x_pos, double y_pos) {
-    int width = 0;
-    int height = 0;
-    glfwGetFramebufferSize(window, &width, &height);
+    int windowWidth = 0;
+    int windowHeight = 0;
+    glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
+
+    int viewWidth = windowHeight * platform.memory.aspectRatio;
+    int viewHeight = windowHeight;
+    int offsetX = 0;
+    int offsetY = 0;
+    if (viewHeight > windowHeight) {
+        viewHeight = windowHeight;
+        viewWidth = windowHeight / platform.memory.aspectRatio;
+    } else {
+        offsetY = (windowHeight - viewHeight) / 2;
+    }
+    if (windowWidth > viewWidth) {
+        offsetX = (windowWidth - viewWidth) / 2;
+    }
 
     auto mousePos = glm::vec2(x_pos, y_pos);
-    mousePos /= glm::vec2(width, height);
+    mousePos -= glm::vec2(offsetX, offsetY);
+    mousePos /= glm::vec2(viewWidth, viewHeight);
     mousePos.y = 1.0F - mousePos.y;
     mousePos *= 2.0F;
     mousePos -= 1.0F;
-    mousePos *= glm::vec2(float(width) / float(height), 1);
-    platform.input->mousePosition = mousePos;
+    mousePos *= glm::vec2(1, float(viewHeight) / float(viewWidth));
+    platform.input.mousePosition = mousePos;
 }
 
 void run_main_loop() {
-    static Input *oldInput = &input[0];
-    static Input *newInput = &input[1];
-
     glClearColor(0.1F, 0.1F, 0.1F, 1.0F);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // NOLINT(hicpp-signed-bitwise)
 
     start_im_gui_frame();
 
-    *newInput = *oldInput;
-    platform.input = newInput;
-
     check_input_for_clicks(platform.input);
-
     update_and_render(platform);
-
-    Input *tmp = oldInput;
-    oldInput = newInput;
-    newInput = tmp;
 
     finish_im_gui_frame();
 
@@ -326,18 +325,15 @@ int main(int argc, char **argv) {
     // to disable vsync uncomment this line
     //    glfwSwapInterval(0);
 
-    // triggering it once "manually" to ensure the aspect ratio is set up
-    // correctly
-    resizeViewport(&platform, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
+    // triggering it once "manually" to ensure the aspect ratio is set up correctly
+    resizeViewport(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
 
-    // ImGui installs its own glfw callbacks, which will then call our
-    // previously installed callbacks
+    // ImGui installs its own glfw callbacks, which will then call our previously installed callbacks
     initImGui(glfw_window);
 
     init_resources();
 
     glEnable(GL_DEPTH_TEST);
-
     //  enableOpenGLDebugging();
 
     std::string renderer = std::string((const char *)glGetString(GL_RENDERER));

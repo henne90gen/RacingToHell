@@ -281,21 +281,21 @@ void renderMenuBackdrop(GameState *gameState, Menu *menu) {
 }
 
 void updateMenu(Platform &platform, Menu *menu) {
-    if (platform.input->upKeyClicked) {
+    if (platform.input.upKeyClicked) {
         changeMenuItemSelection(menu, -1);
     }
 
-    if (platform.input->downKeyClicked) {
+    if (platform.input.downKeyClicked) {
         changeMenuItemSelection(menu, 1);
     }
 
     GameState *gameState = getGameState(platform);
     if (gameState->menuState == MenuState::MAIN && gameState->activeMenuIndex == 0) {
         if (menu->currentMenuItem == 2) { // Car
-            if (platform.input->leftKeyClicked) {
+            if (platform.input.leftKeyClicked) {
                 changeCarSelection(gameState, -1);
             }
-            if (platform.input->rightKeyClicked) {
+            if (platform.input.rightKeyClicked) {
                 changeCarSelection(gameState, 1);
             }
         }
@@ -337,11 +337,11 @@ void updateAndRenderMenus(Platform &platform) {
     // Update
     updateMenu(platform, &gameState->menus[gameState->activeMenuIndex]);
 
-    if (platform.input->enterKeyClicked) {
+    if (platform.input.enterKeyClicked) {
         handleMenuEnter(platform, gameState);
     }
 
-    if (platform.input->escapeKeyClicked) {
+    if (platform.input.escapeKeyClicked) {
         switch (gameState->menuState) {
         case MenuState::MAIN:
             if (gameState->activeMenuIndex == 0) {

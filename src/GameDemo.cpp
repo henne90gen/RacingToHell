@@ -95,19 +95,19 @@ void spawnBullet(GameState *gameState, glm::vec2 position, glm::vec2 velocity, b
  * 		- keeping him on screen
  * 		- shooting
  */
-void updatePlayer(Input *input, GameState *gameState) {
+void updatePlayer(Input input, GameState *gameState) {
     float speed = 0;
     float direction = 0;
-    if (input->downKeyPressed) {
+    if (input.downKeyPressed) {
         speed -= 0.001;
     }
-    if (input->upKeyPressed) {
+    if (input.upKeyPressed) {
         speed += 0.001;
     }
-    if (input->leftKeyPressed) {
+    if (input.leftKeyPressed) {
         direction += 0.09;
     }
-    if (input->rightKeyPressed) {
+    if (input.rightKeyPressed) {
         direction -= 0.09;
     }
 
@@ -141,9 +141,9 @@ void updatePlayer(Input *input, GameState *gameState) {
     }
 
     // shooting
-    if (input->shootKeyClicked
+    if (input.shootKeyClicked
         /*&& gameState->player.energy >= 15*/ /*FIXME make this a variable*/) {
-        glm::vec2 velocity = input->mousePosition - gameState->player.position;
+        glm::vec2 velocity = input.mousePosition - gameState->player.position;
         spawnBullet(gameState, gameState->player.position, velocity, true);
         // FIXME make this a variable
         gameState->player.energy -= 10;
@@ -485,7 +485,7 @@ void gameDemo(Platform &platform) {
 
     updateAndRenderGame(platform, gameState, gameState->menuState == MenuState::GAME);
 
-    if (platform.input->escapeKeyClicked && gameState->menuState == MenuState::GAME) {
+    if (platform.input.escapeKeyClicked && gameState->menuState == MenuState::GAME) {
         loadMenu(platform, MenuState::PAUSE);
     } else if (gameState->menuState != MenuState::GAME) {
         updateAndRenderMenus(platform);

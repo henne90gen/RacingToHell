@@ -7,8 +7,8 @@
 #include <string>
 #include <string_view>
 
-#define DEFAULT_WINDOW_WIDTH 1200
-#define DEFAULT_WINDOW_HEIGHT 675
+#define DEFAULT_WINDOW_WIDTH 450
+#define DEFAULT_WINDOW_HEIGHT 800
 #define WINDOW_TITLE "Racing to Hell"
 #define NUM_PLAYER_TEXTURES 6
 #define NUM_TRAFFIC_TEXTURES 7
@@ -61,7 +61,7 @@ struct Input {
 
 struct Platform {
     GameMemory memory = {};
-    Input *input;
+    Input input = {};
 
     // ---------------------------------------------------
     /// crash the game because of a fatal error

@@ -21,10 +21,8 @@ int getFontSize(GameState *gameState, int fontSizeIndex) {
 
 Math::Rectangle getBoundingBox(glm::vec2 position, unsigned width, unsigned height) {
     Math::Rectangle rect = {};
-    rect.width = width;
-    rect.height = height;
-    rect.position.x = position.x - rect.width / 2;
-    rect.position.y = position.y - rect.height / 2;
+    rect.size = glm::vec2(width, height);
+    rect.position = position - rect.size / 2.0F;
     return rect;
 }
 
@@ -73,12 +71,12 @@ void resizeView(Platform &platform) {
     GameState *gameState = getGameState(platform);
     platform.memory.doResize = false;
 
-    auto xScale = 1.0f / platform.memory.aspectRatio;
+    auto yScale = platform.memory.aspectRatio;
     GLfloat aspectRatioMatrix[16] = {
-        xScale, 0,   0,   0,   //
-        0,      1.0, 0,   0,   //
-        0,      0,   1.0, 0,   //
-        0,      0,   0,   1.0, //
+        1.0, 0,      0,   0,   //
+        0,   yScale, 0,   0,   //
+        0,   0,      1.0, 0,   //
+        0,   0,      0,   1.0, //
     };
     auto aspectRatioMatrixLocation = glGetUniformLocation(gameState->glProgram, "u_AspectRatioMatrix");
     glUniformMatrix4fv(aspectRatioMatrixLocation, 1, GL_FALSE, &aspectRatioMatrix[0]);
@@ -166,9 +164,9 @@ GameState *beginFrame(Platform &platform) {
     Render::clearScreen(0);
     gameState->renderGroup.count = 0;
 
-    if (platform.input->plusKeyPressed) {
+    if (platform.input.plusKeyPressed) {
         gameState->scale += 0.01;
-    } else if (platform.input->minusKeyPressed) {
+    } else if (platform.input.minusKeyPressed) {
         gameState->scale -= 0.01;
     }
 

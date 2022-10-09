@@ -12,7 +12,7 @@ namespace Math
     struct Rectangle
     {
         glm::vec2 position, size;
-        unsigned width, height;
+        // unsigned width, height;
     };
 
     float dotProduct(const glm::vec2 &v1, const glm::vec2 &v2);

@@ -19,11 +19,11 @@ void update_and_render(Platform &platform) {
     beginFrame(platform);
 
     Render::pushTriangle(getGameState(platform), {0, 0}, {1, 0}, {1, 1}, 0xffffffff, 1.0F);
-    textDemo(platform, AtomPlane::BACKGROUND);
+    // textDemo(platform, AtomPlane::BACKGROUND);
 
     followingCarDemo(platform);
 
-    animationDemo(platform, AtomPlane::MENU);
+    // animationDemo(platform, AtomPlane::MENU);
 
     Render::flushBuffer(platform);
 }

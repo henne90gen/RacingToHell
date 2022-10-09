@@ -58,34 +58,6 @@ void importPixelData(void *src, void *dest, unsigned srcWidth, unsigned srcHeigh
     }
 }
 
-void checkInputForClicks(Input *input) {
-    static bool up, down, left, right, enter, escape, plus, minus;
-
-    input->upKeyClicked = input->upKeyPressed && !up;
-    up = input->upKeyPressed;
-
-    input->downKeyClicked = input->downKeyPressed && !down;
-    down = input->downKeyPressed;
-
-    input->leftKeyClicked = input->leftKeyPressed && !left;
-    left = input->leftKeyPressed;
-
-    input->rightKeyClicked = input->rightKeyPressed && !right;
-    right = input->rightKeyPressed;
-
-    input->enterKeyClicked = input->enterKeyPressed && !enter;
-    enter = input->enterKeyPressed;
-
-    input->escapeKeyClicked = input->escapeKeyPressed && !escape;
-    escape = input->escapeKeyPressed;
-
-    input->plusKeyClicked = input->plusKeyPressed && !plus;
-    plus = input->plusKeyPressed;
-
-    input->minusKeyClicked = input->minusKeyPressed && !minus;
-    minus = input->minusKeyPressed;
-}
-
 GLuint createVBO(const GLsizeiptr size, const GLvoid *data, const GLenum usage) {
     GLuint vbo;
     glGenBuffers(1, &vbo);
@@ -193,8 +165,6 @@ GameState *beginFrame(Platform &platform) {
 
     Render::clearScreen(0);
     gameState->renderGroup.count = 0;
-
-    checkInputForClicks(platform.input);
 
     if (platform.input->plusKeyPressed) {
         gameState->scale += 0.01;
@@ -394,11 +364,4 @@ float calculateTextLength(GameState *gameState, std::string text, Render::FontSi
         length += c->advance + c->kerning[text[characterIndex + 1] - Render::firstCharacter];
     }
     return length;
-}
-
-void logTimeDifferenceInMS(Platform &platform, int64_t *start, const std::string &msg) {
-    auto temp = platform.time();
-    float diff = (float)(temp - *start) / 1000000.0f;
-    platform.log(msg + ": " + std::to_string(diff));
-    *start = temp;
 }

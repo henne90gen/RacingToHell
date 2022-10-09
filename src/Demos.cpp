@@ -4,6 +4,7 @@
 #include "Renderer.h"
 
 #include <array>
+#include <fmt/core.h>
 
 void textDemo(Platform &platform, AtomPlane plane) {
     static std::array<std::string, 3> fontFileNames = {
@@ -116,6 +117,7 @@ void followingCarDemo(Platform &platform) {
     GameState *gameState = getGameState(platform);
 
     if (platform.input->shootKeyPressed && gameState->agentCount < (int)sizeof(gameState->agents) / (int)sizeof(Player)) {
+        platform.log(fmt::format("Spawning agent {}", gameState->agentCount));
         gameState->agents[gameState->agentCount++] = Player();
         Player *agent = &gameState->agents[gameState->agentCount - 1];
         agent->position = platform.input->mousePosition;

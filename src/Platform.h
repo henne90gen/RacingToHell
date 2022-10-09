@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <cstring>
+#include <fmt/core.h>
 #include <glm/vec2.hpp>
 #include <string>
 #include <string_view>
@@ -77,7 +78,9 @@ struct Platform {
     int64_t last_modified(const std::string &file_path);
     /// writes a file to disk
     bool write_file(const File &file);
-    /// gets the time in nanoseconds since the epoch
-    int64_t time();
     // ---------------------------------------------------
+
+    template <typename... T> void logf(fmt::format_string<T...> fmt, T &&...args) {
+        log(fmt::vformat(fmt, fmt::make_format_args(args...)));
+    }
 };

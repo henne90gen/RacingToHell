@@ -38,13 +38,13 @@ void initImGui(GLFWwindow *window) {
     ImGui_ImplOpenGL3_Init();
 }
 
-void startImGuiFrame() {
+void start_im_gui_frame() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 }
 
-void finishImGuiFrame() {
+void finish_im_gui_frame() {
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
@@ -55,13 +55,6 @@ void Platform::abort(const std::string &msg) {
 }
 
 void Platform::log(const std::string &msg) { std::cout << msg << std::endl; }
-
-static std::chrono::time_point<std::chrono::high_resolution_clock> program_start;
-int64_t Platform::time() {
-    auto now = std::chrono::high_resolution_clock::now();
-    auto diff = program_start - now;
-    return std::chrono::duration_cast<std::chrono::nanoseconds>(diff).count();
-}
 
 File Platform::read_file(const std::string &file_path, bool is_resource) {
     auto final_file_path = file_path;
@@ -180,16 +173,94 @@ void glfw_framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     resizeViewport(platform, width, height);
 }
 
+/**
+ * All *Clicked variables are filled here.
+ * *Clicked signals the moment where we go from not pressing to pressing a button.
+ */
+void check_input_for_clicks(Input *input) {
+    static bool up, down, left, right, enter, escape, plus, minus, shoot;
+
+    input->upKeyClicked = input->upKeyPressed && !up;
+    up = input->upKeyPressed;
+
+    input->downKeyClicked = input->downKeyPressed && !down;
+    down = input->downKeyPressed;
+
+    input->leftKeyClicked = input->leftKeyPressed && !left;
+    left = input->leftKeyPressed;
+
+    input->rightKeyClicked = input->rightKeyPressed && !right;
+    right = input->rightKeyPressed;
+
+    input->enterKeyClicked = input->enterKeyPressed && !enter;
+    enter = input->enterKeyPressed;
+
+    input->escapeKeyClicked = input->escapeKeyPressed && !escape;
+    escape = input->escapeKeyPressed;
+
+    input->plusKeyClicked = input->plusKeyPressed && !plus;
+    plus = input->plusKeyPressed;
+
+    input->minusKeyClicked = input->minusKeyPressed && !minus;
+    minus = input->minusKeyPressed;
+
+    input->shootKeyClicked = input->shootKeyPressed && !shoot;
+    shoot = input->shootKeyPressed;
+}
+
+// key – The [keyboard key](keys) that was pressed or released.
+// scancode – The system-specific scancode of the key.
+// action – `GLFW_PRESS`, `GLFW_RELEASE` or `GLFW_REPEAT`. Future releases may add more actions.
+// mods – Bit field describing which [modifier keys](mods) were held down.
+void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+    platform.input->enterKeyPressed = key == GLFW_KEY_ENTER && action == GLFW_PRESS;
+    platform.input->escapeKeyPressed = key == GLFW_KEY_ESCAPE && action == GLFW_PRESS;
+    platform.input->upKeyPressed = key == GLFW_KEY_UP && action == GLFW_PRESS;
+    platform.input->downKeyPressed = key == GLFW_KEY_DOWN && action == GLFW_PRESS;
+    platform.input->leftKeyPressed = key == GLFW_KEY_LEFT && action == GLFW_PRESS;
+    platform.input->rightKeyPressed = key == GLFW_KEY_RIGHT && action == GLFW_PRESS;
+    platform.input->plusKeyPressed = key == GLFW_KEY_KP_ADD && action == GLFW_PRESS;
+    platform.input->minusKeyPressed = key == GLFW_KEY_KP_SUBTRACT && action == GLFW_PRESS;
+}
+
+// window The window that received the event.
+// button The [mouse button](@ref buttons) that was pressed or released.
+// action One of `GLFW_PRESS` or `GLFW_RELEASE`. Future releases may add more actions.
+// mods Bit field describing which [modifier keys](@ref mods) were held down.
+void glfw_mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
+    platform.input->shootKeyPressed = button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS;
+}
+
+// window The window that received the event.
+// xpos The new cursor x-coordinate, relative to the left edge of the content area.
+// ypos The new cursor y-coordinate, relative to the top edge of the content area.
+void glfw_cursor_pos_callback(GLFWwindow *window, double x_pos, double y_pos) {
+    int width = 0;
+    int height = 0;
+    glfwGetFramebufferSize(window, &width, &height);
+
+    auto mousePos = glm::vec2(x_pos, y_pos);
+    mousePos /= glm::vec2(width, height);
+    mousePos.y = 1.0F - mousePos.y;
+    mousePos *= 2.0F;
+    mousePos -= 1.0F;
+    mousePos *= glm::vec2(float(width) / float(height), 1);
+    platform.input->mousePosition = mousePos;
+}
+
 void run_main_loop() {
+    static Input *oldInput = &input[0];
+    static Input *newInput = &input[1];
+
     glClearColor(0.1F, 0.1F, 0.1F, 1.0F);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // NOLINT(hicpp-signed-bitwise)
 
-    startImGuiFrame();
+    start_im_gui_frame();
 
-    Input *oldInput = &input[0];
-    Input *newInput = &input[1];
     *newInput = *oldInput;
     platform.input = newInput;
+
+    check_input_for_clicks(platform.input);
 
     update_and_render(platform);
 
@@ -197,7 +268,7 @@ void run_main_loop() {
     oldInput = newInput;
     newInput = tmp;
 
-    finishImGuiFrame();
+    finish_im_gui_frame();
 
     glfwSwapBuffers(glfw_window);
     glfwPollEvents();
@@ -248,6 +319,9 @@ int main(int argc, char **argv) {
 
     // set up callbacks
     glfwSetFramebufferSizeCallback(glfw_window, glfw_framebuffer_size_callback);
+    glfwSetKeyCallback(glfw_window, glfw_key_callback);
+    glfwSetMouseButtonCallback(glfw_window, glfw_mouse_button_callback);
+    glfwSetCursorPosCallback(glfw_window, glfw_cursor_pos_callback);
 
     // to disable vsync uncomment this line
     //    glfwSwapInterval(0);

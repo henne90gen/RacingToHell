@@ -62,6 +62,7 @@ struct Input {
 struct Platform {
     GameMemory memory = {};
     Input input = {};
+    double frameTimeMs = 0.0;
 
     // ---------------------------------------------------
     /// crash the game because of a fatal error

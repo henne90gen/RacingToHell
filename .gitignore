@@ -14,3 +14,4 @@ build/
 .vscode/
 cmake-build-*/
 .idea/
+imgui.ini

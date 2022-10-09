@@ -20,6 +20,7 @@
 
 GLFWwindow *glfw_window = nullptr;
 Platform platform = {};
+auto previousTime = std::chrono::high_resolution_clock::now();
 
 void initImGui(GLFWwindow *window) {
     IMGUI_CHECKVERSION();
@@ -259,6 +260,10 @@ void glfw_cursor_pos_callback(GLFWwindow *window, double x_pos, double y_pos) {
 }
 
 void run_main_loop() {
+    auto now = std::chrono::high_resolution_clock::now();
+    auto timeDiff = now - previousTime;
+    platform.frameTimeMs = double(timeDiff.count()) / 1000000.0;
+
     glClearColor(0.1F, 0.1F, 0.1F, 1.0F);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // NOLINT(hicpp-signed-bitwise)
 
@@ -271,6 +276,8 @@ void run_main_loop() {
 
     glfwSwapBuffers(glfw_window);
     glfwPollEvents();
+
+    previousTime = now;
 }
 
 int main(int argc, char **argv) {

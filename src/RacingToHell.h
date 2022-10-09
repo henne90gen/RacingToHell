@@ -66,16 +66,40 @@ struct Resources {
     Sound::LoadedSound level1Music;
 };
 
-enum class MenuState { GAME, MAIN, GAME_OVER, PAUSE, CREDITS };
+enum class MenuState {
+    GAME,
+    MAIN,
+    GAME_OVER,
+    PAUSE,
+    CREDITS,
+};
+
+enum class MainMenuItem {
+    START_GAME = 0,
+    CHANGE_CAR = 1,
+    CHANGE_DIFFICULTY = 2,
+    CREDITS = 3,
+    EXIT = 4,
+};
+
+enum class PauseMenuItem {
+    RESUME,
+    MAIN_MENU,
+};
+
+enum class GameOverMenuItem {
+    SUBMIT_SCORE,
+    MAIN_MENU,
+};
 
 struct MenuItem {
     char text[50];
     bool bouncy = true;
-    uint32_t animationCounter;
+    double animationTimerMs;
 };
 
 struct Menu {
-    MenuItem items[20];
+    MenuItem items[10];
     uint8_t numberMenuItems = 0;
     int8_t currentMenuItem = 0;
     glm::vec2 position;
@@ -156,7 +180,7 @@ struct GameState {
     bool isInBossFight;
 
     MenuState menuState = MenuState::MAIN;
-    Menu menus[3];
+    Menu menus[2];
     unsigned menuCount, activeMenuIndex;
 
     Player player;

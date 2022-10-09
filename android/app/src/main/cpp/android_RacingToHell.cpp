@@ -10,11 +10,11 @@
 AAssetManager *asset_manager;
 Platform platform = {};
 int realWindowWidth, realWindowHeight;
+auto previousTime = std::chrono::high_resolution_clock::now();
 
-extern "C"
-JNIEXPORT void JNICALL
-Java_game_racingtohell_NativeWrapper_on_1surface_1changed(JNIEnv *env UNUSED, jclass clazz UNUSED,
-                                                          jint width, jint height) {
+extern "C" JNIEXPORT void JNICALL Java_game_racingtohell_NativeWrapper_on_1surface_1changed(JNIEnv *env UNUSED,
+                                                                                            jclass clazz UNUSED,
+                                                                                            jint width, jint height) {
     static bool memoryInitialized = false;
     if (!memoryInitialized) {
         memoryInitialized = true;
@@ -28,21 +28,21 @@ Java_game_racingtohell_NativeWrapper_on_1surface_1changed(JNIEnv *env UNUSED, jc
             platform.abort("Failed to initialize GLAD");
         }
 
-        std::string version =(char*) glGetString(GL_VERSION);
+        std::string version = (char *)glGetString(GL_VERSION);
         platform.log("OpenGL Version: " + version);
 
         int vers[2] = {};
         glGetIntegerv(GL_MAJOR_VERSION, &vers[0]);
         glGetIntegerv(GL_MINOR_VERSION, &vers[1]);
-        platform.log("OpenGL ES: " + std::to_string(vers[0]) + "."+std::to_string(vers[1]));
-//        if (vers[0] > 3 || (vers[0] == 3 && vers[1] >= 1)) {
-//            platform.log("OpenGL Version: " + version);
-//        }
+        platform.log("OpenGL ES: " + std::to_string(vers[0]) + "." + std::to_string(vers[1]));
+        //        if (vers[0] > 3 || (vers[0] == 3 && vers[1] >= 1)) {
+        //            platform.log("OpenGL Version: " + version);
+        //        }
 
         platform.memory.temporaryMemorySize = 10 * MB;
         platform.memory.permanentMemorySize = 100 * MB;
-        platform.memory.temporary = (char *) malloc(platform.memory.temporaryMemorySize);
-        platform.memory.permanent = (char *) malloc(platform.memory.permanentMemorySize);
+        platform.memory.temporary = (char *)malloc(platform.memory.temporaryMemorySize);
+        platform.memory.permanent = (char *)malloc(platform.memory.permanentMemorySize);
         platform.memory.doResize = true;
         platform.memory.aspectRatio = 16.0f / 9.0f;
         platform.memory.base_path = "./";
@@ -54,10 +54,9 @@ Java_game_racingtohell_NativeWrapper_on_1surface_1changed(JNIEnv *env UNUSED, jc
     realWindowHeight = height;
 }
 
-extern "C"
-JNIEXPORT void JNICALL
-Java_game_racingtohell_NativeWrapper_on_1touch_1event(JNIEnv *env UNUSED, jclass clazz UNUSED,
-                                                      jfloat x, jfloat y, jboolean pressed) {
+extern "C" JNIEXPORT void JNICALL Java_game_racingtohell_NativeWrapper_on_1touch_1event(JNIEnv *env UNUSED,
+                                                                                        jclass clazz UNUSED, jfloat x,
+                                                                                        jfloat y, jboolean pressed) {
     // Scaling x and y to game-coordinates
     x = x * DEFAULT_WINDOW_WIDTH / realWindowWidth;
     y = y * DEFAULT_WINDOW_HEIGHT / realWindowHeight;
@@ -70,21 +69,19 @@ Java_game_racingtohell_NativeWrapper_on_1touch_1event(JNIEnv *env UNUSED, jclass
     platform.input.shootKeyPressed = 0;
 }
 
-extern "C"
-JNIEXPORT void JNICALL
-Java_game_racingtohell_NativeWrapper_on_1draw_1frame(JNIEnv *env UNUSED, jclass clazz UNUSED) {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-//    GameState *gameState = getGameState(platform);
-//    gameState->rotationAngle = PI / 2;
+extern "C" JNIEXPORT void JNICALL Java_game_racingtohell_NativeWrapper_on_1draw_1frame(JNIEnv *env UNUSED,
+                                                                                       jclass clazz UNUSED) {
+    auto now = std::chrono::high_resolution_clock::now();
+    auto timeDiff = now - previousTime;
+    platform.frameTimeMs = double(timeDiff.count()) / 1000000.0;
 
     update_and_render(platform);
+
+    previousTime = now;
 }
 
-extern "C"
-JNIEXPORT void JNICALL
-Java_game_racingtohell_NativeWrapper_init_1asset_1manager(JNIEnv *env UNUSED, jclass clazz UNUSED,
-                                                          jobject java_asset_manager) {
+extern "C" JNIEXPORT void JNICALL Java_game_racingtohell_NativeWrapper_init_1asset_1manager(
+    JNIEnv *env UNUSED, jclass clazz UNUSED, jobject java_asset_manager) {
     asset_manager = AAssetManager_fromJava(env, java_asset_manager);
 }
 
@@ -93,9 +90,7 @@ void Platform::abort(const std::string &msg) {
     ::exit(1);
 }
 
-void Platform::log(const std::string &msg) {
-    __android_log_print(ANDROID_LOG_INFO, LOG_TAG, "%s", msg.c_str());
-}
+void Platform::log(const std::string &msg) { __android_log_print(ANDROID_LOG_INFO, LOG_TAG, "%s", msg.c_str()); }
 
 File Platform::read_file(const std::string &file_path, bool is_resource) {
     if (!is_resource) {
@@ -114,8 +109,8 @@ File Platform::read_file(const std::string &file_path, bool is_resource) {
         abort("Couldn't open file " + assetName);
     }
 
-    auto length = (size_t) AAsset_getLength(asset);
-    auto content = (char *) std::malloc(length);
+    auto length = (size_t)AAsset_getLength(asset);
+    auto content = (char *)std::malloc(length);
     std::memcpy(content, AAsset_getBuffer(asset), length);
     AAsset_close(asset);
 

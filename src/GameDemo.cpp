@@ -1,7 +1,8 @@
+#include "GameDemo.h"
+
 #include "Boss.h"
 #include "GameMenu.h"
 #include "Helper.h"
-#include "RacingToHell.h"
 #include "Sound.h"
 
 /**

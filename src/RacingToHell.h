@@ -131,9 +131,6 @@ struct GameWorld {
 
     int32_t lastTrafficCarIndex = -1;
     Car traffic[200];
-
-    Tile tiles[100];
-    unsigned width, height; // in tiles
 };
 
 enum AtomType { RECTANGLE, TRIANGLE, TEXT, TEXTURE, CIRCLE, SCALE, NOSCALE };
@@ -168,8 +165,11 @@ struct GameState {
     Sound::PlayingSound playingSounds[256];
     int lastPlayingSound = -1;
 
+    // TODO remove the frame counter and replace all usages with platform.frameTimeMs
     uint32_t frameCounter;
-    uint32_t roadPosition;
+
+    float roadOffset;
+
     uint8_t level;
     float levelTime, maxLevelTime;
     int8_t difficulty;
@@ -184,11 +184,11 @@ struct GameState {
     unsigned menuCount, activeMenuIdx;
 
     Player player;
+    Boss boss;
 
+    // TODO remove this (it's only used by followingCarDemo
     Player agents[1000];
     int agentCount;
-
-    Boss boss;
 
     GameWorld world;
 

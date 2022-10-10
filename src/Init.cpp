@@ -113,7 +113,7 @@ void resetGameState(GameState *gameState) {
     gameState->levelTime = 0;
     gameState->maxLevelTime = 60;
     gameState->difficulty = 1;
-    gameState->roadPosition = 0;
+    gameState->roadOffset = 0.0F;
     gameState->frameCounter = 0;
 
     // TODO balance spawn rates
@@ -128,8 +128,6 @@ void resetGameState(GameState *gameState) {
     gameState->world = {};
     gameState->world.lastItemIndex = -1;
     gameState->world.lastTrafficCarIndex = -1;
-    gameState->world.width = 10;
-    gameState->world.height = 10;
 
     gameState->isInBossFight = true;
     loadBoss(gameState);

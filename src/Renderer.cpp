@@ -67,18 +67,18 @@ void texture(GameState *gameState, Texture *texture, glm::vec2 position, glm::ve
     glBindBuffer(GL_ARRAY_BUFFER, coordinatesBufferID);
     glBufferData(GL_ARRAY_BUFFER, sizeof(coordinates), coordinates, GL_STATIC_DRAW);
 
-    GLuint positionLocation = glGetAttribLocation(gameState->glProgram, "a_Position");
-    GLuint textureCoordinatesLocation = glGetAttribLocation(gameState->glProgram, "a_TextureCoordinates");
-    GLuint colorLocation = glGetAttribLocation(gameState->glProgram, "a_Color");
-    GLuint colorSourceLocation = glGetUniformLocation(gameState->glProgram, "u_ColorSource");
-    GLuint textureUnitLocation = glGetUniformLocation(gameState->glProgram, "u_TextureUnit");
+    auto positionLocation = glGetAttribLocation(gameState->glProgram, "a_Position");
+    auto textureCoordinatesLocation = glGetAttribLocation(gameState->glProgram, "a_TextureCoordinates");
+    auto colorLocation = glGetAttribLocation(gameState->glProgram, "a_Color");
+    auto colorSourceLocation = glGetUniformLocation(gameState->glProgram, "u_ColorSource");
+    auto textureUnitLocation = glGetUniformLocation(gameState->glProgram, "u_TextureUnit");
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture->id);
     glUniform1i(textureUnitLocation, 0);
     glUniform1i(colorSourceLocation, colorMode);
 
-    GLuint stride = 8 * sizeof(GL_FLOAT);
+    GLsizei stride = 8 * sizeof(GLfloat);
 
     glEnableVertexAttribArray(positionLocation);
     glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(0));
@@ -88,7 +88,7 @@ void texture(GameState *gameState, Texture *texture, glm::vec2 position, glm::ve
 
     glEnableVertexAttribArray(textureCoordinatesLocation);
     glVertexAttribPointer(textureCoordinatesLocation, 2, GL_FLOAT, GL_FALSE, stride,
-                          BUFFER_OFFSET(6 * sizeof(GL_FLOAT)));
+                          BUFFER_OFFSET(6 * sizeof(GLfloat)));
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 

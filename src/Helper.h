@@ -10,7 +10,6 @@ void checkShaders(Platform &platform);
 Render::Character *getCharacter(GameState *gameState, char character, unsigned fontSizeIndex);
 float calculateTextLength(GameState *gameState, std::string text, Render::FontSize fontSize);
 void scaleView(GameState *gameState);
-void generateWorld(Platform &platform);
 Math::Rectangle getCollisionBox(Math::Rectangle rect1, Math::Rectangle rect2);
 
 // FIXME do we really want to use templates here or is there a more performant

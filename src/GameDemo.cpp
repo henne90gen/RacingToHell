@@ -10,7 +10,7 @@
  */
 float getRoadSpeed(GameState *gameState) {
     // FIXME balance road speed
-    return (float)(gameState->level) * 0.5f + 3.0f;
+    return ((float)(gameState->level) * 0.5f + 3.0f) * 0.0002F;
 }
 
 /**
@@ -33,17 +33,26 @@ Render::Texture *getPlayerTexture(GameState *gameState) {
 void updateAndRenderRoad(Platform &platform, bool shouldUpdate) {
     GameState *gameState = getGameState(platform);
 
-    for (unsigned y = 0; y < gameState->world.height; y++) {
-        for (unsigned x = 0; x < gameState->world.width; x++) {
-            Tile *tile = &gameState->world.tiles[y * gameState->world.width + x];
-            auto color = glm::vec4(1, 0, 0, 1);
-            if (tile->traversable) {
-                color = glm::vec4(0, 1, 0, 1);
-            } else {
-                checkPlayerTileCollision(&gameState->player, tile);
-            }
-            Render::pushRectangle(gameState, tile->rect, color, AtomPlane::BACKGROUND);
-        }
+    gameState->roadOffset -= getRoadSpeed(gameState) * platform.frameTimeMs;
+    double roadHeight = 2.0 * (1.0 / platform.memory.aspectRatio);
+    if (gameState->roadOffset < -roadHeight) {
+        gameState->roadOffset = 0.0F;
+    }
+
+    Render::Texture *roadTexture = getCurrentRoad(gameState);
+    {
+        auto pos = glm::vec2(0.0, gameState->roadOffset);
+        auto size = glm::vec2(2.0, roadHeight);
+        auto direction = glm::vec2(0.0, 1.0);
+        Render::pushTexture(gameState, roadTexture, pos, size, direction);
+    }
+
+    {
+        float otherRoadOffset = gameState->roadOffset + roadHeight;
+        auto pos = glm::vec2(0.0, otherRoadOffset);
+        auto size = glm::vec2(2.0, roadHeight);
+        auto direction = glm::vec2(0.0, 1.0);
+        Render::pushTexture(gameState, roadTexture, pos, size, direction);
     }
 }
 

@@ -319,25 +319,6 @@ void extractFileName(std::string fileName, const std::string &fileExtension, cha
     result[index] = '\0';
 }
 
-void generateWorld(Platform &platform) {
-    GameState *gameState = getGameState(platform);
-    platform.log("Generating game world.");
-    for (unsigned y = 0; y < gameState->world.height; y++) {
-        for (unsigned x = 0; x < gameState->world.width; x++) {
-            Tile tile = {};
-            tile.orientation = glm::vec2(0, 1);
-            tile.rect.position.x = ((int)x) * 2.0f / 10.0f - 1.0f;
-            tile.rect.position.y = ((int)y) * 2.0f / 10.0f - 0.8f;
-            tile.rect.size = glm::vec2(0.2f, 0.2f);
-            tile.traversable = x % 2 != 0 || y % 2 != 0;
-
-            gameState->world.tiles[y * gameState->world.width + x] = tile;
-            //			memory->log("X: %d, Y: %d, Traversable: %d", x,
-            // y, tile.traversable);
-        }
-    }
-}
-
 void checkPlayerTileCollision(Player *player, Tile *tile) {
     Math::Rectangle playerRect = {};
     playerRect.position = player->position;

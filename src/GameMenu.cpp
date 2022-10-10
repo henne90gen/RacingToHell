@@ -81,9 +81,6 @@ void loadMenu(Platform &platform, MenuState menuState) {
         loadCreditsMenu(gameState);
         break;
     case MenuState::GAME:
-        if (previousMenuState == MenuState::MAIN) {
-            generateWorld(platform);
-        }
         break;
     }
 }
@@ -310,7 +307,7 @@ void renderMenuBackdrop(GameState *gameState, Menu *menu) {
     Math::Rectangle rect = {};
     rect.position = menu->position;
     rect.size = glm::vec2(2.0, 1.5);
-    Render::pushRectangle(gameState, rect, glm::vec4(0,0,0,0.5F), AtomPlane::MENU - 0.1f);
+    Render::pushRectangle(gameState, rect, glm::vec4(0, 0, 0, 0.5F), AtomPlane::MENU - 0.1f);
 }
 
 void updateMenu(Platform &platform, Menu *menu) {

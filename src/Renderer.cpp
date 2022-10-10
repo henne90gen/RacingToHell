@@ -402,7 +402,7 @@ void setScaleToIdentity(GameState *gameState) {
                                0,   0,   1.0, 0, //
                                0,   0,   0,   1.0};
 
-    GLuint scaleMatrixLocation = glGetUniformLocation(gameState->glProgram, "u_ScaleMatrix");
+    auto scaleMatrixLocation = glGetUniformLocation(gameState->glProgram, "u_ScaleMatrix");
     glUniformMatrix4fv(scaleMatrixLocation, 1, GL_FALSE, &scaleMatrix[0]);
 }
 

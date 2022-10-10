@@ -110,9 +110,9 @@ void goFromDifficultyToMain(GameState *gameState, bool shouldUpdateDifficulty) {
     if (shouldUpdateDifficulty) {
         gameState->difficulty = difficultyMenu.currentMenuItemIdx;
     }
-    
+
     gameState->activeMenuIdx = 0;
-    
+
     Menu &mainMenu = gameState->menus[gameState->activeMenuIdx];
     mainMenu.items[mainMenu.currentMenuItemIdx].animationTimerMs = 0.0;
 }

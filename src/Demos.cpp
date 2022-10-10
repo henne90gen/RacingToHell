@@ -63,7 +63,7 @@ void performanceDemo(Platform &platform, AtomType type) {
         glm::vec2 p1 = glm::vec2(1, 1);
         glm::vec2 p2 = glm::vec2(-1, 1);
         glm::vec2 p3 = glm::vec2();
-        Render::pushTriangle(gameState, p1, p2, p3, 0xff0000ff, plane);
+        Render::pushTriangle(gameState, p1, p2, p3, glm::vec4(1, 0, 0, 1), plane);
     } break;
     case AtomType::CIRCLE: {
         glm::vec2 position = glm::vec2();

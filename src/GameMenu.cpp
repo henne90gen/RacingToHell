@@ -16,8 +16,7 @@ void loadMainMenu(GameState *gameState) {
     menu->position = glm::vec2({-1.0f, 0.8f});
 
     addMenuItem(&menu->items[menu->numberMenuItems++], "Start Game");
-    addMenuItem(&menu->items[menu->numberMenuItems++], "< Car >");
-    menu->items[menu->numberMenuItems - 1].bouncy = false; // remove menu bounce effect
+    addMenuItem(&menu->items[menu->numberMenuItems++], "Car");
 
     addMenuItem(&menu->items[menu->numberMenuItems++], "Difficulty");
     addMenuItem(&menu->items[menu->numberMenuItems++], "Credits");
@@ -114,35 +113,20 @@ void goFromDifficultyToMain(GameState *gameState, bool shouldUpdateDifficulty) {
     mainMenu.items[mainMenu.currentMenuItemIdx].animationTimerMs = 0.0;
 }
 
-void handleMenuEnterMain(Platform &platform) {
-    GameState *gameState = getGameState(platform);
+void goFromMainToCar(GameState *gameState) {
+    gameState->activeMenuIdx = 2;
+    gameState->player.lastCarIndex = gameState->player.carIndex;
+}
 
-    Menu *activeMenu = &gameState->menus[gameState->activeMenuIdx];
-    switch (gameState->activeMenuIdx) {
-    case 0:
-        switch ((MainMenuItem)activeMenu->currentMenuItemIdx) {
-        case MainMenuItem::START_GAME:
-            loadMenu(platform, MenuState::GAME);
-            break;
-        case MainMenuItem::CHANGE_CAR:
-            break;
-        case MainMenuItem::CHANGE_DIFFICULTY:
-            goFromMainToDifficulty(gameState);
-            break;
-        case MainMenuItem::CREDITS:
-            loadMenu(platform, MenuState::CREDITS);
-            break;
-        case MainMenuItem::EXIT:
-            platform.exit();
-            break;
-        }
-        break;
-    case 1:
-        goFromDifficultyToMain(gameState, true);
-        break;
-    case 2:
-        break;
+void goFromCarToMain(GameState *gameState, bool shouldUpdateCarSelection) {
+    if (!shouldUpdateCarSelection) {
+        gameState->player.carIndex = gameState->player.lastCarIndex;
     }
+
+    gameState->activeMenuIdx = 0;
+
+    Menu &mainMenu = gameState->menus[gameState->activeMenuIdx];
+    mainMenu.items[mainMenu.currentMenuItemIdx].animationTimerMs = 0.0;
 }
 
 void handleMenuEnterPause(GameState *gameState) {
@@ -174,7 +158,6 @@ void handleMenuEnterGameOver(GameState *gameState) {
 void handleMenuEnter(Platform &platform, GameState *gameState) {
     switch (gameState->menuState) {
     case MenuState::MAIN:
-        handleMenuEnterMain(platform);
         break;
     case MenuState::PAUSE:
         handleMenuEnterPause(gameState);
@@ -199,13 +182,6 @@ void handleMenuEscape(Platform &platform) {
 
     switch (gameState->menuState) {
     case MenuState::MAIN:
-        if (gameState->activeMenuIdx == 0) {
-            platform.exit();
-        } else if (gameState->activeMenuIdx == 1) {
-            goFromDifficultyToMain(gameState, false);
-        } else {
-            platform.abortf("Invalid active menu: {}", gameState->activeMenuIdx);
-        }
         break;
     case MenuState::CREDITS:
         loadMenu(platform, MenuState::MAIN);
@@ -252,6 +228,30 @@ void renderMenuItem(Platform &platform, GameState *gameState, MenuItem *item, gl
     Render::pushText(gameState, std::string(item->text), position, Render::FontSize::Large, color, AtomPlane::MENU);
 }
 
+void renderCarSelection(GameState *gameState, bool menuHighlight) {
+    auto color = glm::vec4(1, 1, 1, 1);
+    auto position = glm::vec2(0, -1.1);
+
+    float offsetX = -0.2;
+    auto point1 = glm::vec2(offsetX, position.y);
+    auto point2 = glm::vec2(offsetX, position.y + 0.2);
+    auto point3 = glm::vec2(offsetX - 0.1, position.y + 0.1);
+    Render::pushTriangle(gameState, point1, point2, point3, color, AtomPlane::MENU);
+
+    offsetX = 0.2;
+    point1 = {offsetX, position.y};
+    point2 = {offsetX, position.y + 0.2};
+    point3 = {offsetX + 0.1, position.y + 0.1};
+    Render::pushTriangle(gameState, point1, point2, point3, color, AtomPlane::MENU);
+}
+
+void renderMenuBackdrop(GameState *gameState, Menu *menu) {
+    Math::Rectangle rect = {};
+    rect.position = menu->position;
+    rect.size = glm::vec2(2.0, 1.08);
+    Render::pushRectangle(gameState, rect, glm::vec4(0, 0, 0, 0.5F), AtomPlane::MENU - 0.1f);
+}
+
 /**
  * Changes current menu item selection by 'direction'
  */
@@ -266,80 +266,93 @@ void changeMenuItemSelection(Menu *menu, int direction) {
 }
 
 void changeCarSelection(GameState *gameState, int direction) {
-    gameState->player.nextCarIndex += direction;
-    if (gameState->player.nextCarIndex < 0) {
-        gameState->player.nextCarIndex = NUM_PLAYER_TEXTURES - 1;
-    } else if (gameState->player.nextCarIndex >= NUM_PLAYER_TEXTURES) {
-        gameState->player.nextCarIndex = 0;
+    gameState->player.carIndex += direction;
+    if (gameState->player.carIndex < 0) {
+        gameState->player.carIndex = NUM_PLAYER_TEXTURES - 1;
+    } else if (gameState->player.carIndex >= NUM_PLAYER_TEXTURES) {
+        gameState->player.carIndex = 0;
     }
 }
 
-void renderCarSelection(GameState *gameState, glm::vec2 position, bool menuHighlight, bool highlight) {
-    uint32_t color = 0xffffffff;
-    if (!menuHighlight) {
-        color = 0xff808080;
-    }
-
-    float offsetX = position.x;
-    float a = 5;
-    if (highlight && menuHighlight) {
-        offsetX += 15;
-        a = sin(0.1 * gameState->frameCounter) * 7;
-        if (a < 0) {
-            a *= -1;
+void updateMainMenu(Platform &platform) {
+    auto gameState = getGameState(platform);
+    if (platform.input.escapeKeyClicked) {
+        if (gameState->activeMenuIdx == 0) {
+            platform.exit();
+        } else if (gameState->activeMenuIdx == 1) {
+            goFromDifficultyToMain(gameState, false);
+        } else if (gameState->activeMenuIdx == 2) {
+            goFromCarToMain(gameState, false);
+        } else {
+            platform.abortf("Invalid active menu: {}", gameState->activeMenuIdx);
         }
-        offsetX += a;
     }
-
-    glm::vec2 point1 = {offsetX + 12, position.y};
-    glm::vec2 point2 = {offsetX + 12, position.y + 26};
-    glm::vec2 point3 = {offsetX, position.y + 13};
-    Render::pushTriangle(gameState, point1, point2, point3, color, AtomPlane::MENU);
-
-    offsetX += 110 - 2 * a;
-    point1 = {offsetX, position.y};
-    point2 = {offsetX, position.y + 26};
-    point3 = {offsetX + 12, position.y + 13};
-    Render::pushTriangle(gameState, point1, point2, point3, color, AtomPlane::MENU);
-}
-
-void renderMenuBackdrop(GameState *gameState, Menu *menu) {
-    Math::Rectangle rect = {};
-    rect.position = menu->position;
-    rect.size = glm::vec2(2.0, 1.5);
-    Render::pushRectangle(gameState, rect, glm::vec4(0, 0, 0, 0.5F), AtomPlane::MENU - 0.1f);
-}
-
-void updateMenu(Platform &platform, Menu *menu) {
-    GameState *gameState = getGameState(platform);
 
     if (platform.input.enterKeyClicked) {
-        handleMenuEnter(platform, gameState);
-    }
-
-    if (platform.input.upKeyClicked) {
-        changeMenuItemSelection(menu, -1);
-    }
-
-    if (platform.input.downKeyClicked) {
-        changeMenuItemSelection(menu, 1);
-    }
-
-    if (platform.input.escapeKeyClicked) {
-        handleMenuEscape(platform);
-    }
-
-    if (gameState->menuState == MenuState::MAIN && gameState->activeMenuIdx == 0) {
-        if ((MainMenuItem)menu->currentMenuItemIdx == MainMenuItem::CHANGE_CAR) {
-            if (platform.input.leftKeyClicked) {
-                platform.log("changing car to the left");
-                changeCarSelection(gameState, -1);
+        Menu *activeMenu = &gameState->menus[gameState->activeMenuIdx];
+        switch (gameState->activeMenuIdx) {
+        case 0:
+            switch ((MainMenuItem)activeMenu->currentMenuItemIdx) {
+            case MainMenuItem::START_GAME:
+                loadMenu(platform, MenuState::GAME);
+                break;
+            case MainMenuItem::CHANGE_CAR:
+                goFromMainToCar(gameState);
+                break;
+            case MainMenuItem::CHANGE_DIFFICULTY:
+                goFromMainToDifficulty(gameState);
+                break;
+            case MainMenuItem::CREDITS:
+                loadMenu(platform, MenuState::CREDITS);
+                break;
+            case MainMenuItem::EXIT:
+                platform.exit();
+                break;
             }
-            if (platform.input.rightKeyClicked) {
-                platform.log("changing car to the right");
-                changeCarSelection(gameState, 1);
-            }
+            break;
+        case 1:
+            goFromDifficultyToMain(gameState, true);
+            break;
+        case 2:
+            goFromCarToMain(gameState, true);
+            break;
         }
+    }
+
+    if (platform.input.leftKeyClicked && gameState->activeMenuIdx == 2) {
+        changeCarSelection(gameState, -1);
+    }
+    if (platform.input.rightKeyClicked && gameState->activeMenuIdx == 2) {
+        changeCarSelection(gameState, 1);
+    }
+}
+
+void updateActiveMenu(Platform &platform) {
+    GameState *gameState = getGameState(platform);
+
+    switch (gameState->menuState) {
+    case MenuState::GAME:
+        return;
+    case MenuState::MAIN:
+        updateMainMenu(platform);
+        break;
+    case MenuState::GAME_OVER:
+        // updateGameOverMenu(platform);
+        break;
+    case MenuState::PAUSE:
+        // updatePauseMenu(platform);
+        break;
+    case MenuState::CREDITS:
+        // updateCreditsMenu(platform);
+        break;
+    }
+
+    Menu *activeMenu = &gameState->menus[gameState->activeMenuIdx];
+    if (platform.input.upKeyClicked) {
+        changeMenuItemSelection(activeMenu, -1);
+    }
+    if (platform.input.downKeyClicked) {
+        changeMenuItemSelection(activeMenu, 1);
     }
 }
 
@@ -352,9 +365,12 @@ void updateAndRenderMenus(Platform &platform) {
     float plane = ((float)AtomPlane::MENU) - 0.5f;
     Render::pushEnableScaling(gameState, false, plane);
 
-    updateMenu(platform, &gameState->menus[gameState->activeMenuIdx]);
+    updateActiveMenu(platform);
 
     renderMenuBackdrop(gameState, &gameState->menus[0]);
+    if (gameState->menuState == MenuState::MAIN) {
+        renderCarSelection(gameState, 2 == gameState->activeMenuIdx);
+    }
 
     for (unsigned int menuIndex = 0; menuIndex < gameState->menuCount; ++menuIndex) {
         Menu *menu = &gameState->menus[menuIndex];

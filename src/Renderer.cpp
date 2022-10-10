@@ -131,17 +131,12 @@ void text(GameState *gameState, std::string text, glm::vec2 position, FontSize f
     }
 }
 
-void triangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, uint32_t color) {
-    float r = static_cast<float>((color & 0xff000000) >> 24) / 255.0f;
-    float g = static_cast<float>((color & 0x00ff0000) >> 16) / 255.0f;
-    float b = static_cast<float>((color & 0x0000ff00) >> 8) / 255.0f;
-    float a = static_cast<float>(color & 0x000000ff) / 255.0f;
-
+void triangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, glm::vec4 color) {
     // holds the screen coordinates with their associated colors
     float coordinates[] = {
-        point1.x, point1.y, r, g, b, a, //
-        point2.x, point2.y, r, g, b, a, //
-        point3.x, point3.y, r, g, b, a, //
+        point1.x, point1.y, color.r, color.g, color.b, color.a, //
+        point2.x, point2.y, color.r, color.g, color.b, color.a, //
+        point3.x, point3.y, color.r, color.g, color.b, color.a, //
     };
 
     static GLuint coordinatesBufferID;
@@ -295,7 +290,7 @@ void pushRectangle(GameState *gameState, Math::Rectangle dimensions, glm::vec4 c
     pushRectangle(gameState, dimensions, color, (float)plane);
 }
 
-void pushTriangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, uint32_t color,
+void pushTriangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, glm::vec4 color,
                   float plane) {
     RenderAtom *atom = pushRenderAtom(gameState, AtomType::TRIANGLE, plane);
     if (atom == nullptr) {

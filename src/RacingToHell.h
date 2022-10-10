@@ -24,7 +24,7 @@ struct SoundBuffer {
 
 struct Player {
     glm::vec2 position, direction, velocity, acceleration, size;
-    int8_t carIndex, nextCarIndex;
+    int8_t carIndex, lastCarIndex;
     double maxSpeed;
     int32_t health, maxHealth, energy, maxEnergy;
 };

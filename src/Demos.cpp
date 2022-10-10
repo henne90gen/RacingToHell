@@ -27,7 +27,7 @@ void textDemo(Platform &platform, AtomPlane plane) {
     Math::Rectangle rect = {};
     rect.position = glm::vec2(-platform.memory.aspectRatio, 0.5);
     rect.size = glm::vec2(platform.memory.aspectRatio * 2.0f, 1.0);
-    Render::pushRectangle(gameState, rect, 0x00ff00ff, plane - 1);
+    Render::pushRectangle(gameState, rect, glm::vec4(0, 1, 0, 1), plane - 1);
 
     std::string text = "The quick brown fox jumps over the lazy dog.";
     glm::vec2 position = glm::vec2(-1.7f, 0.3);
@@ -50,8 +50,7 @@ void performanceDemo(Platform &platform, AtomType type) {
         Math::Rectangle dim = {};
         dim.position = glm::vec2(0, 0);
         dim.size = glm::vec2(1, 1);
-        uint32_t color = 0xff0000ff;
-        Render::pushRectangle(gameState, dim, color, plane);
+        Render::pushRectangle(gameState, dim, glm::vec4(1, 0, 0, 1), plane);
     } break;
     case AtomType::TEXTURE: {
         Render::Texture *texture = &gameState->resources.playerCarTextures[0];
@@ -83,13 +82,13 @@ void performanceDemo(Platform &platform, AtomType type) {
     }
 }
 
-void performanceDemo(Platform&platform, AtomType type, int n) {
+void performanceDemo(Platform &platform, AtomType type, int n) {
     for (int i = 0; i < n; i++) {
         performanceDemo(platform, type);
     }
 }
 
-void animationDemo(Platform&platform, AtomPlane plane) {
+void animationDemo(Platform &platform, AtomPlane plane) {
     GameState *gameState = getGameState(platform);
     Render::Texture *explosionTexture = &gameState->resources.explosion;
 
@@ -116,7 +115,8 @@ void animationDemo(Platform&platform, AtomPlane plane) {
 void followingCarDemo(Platform &platform) {
     GameState *gameState = getGameState(platform);
 
-    if (platform.input.shootKeyPressed && gameState->agentCount < (int)sizeof(gameState->agents) / (int)sizeof(Player)) {
+    if (platform.input.shootKeyPressed &&
+        gameState->agentCount < (int)sizeof(gameState->agents) / (int)sizeof(Player)) {
         platform.log(fmt::format("Spawning agent {}", gameState->agentCount));
         gameState->agents[gameState->agentCount++] = Player();
         Player *agent = &gameState->agents[gameState->agentCount - 1];

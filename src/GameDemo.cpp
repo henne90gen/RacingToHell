@@ -36,15 +36,12 @@ void updateAndRenderRoad(Platform &platform, bool shouldUpdate) {
     for (unsigned y = 0; y < gameState->world.height; y++) {
         for (unsigned x = 0; x < gameState->world.width; x++) {
             Tile *tile = &gameState->world.tiles[y * gameState->world.width + x];
-            uint32_t color = 0xff0000ff;
+            auto color = glm::vec4(1, 0, 0, 1);
             if (tile->traversable) {
-                color = 0x00ff00ff;
+                color = glm::vec4(0, 1, 0, 1);
             } else {
                 checkPlayerTileCollision(&gameState->player, tile);
             }
-            //			printf("X: %f, Y: %f, Size: %f\n",
-            // rect.position.x, rect.position.y,
-            // rect.size.x);
             Render::pushRectangle(gameState, tile->rect, color, AtomPlane::BACKGROUND);
         }
     }
@@ -433,8 +430,8 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState, bool should
 void updateAndRenderUI(Platform &platform, bool shouldUpdate) {
     GameState *gameState = getGameState(platform);
 
-    static uint32_t energyColor = 0xFFA51795;
-    static uint32_t healthColor = 0xFFA51795;
+    static auto energyColor = glm::vec4(0.9, 0.5, 0.1, 1);
+    static auto healthColor = glm::vec4(0.9, 0.5, 0.1, 1);
 
     float barWidth = 0.05;
     float screenHeight = 2.0;
@@ -481,7 +478,7 @@ void updateAndRenderGame(Platform &platform, GameState *gameState, bool update) 
     }
 }
 
-void gameDemo(Platform &platform) {
+void game(Platform &platform) {
     GameState *gameState = getGameState(platform);
 
     updateAndRenderGame(platform, gameState, gameState->menuState == MenuState::GAME);

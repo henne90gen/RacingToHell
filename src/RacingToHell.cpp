@@ -19,16 +19,11 @@ GameState *getGameState(Platform &platform) {
 void update_and_render(Platform &platform) {
     beginFrame(platform);
 
-    //    gameDemo(platform);
+    game(platform);
 
-    auto rect = Math::Rectangle();
-    rect.position = {0,0};
-    rect.size = {1, 1};
-    Render::pushRectangle(getGameState(platform), rect, 0xffffffff, 1.0F);
-
-    textDemo(platform, AtomPlane::BACKGROUND);
-    followingCarDemo(platform);
-    animationDemo(platform, AtomPlane::MENU);
+    //    textDemo(platform, AtomPlane::BACKGROUND);
+    //    followingCarDemo(platform);
+    //    animationDemo(platform, AtomPlane::MENU);
 
     Render::flushBuffer(platform);
 }

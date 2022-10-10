@@ -178,7 +178,7 @@ void triangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2, glm::vec
  * Draws a rectangle to the screen with it's top left position being
  * rect.position and extending to the bottom right
  */
-void rectangle(GameState *gameState, Math::Rectangle rect, uint32_t color) {
+void rectangle(GameState *gameState, Math::Rectangle rect, glm::vec4 color) {
     glm::vec2 bottomLeft = glm::vec2(0, -rect.size.y);
     glm::vec2 topLeft = glm::vec2(0, 0);
     glm::vec2 bottomRight = glm::vec2(rect.size.x, -rect.size.y);
@@ -189,18 +189,12 @@ void rectangle(GameState *gameState, Math::Rectangle rect, uint32_t color) {
     bottomRight = bottomRight + rect.position;
     topRight = topRight + rect.position;
 
-    float r = static_cast<float>((color & 0xff000000) >> 24) / 255.0f;
-    float g = static_cast<float>((color & 0x00ff0000) >> 16) / 255.0f;
-    float b = static_cast<float>((color & 0x0000ff00) >> 8) / 255.0f;
-    float a = static_cast<float>(color & 0x000000ff) / 255.0f;
-
     // holds the screen coordinates with their associated texture coordinates
     const float coordinates[] = {
-        //
-        bottomLeft.x,  bottomLeft.y,  r, g, b, a, //
-        topLeft.x,     topLeft.y,     r, g, b, a, //
-        bottomRight.x, bottomRight.y, r, g, b, a, //
-        topRight.x,    topRight.y,    r, g, b, a, //
+        bottomLeft.x,  bottomLeft.y,  color.r, color.g, color.b, color.a, //
+        topLeft.x,     topLeft.y,     color.r, color.g, color.b, color.a, //
+        bottomRight.x, bottomRight.y, color.r, color.g, color.b, color.a, //
+        topRight.x,    topRight.y,    color.r, color.g, color.b, color.a, //
     };
 
     static GLuint coordinatesBufferID;
@@ -287,7 +281,7 @@ void pushTexture(GameState *gameState, Texture *texture, glm::vec2 position, glm
     atom->content.textureRect.tileIndex = tileIndex;
 }
 
-void pushRectangle(GameState *gameState, Math::Rectangle dimensions, uint32_t color, float plane) {
+void pushRectangle(GameState *gameState, Math::Rectangle dimensions, glm::vec4 color, float plane) {
     RenderAtom *atom = pushRenderAtom(gameState, AtomType::RECTANGLE, plane);
     if (atom == nullptr) {
         return;
@@ -297,7 +291,7 @@ void pushRectangle(GameState *gameState, Math::Rectangle dimensions, uint32_t co
     atom->content.rect.color = color;
 }
 
-void pushRectangle(GameState *gameState, Math::Rectangle dimensions, uint32_t color, AtomPlane plane) {
+void pushRectangle(GameState *gameState, Math::Rectangle dimensions, glm::vec4 color, AtomPlane plane) {
     pushRectangle(gameState, dimensions, color, (float)plane);
 }
 

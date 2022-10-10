@@ -309,9 +309,8 @@ void renderCarSelection(GameState *gameState, glm::vec2 position, bool menuHighl
 void renderMenuBackdrop(GameState *gameState, Menu *menu) {
     Math::Rectangle rect = {};
     rect.position = menu->position;
-    // FIXME calculate size
     rect.size = glm::vec2(2.0, 1.5);
-    Render::pushRectangle(gameState, rect, 0xff00ff60, AtomPlane::MENU - 0.1f);
+    Render::pushRectangle(gameState, rect, glm::vec4(0,0,0,0.5F), AtomPlane::MENU - 0.1f);
 }
 
 void updateMenu(Platform &platform, Menu *menu) {

@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 #include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
 
 #include "MyMath.h"
 #include "Platform.h"
@@ -10,17 +11,6 @@
 struct VideoBuffer;
 struct GameState;
 struct Input;
-
-// color is always a 32 bit integer in the following form
-// 0xff ff ff ff
-//   AA BB GG RR
-// 0x50 01 02 03
-// this can be read with
-// uint8_t *currentColerPointer8 = (uint8_t *) color;
-// uint8_t textureR = *currentColorPointer8++;
-// uint8_t textureG = *currentColorPointer8++;
-// uint8_t textureB = *currentColorPointer8++;
-// uint8_t textureA = *currentColorPointer8++;
 
 enum AtomPlane { BACKGROUND, AI, AI_BULLETS, PLAYER, PLAYER_BULLETS, GAME_UI, MENU };
 
@@ -50,7 +40,7 @@ struct Character {
 
 struct Rectangle {
     Math::Rectangle dimensions;
-    uint32_t color;
+    glm::vec4 color;
 };
 
 struct Triangle {
@@ -86,13 +76,13 @@ void pushText(GameState *gameState, std::string text, glm::vec2 position, FontSi
               AtomPlane plane);
 void pushTriangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, uint32_t color,
                   float plane);
-void pushRectangle(GameState *gameState, Math::Rectangle dimensions, uint32_t color, float plane);
+void pushRectangle(GameState *gameState, Math::Rectangle dimensions, glm::vec4 color, float plane);
 void pushCircle(GameState *gameState, glm::vec2 position, float radius, uint32_t color, AtomPlane plane);
 void pushTexture(GameState *gameState, Texture *texture, glm::vec2 position, glm::vec2 size, glm::vec2 direction,
                  int tileIndex = 0, AtomPlane plane = AtomPlane::BACKGROUND);
 void pushAnimation(GameState *gameState, Texture *texture, glm::vec2 position, glm::vec2 size, unsigned *tileIndex,
                    AtomPlane plane, int timing = 1);
 
-void triangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, uint32_t color);
+//void triangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, uint32_t color);
 
 } // namespace Render

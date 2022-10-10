@@ -84,4 +84,8 @@ struct Platform {
     template <typename... T> void logf(fmt::format_string<T...> fmt, T &&...args) {
         log(fmt::vformat(fmt, fmt::make_format_args(args...)));
     }
+
+    template <typename... T> void abortf(fmt::format_string<T...> fmt, T &&...args) {
+        abort(fmt::vformat(fmt, fmt::make_format_args(args...)));
+    }
 };

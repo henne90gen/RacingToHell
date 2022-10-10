@@ -101,7 +101,7 @@ struct MenuItem {
 struct Menu {
     MenuItem items[10];
     uint8_t numberMenuItems = 0;
-    int8_t currentMenuItem = 0;
+    int8_t currentMenuItemIdx = 0;
     glm::vec2 position;
     float lineSpacing = 0.2;
     bool isVisible = true;
@@ -181,7 +181,7 @@ struct GameState {
 
     MenuState menuState = MenuState::MAIN;
     Menu menus[2];
-    unsigned menuCount, activeMenuIndex;
+    unsigned menuCount, activeMenuIdx;
 
     Player player;
 

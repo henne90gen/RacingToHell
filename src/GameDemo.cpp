@@ -179,7 +179,7 @@ void updatePlayer(Input input, GameState *gameState) {
  */
 void renderPlayer(GameState *gameState) {
     Render::pushTexture(gameState, getPlayerTexture(gameState), gameState->player.position, gameState->player.size,
-                        gameState->player.direction, AtomPlane::PLAYER + 10.0);
+                        gameState->player.direction, AtomPlane::PLAYER);
 }
 
 /**

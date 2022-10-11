@@ -180,7 +180,7 @@ struct GameState {
     bool isInBossFight;
 
     MenuState menuState = MenuState::MAIN;
-    Menu menus[2];
+    Menu menus[3];
     unsigned menuCount, activeMenuIdx;
 
     Player player;

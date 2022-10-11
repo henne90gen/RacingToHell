@@ -12,7 +12,15 @@ struct VideoBuffer;
 struct GameState;
 struct Input;
 
-enum AtomPlane { BACKGROUND, AI, AI_BULLETS, PLAYER, PLAYER_BULLETS, GAME_UI, MENU };
+enum AtomPlane {
+    BACKGROUND = 0,
+    AI = 1,
+    AI_BULLETS = 2,
+    PLAYER = 3,
+    PLAYER_BULLETS = 4,
+    GAME_UI = 5,
+    MENU = 6,
+};
 
 namespace Render {
 

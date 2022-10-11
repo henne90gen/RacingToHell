@@ -44,7 +44,7 @@ void updateAndRenderRoad(Platform &platform, bool shouldUpdate) {
         auto pos = glm::vec2(0.0, gameState->roadOffset);
         auto size = glm::vec2(2.0, roadHeight);
         auto direction = glm::vec2(0.0, 1.0);
-        Render::pushTexture(gameState, roadTexture, pos, size, direction);
+        Render::pushTexture(gameState, roadTexture, pos, size, direction, AtomPlane::BACKGROUND);
     }
 
     {
@@ -52,7 +52,7 @@ void updateAndRenderRoad(Platform &platform, bool shouldUpdate) {
         auto pos = glm::vec2(0.0, otherRoadOffset);
         auto size = glm::vec2(2.0, roadHeight);
         auto direction = glm::vec2(0.0, 1.0);
-        Render::pushTexture(gameState, roadTexture, pos, size, direction);
+        Render::pushTexture(gameState, roadTexture, pos, size, direction, AtomPlane::BACKGROUND);
     }
 }
 
@@ -177,9 +177,9 @@ void updatePlayer(Input input, GameState *gameState) {
 /**
  * Renders the player to the video buffer
  */
-void renderPlayer(Platform &platform, GameState *gameState) {
-    Render::pushTexture(getGameState(platform), getPlayerTexture(gameState), gameState->player.position,
-                        gameState->player.size, gameState->player.direction, AtomPlane::PLAYER);
+void renderPlayer(GameState *gameState) {
+    Render::pushTexture(gameState, getPlayerTexture(gameState), gameState->player.position, gameState->player.size,
+                        gameState->player.direction, AtomPlane::PLAYER + 10.0);
 }
 
 /**
@@ -465,18 +465,15 @@ void updateAndRenderUI(Platform &platform, bool shouldUpdate) {
  * Updates and renders the game with all its entities
  */
 void updateAndRenderGame(Platform &platform, GameState *gameState, bool update) {
-
-    // update player before doing any collision detection
     if (update) {
         updatePlayer(platform.input, gameState);
     }
 
-    updateAndRenderRoad(platform, update);
-
     if (gameState->menuState != MenuState::CREDITS) {
-        // render player after traffic, so he is always on top
-        renderPlayer(platform, gameState);
+        renderPlayer(gameState);
     }
+
+    updateAndRenderRoad(platform, update);
 
     updateAndRenderBullets(platform, gameState, update);
 

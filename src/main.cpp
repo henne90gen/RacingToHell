@@ -209,14 +209,31 @@ void check_input_for_clicks(Input &input) {
 // action – `GLFW_PRESS`, `GLFW_RELEASE` or `GLFW_REPEAT`. Future releases may add more actions.
 // mods – Bit field describing which [modifier keys](mods) were held down.
 void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-    platform.input.enterKeyPressed = key == GLFW_KEY_ENTER && action == GLFW_PRESS;
-    platform.input.escapeKeyPressed = key == GLFW_KEY_ESCAPE && action == GLFW_PRESS;
-    platform.input.upKeyPressed = key == GLFW_KEY_UP && action == GLFW_PRESS;
-    platform.input.downKeyPressed = key == GLFW_KEY_DOWN && action == GLFW_PRESS;
-    platform.input.leftKeyPressed = key == GLFW_KEY_LEFT && action == GLFW_PRESS;
-    platform.input.rightKeyPressed = key == GLFW_KEY_RIGHT && action == GLFW_PRESS;
-    platform.input.plusKeyPressed = key == GLFW_KEY_KP_ADD && action == GLFW_PRESS;
-    platform.input.minusKeyPressed = key == GLFW_KEY_KP_SUBTRACT && action == GLFW_PRESS;
+
+    if (key == GLFW_KEY_ENTER) {
+        platform.input.enterKeyPressed = action == GLFW_PRESS || action == GLFW_REPEAT;
+    }
+    if (key == GLFW_KEY_ESCAPE) {
+        platform.input.escapeKeyPressed = action == GLFW_PRESS || action == GLFW_REPEAT;
+    }
+    if (key == GLFW_KEY_UP) {
+        platform.input.upKeyPressed = action == GLFW_PRESS || action == GLFW_REPEAT;
+    }
+    if (key == GLFW_KEY_DOWN) {
+        platform.input.downKeyPressed = action == GLFW_PRESS || action == GLFW_REPEAT;
+    }
+    if (key == GLFW_KEY_LEFT) {
+        platform.input.leftKeyPressed = action == GLFW_PRESS || action == GLFW_REPEAT;
+    }
+    if (key == GLFW_KEY_RIGHT) {
+        platform.input.rightKeyPressed = action == GLFW_PRESS || action == GLFW_REPEAT;
+    }
+    if (key == GLFW_KEY_KP_ADD) {
+        platform.input.plusKeyPressed = action == GLFW_PRESS || action == GLFW_REPEAT;
+    }
+    if (key == GLFW_KEY_KP_SUBTRACT) {
+        platform.input.minusKeyPressed = action == GLFW_PRESS || action == GLFW_REPEAT;
+    }
 }
 
 // window The window that received the event.
@@ -224,7 +241,9 @@ void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, in
 // action One of `GLFW_PRESS` or `GLFW_RELEASE`. Future releases may add more actions.
 // mods Bit field describing which [modifier keys](@ref mods) were held down.
 void glfw_mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
-    platform.input.shootKeyPressed = button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS;
+    if (button == GLFW_MOUSE_BUTTON_1) {
+        platform.input.shootKeyPressed = action == GLFW_PRESS || action == GLFW_REPEAT;
+    }
 }
 
 // window The window that received the event.

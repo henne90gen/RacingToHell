@@ -98,10 +98,8 @@ void resetGameState(GameState *gameState) {
     gameState->player = {};
     gameState->player.position = glm::vec2(0, -1.01F);
     gameState->player.size = glm::vec2(0.1F, 0.2F);
-    gameState->player.direction = glm::vec2(0, 1);
     // TODO balance speed
-    // gameState->player.speed = 0;
-    gameState->player.maxSpeed = PLAYER_SPEED;
+    gameState->player.speed = PLAYER_SPEED;
     // TODO balance health
     gameState->player.health = 10;
     gameState->player.maxHealth = 100;

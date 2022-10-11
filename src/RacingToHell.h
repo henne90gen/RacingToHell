@@ -23,6 +23,13 @@ struct SoundBuffer {
 };
 
 struct Player {
+    glm::vec2 position, size;
+    int8_t carIndex, lastCarIndex;
+    float speed;
+    int32_t health, maxHealth, energy, maxEnergy;
+};
+
+struct Agent {
     glm::vec2 position, direction, velocity, acceleration, size;
     int8_t carIndex, lastCarIndex;
     double maxSpeed;
@@ -186,8 +193,7 @@ struct GameState {
     Player player;
     Boss boss;
 
-    // TODO remove this (it's only used by followingCarDemo
-    Player agents[1000];
+    Agent agents[1000];
     int agentCount;
 
     GameWorld world;

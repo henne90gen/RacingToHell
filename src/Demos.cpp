@@ -118,44 +118,44 @@ void followingCarDemo(Platform &platform) {
     if (platform.input.shootKeyPressed &&
         gameState->agentCount < (int)sizeof(gameState->agents) / (int)sizeof(Player)) {
         platform.log(fmt::format("Spawning agent {}", gameState->agentCount));
-        gameState->agents[gameState->agentCount++] = Player();
-        Player *agent = &gameState->agents[gameState->agentCount - 1];
-        agent->position = platform.input.mousePosition;
-        agent->size = glm::vec2(0.05f, 0.10f);
-        agent->maxSpeed = PLAYER_SPEED;
-        agent->carIndex = std::rand() % NUM_PLAYER_TEXTURES;
+        gameState->agents[gameState->agentCount++] = Agent();
+        auto&agent = gameState->agents[gameState->agentCount - 1];
+        agent.position = platform.input.mousePosition;
+        agent.size = glm::vec2(0.05f, 0.10f);
+        agent.maxSpeed = PLAYER_SPEED;
+        agent.carIndex = std::rand() % NUM_PLAYER_TEXTURES;
     }
 
     for (int i = 0; i < gameState->agentCount; i++) {
-        Player *agent = &gameState->agents[i];
+        auto &agent = gameState->agents[i];
 
-        Render::Texture *texture = &gameState->resources.playerCarTextures[agent->carIndex];
+        Render::Texture *texture = &gameState->resources.playerCarTextures[agent.carIndex];
 
-        glm::vec2 desired = platform.input.mousePosition - agent->position;
+        glm::vec2 desired = platform.input.mousePosition - agent.position;
         //		if (Math::length(desired) > 0.01f) {
         desired = Math::normalize(desired);
-        desired = desired * static_cast<float>(agent->maxSpeed);
+        desired = desired * static_cast<float>(agent.maxSpeed);
 
-        glm::vec2 steering = desired - agent->velocity;
+        glm::vec2 steering = desired - agent.velocity;
         steering = Math::normalize(steering);
         steering = steering * 0.00005f;
 
-        agent->acceleration = agent->acceleration + steering;
+        agent.acceleration = agent.acceleration + steering;
         //		} else {
         //			agent->velocity = glm::vec2();
         //			agent->acceleration = glm::vec2();
         //		}
 
-        agent->velocity = agent->velocity + agent->acceleration;
-        if (Math::length(agent->velocity) > agent->maxSpeed) {
-            agent->velocity = Math::normalize(agent->velocity) * static_cast<float>(agent->maxSpeed);
+        agent.velocity = agent.velocity + agent.acceleration;
+        if (Math::length(agent.velocity) > agent.maxSpeed) {
+            agent.velocity = Math::normalize(agent.velocity) * static_cast<float>(agent.maxSpeed);
         }
-        agent->position = agent->position + agent->velocity;
+        agent.position = agent.position + agent.velocity;
 
-        if (agent->velocity.x != 0.0f && agent->velocity.y != 0.0f) {
-            agent->direction = agent->velocity;
+        if (agent.velocity.x != 0.0f && agent.velocity.y != 0.0f) {
+            agent.direction = agent.velocity;
         }
 
-        Render::pushTexture(gameState, texture, agent->position, agent->size, agent->direction, 0, AtomPlane::PLAYER);
+        Render::pushTexture(gameState, texture, agent.position, agent.size, agent.direction, 0, AtomPlane::PLAYER);
     }
 }

@@ -102,37 +102,32 @@ void spawnBullet(GameState *gameState, glm::vec2 position, glm::vec2 velocity, b
  * 		- keeping him on screen
  * 		- shooting
  */
-void updatePlayer(Input input, GameState *gameState) {
-    float speed = 0;
-    float direction = 0;
-    if (input.downKeyPressed) {
-        speed -= 0.001;
+void updatePlayer(Platform &platform) {
+    auto gameState = getGameState(platform);
+
+    glm::vec2 movement = {};
+    if (platform.input.leftKeyPressed) {
+        movement.x = -1;
     }
-    if (input.upKeyPressed) {
-        speed += 0.001;
+    if (platform.input.rightKeyPressed) {
+        movement.x = 1;
     }
-    if (input.leftKeyPressed) {
-        direction += 0.09;
+    if (platform.input.leftKeyPressed && platform.input.rightKeyPressed) {
+        movement.x = 0;
     }
-    if (input.rightKeyPressed) {
-        direction -= 0.09;
+
+    if (platform.input.upKeyPressed) {
+        movement.y = 1;
+    }
+    if (platform.input.downKeyPressed) {
+        movement.y = -1;
+    }
+    if (platform.input.upKeyPressed && platform.input.downKeyPressed) {
+        movement.y = 0;
     }
 
     // movement
-    //	gameState->player.speed += speed;
-    //	if (gameState->player.speed > PLAYER_SPEED) {
-    //		gameState->player.speed = PLAYER_SPEED;
-    //	} else if (gameState->player.speed < -PLAYER_SPEED) {
-    //		gameState->player.speed = -PLAYER_SPEED;
-    //	}
-    //	gameState->player.direction = Math::normalize(
-    //			Math::rotate(gameState->player.direction, direction));
-    //	gameState->player.position = gameState->player.position
-    //			+ gameState->player.direction * gameState->player.speed;
-    //	printf("Player position: %f, %f\n", gameState->player.position.x,
-    //			gameState->player.position.y);
-    //	printf("Player direction: %f, %f\n", gameState->player.direction.x,
-    //			gameState->player.direction.y);
+    gameState->player.position += movement * gameState->player.speed * float(platform.frameTimeMs) * 0.1F;
 
     // energy
     gameState->player.energy -= 1;
@@ -148,12 +143,11 @@ void updatePlayer(Input input, GameState *gameState) {
     }
 
     // shooting
-    if (input.shootKeyClicked
-        /*&& gameState->player.energy >= 15*/ /*FIXME make this a variable*/) {
-        glm::vec2 velocity = input.mousePosition - gameState->player.position;
+    int32_t shootEnergy = 10; // TODO maybe make this depend on level and difficulty
+    if (platform.input.shootKeyClicked && gameState->player.energy >= shootEnergy) {
+        glm::vec2 velocity = platform.input.mousePosition - gameState->player.position;
         spawnBullet(gameState, gameState->player.position, velocity, true);
-        // FIXME make this a variable
-        gameState->player.energy -= 10;
+        gameState->player.energy -= shootEnergy;
     }
 
     Render::Texture *texture = getPlayerTexture(gameState);
@@ -179,7 +173,7 @@ void updatePlayer(Input input, GameState *gameState) {
  */
 void renderPlayer(GameState *gameState) {
     Render::pushTexture(gameState, getPlayerTexture(gameState), gameState->player.position, gameState->player.size,
-                        gameState->player.direction, AtomPlane::PLAYER);
+                        glm::vec2(0, 1), AtomPlane::PLAYER);
 }
 
 /**
@@ -466,7 +460,7 @@ void updateAndRenderUI(Platform &platform, bool shouldUpdate) {
  */
 void updateAndRenderGame(Platform &platform, GameState *gameState, bool update) {
     if (update) {
-        updatePlayer(platform.input, gameState);
+        updatePlayer(platform);
     }
 
     if (gameState->menuState != MenuState::CREDITS) {

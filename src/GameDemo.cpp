@@ -33,10 +33,12 @@ Render::Texture *getPlayerTexture(GameState *gameState) {
 void updateAndRenderRoad(Platform &platform, bool shouldUpdate) {
     GameState *gameState = getGameState(platform);
 
-    gameState->roadOffset -= getRoadSpeed(gameState) * platform.frameTimeMs;
     double roadHeight = 2.0 * (1.0 / platform.memory.aspectRatio);
-    if (gameState->roadOffset < -roadHeight) {
-        gameState->roadOffset = 0.0F;
+    if (shouldUpdate) {
+        gameState->roadOffset -= getRoadSpeed(gameState) * platform.frameTimeMs;
+        if (gameState->roadOffset < -roadHeight) {
+            gameState->roadOffset = 0.0F;
+        }
     }
 
     Render::Texture *roadTexture = getCurrentRoad(gameState);

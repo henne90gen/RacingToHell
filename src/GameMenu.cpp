@@ -13,7 +13,7 @@ void addMenuItem(MenuItem *item, std::string text) {
 
 void loadMainMenu(GameState *gameState) {
     Menu *menu = &gameState->menus[gameState->menuCount++];
-    menu->position = glm::vec2({-1.0f, 0.8f});
+    menu->position = glm::vec2({-1.0F, 0.8F});
 
     addMenuItem(&menu->items[menu->numberMenuItems++], "Start Game");
     addMenuItem(&menu->items[menu->numberMenuItems++], "Car");
@@ -34,7 +34,7 @@ void loadMainMenu(GameState *gameState) {
 
 void loadPauseMenu(GameState *gameState) {
     Menu *menu = &gameState->menus[gameState->menuCount++];
-    menu->position = glm::vec2({20, 50});
+    menu->position = glm::vec2({-1.0F, 0.8F});
 
     addMenuItem(&menu->items[menu->numberMenuItems++], "Resume");
     addMenuItem(&menu->items[menu->numberMenuItems++], "Main Menu");
@@ -360,6 +360,25 @@ void updateMainMenu(Platform &platform) {
     }
 }
 
+void updatePauseMenu(Platform &platform) {
+    GameState *gameState = getGameState(platform);
+
+    if (platform.input.escapeKeyClicked) {
+        loadMenu(platform, MenuState::GAME);
+    }
+
+    if (platform.input.enterKeyClicked) {
+        auto &activeMenu = gameState->menus[gameState->activeMenuIdx];
+        if ((PauseMenuItem)activeMenu.currentMenuItemIdx == PauseMenuItem::RESUME) {
+            loadMenu(platform, MenuState::GAME);
+        }
+        if ((PauseMenuItem)activeMenu.currentMenuItemIdx == PauseMenuItem::MAIN_MENU) {
+            // TODO reset the game state here
+            loadMenu(platform, MenuState::MAIN);
+        }
+    }
+}
+
 void updateActiveMenu(Platform &platform) {
     GameState *gameState = getGameState(platform);
 
@@ -373,7 +392,7 @@ void updateActiveMenu(Platform &platform) {
         // updateGameOverMenu(platform);
         break;
     case MenuState::PAUSE:
-        // updatePauseMenu(platform);
+        updatePauseMenu(platform);
         break;
     case MenuState::CREDITS:
         // updateCreditsMenu(platform);

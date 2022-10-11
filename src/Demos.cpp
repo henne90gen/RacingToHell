@@ -74,11 +74,6 @@ void performanceDemo(Platform &platform, AtomType type) {
         std::string msg = "The quick brown fox jumps over the lazy dog";
         Render::pushText(gameState, msg, position, Render::FontSize::Medium, 0xff0000ff, plane);
     } break;
-    case AtomType::NOSCALE:
-    case AtomType::SCALE:
-        Render::pushEnableScaling(gameState, false, plane);
-        Render::pushEnableScaling(gameState, true, plane);
-        break;
     }
 }
 

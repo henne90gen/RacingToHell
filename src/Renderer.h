@@ -79,7 +79,6 @@ struct Text {
 void clearScreen(uint32_t color);
 void flushBuffer(Platform &platform);
 
-void pushEnableScaling(GameState *gameState, bool enable, float plane);
 void pushText(GameState *gameState, std::string text, glm::vec2 position, FontSize fontSize, uint32_t color,
               AtomPlane plane);
 void pushTriangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, glm::vec4 color,

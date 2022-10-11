@@ -44,7 +44,7 @@ extern "C" JNIEXPORT void JNICALL Java_game_racingtohell_NativeWrapper_on_1surfa
         platform.memory.temporary = (char *)malloc(platform.memory.temporaryMemorySize);
         platform.memory.permanent = (char *)malloc(platform.memory.permanentMemorySize);
         platform.memory.doResize = true;
-        platform.memory.aspectRatio = 16.0f / 9.0f;
+        platform.memory.aspectRatio = 9.0f / 16.0f;
         platform.memory.base_path = "./";
 
         platform.log("Initializing Game - Done");

@@ -242,14 +242,6 @@ RenderAtom *pushRenderAtom(GameState *gameState, AtomType type, AtomPlane plane)
     return pushRenderAtom(gameState, type, (float)plane);
 }
 
-void pushEnableScaling(GameState *gameState, bool enable, float plane) {
-    if (enable) {
-        pushRenderAtom(gameState, AtomType::SCALE, plane);
-    } else {
-        pushRenderAtom(gameState, AtomType::NOSCALE, plane);
-    }
-}
-
 void pushCircle(GameState *gameState, glm::vec2 position, float radius, uint32_t color, AtomPlane plane) {
     RenderAtom *atom = pushRenderAtom(gameState, AtomType::CIRCLE, plane);
     if (atom == nullptr) {
@@ -450,20 +442,6 @@ void flushBuffer(Platform &platform) {
             Circle c = atom->content.circle;
             Render::circle(gameState, c.position, c.radius, c.color);
         } break;
-        case AtomType::SCALE:
-#if RENDER_DEBUG
-            scales++;
-            ordering += " sc";
-#endif
-            scaleView(gameState);
-            break;
-        case AtomType::NOSCALE:
-#if RENDER_DEBUG
-            noscales++;
-            ordering += " ns";
-#endif
-            setScaleToIdentity(gameState);
-            break;
         }
     }
 
@@ -476,8 +454,6 @@ void flushBuffer(Platform &platform) {
     memory->log("\tCirlces: " + std::to_string(circles));
     memory->log("\tTexts: " + std::to_string(texts));
     memory->log("\tTextures: " + std::to_string(textures));
-    memory->log("\tScales: " + std::to_string(scales));
-    memory->log("\tNoScales: " + std::to_string(noscales));
     memory->log("");
 
     std::string msg;

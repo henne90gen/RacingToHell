@@ -26,7 +26,8 @@ struct Player {
     glm::vec2 position, size;
     int8_t carIndex, lastCarIndex;
     float speed;
-    int32_t health, maxHealth, energy, maxEnergy;
+    float health, maxHealth;
+    float fuel, maxFuel;
 };
 
 struct Agent {
@@ -140,7 +141,13 @@ struct GameWorld {
     Car traffic[200];
 };
 
-enum AtomType { RECTANGLE, TRIANGLE, TEXT, TEXTURE, CIRCLE, SCALE, NOSCALE };
+enum AtomType {
+    RECTANGLE,
+    TRIANGLE,
+    TEXT,
+    TEXTURE,
+    CIRCLE,
+};
 
 struct RenderAtom {
     union Content {

@@ -272,6 +272,10 @@ void updateAndRenderCarSelection(Platform &platform, GameState *gameState, bool 
     }
 }
 
+void renderCarStatisticBars(Platform &platform) {
+    // TODO render car statistic bars
+}
+
 void renderMenuBackdrop(GameState *gameState, Menu *menu) {
     Math::Rectangle rect = {};
     rect.position = menu->position;
@@ -391,14 +395,14 @@ void updateActiveMenu(Platform &platform) {
 void updateAndRenderMenus(Platform &platform) {
     GameState *gameState = getGameState(platform);
 
-    float plane = ((float)AtomPlane::MENU) - 0.5f;
-    Render::pushEnableScaling(gameState, false, plane);
-
     updateActiveMenu(platform);
 
     renderMenuBackdrop(gameState, &gameState->menus[0]);
     if (gameState->menuState == MenuState::MAIN) {
         updateAndRenderCarSelection(platform, gameState, 2 == gameState->activeMenuIdx);
+        if (gameState->activeMenuIdx == 2) {
+            renderCarStatisticBars(platform);
+        }
     }
 
     for (unsigned int menuIndex = 0; menuIndex < gameState->menuCount; ++menuIndex) {

@@ -170,8 +170,6 @@ GameState *beginFrame(Platform &platform) {
         gameState->scale -= 0.01;
     }
 
-    Render::pushEnableScaling(gameState, true, -1);
-
     return gameState;
 }
 

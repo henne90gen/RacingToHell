@@ -130,8 +130,8 @@ void updatePlayer(Platform &platform) {
     gameState->player.position += movement * gameState->player.speed * float(platform.frameTimeMs) * 0.1F;
 
     // energy
-    gameState->player.energy -= 1;
-    if (gameState->player.energy <= 0) {
+    gameState->player.fuel -= 1;
+    if (gameState->player.fuel <= 0) {
         // TODO play a nice animation before doing a game over
         gameOver(gameState);
     }
@@ -143,11 +143,9 @@ void updatePlayer(Platform &platform) {
     }
 
     // shooting
-    int32_t shootEnergy = 10; // TODO maybe make this depend on level and difficulty
-    if (platform.input.shootKeyClicked && gameState->player.energy >= shootEnergy) {
+    if (platform.input.shootKeyClicked) {
         glm::vec2 velocity = platform.input.mousePosition - gameState->player.position;
         spawnBullet(gameState, gameState->player.position, velocity, true);
-        gameState->player.energy -= shootEnergy;
     }
 
     Render::Texture *texture = getPlayerTexture(gameState);
@@ -405,9 +403,9 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState, bool should
                     break;
                 case CANISTER_ID:
                     // TODO test: percentage of maxEnergy vs absolute value
-                    gameState->player.energy += 100;
-                    if (gameState->player.energy > gameState->player.maxEnergy) {
-                        gameState->player.energy = gameState->player.maxEnergy;
+                    gameState->player.fuel += 100;
+                    if (gameState->player.fuel > gameState->player.maxFuel) {
+                        gameState->player.fuel = gameState->player.maxFuel;
                     }
                     break;
                 }
@@ -437,21 +435,21 @@ void updateAndRenderUI(Platform &platform, bool shouldUpdate) {
     static auto healthColor = glm::vec4(0.9, 0.5, 0.1, 1);
 
     float barWidth = 0.05;
-    float screenHeight = 2.0;
-    float screenWidth = platform.memory.aspectRatio * 2.0;
+    float screenWidth = 2.0;
+    float screenHeight = (1.0 / platform.memory.aspectRatio) * 2.0;
 
     // energy
-    Math::Rectangle energyBar;
-    float energyHeight = gameState->player.energy * screenHeight / 2.0 / gameState->player.maxEnergy;
-    energyBar.size = glm::vec2(barWidth, energyHeight);
-    energyBar.position = glm::vec2(-screenWidth / 2.0, energyHeight - 1.0);
-    Render::pushRectangle(gameState, energyBar, energyColor, AtomPlane::GAME_UI);
+    Math::Rectangle fuelBar;
+    float fuelHeight = gameState->player.fuel / gameState->player.maxFuel * screenHeight;
+    fuelBar.position = glm::vec2(-screenWidth / 2.0, -screenHeight / 2.0 + fuelHeight);
+    fuelBar.size = glm::vec2(barWidth, fuelHeight);
+    Render::pushRectangle(gameState, fuelBar, energyColor, AtomPlane::GAME_UI);
 
     // health
     Math::Rectangle healthBar;
-    float healthHeight = gameState->player.health * screenHeight / 2.0 / gameState->player.maxHealth;
+    float healthHeight = gameState->player.health / gameState->player.maxHealth * screenHeight;
+    healthBar.position = glm::vec2(-screenWidth / 2.0 + barWidth, -screenHeight / 2.0 + healthHeight);
     healthBar.size = glm::vec2(barWidth, healthHeight);
-    healthBar.position = glm::vec2(-screenWidth / 2.0 + barWidth, healthHeight - 1.0);
     Render::pushRectangle(gameState, healthBar, healthColor, AtomPlane::GAME_UI);
 }
 
@@ -471,9 +469,7 @@ void updateAndRenderGame(Platform &platform, GameState *gameState, bool update) 
 
     updateAndRenderBullets(platform, gameState, update);
 
-    if (gameState->menuState != MenuState::MAIN && gameState->menuState != MenuState::CREDITS) {
-        float plane = ((float)AtomPlane::GAME_UI) - 0.5f;
-        Render::pushEnableScaling(gameState, false, plane);
+    if ((gameState->menuState != MenuState::MAIN && gameState->menuState != MenuState::CREDITS)) {
         updateAndRenderUI(platform, update);
     }
 }

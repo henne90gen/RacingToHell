@@ -101,11 +101,11 @@ void resetGameState(GameState *gameState) {
     // TODO balance speed
     gameState->player.speed = PLAYER_SPEED;
     // TODO balance health
-    gameState->player.health = 10;
-    gameState->player.maxHealth = 100;
+    gameState->player.health = 100.0F;
+    gameState->player.maxHealth = 100.0F;
     // TODO balance energy
-    gameState->player.energy = 1000;
-    gameState->player.maxEnergy = 1000;
+    gameState->player.fuel = 1000.0F;
+    gameState->player.maxFuel = 1000.0F;
 
     gameState->level = 0;
     gameState->levelTime = 0;

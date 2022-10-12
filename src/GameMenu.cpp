@@ -373,7 +373,7 @@ void updatePauseMenu(Platform &platform) {
             loadMenu(platform, MenuState::GAME);
         }
         if ((PauseMenuItem)activeMenu.currentMenuItemIdx == PauseMenuItem::MAIN_MENU) {
-            // TODO reset the game state here
+            resetGameState(gameState);
             loadMenu(platform, MenuState::MAIN);
         }
     }

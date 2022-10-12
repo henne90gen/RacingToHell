@@ -120,18 +120,17 @@ void resetGameState(GameState *gameState) {
     gameState->itemFrequency = 50;
     gameState->bulletSpeed = 0.005f;
 
-    gameState->lastAIBulletIndex = -1;
-    gameState->lastPlayerBulletIndex = -1;
+    gameState->nextAIBulletIndex = 0;
+    gameState->nextPlayerBulletIndex = 0;
 
     gameState->world = {};
-    gameState->world.lastItemIndex = -1;
-    gameState->world.lastTrafficCarIndex = -1;
+    gameState->world.nextItemIndex = 0;
+    gameState->world.nextTrafficCarIndex = 0;
 
     gameState->isInBossFight = true;
     loadBoss(gameState);
 
-    gameState->menuState = MenuState::MAIN; // triggers world generation when loading the game
-                                            // directly into game mode
+    gameState->menuState = MenuState::MAIN;
 }
 
 /**

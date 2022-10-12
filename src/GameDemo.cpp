@@ -61,31 +61,31 @@ void updateAndRenderRoad(Platform &platform, bool shouldUpdate) {
 /**
  * Spawns a bullet at the location of a randomly chosen car
  */
-void spawnBullet(GameState *gameState, glm::vec2 position, glm::vec2 velocity, bool playerBullet) {
+void spawnBullet(GameState *gameState, glm::vec2 position, glm::vec2 direction, bool playerBullet) {
 
-    velocity = Math::normalize(velocity);
+    direction = Math::normalize(direction);
     // FIXME balance bullet speed
-    velocity = velocity * gameState->bulletSpeed;
+    direction = direction * gameState->bulletSpeed;
 
     Bullet bullet = {};
     bullet.position = position;
-    bullet.velocity = velocity;
+    bullet.velocity = direction;
     // FIXME balance bullet radius
     bullet.radius = 0.05;
 
     if (playerBullet) {
         int arrSize = sizeof(gameState->playerBullets) / sizeof(Bullet);
-        if (gameState->lastPlayerBulletIndex + 1 < arrSize) {
+        if (gameState->nextPlayerBulletIndex < arrSize) {
             bullet.color = 0xff0000ff;
-            gameState->lastPlayerBulletIndex++;
-            gameState->playerBullets[gameState->lastPlayerBulletIndex] = bullet;
+            gameState->playerBullets[gameState->nextPlayerBulletIndex] = bullet;
+            gameState->nextPlayerBulletIndex++;
         }
     } else {
         int arrSize = sizeof(gameState->aiBullets) / sizeof(Bullet);
-        if (gameState->lastAIBulletIndex + 1 < arrSize) {
+        if (gameState->nextAIBulletIndex < arrSize) {
             bullet.color = 0xff00ff00;
-            gameState->lastAIBulletIndex++;
-            gameState->aiBullets[gameState->lastAIBulletIndex] = bullet;
+            gameState->aiBullets[gameState->nextAIBulletIndex] = bullet;
+            gameState->nextAIBulletIndex++;
         }
     }
 
@@ -146,8 +146,8 @@ void updatePlayer(Platform &platform) {
 
     // shooting
     if (platform.input.shootKeyClicked) {
-        glm::vec2 velocity = platform.input.mousePosition - gameState->player.position;
-        spawnBullet(gameState, gameState->player.position, velocity, true);
+        glm::vec2 direction = platform.input.mousePosition - gameState->player.position;
+        spawnBullet(gameState, gameState->player.position, direction, true);
     }
 
     Render::Texture *texture = getPlayerTexture(gameState);
@@ -199,7 +199,7 @@ bool updateAndRenderBullet(Platform &platform, GameState *gameState, Bullet &bul
         Math::Rectangle bulletRect = getBoundingBox(bullet.position, bullet.radius * 2, bullet.radius * 2);
 
         if (isPlayerBullet) {
-            for (int i = 0; i < gameState->world.lastTrafficCarIndex + 1; i++) {
+            for (int i = 0; i < gameState->world.nextTrafficCarIndex; i++) {
                 Car *car = &gameState->world.traffic[i];
                 Render::Texture trafficTexture = gameState->resources.trafficCarTextures[car->carIndex];
 
@@ -251,15 +251,15 @@ bool updateAndRenderBullet(Platform &platform, GameState *gameState, Bullet &bul
  * Updates and renders all bullets (player and AI)
  */
 void updateAndRenderBullets(Platform &platform, GameState *gameState, bool shouldUpdate) {
-    for (int i = 0; i < gameState->lastAIBulletIndex + 1; i++) {
+    for (int i = 0; i < gameState->nextAIBulletIndex; i++) {
         if (updateAndRenderBullet(platform, gameState, gameState->aiBullets[i], false, shouldUpdate)) {
-            removeElement(gameState->aiBullets, &gameState->lastAIBulletIndex, &i);
+            removeElement(gameState->aiBullets, &gameState->nextAIBulletIndex, &i);
         }
     }
 
-    for (int i = 0; i < gameState->lastPlayerBulletIndex + 1; i++) {
+    for (int i = 0; i < gameState->nextPlayerBulletIndex; i++) {
         if (updateAndRenderBullet(platform, gameState, gameState->playerBullets[i], true, shouldUpdate)) {
-            removeElement(gameState->playerBullets, &gameState->lastPlayerBulletIndex, &i);
+            removeElement(gameState->playerBullets, &gameState->nextPlayerBulletIndex, &i);
         }
     }
 }
@@ -276,9 +276,9 @@ void spawnTrafficCar(GameState *gameState) {
     car.health = 75;
 
     unsigned arrSize = sizeof(gameState->world.traffic) / sizeof(Car);
-    if (gameState->world.lastTrafficCarIndex + 1 < (int)arrSize) {
-        gameState->world.lastTrafficCarIndex++;
-        gameState->world.traffic[gameState->world.lastTrafficCarIndex] = car;
+    if (gameState->world.nextTrafficCarIndex < (int)arrSize) {
+        gameState->world.traffic[gameState->world.nextTrafficCarIndex] = car;
+        gameState->world.nextTrafficCarIndex++;
     }
 }
 
@@ -292,17 +292,17 @@ void updateAndRenderTraffic(VideoBuffer *buffer, GameState *gameState, bool shou
     }
 
     if (shouldUpdate && gameState->frameCounter % gameState->bulletFrequency == 0 &&
-        gameState->world.lastTrafficCarIndex >= 0) {
+        gameState->world.nextTrafficCarIndex > 0) {
         // FIXME maybe choose the car that is furthest away from the player
         int carIndex = 0;
-        if (gameState->world.lastTrafficCarIndex > 0) {
-            carIndex = std::rand() % gameState->world.lastTrafficCarIndex;
+        if (gameState->world.nextTrafficCarIndex > 1) {
+            carIndex = std::rand() % gameState->world.nextTrafficCarIndex;
         }
-        Car car = gameState->world.traffic[carIndex];
+        auto &car = gameState->world.traffic[carIndex];
         shootAtPlayer(gameState, car.position);
     }
 
-    for (int i = 0; i < gameState->world.lastTrafficCarIndex + 1; i++) {
+    for (int i = 0; i < gameState->world.nextTrafficCarIndex; i++) {
         Car *car = &gameState->world.traffic[i];
         Render::Texture *texture = &gameState->resources.trafficCarTextures[car->carIndex];
 
@@ -311,12 +311,12 @@ void updateAndRenderTraffic(VideoBuffer *buffer, GameState *gameState, bool shou
 
             if (car->health <= 0) {
                 // TODO should we show an explosion?
-                removeElement(gameState->world.traffic, &gameState->world.lastTrafficCarIndex, &i);
+                removeElement(gameState->world.traffic, &gameState->world.nextTrafficCarIndex, &i);
                 continue;
             }
 
             if (car->position.y - texture->height / 2 > DEFAULT_WINDOW_HEIGHT) {
-                removeElement(gameState->world.traffic, &gameState->world.lastTrafficCarIndex, &i);
+                removeElement(gameState->world.traffic, &gameState->world.nextTrafficCarIndex, &i);
                 continue;
             }
 
@@ -356,9 +356,9 @@ void spawnItem(GameState *gameState) {
     item.position = {x, -80};
 
     unsigned arrSize = sizeof(gameState->world.items) / sizeof(Item);
-    if (gameState->world.lastItemIndex + 1 < (int)arrSize) {
-        gameState->world.lastItemIndex++;
-        gameState->world.items[gameState->world.lastItemIndex] = item;
+    if (gameState->world.nextItemIndex < (int)arrSize) {
+        gameState->world.items[gameState->world.nextItemIndex] = item;
+        gameState->world.nextItemIndex++;
     }
 }
 
@@ -371,7 +371,7 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState, bool should
         spawnItem(gameState);
     }
 
-    for (int i = 0; i < gameState->world.lastItemIndex + 1; i++) {
+    for (int i = 0; i < gameState->world.nextItemIndex; i++) {
         Item *item = &gameState->world.items[i];
         Render::Texture *texture = &gameState->resources.itemTextures[item->itemIndex];
 
@@ -411,12 +411,12 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState, bool should
                     }
                     break;
                 }
-                removeElement(gameState->world.items, &gameState->world.lastItemIndex, &i);
+                removeElement(gameState->world.items, &gameState->world.nextItemIndex, &i);
                 continue;
             }
 
             if (item->position.y - texture->height / 2 > DEFAULT_WINDOW_HEIGHT) {
-                removeElement(gameState->world.items, &gameState->world.lastItemIndex, &i);
+                removeElement(gameState->world.items, &gameState->world.nextItemIndex, &i);
                 continue;
             }
         }
@@ -441,14 +441,14 @@ void updateAndRenderUI(Platform &platform, bool shouldUpdate) {
     float screenHeight = (1.0 / platform.memory.aspectRatio) * 2.0;
 
     // energy
-    Math::Rectangle fuelBar;
+    Math::Rectangle fuelBar = {};
     float fuelHeight = gameState->player.fuel / gameState->player.maxFuel * screenHeight;
     fuelBar.position = glm::vec2(-screenWidth / 2.0, -screenHeight / 2.0 + fuelHeight);
     fuelBar.size = glm::vec2(barWidth, fuelHeight);
     Render::pushRectangle(gameState, fuelBar, energyColor, AtomPlane::GAME_UI);
 
     // health
-    Math::Rectangle healthBar;
+    Math::Rectangle healthBar = {};
     float healthHeight = gameState->player.health / gameState->player.maxHealth * screenHeight;
     healthBar.position = glm::vec2(-screenWidth / 2.0 + barWidth, -screenHeight / 2.0 + healthHeight);
     healthBar.size = glm::vec2(barWidth, healthHeight);

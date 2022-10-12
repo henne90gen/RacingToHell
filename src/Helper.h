@@ -12,11 +12,9 @@ float calculateTextLength(GameState *gameState, std::string text, Render::FontSi
 void scaleView(GameState *gameState);
 Math::Rectangle getCollisionBox(Math::Rectangle rect1, Math::Rectangle rect2);
 
-// FIXME do we really want to use templates here or is there a more performant
-// way of doing it?
-template <typename T> void removeElement(T arr[], int *lastIndex, int *iteratorIndex) {
-    arr[*iteratorIndex] = arr[*lastIndex];
-    (*lastIndex)--;
+template <typename T> void removeElement(T arr[], uint16_t *nextIndex, int *iteratorIndex) {
+    (*nextIndex)--;
+    arr[*iteratorIndex] = arr[*nextIndex];
     (*iteratorIndex)--;
 }
 

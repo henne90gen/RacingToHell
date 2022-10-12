@@ -103,14 +103,14 @@ enum class GameOverMenuItem {
 struct MenuItem {
     char text[50];
     bool bouncy = true;
-    double animationTimerMs;
+    double animationTimerMs = 0.0;
 };
 
 struct Menu {
     MenuItem items[10];
     uint8_t numberMenuItems = 0;
     int8_t currentMenuItemIdx = 0;
-    glm::vec2 position;
+    glm::vec2 position = {};
     float lineSpacing = 0.2;
     bool isVisible = true;
 };
@@ -134,10 +134,10 @@ struct Tile {
 };
 
 struct GameWorld {
-    int32_t lastItemIndex = -1;
-    Item items[200];
+    uint16_t nextItemIndex = 0;
+    uint16_t nextTrafficCarIndex = 0;
 
-    int32_t lastTrafficCarIndex = -1;
+    Item items[200];
     Car traffic[200];
 };
 
@@ -205,10 +205,10 @@ struct GameState {
 
     GameWorld world;
 
-    int32_t lastPlayerBulletIndex = -1;
+    uint16_t nextPlayerBulletIndex = 0;
     Bullet playerBullets[100];
 
-    int32_t lastAIBulletIndex = -1;
+    uint16_t nextAIBulletIndex = 0;
     Bullet aiBullets[1000];
 
     RenderGroup renderGroup;
@@ -234,7 +234,7 @@ struct BitmapHeader {
 
 GameState *getGameState(Platform &platform);
 void resetGameState(GameState *gameState);
-void spawnBullet(GameState *gameState, glm::vec2 position, glm::vec2 velocity, bool playerBullet);
+void spawnBullet(GameState *gameState, glm::vec2 position, glm::vec2 direction, bool playerBullet);
 
 struct Platform;
 void update_and_render(Platform &platform);

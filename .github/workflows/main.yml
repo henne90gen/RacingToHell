@@ -41,9 +41,7 @@ jobs:
 
       - name: Build
         working-directory: build
-        run: |
-          cmake --build .
-          mv html/RacingToHell.html html/index.html
+        run: cmake --build .
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4

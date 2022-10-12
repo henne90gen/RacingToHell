@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.16)
 project(RacingToHell)
 
 if (EMSCRIPTEN)
-    set(CMAKE_EXECUTABLE_SUFFIX ".html")
+    set(CMAKE_EXECUTABLE_SUFFIX ".js")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s USE_GLFW=3")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s ASSERTIONS=1")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s WASM=1")
@@ -13,6 +13,8 @@ if (EMSCRIPTEN)
 
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/html)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/html)
+
+    configure_file(index.html ${CMAKE_BINARY_DIR}/html/index.html)
 endif ()
 
 # Third Party Dependencies
@@ -104,7 +106,6 @@ else ()
 endif ()
 
 function(register_resources resources_var)
-    message(STATUS "Registering resources")
     foreach (resource IN LISTS ARGN)
         string(MAKE_C_IDENTIFIER ${resource} identifier)
         get_filename_component(resource_absolute ${resource} ABSOLUTE)
@@ -123,7 +124,7 @@ function(register_resources resources_var)
             "}\n"
     )
     set(${resources_var} ${output_file} PARENT_SCOPE)
-    message(STATUS "Registering resources - Done")
+    message(STATUS "Registering resources done")
 endfunction()
 
 register_resources(RESOURCES

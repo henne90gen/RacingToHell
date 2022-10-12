@@ -159,6 +159,7 @@ void resizeViewport(int windowWidth, int windowHeight) {
         offsetX = (windowWidth - viewWidth) / 2;
     }
 
+    // TODO having windowWidth smaller than the aspect ratio is currently broken
     glViewport(offsetX, offsetY, viewWidth, viewHeight);
 
     platform.logf("Updated the viewport to x={}, y={}, width={}, height={}", offsetX, offsetY, viewWidth, viewHeight);
@@ -216,16 +217,16 @@ void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, in
     if (key == GLFW_KEY_ESCAPE) {
         platform.input.escapeKeyPressed = action == GLFW_PRESS || action == GLFW_REPEAT;
     }
-    if (key == GLFW_KEY_UP) {
+    if (key == GLFW_KEY_UP || key == GLFW_KEY_W) {
         platform.input.upKeyPressed = action == GLFW_PRESS || action == GLFW_REPEAT;
     }
-    if (key == GLFW_KEY_DOWN) {
+    if (key == GLFW_KEY_DOWN || key == GLFW_KEY_S) {
         platform.input.downKeyPressed = action == GLFW_PRESS || action == GLFW_REPEAT;
     }
-    if (key == GLFW_KEY_LEFT) {
+    if (key == GLFW_KEY_LEFT || key == GLFW_KEY_A) {
         platform.input.leftKeyPressed = action == GLFW_PRESS || action == GLFW_REPEAT;
     }
-    if (key == GLFW_KEY_RIGHT) {
+    if (key == GLFW_KEY_RIGHT || key == GLFW_KEY_D) {
         platform.input.rightKeyPressed = action == GLFW_PRESS || action == GLFW_REPEAT;
     }
     if (key == GLFW_KEY_KP_ADD) {

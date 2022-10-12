@@ -8677,16 +8677,12 @@ var ASM_CONSTS = {
       return prevcbfun;
     }
 
+  function _glfwSetWindowIcon(winid, count, images) {}
+
   function _glfwSetWindowShouldClose(winid, value) {
       var win = GLFW.WindowFromId(winid);
       if (!win) return;
       win.shouldClose = value;
-    }
-
-  function _glfwSetWindowUserPointer(winid, ptr) {
-      var win = GLFW.WindowFromId(winid);
-      if (!win) return;
-      win.userptr = ptr;
     }
 
   function _glfwSwapBuffers(winid) {
@@ -9691,8 +9687,8 @@ var asmLibraryArg = {
   "glfwSetMouseButtonCallback": _glfwSetMouseButtonCallback,
   "glfwSetScrollCallback": _glfwSetScrollCallback,
   "glfwSetWindowFocusCallback": _glfwSetWindowFocusCallback,
+  "glfwSetWindowIcon": _glfwSetWindowIcon,
   "glfwSetWindowShouldClose": _glfwSetWindowShouldClose,
-  "glfwSetWindowUserPointer": _glfwSetWindowUserPointer,
   "glfwSwapBuffers": _glfwSwapBuffers,
   "glfwTerminate": _glfwTerminate,
   "glfwWindowHint": _glfwWindowHint,

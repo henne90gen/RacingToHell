@@ -15,6 +15,7 @@
 #include <emscripten.h>
 #endif
 
+#include "Helper.h"
 #include "RacingToHell.h"
 #include "Resources.h"
 
@@ -142,6 +143,42 @@ GameMemory initGameMemory(std::string_view base_path) {
     memory.permanent = (char *)malloc(memory.permanentMemorySize);
 
     return memory;
+}
+
+void load_window_icon() {
+    std::string resource_name = "res/icon.bmp";
+    auto resource_opt = get_resource(platform, resource_name);
+    if (!resource_opt.has_value()) {
+        platform.abort("Failed to load texture " + resource_name);
+    }
+
+    auto resource_content = resource_opt.value()->get_content(platform);
+    if (resource_content[0] != 'B' || resource_content[1] != 'M') {
+        platform.abort(resource_name + " is not a bitmap file.");
+    }
+
+    int fileHeaderSize = 14;
+    BitmapHeader header = *((BitmapHeader *)(resource_content.data() + fileHeaderSize));
+
+    if (header.bitsPerPixel != 32) {
+        platform.abort("Image must have 32-bit of color depth.");
+    }
+
+    int width = static_cast<int>(header.width);
+    int height = static_cast<int>(header.height);
+    auto bytesPerPixel = header.bitsPerPixel / 8;
+    void *content = malloc(width * height * bytesPerPixel);
+
+    importPixelData((void *)(resource_content.data() + header.size + fileHeaderSize), content, header.width,
+                    header.height, 0, 0, width, height);
+
+    GLFWimage icon = {};
+    icon.width = width;
+    icon.height = height;
+    icon.pixels = static_cast<unsigned char *>(content);
+    glfwSetWindowIcon(glfw_window, 1, &icon);
+
+    free(content);
 }
 
 void resizeViewport(int windowWidth, int windowHeight) {
@@ -279,6 +316,13 @@ void glfw_cursor_pos_callback(GLFWwindow *window, double x_pos, double y_pos) {
     platform.input.mousePosition = mousePos;
 }
 
+void setup_callbacks() {
+    glfwSetFramebufferSizeCallback(glfw_window, glfw_framebuffer_size_callback);
+    glfwSetKeyCallback(glfw_window, glfw_key_callback);
+    glfwSetMouseButtonCallback(glfw_window, glfw_mouse_button_callback);
+    glfwSetCursorPosCallback(glfw_window, glfw_cursor_pos_callback);
+}
+
 void run_main_loop() {
     auto now = std::chrono::high_resolution_clock::now();
     auto timeDiff = now - previousTime;
@@ -341,13 +385,12 @@ int main(int argc, char **argv) {
 #endif
 
     platform.memory = initGameMemory(base_path);
-    glfwSetWindowUserPointer(glfw_window, (void *)&platform);
 
-    // set up callbacks
-    glfwSetFramebufferSizeCallback(glfw_window, glfw_framebuffer_size_callback);
-    glfwSetKeyCallback(glfw_window, glfw_key_callback);
-    glfwSetMouseButtonCallback(glfw_window, glfw_mouse_button_callback);
-    glfwSetCursorPosCallback(glfw_window, glfw_cursor_pos_callback);
+    init_resources();
+
+    load_window_icon();
+
+    setup_callbacks();
 
     // to disable vsync uncomment this line
     //    glfwSwapInterval(0);
@@ -358,15 +401,13 @@ int main(int argc, char **argv) {
     // ImGui installs its own glfw callbacks, which will then call our previously installed callbacks
     initImGui(glfw_window);
 
-    init_resources();
-
     glEnable(GL_DEPTH_TEST);
     //  enableOpenGLDebugging();
 
     std::string renderer = std::string((const char *)glGetString(GL_RENDERER));
     std::string version = std::string((const char *)glGetString(GL_VERSION));
-    std::cout << fmt::format("Graphics Card: {}", renderer) << std::endl;
-    std::cout << fmt::format("OpenGL Version: {}", version) << std::endl;
+    platform.logf("Graphics Card: {}", renderer);
+    platform.logf("OpenGL Version: {}", version);
 
 #if EMSCRIPTEN
     emscripten_set_main_loop(run_main_loop, 0, 1);

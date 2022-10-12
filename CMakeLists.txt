@@ -128,6 +128,7 @@ function(register_resources resources_var)
 endfunction()
 
 register_resources(RESOURCES
+        res/icon.bmp
         res/shaders/fragment.glsl
         res/shaders/vertex.glsl
         res/font/Arial.ttf

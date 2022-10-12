@@ -140,7 +140,7 @@ void init(Platform &platform) {
     std::srand(1337);
     platform.memory.isInitialized = true;
 
-    GameState *gameState = (GameState *)reservePermanentMemory(platform, sizeof(GameState));
+    auto gameState = (GameState *)reservePermanentMemory(platform, sizeof(GameState));
     *gameState = {};
 
     glClearColor(1.0, 0, 1.0, 1.0);

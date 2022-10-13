@@ -233,11 +233,14 @@ struct BitmapHeader {
 #pragma pack(pop)
 
 GameState *getGameState(Platform &platform);
-void resetGameState(GameState *gameState);
-void spawnBullet(GameState *gameState, glm::vec2 position, glm::vec2 direction, bool playerBullet);
 
-struct Platform;
+#ifdef HOT_RELOAD
+typedef void update_and_render_func(Platform &platform);
+typedef void init_resources_func();
+#else
 void update_and_render(Platform &platform);
+void init_resources();
+#endif
 
 #if SOUND_ENABLE
 #define GET_SOUND_SAMPLES(name) void name(GameMemory *memory, SoundBuffer *soundBuffer)

@@ -59,26 +59,31 @@ struct Input {
     bool minusKeyPressed, minusKeyClicked;
 };
 
+typedef void exit_func();
+typedef void abort_func(const std::string &msg);
+typedef void log_func(const std::string &msg);
+typedef int64_t last_modified_func(const std::string &file_path);
+typedef File read_file_func(const std::string &file_path, bool is_resource);
+typedef void free_file_func(File &file);
+
 struct Platform {
     GameMemory memory = {};
     Input input = {};
     double frameTimeMs = 0.0;
 
     // ---------------------------------------------------
-    /// crash the game because of a fatal error
-    void abort(const std::string &msg);
     /// gracefully shut down game
-    void exit();
+    exit_func *exit = nullptr;
+    /// crash the game because of a fatal error
+    abort_func *abort = nullptr;
     /// log a message to the console
-    void log(const std::string &msg);
-    /// reads a file from disk
-    File read_file(const std::string &file_path, bool is_resource);
-    /// releases the memory that was allocated for the given file
-    void free_file(File &file);
+    log_func *log = nullptr;
     /// returns the last modification time in nanoseconds since the epoch
-    int64_t last_modified(const std::string &file_path);
-    /// writes a file to disk
-    bool write_file(const File &file);
+    last_modified_func *last_modified = nullptr;
+    /// reads a file from disk
+    read_file_func *read_file = nullptr;
+    /// releases the memory that was allocated for the given file
+    free_file_func *free_file = nullptr;
     // ---------------------------------------------------
 
     template <typename... T> void logf(fmt::format_string<T...> fmt, T &&...args) {

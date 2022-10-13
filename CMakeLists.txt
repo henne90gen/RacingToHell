@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.16)
 
 project(RacingToHell)
 
+option(HOT_RELOAD "Build with code hot reloading enabled" OFF)
+
 if (EMSCRIPTEN)
     set(CMAKE_EXECUTABLE_SUFFIX ".js")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s USE_GLFW=3")
@@ -119,10 +121,13 @@ function(register_resources resources_var)
             "#include <unordered_map>\n\n"
             "extern std::unordered_map<std::string, Resource *> resources;\n\n"
             "${resource_definitions}\n"
+            "#ifdef HOT_RELOAD\n"
+            "extern \"C\" __declspec(dllexport)\n"
+            "#endif\n"
             "void init_resources() {\n"
             "${resource_additions}"
             "}\n"
-    )
+            )
     set(${resources_var} ${output_file} PARENT_SCOPE)
     message(STATUS "Registering resources done")
 endfunction()
@@ -163,7 +168,7 @@ register_resources(RESOURCES
         res/textures/roads/road3.bmp
         res/textures/toolbox.bmp)
 
-add_library(game
+set(SOURCES
         src/Boss.cpp
         src/Collision.cpp
         src/Demos.cpp
@@ -179,6 +184,14 @@ add_library(game
         src/Shader.cpp
         src/Sound.cpp
         ${RESOURCES})
+
+if (HOT_RELOAD)
+    add_library(game SHARED ${SOURCES})
+    target_compile_definitions(game PUBLIC HOT_RELOAD)
+else ()
+    add_library(game STATIC ${SOURCES})
+endif ()
+
 target_link_libraries(game PUBLIC
         fmt::fmt
         glm::glm
@@ -192,4 +205,7 @@ if (NOT ANDROID)
     add_executable(RacingToHell src/main.cpp)
     target_link_libraries(RacingToHell game glfw glad)
     set_property(TARGET RacingToHell PROPERTY CXX_STANDARD 20)
+    if (HOT_RELOAD)
+        target_compile_definitions(RacingToHell PUBLIC HOT_RELOAD)
+    endif ()
 endif ()

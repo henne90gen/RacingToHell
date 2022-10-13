@@ -18,6 +18,4 @@ struct Resource {
     [[nodiscard]] std::string get_file_name(Platform &platform) const;
 };
 
-void init_resources();
-
 std::optional<Resource *> get_resource(Platform &platform, const std::string &resource_name);

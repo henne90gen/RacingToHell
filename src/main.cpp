@@ -1,3 +1,7 @@
+#ifdef HOT_RELOAD
+#include <Windows.h>
+#endif
+
 #include <glad/glad.h>
 
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
@@ -18,6 +22,22 @@
 #include "Helper.h"
 #include "RacingToHell.h"
 #include "Resources.h"
+
+#ifdef HOT_RELOAD
+struct GameCode {
+    std::string sourceDllPath;
+    std::string tmpDllPath;
+    HMODULE gameCodeDLL = nullptr;
+    bool isValid = false;
+    int64_t lastModified = -1;
+
+    update_and_render_func *update_and_render = nullptr;
+    init_resources_func *init_resources = nullptr;
+
+    bool load();
+};
+GameCode gameCode = {};
+#endif
 
 GLFWwindow *glfw_window = nullptr;
 Platform platform = {};
@@ -50,27 +70,32 @@ void finish_im_gui_frame() {
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void Platform::abort(const std::string &msg) {
+void platform_exit() {
+    platform.log("Exiting...");
+    glfwSetWindowShouldClose(glfw_window, 1);
+}
+
+void platform_abort(const std::string &msg) {
     std::cerr << msg << std::endl;
     ::exit(1);
 }
 
-void Platform::log(const std::string &msg) { std::cout << msg << std::endl; }
+void platform_log(const std::string &msg) { std::cout << msg << std::endl; }
 
-File Platform::read_file(const std::string &file_path, bool is_resource) {
+File platform_read_file(const std::string &file_path, bool is_resource) {
     auto final_file_path = file_path;
     if (is_resource) {
 #if EMSCRIPTEN
         final_file_path = "/" + file_path;
 #else
-        final_file_path = memory.base_path + "/" + file_path;
+        final_file_path = platform.memory.base_path + "/" + file_path;
 #endif
     }
-    log("Reading " + final_file_path);
+    platform.log("Reading " + final_file_path);
 
     FILE *fileHandle = fopen(final_file_path.c_str(), "rb");
     if (!fileHandle) {
-        abort("Could not open file " + final_file_path);
+        platform.abort("Could not open file " + final_file_path);
     }
     fseek(fileHandle, 0, SEEK_END);
     long int file_size = ftell(fileHandle);
@@ -89,7 +114,7 @@ File Platform::read_file(const std::string &file_path, bool is_resource) {
     return file;
 }
 
-void Platform::free_file(File &file) {
+void platform_free_file(File &file) {
     if (file.content) {
         std::free(file.content);
     }
@@ -97,38 +122,37 @@ void Platform::free_file(File &file) {
     file.size = 0;
 }
 
-int64_t Platform::last_modified(const std::string &file_path) {
+int64_t platform_last_modified(const std::string &file_path) {
 #if EMSCRIPTEN
     return 0;
 #else
-    auto last_write_time = std::filesystem::last_write_time(file_path);
+    std::error_code ec;
+    auto last_write_time = std::filesystem::last_write_time(file_path, ec);
+    if (ec) {
+        return 0;
+    }
     return std::chrono::time_point_cast<std::chrono::milliseconds>(last_write_time).time_since_epoch().count();
 #endif
 }
 
-bool Platform::write_file(const File &file) {
-    log("Writing " + file.name);
+bool platform_write_file(const File &file) {
+    platform.log("Writing " + file.name);
 
     FILE *fHandle = fopen(file.name.c_str(), "wb");
     if (fHandle == NULL) {
-        log("ERROR - Failed to open file for writing");
+        platform.log("ERROR - Failed to open file for writing");
         return false;
     }
 
     if (fwrite((void *)file.content, 1, file.size, fHandle) != file.size) {
         std::string errorMsg = "ERROR - Failed to write " + std::to_string(file.size) + " bytes to file";
-        log(errorMsg);
+        platform.log(errorMsg);
         return false;
     }
 
     fclose(fHandle);
     fHandle = nullptr;
     return true;
-}
-
-void Platform::exit() {
-    log("Exiting...");
-    glfwSetWindowShouldClose(glfw_window, 1);
 }
 
 GameMemory initGameMemory(std::string_view base_path) {
@@ -147,18 +171,13 @@ GameMemory initGameMemory(std::string_view base_path) {
 
 void load_window_icon() {
     std::string resource_name = "res/icon.bmp";
-    auto resource_opt = get_resource(platform, resource_name);
-    if (!resource_opt.has_value()) {
-        platform.abort("Failed to load texture " + resource_name);
-    }
-
-    auto resource_content = resource_opt.value()->get_content(platform);
-    if (resource_content[0] != 'B' || resource_content[1] != 'M') {
+    auto file = platform.read_file(resource_name, true);
+    if (file.content[0] != 'B' || file.content[1] != 'M') {
         platform.abort(resource_name + " is not a bitmap file.");
     }
 
     int fileHeaderSize = 14;
-    BitmapHeader header = *((BitmapHeader *)(resource_content.data() + fileHeaderSize));
+    BitmapHeader header = *((BitmapHeader *)(file.content + fileHeaderSize));
 
     if (header.bitsPerPixel != 32) {
         platform.abort("Image must have 32-bit of color depth.");
@@ -169,8 +188,20 @@ void load_window_icon() {
     auto bytesPerPixel = header.bitsPerPixel / 8;
     void *content = malloc(width * height * bytesPerPixel);
 
-    importPixelData((void *)(resource_content.data() + header.size + fileHeaderSize), content, header.width,
-                    header.height, 0, 0, width, height);
+    auto src = (void *)(file.content + header.size + fileHeaderSize);
+    for (unsigned y = 0; y < height; y++) {
+        for (unsigned x = 0; x < width; x++) {
+            int srcIndex = (header.width - y - 1) * header.width + x;
+            int destIndex = y * width + x;
+            uint32_t color = ((uint32_t *)(src))[srcIndex];
+            uint8_t red = (color & 0xff000000) >> 24;
+            uint8_t green = (color & 0x00ff0000) >> 16;
+            uint8_t blue = (color & 0x0000ff00) >> 8;
+            uint8_t alpha = color & 0x000000ff;
+            color = (alpha << 24) + (blue << 16) + (green << 8) + red;
+            ((uint32_t *)(content))[destIndex] = color;
+        }
+    }
 
     GLFWimage icon = {};
     icon.width = width;
@@ -323,6 +354,94 @@ void setup_callbacks() {
     glfwSetCursorPosCallback(glfw_window, glfw_cursor_pos_callback);
 }
 
+#ifdef HOT_RELOAD
+std::string GetLastErrorAsString() {
+    // Get the error message ID, if any.
+    DWORD errorMessageID = ::GetLastError();
+    if (errorMessageID == 0) {
+        return {}; // No error message has been recorded
+    }
+
+    LPSTR messageBuffer = nullptr;
+
+    // Ask Win32 to give us the string version of that message ID.
+    // The parameters we pass in, tell Win32 to create the buffer that holds the message for us (because we don't yet
+    // know how long the message string will be).
+    size_t size =
+        FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                       NULL, errorMessageID, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&messageBuffer, 0, NULL);
+
+    // Copy the error message into a std::string.
+    std::string message(messageBuffer, size);
+
+    // Free the Win32's string's buffer.
+    LocalFree(messageBuffer);
+
+    return message;
+}
+
+bool GameCode::load() {
+    if (gameCodeDLL) {
+        FreeLibrary(gameCodeDLL);
+        gameCodeDLL = nullptr;
+    }
+    isValid = false;
+    update_and_render = nullptr;
+    init_resources = nullptr;
+
+    if (sourceDllPath.empty()) {
+        char filename[1000];
+        GetModuleFileNameA(nullptr, filename, sizeof(filename));
+        auto exePath = std::filesystem::path(std::string(filename)).parent_path().generic_string();
+        sourceDllPath = exePath + "/game.dll";
+        tmpDllPath = exePath + "/game-tmp.dll";
+    }
+
+    lastModified = platform_last_modified(sourceDllPath);
+
+    CopyFile(sourceDllPath.c_str(), tmpDllPath.c_str(), FALSE);
+    gameCodeDLL = LoadLibraryA(tmpDllPath.c_str());
+
+    if (gameCodeDLL) {
+        update_and_render = (update_and_render_func *)GetProcAddress(gameCodeDLL, "update_and_render");
+        if (!update_and_render) {
+            platform_log(GetLastErrorAsString());
+        }
+
+        init_resources = (init_resources_func *)GetProcAddress(gameCodeDLL, "init_resources");
+        if (!init_resources) {
+            platform_log(GetLastErrorAsString());
+        }
+
+        isValid = update_and_render != nullptr && init_resources != nullptr;
+    } else {
+        platform_log(GetLastErrorAsString());
+    }
+
+    if (!isValid) {
+        update_and_render = nullptr;
+        init_resources = nullptr;
+    }
+
+    return !isValid;
+}
+#endif
+
+inline void update_and_render_game() {
+#ifndef HOT_RELOAD
+    update_and_render(platform);
+#else
+    auto last_modified = platform_last_modified(gameCode.sourceDllPath);
+    if (last_modified > gameCode.lastModified) {
+        if (!gameCode.load()) {
+            platform_abort("Failed to load game code");
+        }
+        gameCode.init_resources();
+    }
+    gameCode.update_and_render(platform);
+#endif
+}
+
 void run_main_loop() {
     auto now = std::chrono::high_resolution_clock::now();
     auto timeDiff = now - previousTime;
@@ -334,7 +453,7 @@ void run_main_loop() {
     start_im_gui_frame();
 
     check_input_for_clicks(platform.input);
-    update_and_render(platform);
+    update_and_render_game();
 
     finish_im_gui_frame();
 
@@ -346,6 +465,12 @@ void run_main_loop() {
 
 int main(int argc, char **argv) {
     std::cout << "Starting RacingToHell" << std::endl;
+
+#ifdef HOT_RELOAD
+    if (gameCode.load()) {
+        platform_abort("Failed to load game code");
+    }
+#endif
 
     if (glfwInit() == 0) {
         return 1;
@@ -385,8 +510,18 @@ int main(int argc, char **argv) {
 #endif
 
     platform.memory = initGameMemory(base_path);
+    platform.exit = platform_exit;
+    platform.abort = platform_abort;
+    platform.log = platform_log;
+    platform.last_modified = platform_last_modified;
+    platform.read_file = platform_read_file;
+    platform.free_file = platform_free_file;
 
+#ifdef HOT_RELOAD
+    gameCode.init_resources();
+#else
     init_resources();
+#endif
 
     load_window_icon();
 

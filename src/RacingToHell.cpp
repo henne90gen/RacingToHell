@@ -16,14 +16,19 @@ GameState *getGameState(Platform &platform) {
     return (GameState *)(platform.memory.permanent);
 }
 
-void update_and_render(Platform &platform) {
-    beginFrame(platform);
+#ifdef HOT_RELOAD
+extern "C" __declspec(dllexport)
+#endif
+    void update_and_render(Platform &platform) {
+    //    beginFrame(platform);
 
-    game(platform);
+    //    game(platform);
 
     //    textDemo(platform, AtomPlane::BACKGROUND);
     //    followingCarDemo(platform);
     //    animationDemo(platform, AtomPlane::MENU);
 
-    Render::flushBuffer(platform);
+    platform.log("Hello what");
+
+    //    Render::flushBuffer(platform);
 }

@@ -2,6 +2,7 @@
 
 #include "Helper.h"
 #include "Renderer.h"
+#include "Init.h"
 
 void addMenuItem(MenuItem *item, std::string text) {
     *item = {};

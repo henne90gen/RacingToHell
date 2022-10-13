@@ -12,12 +12,73 @@ Platform platform = {};
 int realWindowWidth, realWindowHeight;
 auto previousTime = std::chrono::high_resolution_clock::now();
 
+void platform_log(const std::string &msg) { __android_log_print(ANDROID_LOG_INFO, LOG_TAG, "%s", msg.c_str()); }
+
+void platform_exit() {
+    platform_log("Exiting.");
+    ::exit(0);
+}
+
+void platform_abort(const std::string &msg) {
+    __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, "%s", msg.c_str());
+    ::exit(1);
+}
+
+File platform_read_file(const std::string &file_path, bool is_resource) {
+    if (!is_resource) {
+        // TODO implement reading of non-resource files
+        platform_log("Reading of non-resource files is not supported on Android");
+        return {};
+    }
+
+    std::string assetName = file_path.substr(4, file_path.size() - 1);
+
+    platform_log("Reading " + assetName);
+
+    AAsset *asset = AAssetManager_open(asset_manager, assetName.c_str(), AASSET_MODE_STREAMING);
+
+    if (!asset) {
+        platform_abort("Couldn't open file " + assetName);
+    }
+
+    auto length = (size_t)AAsset_getLength(asset);
+    auto content = (char *)std::malloc(length);
+    std::memcpy(content, AAsset_getBuffer(asset), length);
+    AAsset_close(asset);
+
+    File file = {};
+    file.size = length;
+    file.name = file_path;
+    file.content = content;
+
+    return file;
+}
+
+void platform_free_file(File &file) {
+    if (file.content) {
+        std::free(file.content);
+    }
+
+    file.size = 0;
+}
+
+int64_t platform_last_modified(const std::string &file_path) {
+    // TODO maybe check for existence and only if it exists do the check
+    return 0;
+}
+
 extern "C" JNIEXPORT void JNICALL Java_game_racingtohell_NativeWrapper_on_1surface_1changed(JNIEnv *env UNUSED,
                                                                                             jclass clazz UNUSED,
                                                                                             jint width, jint height) {
     static bool memoryInitialized = false;
     if (!memoryInitialized) {
         memoryInitialized = true;
+        platform.exit = platform_exit;
+        platform.abort = platform_abort;
+        platform.log = platform_log;
+        platform.last_modified = platform_last_modified;
+        platform.read_file = platform_read_file;
+        platform.free_file = platform_free_file;
         platform.log("Initializing Game");
 
         init_resources();
@@ -83,59 +144,4 @@ extern "C" JNIEXPORT void JNICALL Java_game_racingtohell_NativeWrapper_on_1draw_
 extern "C" JNIEXPORT void JNICALL Java_game_racingtohell_NativeWrapper_init_1asset_1manager(
     JNIEnv *env UNUSED, jclass clazz UNUSED, jobject java_asset_manager) {
     asset_manager = AAssetManager_fromJava(env, java_asset_manager);
-}
-
-void Platform::abort(const std::string &msg) {
-    __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, "%s", msg.c_str());
-    ::exit(1);
-}
-
-void Platform::log(const std::string &msg) { __android_log_print(ANDROID_LOG_INFO, LOG_TAG, "%s", msg.c_str()); }
-
-File Platform::read_file(const std::string &file_path, bool is_resource) {
-    if (!is_resource) {
-        // TODO implement reading of non-resource files
-        log("Reading of non-resource files is not supported on Android");
-        return {};
-    }
-
-    std::string assetName = file_path.substr(4, file_path.size() - 1);
-
-    log("Reading " + assetName);
-
-    AAsset *asset = AAssetManager_open(asset_manager, assetName.c_str(), AASSET_MODE_STREAMING);
-
-    if (!asset) {
-        abort("Couldn't open file " + assetName);
-    }
-
-    auto length = (size_t)AAsset_getLength(asset);
-    auto content = (char *)std::malloc(length);
-    std::memcpy(content, AAsset_getBuffer(asset), length);
-    AAsset_close(asset);
-
-    File file = {};
-    file.size = length;
-    file.name = file_path;
-    file.content = content;
-
-    return file;
-}
-
-void Platform::free_file(File &file) {
-    if (file.content) {
-        std::free(file.content);
-    }
-
-    file.size = 0;
-}
-
-int64_t Platform::last_modified(const std::string &file_path) {
-    // TODO maybe check for existence and only if it exists do the check
-    return 0;
-}
-
-void Platform::exit() {
-    log("Exiting.");
-    ::exit(0);
 }

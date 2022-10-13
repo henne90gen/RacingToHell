@@ -3,10 +3,10 @@
 #include "RacingToHell.h"
 #include "Resources.h"
 
-GameState *beginFrame(Platform *platform);
+GameState *beginFrame(Platform &platform);
 void importPixelData(void *src, void *dest, unsigned srcWidth, unsigned srcHeight, int offsetX, int offsetY,
                      unsigned destWidth, unsigned destHeight);
-void checkShaders(Platform *platform);
+void checkShaders(Platform &platform);
 Render::Character *getCharacter(GameState *gameState, char character, unsigned fontSizeIndex);
 float calculateTextLength(GameState *gameState, std::string text, Render::FontSize fontSize);
 void scaleView(GameState *gameState);
@@ -28,5 +28,5 @@ void checkPlayerTileCollision(Player *player, Tile *tile);
 
 int getFontSize(GameState *gameState, int fontSizeIndex);
 void extractFileName(std::string fileName, const std::string &fileExtension, char result[]);
-void loadFont(Platform *platform, const std::string &fontFileName);
+void loadFont(Platform &platform, const std::string &fontFileName);
 void loadTextureToGraphicsMemory(Render::Texture *texture, void *content);

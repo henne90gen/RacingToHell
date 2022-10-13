@@ -232,14 +232,14 @@ struct BitmapHeader {
 };
 #pragma pack(pop)
 
-GameState *getGameState(Platform *platform);
+GameState *getGameState(Platform &platform);
 
 #ifdef HOT_RELOAD
-typedef void update_and_render_func(Platform *platform);
-typedef void init_resources_func(Platform *platform);
+typedef void update_and_render_func(Platform &platform);
+typedef void init_resources_func(Platform &platform);
 #else
-void update_and_render(Platform *platform);
-void init_resources();
+void update_and_render(Platform &platform);
+void init_resources(Platform &platform);
 #endif
 
 #if SOUND_ENABLE

@@ -8,22 +8,21 @@
 
 #include <glad/glad.h>
 
-#define IMGUI_IMPL_OPENGL_LOADER_GLAD
-
 #include <GLFW/glfw3.h>
-#include <backends/imgui_impl_glfw.h>
-#include <backends/imgui_impl_opengl3.h>
 #include <chrono>
 #include <filesystem>
-#include <fmt/core.h>
-#include <imgui.h>
 #include <iostream>
+
+#if WITH_IMGUI
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
+#include <imgui.h>
+#endif
 
 #if EMSCRIPTEN
 #include <emscripten.h>
 #endif
 
-#include "Helper.h"
 #include "RacingToHell.h"
 #include "Resources.h"
 
@@ -31,7 +30,7 @@
 struct GameCode {
     std::string sourceDllPath;
     std::string tmpDllPath;
-    int64_t lastModified = -1;
+    int64_t lastModified = std::numeric_limits<int64_t>::min();
 
 #if WIN32
     HMODULE gameCodeDLL = nullptr;
@@ -41,8 +40,6 @@ struct GameCode {
 
     update_and_render_func *update_and_render = nullptr;
     init_resources_func *init_resources = nullptr;
-
-    bool load();
 };
 GameCode gameCode = {};
 #endif
@@ -51,6 +48,7 @@ GLFWwindow *glfw_window = nullptr;
 Platform platform = {};
 auto previousTime = std::chrono::high_resolution_clock::now();
 
+#if WITH_IMGUI
 void initImGui(GLFWwindow *window) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -77,6 +75,7 @@ void finish_im_gui_frame() {
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
+#endif
 
 void platform_exit() {
     platform.log("Exiting...");
@@ -435,42 +434,50 @@ bool GameCode::load() {
     return !isValid;
 }
 #else
-bool GameCode::load() {
+void reload_game_code(GameCode &code) {
+    code.sourceDllPath = "./libgame.so";
+
+    if (!std::filesystem::exists(code.sourceDllPath)) {
+        return;
+    }
+
+    auto lastModified = platform_last_modified(code.sourceDllPath);
+    if (code.libraryHandle != nullptr && lastModified == code.lastModified) {
+        return;
+    }
+
+    if (code.libraryHandle != nullptr) {
+        dlclose(code.libraryHandle);
+        code.libraryHandle = nullptr;
+        code.update_and_render = nullptr;
+    }
+
     platform_log("Loading game code");
-    if (libraryHandle != nullptr) {
-        dlclose(libraryHandle);
-        libraryHandle = nullptr;
+
+    code.lastModified = lastModified;
+    code.libraryHandle = dlopen(code.sourceDllPath.c_str(), RTLD_LOCAL | RTLD_NOW);
+    if (!code.libraryHandle) {
+        platform_abort("Couldn't load library: " + std::string(dlerror()));
+        return;
     }
 
-    update_and_render = nullptr;
-    init_resources = nullptr;
-
-    sourceDllPath = "./libgame.so";
-
-    if (!std::filesystem::exists(sourceDllPath)) {
-        return true;
+    code.update_and_render = (update_and_render_func *)dlsym(code.libraryHandle, "update_and_render");
+    if (!code.update_and_render) {
+        platform_abort("Couldn't load 'update_and_render' function: " + std::string(dlerror()));
+        return;
     }
 
-    lastModified = platform_last_modified(sourceDllPath);
-    libraryHandle = dlopen(sourceDllPath.c_str(), RTLD_NOW);
-    if (!libraryHandle) {
-        platform_log("Couldn't load library: " + std::string(dlerror()));
-        return true;
+    code.init_resources = (init_resources_func *)dlsym(code.libraryHandle, "init_resources");
+    if (!code.init_resources) {
+        platform_abort("Couldn't load 'init_resources' function: " + std::string(dlerror()));
+        return;
     }
 
-    update_and_render = (update_and_render_func *)dlsym(libraryHandle, "update_and_render");
-    if (!update_and_render) {
-        platform_log("Couldn't load 'update_and_render' function: " + std::string(dlerror()));
-        return true;
+    auto dlsym_error = dlerror();
+    if (dlsym_error) {
+        platform_abort("Function loading failed" + std::string(dlsym_error));
+        return;
     }
-
-    init_resources = (init_resources_func *)dlsym(libraryHandle, "init_resources");
-    if (!init_resources) {
-        platform_log("Couldn't load 'init_resources' function: " + std::string(dlerror()));
-        return true;
-    }
-
-    return update_and_render == nullptr || init_resources == nullptr;
 }
 #endif
 #endif
@@ -479,14 +486,8 @@ inline void update_and_render_game() {
 #ifndef HOT_RELOAD
     update_and_render(platform);
 #else
-    auto last_modified = platform_last_modified(gameCode.sourceDllPath);
-    if (last_modified > gameCode.lastModified) {
-        if (gameCode.load()) {
-            platform_abort("Failed to load game code");
-        }
-        gameCode.init_resources(&platform);
-    }
-    gameCode.update_and_render(&platform);
+    reload_game_code(gameCode);
+    gameCode.update_and_render(platform);
 #endif
 }
 
@@ -498,12 +499,16 @@ void run_main_loop() {
     glClearColor(0.1F, 0.1F, 0.1F, 1.0F);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // NOLINT(hicpp-signed-bitwise)
 
+#if WITH_IMGUI
     start_im_gui_frame();
+#endif
 
     check_input_for_clicks(platform.input);
     update_and_render_game();
 
+#if WITH_IMGUI
     finish_im_gui_frame();
+#endif
 
     glfwSwapBuffers(glfw_window);
     glfwPollEvents();
@@ -515,9 +520,7 @@ int main(int argc, char **argv) {
     std::cout << "Starting RacingToHell" << std::endl;
 
 #ifdef HOT_RELOAD
-    if (gameCode.load()) {
-        platform_abort("Failed to load game code");
-    }
+    reload_game_code(gameCode);
 #endif
 
     if (glfwInit() == 0) {
@@ -536,6 +539,7 @@ int main(int argc, char **argv) {
     }
 
     glfwMakeContextCurrent(glfw_window);
+
     auto procAddress = reinterpret_cast<GLADloadproc>(glfwGetProcAddress);
     auto status = gladLoadGLLoader(procAddress);
     if (status == 0) {
@@ -566,9 +570,9 @@ int main(int argc, char **argv) {
     platform.free_file = platform_free_file;
 
 #ifdef HOT_RELOAD
-    gameCode.init_resources(&platform);
+    gameCode.init_resources(platform);
 #else
-    init_resources();
+    init_resources(platform);
 #endif
 
     load_window_icon();
@@ -582,7 +586,9 @@ int main(int argc, char **argv) {
     resizeViewport(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
 
     // ImGui installs its own glfw callbacks, which will then call our previously installed callbacks
+#if WITH_IMGUI
     initImGui(glfw_window);
+#endif
 
     glEnable(GL_DEPTH_TEST);
     //  enableOpenGLDebugging();

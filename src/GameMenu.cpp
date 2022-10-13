@@ -56,7 +56,7 @@ void loadGameOverMenu(GameState *gameState) {
     addMenuItem(&menu->items[menu->numberMenuItems++], "Back");
 }
 
-void loadMenu(Platform *platform, MenuState menuState) {
+void loadMenu(Platform &platform, MenuState menuState) {
     GameState *gameState = getGameState(platform);
     MenuState previousMenuState = gameState->menuState;
 
@@ -158,7 +158,7 @@ void handleMenuEnterGameOver(GameState *gameState) {
  * Process enter key being pressed
  * Action depends on the current menu and the selected menu item
  */
-void handleMenuEnter(Platform *platform, GameState *gameState) {
+void handleMenuEnter(Platform &platform, GameState *gameState) {
     switch (gameState->menuState) {
     case MenuState::MAIN:
         break;
@@ -180,7 +180,7 @@ void handleMenuEnter(Platform *platform, GameState *gameState) {
     }
 }
 
-void handleMenuEscape(Platform *platform) {
+void handleMenuEscape(Platform &platform) {
     auto gameState = getGameState(platform);
 
     switch (gameState->menuState) {
@@ -213,7 +213,7 @@ float bounce(float xIn) {
 /**
  * Renders a single menu item to screen
  */
-void renderMenuItem(Platform *platform, GameState *gameState, MenuItem *item, glm::vec2 position, bool menuHighlight,
+void renderMenuItem(Platform &platform, GameState *gameState, MenuItem *item, glm::vec2 position, bool menuHighlight,
                     bool highlight) {
     int r = 255, g = 255, b = 255;
     if (!menuHighlight) {
@@ -225,7 +225,7 @@ void renderMenuItem(Platform *platform, GameState *gameState, MenuItem *item, gl
         // make the highlighted item 'bounce'
         auto y = 0.0;
         if (item->bouncy) {
-            item->animationTimerMs += platform->frameTimeMs;
+            item->animationTimerMs += platform.frameTimeMs;
             if (item->animationTimerMs <= 500.0) {
                 y = bounce(item->animationTimerMs);
             }
@@ -236,14 +236,14 @@ void renderMenuItem(Platform *platform, GameState *gameState, MenuItem *item, gl
     Render::pushText(gameState, std::string(item->text), position, Render::FontSize::Large, color, AtomPlane::MENU);
 }
 
-void updateAndRenderCarSelection(Platform *platform, GameState *gameState, bool menuHighlight) {
+void updateAndRenderCarSelection(Platform &platform, GameState *gameState, bool menuHighlight) {
     auto color = glm::vec4(1, 1, 1, 1);
     auto position = glm::vec2(0, -1.1);
 
     {
         // use the menu items for the selection
         auto &animationTimer = gameState->menus[2].items[0].animationTimerMs;
-        animationTimer -= platform->frameTimeMs;
+        animationTimer -= platform.frameTimeMs;
         if (animationTimer < 0.0) {
             animationTimer = 0.0;
         }
@@ -259,7 +259,7 @@ void updateAndRenderCarSelection(Platform *platform, GameState *gameState, bool 
     {
         // use the menu items for the selection
         auto &animationTimer = gameState->menus[2].items[1].animationTimerMs;
-        animationTimer -= platform->frameTimeMs;
+        animationTimer -= platform.frameTimeMs;
         if (animationTimer < 0.0) {
             animationTimer = 0.0;
         }
@@ -273,7 +273,7 @@ void updateAndRenderCarSelection(Platform *platform, GameState *gameState, bool 
     }
 }
 
-void renderCarStatisticBars(Platform *platform) {
+void renderCarStatisticBars(Platform &platform) {
     // TODO render car statistic bars
 }
 
@@ -306,21 +306,21 @@ void changeCarSelection(GameState *gameState, int direction) {
     }
 }
 
-void updateMainMenu(Platform *platform) {
+void updateMainMenu(Platform &platform) {
     auto gameState = getGameState(platform);
-    if (platform->input.escapeKeyClicked) {
+    if (platform.input.escapeKeyClicked) {
         if (gameState->activeMenuIdx == 0) {
-            platform->exit();
+            platform.exit();
         } else if (gameState->activeMenuIdx == 1) {
             goFromDifficultyToMain(gameState, false);
         } else if (gameState->activeMenuIdx == 2) {
             goFromCarToMain(gameState, false);
         } else {
-            platform->abortf("Invalid active menu: {}", gameState->activeMenuIdx);
+            platform.abortf("Invalid active menu: {}", gameState->activeMenuIdx);
         }
     }
 
-    if (platform->input.enterKeyClicked) {
+    if (platform.input.enterKeyClicked) {
         Menu *activeMenu = &gameState->menus[gameState->activeMenuIdx];
         switch (gameState->activeMenuIdx) {
         case 0:
@@ -338,7 +338,7 @@ void updateMainMenu(Platform *platform) {
                 loadMenu(platform, MenuState::CREDITS);
                 break;
             case MainMenuItem::EXIT:
-                platform->exit();
+                platform.exit();
                 break;
             }
             break;
@@ -351,24 +351,24 @@ void updateMainMenu(Platform *platform) {
         }
     }
 
-    if (platform->input.leftKeyClicked && gameState->activeMenuIdx == 2) {
+    if (platform.input.leftKeyClicked && gameState->activeMenuIdx == 2) {
         changeCarSelection(gameState, -1);
         gameState->menus[2].items[0].animationTimerMs = 500.0;
     }
-    if (platform->input.rightKeyClicked && gameState->activeMenuIdx == 2) {
+    if (platform.input.rightKeyClicked && gameState->activeMenuIdx == 2) {
         changeCarSelection(gameState, 1);
         gameState->menus[2].items[1].animationTimerMs = 500.0;
     }
 }
 
-void updatePauseMenu(Platform *platform) {
+void updatePauseMenu(Platform &platform) {
     GameState *gameState = getGameState(platform);
 
-    if (platform->input.escapeKeyClicked) {
+    if (platform.input.escapeKeyClicked) {
         loadMenu(platform, MenuState::GAME);
     }
 
-    if (platform->input.enterKeyClicked) {
+    if (platform.input.enterKeyClicked) {
         auto &activeMenu = gameState->menus[gameState->activeMenuIdx];
         if ((PauseMenuItem)activeMenu.currentMenuItemIdx == PauseMenuItem::RESUME) {
             loadMenu(platform, MenuState::GAME);
@@ -380,7 +380,7 @@ void updatePauseMenu(Platform *platform) {
     }
 }
 
-void updateActiveMenu(Platform *platform) {
+void updateActiveMenu(Platform &platform) {
     GameState *gameState = getGameState(platform);
 
     switch (gameState->menuState) {
@@ -401,10 +401,10 @@ void updateActiveMenu(Platform *platform) {
     }
 
     Menu *activeMenu = &gameState->menus[gameState->activeMenuIdx];
-    if (platform->input.upKeyClicked) {
+    if (platform.input.upKeyClicked) {
         changeMenuItemSelection(activeMenu, -1);
     }
-    if (platform->input.downKeyClicked) {
+    if (platform.input.downKeyClicked) {
         changeMenuItemSelection(activeMenu, 1);
     }
 }
@@ -412,7 +412,7 @@ void updateActiveMenu(Platform *platform) {
 /**
  * Updates and renders all the menus
  */
-void updateAndRenderMenus(Platform *platform) {
+void updateAndRenderMenus(Platform &platform) {
     GameState *gameState = getGameState(platform);
 
     updateActiveMenu(platform);

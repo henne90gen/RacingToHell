@@ -9,11 +9,11 @@
 /**
  * Retrieves the GameState from memory
  */
-GameState *getGameState(Platform *platform) {
-    if (!platform->memory.isInitialized) {
+GameState *getGameState(Platform &platform) {
+    if (!platform.memory.isInitialized) {
         init(platform);
     }
-    return (GameState *)(platform->memory.permanent);
+    return (GameState *)(platform.memory.permanent);
 }
 
 #ifdef HOT_RELOAD
@@ -22,10 +22,10 @@ extern "C"
     __declspec(dllexport)
 #endif
 #endif
-        void update_and_render(Platform *platform) {
+        void update_and_render(Platform &platform) {
     beginFrame(platform);
 
-     game(platform);
+    game_demo(platform);
 
     //    textDemo(platform, AtomPlane::BACKGROUND);
     //    followingCarDemo(platform);

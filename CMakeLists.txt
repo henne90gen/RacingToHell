@@ -85,9 +85,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED 20)
 if (HOT_RELOAD)
     add_library(glad SHARED glad/src/glad.c)
     target_compile_definitions(glad PRIVATE GLAD_GLAPI_EXPORT GLAD_GLAPI_EXPORT_BUILD)
-else()
+else ()
     add_library(glad STATIC glad/src/glad.c)
-endif()
+endif ()
 target_include_directories(glad PUBLIC glad/include)
 
 if (NOT ANDROID)
@@ -99,7 +99,7 @@ if (NOT ANDROID)
             "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp"
             "${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp")
     target_include_directories(imgui PUBLIC "${imgui_SOURCE_DIR}")
-    target_link_libraries(imgui PUBLIC glad glfw)
+    target_link_libraries(imgui PUBLIC glfw)
 else ()
     add_library(imgui
             "${imgui_SOURCE_DIR}/imgui.cpp"
@@ -117,7 +117,7 @@ function(register_resources resources_var)
         string(MAKE_C_IDENTIFIER ${resource} identifier)
         get_filename_component(resource_absolute ${resource} ABSOLUTE)
         string(APPEND resource_definitions "Resource ${identifier}_resource(\"${resource}\");\n")
-        string(APPEND resource_additions "    platform->resources[${identifier}_resource.resource_name] = &${identifier}_resource;\n")
+        string(APPEND resource_additions "    platform.resources[${identifier}_resource.resource_name] = &${identifier}_resource;\n")
     endforeach ()
     set(output_file ${CMAKE_CURRENT_BINARY_DIR}/resources.cpp)
     file(WRITE ${output_file}
@@ -130,7 +130,7 @@ function(register_resources resources_var)
             "__declspec(dllexport)\n"
             "#endif\n"
             "#endif\n"
-            "void init_resources(Platform *platform) {\n"
+            "void init_resources(Platform &platform) {\n"
             "${resource_additions}"
             "}\n"
             )
@@ -194,29 +194,38 @@ set(SOURCES
 if (HOT_RELOAD)
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/temp)
     add_library(game SHARED ${SOURCES})
-    target_link_libraries(game PUBLIC glad)
+    target_include_directories(game PRIVATE glad/include)
     target_compile_definitions(game PUBLIC HOT_RELOAD GLAD_GLAPI_EXPORT)
     add_custom_command(TARGET game POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:game> ${CMAKE_BINARY_DIR}/libgame.so
-    )
+            COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:game> ${CMAKE_BINARY_DIR}/libgame.so.new && ${CMAKE_COMMAND} -E rename ${CMAKE_BINARY_DIR}/libgame.so.new ${CMAKE_BINARY_DIR}/libgame.so
+            )
 else ()
     add_library(game STATIC ${SOURCES})
+    target_include_directories(game PRIVATE glad/include)
 endif ()
 
 target_link_libraries(game PUBLIC
         fmt::fmt
         glm::glm
-        imgui
-        freetype
-        ${OPENGL_gl_LIBRARY})
+        freetype)
 target_include_directories(game PUBLIC ${OPENGL_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set_property(TARGET game PROPERTY CXX_STANDARD 20)
+set_property(TARGET game PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 if (NOT ANDROID)
     add_executable(RacingToHell src/main.cpp)
-    target_link_libraries(RacingToHell game glfw glad)
+    target_link_libraries(RacingToHell
+            fmt::fmt
+            glm::glm
+            freetype
+            glfw
+            OpenGL::GL
+            glad)
     set_property(TARGET RacingToHell PROPERTY CXX_STANDARD 20)
     if (HOT_RELOAD)
         target_compile_definitions(RacingToHell PUBLIC HOT_RELOAD)
+        add_dependencies(RacingToHell game)
+    else ()
+        target_link_libraries(RacingToHell game)
     endif ()
 endif ()

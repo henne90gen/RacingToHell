@@ -9,7 +9,7 @@
 /**
  * Load all audio clips that are going to be used into memory
  */
-void loadAudioClips(Platform *platform) {
+void loadAudioClips(Platform &platform) {
     GameState *gameState = getGameState(platform);
     gameState->resources.aiShot = Sound::loadWAV(platform, "res/sound/shotAI.wav");
     gameState->resources.playerShot = Sound::loadWAV(platform, "res/sound/shotPlayer.wav");
@@ -19,23 +19,23 @@ void loadAudioClips(Platform *platform) {
 /**
  * Load a texture from a bmp file and pushes it to the graphics card
  */
-Render::Texture loadTexture(Platform *platform, const std::string &resource_name, int xDivision = 1,
+Render::Texture loadTexture(Platform &platform, const std::string &resource_name, int xDivision = 1,
                             int yDivision = 1) {
     auto resource_opt = get_resource(platform, resource_name);
     if (!resource_opt.has_value()) {
-        platform->abort("Failed to load texture " + resource_name);
+        platform.abort("Failed to load texture " + resource_name);
     }
 
     auto resource_content = resource_opt.value()->get_content(platform);
     if (resource_content[0] != 'B' || resource_content[1] != 'M') {
-        platform->abort(resource_name + " is not a bitmap file.");
+        platform.abort(resource_name + " is not a bitmap file.");
     }
 
     int fileHeaderSize = 14;
     BitmapHeader header = *((BitmapHeader *)(resource_content.data() + fileHeaderSize));
 
     if (header.bitsPerPixel != 32) {
-        platform->abort("Image must have 32-bit of color depth.");
+        platform.abort("Image must have 32-bit of color depth.");
     }
 
     Render::Texture texture = {};
@@ -59,7 +59,7 @@ Render::Texture loadTexture(Platform *platform, const std::string &resource_name
 /**
  * Load all textures that are going to be used into memory
  */
-void loadTextures(Platform *platform) {
+void loadTextures(Platform &platform) {
     GameState *gameState = getGameState(platform);
 
     gameState->resources.bulletTexture = loadTexture(platform, "res/textures/bullet.bmp");
@@ -136,9 +136,9 @@ void resetGameState(GameState *gameState) {
 /**
  * Initialize the game appropriately
  */
-void init(Platform *platform) {
+void init(Platform &platform) {
     std::srand(1337);
-    platform->memory.isInitialized = true;
+    platform.memory.isInitialized = true;
 
     auto gameState = (GameState *)reservePermanentMemory(platform, sizeof(GameState));
     *gameState = {};

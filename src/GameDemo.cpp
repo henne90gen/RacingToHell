@@ -30,12 +30,12 @@ Render::Texture *getPlayerTexture(GameState *gameState) {
 /**
  * Updates and renders the road in the background
  */
-void updateAndRenderRoad(Platform *platform, bool shouldUpdate) {
+void updateAndRenderRoad(Platform &platform, bool shouldUpdate) {
     GameState *gameState = getGameState(platform);
 
-    double roadHeight = 2.0 * (1.0 / platform->memory.aspectRatio);
+    double roadHeight = 2.0 * (1.0 / platform.memory.aspectRatio);
     if (shouldUpdate) {
-        gameState->roadOffset -= getRoadSpeed(gameState) * platform->frameTimeMs;
+        gameState->roadOffset -= getRoadSpeed(gameState) * platform.frameTimeMs;
         if (gameState->roadOffset < -roadHeight) {
             gameState->roadOffset = 0.0F;
         }
@@ -104,32 +104,32 @@ void spawnBullet(GameState *gameState, glm::vec2 position, glm::vec2 direction, 
  * 		- keeping him on screen
  * 		- shooting
  */
-void updatePlayer(Platform *platform) {
+void updatePlayer(Platform &platform) {
     auto gameState = getGameState(platform);
 
     glm::vec2 movement = {};
-    if (platform->input.leftKeyPressed) {
+    if (platform.input.leftKeyPressed) {
         movement.x = -1;
     }
-    if (platform->input.rightKeyPressed) {
+    if (platform.input.rightKeyPressed) {
         movement.x = 1;
     }
-    if (platform->input.leftKeyPressed && platform->input.rightKeyPressed) {
+    if (platform.input.leftKeyPressed && platform.input.rightKeyPressed) {
         movement.x = 0;
     }
 
-    if (platform->input.upKeyPressed) {
+    if (platform.input.upKeyPressed) {
         movement.y = 1;
     }
-    if (platform->input.downKeyPressed) {
+    if (platform.input.downKeyPressed) {
         movement.y = -1;
     }
-    if (platform->input.upKeyPressed && platform->input.downKeyPressed) {
+    if (platform.input.upKeyPressed && platform.input.downKeyPressed) {
         movement.y = 0;
     }
 
     // movement
-    gameState->player.position += movement * gameState->player.speed * float(platform->frameTimeMs) * 0.1F;
+    gameState->player.position += movement * gameState->player.speed * float(platform.frameTimeMs) * 0.1F;
 
     // energy
     gameState->player.fuel -= 1;
@@ -145,8 +145,8 @@ void updatePlayer(Platform *platform) {
     }
 
     // shooting
-    if (platform->input.shootKeyClicked) {
-        glm::vec2 direction = platform->input.mousePosition - gameState->player.position;
+    if (platform.input.shootKeyClicked) {
+        glm::vec2 direction = platform.input.mousePosition - gameState->player.position;
         spawnBullet(gameState, gameState->player.position, direction, true);
     }
 
@@ -180,7 +180,7 @@ void renderPlayer(GameState *gameState) {
  * Updates and renders a single bullet
  * Checks for collisions with other cars or the player
  */
-bool updateAndRenderBullet(Platform *platform, GameState *gameState, Bullet &bullet, bool isPlayerBullet,
+bool updateAndRenderBullet(Platform &platform, GameState *gameState, Bullet &bullet, bool isPlayerBullet,
                            bool shouldUpdate) {
     if (shouldUpdate) {
         bullet.position = bullet.position + bullet.velocity;
@@ -250,7 +250,7 @@ bool updateAndRenderBullet(Platform *platform, GameState *gameState, Bullet &bul
 /**
  * Updates and renders all bullets (player and AI)
  */
-void updateAndRenderBullets(Platform *platform, GameState *gameState, bool shouldUpdate) {
+void updateAndRenderBullets(Platform &platform, GameState *gameState, bool shouldUpdate) {
     for (int i = 0; i < gameState->nextAIBulletIndex; i++) {
         if (updateAndRenderBullet(platform, gameState, gameState->aiBullets[i], false, shouldUpdate)) {
             removeElement(gameState->aiBullets, &gameState->nextAIBulletIndex, &i);
@@ -430,15 +430,15 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState, bool should
 /**
  * Updates and renders the UI with player health, player energy and timer
  */
-void updateAndRenderUI(Platform *platform, bool shouldUpdate) {
+void updateAndRenderUI(Platform &platform, bool shouldUpdate) {
     GameState *gameState = getGameState(platform);
 
-    static auto energyColor = glm::vec4(0.9, 0.5, 0.1, 1);
-    static auto healthColor = glm::vec4(0.9, 0.5, 0.1, 1);
+    auto energyColor = glm::vec4(0.9, 0.5, 0.1, 1);
+    auto healthColor = glm::vec4(0.9, 0.5, 0.1, 1);
 
     float barWidth = 0.05;
     float screenWidth = 2.0;
-    float screenHeight = (1.0 / platform->memory.aspectRatio) * 2.0;
+    float screenHeight = (1.0 / platform.memory.aspectRatio) * 2.0;
 
     // energy
     Math::Rectangle fuelBar = {};
@@ -458,7 +458,7 @@ void updateAndRenderUI(Platform *platform, bool shouldUpdate) {
 /**
  * Updates and renders the game with all its entities
  */
-void updateAndRenderGame(Platform *platform, GameState *gameState, bool update) {
+void updateAndRenderGame(Platform &platform, GameState *gameState, bool update) {
     if (update) {
         updatePlayer(platform);
     }
@@ -476,12 +476,12 @@ void updateAndRenderGame(Platform *platform, GameState *gameState, bool update) 
     }
 }
 
-void game(Platform *platform) {
+void game_demo(Platform &platform) {
     GameState *gameState = getGameState(platform);
 
     updateAndRenderGame(platform, gameState, gameState->menuState == MenuState::GAME);
 
-    if (platform->input.escapeKeyClicked && gameState->menuState == MenuState::GAME) {
+    if (platform.input.escapeKeyClicked && gameState->menuState == MenuState::GAME) {
         loadMenu(platform, MenuState::PAUSE);
     } else if (gameState->menuState != MenuState::GAME) {
         updateAndRenderMenus(platform);

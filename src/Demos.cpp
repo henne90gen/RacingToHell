@@ -6,7 +6,7 @@
 #include <array>
 #include <fmt/core.h>
 
-void textDemo(Platform *platform, AtomPlane plane) {
+void textDemo(Platform &platform, AtomPlane plane) {
     static std::array<std::string, 3> fontFileNames = {
         "res/font/DejaVuSansMono.ttf",
         "res/font/ComicSans.ttf",
@@ -14,7 +14,7 @@ void textDemo(Platform *platform, AtomPlane plane) {
     };
     static int fontIndex = 0;
 
-    if (platform->input.enterKeyClicked) {
+    if (platform.input.enterKeyClicked) {
         loadFont(platform, fontFileNames[fontIndex]);
         fontIndex++;
         if (fontIndex >= 3) {
@@ -25,8 +25,8 @@ void textDemo(Platform *platform, AtomPlane plane) {
     GameState *gameState = getGameState(platform);
 
     Math::Rectangle rect = {};
-    rect.position = glm::vec2(-platform->memory.aspectRatio, 0.5);
-    rect.size = glm::vec2(platform->memory.aspectRatio * 2.0f, 1.0);
+    rect.position = glm::vec2(-platform.memory.aspectRatio, 0.5);
+    rect.size = glm::vec2(platform.memory.aspectRatio * 2.0f, 1.0);
     Render::pushRectangle(gameState, rect, glm::vec4(0, 1, 0, 1), plane - 1);
 
     std::string text = "The quick brown fox jumps over the lazy dog.";
@@ -40,7 +40,7 @@ void textDemo(Platform *platform, AtomPlane plane) {
     Render::pushText(gameState, text, position, Render::FontSize::Large, 0xff00ffff, plane);
 }
 
-void performanceDemo(Platform *platform, AtomType type) {
+void performanceDemo(Platform &platform, AtomType type) {
     GameState *gameState = getGameState(platform);
 
     AtomPlane plane = AtomPlane::AI;
@@ -77,13 +77,13 @@ void performanceDemo(Platform *platform, AtomType type) {
     }
 }
 
-void performanceDemo(Platform *platform, AtomType type, int n) {
+void performanceDemo(Platform &platform, AtomType type, int n) {
     for (int i = 0; i < n; i++) {
         performanceDemo(platform, type);
     }
 }
 
-void animationDemo(Platform *platform, AtomPlane plane) {
+void animationDemo(Platform &platform, AtomPlane plane) {
     GameState *gameState = getGameState(platform);
     Render::Texture *explosionTexture = &gameState->resources.explosion;
 
@@ -107,15 +107,15 @@ void animationDemo(Platform *platform, AtomPlane plane) {
     }
 }
 
-void followingCarDemo(Platform *platform) {
+void followingCarDemo(Platform &platform) {
     GameState *gameState = getGameState(platform);
 
-    if (platform->input.shootKeyPressed &&
+    if (platform.input.shootKeyPressed &&
         gameState->agentCount < (int)sizeof(gameState->agents) / (int)sizeof(Player)) {
-        platform->log(fmt::format("Spawning agent {}", gameState->agentCount));
+        platform.log(fmt::format("Spawning agent {}", gameState->agentCount));
         gameState->agents[gameState->agentCount++] = Agent();
         auto&agent = gameState->agents[gameState->agentCount - 1];
-        agent.position = platform->input.mousePosition;
+        agent.position = platform.input.mousePosition;
         agent.size = glm::vec2(0.05f, 0.10f);
         agent.maxSpeed = PLAYER_SPEED;
         agent.carIndex = std::rand() % NUM_PLAYER_TEXTURES;
@@ -126,7 +126,7 @@ void followingCarDemo(Platform *platform) {
 
         Render::Texture *texture = &gameState->resources.playerCarTextures[agent.carIndex];
 
-        glm::vec2 desired = platform->input.mousePosition - agent.position;
+        glm::vec2 desired = platform.input.mousePosition - agent.position;
         //		if (Math::length(desired) > 0.01f) {
         desired = Math::normalize(desired);
         desired = desired * static_cast<float>(agent.maxSpeed);

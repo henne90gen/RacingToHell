@@ -13,9 +13,9 @@ struct Resource {
 
     explicit Resource(std::string _resource_name);
 
-    std::string_view get_content(Platform *platform);
-    [[nodiscard]] bool has_changed(Platform *platform) const;
-    [[nodiscard]] std::string get_file_name(Platform *platform) const;
+    std::string_view get_content(Platform &platform);
+    [[nodiscard]] bool has_changed(Platform &platform) const;
+    [[nodiscard]] std::string get_file_name(Platform &platform) const;
 };
 
-std::optional<Resource *> get_resource(Platform *platform, const std::string &resource_name);
+std::optional<Resource *> get_resource(Platform &platform, const std::string &resource_name);

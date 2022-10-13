@@ -1,5 +1,9 @@
 #ifdef HOT_RELOAD
+#if WIN32
 #include <Windows.h>
+#else
+#include <dlfcn.h>
+#endif
 #endif
 
 #include <glad/glad.h>
@@ -27,9 +31,13 @@
 struct GameCode {
     std::string sourceDllPath;
     std::string tmpDllPath;
-    HMODULE gameCodeDLL = nullptr;
-    bool isValid = false;
     int64_t lastModified = -1;
+
+#if WIN32
+    HMODULE gameCodeDLL = nullptr;
+#else
+    void *libraryHandle;
+#endif
 
     update_and_render_func *update_and_render = nullptr;
     init_resources_func *init_resources = nullptr;
@@ -355,6 +363,7 @@ void setup_callbacks() {
 }
 
 #ifdef HOT_RELOAD
+#if WIN32
 std::string GetLastErrorAsString() {
     // Get the error message ID, if any.
     DWORD errorMessageID = ::GetLastError();
@@ -425,6 +434,46 @@ bool GameCode::load() {
 
     return !isValid;
 }
+#else
+bool GameCode::load() {
+    platform_log("Loading game code");
+    if (libraryHandle != nullptr) {
+        dlclose(libraryHandle);
+        libraryHandle = nullptr;
+    }
+
+    update_and_render = nullptr;
+    init_resources = nullptr;
+
+    sourceDllPath = "./libgame.so";
+
+    if (!std::filesystem::exists(sourceDllPath)) {
+        return true;
+    }
+
+    lastModified = platform_last_modified(sourceDllPath);
+
+    libraryHandle = dlopen(sourceDllPath.c_str(), RTLD_NOW);
+    if (!libraryHandle) {
+        platform_log("Couldn't load library: " + std::string(dlerror()));
+        return true;
+    }
+
+    update_and_render = (update_and_render_func *)dlsym(libraryHandle, "update_and_render");
+    if (!update_and_render) {
+        platform_log("Couldn't load 'update_and_render' function: " + std::string(dlerror()));
+        return true;
+    }
+
+    init_resources = (init_resources_func *)dlsym(libraryHandle, "init_resources");
+    if (!init_resources) {
+        platform_log("Couldn't load 'init_resources' function: " + std::string(dlerror()));
+        return true;
+    }
+
+    return update_and_render == nullptr || init_resources == nullptr;
+}
+#endif
 #endif
 
 inline void update_and_render_game() {
@@ -433,7 +482,7 @@ inline void update_and_render_game() {
 #else
     auto last_modified = platform_last_modified(gameCode.sourceDllPath);
     if (last_modified > gameCode.lastModified) {
-        if (!gameCode.load()) {
+        if (gameCode.load()) {
             platform_abort("Failed to load game code");
         }
         gameCode.init_resources();

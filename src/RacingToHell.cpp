@@ -17,7 +17,10 @@ GameState *getGameState(Platform &platform) {
 }
 
 #ifdef HOT_RELOAD
-extern "C" __declspec(dllexport)
+extern "C" 
+#if WIN32
+__declspec(dllexport)
+#endif
 #endif
     void update_and_render(Platform &platform) {
     //    beginFrame(platform);
@@ -28,6 +31,7 @@ extern "C" __declspec(dllexport)
     //    followingCarDemo(platform);
     //    animationDemo(platform, AtomPlane::MENU);
 
+    // asda
     platform.log("Hello what");
 
     //    Render::flushBuffer(platform);

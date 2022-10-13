@@ -77,7 +77,7 @@ struct Text {
 };
 
 void clearScreen(uint32_t color);
-void flushBuffer(Platform &platform);
+void flushBuffer(Platform *platform);
 
 void pushText(GameState *gameState, std::string text, glm::vec2 position, FontSize fontSize, uint32_t color,
               AtomPlane plane);

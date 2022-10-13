@@ -4,7 +4,7 @@
 
 #include <fmt/core.h>
 
-GLuint compileShader(Platform &platform, const GLenum type, Resource *shader) {
+GLuint compileShader(Platform *platform, const GLenum type, Resource *shader) {
     GLint compileStatus;
     GLuint shaderID = glCreateShader(type);
 
@@ -22,15 +22,15 @@ GLuint compileShader(Platform &platform, const GLenum type, Resource *shader) {
         if (infoLogLength > 0) {
             char *shaderErrorMessage = new char[infoLogLength + 1];
             glGetShaderInfoLog(shaderID, infoLogLength, nullptr, shaderErrorMessage);
-            platform.log(shaderErrorMessage);
+            platform->log(shaderErrorMessage);
         }
-        platform.abort(fmt::format("Failed to compile shader: {}\n{}", type, shader_content));
+        platform->abort(fmt::format("Failed to compile shader: {}\n{}", type, shader_content));
     }
 
     return shaderID;
 }
 
-GLuint linkProgram(Platform &platform, const GLuint vertex_shader, const GLuint fragment_shader) {
+GLuint linkProgram(Platform *platform, const GLuint vertex_shader, const GLuint fragment_shader) {
     GLuint programID = glCreateProgram();
     GLint linkStatus;
 
@@ -45,16 +45,16 @@ GLuint linkProgram(Platform &platform, const GLuint vertex_shader, const GLuint 
         if (infoLogLength > 0) {
             char *programErrorMessage = new char[infoLogLength + 1];
             glGetProgramInfoLog(programID, infoLogLength, nullptr, programErrorMessage);
-            platform.log(programErrorMessage);
+            platform->log(programErrorMessage);
         }
-        platform.abort("Failed to link shader program.");
+        platform->abort("Failed to link shader program.");
     }
 
     return programID;
 }
 
-GLuint buildProgram(Platform &platform, Resource *vertex_shader, Resource *fragment_shader) {
-    platform.log("Compiling shaders...");
+GLuint buildProgram(Platform *platform, Resource *vertex_shader, Resource *fragment_shader) {
+    platform->log("Compiling shaders...");
     GLuint vertex_shader_id = compileShader(platform, GL_VERTEX_SHADER, vertex_shader);
     GLuint fragment_shader_id = compileShader(platform, GL_FRAGMENT_SHADER, fragment_shader);
     return linkProgram(platform, vertex_shader_id, fragment_shader_id);

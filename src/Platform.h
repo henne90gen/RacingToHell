@@ -6,6 +6,7 @@
 #include <glm/vec2.hpp>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 
 #define DEFAULT_WINDOW_WIDTH 450
 #define DEFAULT_WINDOW_HEIGHT 800
@@ -66,10 +67,12 @@ typedef int64_t last_modified_func(const std::string &file_path);
 typedef File read_file_func(const std::string &file_path, bool is_resource);
 typedef void free_file_func(File &file);
 
+struct Resource;
 struct Platform {
     GameMemory memory = {};
     Input input = {};
     double frameTimeMs = 0.0;
+    std::unordered_map<std::string, Resource *> resources = {};
 
     // ---------------------------------------------------
     /// gracefully shut down game

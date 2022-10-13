@@ -42,12 +42,12 @@ uint32_t getChunkDataSize(RiffIterator iter) {
     return chunk->size;
 }
 
-LoadedSound loadWAV(Platform &platform, const std::string &path) {
+LoadedSound loadWAV(Platform *platform, const std::string &path) {
     LoadedSound result = {};
 
     auto resource_opt = get_resource(platform, path);
     if (!resource_opt.has_value()) {
-        platform.abort(path + " konnte nicht geladen werden.");
+        platform->abort(path + " konnte nicht geladen werden.");
     }
 
     auto content = resource_opt.value()->get_content(platform);
@@ -57,7 +57,7 @@ LoadedSound loadWAV(Platform &platform, const std::string &path) {
     int16_t *sampleData;
 
     if (header->riffId != WAVE_CHUNKID_RIFF || header->waveId != WAVE_CHUNKID_WAVE) {
-        platform.abort("Invalid WAV header");
+        platform->abort("Invalid WAV header");
     }
 
     for (RiffIterator iter = parseChunkAt(header + 1, (uint8_t *)(header + 1) + header->chunkSize - 4); isValid(iter);
@@ -96,7 +96,7 @@ LoadedSound loadWAV(Platform &platform, const std::string &path) {
             result.samples[1][sampleIndex] = source;
         }
     } else {
-        platform.abort("More than two channels aren't supported.");
+        platform->abort("More than two channels aren't supported.");
     }
 
     return result;

@@ -58,7 +58,7 @@ enum {
     WAVE_CHUNKID_WAVE = RIFF_CODE('W', 'A', 'V', 'E')
 };
 
-LoadedSound loadWAV(Platform &platform, const std::string &path);
+LoadedSound loadWAV(Platform *platform, const std::string &path);
 void getSoundSamples(GameMemory *memory, SoundBuffer *soundBuffer);
 void output(GameState *state, LoadedSound *loadedSound, float volumeLeft, float volumeRight, Mode mode);
 } // namespace Sound

@@ -82,7 +82,12 @@ endif ()
 
 set(CMAKE_CXX_STANDARD_REQUIRED 20)
 
-add_library(glad glad/src/glad.c)
+if (HOT_RELOAD)
+    add_library(glad SHARED glad/src/glad.c)
+    target_compile_definitions(glad PRIVATE GLAD_GLAPI_EXPORT GLAD_GLAPI_EXPORT_BUILD)
+else()
+    add_library(glad STATIC glad/src/glad.c)
+endif()
 target_include_directories(glad PUBLIC glad/include)
 
 if (NOT ANDROID)
@@ -112,14 +117,12 @@ function(register_resources resources_var)
         string(MAKE_C_IDENTIFIER ${resource} identifier)
         get_filename_component(resource_absolute ${resource} ABSOLUTE)
         string(APPEND resource_definitions "Resource ${identifier}_resource(\"${resource}\");\n")
-        string(APPEND resource_additions "    resources[${identifier}_resource.resource_name] = &${identifier}_resource;\n")
+        string(APPEND resource_additions "    platform->resources[${identifier}_resource.resource_name] = &${identifier}_resource;\n")
     endforeach ()
     set(output_file ${CMAKE_CURRENT_BINARY_DIR}/resources.cpp)
     file(WRITE ${output_file}
             "#include \"Resources.h\"\n"
-            "#include <string>\n"
-            "#include <unordered_map>\n\n"
-            "extern std::unordered_map<std::string, Resource *> resources;\n\n"
+            "#include <string>\n\n"
             "${resource_definitions}\n"
             "#ifdef HOT_RELOAD\n"
             "extern \"C\"\n"
@@ -127,7 +130,7 @@ function(register_resources resources_var)
             "__declspec(dllexport)\n"
             "#endif\n"
             "#endif\n"
-            "void init_resources() {\n"
+            "void init_resources(Platform *platform) {\n"
             "${resource_additions}"
             "}\n"
             )
@@ -189,8 +192,13 @@ set(SOURCES
         ${RESOURCES})
 
 if (HOT_RELOAD)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/temp)
     add_library(game SHARED ${SOURCES})
-    target_compile_definitions(game PUBLIC HOT_RELOAD)
+    target_link_libraries(game PUBLIC glad)
+    target_compile_definitions(game PUBLIC HOT_RELOAD GLAD_GLAPI_EXPORT)
+    add_custom_command(TARGET game POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:game> ${CMAKE_BINARY_DIR}/libgame.so
+    )
 else ()
     add_library(game STATIC ${SOURCES})
 endif ()

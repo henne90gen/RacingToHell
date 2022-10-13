@@ -452,7 +452,6 @@ bool GameCode::load() {
     }
 
     lastModified = platform_last_modified(sourceDllPath);
-
     libraryHandle = dlopen(sourceDllPath.c_str(), RTLD_NOW);
     if (!libraryHandle) {
         platform_log("Couldn't load library: " + std::string(dlerror()));
@@ -485,9 +484,9 @@ inline void update_and_render_game() {
         if (gameCode.load()) {
             platform_abort("Failed to load game code");
         }
-        gameCode.init_resources();
+        gameCode.init_resources(&platform);
     }
-    gameCode.update_and_render(platform);
+    gameCode.update_and_render(&platform);
 #endif
 }
 
@@ -567,7 +566,7 @@ int main(int argc, char **argv) {
     platform.free_file = platform_free_file;
 
 #ifdef HOT_RELOAD
-    gameCode.init_resources();
+    gameCode.init_resources(&platform);
 #else
     init_resources();
 #endif

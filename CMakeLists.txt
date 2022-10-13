@@ -218,8 +218,10 @@ if (NOT ANDROID)
             glm::glm
             freetype
             glfw
-            OpenGL::GL
             glad)
+    if (NOT EMSCRIPTEN)
+        target_link_libraries(RacingToHell OpenGL::GL)
+    endif ()
     set_property(TARGET RacingToHell PROPERTY CXX_STANDARD 20)
     if (HOT_RELOAD)
         target_compile_definitions(RacingToHell PUBLIC HOT_RELOAD)

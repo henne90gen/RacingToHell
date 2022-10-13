@@ -81,7 +81,7 @@ extern "C" JNIEXPORT void JNICALL Java_game_racingtohell_NativeWrapper_on_1surfa
         platform.free_file = platform_free_file;
         platform.log("Initializing Game");
 
-        init_resources();
+        init_resources(platform);
 
         auto procAddress = reinterpret_cast<GLADloadproc>(eglGetProcAddress);
         auto status = gladLoadGLES2Loader(procAddress);

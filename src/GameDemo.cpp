@@ -476,7 +476,7 @@ void updateAndRenderGame(Platform &platform, GameState *gameState, bool update) 
     }
 }
 
-void game_demo(Platform &platform) {
+void game(Platform &platform) {
     GameState *gameState = getGameState(platform);
 
     updateAndRenderGame(platform, gameState, gameState->menuState == MenuState::GAME);

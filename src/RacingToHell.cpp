@@ -25,7 +25,7 @@ extern "C"
         void update_and_render(Platform &platform) {
     beginFrame(platform);
 
-    game_demo(platform);
+    game(platform);
 
     //    textDemo(platform, AtomPlane::BACKGROUND);
     //    followingCarDemo(platform);

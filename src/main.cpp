@@ -499,6 +499,9 @@ void run_main_loop() {
     auto timeDiff = now - previousTime;
     platform.frameTimeMs = double(timeDiff.count()) / 1000000.0;
 
+    static unsigned int VAO;
+    glGenVertexArrays(1, &VAO);
+
     glClearColor(0.1F, 0.1F, 0.1F, 1.0F);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // NOLINT(hicpp-signed-bitwise)
 

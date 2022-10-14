@@ -31,13 +31,14 @@ void textDemo(Platform &platform, AtomPlane plane) {
 
     std::string text = "The quick brown fox jumps over the lazy dog.";
     glm::vec2 position = glm::vec2(-1.7f, 0.3);
-    Render::pushText(gameState, text, position, Render::FontSize::Small, 0xff00ffff, plane);
+    const auto color = glm::vec4(1, 0, 1, 1);
+    Render::pushText(gameState, text, position, Render::FontSize::Small, color, plane);
 
     position = glm::vec2(-1.7f, 0);
-    Render::pushText(gameState, text, position, Render::FontSize::Medium, 0xff00ffff, plane);
+    Render::pushText(gameState, text, position, Render::FontSize::Medium, color, plane);
 
     position = glm::vec2(-1.7f, -0.35);
-    Render::pushText(gameState, text, position, Render::FontSize::Large, 0xff00ffff, plane);
+    Render::pushText(gameState, text, position, Render::FontSize::Large, color, plane);
 }
 
 void performanceDemo(Platform &platform, AtomType type) {
@@ -67,12 +68,12 @@ void performanceDemo(Platform &platform, AtomType type) {
     } break;
     case AtomType::CIRCLE: {
         glm::vec2 position = glm::vec2();
-        Render::pushCircle(gameState, position, 1, 0xff0000ff, plane);
+        Render::pushCircle(gameState, position, 1, glm::vec4(1, 0, 0, 1), plane);
     } break;
     case AtomType::TEXT: {
         glm::vec2 position = glm::vec2(-1.7f, 0.7);
         std::string msg = "The quick brown fox jumps over the lazy dog";
-        Render::pushText(gameState, msg, position, Render::FontSize::Medium, 0xff0000ff, plane);
+        Render::pushText(gameState, msg, position, Render::FontSize::Medium, glm::vec4(1, 0, 0, 1), plane);
     } break;
     }
 }
@@ -114,7 +115,7 @@ void followingCarDemo(Platform &platform) {
         gameState->agentCount < (int)sizeof(gameState->agents) / (int)sizeof(Player)) {
         platform.log(fmt::format("Spawning agent {}", gameState->agentCount));
         gameState->agents[gameState->agentCount++] = Agent();
-        auto&agent = gameState->agents[gameState->agentCount - 1];
+        auto &agent = gameState->agents[gameState->agentCount - 1];
         agent.position = platform.input.mousePosition;
         agent.size = glm::vec2(0.05f, 0.10f);
         agent.maxSpeed = PLAYER_SPEED;

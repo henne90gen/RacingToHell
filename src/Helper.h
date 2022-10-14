@@ -8,7 +8,7 @@ void importPixelData(void *src, void *dest, unsigned srcWidth, unsigned srcHeigh
                      unsigned destWidth, unsigned destHeight);
 void checkShaders(Platform &platform);
 Render::Character *getCharacter(GameState *gameState, char character, unsigned fontSizeIndex);
-float calculateTextLength(GameState *gameState, std::string text, Render::FontSize fontSize);
+glm::vec2 calculateTextSize(GameState *gameState, std::string text, Render::FontSize fontSize);
 void scaleView(GameState *gameState);
 Math::Rectangle getCollisionBox(Math::Rectangle rect1, Math::Rectangle rect2);
 

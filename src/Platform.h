@@ -49,7 +49,7 @@ struct GameMemory {
 };
 
 struct Input {
-    glm::vec2 mousePosition;
+    glm::vec2 mousePosition, mousePositionPrevious;
     // TODO convert these into a bit mask (optimization)
     bool upKeyPressed, downKeyPressed, leftKeyPressed, rightKeyPressed;
     bool upKeyClicked, downKeyClicked, leftKeyClicked, rightKeyClicked;

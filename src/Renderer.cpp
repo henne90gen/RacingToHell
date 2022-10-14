@@ -18,7 +18,7 @@ void clearScreen(uint32_t color) {
  * colorMode: 0 for texture colors, 1 for solid color with alpha from texture
  */
 void texture(GameState *gameState, Texture *texture, glm::vec2 position, glm::vec2 size, glm::vec2 direction,
-             int tileIndex, uint8_t colorMode, uint32_t color) {
+             int tileIndex, uint8_t colorMode, glm::vec4 color) {
     size = size * 0.5F;
     glm::vec2 bottomLeft = glm::vec2(-size.x, -size.y);
     glm::vec2 topLeft = glm::vec2(-size.x, size.y);
@@ -30,17 +30,6 @@ void texture(GameState *gameState, Texture *texture, glm::vec2 position, glm::ve
     topLeft = Math::rotate(topLeft, angle) + position;
     bottomRight = Math::rotate(bottomRight, angle) + position;
     topRight = Math::rotate(topRight, angle) + position;
-
-    float r = 0.0F;
-    float g = 0.0F;
-    float b = 0.0F;
-    float a = 0.0F;
-    if (colorMode == 1) {
-        r = static_cast<float>((color & 0xff000000) >> 24) / 255.0f;
-        g = static_cast<float>((color & 0x00ff0000) >> 16) / 255.0f;
-        b = static_cast<float>((color & 0x0000ff00) >> 8) / 255.0f;
-        a = static_cast<float>(color & 0x000000ff) / 255.0f;
-    }
 
     float xStride = 1.0f / (float)texture->xDivision;
     float yStride = 1.0f / (float)texture->yDivision;
@@ -54,10 +43,10 @@ void texture(GameState *gameState, Texture *texture, glm::vec2 position, glm::ve
     // holds the screen coordinates with their associated texture coordinates
     const float coordinates[] = {
         //
-        bottomLeft.x,  bottomLeft.y,  r, g, b, a, texBL.x, texBL.y, //
-        topLeft.x,     topLeft.y,     r, g, b, a, texTL.x, texTL.y, //
-        bottomRight.x, bottomRight.y, r, g, b, a, texBR.x, texBR.y, //
-        topRight.x,    topRight.y,    r, g, b, a, texTR.x, texTR.y  //
+        bottomLeft.x,  bottomLeft.y,  color.r, color.g, color.b, color.a, texBL.x, texBL.y, //
+        topLeft.x,     topLeft.y,     color.r, color.g, color.b, color.a, texTL.x, texTL.y, //
+        bottomRight.x, bottomRight.y, color.r, color.g, color.b, color.a, texBR.x, texBR.y, //
+        topRight.x,    topRight.y,    color.r, color.g, color.b, color.a, texTR.x, texTR.y  //
     };
 
     static GLuint coordinatesBufferID;
@@ -100,7 +89,7 @@ void texture(GameState *gameState, Texture *texture, glm::vec2 position, glm::ve
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void character(GameState *gameState, char character, glm::vec2 position, FontSize fontSize, uint32_t color) {
+void character(GameState *gameState, char character, glm::vec2 position, FontSize fontSize, glm::vec4 color) {
     Render::Character *c = getCharacter(gameState, character, fontSize);
 
     position = position + c->bearing;
@@ -113,9 +102,9 @@ void character(GameState *gameState, char character, glm::vec2 position, FontSiz
  * Renders the given text with the given color to the screen.
  * Position is the bottom left corner of the text.
  * fontSizeID needs to be one of the following: FontSizeSmall, FontSizeMedium or
- * FontSizeBig.
+ * FontSizeLarge.
  */
-void text(GameState *gameState, std::string text, glm::vec2 position, FontSize fontSize, uint32_t color) {
+void text(GameState *gameState, std::string text, glm::vec2 position, FontSize fontSize, glm::vec4 color) {
     if (text.size() == 0) {
         return;
     }
@@ -222,7 +211,7 @@ void rectangle(GameState *gameState, Math::Rectangle rect, glm::vec4 color) {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void circle(GameState *gameState, glm::vec2 position, float radius, uint32_t color) {
+void circle(GameState *gameState, glm::vec2 position, float radius, glm::vec4 color) {
     texture(gameState, &gameState->resources.bulletTexture, position, glm::vec2(radius, radius), glm::vec2(1.0, 0.0), 0,
             1, color);
 }
@@ -242,7 +231,7 @@ RenderAtom *pushRenderAtom(GameState *gameState, AtomType type, AtomPlane plane)
     return pushRenderAtom(gameState, type, (float)plane);
 }
 
-void pushCircle(GameState *gameState, glm::vec2 position, float radius, uint32_t color, AtomPlane plane) {
+void pushCircle(GameState *gameState, glm::vec2 position, float radius, glm::vec4 color, AtomPlane plane) {
     RenderAtom *atom = pushRenderAtom(gameState, AtomType::CIRCLE, plane);
     if (atom == nullptr) {
         return;
@@ -295,7 +284,7 @@ void pushTriangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2, glm:
     atom->content.triangle.color = color;
 }
 
-void pushText(GameState *gameState, std::string text, glm::vec2 position, FontSize fontSize, uint32_t color,
+void pushText(GameState *gameState, std::string text, glm::vec2 position, FontSize fontSize, glm::vec4 color,
               AtomPlane plane) {
     while (true) {
         RenderAtom *atom = pushRenderAtom(gameState, AtomType::TEXT, plane);
@@ -320,7 +309,7 @@ void pushText(GameState *gameState, std::string text, glm::vec2 position, FontSi
         }
 
         std::string tmp = text.substr(0, 49);
-        position.x += calculateTextLength(gameState, tmp, fontSize);
+        position.x += calculateTextSize(gameState, tmp, fontSize).x;
         text = text.substr(49);
     }
 }
@@ -432,7 +421,7 @@ void flushBuffer(Platform &platform) {
 #endif
             TextureRectangle tr = atom->content.textureRect;
             Render::texture(gameState, &tr.texture, tr.dimensions.position, tr.dimensions.size, tr.direction,
-                            tr.tileIndex, 0, 0);
+                            tr.tileIndex, 0, glm::vec4());
         } break;
         case AtomType::CIRCLE: {
 #if RENDER_DEBUG

@@ -330,6 +330,7 @@ void glfw_cursor_pos_callback(GLFWwindow *window, double x_pos, double y_pos) {
     mousePos *= 2.0F;
     mousePos -= 1.0F;
     mousePos *= glm::vec2(1, float(viewHeight) / float(viewWidth));
+    platform.input.mousePositionPrevious = platform.input.mousePosition;
     platform.input.mousePosition = mousePos;
 }
 

@@ -76,14 +76,14 @@ void spawnBullet(GameState *gameState, glm::vec2 position, glm::vec2 direction, 
     if (playerBullet) {
         int arrSize = sizeof(gameState->playerBullets) / sizeof(Bullet);
         if (gameState->nextPlayerBulletIndex < arrSize) {
-            bullet.color = 0xff0000ff;
+            bullet.color = glm::vec4(1, 0, 0, 1);
             gameState->playerBullets[gameState->nextPlayerBulletIndex] = bullet;
             gameState->nextPlayerBulletIndex++;
         }
     } else {
         int arrSize = sizeof(gameState->aiBullets) / sizeof(Bullet);
         if (gameState->nextAIBulletIndex < arrSize) {
-            bullet.color = 0xff00ff00;
+            bullet.color = glm::vec4(1, 0, 1, 1);
             gameState->aiBullets[gameState->nextAIBulletIndex] = bullet;
             gameState->nextAIBulletIndex++;
         }

@@ -66,25 +66,25 @@ struct TextureRectangle {
 struct Circle {
     glm::vec2 position;
     float radius;
-    uint32_t color;
+    glm::vec4 color;
 };
 
 struct Text {
     glm::vec2 position;
     char characters[50];
     FontSize fontSize;
-    uint32_t color;
+    glm::vec4 color;
 };
 
 void clearScreen(uint32_t color);
 void flushBuffer(Platform &platform);
 
-void pushText(GameState *gameState, std::string text, glm::vec2 position, FontSize fontSize, uint32_t color,
+void pushText(GameState *gameState, std::string text, glm::vec2 position, FontSize fontSize, glm::vec4 color,
               AtomPlane plane);
 void pushTriangle(GameState *gameState, glm::vec2 point1, glm::vec2 point2, glm::vec2 point3, glm::vec4 color,
                   float plane);
 void pushRectangle(GameState *gameState, Math::Rectangle dimensions, glm::vec4 color, float plane);
-void pushCircle(GameState *gameState, glm::vec2 position, float radius, uint32_t color, AtomPlane plane);
+void pushCircle(GameState *gameState, glm::vec2 position, float radius, glm::vec4 color, AtomPlane plane);
 void pushTexture(GameState *gameState, Texture *texture, glm::vec2 position, glm::vec2 size, glm::vec2 direction,
                  int tileIndex = 0, AtomPlane plane = AtomPlane::BACKGROUND);
 void pushAnimation(GameState *gameState, Texture *texture, glm::vec2 position, glm::vec2 size, unsigned *tileIndex,

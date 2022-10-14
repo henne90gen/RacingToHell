@@ -327,17 +327,19 @@ void checkPlayerTileCollision(Player *player, Tile *tile) {
     }
 }
 
-float calculateTextLength(GameState *gameState, std::string text, Render::FontSize fontSize) {
+glm::vec2 calculateTextSize(GameState *gameState, std::string text, Render::FontSize fontSize) {
     if (text.empty()) {
-        return 0.0f;
+        return {};
     }
 
-    float length = 0.0f;
+    auto result = glm::vec2();
 
     for (unsigned characterIndex = 0; characterIndex < text.size(); ++characterIndex) {
         Render::Character *c = getCharacter(gameState, text[characterIndex], fontSize);
 
-        length += c->advance + c->kerning[text[characterIndex + 1] - Render::firstCharacter];
+        result.x += c->advance + c->kerning[text[characterIndex + 1] - Render::firstCharacter];
+        result.y = std::max(c->size.y, result.y);
     }
-    return length;
+
+    return result;
 }

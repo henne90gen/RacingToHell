@@ -51,7 +51,7 @@ struct Item {
 struct Bullet {
     glm::vec2 position, velocity;
     float radius;
-    uint32_t color;
+    glm::vec4 color;
 };
 
 struct Resources {

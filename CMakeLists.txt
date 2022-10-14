@@ -65,8 +65,6 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(
-        # benchmark
-        # googletest
         fmt
         imgui
         glm
@@ -84,9 +82,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED 20)
 
 if (HOT_RELOAD)
     add_library(glad SHARED glad/src/glad.c)
-    if (WIN32)
-        target_compile_definitions(glad PRIVATE GLAD_GLAPI_EXPORT GLAD_GLAPI_EXPORT_BUILD)
-    endif ()
+    target_compile_definitions(glad PRIVATE GLAD_GLAPI_EXPORT GLAD_GLAPI_EXPORT_BUILD)
 else ()
     add_library(glad STATIC glad/src/glad.c)
 endif ()
@@ -201,8 +197,9 @@ if (HOT_RELOAD)
             LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/temp"
             RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/temp"
             )
+    target_compile_definitions(game PRIVATE GLAD_GLAPI_EXPORT)
+
     if (WIN32)
-        target_compile_definitions(game PRIVATE GLAD_GLAPI_EXPORT)
         target_link_libraries(game PUBLIC OpenGL::GL glad)
         add_custom_command(TARGET game POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:game> ${CMAKE_BINARY_DIR}/game.dll.new && ${CMAKE_COMMAND} -E rename ${CMAKE_BINARY_DIR}/game.dll.new ${CMAKE_BINARY_DIR}/game.dll
@@ -240,10 +237,7 @@ if (NOT ANDROID)
     endif ()
     set_property(TARGET RacingToHell PROPERTY CXX_STANDARD 20)
     if (HOT_RELOAD)
-        target_compile_definitions(RacingToHell PUBLIC HOT_RELOAD)
-        if (WIN32)
-            target_compile_definitions(RacingToHell PRIVATE GLAD_GLAPI_EXPORT)
-        endif ()
+        target_compile_definitions(RacingToHell PUBLIC HOT_RELOAD GLAD_GLAPI_EXPORT)
         add_dependencies(RacingToHell game)
     else ()
         target_link_libraries(RacingToHell game)

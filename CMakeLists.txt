@@ -82,7 +82,7 @@ endif ()
 
 set(CMAKE_CXX_STANDARD_REQUIRED 20)
 
-if (HOT_RELOAD)
+if (HOT_RELOAD AND NOT WIN32)
     add_library(glad SHARED glad/src/glad.c)
 else ()
     add_library(glad STATIC glad/src/glad.c)
@@ -191,13 +191,25 @@ set(SOURCES
         ${RESOURCES})
 
 if (HOT_RELOAD)
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/temp)
     add_library(game SHARED ${SOURCES})
-    target_include_directories(game PRIVATE glad/include)
-    target_compile_definitions(game PUBLIC HOT_RELOAD)
-    add_custom_command(TARGET game POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:game> ${CMAKE_BINARY_DIR}/libgame.so.new && ${CMAKE_COMMAND} -E rename ${CMAKE_BINARY_DIR}/libgame.so.new ${CMAKE_BINARY_DIR}/libgame.so
+    set_target_properties(game
+            PROPERTIES
+            ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/temp"
+            LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/temp"
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/temp"
             )
+    if (WIN32)
+        target_link_libraries(game PUBLIC OpenGL::GL glad)
+        add_custom_command(TARGET game POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:game> ${CMAKE_BINARY_DIR}/game.dll.new && ${CMAKE_COMMAND} -E rename ${CMAKE_BINARY_DIR}/game.dll.new ${CMAKE_BINARY_DIR}/game.dll
+                )
+    else ()
+        target_include_directories(game PRIVATE glad/include)
+        add_custom_command(TARGET game POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:game> ${CMAKE_BINARY_DIR}/libgame.so.new && ${CMAKE_COMMAND} -E rename ${CMAKE_BINARY_DIR}/libgame.so.new ${CMAKE_BINARY_DIR}/libgame.so
+                )
+    endif ()
+    target_compile_definitions(game PUBLIC HOT_RELOAD)
 else ()
     add_library(game STATIC ${SOURCES})
     target_include_directories(game PRIVATE glad/include)

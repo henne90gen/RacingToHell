@@ -1,6 +1,7 @@
 #ifdef HOT_RELOAD
 #if WIN32
 #include <Windows.h>
+#undef min
 #else
 #include <dlfcn.h>
 #endif
@@ -12,6 +13,7 @@
 #include <chrono>
 #include <filesystem>
 #include <iostream>
+#include <limits>
 
 #if WITH_IMGUI
 #include <backends/imgui_impl_glfw.h>
@@ -388,50 +390,50 @@ std::string GetLastErrorAsString() {
     return message;
 }
 
-bool GameCode::load() {
-    if (gameCodeDLL) {
-        FreeLibrary(gameCodeDLL);
-        gameCodeDLL = nullptr;
-    }
-    isValid = false;
-    update_and_render = nullptr;
-    init_resources = nullptr;
-
-    if (sourceDllPath.empty()) {
+void reload_game_code(GameCode &code) {
+    if (code.sourceDllPath.empty()) {
         char filename[1000];
         GetModuleFileNameA(nullptr, filename, sizeof(filename));
         auto exePath = std::filesystem::path(std::string(filename)).parent_path().generic_string();
-        sourceDllPath = exePath + "/game.dll";
-        tmpDllPath = exePath + "/game-tmp.dll";
+        code.sourceDllPath = exePath + "/game.dll";
+        code.tmpDllPath = exePath + "/game-tmp.dll";
     }
 
-    lastModified = platform_last_modified(sourceDllPath);
-
-    CopyFile(sourceDllPath.c_str(), tmpDllPath.c_str(), FALSE);
-    gameCodeDLL = LoadLibraryA(tmpDllPath.c_str());
-
-    if (gameCodeDLL) {
-        update_and_render = (update_and_render_func *)GetProcAddress(gameCodeDLL, "update_and_render");
-        if (!update_and_render) {
-            platform_log(GetLastErrorAsString());
-        }
-
-        init_resources = (init_resources_func *)GetProcAddress(gameCodeDLL, "init_resources");
-        if (!init_resources) {
-            platform_log(GetLastErrorAsString());
-        }
-
-        isValid = update_and_render != nullptr && init_resources != nullptr;
-    } else {
-        platform_log(GetLastErrorAsString());
+    if (!std::filesystem::exists(code.sourceDllPath)) {
+        return;
     }
 
-    if (!isValid) {
-        update_and_render = nullptr;
-        init_resources = nullptr;
+    auto lastModified = platform_last_modified(code.sourceDllPath);
+    if (code.gameCodeDLL != nullptr && lastModified == code.lastModified) {
+        return;
     }
 
-    return !isValid;
+    if (code.gameCodeDLL) {
+        FreeLibrary(code.gameCodeDLL);
+        code.gameCodeDLL = nullptr;
+        code.update_and_render = nullptr;
+        code.init_resources = nullptr;
+    }
+
+    platform_log("Loading game code");
+
+    code.lastModified = lastModified;
+
+    CopyFile(code.sourceDllPath.c_str(), code.tmpDllPath.c_str(), FALSE);
+    code.gameCodeDLL = LoadLibraryA(code.tmpDllPath.c_str());
+    if (!code.gameCodeDLL) {
+        platform_abort(GetLastErrorAsString());
+    }
+
+    code.update_and_render = (update_and_render_func *)GetProcAddress(code.gameCodeDLL, "update_and_render");
+    if (!code.update_and_render) {
+        platform_abort(GetLastErrorAsString());
+    }
+
+    code.init_resources = (init_resources_func *)GetProcAddress(code.gameCodeDLL, "init_resources");
+    if (!code.init_resources) {
+        platform_abort(GetLastErrorAsString());
+    }
 }
 #else
 void reload_game_code(GameCode &code) {
@@ -450,6 +452,7 @@ void reload_game_code(GameCode &code) {
         dlclose(code.libraryHandle);
         code.libraryHandle = nullptr;
         code.update_and_render = nullptr;
+        code.init_resources = nullptr;
     }
 
     platform_log("Loading game code");

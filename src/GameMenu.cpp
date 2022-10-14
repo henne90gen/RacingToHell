@@ -371,6 +371,28 @@ void updateMainMenu(Platform &platform) {
         changeCarSelection(gameState, 1);
         gameState->menus[2].items[1].animationTimerMs = 500.0;
     }
+
+    if (gameState->activeMenuIdx == 2) {
+        {
+            Math::Rectangle rect = {};
+            rect.position = glm::vec2(-0.3, -0.9);
+            rect.size = glm::vec2(0.1, 0.2);
+            if (Collision::rectangle(rect, platform.input.mousePosition) && platform.input.shootKeyClicked) {
+                changeCarSelection(gameState, -1);
+                gameState->menus[2].items[0].animationTimerMs = 500.0;
+            }
+        }
+
+        {
+            Math::Rectangle rect = {};
+            rect.position = glm::vec2(0.2, -0.9);
+            rect.size = glm::vec2(0.1, 0.2);
+            if (Collision::rectangle(rect, platform.input.mousePosition) && platform.input.shootKeyClicked) {
+                changeCarSelection(gameState, 1);
+                gameState->menus[2].items[1].animationTimerMs = 500.0;
+            }
+        }
+    }
 }
 
 void updatePauseMenu(Platform &platform) {

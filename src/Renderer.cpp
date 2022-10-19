@@ -212,8 +212,8 @@ void rectangle(GameState *gameState, Math::Rectangle rect, glm::vec4 color) {
 }
 
 void circle(GameState *gameState, glm::vec2 position, float radius, glm::vec4 color) {
-    texture(gameState, &gameState->resources.bulletTexture, position, glm::vec2(radius, radius), glm::vec2(1.0, 0.0), 0,
-            1, color);
+    texture(gameState, &gameState->resources.bulletTexture, position, glm::vec2(radius * 2.0, radius * 2.0),
+            glm::vec2(1.0, 0.0), 0, 1, color);
 }
 
 RenderAtom *pushRenderAtom(GameState *gameState, AtomType type, float plane) {

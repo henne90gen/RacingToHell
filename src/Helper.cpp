@@ -31,10 +31,9 @@ Math::Rectangle getBoundingBox(glm::vec2 position, unsigned width, unsigned heig
  * Use the result and the position of rect2 for collision detection
  */
 Math::Rectangle getCollisionBox(Math::Rectangle rect1, Math::Rectangle rect2) {
-    rect1.size.x += rect2.size.x;
-    rect1.size.y += rect2.size.y;
+    rect1.size += rect2.size;
     rect1.position.x -= rect2.size.x / 2.0f;
-    rect1.position.y -= rect2.size.y / 2.0f;
+    rect1.position.y += rect2.size.y / 2.0f;
     return rect1;
 }
 

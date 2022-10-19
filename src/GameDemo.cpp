@@ -30,9 +30,7 @@ Render::Texture *getPlayerTexture(GameState *gameState) {
 /**
  * Updates and renders the road in the background
  */
-void updateAndRenderRoad(Platform &platform, bool shouldUpdate) {
-    GameState *gameState = getGameState(platform);
-
+void updateAndRenderRoad(Platform &platform, GameState *gameState, bool shouldUpdate) {
     double roadHeight = 2.0 * (1.0 / platform.memory.aspectRatio);
     if (shouldUpdate) {
         gameState->roadOffset -= getRoadSpeed(gameState) * platform.frameTimeMs;
@@ -152,19 +150,21 @@ void updatePlayer(Platform &platform) {
 
     Render::Texture *texture = getPlayerTexture(gameState);
     // checking left and right
-    if (gameState->player.position.x < texture->width / 2) {
-        //		gameState->player.position.x = texture->width / 2;
-    } else if (gameState->player.position.x > DEFAULT_WINDOW_WIDTH - texture->width / 2) {
-        //		gameState->player.position.x = WINDOW_WIDTH -
-        // texture->width / 2;
+    auto leftBound = -1.0F + gameState->player.size.x / 2.0F;
+    auto rightBound = 1.0F - gameState->player.size.x / 2.0F;
+    if (gameState->player.position.x < leftBound) {
+        gameState->player.position.x = leftBound;
+    } else if (gameState->player.position.x > rightBound) {
+        gameState->player.position.x = rightBound;
     }
 
     // checking top and bottom
-    if (gameState->player.position.y < texture->height / 2) {
-        //		gameState->player.position.y = texture->height / 2;
-    } else if (gameState->player.position.y > DEFAULT_WINDOW_HEIGHT - texture->height / 2) {
-        //		gameState->player.position.y = WINDOW_HEIGHT -
-        // texture->height / 2;
+    auto lowerBound = -(1.0F / platform.memory.aspectRatio) + gameState->player.size.y / 2.0F;
+    auto topBound = (1.0F / platform.memory.aspectRatio) - gameState->player.size.y / 2.0F;
+    if (gameState->player.position.y < lowerBound) {
+        gameState->player.position.y = lowerBound;
+    } else if (gameState->player.position.y > topBound) {
+        gameState->player.position.y = topBound;
     }
 }
 
@@ -185,18 +185,18 @@ bool updateAndRenderBullet(Platform &platform, GameState *gameState, Bullet &bul
     if (shouldUpdate) {
         bullet.position = bullet.position + bullet.velocity;
 
-        if (bullet.position.x < -10.0) {
-            return true;
-        } else if (bullet.position.x > 10.0) {
+        if (bullet.position.x < -1.1 || bullet.position.x > 1.1) {
             return true;
         }
-        if (bullet.position.y < -10.0) {
-            return true;
-        } else if (bullet.position.y > 10.0) {
+        if (bullet.position.y < -(1.0F / platform.memory.aspectRatio) - 0.1 ||
+            bullet.position.y > (1.0F / platform.memory.aspectRatio) + 0.1) {
             return true;
         }
 
-        Math::Rectangle bulletRect = getBoundingBox(bullet.position, bullet.radius * 2, bullet.radius * 2);
+        Math::Rectangle bulletRect = {};
+        auto r = bullet.radius / 2.0;
+        bulletRect.position = bullet.position - glm::vec2(r, -r);
+        bulletRect.size = {bullet.radius, bullet.radius};
 
         if (isPlayerBullet) {
             for (int i = 0; i < gameState->world.nextTrafficCarIndex; i++) {
@@ -221,18 +221,26 @@ bool updateAndRenderBullet(Platform &platform, GameState *gameState, Bullet &bul
                 }
             }
         } else {
-            Render::Texture *playerTexture = getPlayerTexture(gameState);
-            Math::Rectangle playerRect =
-                getBoundingBox(gameState->player.position, playerTexture->width, playerTexture->height);
+            Math::Rectangle playerRect = {};
+            auto size = gameState->player.size;
+            size.x *= 0.85;
+            playerRect.position = gameState->player.position;
+            playerRect.position.x -= size.x / 2.0F;
+            playerRect.position.y += size.y / 2.0F;
+            playerRect.size = size;
             Math::Rectangle collisionBox = getCollisionBox(playerRect, bulletRect);
 
+#define COLLISION_DEBUG 0
 #if COLLISION_DEBUG
-            Render::pushRectangle(buffer, collisionBox, 0x40ff0000);
+            Render::pushRectangle(gameState, playerRect, glm::vec4(0, 0, 0, 0.5), AtomPlane::AI_BULLETS - 1);
+            Render::pushRectangle(gameState, bulletRect, glm::vec4(0, 0, 1, 1), AtomPlane::AI_BULLETS - 1);
+            Render::pushRectangle(gameState, collisionBox, glm::vec4(1, 0, 0, 0.5), AtomPlane::AI_BULLETS - 1);
 #endif
+#undef COLLISION_DEBUG
 
             if (Collision::rectangle(collisionBox, bullet.position)) {
                 // FIXME balance damage
-                //				gameState->player.health -= 1;
+                gameState->player.health -= 1;
                 return true;
             }
         }
@@ -267,16 +275,16 @@ void updateAndRenderBullets(Platform &platform, GameState *gameState, bool shoul
 /**
  * Spawns a new car on one of the four lanes
  */
-void spawnTrafficCar(GameState *gameState) {
-    Car car = {};
-    car.carIndex = std::rand() % NUM_TRAFFIC_TEXTURES;
-    float x = (std::rand() % 4) * (DEFAULT_WINDOW_WIDTH / 4) + DEFAULT_WINDOW_WIDTH / 8;
-    car.position = {x, -80};
-    car.speed = 5;
-    car.health = 75;
-
+void spawnTrafficCar(Platform &platform, GameState *gameState) {
     unsigned arrSize = sizeof(gameState->world.traffic) / sizeof(Car);
     if (gameState->world.nextTrafficCarIndex < (int)arrSize) {
+        Car car = {};
+        car.carIndex = std::rand() % NUM_TRAFFIC_TEXTURES;
+        car.position = {0, 0};
+        car.size = {0.1, 0.2};
+        car.speed = 5;
+        car.health = 75;
+
         gameState->world.traffic[gameState->world.nextTrafficCarIndex] = car;
         gameState->world.nextTrafficCarIndex++;
     }
@@ -286,26 +294,30 @@ void spawnTrafficCar(GameState *gameState) {
  * Updates and renders all cars
  * Checks for collision between one of the cars and the player
  */
-void updateAndRenderTraffic(VideoBuffer *buffer, GameState *gameState, bool shouldUpdate) {
-    if (shouldUpdate && gameState->frameCounter % gameState->trafficFrequency == 0) {
-        spawnTrafficCar(gameState);
+void updateAndRenderTraffic(Platform &platform, GameState *gameState, bool shouldUpdate) {
+    gameState->trafficCarSpawnTimeMs += platform.frameTimeMs;
+    if (shouldUpdate && gameState->trafficCarSpawnTimeMs > gameState->trafficCarFrequencyMs) {
+        gameState->trafficCarSpawnTimeMs = 0;
+        spawnTrafficCar(platform, gameState);
     }
 
-    if (shouldUpdate && gameState->frameCounter % gameState->bulletFrequency == 0 &&
+    gameState->bulletSpawnTimeMs += platform.frameTimeMs;
+    if (shouldUpdate && gameState->bulletSpawnTimeMs > gameState->bulletFrequencyMs &&
         gameState->world.nextTrafficCarIndex > 0) {
-        // FIXME maybe choose the car that is furthest away from the player
         int carIndex = 0;
         if (gameState->world.nextTrafficCarIndex > 1) {
             carIndex = std::rand() % gameState->world.nextTrafficCarIndex;
         }
         auto &car = gameState->world.traffic[carIndex];
         shootAtPlayer(gameState, car.position);
+        gameState->bulletSpawnTimeMs = 0;
     }
 
     for (int i = 0; i < gameState->world.nextTrafficCarIndex; i++) {
         Car *car = &gameState->world.traffic[i];
         Render::Texture *texture = &gameState->resources.trafficCarTextures[car->carIndex];
 
+#if 0
         if (shouldUpdate) {
             car->position = {car->position.x, ((float)car->speed) + car->position.y};
 
@@ -336,13 +348,10 @@ void updateAndRenderTraffic(VideoBuffer *buffer, GameState *gameState, bool shou
                 gameOver(gameState);
             }
         }
+#endif
 
-        //		int x = car->position.x - texture->width / 2;
-        //		int y = car->position.y - texture->height / 2;
-        //		Render::textureAlpha(buffer, texture, x, y);
-
-        // Render::bar(buffer, { car->position.x, (float) y - 13 }, car->health,
-        //		0xff0000ff);
+        Render::pushTexture(gameState, texture, car->position, car->size, glm::vec2(0, 1), 0, AtomPlane::AI);
+        // Render::bar(buffer, { car->position.x, (float) y - 13 }, car->health, 0xff0000ff);
     }
 }
 
@@ -467,7 +476,9 @@ void updateAndRenderGame(Platform &platform, GameState *gameState, bool update) 
         renderPlayer(gameState);
     }
 
-    updateAndRenderRoad(platform, update);
+    updateAndRenderRoad(platform, gameState, update);
+
+    updateAndRenderTraffic(platform, gameState, update);
 
     updateAndRenderBullets(platform, gameState, update);
 

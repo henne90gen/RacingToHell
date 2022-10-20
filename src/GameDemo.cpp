@@ -6,6 +6,8 @@
 #include "Player.h"
 #include "Sound.h"
 
+#include <array>
+
 /**
  * Calculates the current road speed from level (and soon difficulty)
  */
@@ -167,19 +169,35 @@ void updateAndRenderBullets(Platform &platform, GameState *gameState, bool shoul
 /**
  * Spawns a new car on one of the four lanes
  */
-void spawnTrafficCar(Platform &platform, GameState *gameState) {
-    unsigned arrSize = sizeof(gameState->world.traffic) / sizeof(Car);
-    if (gameState->world.nextTrafficCarIndex < (int)arrSize) {
-        Car car = {};
-        car.carIndex = std::rand() % NUM_TRAFFIC_TEXTURES;
-        car.position = {0, 0};
-        car.size = {0.1, 0.2};
-        car.speed = 5;
-        car.health = 75;
-
-        gameState->world.traffic[gameState->world.nextTrafficCarIndex] = car;
-        gameState->world.nextTrafficCarIndex++;
+void spawnTrafficCar(Platform &platform, GameState *gameState, bool shouldUpdate) {
+    if (!shouldUpdate) {
+        return;
     }
+
+    gameState->trafficCarSpawnTimeMs += platform.frameTimeMs;
+    if (gameState->trafficCarSpawnTimeMs <= gameState->trafficCarFrequencyMs) {
+        return;
+    }
+    gameState->trafficCarSpawnTimeMs = 0;
+
+    unsigned arrSize = sizeof(gameState->world.traffic) / sizeof(Car);
+    if (gameState->world.nextTrafficCarIndex >= (int)arrSize) {
+        return;
+    }
+
+    std::array<float, 4> lanes = {-0.75, -0.25, 0.25, 0.75};
+    auto lane = std::rand() % 4;
+    auto x = lanes[lane];
+
+    Car car = {};
+    car.carIndex = std::rand() % NUM_TRAFFIC_TEXTURES;
+    car.size = {0.1, 0.2};
+    car.position = {x, 1.0F / platform.memory.aspectRatio + car.size.y};
+    car.speed = 0.003F;
+    car.health = 1.0F;
+
+    gameState->world.traffic[gameState->world.nextTrafficCarIndex] = car;
+    gameState->world.nextTrafficCarIndex++;
 }
 
 /**
@@ -187,11 +205,7 @@ void spawnTrafficCar(Platform &platform, GameState *gameState) {
  * Checks for collision between one of the cars and the player
  */
 void updateAndRenderTraffic(Platform &platform, GameState *gameState, bool shouldUpdate) {
-    gameState->trafficCarSpawnTimeMs += platform.frameTimeMs;
-    if (shouldUpdate && gameState->trafficCarSpawnTimeMs > gameState->trafficCarFrequencyMs) {
-        gameState->trafficCarSpawnTimeMs = 0;
-        spawnTrafficCar(platform, gameState);
-    }
+    spawnTrafficCar(platform, gameState, shouldUpdate);
 
     gameState->bulletSpawnTimeMs += platform.frameTimeMs;
     if (shouldUpdate && gameState->bulletSpawnTimeMs > gameState->bulletFrequencyMs &&
@@ -209,40 +223,41 @@ void updateAndRenderTraffic(Platform &platform, GameState *gameState, bool shoul
         Car *car = &gameState->world.traffic[i];
         Render::Texture *texture = &gameState->resources.trafficCarTextures[car->carIndex];
 
-#if 0
         if (shouldUpdate) {
-            car->position = {car->position.x, ((float)car->speed) + car->position.y};
+            car->position = {car->position.x, car->position.y - car->speed};
 
             if (car->health <= 0) {
-                // TODO should we show an explosion?
+                // TODO show an explosion
                 removeElement(gameState->world.traffic, &gameState->world.nextTrafficCarIndex, &i);
                 continue;
             }
 
-            if (car->position.y - texture->height / 2 > DEFAULT_WINDOW_HEIGHT) {
+            if (car->position.y + car->size.y / 2.0 < -1.0F / platform.memory.aspectRatio) {
                 removeElement(gameState->world.traffic, &gameState->world.nextTrafficCarIndex, &i);
                 continue;
             }
 
-            Math::Rectangle carRect = getBoundingBox(car->position, texture->width, texture->height);
+            auto carRect = Math::Rectangle();
+            auto offset = car->size / 2.0F;
+            offset.y *= -1;
+            carRect.position = car->position - offset;
+            carRect.size = car->size;
+            auto playerRect = getPlayerCollisionBox(gameState);
+            auto collisionBox = getCollisionBox(carRect, playerRect);
 
-            Render::Texture *playerTexture = getPlayerTexture(gameState);
-            Math::Rectangle playerRect =
-                getBoundingBox(gameState->player.position, playerTexture->width, playerTexture->height);
-
-            Math::Rectangle collisionBox = getCollisionBox(carRect, playerRect);
-
+#define COLLISION_DEBUG 0
 #if COLLISION_DEBUG
-            Render::pushRectangle(buffer, collisionBox, 0x4000ff00);
+            Render::pushRectangle(gameState, carRect, glm::vec4(1, 1, 0, 0.5), AtomPlane::AI + 1);
+            Render::pushRectangle(gameState, collisionBox, glm::vec4(1, 0, 0, 0.5), AtomPlane::AI + 1);
 #endif
+#undef COLLISION_DEBUG
 
             if (Collision::rectangle(collisionBox, gameState->player.position)) {
-                gameOver(gameState);
+                gameOver(platform);
             }
         }
-#endif
 
-        Render::pushTexture(gameState, texture, car->position, car->size, glm::vec2(0, 1), 0, AtomPlane::AI);
+        Render::pushTexture(gameState, texture, car->position, car->size, glm::vec2(0, -1), 0, AtomPlane::AI);
         // Render::bar(buffer, { car->position.x, (float) y - 13 }, car->health, 0xff0000ff);
     }
 }

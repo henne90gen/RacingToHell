@@ -50,10 +50,10 @@ void loadCreditsMenu(GameState *gameState) {
 
 void loadGameOverMenu(GameState *gameState) {
     Menu *menu = &gameState->menus[gameState->menuCount++];
-    menu->position = glm::vec2({20, 50});
+    menu->position = glm::vec2({-1.0F, 0.8F});
 
     addMenuItem(&menu->items[menu->numberMenuItems++], "Submit Score");
-    addMenuItem(&menu->items[menu->numberMenuItems++], "Back");
+    addMenuItem(&menu->items[menu->numberMenuItems++], "Back to Main Menu");
 }
 
 void loadMenu(Platform &platform, MenuState menuState) {
@@ -88,9 +88,7 @@ void loadMenu(Platform &platform, MenuState menuState) {
 /**
  * Switch to the game over screen
  */
-void gameOver(GameState *gameState) {
-    //	loadMenu(gameState, MenuState::GAME_OVER);
-}
+void gameOver(Platform &platform) { loadMenu(platform, MenuState::GAME_OVER); }
 
 void goFromMainToDifficulty(GameState *gameState) {
     gameState->activeMenuIdx = 1;
@@ -130,71 +128,6 @@ void goFromCarToMain(GameState *gameState, bool shouldUpdateCarSelection) {
 
     Menu &mainMenu = gameState->menus[gameState->activeMenuIdx];
     mainMenu.items[mainMenu.currentMenuItemIdx].animationTimerMs = 0.0;
-}
-
-void handleMenuEnterPause(GameState *gameState) {
-    switch ((PauseMenuItem)gameState->menus[0].currentMenuItemIdx) {
-    case PauseMenuItem::RESUME:
-        gameState->menuState = MenuState::GAME;
-        break;
-    case PauseMenuItem::MAIN_MENU:
-        resetGameState(gameState);
-        break;
-    }
-}
-
-void handleMenuEnterGameOver(GameState *gameState) {
-    switch ((GameOverMenuItem)gameState->menus[0].currentMenuItemIdx) {
-    case GameOverMenuItem::SUBMIT_SCORE:
-        // TODO submit score
-        break;
-    case GameOverMenuItem::MAIN_MENU:
-        resetGameState(gameState);
-        break;
-    }
-}
-
-/**
- * Process enter key being pressed
- * Action depends on the current menu and the selected menu item
- */
-void handleMenuEnter(Platform &platform, GameState *gameState) {
-    switch (gameState->menuState) {
-    case MenuState::MAIN:
-        break;
-    case MenuState::PAUSE:
-        handleMenuEnterPause(gameState);
-        break;
-    case MenuState::GAME_OVER:
-        handleMenuEnterGameOver(gameState);
-        break;
-    case MenuState::CREDITS:
-        switch (gameState->menus[0].currentMenuItemIdx) {
-        case 0:
-            loadMenu(platform, MenuState::MAIN);
-            break;
-        }
-        break;
-    case MenuState::GAME:
-        break;
-    }
-}
-
-void handleMenuEscape(Platform &platform) {
-    auto gameState = getGameState(platform);
-
-    switch (gameState->menuState) {
-    case MenuState::MAIN:
-        break;
-    case MenuState::CREDITS:
-        loadMenu(platform, MenuState::MAIN);
-        break;
-    case MenuState::PAUSE:
-        loadMenu(platform, MenuState::GAME);
-        break;
-    default:
-        break;
-    }
 }
 
 float bounce(float xIn) {
@@ -315,6 +248,18 @@ void menuItemSelectedPauseMenu(Platform &platform, GameState *gameState) {
     }
 }
 
+void menuItemSelectedGameOverMenu(Platform &platform, GameState *gameState) {
+    auto &activeMenu = gameState->menus[gameState->activeMenuIdx];
+    if ((GameOverMenuItem)activeMenu.currentMenuItemIdx == GameOverMenuItem::SUBMIT_SCORE) {
+        // TODO implement this
+        // loadMenu(platform, MenuState::GAME);
+    }
+    if ((GameOverMenuItem)activeMenu.currentMenuItemIdx == GameOverMenuItem::MAIN_MENU) {
+        resetGameState(gameState);
+        loadMenu(platform, MenuState::MAIN);
+    }
+}
+
 void menuItemSelectedMainMenu(Platform &platform, GameState *gameState) {
     Menu *activeMenu = &gameState->menus[gameState->activeMenuIdx];
     switch (gameState->activeMenuIdx) {
@@ -404,6 +349,14 @@ void updatePauseMenu(Platform &platform) {
     }
 }
 
+void updateGameOverMenu(Platform &platform) {
+    GameState *gameState = getGameState(platform);
+
+    if (platform.input.enterKeyClicked) {
+        menuItemSelectedGameOverMenu(platform, gameState);
+    }
+}
+
 void updateMouseHoverOfActiveMenu(Platform &platform) {
     GameState *gameState = getGameState(platform);
     for (unsigned int menuIndex = 0; menuIndex < gameState->menuCount; ++menuIndex) {
@@ -443,6 +396,7 @@ void updateMouseHoverOfActiveMenu(Platform &platform) {
                         menuItemSelectedMainMenu(platform, gameState);
                         break;
                     case MenuState::GAME_OVER:
+                        menuItemSelectedGameOverMenu(platform, gameState);
                         break;
                     case MenuState::PAUSE:
                         menuItemSelectedPauseMenu(platform, gameState);
@@ -470,7 +424,7 @@ void updateActiveMenu(Platform &platform) {
         updateMainMenu(platform);
         break;
     case MenuState::GAME_OVER:
-        // updateGameOverMenu(platform);
+        updateGameOverMenu(platform);
         break;
     case MenuState::PAUSE:
         updatePauseMenu(platform);

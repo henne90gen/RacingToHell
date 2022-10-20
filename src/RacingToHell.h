@@ -41,7 +41,7 @@ struct Car {
     glm::vec2 position;
     glm::vec2 size;
     uint8_t carIndex;
-    int8_t health, speed;
+    float health, speed;
 };
 
 struct Item {

@@ -72,13 +72,13 @@ void updatePlayer(Platform &platform) {
     gameState->player.fuel -= 1;
     if (gameState->player.fuel <= 0) {
         // TODO play a nice animation before doing a game over
-        gameOver(gameState);
+        gameOver(platform);
     }
 
     // health
     if (gameState->player.health <= 0) {
         // TODO play the explosion before going game over
-        gameOver(gameState);
+        gameOver(platform);
     }
 
     // shooting

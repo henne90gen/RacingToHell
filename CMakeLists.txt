@@ -182,6 +182,7 @@ set(SOURCES
         src/Memory.cpp
         src/Init.cpp
         src/MyMath.cpp
+        src/Player.cpp
         src/RacingToHell.cpp
         src/Renderer.cpp
         src/Resources.cpp

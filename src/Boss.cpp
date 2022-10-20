@@ -4,7 +4,7 @@
 
 void shootAtPlayer(GameState *gameState, glm::vec2 origin) {
     glm::vec2 direction = gameState->player.position - origin;
-    spawnBullet(gameState, origin, direction, false);
+    spawnBullet(gameState, origin, direction);
 }
 
 void updateTank(GameState *gameState) {
@@ -35,7 +35,7 @@ void updateTank(GameState *gameState) {
             boss->speed = -boss->speed;
         }
         if (gameState->frameCounter % boss->bulletFrequency == 0) {
-            spawnBullet(gameState, boss->position, glm::vec2({0, gameState->bulletSpeed}), false);
+            spawnBullet(gameState, boss->position, glm::vec2({0, gameState->bulletSpeed}));
         }
         break;
     case 1: // Three bullet burst
@@ -73,7 +73,7 @@ void updateTank(GameState *gameState) {
             float angle = Math::angle(playerDirection) + PI / 16;
             for (int i = 0; i < 5; i++) {
                 glm::vec2 direction = glm::vec2(angle - PI / 32 * i);
-                spawnBullet(gameState, boss->position, direction, false);
+                spawnBullet(gameState, boss->position, direction);
             }
         }
         break;

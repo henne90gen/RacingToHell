@@ -220,9 +220,48 @@ void spawnTrafficCarBullet(Platform &platform, GameState *gameState, bool should
     gameState->bulletSpawnTimeMs = 0;
 }
 
+bool updateAndRenderTrafficCar(Platform &platform, GameState *gameState, bool shouldUpdate, Car *car) {
+    Render::Texture *texture = &gameState->resources.trafficCarTextures[car->carIndex];
+
+    if (shouldUpdate) {
+        car->position.y -= car->speed * platform.frameTimeMs;
+
+        if (car->health <= 0) {
+            // TODO show an explosion
+            return true;
+        }
+
+        if (car->position.y + car->size.y / 2.0 < -1.0F / platform.memory.aspectRatio) {
+            return true;
+        }
+
+        auto carRect = Math::Rectangle();
+        auto offset = car->size / 2.0F;
+        offset.y *= -1;
+        carRect.position = car->position - offset;
+        carRect.size = car->size;
+        auto playerRect = getPlayerCollisionBox(gameState);
+        auto collisionBox = getCollisionBox(carRect, playerRect);
+
+#define COLLISION_DEBUG 0
+#if COLLISION_DEBUG
+        Render::pushRectangle(gameState, carRect, glm::vec4(1, 1, 0, 0.5), AtomPlane::AI + 1);
+        Render::pushRectangle(gameState, collisionBox, glm::vec4(1, 0, 0, 0.5), AtomPlane::AI + 1);
+#endif
+#undef COLLISION_DEBUG
+
+        if (Collision::rectangle(collisionBox, gameState->player.position)) {
+            gameOver(platform);
+        }
+    }
+
+    Render::pushTexture(gameState, texture, car->position, car->size, glm::vec2(0, -1), 0, AtomPlane::AI);
+
+    return false;
+}
 /**
  * Updates and renders all cars
- * Checks for collision between one of the cars and the player
+ * Checks for collision between each of the cars and the player
  */
 void updateAndRenderTraffic(Platform &platform, GameState *gameState, bool shouldUpdate) {
     spawnTrafficCar(platform, gameState, shouldUpdate);
@@ -230,44 +269,9 @@ void updateAndRenderTraffic(Platform &platform, GameState *gameState, bool shoul
 
     for (int i = 0; i < gameState->world.nextTrafficCarIndex; i++) {
         Car *car = &gameState->world.traffic[i];
-        Render::Texture *texture = &gameState->resources.trafficCarTextures[car->carIndex];
-
-        if (shouldUpdate) {
-            car->position.y -= car->speed * platform.frameTimeMs;
-
-            if (car->health <= 0) {
-                // TODO show an explosion
-                removeElement(gameState->world.traffic, &gameState->world.nextTrafficCarIndex, &i);
-                continue;
-            }
-
-            if (car->position.y + car->size.y / 2.0 < -1.0F / platform.memory.aspectRatio) {
-                removeElement(gameState->world.traffic, &gameState->world.nextTrafficCarIndex, &i);
-                continue;
-            }
-
-            auto carRect = Math::Rectangle();
-            auto offset = car->size / 2.0F;
-            offset.y *= -1;
-            carRect.position = car->position - offset;
-            carRect.size = car->size;
-            auto playerRect = getPlayerCollisionBox(gameState);
-            auto collisionBox = getCollisionBox(carRect, playerRect);
-
-#define COLLISION_DEBUG 0
-#if COLLISION_DEBUG
-            Render::pushRectangle(gameState, carRect, glm::vec4(1, 1, 0, 0.5), AtomPlane::AI + 1);
-            Render::pushRectangle(gameState, collisionBox, glm::vec4(1, 0, 0, 0.5), AtomPlane::AI + 1);
-#endif
-#undef COLLISION_DEBUG
-
-            if (Collision::rectangle(collisionBox, gameState->player.position)) {
-                gameOver(platform);
-            }
+        if (updateAndRenderTrafficCar(platform, gameState, shouldUpdate, car)) {
+            removeElement(gameState->world.traffic, &gameState->world.nextTrafficCarIndex, &i);
         }
-
-        Render::pushTexture(gameState, texture, car->position, car->size, glm::vec2(0, -1), 0, AtomPlane::AI);
-        // Render::bar(buffer, { car->position.x, (float) y - 13 }, car->health, 0xff0000ff);
     }
 }
 
@@ -303,6 +307,61 @@ void spawnItem(Platform &platform, GameState *gameState, bool shouldUpdate) {
 }
 
 /**
+ * Returns true if the item should be removed.
+ */
+bool updateAndRenderItem(Platform &platform, GameState *gameState, bool shouldUpdate, Item *item) {
+    Render::Texture *texture = &gameState->resources.itemTextures[item->itemIndex];
+
+    if (shouldUpdate) {
+        item->position.y -= getRoadSpeed(gameState) * platform.frameTimeMs;
+
+        Math::Rectangle rect = {};
+        auto offset = item->size / 2.0F;
+        offset.y *= -1;
+        rect.position = item->position - offset;
+        rect.size = item->size;
+
+        auto playerRect = getPlayerCollisionBox(gameState);
+        auto collisionRect = getCollisionBox(rect, playerRect);
+
+#define COLLISION_DEBUG 0
+#if COLLISION_DEBUG
+        Render::pushRectangle(gameState, collisionRect, glm::vec4(0, 0, 1, 0.5), AtomPlane::AI);
+#endif
+#undef COLLISION_DEBUG
+
+        if (Collision::rectangle(collisionRect, gameState->player.position)) {
+            // TODO balance item effects
+            switch (item->itemIndex) {
+            case TOOLBOX_ID:
+                // TODO test: percentage of maxHealth vs absolute value
+                gameState->player.health += 5.0F;
+                if (gameState->player.health > gameState->player.maxHealth) {
+                    gameState->player.health = gameState->player.maxHealth;
+                }
+                break;
+            case CANISTER_ID:
+                // TODO test: percentage of maxEnergy vs absolute value
+                gameState->player.fuel += 100.0F;
+                if (gameState->player.fuel > gameState->player.maxFuel) {
+                    gameState->player.fuel = gameState->player.maxFuel;
+                }
+                break;
+            }
+            return true;
+        }
+
+        if (item->position.y + (item->size.y / 2.0F) < -1.0F / platform.memory.aspectRatio) {
+            return true;
+        }
+    }
+
+    Render::pushTexture(gameState, texture, item->position, item->size, glm::vec2(0, 1), 0, AtomPlane::AI);
+
+    return false;
+}
+
+/**
  * Updates and renders all items
  * Checks for collision with player and handles pickup effects
  */
@@ -311,55 +370,9 @@ void updateAndRenderItems(Platform &platform, GameState *gameState, bool shouldU
 
     for (int i = 0; i < gameState->world.nextItemIndex; i++) {
         Item *item = &gameState->world.items[i];
-        Render::Texture *texture = &gameState->resources.itemTextures[item->itemIndex];
-
-        if (shouldUpdate) {
-            item->position.y -= getRoadSpeed(gameState) * platform.frameTimeMs;
-
-            Math::Rectangle rect = {};
-            auto offset = item->size / 2.0F;
-            offset.y *= -1;
-            rect.position = item->position - offset;
-            rect.size = item->size;
-
-            auto playerRect = getPlayerCollisionBox(gameState);
-            auto collisionRect = getCollisionBox(rect, playerRect);
-
-#define COLLISION_DEBUG 0
-#if COLLISION_DEBUG
-            Render::pushRectangle(gameState, collisionRect, glm::vec4(0, 0, 1, 0.5), AtomPlane::AI);
-#endif
-#undef COLLISION_DEBUG
-
-            if (Collision::rectangle(collisionRect, gameState->player.position)) {
-                // TODO balance item effects
-                switch (item->itemIndex) {
-                case TOOLBOX_ID:
-                    // TODO test: percentage of maxHealth vs absolute value
-                    gameState->player.health += 5;
-                    if (gameState->player.health > gameState->player.maxHealth) {
-                        gameState->player.health = gameState->player.maxHealth;
-                    }
-                    break;
-                case CANISTER_ID:
-                    // TODO test: percentage of maxEnergy vs absolute value
-                    gameState->player.fuel += 100;
-                    if (gameState->player.fuel > gameState->player.maxFuel) {
-                        gameState->player.fuel = gameState->player.maxFuel;
-                    }
-                    break;
-                }
-                removeElement(gameState->world.items, &gameState->world.nextItemIndex, &i);
-                continue;
-            }
-
-            if (item->position.y + (item->size.y / 2.0F) < -1.0F / platform.memory.aspectRatio) {
-                removeElement(gameState->world.items, &gameState->world.nextItemIndex, &i);
-                continue;
-            }
+        if (updateAndRenderItem(platform, gameState, shouldUpdate, item)) {
+            removeElement(gameState->world.items, &gameState->world.nextItemIndex, &i);
         }
-
-        Render::pushTexture(gameState, texture, item->position, item->size, glm::vec2(0, 1), 0, AtomPlane::AI);
     }
 }
 

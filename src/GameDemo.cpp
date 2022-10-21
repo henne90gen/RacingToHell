@@ -296,7 +296,7 @@ void spawnItem(Platform &platform, GameState *gameState, bool shouldUpdate) {
     item.size = {0.1, 0.1 * (float(texture.height) / float(texture.width))};
     std::array<float, 3> itemLanes = {-0.5, 0.0, 0.5};
     float x = itemLanes[std::rand() % 3];
-    item.position = {x, (1.0F / platform.memory.aspectRatio) - item.size.y};
+    item.position = {x, (1.0F / platform.memory.aspectRatio) + item.size.y / 2.0F};
 
     gameState->world.items[gameState->world.nextItemIndex] = item;
     gameState->world.nextItemIndex++;
@@ -316,17 +316,20 @@ void updateAndRenderItems(Platform &platform, GameState *gameState, bool shouldU
         if (shouldUpdate) {
             item->position.y -= getRoadSpeed(gameState) * platform.frameTimeMs;
 
-            // decreases the size of the collision box
-            int bufferZone = 10;
-            Math::Rectangle rect =
-                getBoundingBox(item->position, texture->width - bufferZone, texture->height - bufferZone);
+            Math::Rectangle rect = {};
+            auto offset = item->size / 2.0F;
+            offset.y *= -1;
+            rect.position = item->position - offset;
+            rect.size = item->size;
 
             auto playerRect = getPlayerCollisionBox(gameState);
             auto collisionRect = getCollisionBox(rect, playerRect);
 
+#define COLLISION_DEBUG 0
 #if COLLISION_DEBUG
-            Render::pushRectangle(buffer, collisionRect, 0x00ffff50);
+            Render::pushRectangle(gameState, collisionRect, glm::vec4(0, 0, 1, 0.5), AtomPlane::AI);
 #endif
+#undef COLLISION_DEBUG
 
             if (Collision::rectangle(collisionRect, gameState->player.position)) {
                 // TODO balance item effects
@@ -350,7 +353,7 @@ void updateAndRenderItems(Platform &platform, GameState *gameState, bool shouldU
                 continue;
             }
 
-            if (item->position.y - texture->height / 2 > DEFAULT_WINDOW_HEIGHT) {
+            if (item->position.y + (item->size.y / 2.0F) < -1.0F / platform.memory.aspectRatio) {
                 removeElement(gameState->world.items, &gameState->world.nextItemIndex, &i);
                 continue;
             }

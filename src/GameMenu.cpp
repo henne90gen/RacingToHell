@@ -166,7 +166,7 @@ void renderMenuItem(Platform &platform, GameState *gameState, MenuItem *item, gl
     Render::pushText(gameState, std::string(item->text), position, Render::FontSize::Large, color, AtomPlane::MENU);
 }
 
-void updateAndRenderCarSelection(Platform &platform, GameState *gameState, bool menuHighlight) {
+void updateAndRenderCarSelection(Platform &platform, GameState *gameState) {
     auto color = glm::vec4(1, 1, 1, 1);
     auto position = glm::vec2(0, -1.1);
 
@@ -455,7 +455,7 @@ void updateAndRenderMenus(Platform &platform) {
 
     renderMenuBackdrop(gameState, &gameState->menus[0]);
     if (gameState->menuState == MenuState::MAIN) {
-        updateAndRenderCarSelection(platform, gameState, 2 == gameState->activeMenuIdx);
+        updateAndRenderCarSelection(platform, gameState);
         if (gameState->activeMenuIdx == 2) {
             renderCarStatisticBars(platform);
         }

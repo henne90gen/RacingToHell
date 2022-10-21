@@ -8,7 +8,6 @@
 #include "Platform.h"
 
 // forward declarations
-struct VideoBuffer;
 struct GameState;
 struct Input;
 

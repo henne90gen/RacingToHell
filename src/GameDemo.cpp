@@ -200,31 +200,40 @@ void spawnTrafficCar(Platform &platform, GameState *gameState, bool shouldUpdate
     gameState->world.nextTrafficCarIndex++;
 }
 
+void spawnTrafficCarBullet(Platform &platform, GameState *gameState, bool shouldUpdate) {
+    if (!shouldUpdate) {
+        return;
+    }
+
+    if (gameState->world.nextTrafficCarIndex <= 0) {
+        return;
+    }
+
+    gameState->bulletSpawnTimeMs += platform.frameTimeMs;
+    if (gameState->bulletSpawnTimeMs <= gameState->bulletFrequencyMs) {
+        return;
+    }
+
+    int carIndex = std::rand() % gameState->world.nextTrafficCarIndex;
+    auto &car = gameState->world.traffic[carIndex];
+    shootAtPlayer(gameState, car.position);
+    gameState->bulletSpawnTimeMs = 0;
+}
+
 /**
  * Updates and renders all cars
  * Checks for collision between one of the cars and the player
  */
 void updateAndRenderTraffic(Platform &platform, GameState *gameState, bool shouldUpdate) {
     spawnTrafficCar(platform, gameState, shouldUpdate);
-
-    gameState->bulletSpawnTimeMs += platform.frameTimeMs;
-    if (shouldUpdate && gameState->bulletSpawnTimeMs > gameState->bulletFrequencyMs &&
-        gameState->world.nextTrafficCarIndex > 0) {
-        int carIndex = 0;
-        if (gameState->world.nextTrafficCarIndex > 1) {
-            carIndex = std::rand() % gameState->world.nextTrafficCarIndex;
-        }
-        auto &car = gameState->world.traffic[carIndex];
-        shootAtPlayer(gameState, car.position);
-        gameState->bulletSpawnTimeMs = 0;
-    }
+    spawnTrafficCarBullet(platform, gameState, shouldUpdate);
 
     for (int i = 0; i < gameState->world.nextTrafficCarIndex; i++) {
         Car *car = &gameState->world.traffic[i];
         Render::Texture *texture = &gameState->resources.trafficCarTextures[car->carIndex];
 
         if (shouldUpdate) {
-            car->position = {car->position.x, car->position.y - car->speed};
+            car->position.y -= car->speed * platform.frameTimeMs;
 
             if (car->health <= 0) {
                 // TODO show an explosion
@@ -265,34 +274,47 @@ void updateAndRenderTraffic(Platform &platform, GameState *gameState, bool shoul
 /**
  * Spawns a random item on one of the four lanes
  */
-void spawnItem(GameState *gameState) {
-    Item item = {};
-    item.itemIndex = std::rand() % NUM_ITEM_TEXTURES;
-    float x = (std::rand() % 4) * (DEFAULT_WINDOW_WIDTH / 4) + DEFAULT_WINDOW_WIDTH / 8;
-    item.position = {x, -80};
+void spawnItem(Platform &platform, GameState *gameState, bool shouldUpdate) {
+    if (!shouldUpdate) {
+        return;
+    }
+
+    gameState->itemSpawnTimeMs += platform.frameTimeMs;
+    if (gameState->itemSpawnTimeMs <= gameState->itemFrequencyMs) {
+        return;
+    }
+    gameState->itemSpawnTimeMs = 0;
 
     unsigned arrSize = sizeof(gameState->world.items) / sizeof(Item);
-    if (gameState->world.nextItemIndex < (int)arrSize) {
-        gameState->world.items[gameState->world.nextItemIndex] = item;
-        gameState->world.nextItemIndex++;
+    if (gameState->world.nextItemIndex >= (int)arrSize) {
+        return;
     }
+
+    Item item = {};
+    item.itemIndex = std::rand() % NUM_ITEM_TEXTURES;
+    auto &texture = gameState->resources.itemTextures[item.itemIndex];
+    item.size = {0.1, 0.1 * (float(texture.height) / float(texture.width))};
+    std::array<float, 3> itemLanes = {-0.5, 0.0, 0.5};
+    float x = itemLanes[std::rand() % 3];
+    item.position = {x, (1.0F / platform.memory.aspectRatio) - item.size.y};
+
+    gameState->world.items[gameState->world.nextItemIndex] = item;
+    gameState->world.nextItemIndex++;
 }
 
 /**
  * Updates and renders all items
  * Checks for collision with player and handles pickup effects
  */
-void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState, bool shouldUpdate) {
-    if (shouldUpdate && gameState->frameCounter % gameState->itemFrequency == 0) {
-        spawnItem(gameState);
-    }
+void updateAndRenderItems(Platform &platform, GameState *gameState, bool shouldUpdate) {
+    spawnItem(platform, gameState, shouldUpdate);
 
     for (int i = 0; i < gameState->world.nextItemIndex; i++) {
         Item *item = &gameState->world.items[i];
         Render::Texture *texture = &gameState->resources.itemTextures[item->itemIndex];
 
         if (shouldUpdate) {
-            item->position = {item->position.x, (float)(item->position.y + getRoadSpeed(gameState))};
+            item->position.y -= getRoadSpeed(gameState) * platform.frameTimeMs;
 
             // decreases the size of the collision box
             int bufferZone = 10;
@@ -334,9 +356,7 @@ void updateAndRenderItems(VideoBuffer *buffer, GameState *gameState, bool should
             }
         }
 
-        //		int x = item->position.x - texture->width / 2;
-        //		int y = item->position.y - texture->height / 2;
-        //		Render::textureAlpha(buffer, texture, x, y);
+        Render::pushTexture(gameState, texture, item->position, item->size, glm::vec2(0, 1), 0, AtomPlane::AI);
     }
 }
 
@@ -383,6 +403,8 @@ void updateAndRenderGame(Platform &platform, GameState *gameState, bool update) 
     updateAndRenderRoad(platform, gameState, update);
 
     updateAndRenderTraffic(platform, gameState, update);
+
+    updateAndRenderItems(platform, gameState, update);
 
     updateAndRenderBullets(platform, gameState, update);
 

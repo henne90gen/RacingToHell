@@ -115,11 +115,13 @@ void resetGameState(GameState *gameState) {
     gameState->frameCounter = 0;
 
     // TODO balance spawn rates
-    gameState->trafficCarFrequencyMs = 500;
+    gameState->trafficCarFrequencyMs = 1000;
     gameState->trafficCarSpawnTimeMs = 0;
-    gameState->bulletFrequencyMs = 2000;
+    gameState->bulletFrequencyMs = 500;
     gameState->bulletSpawnTimeMs = 0;
-    gameState->itemFrequency = 50;
+    gameState->itemFrequencyMs = 500;
+    gameState->itemSpawnTimeMs = 0;
+
     gameState->bulletSpeed = 0.005f;
 
     gameState->nextAIBulletIndex = 0;

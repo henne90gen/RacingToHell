@@ -11,11 +11,6 @@
 #define BUFFER_OFFSET(i) ((void *)(i))
 #define PLAYER_SPEED 0.01
 
-// struct VideoBuffer {
-//     uint32_t width, height, bytesPerPixel;
-//     void *content;
-// };
-
 struct SoundBuffer {
     int16_t *samples;
     int sampleCount;
@@ -38,15 +33,14 @@ struct Agent {
 };
 
 struct Car {
-    glm::vec2 position;
-    glm::vec2 size;
+    glm::vec2 position, size;
     uint8_t carIndex;
     float health, speed;
 };
 
 struct Item {
-    glm::vec2 position;
-    uint8_t effect, itemIndex;
+    glm::vec2 position, size;
+    uint8_t itemIndex, effect;
 };
 
 struct Bullet {
@@ -190,7 +184,7 @@ struct GameState {
     int8_t difficulty;
     double trafficCarFrequencyMs, trafficCarSpawnTimeMs;
     double bulletFrequencyMs, bulletSpawnTimeMs;
-    uint32_t itemFrequency;
+    double itemFrequencyMs, itemSpawnTimeMs;
     float bulletSpeed;
     bool isInBossFight;
 

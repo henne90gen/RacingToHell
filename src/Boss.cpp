@@ -96,7 +96,7 @@ void updateBoss(GameState *gameState) {
     }
 }
 
-void renderBoss(VideoBuffer *buffer, GameState *gameState) {
+void renderBoss(Platform &platform, GameState *gameState) {
     //	Render::Texture* tankTexture = &gameState->resources.tank;
     //	int tankOffsetX = gameState->boss.position.x - tankTexture->width / 2;
     //	int tankOffsetY = gameState->boss.position.y - tankTexture->height / 2;
@@ -111,12 +111,12 @@ void renderBoss(VideoBuffer *buffer, GameState *gameState) {
     //			cannonOffsetY);
 }
 
-void updateAndRenderBoss(VideoBuffer *buffer, GameState *gameState, bool update) {
+void updateAndRenderBoss(Platform &platform, GameState *gameState, bool update) {
     if (update) {
         updateBoss(gameState);
     }
     if (gameState->menuState == MenuState::GAME || gameState->menuState == MenuState::PAUSE) {
-        renderBoss(buffer, gameState);
+        renderBoss(platform, gameState);
     }
 }
 

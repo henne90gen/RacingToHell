@@ -128,7 +128,6 @@ void followingCarDemo(Platform &platform) {
         Render::Texture *texture = &gameState->resources.playerCarTextures[agent.carIndex];
 
         glm::vec2 desired = platform.input.mousePosition - agent.position;
-        //		if (Math::length(desired) > 0.01f) {
         desired = glm::normalize(desired);
         desired = desired * static_cast<float>(agent.maxSpeed);
 
@@ -137,13 +136,9 @@ void followingCarDemo(Platform &platform) {
         steering = steering * 0.00005f;
 
         agent.acceleration = agent.acceleration + steering;
-        //		} else {
-        //			agent->velocity = glm::vec2();
-        //			agent->acceleration = glm::vec2();
-        //		}
 
         agent.velocity = agent.velocity + agent.acceleration;
-        if (Math::length(agent.velocity) > agent.maxSpeed) {
+        if (glm::length(agent.velocity) > agent.maxSpeed) {
             agent.velocity = glm::normalize(agent.velocity) * static_cast<float>(agent.maxSpeed);
         }
         agent.position = agent.position + agent.velocity;

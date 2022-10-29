@@ -5,20 +5,14 @@
 
 #define PI 3.141592654f
 
-namespace Math
-{
+namespace Math {
 
-    struct Rectangle
-    {
-        glm::vec2 position, size;
-        // unsigned width, height;
-    };
+struct Rectangle {
+    glm::vec2 position, size;
+};
 
-    float dotProduct(const glm::vec2 &v1, const glm::vec2 &v2);
+double angle(const glm::vec2 &v);
 
-    float length(const glm::vec2 &v);
+glm::vec2 rotate(const glm::vec2 &v, double angle);
 
-    double angle(const glm::vec2 &v);
-
-    glm::vec2 rotate(const glm::vec2 &v, double angle);
-}
+} // namespace Math

@@ -56,7 +56,7 @@ void updateAndRenderRoad(Platform &platform, GameState *gameState, bool shouldUp
  * Spawns a bullet at the location of a randomly chosen car
  */
 void spawnBullet(GameState *gameState, glm::vec2 position, glm::vec2 direction) {
-    direction = Math::normalize(direction);
+    direction = glm::normalize(direction);
     // FIXME balance bullet speed
     direction = direction * gameState->bulletSpeed;
 

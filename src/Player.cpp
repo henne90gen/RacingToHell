@@ -6,7 +6,7 @@
  * Spawns a bullet at the location of the player
  */
 void spawnPlayerBullet(GameState *gameState, glm::vec2 position, glm::vec2 direction) {
-    direction = Math::normalize(direction);
+    direction = glm::normalize(direction);
     // FIXME balance bullet speed
     direction = direction * gameState->bulletSpeed;
 

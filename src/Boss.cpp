@@ -48,7 +48,7 @@ void updateTank(GameState *gameState) {
         }
         if (boss->position.x != centerPosition.x || boss->position.y != centerPosition.y) {
             glm::vec2 movement = centerPosition - boss->position;
-            movement = Math::normalize(movement);
+            movement = glm::normalize(movement);
             movement = movement * boss->speed;
             boss->position = boss->position + movement;
         }

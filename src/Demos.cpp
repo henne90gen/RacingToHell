@@ -129,11 +129,11 @@ void followingCarDemo(Platform &platform) {
 
         glm::vec2 desired = platform.input.mousePosition - agent.position;
         //		if (Math::length(desired) > 0.01f) {
-        desired = Math::normalize(desired);
+        desired = glm::normalize(desired);
         desired = desired * static_cast<float>(agent.maxSpeed);
 
         glm::vec2 steering = desired - agent.velocity;
-        steering = Math::normalize(steering);
+        steering = glm::normalize(steering);
         steering = steering * 0.00005f;
 
         agent.acceleration = agent.acceleration + steering;
@@ -144,7 +144,7 @@ void followingCarDemo(Platform &platform) {
 
         agent.velocity = agent.velocity + agent.acceleration;
         if (Math::length(agent.velocity) > agent.maxSpeed) {
-            agent.velocity = Math::normalize(agent.velocity) * static_cast<float>(agent.maxSpeed);
+            agent.velocity = glm::normalize(agent.velocity) * static_cast<float>(agent.maxSpeed);
         }
         agent.position = agent.position + agent.velocity;
 

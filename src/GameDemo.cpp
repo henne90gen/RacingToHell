@@ -83,7 +83,7 @@ void spawnBullet(GameState *gameState, glm::vec2 position, glm::vec2 direction) 
 bool updateAndRenderBullet(Platform &platform, GameState *gameState, Bullet &bullet, bool isPlayerBullet,
                            bool shouldUpdate) {
     if (shouldUpdate) {
-        bullet.position = bullet.position + bullet.velocity;
+        bullet.position = bullet.position + bullet.velocity * float(platform.frameTimeMs);
 
         if (bullet.position.x < -1.1 || bullet.position.x > 1.1) {
             return true;
@@ -193,7 +193,7 @@ void spawnTrafficCar(Platform &platform, GameState *gameState, bool shouldUpdate
     car.carIndex = std::rand() % NUM_TRAFFIC_TEXTURES;
     car.size = {0.1, 0.2};
     car.position = {x, 1.0F / platform.memory.aspectRatio + car.size.y};
-    car.speed = 0.003F;
+    car.speed = 0.0003F;
     car.health = 1.0F;
 
     gameState->world.traffic[gameState->world.nextTrafficCarIndex] = car;

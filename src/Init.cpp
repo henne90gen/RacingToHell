@@ -122,7 +122,7 @@ void resetGameState(GameState *gameState) {
     gameState->itemFrequencyMs = 500;
     gameState->itemSpawnTimeMs = 0;
 
-    gameState->bulletSpeed = 0.005f;
+    gameState->bulletSpeed = 0.001f;
 
     gameState->nextAIBulletIndex = 0;
     gameState->nextPlayerBulletIndex = 0;

@@ -105,6 +105,8 @@ bool updateAndRenderBullet(Platform &platform, GameState *gameState, Bullet &bul
 
                 // decreases the size of the collision box
                 int bufferZone = 17;
+                auto carRect = Math::Rectangle{};
+                auto collisionBox = getCollisionBox(carRect, bulletRect);
                 Math::Rectangle trafficRect = getBoundingBox(car->position, trafficTexture.width - bufferZone,
                                                              trafficTexture.height - bufferZone);
 
@@ -116,7 +118,7 @@ bool updateAndRenderBullet(Platform &platform, GameState *gameState, Bullet &bul
 
                 if (Collision::rectangle(collisionBox, bullet.position)) {
                     // FIXME balance damage
-                    car->health -= 1;
+                    car->health -= 0.1F;
                     return true;
                 }
             }
@@ -223,6 +225,12 @@ void spawnTrafficCarBullet(Platform &platform, GameState *gameState, bool should
 bool updateAndRenderTrafficCar(Platform &platform, GameState *gameState, bool shouldUpdate, Car *car) {
     Render::Texture *texture = &gameState->resources.trafficCarTextures[car->carIndex];
 
+    auto carRect = Math::Rectangle();
+    auto offset = car->size / 2.0F;
+    offset.y *= -1;
+    carRect.position = car->position - offset;
+    carRect.size = car->size;
+
     if (shouldUpdate) {
         car->position.y -= car->speed * platform.frameTimeMs;
 
@@ -235,26 +243,23 @@ bool updateAndRenderTrafficCar(Platform &platform, GameState *gameState, bool sh
             return true;
         }
 
-        auto carRect = Math::Rectangle();
-        auto offset = car->size / 2.0F;
-        offset.y *= -1;
-        carRect.position = car->position - offset;
-        carRect.size = car->size;
         auto playerRect = getPlayerCollisionBox(gameState);
         auto collisionBox = getCollisionBox(carRect, playerRect);
 
-#define COLLISION_DEBUG 0
-#if COLLISION_DEBUG
+#if 0
         Render::pushRectangle(gameState, carRect, glm::vec4(1, 1, 0, 0.5), AtomPlane::AI + 1);
         Render::pushRectangle(gameState, collisionBox, glm::vec4(1, 0, 0, 0.5), AtomPlane::AI + 1);
 #endif
-#undef COLLISION_DEBUG
 
         if (Collision::rectangle(collisionBox, gameState->player.position)) {
             gameOver(platform);
         }
     }
 
+    Math::Rectangle healthRect = {};
+    healthRect.position = carRect.position + glm::vec2(0, 0.015);
+    healthRect.size = {0.1 * car->health, 0.01};
+    Render::pushRectangle(gameState, healthRect, glm::vec4(1, 0, 0, 1), AtomPlane::AI);
     Render::pushTexture(gameState, texture, car->position, car->size, glm::vec2(0, -1), 0, AtomPlane::AI);
 
     return false;
